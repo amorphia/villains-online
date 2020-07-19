@@ -1,0 +1,97 @@
+let obj = {
+
+    async startTakeActionsStep(){
+        this.data.phase = "take-actions";
+        await this.timedPrompt( 'title-card', this.titleCardTimer, { message : 'Take Actions Step' } );
+        this.defaultListener = 'choose-action';
+
+        this.setActivePlayerByPlayerOrder();
+        this.setActivePlayerListener();
+        this.allPlayers({ passed : false } );
+        Server.saveToDB( this );
+        this.updateAll();
+    },
+
+
+    chooseAction( player, action, ...args ) {
+        let method = _.camelCase(`take-${action}-action`);
+        this[method](player, ...args);
+    },
+
+    activateDecline( player, action, tokenId ){
+        let token = this.objectMap[tokenId];
+
+        if( action === 'decline' ){
+            this.declineToken( player, token );
+        } else {
+            player.faction().activateToken( player, token );
+        }
+    },
+
+    declineToken( player, token, refund ){
+
+        let area = this.areas[ token.location ];
+
+        _.discardToken( token, area );
+
+        if( refund ){
+            this.checkForTokenRefund( token, area );
+        }
+
+        if( typeof player === 'string' ){
+            player = this.getPlayerById( player );
+        }
+
+        this.message({ message: `Pull their <span class="uppercase highlight">${token.name}</span> token`, faction : player.faction() });
+        this.advancePlayer();
+    },
+
+    checkForTokenRefund( token, area ) {
+        let faction = this.factions[token.faction];
+        let refund = faction.tokenCost( token, area );
+        if( refund ){
+            faction.data.energy += refund;
+        }
+    },
+
+    takePassAction( player ){
+        player.data.passed = true;
+        this.message({ message: `Have passed`, faction : player.faction() });
+        this.data.playerAction++;
+        if( this.allPlayersHavePassed() ){
+            this.startCombatStep();
+        } else {
+            this.advancePlayer();
+        }
+    },
+
+    takeLockedAction( player ){
+        this.message({ message: `are locked`, faction : player.faction() });
+        this.data.playerAction++;
+        this.advancePlayer();
+    },
+
+
+    async takeSkillAction( player, areaName ){
+        let area = this.areas[areaName];
+        let faction = player.faction();
+        await faction.useSkill( area );
+        this.advancePlayer();
+    },
+
+    takeTokenAction( player, tokenId ){
+        let token = this.objectMap[tokenId];
+        let area = this.areas[token.location];
+        let faction = player.faction();
+        faction.revealToken( player, token, area, this );
+    },
+
+
+    resetResolving(){
+       _.forEach( this.data.resolving, (val, prop, obj ) => obj[prop] = null );
+    },
+
+
+};
+
+module.exports = obj;

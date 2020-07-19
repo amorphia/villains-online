@@ -1,0 +1,128 @@
+let obj = {
+
+    canActivateDeploy( token, area ){
+        return this.canDeployFromReserves() || this.deployFromAreas().length > 0;
+    },
+
+
+    canDeployFromReserves(){
+        let lowestCost = this.reserves().reduce( (acc, unit) => {
+            return unit.cost < acc ? unit.cost : acc;
+        }, 100 );
+
+        return this.money() >= lowestCost;
+    },
+
+
+    async deployToken( args ) {
+        args.fromToken = true;
+        let output = await this.deploy( args );
+
+        if( output.declined ){
+            this.game().declineToken( this.playerId, args.token, true );
+            return;
+        }
+
+        this.game().advancePlayer();
+    },
+
+
+    async deploy( args ){
+
+        // set areas
+        let areas = [];
+        if( args.area ){
+            if( typeof args.area === 'string' ) areas.push( args.area );
+            else areas.push( args.area.name );
+        } else {
+            areas = Object.keys( this.game().areas );
+        }
+
+        let data = {
+            deployLimit : args.deployLimit || this.data.deployLimit,
+            toAreas : areas,
+            fromAreas : this.deployFromAreas( args ),
+            unitTypes : args.unitTypes,
+            free : args.free,
+            fromToken : args.fromToken,
+            readyUnits : args.readyUnits
+        };
+
+        let result = await this.game().promise({ players: args.player, name: 'deploy-action', data : data });
+        return await this.processDeploy( ...result );
+    },
+
+
+    deployFromAreas( args = {} ){
+        let areas = {};
+        let money = this.money();
+
+        _.forEach( this.data.units, (unit, index) => {
+            // if our deploy is limited to a certain unit type only include areas with those
+            let unitMatches = !args.unitTypes || args.unitTypes.includes( unit.type );
+            let canPayFor = args.free || money >= unit.cost;
+
+            if( canPayFor && unitMatches && _.unitInPlay( unit ) ){
+                areas[ unit.location ] = { val : true };
+                if( this.data.name === 'aliens' && unit.type === "champion"){
+                    areas[ unit.location ].kau = true;
+                }
+            }
+        });
+
+        _.forEach( areas, (data, name) => {
+            let cards = this.game().areas[name].data.cards;
+            let trapped = _.find( cards, card => card.class === 'trapped-like-rats' ) && ! data.kau;
+            let nuked = _.find( cards, card => card.class === 'suitcase-nuke' );
+
+            if( nuked || trapped ){
+                delete areas[name];
+            }
+        });
+
+        return Object.keys( areas );
+    },
+
+    async processDeploy( player, data ){
+        if( data.decline ) return { declined : true };
+
+        let output = {
+            cost : data.cost,
+            units : [],
+        };
+
+        this.payCost( data.cost );
+
+        data.units.forEach( unitId => {
+            let unit = this.game().objectMap[unitId];
+
+            output.units.push({
+                from : unit.location,
+                unit : unit
+            });
+
+            // update area
+            unit.location = data.toArea;
+            // heal wounded units
+            if( unit.hasOwnProperty( 'flipped' ) ) unit.flipped = false;
+
+            // ready units
+            if( data.readyUnits ){
+                unit.ready = true;
+            } else {
+                if( unit.ready ) unit.ready = false;
+            }
+        });
+
+        let unitNames = [];
+        output.units.forEach( data => unitNames.push( data.unit.name ) );
+        let message = `Pay xC${output.cost}x to deploy <span class="faction-${this.name}">${ unitNames.join(', ') }</span> to the ${output.units[0].unit.location}`;
+        this.message({ message: message, faction : this });
+
+        await this.triggeredEvents( 'deploy', output.units );
+
+        return output;
+    }
+};
+
+module.exports = obj;

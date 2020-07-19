@@ -1,0 +1,22 @@
+
+
+@keyframes ripple {
+    /*
+    0% { box-shadow: 0 0 0 0 rgba(43,43,43, 0.3); }
+    100% { box-shadow: 0 0 0 25px rgba(43,43,43, 0); }
+    */
+    0% { box-shadow: 0 0 0 0 rgba(0,0,0,.5); }
+    100% { box-shadow: 0 0 0 20px rgba(0,0,0,.0); }
+}
+
+@keyframes seenflash {
+    0% { background-color:  #f4f4f4; }
+    20% { background-color: #FF6; }
+    100% { background-color:  #f4f4f4; }
+}
+
+@keyframes unseenflash {
+    0% { background-color: var(--primary-color); }
+    20% { background-color: #FF6; }
+    100% { background-color: var(--primary-color); }
+}

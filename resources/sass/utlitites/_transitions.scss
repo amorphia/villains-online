@@ -1,0 +1,169 @@
+/**
+    Fade
+ */
+
+.fade-enter-active, .fade-leave-active {
+    transition: all .2s;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: .75;
+}
+
+/**
+    slide
+**/
+
+.slide-enter-active, .slide-leave-active {
+     transition: transform .3s;
+ }
+
+.slide-enter {
+    transform: translateX(-100%);
+}
+
+.slide-leave-to {
+    transform: translateX(-100%);
+}
+
+
+/**
+    slide directions
+**/
+
+
+.slide-left-enter,
+.slide-left-leave,
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter,
+.slide-right-leave,
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: transform .3s ease-in-out;
+}
+
+
+
+.slide-left-enter-to,
+.slide-left-leave,
+.slide-right-enter-to,
+.slide-right-leave {
+    transform: translateX(0);
+}
+
+
+
+.slide-left-enter-active,
+.slide-right-enter-active{
+    //transition-delay: .2s;
+}
+
+.slide-left-leave-to, .slide-right-enter {
+    transform: translateX(-100%);
+}
+
+.slide-left-enter, .slide-right-leave-to  {
+    transform: translateX(100%);
+}
+
+//v-enter: Starting state for enter. Added before element is inserted, removed one frame after element is inserted.
+
+//v-enter-active: Active state for enter. Applied during the entire entering phase. Added before element is inserted, removed when transition/animation finishes. This class can be used to define the duration, delay and easing curve for the entering transition.
+
+//v-enter-to: Only available in versions 2.1.8+. Ending state for enter. Added one frame after element is inserted (at the same time v-enter is removed), removed when transition/animation finishes.
+
+//v-leave: Starting state for leave. Added immediately when a leaving transition is triggered, removed after one frame.
+
+//v-leave-active: Active state for leave. Applied during the entire leaving phase. Added immediately when leave transition is triggered, removed when the transition/animation finishes. This class can be used to define the duration, delay and easing curve for the leaving transition.
+
+//v-leave-to: Only available in versions 2.1.8+. Ending state for leave. Added one frame after a leaving transition is triggered (at the same time v-leave is removed), removed when the transition/animation finishes.
+
+.up-enter, .up-leave, .up-enter-active, .up-leave-active {
+    transition: transform .2s ease-in-out;
+}
+
+.up-enter, .up-leave-to {
+    transform: translateY(100%);
+}
+
+.up-enter-to, .up-leave {
+    transform: translateY(0);
+}
+
+
+
+
+.left-enter, .left-leave, .left-enter-active, .left-leave-active {
+    transition: transform .2s linear;
+}
+
+.left-enter {
+    transform: translateX(100%);
+}
+
+.left-enter-to, .left-leave {
+    transform: translateX(0);
+}
+
+.left-leave-to {
+    transform: translateX(-100%);
+}
+
+.left-enter-active {
+    transition-delay: .1s;
+}
+
+
+.right-enter, .right-leave, .right-enter-active, .right-leave-active {
+    transition: transform .2s linear;
+}
+
+.right-enter, .right-leave-to {
+    transform: translateX(-100%);
+}
+
+.right-enter-to, .right-leave {
+    transform: translateX(0);
+}
+
+.right-enter-active {
+    transition-delay: .1s;
+}
+
+/**
+    Slide Down
+**/
+
+.slide-down-enter-active, .slide-down-leave-active {
+    transition: transform .3s;
+}
+
+.slide-down-enter {
+    transform: translateY(-100%);
+}
+
+.slide-down-leave-to {
+    transform: translateY(-100%);
+}
+
+
+/**
+    Slide Open
+**/
+
+.open-enter-active, .open-leave-active {
+    transition: max-height .5s;
+    overflow: hidden;
+}
+
+.open-enter-to, .open-leave {
+    max-height: 200vh;
+    overflow: hidden;
+}
+
+.open-leave-to, .open-enter {
+    max-height: 0;
+    overflow: hidden;
+}

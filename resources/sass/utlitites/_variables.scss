@@ -1,0 +1,56 @@
+:root {
+	--dark-text: #282828;
+	--near-white: rgb(251,251,251);
+    --light-text: #d4d4d4;
+    --light-grey: #767676;
+    --mid-grey: #272727;
+    --dark-grey: #0e0e0e;
+    --primary-color: #76316599;
+    --primary-light-color: #d7a2ff;
+    --primary-font: "Teko", helvetica, sans-serif;
+    --secondary-font: "Oswald", impact, arial, sans-serif;
+    --accent-font: "Abel", helvetica, arial, sans-serif;
+    --success-color: #38b383;
+    --gold: #ffec02;
+    --highlight-color : #FFA700;
+    --dark-color: #333333;
+    --off-white : #ADADAD;
+    --light-yellow : #ffe000;
+
+    --faction-mafia: #ff6800;
+    --faction-mafia-secondary: #fffa06;
+    --faction-mutants: #90c500;
+    --faction-mutants-secondary: #ffff00;
+    --faction-scientists: #ffdd0b;
+    --faction-scientists-secondary: #ffffc3;
+    --faction-robots: #108cf9;
+    --faction-robots-secondary: #afffff;
+    --faction-bankers: #00b03d;
+    --faction-bankers-secondary: #c7ffc5;
+    --faction-commies: #ff1b00;
+    --faction-commies-secondary: #ffe000;
+    --faction-aliens: #00ab79;
+    --faction-aliens-secondary: #ffb800;
+    --faction-cultists: #b2b2b2;
+    --faction-cultists-secondary: #fdfdfd;
+
+}
+
+.faction-neutrals{color: white}
+.faction-mafia {color: var(--faction-mafia)}
+.faction-mutants {color: var(--faction-mutants)}
+.faction-scientists {color: var(--faction-scientists)}
+.faction-robots {color: var(--faction-robots)}
+.faction-bankers {color: var(--faction-bankers)}
+.faction-commies {color: var(--faction-commies)}
+.faction-aliens {color: var(--faction-aliens)}
+.faction-cultists {color: var(--faction-cultists)}
+
+.primary { color: var(--primary-color) }
+.primary-light { color: var(--primary-light-color) }
+.highlight { color: var(--highlight-color) }
+.white { color: white }
+
+.primary-font { font-family: var(--primary-font) }
+.secondary-font { font-family: var(--secondary-font) }
+.accent-font { font-family: var(--accent-font) }

@@ -1,0 +1,272 @@
+<template>
+<transition name="right">
+    <div v-if="area" class="view-area pos-absolute width-100 height-100 p-5  overflow-auto z-4">
+        <button class="toggle fixed top right icon-x"
+                @click="closeViewArea"
+        ></button>
+
+        <div class="d-flex align-stretch">
+            <div class="view-area__main-content width-40 pt-4 pr-5 pb-6">
+
+                <div v-if="area.owner" class="title d-flex align-center view-area__controller">
+                    <img class="determine-control__faction-icon" :src="factionIcon( area.owner )">
+                    Controlled by The {{ area.owner | startCase }}
+                </div>
+
+                <div class="view-player__title">Control Ability</div>
+                <div class="p-3 highlight">{{ area.control }}</div>
+
+                <div class="view-player__title">Skill Ability</div>
+                <div class="p-3 highlight">{{ area.skill }}</div>
+
+                <div class="view-player__title">Active Cards:</div>
+                <div v-if="area.cards.length" class="view-player__active-cards pt-4">
+                    <div v-for="card in area.cards" class="pos-relative view-player__card">
+                        <img class="z-1 view-player__card" :src="`/images/cards/${card.file}.jpg`">
+                        <img class="pos-absolute bottom-0 z-2 card-faction-icon" :src="factionIcon( card.owner )">
+                    </div>
+                </div>
+                <div v-else class="view-player__empty">No Active Cards</div>
+
+
+                <div class="view-player__title">Used Skill Ability:</div>
+                <div v-if="usedSkill.length" class="view-player__areas">
+                    <div v-for="faction in usedSkill" class="highlight p-3">
+                        <img class="determine-control__faction-icon" :src="factionIcon( faction )">
+                    </div>
+                </div>
+                <div v-else class="view-player__empty">No factions have used this skill ability</div>
+
+
+            </div>
+
+            <div class="view-player__main-content width-60 pt-6 pr-5 pb-3 h-100">
+
+                <div class="p-0 width-100 view-area__area pos-relative" :class="`area-${area.name}`">
+
+                    <div class="view-area__tokens pos-absolute width-100 z-2">
+                        <token-row :area="area"></token-row>
+                    </div>
+
+                    <div class="view-area__header area-zoom__header p-4 pos-relative grow-0 shrink-0"></div>
+
+                    <div class="view-area__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap">
+                        <area-units v-for="faction in shared.data.factions"
+                                    :faction="faction"
+                                    :key="faction.name"
+                                    :area="area.name">
+                        </area-units>
+                    </div>
+
+                    <div class="view-area__footer area-zoom__footer p-4 pos-relative grow-0 shrink-0 center-text overflow-auto">
+                        <area-units v-for="faction in shared.data.factions"
+                                    :faction="faction"
+                                    :area="area.name"
+                                    :key="faction.name"
+                                    skilled="true"
+                                    classes="d-inline">
+                        </area-units>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</transition>
+</template>
+
+
+<script>
+    export default {
+
+        name: 'view-area',
+        data() {
+            return {
+                shared : App.state,
+                area : null,
+            };
+        },
+
+        watch : {
+            area(){
+                App.event.emit( 'sound', 'ui' );
+            }
+        },
+
+        created(){
+            this.shared.event.on( 'viewArea', this.setViewArea );
+            this.shared.event.on( 'viewPlayer', () => this.area = null );
+        },
+
+
+        computed : {
+            usedSkill(){
+                return Object.values( this.shared.data.factions ).map( faction => {
+                    if( faction.usedSkills.includes( this.area.name ) ) return faction.name;
+                }).filter( item => item );
+            }
+        },
+
+        methods : {
+
+            factionIcon( factionName ){
+                return _.factionIcon( factionName );
+            },
+
+            closeViewArea(){
+                this.area = null;
+            },
+
+            setViewArea( area ){
+                if( this.area && this.area.name === area.name ){
+                    this.closeViewArea();
+                    return
+                }
+                this.area = area;
+            }
+        }
+    }
+</script>
+
+
+<style>
+    .view-area {
+        background-image : url('/images/factory-background.jpg');
+        background-position: center;
+        background-size: cover;
+        z-index: 3;
+        font-size: 1.4rem;
+        color: var(--primary-light-color);
+    }
+
+    .view-area .view-area__controller {
+        margin-bottom: 2rem;
+    }
+
+    .view-area .view-player__empty {
+        font-size: .9em;
+    }
+
+    .view-area__unit-image {
+        width: 100%;
+        border: 1.5px solid rgba(0,0,0,.1);
+    }
+
+    .view-area__token-wrap, .view-area__unit-wrap {
+        width: 6vw;
+    }
+
+    .view-area__token, .view-area__unit {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        max-width: 6vw;
+        max-height: 6vw;
+        top: 0;
+        left: 0;
+        border: 1.5px solid rgba(0,0,0,.1);
+    }
+
+    .view-area__upgrade-card-image{
+        border: 1.5px solid rgba(0,0,0,.1);
+    }
+
+    .view-area__token {
+        border-radius: 50%;
+    }
+
+    .card-faction-icon {
+        left: 50%;
+        transform: translate(-50%, -20%);
+        width: 20%;
+        top: 0;
+        border: 1.5px solid white;
+        box-shadow: 0 0 2px 4px rgba(0,0,0,.6);
+    }
+
+
+    .empty-result {
+        text-align: center;
+        padding: 1vw;
+        font-size: 1.3em;
+        color: var(--primary-light-color);
+    }
+
+    .view-area__area {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);
+        border: 2px solid rgba(255,255,255,.3);
+        width: 100%;
+        padding: 3px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .view-area__header {
+        width: 100%;
+        background-size: cover;
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        min-height: 9rem;
+    }
+
+    .view-area__body {
+        min-height: 20rem;
+    }
+
+    .view-area__footer {
+        width: 100%;
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+        min-height: 6rem;
+        padding-top: 1.5rem;
+    }
+
+    .view-area__tokens {
+        left: 50%;
+        transform: translate(-50%,-50%);
+        top: 0;
+    }
+
+
+    .area-capitol { background-image: url("/images/areas/capitol-bg.jpg") }
+    .area-capitol .area-zoom__header { background-image: url("/images/areas/capitol-top.png") }
+    .area-capitol .area-zoom__footer { background-image: url("/images/areas/capitol-bottom.png") }
+
+    .area-sewers { background-image: url("/images/areas/sewers-bg.jpg") }
+    .area-sewers .area-zoom__header { background-image: url("/images/areas/sewers-top.png") }
+    .area-sewers .area-zoom__footer { background-image: url("/images/areas/sewers-bottom.png") }
+
+    .area-police { background-image: url("/images/areas/police-bg.jpg") }
+    .area-police .area-zoom__header { background-image: url("/images/areas/police-top.png") }
+    .area-police .area-zoom__footer { background-image: url("/images/areas/police-bottom.png") }
+
+    .area-laboratory { background-image: url("/images/areas/laboratory-bg.jpg") }
+    .area-laboratory .area-zoom__header { background-image: url("/images/areas/laboratory-top.png") }
+    .area-laboratory .area-zoom__footer { background-image: url("/images/areas/laboratory-bottom.png") }
+
+    .area-factory { background-image: url("/images/areas/factory-bg.jpg") }
+    .area-factory .area-zoom__header { background-image: url("/images/areas/factory-top.png") }
+    .area-factory .area-zoom__footer { background-image: url("/images/areas/factory-bottom.png") }
+
+    .area-bank { background-image: url("/images/areas/bank-bg.jpg") }
+    .area-bank .area-zoom__header { background-image: url("/images/areas/bank-top.png") }
+    .area-bank .area-zoom__footer { background-image: url("/images/areas/bank-bottom.png") }
+
+    .area-university { background-image: url("/images/areas/university-bg.jpg") }
+    .area-university .area-zoom__header { background-image: url("/images/areas/university-top.png") }
+    .area-university .area-zoom__footer { background-image: url("/images/areas/university-bottom.png") }
+
+    .area-subway { background-image: url("/images/areas/subway-bg.jpg") }
+    .area-subway .area-zoom__header { background-image: url("/images/areas/subway-top.png") }
+    .area-subway .area-zoom__footer { background-image: url("/images/areas/subway-bottom.png") }
+
+    .area-church { background-image: url("/images/areas/church-bg.jpg") }
+    .area-church .area-zoom__header { background-image: url("/images/areas/church-top.png") }
+    .area-church .area-zoom__footer { background-image: url("/images/areas/church-bottom.png") }
+</style>
+

@@ -1,0 +1,372 @@
+//@import 'icomoon/style.css';
+@import 'utlitites/reset';
+@import 'utlitites/variables';
+@import 'utlitites/mq';
+@import 'utlitites/animations';
+@import 'utlitites/utility';
+@import 'utlitites/forms';
+@import 'utlitites/transitions';
+@import 'partials/landing';
+@import 'partials/choose-factions';
+
+
+:root {
+    font-size: 1vw;
+}
+
+* {
+    user-select: none;
+}
+
+body {
+    background-color: var(--primary-color);
+    background-image: url('/images/background.jpg');
+    color: white;
+    font-family: var(--primary-font);
+    background-size: cover;
+}
+
+.glass {
+    background-color: rgba(255,255,255,.05);
+    backdrop-filter: blur(10px) saturate(150%);
+    box-shadow: 0px 0px 6px rgba(0,0,0,.5);
+}
+
+.main-container {
+    height: 100vh;
+    overflow: hidden;
+}
+
+
+
+.main-content {
+    transition: flex-basis .3s;
+    will-change: flex-basis;
+}
+
+
+
+.alert {
+    font-size: 1.2rem;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    margin: 1rem;
+    text-align: center;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    font-family: var(--secondary-font);
+}
+
+.alert-success {
+    background-color: var(--primary-color);
+}
+
+.button {
+    padding: .75rem;
+    margin: .5rem .25rem;
+    line-height: 1.25;
+    text-transform: uppercase;
+    background-color: var(--primary-color);
+    color: white;
+    transition: background-color 0.2s;
+    border-radius: 3px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    letter-spacing: 2px;
+    box-shadow: 0 2px 2px rgba(0,0,0,.5);
+    transition: color .3s;
+
+    &:hover {
+        color: var(--light-yellow);
+    }
+
+    &.wide {
+        padding: .75rem 2.5rem;
+    }
+
+    &.button-empty {
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    &.active {
+        color: var(--highlight-color);
+    }
+}
+
+.drawer__main {
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 0;
+    transition: flex-basis 0.3s;
+    will-change: flex-basis;
+
+    &.drawer--closed {
+        flex-basis: 100%;
+    }
+
+}
+
+.ripple {
+    animation: ripple 1s ease-in infinite;
+}
+
+.drawer__aside {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+}
+
+.flipper, .toggle {
+    cursor: pointer;
+    padding: 1vw;
+    background-color: rgba(0,0,0,.8);
+    color: var(--highlight-color);
+}
+
+.toggle {
+    position: absolute;
+    cursor: pointer;
+    padding: 1vw;
+    background-color: rgba(0,0,0,.8);
+    color: var(--highlight-color);
+
+
+    &.top {
+        top: 0;
+    }
+
+    &.left {
+        left: 0;
+    }
+
+    &.right {
+        right: 0;
+    }
+
+    &.bottom {
+        bottom: 0;
+    }
+
+}
+
+.first-player {
+    font-size: .9em;
+    color: var(--highlight-color);
+}
+
+[data-count]{
+
+    &:after {
+        content: attr(data-count);
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        font-size: 1em;
+        background-color: black;
+        transform: translate(-50%, -50%);
+        height: 1.5em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 0 5px rgba(0,0,0,.5);
+        padding: 0 .5rem;
+        z-index: 3;
+    }
+}
+
+
+body {
+    scrollbar-color: var(--primary-color) rgba(0,0,0,.1); /* thumb and track color */
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,.1);
+    box-shadow: inset 0 0 5px rgba(0,0,0,.5);
+    border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-light-color);
+}
+
+
+.loader-bar {
+    height: 2px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+
+    &.side {
+        width: 2px;
+        height: 100%;
+    }
+}
+
+
+.loader-bar__streak {
+    position: relative;
+    height: 100%;
+    animation-name: loader-animation;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.loader-bar.side .loader-bar__streak {
+    width: 100%;
+    height: unset;
+    animation-name: loader-animation-side;
+}
+
+
+.visitor-image--thumb {
+    border: 2px solid rgba(255,255,255,.65);
+    box-shadow: 0px 5px 10px -2px rgba(0,0,0,.5);
+    transition: transform .2s;
+    width: 90px;
+    height: 90px;
+    background-size: cover;
+    background-position: center;
+
+    @include desktop {
+        &:hover {
+            transform: scale( 1.1 );
+        }
+    }
+
+    @include mobile {
+        width: 50px;
+        height: 50px;
+    }
+
+}
+
+.title {
+    letter-spacing: 1px;
+    margin-bottom: .5em;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    padding: .2em .5em;
+    margin-top: .5em;
+    white-space: nowrap;
+    font-family: var(--secondary-font);
+    border-color: #e953cd;
+    font-weight: 200;
+    overflow: hidden;
+
+    span {
+        font-family: var(--primary-font);
+        color: var(--highlight-color);
+        font-size: 1.3em;
+    }
+
+    span.note {
+        color: var(--off-white);
+        font-size: .85em;
+    }
+
+}
+
+
+
+.horizontal-scroll {
+    overflow-x: overlay;
+    overflow-y: hidden;
+}
+
+
+
+@keyframes loader-animation {
+    0% {
+        width: 0%;
+        background-color: #ff00fa;
+    }
+    25% {
+        width: 100%;
+        left: 0%
+    }
+    50% {
+        left: 100%;
+        width: 0;
+        background-color: gold;
+    }
+    75% {
+        left: 0%;
+        width: 100%
+    }
+    100% {
+        left: 0%;
+        width: 0%;
+        background-color: #ff00fa;
+    }
+}
+
+@keyframes loader-animation-side {
+    0% {
+        height: 0%;
+        background-color: #ff00fa;
+    }
+    25% {
+        height: 100%;
+        top: 0%
+    }
+    50% {
+        top: 100%;
+        height: 0;
+        background-color: gold;
+    }
+    75% {
+        top: 0%;
+        height: 100%
+    }
+    100% {
+        top: 0%;
+        height: 0%;
+        background-color: #ff00fa;
+    }
+}
+
+
+
+@keyframes selected {
+    from {transform: translate(-50%, -50%) rotate(0);}
+    to   {transform: translate(-50%, -50%) rotate(360deg);}
+}
+
+.selected {
+    --border-bg: conic-gradient( #ff00fa, gold, gold, #ff00fa, #ff00fa );
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        display: block;
+        background: var(--border-bg);
+        width: calc(100% * 1.75);
+        padding-bottom: calc(100% * 1.75);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 100%;
+        z-index: 0;
+        animation: selected 2s linear infinite;
+    }
+}

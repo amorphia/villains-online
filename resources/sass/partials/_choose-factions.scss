@@ -1,0 +1,82 @@
+.choose-factions__faction-sheet{
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.choose-factions__player-container {
+    background-image: url('/images/background-blurred.jpg');
+    background-size: 100% 300%;
+    background-position: center;
+    box-shadow: 0px 0px 6px rgba(0,0,0,.5);
+}
+
+.choose-factions__player {
+    letter-spacing: 2px;
+    width: 26vw;
+    font-size: 1.2em;
+    border-bottom: 4px solid rgba(0,0,0,.5);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .loader-bar {
+        display: none;
+    }
+}
+
+.choose-factions__player-faction {
+    background-color: rgba(0,0,0,.3);
+    text-align: center;
+    color: var(--success-color);
+}
+
+.choose-factions__player-index {
+    background-color: var(--primary-color);
+}
+
+
+.choose-factions__player.active {
+    .choose-factions__player-index {
+        background-color: var(--highlight-color);
+        color: black;
+    }
+    .loader-bar {
+        display: block;
+    }
+    .choose-factions__text {
+        color: var(--highlight-color);
+    }
+}
+
+.choose-factions__faction {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    text-align: right;
+    padding: .2rem;
+    text-align: right;
+
+    &.active {
+        color: var(--highlight-color);
+    }
+
+    &.taken {
+        opacity: .5;
+    }
+}
+
+.choose-factions__circle {
+    font-size: .7rem;
+    margin-left: .5rem;
+    opacity: .7;
+}
+
+.choose-factions__faction-container {
+    width: 15rem;
+    flex-basis: 15rem;
+    text-align: right;
+    padding-right: 1rem;
+}

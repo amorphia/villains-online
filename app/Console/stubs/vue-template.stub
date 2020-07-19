@@ -1,0 +1,23 @@
+<template>
+    <!-- Your {Component} component's template -->
+</template>
+
+
+<script>
+    export default {
+
+        name: '{name}',
+
+        data() {
+            return {
+                shared : App.state
+            };
+        }
+    }
+</script>
+
+
+<style>
+
+</style>
+
