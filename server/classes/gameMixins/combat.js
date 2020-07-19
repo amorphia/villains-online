@@ -1,0 +1,43 @@
+let Battle = require( '../Battle' );
+
+let obj = {
+    async battle( area, options = {} ){
+
+        if( !area.canBattle() ){
+            this.message({ message : `Unable to battle in the ${area.name}` , class : 'warning' });
+            return;
+        }
+
+        let combat = new Battle( area, this, options );
+        this.data.combat = combat.data;
+        this.message({ message : `A battle begins in the ${area.name}`, class : 'highlight' });
+        await combat.init();
+        this.message({ message :  `The battle in the ${area.name} concludes`, class : 'highlight' });
+
+        this.updateAll();
+        await this.wait( 3 );
+        this.data.combat = null;
+    },
+
+    assignHits( unit, faction, count = 1 ){
+        if( count === 1 && unit.toughness && !unit.flipped ){
+            unit.flipped = true;
+            return 'wounds';
+        } else {
+            this.killUnit( unit, faction );
+            return 'kills';
+        }
+    },
+
+    async killUnit( unit, faction ){
+        if( typeof faction !== 'string' ) faction = faction.name;
+        unit.killed = faction;
+
+        if( unit.ready ) unit.ready = false;
+        if( unit.flipped ) unit.flipped = false;
+
+        await this.factions[faction].triggeredEvents( 'unitKilled', [{ unit : unit }] );
+    },
+};
+
+module.exports = obj;
