@@ -47,7 +47,6 @@
 
             if( cookieVol !== null ){
                 let cookieVol = App.cookie( 'volume' );
-                console.log( cookieVol );
                 this.volume = parseInt( cookieVol );
                 this.updateVolume();
             }
@@ -97,7 +96,6 @@
                     case 2: vol = 0.7; break;
                 }
 
-                console.log( 'vol', this.volume, vol );
                 _.forEach( this.sounds, sound => sound.volume = vol );
             },
 

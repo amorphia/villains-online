@@ -35,6 +35,7 @@
         },
 
         created(){
+
             this.shared.id = App.user.uuid;
             this.shared.name = App.user.name;
             this.shared.admin = App.user.admin;
@@ -84,19 +85,16 @@
             initCoreSocketFunctions(){
                 // listen for open games
                 this.shared.socket.on( 'openGame', game => {
-                    console.log( 'openGame received',  game );
                     this.$set( this.shared, 'game', game );
                 });
 
                 // listen for saved games
                 this.shared.socket.on( 'savedGame', game => {
-                    console.log( 'savedGame received', game );
                     this.shared.saveGame = game;
                 });
 
                 // listen for concluded game
                 this.shared.socket.on( 'clearGame', () => {
-                    console.log( 'clearGame received' );
                     this.shared.data = null;
                     this.faction = null;
                     this.factionName = null;
@@ -105,7 +103,6 @@
 
                 // listen for full game data update
                 this.shared.socket.on( 'update', data => {
-                    console.log( 'Game update received');
 
                     this.shared.data = data;
                     this.shared.player = this.shared.getPlayer();
@@ -114,7 +111,6 @@
 
                 // listen for player data update
                 this.shared.socket.on( 'updatePlayerData', data => {
-                    console.log( 'Player update received');
 
                     this.shared.data.players = data;
                     this.shared.player = this.shared.getPlayer();
@@ -123,7 +119,6 @@
 
                 // listen for resource update
                 this.shared.socket.on( 'updateResources', data => {
-                    console.log( 'Resource update received');
 
                     data.forEach( item => {
                         this.shared.data.factions[ item.faction ].resources = item.resources;

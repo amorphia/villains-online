@@ -118,28 +118,22 @@
 
             unitClicked( unit ){
 
-                console.log( 'unit clicked' );
-
                 if( ( this.data.enemyOnly && unit.faction === this.shared.faction.name )
                     || ( this.data.playerOnly && unit.faction !== this.shared.faction.name )
                     || ( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) )
                 ) {
-                    console.log( 'rejected' );
                     return;
                 }
 
                 if( unit.selected ){
                     this.$set( unit, 'selected', false );
-                    console.log( 'already selected' );
                 } else {
                     if( this.needToSelect === 0 ) {
                         if( this.data.count > 1) {
-                            console.log( 'already have enough units' );
                             return;
                         }
                         this.areaUnits.forEach( unit => this.$set( unit, 'selected', false ) );
                     }
-                    console.log( 'set token as selected' );
                     this.$set( unit, 'selected', true );
                 }
             },

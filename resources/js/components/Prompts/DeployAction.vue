@@ -147,7 +147,6 @@
 
             addUnitFromPlay( unit ){
                 if( unit.selected ){
-                    console.log( 'already selected' );
                     this.$set( unit, 'selected', false);
                     return;
                 }
@@ -190,7 +189,6 @@
             canSave(){
                 let unitsSelectedTest = this.selected.length >= 1;
                 let costTest = (this.shared.faction.resources + this.shared.faction.energy) >= this.cost;
-                console.log( 'unitsSelectedTest', unitsSelectedTest, 'costTest', costTest);
                 return unitsSelectedTest && costTest;
             },
 

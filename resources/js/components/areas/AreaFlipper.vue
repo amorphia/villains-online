@@ -23,7 +23,6 @@
 
         mounted(){
             this.shared.event.on( 'areaClicked', this.areaClicked );
-            console.log( 'AreaFlipper mounted' );
             this.$nextTick( () => {
                 if( this.area && !this.locked ) this.shared.event.emit('areaSelected', this.area );
             });

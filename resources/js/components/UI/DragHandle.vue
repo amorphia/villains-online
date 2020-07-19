@@ -41,7 +41,6 @@
             setParentValues(){
                 this.parentY = this.parentEl.offsetTop;
                 this.parentX = this.parentEl.offsetLeft;
-                console.log( this );
             },
 
             addEventListeners(){
@@ -65,9 +64,6 @@
 
                 this.offsetX = e.clientX - this.initialX ;
                 this.offsetY = this.initialY - e.clientY;
-
-                console.log( 'this.offsetX', this.offsetX );
-                console.log( 'this.offsetY', this.offsetY );
 
                 this.parentEl.style.top = (this.parentY - this.offsetY) + "px";
                 this.parentEl.style.right = (this.parentX - this.offsetX) + "px";

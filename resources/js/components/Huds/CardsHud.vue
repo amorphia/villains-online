@@ -27,7 +27,7 @@
 
         methods : {
             itemClicked( item ) {
-                console.log( item );
+
             },
         }
     }

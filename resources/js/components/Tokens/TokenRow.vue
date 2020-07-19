@@ -36,7 +36,6 @@
                 if( !existing && this.token && ( n === 1 || this.area.tokens[n-2] ) ) return this.token;
             },
             emitToken( token ){
-                console.log( 'token row emitter' );
                 this.$emit('token', token );
             }
         }

@@ -89,7 +89,6 @@
         },
         mounted(){
             this.shared.event.on( 'areaSelected', area => {
-                console.log( this.area.name, 'area-selected', area );
                 if( this.area.name !== area.name ) this.opacity = true;
                 else this.opacity = false;
             });

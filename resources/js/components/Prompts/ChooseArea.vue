@@ -35,7 +35,6 @@
 
 
         updated(){
-            console.log( 'chooseArea updated' );
             this.shared.event.emit('areaSelected', this.area );
         },
 
@@ -97,31 +96,25 @@
 
             tokenClicked( token ){
 
-                console.log( 'token clicked' );
-
                 if( token.location !== this.area.name
                     || ( this.data.unrevealedOnly && token.revealed )
                     || ( this.data.revealedOnly && !token.revealed )
                     || ( this.data.enemyOnly && token.faction === this.shared.faction.name )
                     || ( this.data.playerOnly && token.faction !== this.shared.faction.name )
                 ) {
-                    console.log( 'rejected' );
                     return;
                 }
 
                 if( token.selected ){
                     this.$set( token, 'selected', false );
-                    console.log( 'token was already selected' );
                 } else {
                     if( this.needToSelect === 0 ) {
                         if( this.data.count > 1) {
-                            console.log( 'already have enough tokens' );
                             return;
                         }
 
                         this.area.tokens.forEach( token => this.$set( token, 'selected', false ) );
                     }
-                    console.log( 'set token as selected' );
                     this.$set( token, 'selected', true );
                 }
             },

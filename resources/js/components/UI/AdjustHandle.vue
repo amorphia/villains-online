@@ -28,11 +28,9 @@
         mounted(){
             this.parentEl = this.$refs.handle.parentElement;
             this.setParentValues();
-            console.log( this );
         },
         methods : {
             onMouseDown ( e ) {
-                console.log( e );
                 this.initialX = e.clientX;
                 this.initialY = e.clientY;
                 this.addEventListeners();

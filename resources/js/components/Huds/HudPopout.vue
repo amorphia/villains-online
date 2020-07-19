@@ -36,7 +36,6 @@
         methods : {
 
             setHeight( size ){
-                console.log( 'size', size );
                 this.height = size;
             }
         }

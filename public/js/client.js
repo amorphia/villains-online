@@ -3118,7 +3118,6 @@ __webpack_require__.r(__webpack_exports__);
     if (cookieVol !== null) {
       var _cookieVol = App.cookie('volume');
 
-      console.log(_cookieVol);
       this.volume = parseInt(_cookieVol);
       this.updateVolume();
     }
@@ -3183,8 +3182,6 @@ __webpack_require__.r(__webpack_exports__);
           break;
       }
 
-      console.log('vol', this.volume, vol);
-
       _.forEach(this.sounds, function (sound) {
         return sound.volume = vol;
       });
@@ -3230,9 +3227,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    itemClicked: function itemClicked(item) {
-      console.log(item);
-    }
+    itemClicked: function itemClicked(item) {}
   }
 });
 
@@ -3467,7 +3462,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     setHeight: function setHeight(size) {
-      console.log('size', size);
       this.height = size;
     }
   }
@@ -3506,9 +3500,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    itemClicked: function itemClicked(item) {
-      console.log(item);
-    }
+    itemClicked: function itemClicked(item) {}
   }
 });
 
@@ -4785,7 +4777,6 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   updated: function updated() {
-    console.log('chooseArea updated');
     this.shared.event.emit('areaSelected', this.area);
   },
   computed: {
@@ -4848,20 +4839,15 @@ __webpack_require__.r(__webpack_exports__);
     tokenClicked: function tokenClicked(token) {
       var _this4 = this;
 
-      console.log('token clicked');
-
       if (token.location !== this.area.name || this.data.unrevealedOnly && token.revealed || this.data.revealedOnly && !token.revealed || this.data.enemyOnly && token.faction === this.shared.faction.name || this.data.playerOnly && token.faction !== this.shared.faction.name) {
-        console.log('rejected');
         return;
       }
 
       if (token.selected) {
         this.$set(token, 'selected', false);
-        console.log('token was already selected');
       } else {
         if (this.needToSelect === 0) {
           if (this.data.count > 1) {
-            console.log('already have enough tokens');
             return;
           }
 
@@ -4870,7 +4856,6 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
 
-        console.log('set token as selected');
         this.$set(token, 'selected', true);
       }
     }
@@ -5417,20 +5402,15 @@ __webpack_require__.r(__webpack_exports__);
     tokenClicked: function tokenClicked(token) {
       var _this3 = this;
 
-      console.log('token clicked');
-
       if (token.location !== this.area.name || this.data.unrevealedOnly && token.revealed || this.data.revealedOnly && !token.revealed || this.data.enemyOnly && token.faction === this.shared.faction.name || this.data.playerOnly && token.faction !== this.shared.faction.name) {
-        console.log('rejected');
         return;
       }
 
       if (token.selected) {
         this.$set(token, 'selected', false);
-        console.log('token was already selected');
       } else {
         if (this.needToSelect === 0) {
           if (this.data.count > 1) {
-            console.log('already have enough tokens');
             return;
           }
 
@@ -5439,7 +5419,6 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
 
-        console.log('set token as selected');
         this.$set(token, 'selected', true);
       }
     }
@@ -5570,20 +5549,15 @@ __webpack_require__.r(__webpack_exports__);
     unitClicked: function unitClicked(unit) {
       var _this4 = this;
 
-      console.log('unit clicked');
-
       if (this.data.enemyOnly && unit.faction === this.shared.faction.name || this.data.playerOnly && unit.faction !== this.shared.faction.name || this.data.unitTypes && !this.data.unitTypes.includes(unit.type)) {
-        console.log('rejected');
         return;
       }
 
       if (unit.selected) {
         this.$set(unit, 'selected', false);
-        console.log('already selected');
       } else {
         if (this.needToSelect === 0) {
           if (this.data.count > 1) {
-            console.log('already have enough units');
             return;
           }
 
@@ -5592,7 +5566,6 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
 
-        console.log('set token as selected');
         this.$set(unit, 'selected', true);
       }
     }
@@ -5979,7 +5952,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     addUnitFromPlay: function addUnitFromPlay(unit) {
       if (unit.selected) {
-        console.log('already selected');
         this.$set(unit, 'selected', false);
         return;
       }
@@ -6018,7 +5990,6 @@ __webpack_require__.r(__webpack_exports__);
     canSave: function canSave() {
       var unitsSelectedTest = this.selected.length >= 1;
       var costTest = this.shared.faction.resources + this.shared.faction.energy >= this.cost;
-      console.log('unitsSelectedTest', unitsSelectedTest, 'costTest', costTest);
       return unitsSelectedTest && costTest;
     },
     fromAreas: function fromAreas() {
@@ -7043,7 +7014,6 @@ __webpack_require__.r(__webpack_exports__);
       if (!existing && this.token && (n === 1 || this.area.tokens[n - 2])) return this.token;
     },
     emitToken: function emitToken(token) {
-      console.log('token row emitter');
       this.$emit('token', token);
     }
   }
@@ -7190,11 +7160,9 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.parentEl = this.$refs.handle.parentElement;
     this.setParentValues();
-    console.log(this);
   },
   methods: {
     onMouseDown: function onMouseDown(e) {
-      console.log(e);
       this.initialX = e.clientX;
       this.initialY = e.clientY;
       this.addEventListeners();
@@ -7310,7 +7278,6 @@ __webpack_require__.r(__webpack_exports__);
     setParentValues: function setParentValues() {
       this.parentY = this.parentEl.offsetTop;
       this.parentX = this.parentEl.offsetLeft;
-      console.log(this);
     },
     addEventListeners: function addEventListeners() {
       window.addEventListener('mouseup', this.onMouseUp);
@@ -7328,8 +7295,6 @@ __webpack_require__.r(__webpack_exports__);
     onMouseMove: function onMouseMove(e) {
       this.offsetX = e.clientX - this.initialX;
       this.offsetY = this.initialY - e.clientY;
-      console.log('this.offsetX', this.offsetX);
-      console.log('this.offsetY', this.offsetY);
       this.parentEl.style.top = this.parentY - this.offsetY + "px";
       this.parentEl.style.right = this.parentX - this.offsetX + "px";
     }
@@ -8263,18 +8228,14 @@ __webpack_require__.r(__webpack_exports__);
 
       // listen for open games
       this.shared.socket.on('openGame', function (game) {
-        console.log('openGame received', game);
-
         _this4.$set(_this4.shared, 'game', game);
       }); // listen for saved games
 
       this.shared.socket.on('savedGame', function (game) {
-        console.log('savedGame received', game);
         _this4.shared.saveGame = game;
       }); // listen for concluded game
 
       this.shared.socket.on('clearGame', function () {
-        console.log('clearGame received');
         _this4.shared.data = null;
         _this4.faction = null;
         _this4.factionName = null;
@@ -8282,21 +8243,18 @@ __webpack_require__.r(__webpack_exports__);
       }); // listen for full game data update
 
       this.shared.socket.on('update', function (data) {
-        console.log('Game update received');
         _this4.shared.data = data;
         _this4.shared.player = _this4.shared.getPlayer();
         _this4.shared.faction = _this4.shared.getFaction();
       }); // listen for player data update
 
       this.shared.socket.on('updatePlayerData', function (data) {
-        console.log('Player update received');
         _this4.shared.data.players = data;
         _this4.shared.player = _this4.shared.getPlayer();
         _this4.shared.faction = _this4.shared.getFaction();
       }); // listen for resource update
 
       this.shared.socket.on('updateResources', function (data) {
-        console.log('Resource update received');
         data.forEach(function (item) {
           _this4.shared.data.factions[item.faction].resources = item.resources;
         });
@@ -8348,7 +8306,6 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.shared.event.on('areaClicked', this.areaClicked);
-    console.log('AreaFlipper mounted');
     this.$nextTick(function () {
       if (_this.area && !_this.locked) _this.shared.event.emit('areaSelected', _this.area);
     });
@@ -8504,7 +8461,6 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.shared.event.on('areaSelected', function (area) {
-      console.log(_this.area.name, 'area-selected', area);
       if (_this.area.name !== area.name) _this.opacity = true;else _this.opacity = false;
     });
     this.shared.event.on('unselectAreas', function (area) {
