@@ -2,9 +2,60 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/GameLobby.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/GameLobby.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Areas.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Battle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Cards.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/DB.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Factions.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Game.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/PlanTester.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Plan_old.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Player.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Server.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Token.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Unit.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/data/cards.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/data/factionList.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/activatesSkills.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/movesUnits.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/playsCards.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/propertyMethods.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/setup.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/triggeredEvents.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/aliensPlans.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/bankersPlans.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/commiesPlans.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/cultistsPlans.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/mafiaPlans.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/mutantsPlans.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/robotsPlans.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/scientistsPlans.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Aliens.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Bankers.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Commies.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Cultists.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Mafia.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Mutants.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Robots.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Scientists.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/combat.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/combatStep.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/endOfTurn.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/players.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/propertyMethods.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/setup.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/startOfTurn.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/takeActionsStep.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/games.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/partials/helpers.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +96,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../villains-online-server" />
   </component>
   <component name="IgnoredFileRootStore">
     <option name="generatedRoots">
@@ -232,7 +283,7 @@
       <workItem from="1591223441450" duration="81406000" />
       <workItem from="1591417607847" duration="235785000" />
       <workItem from="1592157951059" duration="164940000" />
-      <workItem from="1594834562760" duration="79706000" />
+      <workItem from="1594834562760" duration="82640000" />
     </task>
     <servers />
   </component>
@@ -272,10 +323,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="110" y="111" width="1035" height="632" key="find.popup" timestamp="1595180521676">
+    <state x="110" y="111" width="1035" height="632" key="find.popup" timestamp="1595181902167">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="110" y="111" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1595180521676" />
+    <state x="110" y="111" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1595181902167" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1595179883912">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
