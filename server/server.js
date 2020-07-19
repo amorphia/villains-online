@@ -16,7 +16,7 @@ const server = require( 'http' ).Server( express );
 const io = require( 'socket.io' )( server );
 global.Server = require('./classes/Server')( server, io );
 
-Server.server.listen( 3000 );
+Server.server.listen( 6002 );
 
 
 
