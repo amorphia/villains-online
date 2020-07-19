@@ -2973,7 +2973,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
+/* WEBPACK VAR INJECTION */(function(process) {//
 //
 //
 //
@@ -3016,6 +3016,14 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    canJoin: function canJoin() {
+      if (process.env.MIX_APP_ENV !== 'production') return true;
+      return this.shared.game.players.length < 5;
+    },
+    canStart: function canStart() {
+      if (process.env.MIX_APP_ENV !== 'production') return true;
+      return this.shared.game.players.length >= 2 && this.shared.game.players.length <= 5;
+    },
     joinedGame: function joinedGame() {
       for (var player in this.shared.game.players) {
         if (this.shared.game.players[player].id === this.shared.id) return true;
@@ -3046,6 +3054,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 });
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -52826,6 +52835,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "button wide px-6",
+                      attrs: { disabled: !_vm.canJoin },
                       on: { click: _vm.joinGame }
                     },
                     [_vm._v("JOIN")]
@@ -52848,6 +52858,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "button wide px-6",
+                      attrs: { disabled: !_vm.canStart },
                       on: { click: _vm.startGame }
                     },
                     [_vm._v("START")]

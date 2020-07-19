@@ -16,9 +16,9 @@
                 <div v-if="Object.keys(shared.game.players).length === 0" class="open-game__empty">No Players</div>
             </div>
             <div class="open-game__buttons center-text">
-                <button v-if="!joinedGame" class="button wide px-6" @click="joinGame">JOIN</button>
+                <button v-if="!joinedGame" :disabled="!canJoin" class="button wide px-6" @click="joinGame">JOIN</button>
                 <button v-if="joinedGame" class="button wide px-6 button-empty" @click="leaveGame">LEAVE</button>
-                <button v-if="joinedGame" class="button wide px-6" @click="startGame">START</button>
+                <button v-if="joinedGame" :disabled="!canStart" class="button wide px-6" @click="startGame">START</button>
             </div>
         </div>
         <div v-else class="">
@@ -43,6 +43,14 @@
         },
 
         computed : {
+            canJoin(){
+                if( process.env.MIX_APP_ENV !== 'production' ) return true;
+                return this.shared.game.players.length < 5;
+            },
+            canStart(){
+                  if( process.env.MIX_APP_ENV !== 'production' ) return true;
+                  return this.shared.game.players.length >= 2 && this.shared.game.players.length <= 5;
+            },
             joinedGame(){
                 for( let player in this.shared.game.players ){
                     if( this.shared.game.players[player].id === this.shared.id ) return true;
