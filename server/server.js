@@ -12,7 +12,7 @@ _.mixin( require( './partials/helpers') );
 /**
  * Set Up Server
  */
-const port = 3000;
+const port = 6001;
 const express = require( 'express' )();
 const cors = require('cors');
 express.use( cors() );
