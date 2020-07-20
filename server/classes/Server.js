@@ -24,7 +24,7 @@ class Server {
     initPlayerConnections() {
 
         this.io.on( 'connection', socket => {
-            if( this.debug ) console.log( 'Connection:', socket.id );
+            console.log( 'Connection:', socket.id );
 
             // add authorized players to players store
             socket.on( 'newPlayer', data => this.addPlayer( socket, data ) );
@@ -193,7 +193,7 @@ class Server {
             if( this.savedGames ) socket.emit( 'savedGames', this.getSavedGameList() );
         }
 
-        if( this.debug ) console.log( `${player.data.name} connected` );
+        console.log( `${player.data.name} connected` );
     }
 
     getSavedGameList(){

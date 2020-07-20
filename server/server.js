@@ -11,12 +11,16 @@ _.mixin( require( './partials/helpers') );
 /**
  * Set Up Server
  */
+const port = 3000;
 const express = require( 'express' )();
+
 const server = require( 'http' ).Server( express );
 const io = require( 'socket.io' )( server );
 global.Server = require('./classes/Server')( server, io );
 
-Server.server.listen( 6002 );
+
+Server.server.listen( port );
+console.log( "Websockets listening on port :" + port );
 
 
 
