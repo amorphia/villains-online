@@ -36,6 +36,8 @@
 
         created(){
 
+            console.log( 'Villians Online initializing in env: ',  process.env.MIX_APP_ENV );
+
             this.shared.id = App.user.uuid;
             this.shared.name = App.user.name;
             this.shared.admin = App.user.admin;

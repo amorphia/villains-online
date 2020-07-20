@@ -8187,6 +8187,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
+    console.log('Villians Online initializing in env: ', "local");
     this.shared.id = App.user.uuid;
     this.shared.name = App.user.name;
     this.shared.admin = App.user.admin;
