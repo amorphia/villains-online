@@ -31,7 +31,6 @@
         "socket.io": "^2.3.0",
         "sqlite3": "^4.2.0",
         "uuid": "^8.1.0",
-        "vue-draggable-resizable": "^2.2.0",
         "vue-scrollto": "^2.18.1"
     }
 }

@@ -74,6 +74,3 @@ Vue.use( VueScrollTo, {
     y: true
 });
 
-window.VueDraggableResizable = require( 'vue-draggable-resizable' );
-import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
-Vue.component( 'vue-draggable-resizable', VueDraggableResizable );
