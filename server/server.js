@@ -5,6 +5,7 @@ global._ = require( 'lodash' );
 const { v4: uuid4 } = require( 'uuid' );
 global.uuid = uuid4;
 
+
 _.mixin( require( './partials/helpers') );
 
 
@@ -13,6 +14,8 @@ _.mixin( require( './partials/helpers') );
  */
 const port = 3000;
 const express = require( 'express' )();
+const cors = require('cors');
+express.use( cors() );
 
 const server = require( 'http' ).Server( express );
 const io = require( 'socket.io' )( server );
