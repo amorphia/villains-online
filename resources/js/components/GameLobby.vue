@@ -54,7 +54,7 @@
             },
             canStart(){
                   if( process.env.MIX_APP_ENV !== 'production' ) return true;
-                  return this.currentPlayerCount >= 2 && this.currentPlayerCount <= 5;
+                  return this.currentPlayerCount >= 3 && this.currentPlayerCount <= 5;
             },
             joinedGame(){
                 for( let player in this.shared.game.players ){
