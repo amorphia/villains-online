@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/villains-online.iml" filepath="$PROJECT_DIR$/.idea/villains-online.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../villains-online-server/.idea/villains-online-server.iml" filepath="$PROJECT_DIR$/../villains-online-server/.idea/villains-online-server.iml" />
     </modules>
   </component>
 </project>
