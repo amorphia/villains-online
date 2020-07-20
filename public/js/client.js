@@ -3016,13 +3016,16 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    currentPlayerCount: function currentPlayerCount() {
+      return Object.keys(this.shared.game.players).length;
+    },
     canJoin: function canJoin() {
       if (true) return true;
-      return this.shared.game.players.length < 5;
+      return this.currentPlayerCount < 5;
     },
     canStart: function canStart() {
       if (true) return true;
-      return this.shared.game.players.length >= 2 && this.shared.game.players.length <= 5;
+      return this.currentPlayerCount >= 2 && this.currentPlayerCount <= 5;
     },
     joinedGame: function joinedGame() {
       for (var player in this.shared.game.players) {
@@ -8187,7 +8190,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    console.log('Villians Online initializing in env: ', "local");
+    console.log('Villians Online initializing in env:', "local");
     this.shared.id = App.user.uuid;
     this.shared.name = App.user.name;
     this.shared.admin = App.user.admin;

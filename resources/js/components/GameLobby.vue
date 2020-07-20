@@ -43,13 +43,18 @@
         },
 
         computed : {
+
+            currentPlayerCount(){
+                return Object.keys( this.shared.game.players ).length;
+            },
+
             canJoin(){
                 if( process.env.MIX_APP_ENV !== 'production' ) return true;
-                return this.shared.game.players.length < 5;
+                return this.currentPlayerCount < 5;
             },
             canStart(){
                   if( process.env.MIX_APP_ENV !== 'production' ) return true;
-                  return this.shared.game.players.length >= 2 && this.shared.game.players.length <= 5;
+                  return this.currentPlayerCount >= 2 && this.currentPlayerCount <= 5;
             },
             joinedGame(){
                 for( let player in this.shared.game.players ){

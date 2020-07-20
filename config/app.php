@@ -10,7 +10,7 @@ return [
     ],
 
 
-    'game_server' => env('GAME_SERVER', 'http://localhost:3000' ),
+    'game_server' => env('GAME_SERVER', 'http://localhost:6001' ),
 
     /*
     |--------------------------------------------------------------------------
