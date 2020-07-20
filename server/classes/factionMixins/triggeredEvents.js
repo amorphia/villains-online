@@ -3,8 +3,8 @@ let obj = {
 
     async triggeredEvents( type, units ){
         if( !Array.isArray( units ) ) units = [ units ];
-
         let events = this.getTriggeredEvents( type, units );
+
         if( events.length ){
             await this.processTriggeredEvents( events );
         }
@@ -12,7 +12,6 @@ let obj = {
 
 
     async processTriggeredEvents( events ){
-
         for( let event of events ) {
             let faction = this.game().factions[ event.unit.faction ];
             await faction[ event.event ]( event );

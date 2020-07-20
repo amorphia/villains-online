@@ -12,7 +12,7 @@ class Aliens extends Faction {
         this.data.title = "The Centari Invasion";
         this.data.captured.max = 5;
         this.data.kau = null;
-        this.farMove = false;
+        this.data.farMove = false;
 
         this.capturedRewards = [
             { ap : 1, maxEnergy : 1 },
@@ -67,7 +67,7 @@ class Aliens extends Faction {
     processUpgrade( n ){
         switch( n ){
             case 2 :
-                this.farMove = true;
+                this.data.farMove = true;
                 // intentional fallthrough
             case 1 :
                 this.data.tokens.forEach( token => token.cost = 0 );

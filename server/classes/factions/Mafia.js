@@ -79,7 +79,7 @@ class Mafia extends Faction {
 
         let unit = this.game().objectMap[data.unit];
         this.game().sound( 'hit' );
-        let result = this.game().assignHits( unit, this );
+        let result = await this.game().assignHits( unit, this );
         this.game().message({ message : `the hitman ${result} <span class="faction-${unit.faction}">the ${unit.faction}'s ${unit.name}</span> in <span class="highlight">the ${args.area.name}</span>`, faction : this });
 
         this.game().advancePlayer();

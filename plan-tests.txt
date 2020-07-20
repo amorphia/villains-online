@@ -1,0 +1,42 @@
+{ test : 'unitsInPlay', args : [8] },
+
+{ test : 'loseUnits', args : [3] },
+
+{ test : 'unitsAtTarget', args : [2, 'talent'] },
+
+{ test : 'unitInEnemy', args : ['mole', 1] },
+
+{ test : 'killUnits', args : [5] },
+
+{ test : 'tokensInAreas', args : [6] },
+
+{ test : 'useSkills', args : [2] },
+
+{ test : 'exterminateAreas', args : [1] },
+
+{ test : 'enemyMarkers', args : [3] },
+
+{ test : 'influenceInAreas', args : [6,1] },
+
+{ test : 'controlTarget', args : [] },
+
+
+ /// tokens in areas by type
+
+
+{ test : 'controlAreas', args : [3] },
+
+{ test : 'killMost', args : [] },
+
+{ test : 'controlEnemyTargets', args : [1] },
+{ test : 'exterminateEnemyTarget', args : [] },
+{ test : 'unitsAtEnemyTarget', args : [2, 'mole'? ] },
+{ test : 'mrFusion', args : [4] },
+
+
+
+
+
+
+
+

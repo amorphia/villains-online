@@ -2,7 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/resources/js/components/GameLobby.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/GameLobby.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/classes/factionPlans/loyalistsPlans.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/classes/factions/Loyalists.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/app.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/GameSound.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/GameSound.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseUnits.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseUnits.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/DeployAction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/DeployAction.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewCombat.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewCombat.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/sass/utlitites/_variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/utlitites/_variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Areas.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Areas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Battle.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Battle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Cards.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Cards.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Factions.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Factions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/PlanTester.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/PlanTester.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/data/factionList.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/data/factionList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/movesUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/movesUnits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/propertyMethods.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/propertyMethods.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/triggeredEvents.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/triggeredEvents.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Aliens.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Aliens.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Cultists.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Cultists.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Mafia.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Mafia.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/combat.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/combat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/games.db" beforeDir="false" afterPath="$PROJECT_DIR$/server/games.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,18 +198,18 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="HTML" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/server/classes/factionPlans" />
     <property name="list.type.of.created.stylesheet" value="SCSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="web-ide.project.structure" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Websites\villains-online\server\classes\factionPlans" />
+      <recent name="D:\Websites\villains-online\server\classes\factions" />
       <recent name="D:\Websites\villains-online" />
       <recent name="D:\Websites\villains-online\resources\js\partials" />
-      <recent name="D:\Websites\villains-online\server\classes\factionPlans" />
       <recent name="D:\Websites\villains-online\server\classes\data" />
-      <recent name="D:\Websites\villains-online\resources\js\components\Prompts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Websites\villains-online\resources\js\components\Huds" />
@@ -230,7 +257,7 @@
       <workItem from="1591223441450" duration="81406000" />
       <workItem from="1591417607847" duration="235785000" />
       <workItem from="1592157951059" duration="164940000" />
-      <workItem from="1594834562760" duration="92278000" />
+      <workItem from="1594834562760" duration="111273000" />
     </task>
     <servers />
   </component>
@@ -270,10 +297,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="110" y="111" width="1035" height="632" key="find.popup" timestamp="1595222309000">
+    <state x="110" y="111" width="1035" height="632" key="find.popup" timestamp="1595287120888">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="110" y="111" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1595222309000" />
+    <state x="110" y="111" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1595287120888" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1595179883912">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

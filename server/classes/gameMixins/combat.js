@@ -19,12 +19,12 @@ let obj = {
         this.data.combat = null;
     },
 
-    assignHits( unit, faction, count = 1 ){
+    async assignHits( unit, faction, count = 1 ){
         if( count === 1 && unit.toughness && !unit.flipped ){
             unit.flipped = true;
             return 'wounds';
         } else {
-            this.killUnit( unit, faction );
+            await this.killUnit( unit, faction );
             return 'kills';
         }
     },
@@ -34,9 +34,12 @@ let obj = {
         unit.killed = faction;
 
         if( unit.ready ) unit.ready = false;
-        if( unit.flipped ) unit.flipped = false;
+        if( unit.flipped ){
+            unit.flipped = false;
+            this.factions[faction].unitUnflipped( unit );
+        }
 
-        await this.factions[faction].triggeredEvents( 'unitKilled', [{ unit : unit }] );
+        await this.factions[faction].triggeredEvents( 'killed', [{ unit : unit }] );
     },
 };
 

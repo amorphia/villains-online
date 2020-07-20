@@ -3115,7 +3115,7 @@ __webpack_require__.r(__webpack_exports__);
       volume: 1,
       mute: false,
       sounds: {},
-      soundBank: ['active', 'basta', 'combat', 'chirp', 'coin', 'error', 'explosion', 'hit', 'hit2', 'hit3', 'huh', 'points', 'title', 'wiff', 'woosh', 'ui']
+      soundBank: ['active', 'basta', 'combat', 'chirp', 'coin', 'error', 'explosion', 'hit', 'hit2', 'hit3', 'huh', 'points', 'queendeath', 'title', 'wiff', 'woosh', 'ui']
     };
   },
   mounted: function mounted() {
@@ -5517,6 +5517,7 @@ __webpack_require__.r(__webpack_exports__);
       _.forEach(this.shared.data.factions, function (faction) {
         if (_this2.data.enemyOnly && faction.name === _this2.shared.faction.name) return;
         if (_this2.data.playerOnly && faction.name !== _this2.shared.faction.name) return;
+        if (_this2.data.belongsTo && faction.name !== _this2.data.belongsTo) return;
         units = _.concat(units, faction.units.filter(function (unit) {
           if (_this2.data.needsToAttack) {
             if (unit.location !== _this2.area.name || !unit.needsToAttack) return;
@@ -5989,7 +5990,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return !(!_.unitInArea(unit, area) || _this.data.unitTypes && !_this.data.unitTypes.includes(unit.type) || _this.data.invalidId === unit.id);
+        return !(!unit.hasOwnProperty('cost ') || !_.unitInArea(unit, area) || _this.data.unitTypes && !_this.data.unitTypes.includes(unit.type) || _this.data.invalidId === unit.id);
       });
     }
   },
@@ -6035,7 +6036,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return this.shared.faction.units.filter(function (unit) {
-        return !unit.selected && !unit.location;
+        return !unit.noDeploy && !unit.selected && !unit.location;
       });
     },
     selected: function selected() {
@@ -7845,6 +7846,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
 //
 //
 //
@@ -57884,6 +57887,10 @@ var render = function() {
                   staticClass: "view-area__main-content width-35 pt-2 pr-5 pb-6"
                 },
                 [
+                  _c("div", { staticClass: "title" }, [
+                    _vm._v(_vm._s(_vm.combat.title))
+                  ]),
+                  _vm._v(" "),
                   _c(
                     "div",
                     { staticClass: "faction-list" },

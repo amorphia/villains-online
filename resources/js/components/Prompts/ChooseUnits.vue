@@ -73,6 +73,7 @@
 
                     if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
                     if( this.data.playerOnly && faction.name !== this.shared.faction.name ) return;
+                    if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return;
 
                     units = _.concat( units, faction.units.filter( unit => {
                         if( this.data.needsToAttack ){

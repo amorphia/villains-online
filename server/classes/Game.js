@@ -149,6 +149,7 @@ class Game {
 
         // good lord, an embarrassing end run around a bug I couldn't track down
         if( args.name === 'take-actions' ) args.name = 'choose-action';
+        if( args.name === 'place-tokens' ) args.name = 'place-token';
 
         args.callback = args.callback || args.name;
 

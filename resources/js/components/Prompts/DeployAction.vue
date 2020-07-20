@@ -162,17 +162,18 @@
                 this.$set( unit, 'selected', true );
             },
 
+
             groupBy( array, prop ){
                 return _.groupBy( array, prop );
             },
 
             fromAreaUnits( area ){
-
                 return this.shared.faction.units.filter( unit => {
                     return !(
-                        !_.unitInArea( unit, area )
-                        || (this.data.unitTypes && !this.data.unitTypes.includes(unit.type))
-                        || (this.data.invalidId === unit.id)
+                        ! unit.hasOwnProperty( 'cost ')
+                        || ! _.unitInArea( unit, area )
+                        || this.data.unitTypes && !this.data.unitTypes.includes( unit.type )
+                        || this.data.invalidId === unit.id
                     );
                 });
             },
@@ -217,7 +218,7 @@
                     return this.shared.faction.units.filter( unit => !unit.selected && !unit.location && this.data.unitTypes.includes( unit.type ) );
                 }
 
-                return this.shared.faction.units.filter( unit => !unit.selected && !unit.location );
+                return this.shared.faction.units.filter( unit => !unit.noDeploy && !unit.selected && !unit.location );
             },
 
             selected(){

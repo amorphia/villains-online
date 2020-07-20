@@ -212,6 +212,7 @@ a {
   --faction-aliens-secondary: #ffb800;
   --faction-cultists: #b2b2b2;
   --faction-cultists-secondary: #fdfdfd;
+  --faction-loyalists: #864eef;
 }
 
 .faction-neutrals {
@@ -248,6 +249,10 @@ a {
 
 .faction-cultists {
   color: var(--faction-cultists);
+}
+
+.faction-loyalists {
+  color: var(--faction-loyalists);
 }
 
 .primary {

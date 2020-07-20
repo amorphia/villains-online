@@ -54,9 +54,24 @@ class Area {
         return maxes.length === 1 ? maxes[0].faction : false;
     }
 
+    herMajestyInArea(){
+        if( !this.game().factions['loyalists'] ) return false;
+
+        return !! this.game().factions['loyalists'].data.units.find( unit => unit.type === 'champion'
+                                                                             && !unit.killed
+                                                                             && unit.location === this.name );
+    }
+
     determineControl(){
+        let newControllerName;
         let influences = this.eachInfluenceHere();
-        let newControllerName = this.playerWithMostInfluence( influences );
+
+        if( this.herMajestyInArea() ){
+            newControllerName = 'loyalists';
+        } else {
+            newControllerName = this.playerWithMostInfluence( influences );
+        }
+
 
         if( !newControllerName && this.data.owner ){
             newControllerName = this.data.owner;
@@ -86,7 +101,15 @@ class Area {
 
     }
 
+    units(){
+        let units = [];
+        Object.values( this.game().factions ).forEach( faction => {
+            let factionUnits = faction.unitsInArea( this );
+            units = units.concat( factionUnits );
+        });
 
+        return units;
+    }
 
     canBattle(){
         if( _.find( this.data.cards, card => card.class === 'cease-fire' ) ) return false;

@@ -170,6 +170,7 @@ class Faction {
     processUpgrade(){}
     factionCleanUp(){}
     factionCombatMods( mods ){ return mods }
+    unitUnflipped( unit ){}
 
     sound( sound, options ){
         this.game().sound( sound, options );
@@ -252,6 +253,23 @@ class Faction {
         }
     }
 
+
+
+    replaceUnit( unit ){
+        if( typeof unit === 'string' ) unit = this.game().objectMap[ unit ];
+        let replacement = this.data.units.find( item => !item.location && item.type === unit.type && !item.killed );
+
+        // replace unit
+        replacement.location = unit.location;
+        if( unit.ready ) {
+            unit.ready = false;
+            replacement.ready = true;
+        }
+
+        // remove replaced unit
+        unit.location = null;
+        if( unit.flipped ) unit.flipped = false;
+    }
 
     discardCard( card ){
         if( typeof card === 'string' ) card = this.game().objectMap[card];

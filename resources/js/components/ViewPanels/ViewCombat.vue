@@ -5,6 +5,8 @@
             <div class="d-flex align-stretch">
                 <div class="view-area__main-content width-35 pt-2 pr-5 pb-6">
 
+                    <div class="title">{{combat.title}}</div>
+
                     <div class="faction-list">
                         <combat-faction v-for="faction in combat.factions"
                                         :faction="faction"

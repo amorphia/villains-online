@@ -33,6 +33,7 @@
     --faction-aliens-secondary: #ffb800;
     --faction-cultists: #b2b2b2;
     --faction-cultists-secondary: #fdfdfd;
+    --faction-loyalists: #864eef;
 
 }
 
@@ -45,6 +46,7 @@
 .faction-commies {color: var(--faction-commies)}
 .faction-aliens {color: var(--faction-aliens)}
 .faction-cultists {color: var(--faction-cultists)}
+.faction-loyalists {color: var(--faction-loyalists)}
 
 .primary { color: var(--primary-color) }
 .primary-light { color: var(--primary-light-color) }

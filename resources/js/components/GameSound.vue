@@ -30,6 +30,7 @@
                     'hit3',
                     'huh',
                     'points',
+                    'queendeath',
                     'title',
                     'wiff',
                     'woosh',

@@ -42,7 +42,7 @@ let obj = {
         let areas;
 
         // if our move isn't limited to adjacency return every area but this one
-        if( args.farMove || this.farMove || this.areas().includes( 'subway' ) ){
+        if( args.farMove || this.data.farMove || this.areas().includes( 'subway' ) ){
             areas = this.game().data.areaOrder.slice();
             areas = areas.filter( area => area !== args.area.name );
         } else {

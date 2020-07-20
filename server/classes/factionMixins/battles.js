@@ -164,11 +164,12 @@ let obj = {
         }
 
         let results = [];
-        targets.forEach( target => {
+
+        for( let target of targets ){
             let unit = this.game().objectMap[ target.id ];
-            let result = this.game().assignHits( unit, killer, target.hits );
+            let result = await this.game().assignHits( unit, killer, target.hits );
             results.push(`${result} <span class="faction-${this.name}">${unit.name}</span>`);
-        });
+        }
 
         if( results.length ){
             this.game().message({ faction: killer, message: `${results.join(', ')} in the ${area.name}` });

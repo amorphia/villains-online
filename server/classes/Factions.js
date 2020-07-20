@@ -6,7 +6,7 @@ let Bankers = require( './factions/Bankers' );
 let Commies = require( './factions/Commies' );
 let Aliens = require( './factions/Aliens' );
 let Cultists = require( './factions/Cultists' );
-
+let Loyalists = require( './factions/Loyalists' );
 
 
 module.exports = {
@@ -17,5 +17,6 @@ module.exports = {
     bankers : Bankers,
     commies : Commies,
     aliens : Aliens,
+    loyalists : Loyalists,
     cultists : Cultists
 };

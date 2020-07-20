@@ -7,7 +7,7 @@ let obj = {
 
     canDeployFromReserves(){
         let lowestCost = this.reserves().reduce( (acc, unit) => {
-            return unit.cost < acc ? unit.cost : acc;
+            return !unit.noDeploy && unit.cost < acc ? unit.cost : acc;
         }, 100 );
 
         return this.money() >= lowestCost;
@@ -62,7 +62,7 @@ let obj = {
             let unitMatches = !args.unitTypes || args.unitTypes.includes( unit.type );
             let canPayFor = args.free || money >= unit.cost;
 
-            if( canPayFor && unitMatches && _.unitInPlay( unit ) ){
+            if( !unit.noDeploy && canPayFor && unitMatches && _.unitInPlay( unit ) ){
                 areas[ unit.location ] = { val : true };
                 if( this.data.name === 'aliens' && unit.type === "champion"){
                     areas[ unit.location ].kau = true;
@@ -104,7 +104,7 @@ let obj = {
             // update area
             unit.location = data.toArea;
             // heal wounded units
-            if( unit.hasOwnProperty( 'flipped' ) ) unit.flipped = false;
+            if( unit.toughness && unit.flipped ) unit.flipped = false;
 
             // ready units
             if( data.readyUnits ){

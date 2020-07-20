@@ -7,6 +7,7 @@ let obj = {
     commies : { owner : null },
     aliens : { owner : null },
     cultists : { owner : null },
+    loyalists : { owner : null },
 };
 
 module.exports = Object.assign({}, obj );

@@ -194,7 +194,7 @@ class HighNoon extends Card {
 
 
 class LetGodSortThemOut extends Card {
-    handle( faction, area ){
+    async handle( faction, area ){
         let promises = [];
 
         _.forEach( faction.game().factions, item => {
@@ -208,14 +208,14 @@ class LetGodSortThemOut extends Card {
                 unitsInPlay.forEach( unit => areas[unit.location] = true );
                 areas = Object.keys( areas );
 
-                promises.push( faction.game().promise({ players: item.playerId, name: 'sacrifice-units', data : { count : unitsToSacrifice, areas : areas  } }).then( ([player, data]) => {
+                promises.push( faction.game().promise({ players: item.playerId, name: 'sacrifice-units', data : { count : unitsToSacrifice, areas : areas  } }).then( async ([player, data]) => {
 
                     let unitNames = [];
-                    data.units.forEach( u => {
+                    for( let u of data.units ){
                         let unit = faction.game().objectMap[u];
                         unitNames.push( unit.name );
-                        faction.game().killUnit( unit, faction );
-                    });
+                        await faction.game().killUnit( unit, faction );
+                    }
 
                     let message = `sacrifices <span class="highlight">${unitNames.join(', ')}</span>`;
                     faction.game().message({ faction: item, message: message });
@@ -224,7 +224,8 @@ class LetGodSortThemOut extends Card {
             }
         });
 
-        return Promise.all( promises ).then();
+
+        return Promise.all( promises );
     }
 }
 

@@ -105,10 +105,11 @@ let mixin = {
         return _.enemyUnitsInArea( this.data, area.name, this.game().data.factions, basicOnly );
     },
 
-    areasWithUnits(){
+    areasWithUnits( types ){
+        if( typeof types === 'string' ) types = [ types ];
         let areas = {};
         this.data.units.forEach( unit => {
-            if( _.unitInPlay( unit ) ){
+            if( _.unitInPlay( unit ) && ( !types || types.includes( unit.type ) ) ){
                 areas[ unit.location ] = true;
             }
         });
@@ -141,9 +142,7 @@ let mixin = {
         return _.areaExterminated( area, this.game().data.factions ) === this.name;
     },
 
-    unitsInPlay() {
-        return this.data.units.filter( unit => _.unitInPlay( unit ) ).length;
-    },
+
 
     totalKills(){
         let kills = 0;
@@ -184,6 +183,27 @@ let mixin = {
      * UNITS
      *
      */
+
+    unitsInPlay() {
+        return this.data.units.filter( unit => _.unitInPlay( unit ) );
+    },
+
+    unitTypesInPlay( basicOnly ){
+        let types = {};
+        this.data.units.forEach( unit => {
+            if( _.unitInPlay( unit ) && ( ! basicOnly || unit.basic ) ) types[unit.type] = true;
+        });
+        return Object.keys( types );
+    },
+
+    unitTypesInReserves( basicOnly ){
+        let types = {};
+        this.data.units.forEach( unit => {
+           if( _.unitInReserves( unit ) && ( ! basicOnly || unit.basic ) ) types[unit.type] = true;
+        });
+        return Object.keys( types );
+    },
+
 
     reserves(){
         return this.data.units.filter( unit => !unit.location );

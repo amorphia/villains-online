@@ -71,7 +71,7 @@ class PlanTester {
 
 
     unitsInPlay( faction, unitsInPlay ){
-        return faction.unitsInPlay() >= unitsInPlay;
+        return faction.unitsInPlay().length >= unitsInPlay;
     }
 
 
@@ -99,6 +99,10 @@ class PlanTester {
         return faction.targetArea().data.owner === faction.name;
     }
 
+
+    controlArea( faction, areaName ) {
+        return faction.game().areas[ areaName ].data.owner === faction.name;
+    }
 
     tokensInAreas( faction, areaCount, type ) {
         let count = 0;

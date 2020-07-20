@@ -4,6 +4,7 @@ class Battle {
     options;
 
     data = {
+        title : '',
         factionIndex : 0,
         areaName : null,
         currentUnit : null,
@@ -28,21 +29,48 @@ class Battle {
         }
 
         this.game().sound( 'combat' );
-        this.makeFactionsList();
-        await this.resolve();
+        await this.resolveBattle();
     }
 
+    hasFirstStrikeUnits(){
+        let areaUnits = this.area.units();
+        return areaUnits.filter( unit => unit.firstStrike ).length > 0;
+    }
 
-    async resolve(){
+    async resolveBattle(){
+
+        if( this.hasFirstStrikeUnits() ){
+            console.log( 'resolving first strike phase' );
+            await this.resolveStrikePhase( true );
+        }
+
+        if( this.area.canBattle() ){
+            console.log( 'resolving regular strike phase' );
+            await this.resolveStrikePhase();
+        }
+        this.data.title = 'Battle completed';
+        this.data.completed = true;
+    }
+
+    async resolveStrikePhase( firstStrikePhase ){
+
+        this.data.factionIndex = 0;
+        this.data.currentUnit = null;
+        this.data.attackingUnits = {};
+        this.data.factions = [];
+        this.data.title = firstStrikePhase ? 'Resolving First Strike Attacks' : 'Resolving Attacks';
+
+        this.makeFactionsList( firstStrikePhase );
+
         for( let i = 0; i < this.data.factions.length; i++ ){
             let faction = this.data.factions[i];
             this.data.factionIndex = i;
-            this.game().message({ faction : faction.name, message : `start their attacks` });
+            this.game().message({ faction : faction.name, message : `start their ${ firstStrikePhase ? 'first strike ' : '' }attacks` });
             await this.makeAttacks( faction );
-            this.game().message({ faction : faction.name, message : `have completed their attacks` });
+            this.game().message({ faction : faction.name, message : `have completed their ${ firstStrikePhase ? 'first strike ' : '' }attacks` });
         }
         this.data.factionIndex++;
-        this.data.completed = true;
+
     }
 
     async makeAttacks( factionData ){
@@ -82,13 +110,17 @@ class Battle {
         return Server.games[this.gameId];
     }
 
-    makeFactionsList(){
+    makeFactionsList( firstStrikePhase ){
         _.forEach( this.game().factions, faction => {
             let unitsInArea = _.factionUnitsInArea( faction, this.area.name );
 
             if( unitsInArea.length ) {
                 unitsInArea.forEach( unit => {
-                    if( unit.attack.length ) unit.needsToAttack = true
+                    if( firstStrikePhase ){
+                        if( unit.firstStrike && unit.attack.length ) unit.needsToAttack = true;
+                    } else {
+                        if( !unit.firstStrike && unit.attack.length ) unit.needsToAttack = true;
+                    }
                 });
 
                 this.data.factions.push({

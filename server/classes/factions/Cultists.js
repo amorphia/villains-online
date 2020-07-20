@@ -63,11 +63,11 @@ class Cultists extends Faction {
         if( !targetFaction ){
             this.game().message({ faction : this, message: "No souls for Basta to claim", class : 'warning' });
             return;
-        } else {
-            this.game().sound( 'basta' );
-            message = `<span class="faction-${targetFaction.name}">the ${targetFaction.name}</span> must pay tribute to Basta`;
-            this.game().message({ player: player, message: message });
         }
+
+        this.game().sound( 'basta' );
+        message = `<span class="faction-${targetFaction.name}">the ${targetFaction.name}</span> must pay tribute to Basta`;
+        this.game().message({ player: player, message: message });
 
 
         let enemyUnits = _.factionUnitsInArea( targetFaction, area );
@@ -81,7 +81,7 @@ class Cultists extends Faction {
             unit = enemyUnits[0];
         }
 
-        this.game().killUnit( unit, this );
+        await this.game().killUnit( unit, this );
 
         message = `sacrifices <span class="faction-${unit.faction}">${unit.name}</span> in <span class="highlight">the ${event.from}</span>`;
         this.game().message({ faction: targetFaction, message: message });
