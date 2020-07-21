@@ -9004,6 +9004,15 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+//
+//
+//
 //
 //
 //
@@ -9038,19 +9047,34 @@ __webpack_require__.r(__webpack_exports__);
         return _.unitInArea(unit, _this.area);
       }), 'type');
     },
-    skilled: function skilled() {
-      if (!this.faction) return 0;
-      return _.canUseSkill(this.faction, this.area);
-    },
     kills: function kills() {
       if (!this.faction) return 0;
       return _.killsInArea(this.faction, this.area, this.shared.data.factions);
     },
-    influence: function influence() {
-      /*
-      if( !this.faction ) return 0;
-      return _.influence( this.faction, this.area, this.shared.data.factions );
-      */
+    statusIcons: function statusIcons() {
+      if (this.neutral) return {};
+      var status = {};
+
+      var _iterator = _createForOfIteratorHelper(this.faction.units),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var unit = _step.value;
+          if (unit.location !== this.area.name || unit.killed) continue;
+          if (unit.ready) status['skilled'] = 'has ready units';
+          if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units'; //if (!unit.toughness && unit.flipped) status[this.faction.statusIcon] = this.faction.statusDescription;
+
+          if (unit.firstStrike) status['first-strike'] = 'has units with first strike';
+          if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him';
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return status;
     },
     stats: function stats() {
       if (this.neutral) return [{
@@ -9058,11 +9082,6 @@ __webpack_require__.r(__webpack_exports__);
         val: 1
       }];
       var stats = [];
-      /*
-      if( this.influence ){
-          stats.push({ name : 'influence', val : this.influence, description : 'influnece' });
-      }
-      */
 
       _.forEach(this.units, function (count, type) {
         stats.push({
@@ -9071,20 +9090,6 @@ __webpack_require__.r(__webpack_exports__);
           description: "".concat(type, "s")
         });
       });
-
-      if (this.skilled) {
-        stats.push({
-          name: 'color-skill',
-          val: 0,
-          description: "ready units"
-        });
-      }
-      /*
-      if( this.kills ){
-          stats.push({ name: 'kill', val : this.kills, description : `kills` });
-      }
-      */
-
 
       return stats;
     }
@@ -59812,6 +59817,19 @@ var render = function() {
                     attrs: { title: stat.description }
                   })
             ])
+          }),
+          _vm._v(" "),
+          _vm._l(_vm.statusIcons, function(desc, icon) {
+            return _c(
+              "div",
+              { staticClass: "map-player__stat", attrs: { title: desc } },
+              [
+                _c("img", {
+                  staticClass: "map-player__champion",
+                  attrs: { src: "/images/icons/" + icon + ".png" }
+                })
+              ]
+            )
           })
         ],
         2

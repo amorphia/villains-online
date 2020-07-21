@@ -7,6 +7,9 @@
                 <img v-if="stat.name === 'champion'" class="map-player__champion" :src="`/images/factions/${name}/portrait.png`">
                 <i v-else :class="`icon-${stat.name}`" :title="stat.description"></i>
             </div>
+            <div v-for="(desc, icon) in statusIcons" class="map-player__stat" :title="desc">
+                <img class="map-player__champion" :src="`/images/icons/${icon}.png`">
+            </div>
         </div>
 </template>
 
@@ -18,7 +21,7 @@
         props :['neutral','area','faction'],
         data() {
             return {
-                shared : App.state
+                shared : App.state,
             };
         },
 
@@ -33,47 +36,45 @@
                 return this.shared.groupByCount( this.faction.units.filter( unit => _.unitInArea( unit, this.area ) ), 'type' );
             },
 
-            skilled(){
-                if( !this.faction ) return 0;
-                return _.canUseSkill( this.faction, this.area );
-            },
 
             kills(){
                 if( !this.faction ) return 0;
                 return _.killsInArea( this.faction, this.area, this.shared.data.factions );
             },
 
-            influence(){
-                /*
-                if( !this.faction ) return 0;
-                return _.influence( this.faction, this.area, this.shared.data.factions );
-                */
+
+            statusIcons(){
+                if( this.neutral ) return {};
+
+                let status = {};
+
+                for( let unit of this.faction.units ) {
+                    if (unit.location !== this.area.name || unit.killed) continue;
+
+                    if (unit.ready) status['skilled'] = 'has ready units';
+
+                    if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
+
+                    //if (!unit.toughness && unit.flipped) status[this.faction.statusIcon] = this.faction.statusDescription;
+
+                    if( unit.firstStrike ) status['first-strike'] = 'has units with first strike';
+
+                    if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him';
+                }
+
+                return status;
             },
 
             stats(){
                 if( this.neutral ) return [ { name: 'influence', val : 1 }];
 
-                let stats = [];
 
-                /*
-                if( this.influence ){
-                    stats.push({ name : 'influence', val : this.influence, description : 'influnece' });
-                }
-                */
+                let stats = [];
 
                 _.forEach( this.units, (count, type) => {
                     stats.push({ name : type, val : count, description : `${type}s` });
                 });
 
-                if( this.skilled ){
-                    stats.push({ name: 'color-skill', val : 0, description : `ready units` });
-                }
-
-                /*
-                if( this.kills ){
-                    stats.push({ name: 'kill', val : this.kills, description : `kills` });
-                }
-                */
 
                 return stats;
             }
