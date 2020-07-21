@@ -2953,8 +2953,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-display',
   data: function data() {
@@ -3117,7 +3115,7 @@ __webpack_require__.r(__webpack_exports__);
       volume: 1,
       mute: false,
       sounds: {},
-      soundBank: ['active', 'basta', 'combat', 'chirp', 'coin', 'error', 'explosion', 'hit', 'hit2', 'hit3', 'huh', 'points', 'queendeath', 'title', 'wiff', 'woosh', 'ui']
+      soundBank: ['active', 'basta', 'combat', 'chirp', 'coin', 'error', 'explosion', 'hatch', 'hit', 'hit2', 'hit3', 'huh', 'points', 'queendeath', 'title', 'wiff', 'woosh', 'ui']
     };
   },
   mounted: function mounted() {
@@ -6937,6 +6935,175 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/scatter-units.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/scatter-units.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'scatter-units',
+  data: function data() {
+    return {
+      shared: App.state,
+      toAreaIndex: 0
+    };
+  },
+  methods: {
+    resolve: function resolve(option) {
+      var data = {};
+
+      if (!option) {
+        data.decline = true;
+      } else {
+        data.scatters = this.selected.map(function (unit) {
+          return {
+            units: [unit.id],
+            toArea: unit.selected
+          };
+        });
+        data.cost = this.cost;
+      }
+
+      data = Object.assign({}, this.data, data);
+      this.shared.respond('scatter-units', data);
+    },
+    updateToIndex: function updateToIndex(index) {
+      this.toAreaIndex = index;
+    },
+    addUnitToArea: function addUnitToArea(unit) {
+      if (this.currentAreaUnits.length) return;
+      this.$set(unit, 'selected', this.area.name);
+    },
+    removeUnitFromArea: function removeUnitFromArea(unit) {
+      this.$set(unit, 'selected', null);
+    },
+    policePayoffs: function policePayoffs(area) {
+      var _this = this;
+
+      var policePayoff = 0;
+
+      _.forEach(area.cards, function (card) {
+        if (card["class"] === 'police-payoff' // if there is a police payoff here
+        && card.owner !== _this.shared.faction.name // which we don't own
+        && !_.hasKauImmunity(_this.shared.faction, area) // and we don't already have kau immunity in this area
+        && !_.find(_this.selected, function (unit) {
+          return unit.type === 'champion' && unit.faction === 'aliens';
+        })) // and we aren't deploying kau
+          {
+            policePayoff++; // increase our police payoff cost by one
+          }
+      });
+
+      return policePayoff;
+    }
+  },
+  computed: {
+    fromArea: function fromArea() {
+      return this.shared.data.areas[this.data.fromArea];
+    },
+    area: function area() {
+      return this.shared.data.areas[this.data.toAreas[this.toAreaIndex]];
+    },
+    fromAreaUnits: function fromAreaUnits() {
+      var _this2 = this;
+
+      return this.shared.faction.units.filter(function (unit) {
+        return _.unitInArea(unit, _this2.fromArea) && !unit.selected && unit.type !== 'champion';
+      });
+    },
+    currentAreaUnits: function currentAreaUnits() {
+      var _this3 = this;
+
+      return this.shared.faction.units.filter(function (unit) {
+        return unit.selected === _this3.area.name;
+      });
+    },
+    selected: function selected() {
+      return this.shared.faction.units.filter(function (unit) {
+        return unit.selected;
+      });
+    },
+    canSave: function canSave() {
+      var unitsSelectedTest = this.selected.length >= 1;
+      var costTest = this.shared.faction.resources + this.shared.faction.energy >= this.cost;
+      return unitsSelectedTest && costTest;
+    },
+    toAreas: function toAreas() {
+      var _this4 = this;
+
+      var areas = [];
+      this.data.toAreas.forEach(function (areaName) {
+        areas.push(_this4.shared.data.areas[areaName]);
+      });
+      return areas;
+    },
+    cost: function cost() {
+      var _this5 = this;
+
+      var cost = 0;
+      this.toAreas.forEach(function (area) {
+        var payoffs = _this5.policePayoffs(area);
+
+        if (_this5.shared.faction.units.filter(function (unit) {
+          return unit.selected === area.name;
+        }).length) {
+          cost += payoffs;
+        }
+      });
+      return cost;
+    },
+    data: function data() {
+      return this.shared.player.prompt.data;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SavedGames.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SavedGames.vue?vue&type=script&lang=js& ***!
@@ -9933,7 +10100,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.area-header {\n    background-position: center -1rem, center top;\n    background-repeat: no-repeat;\n    background-size: contain, cover;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    width: 40rem;\n    padding-top: 5rem;\n    min-height: 8rem;\n}\n.area-header-reserves { background-image: url(/images/areas/reserves-top.png), url(/images/areas/reserves-bg.jpg)\n}\n.area-header-church { background-image: url(/images/areas/church-top.png), url(/images/areas/church-bg.jpg)\n}\n.area-header-sewers { background-image: url(/images/areas/sewers-top.png), url(/images/areas/sewers-bg.jpg)\n}\n.area-header-police { background-image: url(/images/areas/police-top.png), url(/images/areas/police-bg.jpg)\n}\n.area-header-subway { background-image: url(/images/areas/subway-top.png), url(/images/areas/subway-bg.jpg)\n}\n.area-header-capitol { background-image: url(/images/areas/capitol-top.png),  url(/images/areas/capitol-bg.jpg)\n}\n.area-header-laboratory { background-image: url(/images/areas/laboratory-top.png),  url(/images/areas/laboratory-bg.jpg)\n}\n.area-header-university { background-image: url(/images/areas/university-top.png),  url(/images/areas/university-bg.jpg)\n}\n.area-header-bank { background-image: url(/images/areas/bank-top.png),  url(/images/areas/bank-bg.jpg)\n}\n.area-header-factory { background-image: url(/images/areas/factory-top.png),  url(/images/areas/factory-bg.jpg)\n}\n\n", ""]);
+exports.push([module.i, "\n.area-header {\n    background-position: center -1rem, center top;\n    background-repeat: no-repeat;\n    background-size: contain, cover;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    width: 40rem;\n    padding-top: 5rem;\n    min-height: 8rem;\n}\n.area-header__units {\n    min-height: 14rem;\n}\n.area-header-reserves { background-image: url(/images/areas/reserves-top.png), url(/images/areas/reserves-bg.jpg)\n}\n.area-header-church { background-image: url(/images/areas/church-top.png), url(/images/areas/church-bg.jpg)\n}\n.area-header-sewers { background-image: url(/images/areas/sewers-top.png), url(/images/areas/sewers-bg.jpg)\n}\n.area-header-police { background-image: url(/images/areas/police-top.png), url(/images/areas/police-bg.jpg)\n}\n.area-header-subway { background-image: url(/images/areas/subway-top.png), url(/images/areas/subway-bg.jpg)\n}\n.area-header-capitol { background-image: url(/images/areas/capitol-top.png),  url(/images/areas/capitol-bg.jpg)\n}\n.area-header-laboratory { background-image: url(/images/areas/laboratory-top.png),  url(/images/areas/laboratory-bg.jpg)\n}\n.area-header-university { background-image: url(/images/areas/university-top.png),  url(/images/areas/university-bg.jpg)\n}\n.area-header-bank { background-image: url(/images/areas/bank-top.png),  url(/images/areas/bank-bg.jpg)\n}\n.area-header-factory { background-image: url(/images/areas/factory-top.png),  url(/images/areas/factory-bg.jpg)\n}\n\n", ""]);
 
 // exports
 
@@ -52678,16 +52845,9 @@ var render = function() {
     "div",
     { staticClass: "width-100 grow-1 pos-relative z-0" },
     [
-      _c(
-        "transition",
-        { attrs: { name: "fade" } },
-        [
-          _vm.shared.player.prompt.name
-            ? _c(_vm.shared.player.prompt.name, { tag: "component" })
-            : _vm._e()
-        ],
-        1
-      ),
+      _vm.shared.player.prompt.name
+        ? _c(_vm.shared.player.prompt.name, { tag: "component" })
+        : _vm._e(),
       _vm._v(" "),
       _c("view-combat"),
       _vm._v(" "),
@@ -56963,6 +57123,133 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: !_vm.canSave },
                 on: { click: _vm.resolve }
+              },
+              [_vm._v("save")]
+            )
+          ])
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/scatter-units.vue?vue&type=template&id=2df7cbc5&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/scatter-units.vue?vue&type=template&id=2df7cbc5& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("player-prompt", { attrs: { classes: "" } }, [
+    _c("div", { staticClass: "choose-action overflow-auto px-2" }, [
+      _c(
+        "div",
+        {
+          staticClass:
+            "width-100 d-flex justify-center flex-column align-center"
+        },
+        [
+          _c("div", { staticClass: "title mb-4" }, [
+            _vm._v("Choose units to scatter")
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "mt-3 pb-4" },
+            [
+              _c(
+                "area-flipper",
+                {
+                  attrs: {
+                    areas: [_vm.fromArea],
+                    locked: "true",
+                    index: "0",
+                    classes: "area-header__units pt-0"
+                  }
+                },
+                [
+                  _c("unit-row", {
+                    attrs: { units: _vm.fromAreaUnits },
+                    on: { unit: _vm.addUnitToArea }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "area-flipper",
+            {
+              attrs: {
+                areas: _vm.toAreas,
+                index: _vm.toAreaIndex,
+                classes: "area-header__units"
+              },
+              on: { update: _vm.updateToIndex }
+            },
+            [
+              _c("unit-row", {
+                attrs: { units: _vm.currentAreaUnits },
+                on: { unit: _vm.removeUnitFromArea }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _vm.cost > 0
+            ? _c("div", {
+                staticClass: "prompt-question",
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.shared.filterText(
+                      "Pay xC" + _vm.cost + "x to move these units?"
+                    )
+                  )
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _c("div", { staticClass: "flex-center" }, [
+            _c(
+              "button",
+              {
+                staticClass: "button button-empty",
+                on: {
+                  click: function($event) {
+                    return _vm.resolve(false)
+                  }
+                }
+              },
+              [_vm._v("decline")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "button",
+                attrs: { disabled: !_vm.canSave },
+                on: {
+                  click: function($event) {
+                    return _vm.resolve(true)
+                  }
+                }
               },
               [_vm._v("save")]
             )
@@ -72010,6 +72297,7 @@ var map = {
 	"./Prompts/PlayerPrompt.vue": "./resources/js/components/Prompts/PlayerPrompt.vue",
 	"./Prompts/SacrificeUnits.vue": "./resources/js/components/Prompts/SacrificeUnits.vue",
 	"./Prompts/ScorePlans.vue": "./resources/js/components/Prompts/ScorePlans.vue",
+	"./Prompts/scatter-units.vue": "./resources/js/components/Prompts/scatter-units.vue",
 	"./SavedGames.vue": "./resources/js/components/SavedGames.vue",
 	"./Tokens/TokenRow.vue": "./resources/js/components/Tokens/TokenRow.vue",
 	"./Tokens/TokenSet.vue": "./resources/js/components/Tokens/TokenSet.vue",
@@ -77526,6 +77814,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Prompts/scatter-units.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/Prompts/scatter-units.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _scatter_units_vue_vue_type_template_id_2df7cbc5___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scatter-units.vue?vue&type=template&id=2df7cbc5& */ "./resources/js/components/Prompts/scatter-units.vue?vue&type=template&id=2df7cbc5&");
+/* harmony import */ var _scatter_units_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./scatter-units.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/scatter-units.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _scatter_units_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _scatter_units_vue_vue_type_template_id_2df7cbc5___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _scatter_units_vue_vue_type_template_id_2df7cbc5___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Prompts/scatter-units.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/scatter-units.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/scatter-units.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_scatter_units_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./scatter-units.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/scatter-units.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_scatter_units_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/scatter-units.vue?vue&type=template&id=2df7cbc5&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/scatter-units.vue?vue&type=template&id=2df7cbc5& ***!
+  \******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_scatter_units_vue_vue_type_template_id_2df7cbc5___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./scatter-units.vue?vue&type=template&id=2df7cbc5& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/scatter-units.vue?vue&type=template&id=2df7cbc5&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_scatter_units_vue_vue_type_template_id_2df7cbc5___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_scatter_units_vue_vue_type_template_id_2df7cbc5___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/SavedGames.vue":
 /*!************************************************!*\
   !*** ./resources/js/components/SavedGames.vue ***!
@@ -80793,6 +81150,10 @@ var helpers = {
       return token.revealed && token.name === 'biohazard';
     })) {
       defenseBonus += 2;
+    }
+
+    if (targetFaction.factionDefenseBonus) {
+      defenseBonus += targetFaction.factionDefenseBonus;
     }
 
     return defenseBonus;

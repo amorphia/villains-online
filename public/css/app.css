@@ -213,6 +213,7 @@ a {
   --faction-cultists: #b2b2b2;
   --faction-cultists-secondary: #fdfdfd;
   --faction-loyalists: #864eef;
+  --faction-swarm: #6c7f30;
 }
 
 .faction-neutrals {
@@ -253,6 +254,10 @@ a {
 
 .faction-loyalists {
   color: var(--faction-loyalists);
+}
+
+.faction-swarm {
+  color: var(--faction-swarm);
 }
 
 .primary {
@@ -1747,7 +1752,7 @@ a {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.1s;
+  transition: all 0.05s;
 }
 
 .fade-enter,

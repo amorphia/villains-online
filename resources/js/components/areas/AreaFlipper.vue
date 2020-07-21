@@ -89,6 +89,10 @@
         min-height: 8rem;
     }
 
+    .area-header__units {
+        min-height: 14rem;
+    }
+
     .area-header-reserves { background-image: url(/images/areas/reserves-top.png), url(/images/areas/reserves-bg.jpg) }
     .area-header-church { background-image: url(/images/areas/church-top.png), url(/images/areas/church-bg.jpg) }
     .area-header-sewers { background-image: url(/images/areas/sewers-top.png), url(/images/areas/sewers-bg.jpg) }

@@ -213,6 +213,10 @@ class PlanTester {
         return faction.data.cards.hand.length >= cardCount;
     }
 
+    unitsInAreas( faction, areaCount ){
+        return faction.areasWithUnits().length >= areaCount;
+    }
+
 }
 
 module.exports = PlanTester;

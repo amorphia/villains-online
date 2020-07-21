@@ -25,6 +25,7 @@
                     'coin',
                     'error',
                     'explosion',
+                    'hatch',
                     'hit',
                     'hit2',
                     'hit3',

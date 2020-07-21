@@ -221,6 +221,10 @@ let helpers = {
             defenseBonus += 2;
         }
 
+        if( targetFaction.factionDefenseBonus ){
+            defenseBonus += targetFaction.factionDefenseBonus;
+        }
+
         return defenseBonus;
     },
 

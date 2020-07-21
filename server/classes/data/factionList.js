@@ -8,6 +8,10 @@ let obj = {
     aliens : { owner : null },
     cultists : { owner : null },
     loyalists : { owner : null },
+    swarm : { owner : null },
+    //vampires : { owner : null },
+    //mesmersits : { owner : null },
+    //hackers : { owner : null },
 };
 
 module.exports = Object.assign({}, obj );

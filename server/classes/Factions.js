@@ -7,7 +7,10 @@ let Commies = require( './factions/Commies' );
 let Aliens = require( './factions/Aliens' );
 let Cultists = require( './factions/Cultists' );
 let Loyalists = require( './factions/Loyalists' );
-
+let Swarm = require( './factions/Swarm' );
+//let Vampires = require( './factions/Vampires' );
+//let Mesmerists = require( './factions/Mesmerists' );
+//let Hackers = require( './factions/Hackers' );
 
 module.exports = {
     mutants : Mutants,
@@ -18,5 +21,9 @@ module.exports = {
     commies : Commies,
     aliens : Aliens,
     loyalists : Loyalists,
-    cultists : Cultists
+    swarm : Swarm,
+    cultists : Cultists,
+    //vampires : Vampires,
+    //mesmersits : Mesmerists,
+    //hackers : Hackers,
 };

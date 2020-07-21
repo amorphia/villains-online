@@ -1,0 +1,158 @@
+<template>
+    <player-prompt classes="">
+        <div class="choose-action overflow-auto px-2">
+            <div class="width-100 d-flex justify-center flex-column align-center">
+
+
+                <div class="title mb-4">Choose units to scatter</div>
+
+                <div class="mt-3 pb-4">
+                    <area-flipper
+                        :areas="[fromArea]"
+                        locked="true"
+                        index="0"
+                        classes="area-header__units pt-0">
+                        <unit-row :units="fromAreaUnits" @unit="addUnitToArea"></unit-row>
+                    </area-flipper>
+                </div>
+
+                <area-flipper :areas="toAreas"
+                              :index="toAreaIndex"
+                              classes="area-header__units"
+                              @update="updateToIndex">
+                    <unit-row :units="currentAreaUnits" @unit="removeUnitFromArea"></unit-row>
+                </area-flipper>
+
+                <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to move these units?` )"></div>
+
+                <div class="flex-center">
+                    <button class="button button-empty" @click="resolve( false )">decline</button>
+                    <button class="button"
+                            @click="resolve( true )"
+                            :disabled="!canSave">save</button>
+                </div>
+
+            </div>
+        </div>
+    </player-prompt>
+</template>
+
+
+<script>
+    export default {
+
+        name: 'scatter-units',
+        data() {
+            return {
+                shared : App.state,
+                toAreaIndex : 0
+            };
+        },
+
+        methods : {
+            resolve( option ){
+                let data = {};
+
+                if( !option ){
+                    data.decline = true;
+                } else {
+                    data.scatters = this.selected.map( unit => {
+                        return { units : [unit.id], toArea : unit.selected };
+                    });
+                    data.cost = this.cost;
+                }
+
+                data = Object.assign( {}, this.data, data );
+                this.shared.respond( 'scatter-units', data );
+            },
+
+            updateToIndex( index ){
+                this.toAreaIndex = index;
+            },
+
+            addUnitToArea( unit ){
+                if( this.currentAreaUnits.length ) return;
+                this.$set( unit, 'selected', this.area.name );
+            },
+
+            removeUnitFromArea( unit ){
+                this.$set( unit, 'selected', null );
+            },
+
+            policePayoffs( area ){
+                let policePayoff = 0;
+
+                _.forEach( area.cards, card => {
+                    if( card.class === 'police-payoff' // if there is a police payoff here
+                        && card.owner !== this.shared.faction.name // which we don't own
+                        && !_.hasKauImmunity( this.shared.faction, area ) // and we don't already have kau immunity in this area
+                        && !_.find( this.selected, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
+                    {
+                        policePayoff++; // increase our police payoff cost by one
+                    }
+                });
+
+                return policePayoff;
+            },
+        },
+
+        computed : {
+
+            fromArea(){
+                return this.shared.data.areas[ this.data.fromArea ];
+            },
+
+            area(){
+                return this.shared.data.areas[ this.data.toAreas[this.toAreaIndex] ];
+            },
+
+            fromAreaUnits(){
+                return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.fromArea ) && !unit.selected && unit.type !== 'champion' );
+            },
+
+            currentAreaUnits(){
+                return this.shared.faction.units.filter( unit => unit.selected === this.area.name );
+            },
+
+            selected(){
+                return this.shared.faction.units.filter( unit => unit.selected );
+            },
+
+            canSave(){
+                let unitsSelectedTest = this.selected.length >= 1;
+                let costTest = ( this.shared.faction.resources + this.shared.faction.energy ) >= this.cost;
+                return unitsSelectedTest && costTest;
+            },
+
+            toAreas(){
+                let areas = [];
+                this.data.toAreas.forEach( areaName => { areas.push( this.shared.data.areas[areaName] )});
+                return areas;
+            },
+
+            cost(){
+                let cost = 0;
+
+                this.toAreas.forEach( area => {
+                   let payoffs =  this.policePayoffs( area );
+                   if( this.shared.faction.units.filter( unit => unit.selected === area.name ).length ){
+                       cost += payoffs;
+                   }
+                });
+
+                return cost;
+            },
+
+            data(){
+                return this.shared.player.prompt.data;
+            },
+
+        }
+    }
+</script>
+
+
+<style>
+
+</style>
+

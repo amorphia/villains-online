@@ -103,6 +103,11 @@ let obj = {
             return;
         }
 
+        // swarm goon defense mod
+        if( args.unit && victim.name === 'swarm' && args.unit.type === 'goon' ){
+            args.attacks = args.attacks.slice(1);
+        }
+
         let rolls = [].concat( _.roll( args.attacks.length ) );
         let toHit = this.getToHitNumber( args, victim );
         let hits = this.calculateHits( rolls, toHit );

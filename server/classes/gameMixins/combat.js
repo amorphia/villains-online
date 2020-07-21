@@ -34,6 +34,7 @@ let obj = {
         unit.killed = faction;
 
         if( unit.ready ) unit.ready = false;
+
         if( unit.flipped ){
             unit.flipped = false;
             this.factions[faction].unitUnflipped( unit );

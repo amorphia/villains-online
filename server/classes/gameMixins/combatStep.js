@@ -28,6 +28,10 @@ let obj = {
             }
         }
 
+        for( let faction in this.factions ){
+            await this.factions[faction].afterCombatStep();
+        }
+
         this.startEndOfTurnStep();
     }
 

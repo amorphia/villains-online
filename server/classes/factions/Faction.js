@@ -171,6 +171,8 @@ class Faction {
     factionCleanUp(){}
     factionCombatMods( mods ){ return mods }
     unitUnflipped( unit ){}
+    afterCombatStep(){}
+    startOfTurn(){}
 
     sound( sound, options ){
         this.game().sound( sound, options );
@@ -292,7 +294,7 @@ class Faction {
     }
 
     payCost( n, announce = false ){
-        if( n === 0 ) return;
+        if( !n ) return;
 
         let message = `Pay xC${n}x`;
         if( this.data.energy >= n ){
@@ -354,6 +356,11 @@ class Faction {
         this.game().message({ message: message, faction : this });
     }
 
+    // used in onKilledEvents
+    returnUnitToReserves( event ){
+        event.unit.location = null;
+        event.unit.killed = null;
+    }
 
     applyCapturedRewards(){
         let rewards = this.capturedRewards[ this.data.captured.current - 1 ];
