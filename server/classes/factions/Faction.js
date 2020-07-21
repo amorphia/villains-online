@@ -174,6 +174,10 @@ class Faction {
     afterCombatStep(){}
     startOfTurn(){}
 
+    startOfTurnPrompt() {
+        return 'choose-target';
+    }
+
     sound( sound, options ){
         this.game().sound( sound, options );
     }

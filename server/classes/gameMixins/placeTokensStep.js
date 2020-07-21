@@ -14,18 +14,25 @@ let obj = {
     },
 
     placeAToken( player, areaId, tokenId ){
+        let message;
         let faction = player.faction();
         let token = this.objectMap[ tokenId ];
-        let area = this.areas[areaId];
+
 
         faction.payCost( faction.data.tokenCost );
+        token.location = areaId;
 
-        token.location = area.name;
-        area.data.tokens.push( token );
+        if( areaId === 'xavier' ){
+            this.data.factions['society'].units.find( unit => unit.type === 'champion' ).token = token;
+            message = `Place a token on <span class="faction-society">Xavier Blackstone</span>`;
+        } else {
+            let area = this.areas[areaId];
+            area.data.tokens.push( token );
+            this.checkForCombatMarker( area );
+            message = `Place a token in <span class="highlight">the ${area.name}</span>`;
+        }
 
-        this.checkForCombatMarker( area );
-
-        this.message({ message:`Place a token in <span class="highlight">the ${area.name}</span>`, faction : faction });
+        this.message({ message: message, faction : faction });
         this.data.playerAction++;
         this.advancePlayer();
     },

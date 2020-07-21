@@ -4,7 +4,7 @@
             <div class="width-100 d-flex justify-center flex-column align-center">
 
 
-                <div class="title mb-4">Choose units to scatter</div>
+                <div class="title mb-4">{{ data.message }}</div>
 
                 <div class="mt-3 pb-4">
                     <area-flipper
@@ -41,7 +41,7 @@
 <script>
     export default {
 
-        name: 'scatter-units',
+        name: 'move-away',
         data() {
             return {
                 shared : App.state,
@@ -56,14 +56,14 @@
                 if( !option ){
                     data.decline = true;
                 } else {
-                    data.scatters = this.selected.map( unit => {
+                    data.moves = this.selected.map( unit => {
                         return { units : [unit.id], toArea : unit.selected };
                     });
                     data.cost = this.cost;
                 }
 
                 data = Object.assign( {}, this.data, data );
-                this.shared.respond( 'scatter-units', data );
+                this.shared.respond( 'move-away', data );
             },
 
             updateToIndex( index ){
@@ -71,7 +71,10 @@
             },
 
             addUnitToArea( unit ){
-                if( this.currentAreaUnits.length ) return;
+
+                if( this.currentAreaUnits.length
+                    || ( this.data.limit && this.selected.length >= this.data.limit ) ) return;
+
                 this.$set( unit, 'selected', this.area.name );
             },
 
@@ -107,15 +110,28 @@
             },
 
             fromAreaUnits(){
-                return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.fromArea ) && !unit.selected && unit.type !== 'champion' );
+                let units = [];
+
+                if( this.data.enemyOnly ){ // enemy units
+                    Object.values( this.shared.data.factions ).forEach( faction => {
+                        units = units.concat( faction.units );
+                    });
+                } else { // player units
+                    units = this.shared.faction.units;
+                }
+
+                return units.filter( unit => _.unitInArea( unit, this.fromArea )
+                                            && ( !this.data.noChampion || unit.type !== 'champion' )
+                                            && ( !this.data.basicOnly || unit.basic ) );
             },
 
+
             currentAreaUnits(){
-                return this.shared.faction.units.filter( unit => unit.selected === this.area.name );
+                return this.fromAreaUnits.filter( unit => unit.selected === this.area.name );
             },
 
             selected(){
-                return this.shared.faction.units.filter( unit => unit.selected );
+                return this.fromAreaUnits.filter( unit => unit.selected );
             },
 
             canSave(){
@@ -135,7 +151,7 @@
 
                 this.toAreas.forEach( area => {
                    let payoffs =  this.policePayoffs( area );
-                   if( this.shared.faction.units.filter( unit => unit.selected === area.name ).length ){
+                   if( this.fromAreaUnits.filter( unit => unit.selected === area.name ).length ){
                        cost += payoffs;
                    }
                 });

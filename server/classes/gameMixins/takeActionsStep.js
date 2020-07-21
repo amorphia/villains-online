@@ -29,20 +29,27 @@ let obj = {
     },
 
     declineToken( player, token, refund ){
+        if( typeof player === 'string' ){
+            player = this.getPlayerById( player );
+        }
 
+        let message;
         let area = this.areas[ token.location ];
+        let faction = player.faction();
 
-        _.discardToken( token, area );
+        if( faction.data.tokensNotDiscardedMax && faction.data.tokensNotDiscarded < faction.data.tokensNotDiscardedMax ){
+            message = `Doesn't activate their <span class="uppercase highlight">${token.name}</span> token, but it stays in place`;
+            faction.data.tokensNotDiscarded++;
+        } else {
+            message = `Pull their <span class="uppercase highlight">${token.name}</span> token`;
+            _.discardToken( token, area );
+        }
 
         if( refund ){
             this.checkForTokenRefund( token, area );
         }
 
-        if( typeof player === 'string' ){
-            player = this.getPlayerById( player );
-        }
-
-        this.message({ message: `Pull their <span class="uppercase highlight">${token.name}</span> token`, faction : player.faction() });
+        this.message({ message: message, faction : faction });
         this.advancePlayer();
     },
 
@@ -79,13 +86,19 @@ let obj = {
         this.advancePlayer();
     },
 
+    takeXavierAction( player ){
+        player.faction().revealXavierToken( player );
+    },
+
     takeTokenAction( player, tokenId ){
         let token = this.objectMap[tokenId];
         let area = this.areas[token.location];
+
+        console.log( 'takeTokenAction', token, area  );
+
         let faction = player.faction();
         faction.revealToken( player, token, area, this );
     },
-
 
     resetResolving(){
        _.forEach( this.data.resolving, (val, prop, obj ) => obj[prop] = null );

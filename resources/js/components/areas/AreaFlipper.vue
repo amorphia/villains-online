@@ -1,5 +1,5 @@
 <template>
-    <div class="px-3 width-100 d-flex justify-center">
+    <div class="width-100 d-flex justify-center">
         <button v-if="areas.length > 1 || hasReserves" class="flipper" @click="prev"><i class="icon-left"></i></button>
         <div class="area-header p-4 pb-1 pos-relative" :class="`area-header-${areaName} ${classes}`">
             <slot></slot>

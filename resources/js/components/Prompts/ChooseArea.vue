@@ -35,7 +35,9 @@
 
 
         updated(){
-            this.shared.event.emit('areaSelected', this.area );
+            if( this.data.prompt.name === 'choose-area' ){
+                this.shared.event.emit('areaSelected', this.area );
+            }
         },
 
         computed : {

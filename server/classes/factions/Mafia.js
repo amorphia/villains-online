@@ -47,6 +47,20 @@ class Mafia extends Faction {
         };
     }
 
+    startOfTurnPrompt() {
+        return this.areas().includes( 'police' ) ? 'choose-target' : 'choose-spy';
+    }
+
+    resolveStartOfTurn( player, spy ){
+        this.data.spy = spy;
+        player.setPrompt({ name : 'choose-target' });
+
+        this.game().message({ message: `Is spying on the ${spy}`, faction: this });
+        this.game().data.playerAction++;
+        Server.saveToDB( this );
+        this.game().updateAll();
+    }
+
     factionCleanUp(){
         this.data.spy = null;
     }

@@ -1,7 +1,7 @@
 <template>
     <div class="area-map__token-space ratio-square"
-         :class="`${area.name}-${ index } ${ ( token && token.selected ) || forcedtoken || highlight ? ' selected' : ''}`"
-         @click="$emit( 'token', token )">
+         :class="computeClasses"
+         @click="emitToken">
         <img v-if="tokenImage" class="area-map__token" :class="{'saturate-5 opacity-8' : canSeeToken && !highlight,  }" :src="tokenImage">
     </div>
 </template>
@@ -17,7 +17,37 @@
                 shared : App.state,
             };
         },
+
+        methods : {
+            emitToken(){
+
+                if( this.token ){
+                    this.$emit( 'token', this.token );
+                }
+
+                if( this.forcedtoken ){
+                    this.$emit( 'token', this.forcedtoken );
+                }
+            }
+        },
+
         computed : {
+
+            computeClasses(){
+                let classes = [];
+
+                if( this.area ){
+                    classes.push( `${this.area.name}-${this.index}` );
+                }
+
+                if( ( this.token && this.token.selected )
+                    || this.forcedtoken
+                    || this.highlight ){
+                    classes.push( 'selected' );
+                }
+
+                return classes.join(' ');
+            },
 
             canSeeToken(){
                 if( ! this.token || this.token.revealed ) return false;

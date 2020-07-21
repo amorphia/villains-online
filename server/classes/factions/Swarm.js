@@ -116,31 +116,16 @@ class Swarm extends Faction {
     }
 
     async scatterToken( args ) {
-        let data, player;
-
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'scatter-units',
-            data: {
-                fromArea: args.area.name,
-                toAreas: args.area.data.adjacent,
-            }
+        await this.moveAwayToken( args, {
+            fromArea: args.area.name,
+            toAreas: args.area.data.adjacent,
+            noChampion : true,
+            message : 'Choose units to scatter'
         });
 
-        if( data.decline ){
-            this.game().declineToken( this.playerId, args.token, true );
-            return;
-        }
-
-        this.payCost( data.cost );
-
-        for( let scatter of data.scatters ){
-            await this.processMove( player, scatter );
-        }
-
+        this.game().sound( 'hatch' );
         this.game().advancePlayer();
     }
-
 }
 
 

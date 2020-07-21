@@ -95,10 +95,30 @@ let obj = {
         }
 
         this.message({ message: message, faction : this });
-
         await this.triggeredEvents( 'move', output.units );
 
         return output;
+    },
+
+    async moveAwayToken( args, options ){
+        let data, player;
+
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'move-away',
+            data: options
+        });
+
+        if( data.decline ){
+            this.game().declineToken( this.playerId, args.token, true );
+            return;
+        }
+
+        this.payCost( data.cost );
+
+        for( let move of data.moves ){
+            await this.processMove( player, move );
+        }
     }
 
 };

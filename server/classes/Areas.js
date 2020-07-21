@@ -529,7 +529,7 @@ class Church extends Area {
     areasWithRevealedTokens( faction ){
         let areasWithRevealedTokens = {};
         faction.data.tokens.forEach( token => {
-            if( token.location && token.revealed ) areasWithRevealedTokens[token.location] = true;
+            if( token.location && token.location !== 'xavier' && token.revealed ) areasWithRevealedTokens[token.location] = true;
         });
         return Object.keys( areasWithRevealedTokens );
     }

@@ -11,7 +11,7 @@ class Game {
         'joinGame',
         'chooseFaction',
         'chooseTargetPlan',
-        'saveSpy',
+        'factionStartOfTurnResponse',
         'passToken',
         'sendBribe',
         'initPassAction',

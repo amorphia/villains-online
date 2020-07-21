@@ -101,6 +101,19 @@ let mixin = {
         return Object.keys( enemyUnits ).length > 0;
     },
 
+    enemyUnitTypesInArea( area, basicOnly ){
+        let types = {};
+        let enemyUnits = this.enemyUnitsInArea( area, basicOnly );
+
+        Object.values( enemyUnits ).forEach( factionUnits => {
+            factionUnits.forEach( unit =>  {
+                types[unit.type] = true;
+            });
+        });
+
+        return Object.keys( types );
+    },
+
     enemyUnitsInArea( area, basicOnly ){
         return _.enemyUnitsInArea( this.data, area.name, this.game().data.factions, basicOnly );
     },

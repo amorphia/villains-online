@@ -29,6 +29,7 @@
                     'hit',
                     'hit2',
                     'hit3',
+                    'hypnotize',
                     'huh',
                     'points',
                     'queendeath',

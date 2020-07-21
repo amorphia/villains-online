@@ -31,7 +31,20 @@
 
 <style>
 
+    .units-hud__unit .area-map__token-space {
+        position: absolute;
+        z-index: 3;
+        width: 80%;
+        left: 52%;
+        bottom: 53%;
+        transform: translate(-50%, 50%);
 
+    }
+
+    .units-hud__unit .area-map__token-space img {
+        outline: none;
+        opacity: 1 !important;
+    }
 
 </style>
 

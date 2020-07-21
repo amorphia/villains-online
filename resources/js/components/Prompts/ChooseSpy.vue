@@ -44,7 +44,7 @@
         methods : {
             saveSpy(){
                 App.event.emit( 'sound', 'ui' );
-                this.shared.socketEmit( 'saveSpy', this.spy );
+                this.shared.socketEmit( 'factionStartOfTurnResponse', this.spy );
             }
         }
     }

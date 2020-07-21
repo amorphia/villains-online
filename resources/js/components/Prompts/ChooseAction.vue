@@ -5,14 +5,22 @@
 
                 <div class="title">{{ message }}</div>
 
-                <area-flipper v-if="collection.length" :areas="collection" :index="areaIndex" @update="update">
-                    <token-row v-if="action === 'token'" :area="area" :highlight="firstToken"></token-row>
-                    <div v-if="action === 'skill'" class="choose-action__skilled-units center-text">
+                <div v-if="action === 'xavier'" class="d-flex justify-center">
+                    <area-flipper :areas="[xavierArea]" index="0">
+                        <unit-row :units="[xavier]"></unit-row>
+                    </area-flipper>
+                </div>
 
+                <area-flipper v-if="collection.length" :areas="collection" :index="areaIndex" @update="update">
+
+                    <token-row v-if="action === 'token'" :area="area" :highlight="firstToken"></token-row>
+
+                    <div v-if="action === 'skill'" class="choose-action__skilled-units center-text">
                         <unit-row :units="skilledUnitsInArea" allSelected="true"></unit-row>
 
                         <div class="width-100 choose-action__skill-ability" v-html="this.shared.filterText( this.area.skill )"></div>
                     </div>
+
                 </area-flipper>
 
                 <div v-if="!action" class="view-player__empty">
@@ -33,6 +41,13 @@
                             :class="{ active: action === 'locked' }"
                             @click="action = 'locked'">
                                 LOCKED
+                    </button>
+
+                    <button v-if="validActions.includes('xavier')"
+                            class="button button-empty"
+                            :class="{ active: action === 'xavier' }"
+                            @click="setXavierAction">
+                                REVEAL XAVIER TOKEN
                     </button>
 
                     <button v-if="validActions.includes('token')"
@@ -90,12 +105,13 @@
             chooseAction(){
 
                 let args = [];
+
                 switch( this.action ){
                     case 'skill':
-                        args.push( this.area.name );
+                        args = [this.area.name];
                         break;
                     case 'token':
-                        args.push( this.firstUnrevealed( this.area ).id );
+                        args = [this.firstUnrevealed( this.area ).id];
                         break;
                 }
 
@@ -104,26 +120,23 @@
                 this.areaIndex = 0;
             },
 
-            /*
-            areaClicked( area ){
-                if( this.shared.player.prompt.name !== 'choose-action' || ! _.find( this.collection, item => item.name === area.name ) ) return;
-                this.areaIndex = _.findIndex( this.collection, item => area.name == item.name );
-                this.shared.event.emit('areaSelected', area );
-            },
-            */
-
             update( n ){
                 this.areaIndex = n;
             },
 
             setSkillAction(){
                 this.action = 'skill';
-                this.shared.event.emit('areaSelected', this.collection[ this.areaIndex ] );
+                // this.shared.event.emit('areaSelected', this.collection[ this.areaIndex ] );
             },
 
             setTokenAction(){
                 this.action = 'token';
-                this.shared.event.emit('areaSelected', this.collection[ this.areaIndex ] );
+                // this.shared.event.emit('areaSelected', this.collection[ this.areaIndex ] );
+            },
+
+            setXavierAction(){
+                this.action = 'xavier';
+                this.$set( this.xavier, 'placedToken', this.xavier.token );
             },
 
             prev(){
@@ -159,6 +172,9 @@
                     case 'token':
                         return "Choose a token to reveal";
                         break;
+                    case 'xavier':
+                        return "Reveal Xavier's token";
+                        break;
                     case 'pass':
                         return "Declare yourself passed";
                         break;
@@ -175,7 +191,11 @@
                     actions.push( 'skill' );
                 }
 
-                if( this.revealableTokens.length ){
+                if( this.canXavier ){
+                    actions.push( 'xavier' );
+                }
+
+                if( this.revealableTokens.length  ){
                     actions.push( 'token' );
                 }
 
@@ -209,6 +229,21 @@
 
             activeTokens(){
                 return this.shared.faction.tokens.filter( token => token.location && token.revealed === false );
+            },
+
+            xavier(){
+                if( this.shared.faction.name !== 'society' ) return;
+                return this.shared.faction.units.find( unit => unit.type === 'champion' );
+            },
+
+            xavierArea(){
+                if( this.shared.faction.name !== 'society' ) return;
+                return this.shared.data.areas[ this.xavier.location ];
+            },
+
+            canXavier(){
+                if( this.shared.faction.name !== 'society' ) return;
+                return this.xavier.token;
             },
 
             revealableTokens(){

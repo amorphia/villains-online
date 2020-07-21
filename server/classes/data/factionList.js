@@ -10,7 +10,7 @@ let obj = {
     loyalists : { owner : null },
     swarm : { owner : null },
     //vampires : { owner : null },
-    //mesmersits : { owner : null },
+    society : { owner : null },
     //hackers : { owner : null },
 };
 

@@ -4,6 +4,8 @@
              :class="setClasses"
              @click="$emit( 'unit', unit, hpLeft )">
 
+            <token-slot v-if="hasToken" :forcedtoken="hasForcedToken" :token="hasRegularToken"></token-slot>
+
             <img class="unit-hud__unit-image" :src="img">
         </div>
 
@@ -21,6 +23,7 @@
     export default {
 
         name: 'unit-icon',
+
         props : ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes' ],
         data() {
             return {
@@ -28,6 +31,18 @@
             };
         },
         computed :{
+
+            hasForcedToken(){
+                if( this.unit.placeToken ) return this.unit.placeToken;
+            },
+
+            hasRegularToken(){
+                if( this.unit.token ) return this.unit.token;
+            },
+
+            hasToken(){
+                return this.hasForcedToken || this.hasRegularToken;
+            },
 
             setClasses(){
                 let classes = [];

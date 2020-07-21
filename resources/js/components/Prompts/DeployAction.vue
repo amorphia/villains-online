@@ -78,7 +78,7 @@
         },
 
         mounted(){
-            // if we have ntohing to deploy from our reserves
+            // if we have nothing to deploy from our reserves
             if( this.reserves.length === 0 && this.fromAreas.length > 0 ) this.fromAreaIndex = 0;
 
             // if we have no units to deploy at all

@@ -213,7 +213,8 @@ a {
   --faction-cultists: #b2b2b2;
   --faction-cultists-secondary: #fdfdfd;
   --faction-loyalists: #864eef;
-  --faction-swarm: #6c7f30;
+  --faction-swarm: #889941;
+  --faction-society: #f43de8;
 }
 
 .faction-neutrals {
@@ -258,6 +259,10 @@ a {
 
 .faction-swarm {
   color: var(--faction-swarm);
+}
+
+.faction-society {
+  color: var(--faction-society);
 }
 
 .primary {

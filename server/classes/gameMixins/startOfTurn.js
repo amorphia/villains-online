@@ -18,17 +18,10 @@ let obj = {
     },
 
     setStartOfTurnPrompts(){
-
         _.forEach( this.players, player => {
             let prompt;
             let faction = this.factions[player.data.faction];
-            if( faction.name === 'mafia' && !faction.areas().includes( 'police' ) ){
-                prompt = { name: 'choose-spy' };
-            } else {
-                prompt = { name: 'choose-target' };
-            }
-
-            player.setPrompt( prompt );
+            player.setPrompt( faction.startOfTurnPrompt() );
         });
     },
 
@@ -55,17 +48,11 @@ let obj = {
         }
     },
 
-    saveSpy( player, spy ){
+    factionStartOfTurnResponse( player, data ){
         if( ! player.data.active ) return;
+        player.faction().resolveStartOfTurn( player, data );
+    },
 
-        this.data.factions[ 'mafia' ].spy = spy;
-        player.setPrompt( {name : 'choose-target'});
-
-        this.message({ message: `Is spying on the ${spy}`, faction: player.faction() });
-        this.data.playerAction++;
-        Server.saveToDB( this );
-        this.updateAll();
-    }
 
 };
 
