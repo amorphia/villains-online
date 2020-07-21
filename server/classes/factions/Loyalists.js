@@ -11,6 +11,7 @@ class Loyalists extends Faction {
         this.data.name = this.name;
         this.data.title = "Her Majesty's Loyalists";
         this.data.knightCount = 2;
+        this.data.maxEnergy = 8;
 
         // tokens
         this.tokens['knight'] = {
