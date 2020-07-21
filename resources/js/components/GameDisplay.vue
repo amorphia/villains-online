@@ -1,6 +1,8 @@
 <template>
     <div class="width-100 grow-1 pos-relative z-0">
-        <component v-if="shared.player.prompt.name" :is="shared.player.prompt.name"></component>
+        <transition name="fade">
+            <component v-if="shared.player.prompt.name" :is="shared.player.prompt.name"></component>
+        </transition>
         <view-combat></view-combat>
         <view-area></view-area>
         <view-player></view-player>

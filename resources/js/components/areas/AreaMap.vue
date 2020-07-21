@@ -284,6 +284,7 @@
         background-size: 100% 2vw, 100% auto;
         box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);
         border: 2px solid rgba(255,255,255,.3);
+        transition: opacity .3s;
     }
 
     .church-container { order: 1; }
