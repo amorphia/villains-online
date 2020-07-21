@@ -119,6 +119,10 @@ let obj = {
         let promises = [];
         let results = [];
         let slideSpeed = 5;
+        if( process.env.APP_ENV === 'local' ){
+            console.log( 'speeding up slidespeed on local' )
+            slideSpeed = 1.5;
+        }
 
         _.forEach( this.factions, faction => {
                 let plans = faction.testPlans();
@@ -159,6 +163,10 @@ let obj = {
 
         let targets = [];
         let slideSpeed = 3;
+        if( process.env.APP_ENV === 'local' ){
+            console.log( 'speeding up slidespeed on local' )
+            slideSpeed = 1.5;
+        }
 
         _.forEach( this.factions, faction => {
             let card = faction.data.cards.target[0];
@@ -189,6 +197,10 @@ let obj = {
     async determineControlStep(){
 
         let slideSpeed = 4;
+        if( process.env.APP_ENV === 'local' ){
+            console.log( 'speeding up slidespeed on local' )
+            slideSpeed = 1.5;
+        }
 
         await this.timedPrompt( 'title-card', this.titleCardTimer, { message : 'Determine Control Step' } );
 

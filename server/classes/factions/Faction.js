@@ -336,8 +336,8 @@ class Faction {
         this.data.units.forEach( unit => {
             if( unit.skilled ) unit.ready = true;
 
-            if( unit.type === 'patsy '){
-                unit.ready = controlsUniversity;
+            if( controlsUniversity && unit.type === 'patsy' ){
+                unit.ready = true;
             }
         });
     }
