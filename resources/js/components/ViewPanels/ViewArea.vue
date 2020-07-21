@@ -14,10 +14,10 @@
                 </div>
 
                 <div class="view-player__title">Control Ability</div>
-                <div class="p-3 highlight">{{ area.control }}</div>
+                <div class="p-3 primary-light">{{ area.control }}</div>
 
                 <div class="view-player__title">Skill Ability</div>
-                <div class="p-3 highlight">{{ area.skill }}</div>
+                <div class="p-3 primary-light">{{ area.skill }}</div>
 
                 <div class="view-player__title">Active Cards:</div>
                 <div v-if="area.cards.length" class="view-player__active-cards pt-4">

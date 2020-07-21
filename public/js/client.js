@@ -58002,7 +58002,7 @@ var render = function() {
                     _vm._v("Control Ability")
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "p-3 highlight" }, [
+                  _c("div", { staticClass: "p-3 primary-light" }, [
                     _vm._v(_vm._s(_vm.area.control))
                   ]),
                   _vm._v(" "),
@@ -58010,7 +58010,7 @@ var render = function() {
                     _vm._v("Skill Ability")
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "p-3 highlight" }, [
+                  _c("div", { staticClass: "p-3 primary-light" }, [
                     _vm._v(_vm._s(_vm.area.skill))
                   ]),
                   _vm._v(" "),
