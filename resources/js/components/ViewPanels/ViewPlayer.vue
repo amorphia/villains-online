@@ -106,9 +106,7 @@
 
             <div class="view-player__side width-45 height-100 pt-4 pl-3 pb-6">
                 <div class="view-player__title">Faction Sheet:</div>
-                <div class="choose-factions__faction-sheet my-5"
-                     :style="`background-image : url('/images/factions/${faction.name}/sheet.jpg')`"
-                ></div>
+                <img :src="`/images/factions/${faction.name}/sheet.jpg`" class="my-5" >
 
                 <div class="view-player__title mt-5">Unit Mix:</div>
                 <div class="view-player__units d-flex mb-4 justify-center">

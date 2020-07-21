@@ -8245,8 +8245,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-player',
   data: function data() {
@@ -58796,12 +58794,11 @@ var render = function() {
                   _vm._v("Faction Sheet:")
                 ]),
                 _vm._v(" "),
-                _c("div", {
-                  staticClass: "choose-factions__faction-sheet my-5",
-                  style:
-                    "background-image : url('/images/factions/" +
-                    _vm.faction.name +
-                    "/sheet.jpg')"
+                _c("img", {
+                  staticClass: "my-5",
+                  attrs: {
+                    src: "/images/factions/" + _vm.faction.name + "/sheet.jpg"
+                  }
                 }),
                 _vm._v(" "),
                 _c("div", { staticClass: "view-player__title mt-5" }, [
