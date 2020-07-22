@@ -4052,7 +4052,7 @@ __webpack_require__.r(__webpack_exports__);
       return _.factionIcon(factionName);
     },
     incrementIndex: function incrementIndex() {
-      if (!this.data || this.index === this.data.results.length - 1) {
+      if (!this.data || !this.data.results || this.index === this.data.results.length - 1) {
         clearInterval(this.interval);
         return;
       }

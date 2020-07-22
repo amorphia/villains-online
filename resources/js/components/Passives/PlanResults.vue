@@ -39,14 +39,11 @@
         methods : {
 
             checkForAPSound(){
-
                 if( this.currentScoredPlans.length ){
                     App.event.emit( 'sound', 'points' );
                 } else {
                     App.event.emit( 'sound', 'chirp' );
                 }
-
-
             },
 
             factionIcon( factionName ){
@@ -54,7 +51,7 @@
             },
 
             incrementIndex(){
-                if( !this.data || this.index === this.data.results.length - 1 ){
+                if( !this.data || !this.data.results || this.index === this.data.results.length - 1 ){
                     clearInterval( this.interval );
                     return;
                 }
