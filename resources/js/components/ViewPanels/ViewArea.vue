@@ -13,6 +13,11 @@
                     Controlled by The {{ area.owner | startCase }}
                 </div>
 
+                <div v-if="exterminated" class="title d-flex align-center view-area__controller">
+                    <img class="determine-control__faction-icon" :src="factionIcon( area.owner )">
+                    Exterminated by The {{ area.owner | startCase }}
+                </div>
+
                 <div class="view-player__title">Control Ability</div>
                 <div class="p-3 primary-light">{{ area.control }}</div>
 
@@ -110,6 +115,10 @@
 
 
         computed : {
+            exterminated(){
+                return _.areaExterminated( this.area, this.shared.data.factions );
+            },
+
             influences(){
                 return _.eachInfluenceInArea( this.area, this.shared.data.factions, true );
             },
@@ -155,6 +164,7 @@
 
     .view-area .title, .view-area .view-player__title {
         color: #fde4ff;
+        font-size: 1em;
     }
 
     .view-area .view-area__controller {
