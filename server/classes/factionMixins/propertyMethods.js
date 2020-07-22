@@ -241,8 +241,8 @@ let mixin = {
     areasWithKills(){
         let areas = {};
 
-        faction.kills().forEach( kill => {
-            area[kill.location] = true;
+        this.kills().forEach( kill => {
+            areas[kill.location] = true;
         });
 
         return Object.keys( areas );
