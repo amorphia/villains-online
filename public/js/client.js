@@ -81578,7 +81578,7 @@ var helpers = {
   assignableHits: function assignableHits(units) {
     var assignableHits = 0;
     units.forEach(function (unit) {
-      assignableHits += unit.toughness && !unit.flipped ? 2 : 1;
+      assignableHits += unit.toughness && !unit.flipped || unit.flipped && unit.faction === 'vampires' && unit.type === 'champion' ? 2 : 1;
       assignableHits -= unit.hits ? unit.hits : 0;
     });
     return assignableHits;
