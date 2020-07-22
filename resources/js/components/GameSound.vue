@@ -20,6 +20,7 @@
                 soundBank : [
                     'active',
                     'basta',
+                    'bats',
                     'combat',
                     'chirp',
                     'coin',

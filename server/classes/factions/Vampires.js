@@ -99,7 +99,7 @@ class Vampires extends Faction {
 
         unit.location = destinationAreaName;
         this.game().sound( 'bats' );
-        this.game().message({ faction : this, message: `Flys a vampire <span class="faction-vampires">${unit.name}</span> to The ${destinationAreaName}` });
+        this.game().message({ faction : this, message: `Flys a vampire ${unit.name} to The ${destinationAreaName}` });
 
     }
 
