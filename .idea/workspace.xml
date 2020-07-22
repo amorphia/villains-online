@@ -4,9 +4,8 @@
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/areas/MapPlayer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/areas/MapPlayer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Loyalists.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Loyalists.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/games.db" beforeDir="false" afterPath="$PROJECT_DIR$/server/games.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/GameLobby.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/GameLobby.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/VillainsOnline.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/VillainsOnline.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,7 +233,7 @@
       <workItem from="1591223441450" duration="81406000" />
       <workItem from="1591417607847" duration="235785000" />
       <workItem from="1592157951059" duration="164940000" />
-      <workItem from="1594834562760" duration="148294000" />
+      <workItem from="1594834562760" duration="149767000" />
     </task>
     <servers />
   </component>

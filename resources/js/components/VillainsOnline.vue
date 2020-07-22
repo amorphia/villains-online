@@ -131,6 +131,7 @@
             initSocket(){
                 let socket = io( App.server );
                 this.shared.init( 'socket', socket );
+
                 this.shared.socket.emit( 'newPlayer', {
                     name : App.user.name,
                     id : App.user.uuid

@@ -22,7 +22,10 @@
             </div>
         </div>
         <div v-else class="">
-            <button @click="newGame" class="button new-game-button">Create New Game</button>
+            <div v-if="this.shared.socket.disconnected" class="server-offline">
+                <i class="icon-kill"></i>SERVER OFFLINE
+            </div>
+            <button v-else @click="newGame" class="button new-game-button">Create New Game</button>
         </div>
     </div>
 </template>
@@ -101,5 +104,27 @@
         font-size: 1.5rem;
         color: var(--highlight-color);
     }
+
+    .server-offline {
+        padding: 2rem;
+        display: flex;
+        align-items: baseline;
+        font-size: 1.75em;
+        background-color: rgba(17, 7, 19, 0.9);
+        border-radius: .2em;
+        border-top: 1px solid rgba(91, 33, 128, 0.56);
+        letter-spacing: 2px;
+        color: var(--highlight-color);
+        box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);
+    }
+
+    .server-offline i {
+        color: red;
+        font-size: .9em;
+        position: relative;
+        top: 3px;
+        margin-right: .5rem;
+    }
+
 </style>
 

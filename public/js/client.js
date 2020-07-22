@@ -3003,6 +3003,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-lobby',
   data: function data() {
@@ -9392,7 +9395,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.logout-link {\n    font-size: 1.5rem;\n    color: var(--highlight-color);\n}\n", ""]);
+exports.push([module.i, "\n.logout-link {\n    font-size: 1.5rem;\n    color: var(--highlight-color);\n}\n.server-offline {\n    padding: 2rem;\n    display: flex;\n    align-items: baseline;\n    font-size: 1.75em;\n    background-color: rgba(17, 7, 19, 0.9);\n    border-radius: .2em;\n    border-top: 1px solid rgba(91, 33, 128, 0.56);\n    letter-spacing: 2px;\n    color: var(--highlight-color);\n    box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);\n}\n.server-offline i {\n    color: red;\n    font-size: .9em;\n    position: relative;\n    top: 3px;\n    margin-right: .5rem;\n}\n\n", ""]);
 
 // exports
 
@@ -53234,14 +53237,19 @@ var render = function() {
             ])
           ])
         : _c("div", {}, [
-            _c(
-              "button",
-              {
-                staticClass: "button new-game-button",
-                on: { click: _vm.newGame }
-              },
-              [_vm._v("Create New Game")]
-            )
+            this.shared.socket.disconnected
+              ? _c("div", { staticClass: "server-offline" }, [
+                  _c("i", { staticClass: "icon-kill" }),
+                  _vm._v("SERVER OFFLINE\n        ")
+                ])
+              : _c(
+                  "button",
+                  {
+                    staticClass: "button new-game-button",
+                    on: { click: _vm.newGame }
+                  },
+                  [_vm._v("Create New Game")]
+                )
           ])
     ],
     1
