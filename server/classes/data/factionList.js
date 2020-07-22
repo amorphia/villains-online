@@ -9,7 +9,7 @@ let obj = {
     cultists : { owner : null },
     loyalists : { owner : null },
     swarm : { owner : null },
-    //vampires : { owner : null },
+    vampires : { owner : null },
     society : { owner : null },
     //hackers : { owner : null },
 };

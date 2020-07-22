@@ -1,7 +1,7 @@
 let obj = {
 
     async selectEnemyPlayerWithUnitsInArea( area, message, args ){
-        let player, data, targetFaction;
+        let player, data, targetFaction, selfAttack;
 
         if( typeof area !== 'string' ) area = area.name;
 
@@ -10,7 +10,8 @@ let obj = {
 
         // no enemies with units in the from location
         if( targetFactions.length === 0 ){
-            return;
+            // if this attack forces a self attack return this faction as the victim, otherwise return false
+            return args.selfAttack ? this : false;
         }
 
         [player, data] = await this.game().promise({ players: this.playerId, name: 'choose-victim', data : {
@@ -91,6 +92,7 @@ let obj = {
         let message = '';
         args.attacks.forEach( n => message += `xA${n}x` );
         message = `Choose player to target with your attack of ${ message }`;
+
         let victim = await this.selectEnemyPlayerWithUnitsInArea( args.area, message, args );
 
         if( victim === 'declined' ){

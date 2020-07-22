@@ -215,6 +215,7 @@ a {
   --faction-loyalists: #864eef;
   --faction-swarm: #889941;
   --faction-society: #f43de8;
+  --faction-vampires: #cc1d1d;
 }
 
 .faction-neutrals {
@@ -263,6 +264,10 @@ a {
 
 .faction-society {
   color: var(--faction-society);
+}
+
+.faction-vampires {
+  color: var(--faction-vampires);
 }
 
 .primary {

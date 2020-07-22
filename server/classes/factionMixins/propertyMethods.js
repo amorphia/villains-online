@@ -118,15 +118,26 @@ let mixin = {
         return _.enemyUnitsInArea( this.data, area.name, this.game().data.factions, basicOnly );
     },
 
-    areasWithUnits( types ){
-        if( typeof types === 'string' ) types = [ types ];
+    areasWithUnits( options = {} ){
+        if( typeof options.types === 'string' ) options.types = [ option.types ];
+
         let areas = {};
         this.data.units.forEach( unit => {
-            if( _.unitInPlay( unit ) && ( !types || types.includes( unit.type ) ) ){
+            if( _.unitInPlay( unit )
+                && ( !options.types || options.types.includes( unit.type ) )
+                && ( !options.flipped || unit.flipped )
+            ){
                 areas[ unit.location ] = true;
             }
         });
-        return Object.keys( areas );
+
+        let areasArray = Object.keys( areas );
+
+        if( options.excludesArea ){
+            areasArray = areasArray.filter( area => area !== options.excludesArea );
+        }
+
+        return areasArray;
     },
 
     hasUnitsInArea( area ) {
@@ -227,6 +238,15 @@ let mixin = {
         return this.data.units.filter( unit => unit.killed );
     },
 
+    areasWithKills(){
+        let areas = {};
+
+        faction.kills().forEach( kill => {
+            area[kill.location] = true;
+        });
+
+        return Object.keys( areas );
+    },
 
     kills(){
         let kills = [];

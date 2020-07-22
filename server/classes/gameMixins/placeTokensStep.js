@@ -53,7 +53,7 @@ let obj = {
 
     passToken( player ){
         player.data.passed = true;
-        this.message({ message: `Has passed`, faction : player.faction() });
+        this.message({ message: `Have passed`, faction : player.faction() });
         this.data.playerAction++;
         if( this.allPlayersHavePassed() ){
             this.startTakeActionsStep();

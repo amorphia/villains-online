@@ -90,14 +90,14 @@ let obj = {
         player.faction().revealXavierToken( player );
     },
 
-    takeTokenAction( player, tokenId ){
+    async takeTokenAction( player, tokenId ){
         let token = this.objectMap[tokenId];
         let area = this.areas[token.location];
 
         console.log( 'takeTokenAction', token, area  );
 
         let faction = player.faction();
-        faction.revealToken( player, token, area, this );
+        await faction.revealToken( player, token, area, this );
     },
 
     resetResolving(){

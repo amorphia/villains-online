@@ -1,11 +1,13 @@
 let obj = {
 
-    revealToken( player, token, area ) {
+    async revealToken( player, token, area ) {
 
         if( token.resource ) this.gainResources( 1 );
         token.revealed = true;
 
         this.game().message({ message: 'reveal', type : 'reveal-token', faction : this, token : token });
+
+        await this.onAfterReveal( token );
 
         if( ! this.canActivate( token, area ) ){
             this.sound( 'error' );

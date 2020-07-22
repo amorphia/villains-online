@@ -55,9 +55,9 @@
 
                     if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
 
-                    //if (!unit.toughness && unit.flipped) status[this.faction.statusIcon] = this.faction.statusDescription;
+                    if (!unit.toughness && unit.flipped) status[this.faction.statusIcon] = this.faction.statusDescription;
 
-                    if( unit.firstStrike ) status['first-strike'] = 'has units with first strike';
+                    if( unit.firstStrike ) status[`${unit.faction}-first-strike`] = 'has units with first strike';
 
                     if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him';
                 }

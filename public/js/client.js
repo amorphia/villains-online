@@ -5522,6 +5522,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-units',
   data: function data() {
@@ -5573,6 +5574,7 @@ __webpack_require__.r(__webpack_exports__);
             if (!_.unitInArea(unit, _this2.area)) return;
           }
 
+          if (_this2.data.flippedOnly && !unit.flipped) return;
           if (_this2.data.hasAttack && !unit.attack.length) return;
           if (_this2.data.unitTypes && !_this2.data.unitTypes.includes(unit.type)) return;
           return true;
@@ -5591,9 +5593,15 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    resolve: function resolve() {
+    resolve: function resolve(action) {
       var data = {};
-      data.units = _.map(this.selected, 'id');
+
+      if (action) {
+        data.units = _.map(this.selected, 'id');
+      } else {
+        data.decline = true;
+      }
+
       data = Object.assign({}, this.data, data);
       this.shared.respond('choose-units', data);
     },
@@ -9066,9 +9074,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           var unit = _step.value;
           if (unit.location !== this.area.name || unit.killed) continue;
           if (unit.ready) status['skilled'] = 'has ready units';
-          if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units'; //if (!unit.toughness && unit.flipped) status[this.faction.statusIcon] = this.faction.statusDescription;
-
-          if (unit.firstStrike) status['first-strike'] = 'has units with first strike';
+          if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
+          if (!unit.toughness && unit.flipped) status[this.faction.statusIcon] = this.faction.statusDescription;
+          if (unit.firstStrike) status["".concat(unit.faction, "-first-strike")] = 'has units with first strike';
           if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him';
         }
       } catch (err) {
@@ -56055,12 +56063,31 @@ var render = function() {
             : _vm._e(),
           _vm._v(" "),
           _c("div", {}, [
+            _vm.data.canDecline
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "button button-empty",
+                    on: {
+                      click: function($event) {
+                        return _vm.resolve(false)
+                      }
+                    }
+                  },
+                  [_vm._v("DECLINE")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
             _c(
               "button",
               {
                 staticClass: "button",
                 attrs: { disabled: _vm.needToSelect > 0 },
-                on: { click: _vm.resolve }
+                on: {
+                  click: function($event) {
+                    return _vm.resolve(true)
+                  }
+                }
               },
               [_vm._v("SAVE")]
             )

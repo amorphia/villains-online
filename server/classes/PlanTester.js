@@ -217,6 +217,10 @@ class PlanTester {
         return faction.areasWithUnits().length >= areaCount;
     }
 
+    killsInAreas( faction, areaCount ){
+        return faction.areasWithKills().length >= areaCount;
+    }
+
 }
 
 module.exports = PlanTester;

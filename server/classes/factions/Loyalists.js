@@ -98,7 +98,7 @@ class Loyalists extends Faction {
         let killerOptions = killer.unitTypesInReserves( true );
         let victimOptions = this.unitTypesInPlay( true );
         let potentialTypes = _.intersection( killerOptions, victimOptions );
-        let potentialAreas = this.areasWithUnits( potentialTypes );
+        let potentialAreas = this.areasWithUnits({ types : potentialTypes });
 
         this.game().sound( 'queendeath' );
         this.game().message({ faction : killer, message: `Have <span class="highlight">committed regicide</span>! The Queenslayers must now collect their bounty` });

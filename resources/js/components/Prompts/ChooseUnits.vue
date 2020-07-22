@@ -17,7 +17,8 @@
                 </area-flipper>
 
                 <div class="">
-                    <button class="button" @click="resolve" :disabled="needToSelect > 0">SAVE</button>
+                    <button v-if="data.canDecline" class="button button-empty" @click="resolve( false )">DECLINE</button>
+                    <button class="button" @click="resolve( true )" :disabled="needToSelect > 0">SAVE</button>
                 </div>
             </div>
         </div>
@@ -82,8 +83,10 @@
                             if( !_.unitInArea( unit, this.area ) ) return;
                         }
 
+                        if( this.data.flippedOnly && !unit.flipped ) return;
                         if( this.data.hasAttack && !unit.attack.length ) return;
                         if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ) return;
+
                         return true;
                     }));
                 });
@@ -102,9 +105,15 @@
         },
 
         methods : {
-            resolve(){
+            resolve( action ){
                 let data = {};
-                data.units = _.map( this.selected, 'id' );
+
+                if( action ){
+                    data.units = _.map( this.selected, 'id' );
+                } else {
+                    data.decline = true;
+                }
+
                 data = Object.assign( {}, this.data, data );
 
                 this.shared.respond( 'choose-units', data );

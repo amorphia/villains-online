@@ -173,6 +173,7 @@ class Faction {
     unitUnflipped( unit ){}
     afterCombatStep(){}
     startOfTurn(){}
+    onAfterReveal(){}
 
     startOfTurnPrompt() {
         return 'choose-target';

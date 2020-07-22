@@ -20,13 +20,24 @@ let obj = {
     },
 
     async assignHits( unit, faction, count = 1 ){
+
+        // Lilith heal ability
+        if( count === 1
+            && unit.faction === 'vampires'
+            && unit.flipped === true
+            && unit.type === 'champion'
+        ){
+            this.factions['vampires'].unitUnflipped( unit );
+            return 'return to human form'
+        }
+
         if( count === 1 && unit.toughness && !unit.flipped ){
             unit.flipped = true;
             return 'wounds';
-        } else {
-            await this.killUnit( unit, faction );
-            return 'kills';
         }
+
+        await this.killUnit( unit, faction );
+        return 'kills';
     },
 
     async killUnit( unit, faction ){

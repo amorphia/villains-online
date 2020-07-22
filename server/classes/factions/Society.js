@@ -10,6 +10,7 @@ class Society extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Blackstone Society";
+        this.data.maxEnergy = 10;
         this.data.tokensNotDiscarded = 0;
         this.data.tokensNotDiscardedMax = 0;
 
