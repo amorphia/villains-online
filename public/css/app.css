@@ -1,3 +1,259 @@
+@font-face {
+    font-family: 'icomoon';
+    src:  url('/fonts/icomoon.eot?aurd7d');
+    src:  url('/fonts/icomoon.eot?aurd7d#iefix') format('embedded-opentype'),
+    url('/fonts/icomoon.woff2?aurd7d') format('woff2'),
+    url('/fonts/icomoon.ttf?aurd7d') format('truetype'),
+    url('/fonts/icomoon.woff?aurd7d') format('woff'),
+    url('/fonts/icomoon.svg?aurd7d#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-goon:before {
+    content: "\E956";
+}
+.icon-influence:before {
+    content: "\E957";
+}
+.icon-mole:before {
+    content: "\E958";
+}
+.icon-patsy:before {
+    content: "\E959";
+}
+.icon-skill:before {
+    content: "\E95A";
+}
+.icon-talent:before {
+    content: "\E95B";
+}
+.icon-toughness-solid:before {
+    content: "\E95C";
+}
+.icon-drone:before {
+    content: "\E964";
+}
+.icon-servant:before {
+    content: "\E963";
+}
+.icon-sewers:before {
+    content: "\E961";
+}
+.icon-graveyard:before {
+    content: "\E960";
+}
+.icon-biohazard:before {
+    content: "\E95F";
+}
+.icon-exterminate:before {
+    content: "\E95D";
+}
+.icon-kill:before {
+    content: "\E95E";
+}
+.icon-police-payoff:before {
+    content: "\E955";
+}
+.icon-ample-cover:before {
+    content: "\E942";
+}
+.icon-cease-fire:before {
+    content: "\E943";
+}
+.icon-church:before {
+    content: "\E944";
+}
+.icon-credit-freeze:before {
+    content: "\E945";
+}
+.icon-display-of-brilliance:before {
+    content: "\E946";
+}
+.icon-factory:before {
+    content: "\E947";
+}
+.icon-go-go-go:before {
+    content: "\E948";
+}
+.icon-go-with-god:before {
+    content: "\E949";
+}
+.icon-march-the-streets:before {
+    content: "\E94A";
+}
+.icon-massacre:before {
+    content: "\E94B";
+}
+.icon-military-cache:before {
+    content: "\E94C";
+}
+.icon-police:before {
+    content: "\E94D";
+}
+.icon-rise-up:before {
+    content: "\E94E";
+}
+.icon-rousing-speech:before {
+    content: "\E94F";
+}
+.icon-stand-down:before {
+    content: "\E950";
+}
+.icon-subway:before {
+    content: "\E951";
+}
+.icon-suitcase-nuke:before {
+    content: "\E952";
+}
+.icon-trapped-like-rats:before {
+    content: "\E953";
+}
+.icon-university:before {
+    content: "\E954";
+}
+.icon-gun:before {
+    content: "\E937";
+}
+.icon-card:before {
+    content: "\E933";
+}
+.icon-left:before {
+    content: "\E940";
+}
+.icon-right:before {
+    content: "\E941";
+}
+.icon-minimize:before {
+    content: "\E93C";
+}
+.icon-maximize:before {
+    content: "\E93D";
+}
+.icon-cards:before {
+    content: "\E934";
+}
+.icon-score:before {
+    content: "\E935";
+}
+.icon-units:before {
+    content: "\E93A";
+}
+.icon-save:before {
+    content: "\E962";
+}
+.icon-volume-high:before {
+    content: "\EA26";
+}
+.icon-volume-mid:before {
+    content: "\EA27";
+}
+.icon-save:before {
+    content: "\E962";
+}
+.icon-volume-high:before {
+    content: "\EA26";
+}
+.icon-volume-mid:before {
+    content: "\EA27";
+}
+.icon-mute:before {
+    content: "\EA2A";
+}
+.icon-checkbox-checked:before {
+    content: "\EA52";
+}
+.icon-checkbox-unchecked:before {
+    content: "\EA53";
+}
+.icon-tokens:before {
+    content: "\EA54";
+}
+.icon-x:before {
+    content: "\E92E";
+}
+.icon-error:before {
+    content: "\E900";
+}
+.icon-key:before {
+    content: "\E903";
+}
+.icon-plans:before {
+    content: "\E93B";
+}
+.icon-flag:before {
+    content: "\E906";
+}
+.icon-target:before {
+    content: "\E938";
+}
+.icon-chat:before {
+    content: "\E90B";
+}
+.icon-drag_handle:before {
+    content: "\E92F";
+}
+.icon-circle:before {
+    content: "\E930";
+}
+.icon-num-3:before {
+    content: "\E91B";
+}
+.icon-num-4:before {
+    content: "\E91C";
+}
+.icon-num-1:before {
+    content: "\E91F";
+}
+.icon-num-2:before {
+    content: "\E920";
+}
+.icon-circle-open:before {
+    content: "\E931";
+}
+.icon-money:before {
+    content: "\E922";
+}
+.icon-delete:before {
+    content: "\E926";
+}
+.icon-home:before {
+    content: "\E927";
+}
+.icon-launch:before {
+    content: "\E92A";
+}
+.icon-zoom_in:before {
+    content: "\E928";
+}
+.icon-zoom_out:before {
+    content: "\E929";
+}
+.icon-toggle_off:before {
+    content: "\E92B";
+}
+.icon-toggle_on:before {
+    content: "\E92C";
+}
+.icon-bolt:before {
+    content: "\E92D";
+}
 @charset "UTF-8";
 
 /* Box sizing rules */

@@ -1,39 +1,180 @@
 @font-face {
-  font-family: 'icomoon';
-  src:  url('/fonts/icomoon.eot?mjf324');
-  src:  url('/fonts/icomoon.eot?mjf324#iefix') format('embedded-opentype'),
-    url('/fonts/icomoon.woff2?mjf324') format('woff2'),
-    url('/fonts/icomoon.ttf?mjf324') format('truetype'),
-    url('/fonts/icomoon.woff?mjf324') format('woff'),
-    url('/fonts/icomoon.svg?mjf324#icomoon') format('svg');
-  font-weight: normal;
-  font-style: normal;
-  font-display: block;
+    font-family: 'icomoon';
+    src:  url('/fonts/icomoon.eot?aurd7d');
+    src:  url('/fonts/icomoon.eot?aurd7d#iefix') format('embedded-opentype'),
+    url('/fonts/icomoon.woff2?aurd7d') format('woff2'),
+    url('/fonts/icomoon.ttf?aurd7d') format('truetype'),
+    url('/fonts/icomoon.woff?aurd7d') format('woff'),
+    url('/fonts/icomoon.svg?aurd7d#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
 }
 
 [class^="icon-"], [class*=" icon-"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'icomoon' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
 
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-menu:before {
-    content: "\e90b";
+.icon-goon:before {
+    content: "\e956";
 }
-.icon-recent:before {
-    content: "\e909";
+.icon-influence:before {
+    content: "\e957";
 }
-.icon-home:before {
-    content: "\e90a";
+.icon-mole:before {
+    content: "\e958";
+}
+.icon-patsy:before {
+    content: "\e959";
+}
+.icon-skill:before {
+    content: "\e95a";
+}
+.icon-talent:before {
+    content: "\e95b";
+}
+.icon-toughness-solid:before {
+    content: "\e95c";
+}
+.icon-drone:before {
+    content: "\e964";
+}
+.icon-servant:before {
+    content: "\e963";
+}
+.icon-sewers:before {
+    content: "\e961";
+}
+.icon-graveyard:before {
+    content: "\e960";
+}
+.icon-biohazard:before {
+    content: "\e95f";
+}
+.icon-exterminate:before {
+    content: "\e95d";
+}
+.icon-kill:before {
+    content: "\e95e";
+}
+.icon-police-payoff:before {
+    content: "\e955";
+}
+.icon-ample-cover:before {
+    content: "\e942";
+}
+.icon-cease-fire:before {
+    content: "\e943";
+}
+.icon-church:before {
+    content: "\e944";
+}
+.icon-credit-freeze:before {
+    content: "\e945";
+}
+.icon-display-of-brilliance:before {
+    content: "\e946";
+}
+.icon-factory:before {
+    content: "\e947";
+}
+.icon-go-go-go:before {
+    content: "\e948";
+}
+.icon-go-with-god:before {
+    content: "\e949";
+}
+.icon-march-the-streets:before {
+    content: "\e94a";
+}
+.icon-massacre:before {
+    content: "\e94b";
+}
+.icon-military-cache:before {
+    content: "\e94c";
+}
+.icon-police:before {
+    content: "\e94d";
+}
+.icon-rise-up:before {
+    content: "\e94e";
+}
+.icon-rousing-speech:before {
+    content: "\e94f";
+}
+.icon-stand-down:before {
+    content: "\e950";
+}
+.icon-subway:before {
+    content: "\e951";
+}
+.icon-suitcase-nuke:before {
+    content: "\e952";
+}
+.icon-trapped-like-rats:before {
+    content: "\e953";
+}
+.icon-university:before {
+    content: "\e954";
+}
+.icon-gun:before {
+    content: "\e937";
+}
+.icon-card:before {
+    content: "\e933";
+}
+.icon-left:before {
+    content: "\e940";
+}
+.icon-right:before {
+    content: "\e941";
+}
+.icon-minimize:before {
+    content: "\e93c";
+}
+.icon-maximize:before {
+    content: "\e93d";
+}
+.icon-cards:before {
+    content: "\e934";
+}
+.icon-score:before {
+    content: "\e935";
+}
+.icon-units:before {
+    content: "\e93a";
+}
+.icon-save:before {
+    content: "\e962";
+}
+.icon-volume-high:before {
+    content: "\ea26";
+}
+.icon-volume-mid:before {
+    content: "\ea27";
+}
+.icon-save:before {
+    content: "\e962";
+}
+.icon-volume-high:before {
+    content: "\ea26";
+}
+.icon-volume-mid:before {
+    content: "\ea27";
+}
+.icon-mute:before {
+    content: "\ea2a";
 }
 .icon-checkbox-checked:before {
     content: "\ea52";
@@ -41,30 +182,75 @@
 .icon-checkbox-unchecked:before {
     content: "\ea53";
 }
-.icon-show:before {
-    content: "\e905";
-}
-.icon-user:before {
-    content: "\e906";
-}
-.icon-search:before {
-    content: "\e904";
-}
-.icon-star:before {
-    content: "\e903";
-}
-.icon-link:before {
-    content: "\e902";
+.icon-tokens:before {
+    content: "\ea54";
 }
 .icon-x:before {
-    content: "\e908";
+    content: "\e92e";
 }
-.icon-right:before {
-    content: "\e901";
-}
-.icon-left:before {
+.icon-error:before {
     content: "\e900";
 }
-.icon-year:before {
-    content: "\e907";
+.icon-key:before {
+    content: "\e903";
+}
+.icon-plans:before {
+    content: "\e93b";
+}
+.icon-flag:before {
+    content: "\e906";
+}
+.icon-target:before {
+    content: "\e938";
+}
+.icon-chat:before {
+    content: "\e90b";
+}
+.icon-drag_handle:before {
+    content: "\e92f";
+}
+.icon-circle:before {
+    content: "\e930";
+}
+.icon-num-3:before {
+    content: "\e91b";
+}
+.icon-num-4:before {
+    content: "\e91c";
+}
+.icon-num-1:before {
+    content: "\e91f";
+}
+.icon-num-2:before {
+    content: "\e920";
+}
+.icon-circle-open:before {
+    content: "\e931";
+}
+.icon-money:before {
+    content: "\e922";
+}
+.icon-delete:before {
+    content: "\e926";
+}
+.icon-home:before {
+    content: "\e927";
+}
+.icon-launch:before {
+    content: "\e92a";
+}
+.icon-zoom_in:before {
+    content: "\e928";
+}
+.icon-zoom_out:before {
+    content: "\e929";
+}
+.icon-toggle_off:before {
+    content: "\e92b";
+}
+.icon-toggle_on:before {
+    content: "\e92c";
+}
+.icon-bolt:before {
+    content: "\e92d";
 }

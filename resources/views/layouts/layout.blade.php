@@ -14,7 +14,6 @@
 
     <!-- Icons -->
     <link rel="apple-touch-icon" href="/favicons/apple-touch-icon.png">
-    <link rel="stylesheet" href="https://i.icomoon.io/public/816144a5fb/MovieTracker/style.css">
 
     <!-- Scripts -->
     <script>
@@ -31,7 +30,6 @@
     <!-- FONTS -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href='https://fonts.googleapis.com/css?family=Abel|Teko|Oswald?subsets=latin' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="https://i.icomoon.io/public/816144a5fb/VillainsOnline/style.css">
 
 </head>
 <body id="top" class="@yield( 'page' )">
