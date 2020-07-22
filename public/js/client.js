@@ -2953,6 +2953,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-display',
   data: function data() {
@@ -53113,6 +53116,13 @@ var render = function() {
     "div",
     { staticClass: "width-100 grow-1 pos-relative z-0" },
     [
+      _vm.shared.socket.disconnected
+        ? _c("div", { staticClass: "pos-absolute top-0 z-5 server-offline" }, [
+            _c("i", { staticClass: "icon-kill" }),
+            _vm._v("SERVER OFFLINE\n    ")
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _vm.shared.player.prompt.name
         ? _c(_vm.shared.player.prompt.name, { tag: "component" })
         : _vm._e(),
@@ -53249,7 +53259,7 @@ var render = function() {
             ])
           ])
         : _c("div", {}, [
-            this.shared.socket.disconnected
+            _vm.shared.socket.disconnected
               ? _c("div", { staticClass: "server-offline" }, [
                   _c("i", { staticClass: "icon-kill" }),
                   _vm._v("SERVER OFFLINE\n        ")

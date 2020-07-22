@@ -22,7 +22,7 @@
             </div>
         </div>
         <div v-else class="">
-            <div v-if="this.shared.socket.disconnected" class="server-offline">
+            <div v-if="shared.socket.disconnected" class="server-offline">
                 <i class="icon-kill"></i>SERVER OFFLINE
             </div>
             <button v-else @click="newGame" class="button new-game-button">Create New Game</button>
