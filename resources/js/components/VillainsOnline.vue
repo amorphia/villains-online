@@ -105,7 +105,7 @@
 
                 // listen for full game data update
                 this.shared.socket.on( 'update', data => {
-
+                    App.event.emit('unselectAreas' );
                     this.shared.data = data;
                     this.shared.player = this.shared.getPlayer();
                     this.shared.faction = this.shared.getFaction();

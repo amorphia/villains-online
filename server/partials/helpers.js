@@ -240,14 +240,16 @@ let helpers = {
         return factionAreas;
     },
 
-    eachInfluenceInArea( area, factions ){
+    eachInfluenceInArea( area, factions, withZeros ){
         let influences = [];
+        if( area.owner === 'neutral' ) influences.push( { faction : 'neutrals', influence : 1 } );
+
         this.forEach( factions, faction => {
             let influence = this.influence( faction, area, factions );
-            if( influence ) influences.push({ faction : faction.name, influence : influence });
+            if( withZeros || influence ) influences.push({ faction : faction.name, influence : influence });
         });
 
-        influences.sort( (a,b) => a.influence - b.influence );
+        influences.sort( (a,b) => b.influence - a.influence );
         return influences;
     },
 

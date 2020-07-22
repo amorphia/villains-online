@@ -55,7 +55,7 @@
 
                     if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
 
-                    if (!unit.toughness && unit.flipped) status[this.faction.statusIcon] = this.faction.statusDescription;
+                    if (!unit.toughness && unit.flipped && this.faction.statusIcon) status[this.faction.statusIcon] = this.faction.statusDescription;
 
                     if( unit.firstStrike ) status[`${unit.faction}-first-strike`] = 'has units with first strike';
 

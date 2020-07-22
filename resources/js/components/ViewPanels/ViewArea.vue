@@ -19,6 +19,16 @@
                 <div class="view-player__title">Skill Ability</div>
                 <div class="p-3 primary-light">{{ area.skill }}</div>
 
+                <div class="view-player__title">Influence</div>
+                <div class="view-area__influence-container">
+                    <div v-for="influence in influences" class="d-flex view-area__influence player-hud">
+                        <div class="influence-marker mb-2"><img src="/images/icons/influence.png"></div>
+                        <div class="view-area__influence-count">{{ influence.influence }}</div>
+                        <img class="determine-control__faction-icon" :src="factionIcon( influence.faction )">
+                        <span>The {{ influence.faction | startCase }}</span>
+                    </div>
+                </div>
+
                 <div class="view-player__title">Active Cards:</div>
                 <div v-if="area.cards.length" class="view-player__active-cards pt-4">
                     <div v-for="card in area.cards" class="pos-relative view-player__card">
@@ -100,6 +110,10 @@
 
 
         computed : {
+            influences(){
+                return _.eachInfluenceInArea( this.area, this.shared.data.factions, true );
+            },
+
             usedSkill(){
                 return Object.values( this.shared.data.factions ).map( faction => {
                     if( faction.usedSkills.includes( this.area.name ) ) return faction.name;
@@ -139,6 +153,10 @@
         color: var(--primary-light-color);
     }
 
+    .view-area .title, .view-area .view-player__title {
+        color: #fde4ff;
+    }
+
     .view-area .view-area__controller {
         margin-bottom: 2rem;
     }
@@ -151,6 +169,34 @@
         width: 100%;
         border: 1.5px solid rgba(0,0,0,.1);
     }
+
+    .view-area__influence {
+        align-items: center;
+        font-size: 1.5rem;
+        padding-bottom: .3rem;
+        padding-left: 1rem;
+    }
+
+    .view-area__influence .influence-marker {
+        position: relative;
+        bottom: .25rem;
+    }
+
+    .view-area__influence-count {
+        font-size: 1.5em;
+        width: 2rem;
+        text-align: center;
+        margin-right: .2rem;
+    }
+
+    .view-area__influence .determine-control__faction-icon{
+        width: 1.5em;
+        margin-right: .7rem;
+    }
+
+
+
+
 
     .view-area__token-wrap, .view-area__unit-wrap {
         width: 6vw;

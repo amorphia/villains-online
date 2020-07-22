@@ -46,8 +46,8 @@
                 </div>
                 <div v-for="obj in influence"
                      class="area-map__influence-count"
-                     :class="`faction-${obj.name}`"
-                     :title="`the ${obj.name} have ${obj.influence} influence in the ${area.name}`">{{ obj.influence }}</div>
+                     :class="`faction-${obj.faction}`"
+                     :title="`the ${obj.faction} have ${obj.influence} influence in the ${area.name}`">{{ obj.influence }}</div>
             </div>
 
 
@@ -98,17 +98,7 @@
         computed : {
 
             influence(){
-                let influence = [];
-                if( this.area.owner === 'neutral' ) influence.push( { name : 'neutrals', influence : 1 } );
-
-                _.forEach( this.shared.data.factions, faction => {
-                    let factionInfluence = _.influence( faction, this.area, this.shared.data.factions );
-                    if( factionInfluence ) influence.push( { name : faction.name, influence : factionInfluence } );
-                });
-
-                influence = _.orderBy( influence, ['influence'], ['desc'] );
-                return influence;
-
+                return _.eachInfluenceInArea( this.area, this.shared.data.factions );
             },
 
             graveyard(){
@@ -149,7 +139,7 @@
                     }
                 });
 
-                // targets
+                // skills
                 _.forEach( this.shared.data.factions, faction => {
                     if( faction.usedSkills.includes( this.area.name ) ){
                         stats.push({ name : 'skill', owner : faction.name, title : 'skill used', description : `the ${faction.name} have used this area's skill` } )

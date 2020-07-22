@@ -168,14 +168,11 @@
             },
 
             fromAreaUnits( area ){
-                return this.shared.faction.units.filter( unit => {
-                    return !(
-                        ! unit.hasOwnProperty( 'cost ')
-                        || ! _.unitInArea( unit, area )
-                        || this.data.unitTypes && !this.data.unitTypes.includes( unit.type )
-                        || this.data.invalidId === unit.id
-                    );
-                });
+                return this.shared.faction.units
+                    .filter( unit => ! unit.noDeploy
+                                      && _.unitInArea( unit, area )
+                                      && (! this.data.unitTypes || this.data.unitTypes.includes( unit.type ) ) );
+
             },
         },
 

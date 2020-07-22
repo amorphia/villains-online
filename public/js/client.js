@@ -6046,7 +6046,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return !(!unit.hasOwnProperty('cost ') || !_.unitInArea(unit, area) || _this.data.unitTypes && !_this.data.unitTypes.includes(unit.type) || _this.data.invalidId === unit.id);
+        return !unit.noDeploy && _.unitInArea(unit, area) && (!_this.data.unitTypes || _this.data.unitTypes.includes(unit.type));
       });
     }
   },
@@ -8166,6 +8166,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-area',
   data: function data() {
@@ -8188,6 +8198,9 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    influences: function influences() {
+      return _.eachInfluenceInArea(this.area, this.shared.data.factions, true);
+    },
     usedSkill: function usedSkill() {
       var _this2 = this;
 
@@ -8637,6 +8650,7 @@ __webpack_require__.r(__webpack_exports__);
       }); // listen for full game data update
 
       this.shared.socket.on('update', function (data) {
+        App.event.emit('unselectAreas');
         _this4.shared.data = data;
         _this4.shared.player = _this4.shared.getPlayer();
         _this4.shared.faction = _this4.shared.getFaction();
@@ -8863,33 +8877,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     influence: function influence() {
-      var _this2 = this;
-
-      var influence = [];
-      if (this.area.owner === 'neutral') influence.push({
-        name: 'neutrals',
-        influence: 1
-      });
-
-      _.forEach(this.shared.data.factions, function (faction) {
-        var factionInfluence = _.influence(faction, _this2.area, _this2.shared.data.factions);
-
-        if (factionInfluence) influence.push({
-          name: faction.name,
-          influence: factionInfluence
-        });
-      });
-
-      influence = _.orderBy(influence, ['influence'], ['desc']);
-      return influence;
+      return _.eachInfluenceInArea(this.area, this.shared.data.factions);
     },
     graveyard: function graveyard() {
-      var _this3 = this;
+      var _this2 = this;
 
       var dead = {};
 
       _.forEach(this.shared.data.factions, function (faction) {
-        var kills = _.killsInArea(faction, _this3.area, _this3.shared.data.factions);
+        var kills = _.killsInArea(faction, _this2.area, _this2.shared.data.factions);
 
         if (kills) dead[faction.name] = kills;
       });
@@ -8913,12 +8909,12 @@ __webpack_require__.r(__webpack_exports__);
       return "area-map-".concat(this.area.name, " ").concat(this.opacity ? 'opacity-4' : '');
     },
     stats: function stats() {
-      var _this4 = this;
+      var _this3 = this;
 
       var stats = []; // targets
 
       _.forEach(this.shared.data.factions, function (faction) {
-        if (faction.cards.target.length && _this4.shared.canSeeTarget(faction) && faction.cards.target[0].target === _this4.area.name) {
+        if (faction.cards.target.length && _this3.shared.canSeeTarget(faction) && faction.cards.target[0].target === _this3.area.name) {
           stats.push({
             name: 'target',
             owner: faction.name,
@@ -8926,11 +8922,11 @@ __webpack_require__.r(__webpack_exports__);
             description: "the ".concat(faction.name, " are targeting this area")
           });
         }
-      }); // targets
+      }); // skills
 
 
       _.forEach(this.shared.data.factions, function (faction) {
-        if (faction.usedSkills.includes(_this4.area.name)) {
+        if (faction.usedSkills.includes(_this3.area.name)) {
           stats.push({
             name: 'skill',
             owner: faction.name,
@@ -9075,7 +9071,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           if (unit.location !== this.area.name || unit.killed) continue;
           if (unit.ready) status['skilled'] = 'has ready units';
           if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
-          if (!unit.toughness && unit.flipped) status[this.faction.statusIcon] = this.faction.statusDescription;
+          if (!unit.toughness && unit.flipped && this.faction.statusIcon) status[this.faction.statusIcon] = this.faction.statusDescription;
           if (unit.firstStrike) status["".concat(unit.faction, "-first-strike")] = 'has units with first strike';
           if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him';
         }
@@ -10277,7 +10273,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.view-area {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n    font-size: 1.4rem;\n    color: var(--primary-light-color);\n}\n.view-area .view-area__controller {\n    margin-bottom: 2rem;\n}\n.view-area .view-player__empty {\n    font-size: .9em;\n}\n.view-area__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__token-wrap, .view-area__unit-wrap {\n    width: 6vw;\n}\n.view-area__token, .view-area__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__upgrade-card-image{\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__token {\n    border-radius: 50%;\n}\n.card-faction-icon {\n    left: 50%;\n    transform: translate(-50%, -20%);\n    width: 20%;\n    top: 0;\n    border: 1.5px solid white;\n    box-shadow: 0 0 2px 4px rgba(0,0,0,.6);\n}\n.empty-result {\n    text-align: center;\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--primary-light-color);\n}\n.view-area__area {\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: cover;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    width: 100%;\n    padding: 3px;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between;\n}\n.view-area__header {\n    width: 100%;\n    background-size: cover;\n    background-position: center bottom;\n    background-repeat: no-repeat;\n    min-height: 9rem;\n}\n.view-area__body {\n    min-height: 20rem;\n}\n.view-area__footer {\n    width: 100%;\n    background-size: cover;\n    background-position: center top;\n    background-repeat: no-repeat;\n    min-height: 6rem;\n    padding-top: 1.5rem;\n}\n.view-area__tokens {\n    left: 50%;\n    transform: translate(-50%,-50%);\n    top: 0;\n}\n.area-capitol { background-image: url(\"/images/areas/capitol-bg.jpg\")\n}\n.area-capitol .area-zoom__header { background-image: url(\"/images/areas/capitol-top.png\")\n}\n.area-capitol .area-zoom__footer { background-image: url(\"/images/areas/capitol-bottom.png\")\n}\n.area-sewers { background-image: url(\"/images/areas/sewers-bg.jpg\")\n}\n.area-sewers .area-zoom__header { background-image: url(\"/images/areas/sewers-top.png\")\n}\n.area-sewers .area-zoom__footer { background-image: url(\"/images/areas/sewers-bottom.png\")\n}\n.area-police { background-image: url(\"/images/areas/police-bg.jpg\")\n}\n.area-police .area-zoom__header { background-image: url(\"/images/areas/police-top.png\")\n}\n.area-police .area-zoom__footer { background-image: url(\"/images/areas/police-bottom.png\")\n}\n.area-laboratory { background-image: url(\"/images/areas/laboratory-bg.jpg\")\n}\n.area-laboratory .area-zoom__header { background-image: url(\"/images/areas/laboratory-top.png\")\n}\n.area-laboratory .area-zoom__footer { background-image: url(\"/images/areas/laboratory-bottom.png\")\n}\n.area-factory { background-image: url(\"/images/areas/factory-bg.jpg\")\n}\n.area-factory .area-zoom__header { background-image: url(\"/images/areas/factory-top.png\")\n}\n.area-factory .area-zoom__footer { background-image: url(\"/images/areas/factory-bottom.png\")\n}\n.area-bank { background-image: url(\"/images/areas/bank-bg.jpg\")\n}\n.area-bank .area-zoom__header { background-image: url(\"/images/areas/bank-top.png\")\n}\n.area-bank .area-zoom__footer { background-image: url(\"/images/areas/bank-bottom.png\")\n}\n.area-university { background-image: url(\"/images/areas/university-bg.jpg\")\n}\n.area-university .area-zoom__header { background-image: url(\"/images/areas/university-top.png\")\n}\n.area-university .area-zoom__footer { background-image: url(\"/images/areas/university-bottom.png\")\n}\n.area-subway { background-image: url(\"/images/areas/subway-bg.jpg\")\n}\n.area-subway .area-zoom__header { background-image: url(\"/images/areas/subway-top.png\")\n}\n.area-subway .area-zoom__footer { background-image: url(\"/images/areas/subway-bottom.png\")\n}\n.area-church { background-image: url(\"/images/areas/church-bg.jpg\")\n}\n.area-church .area-zoom__header { background-image: url(\"/images/areas/church-top.png\")\n}\n.area-church .area-zoom__footer { background-image: url(\"/images/areas/church-bottom.png\")\n}\n", ""]);
+exports.push([module.i, "\n.view-area {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n    font-size: 1.4rem;\n    color: var(--primary-light-color);\n}\n.view-area .title, .view-area .view-player__title {\n    color: #fde4ff;\n}\n.view-area .view-area__controller {\n    margin-bottom: 2rem;\n}\n.view-area .view-player__empty {\n    font-size: .9em;\n}\n.view-area__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__influence {\n    align-items: center;\n    font-size: 1.5rem;\n    padding-bottom: .3rem;\n    padding-left: 1rem;\n}\n.view-area__influence .influence-marker {\n    position: relative;\n    bottom: .25rem;\n}\n.view-area__influence-count {\n    font-size: 1.5em;\n    width: 2rem;\n    text-align: center;\n    margin-right: .2rem;\n}\n.view-area__influence .determine-control__faction-icon{\n    width: 1.5em;\n    margin-right: .7rem;\n}\n.view-area__token-wrap, .view-area__unit-wrap {\n    width: 6vw;\n}\n.view-area__token, .view-area__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__upgrade-card-image{\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__token {\n    border-radius: 50%;\n}\n.card-faction-icon {\n    left: 50%;\n    transform: translate(-50%, -20%);\n    width: 20%;\n    top: 0;\n    border: 1.5px solid white;\n    box-shadow: 0 0 2px 4px rgba(0,0,0,.6);\n}\n.empty-result {\n    text-align: center;\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--primary-light-color);\n}\n.view-area__area {\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: cover;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    width: 100%;\n    padding: 3px;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between;\n}\n.view-area__header {\n    width: 100%;\n    background-size: cover;\n    background-position: center bottom;\n    background-repeat: no-repeat;\n    min-height: 9rem;\n}\n.view-area__body {\n    min-height: 20rem;\n}\n.view-area__footer {\n    width: 100%;\n    background-size: cover;\n    background-position: center top;\n    background-repeat: no-repeat;\n    min-height: 6rem;\n    padding-top: 1.5rem;\n}\n.view-area__tokens {\n    left: 50%;\n    transform: translate(-50%,-50%);\n    top: 0;\n}\n.area-capitol { background-image: url(\"/images/areas/capitol-bg.jpg\")\n}\n.area-capitol .area-zoom__header { background-image: url(\"/images/areas/capitol-top.png\")\n}\n.area-capitol .area-zoom__footer { background-image: url(\"/images/areas/capitol-bottom.png\")\n}\n.area-sewers { background-image: url(\"/images/areas/sewers-bg.jpg\")\n}\n.area-sewers .area-zoom__header { background-image: url(\"/images/areas/sewers-top.png\")\n}\n.area-sewers .area-zoom__footer { background-image: url(\"/images/areas/sewers-bottom.png\")\n}\n.area-police { background-image: url(\"/images/areas/police-bg.jpg\")\n}\n.area-police .area-zoom__header { background-image: url(\"/images/areas/police-top.png\")\n}\n.area-police .area-zoom__footer { background-image: url(\"/images/areas/police-bottom.png\")\n}\n.area-laboratory { background-image: url(\"/images/areas/laboratory-bg.jpg\")\n}\n.area-laboratory .area-zoom__header { background-image: url(\"/images/areas/laboratory-top.png\")\n}\n.area-laboratory .area-zoom__footer { background-image: url(\"/images/areas/laboratory-bottom.png\")\n}\n.area-factory { background-image: url(\"/images/areas/factory-bg.jpg\")\n}\n.area-factory .area-zoom__header { background-image: url(\"/images/areas/factory-top.png\")\n}\n.area-factory .area-zoom__footer { background-image: url(\"/images/areas/factory-bottom.png\")\n}\n.area-bank { background-image: url(\"/images/areas/bank-bg.jpg\")\n}\n.area-bank .area-zoom__header { background-image: url(\"/images/areas/bank-top.png\")\n}\n.area-bank .area-zoom__footer { background-image: url(\"/images/areas/bank-bottom.png\")\n}\n.area-university { background-image: url(\"/images/areas/university-bg.jpg\")\n}\n.area-university .area-zoom__header { background-image: url(\"/images/areas/university-top.png\")\n}\n.area-university .area-zoom__footer { background-image: url(\"/images/areas/university-bottom.png\")\n}\n.area-subway { background-image: url(\"/images/areas/subway-bg.jpg\")\n}\n.area-subway .area-zoom__header { background-image: url(\"/images/areas/subway-top.png\")\n}\n.area-subway .area-zoom__footer { background-image: url(\"/images/areas/subway-bottom.png\")\n}\n.area-church { background-image: url(\"/images/areas/church-bg.jpg\")\n}\n.area-church .area-zoom__header { background-image: url(\"/images/areas/church-top.png\")\n}\n.area-church .area-zoom__footer { background-image: url(\"/images/areas/church-bottom.png\")\n}\n", ""]);
 
 // exports
 
@@ -58474,6 +58470,49 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "view-player__title" }, [
+                    _vm._v("Influence")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "view-area__influence-container" },
+                    _vm._l(_vm.influences, function(influence) {
+                      return _c(
+                        "div",
+                        {
+                          staticClass: "d-flex view-area__influence player-hud"
+                        },
+                        [
+                          _c("div", { staticClass: "influence-marker mb-2" }, [
+                            _c("img", {
+                              attrs: { src: "/images/icons/influence.png" }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "view-area__influence-count" },
+                            [_vm._v(_vm._s(influence.influence))]
+                          ),
+                          _vm._v(" "),
+                          _c("img", {
+                            staticClass: "determine-control__faction-icon",
+                            attrs: { src: _vm.factionIcon(influence.faction) }
+                          }),
+                          _vm._v(" "),
+                          _c("span", [
+                            _vm._v(
+                              "The " +
+                                _vm._s(_vm._f("startCase")(influence.faction))
+                            )
+                          ])
+                        ]
+                      )
+                    }),
+                    0
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "view-player__title" }, [
                     _vm._v("Active Cards:")
                   ]),
                   _vm._v(" "),
@@ -59680,11 +59719,11 @@ var render = function() {
                       "div",
                       {
                         staticClass: "area-map__influence-count",
-                        class: "faction-" + obj.name,
+                        class: "faction-" + obj.faction,
                         attrs: {
                           title:
                             "the " +
-                            obj.name +
+                            obj.faction +
                             " have " +
                             obj.influence +
                             " influence in the " +
@@ -81726,20 +81765,24 @@ var helpers = {
     });
     return factionAreas;
   },
-  eachInfluenceInArea: function eachInfluenceInArea(area, factions) {
+  eachInfluenceInArea: function eachInfluenceInArea(area, factions, withZeros) {
     var _this5 = this;
 
     var influences = [];
+    if (area.owner === 'neutral') influences.push({
+      faction: 'neutrals',
+      influence: 1
+    });
     this.forEach(factions, function (faction) {
       var influence = _this5.influence(faction, area, factions);
 
-      if (influence) influences.push({
+      if (withZeros || influence) influences.push({
         faction: faction.name,
         influence: influence
       });
     });
     influences.sort(function (a, b) {
-      return a.influence - b.influence;
+      return b.influence - a.influence;
     });
     return influences;
   },
