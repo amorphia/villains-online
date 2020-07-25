@@ -101,7 +101,7 @@ class Robots extends Faction {
         let player, data, output;
 
         [player, data] = await this.game().promise({ players: this.playerId, name: 'choose-wild', data : { area : args.area.name } });
-        this.game().message({ message : `have chosen to treat their <span class="faction-robots">wild</span> token as a <span class="highlight">${data.type}</span> token`, faction : this });
+        this.game().message({ message : `have chosen to treat their <span class="faction-robots">wild</span> token as a ${data.type} token`, faction : this });
         let tokenMethod = 'canActivate' + _.classCase( data.type );
         let canActivate = this[tokenMethod]( args.token, args.area );
 

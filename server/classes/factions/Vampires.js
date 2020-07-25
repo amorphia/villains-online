@@ -125,7 +125,7 @@ class Vampires extends Faction {
         let areas = this.areasWithDeployTokens();
 
         for( let area of areas ){
-            let message = `Feasts in <span class="highlight">The ${ area }</span>`;
+            let message = `Feasts in The ${ area }`;
             this.message({ message: message, faction : this });
 
             // prompt player to select a unit
@@ -157,15 +157,15 @@ class Vampires extends Faction {
 
         if( !unit.flipped ){
             unit.flipped = true;
-            unit.attack = unit.attack.map( attack => attack + 2 );
-            let message = `<span class="highlight">${unit.name}</span> becomes a vampire in The ${unit.location}`;
+            unit.attack = unit.attack.map( attack => attack - 2 );
+            let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;
             this.message({ message: message, faction : this });
         }
     }
 
     unitUnflipped( unit ) {
         unit.flipped = false;
-        unit.attack = unit.attack.map( attack => attack - 2 );
+        unit.attack = unit.attack.map( attack => attack + 2 );
     }
 
 }

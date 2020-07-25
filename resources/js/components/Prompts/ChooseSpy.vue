@@ -22,9 +22,9 @@
                 </div>
             </div>
             <div class="width-100 d-flex justify-center">
-                <button class="button" :disabled="!spy" @click="saveSpy">SAVE</button>
+                <button class="button" :disabled="!spy" @click="saveSpy">{{ buttonMessage }}</button>
             </div>
-        </div>
+        </div>}
     </player-prompt>
 </template>
 
@@ -41,6 +41,11 @@
             };
         },
 
+        computed : {
+            buttonMessage(){
+                return this.spy ? `spy on the ${this.spy}` : "choose faction";
+            }
+        },
         methods : {
             saveSpy(){
                 App.event.emit( 'sound', 'ui' );

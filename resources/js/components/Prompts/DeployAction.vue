@@ -50,7 +50,7 @@
                             v-if="canDecline">decline</button>
                     <button class="button"
                             @click="resolve( true )"
-                            :disabled="canSave !== true">save</button>
+                            :disabled="canSave !== true">deploy selected units</button>
                 </div>
 
             </div>
@@ -211,11 +211,12 @@
             },
 
             reserves(){
-                if( this.data.unitTypes ){
-                    return this.shared.faction.units.filter( unit => !unit.selected && !unit.location && this.data.unitTypes.includes( unit.type ) );
-                }
-
-                return this.shared.faction.units.filter( unit => !unit.noDeploy && !unit.selected && !unit.location );
+                return this.shared.faction.units.filter(
+                    unit => !unit.selected
+                            && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
+                            && !unit.noDeploy
+                            && !unit.location
+                );
             },
 
             selected(){

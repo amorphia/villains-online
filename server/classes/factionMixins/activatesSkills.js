@@ -4,11 +4,11 @@ let obj = {
         if( typeof area === 'string' ) area = this.game().areas[area];
 
         if( _.hasUsedSkill( this, area ) ){
-            this.game().message({ message: `has already used <span class="highlight">the ${area.name}'s</span> skill ability`, faction : this });
+            this.game().message({ message: `has already used the ${area.name}'s skill ability`, faction : this });
             return;
         }
 
-        this.game().message({ message: `activate the skill ability of <span class="highlight">the ${area.name}</span>`, faction : this });
+        this.game().message({ message: `activate the skill ability of the ${area.name}`, faction : this });
 
         let triggered = [];
         this.data.usedSkills.push( area.name );

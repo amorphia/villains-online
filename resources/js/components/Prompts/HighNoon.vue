@@ -43,7 +43,7 @@
                 <div class="flex-center">
                     <button class="button"
                             @click="resolve( true )"
-                            :disabled="!selected.length">save</button>
+                            :disabled="!selected.length">{{ buttonMessage }}</button>
                 </div>
 
             </div>
@@ -85,6 +85,9 @@
         },
 
         computed : {
+            buttonMessage(){
+                return this.selected.length ? `deploy selected units to the ${this.area.name}` : `select a unit`;
+            },
 
             enemies(){
                 let enemies = [];

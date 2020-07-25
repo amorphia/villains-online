@@ -53,7 +53,7 @@
         bottom: 100%;
         left: 0;
         z-index: 0;
-        margin-bottom: 5px;
+        padding-bottom: 0.75rem;
         background-color: rgba(0,0,0,.7);
     }
 

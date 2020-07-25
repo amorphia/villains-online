@@ -41,7 +41,7 @@
 
                 <div class="">
                     <button class="button button-empty" @click="passToken">PASS</button>
-                    <button class="button" @click="placeToken" :disabled="saveDisabled">SAVE</button>
+                    <button class="button" @click="placeToken" :disabled="saveDisabled">{{ buttonMessage }}</button>
                 </div>
             </div>
         </div>
@@ -73,6 +73,10 @@
 
         computed : {
 
+            buttonMessage(){
+                return !this.saveDisabled ? `place token in ${this.area.name}` : 'PLACE TOKEN';
+            },
+
             xavier(){
                 if( this.shared.faction.name !== 'society' ) return;
                 let xavier = this.shared.faction.units.find( unit => unit.type === 'champion' );
@@ -100,6 +104,10 @@
 
             reserves(){
                 return this.shared.faction.tokens.filter( token => !token.location );
+            },
+
+            area(){
+                return this.availableAreas[this.areaIndex];
             },
 
             availableAreas(){
@@ -136,7 +144,7 @@
             },
 
             placeToken(){
-                let areaName = this.areaIndex === -1 ? 'xavier' : this.availableAreas[this.areaIndex].name;
+                let areaName = this.areaIndex === -1 ? 'xavier' : this.area.name;
                 this.shared.respond( 'place-token', 'place', areaName, this.token.id );
             },
 

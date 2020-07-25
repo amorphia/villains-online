@@ -32,7 +32,7 @@
                 <div class="flex-center">
                     <button class="button"
                             @click="resolve"
-                            :disabled="hitsToAssign > 0 && assignableHits !== 0">save</button>
+                            :disabled="hitsToAssign > 0 && assignableHits !== 0">{{ buttonMessage }}</button>
                 </div>
 
             </div>
@@ -86,6 +86,10 @@
         },
 
         computed : {
+
+            buttonMessage(){
+                return this.hitsToAssign === 0 ?  "confirm hit assignment" : `assign ${this.hitsToAssign} more hits`;
+            },
 
             canDeflect(){
                 if( this.hitsToAssign === 0 ) return;

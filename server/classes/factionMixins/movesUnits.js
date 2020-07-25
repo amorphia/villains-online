@@ -86,7 +86,7 @@ let obj = {
         let unitNames = [];
         output.units.forEach( data => unitNames.push( data.unit.name ) );
 
-        let message = ` <span class="highlight">${ unitNames.join(', ') }</span> to the ${output.units[0].unit.location}`;
+        let message = ` <span class="faction-${this.name}">${ unitNames.join(', ') }</span> to the ${output.units[0].unit.location}`;
 
         if( data.cost ){
             message = `Pay xC${output.cost}x to move` + message;

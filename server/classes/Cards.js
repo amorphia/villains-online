@@ -105,7 +105,7 @@ class Despotism extends Card {
         let areas = faction.areas();
         for( let index in faction.areas() ){
             let area = faction.game().areas[areas[index]];
-            faction.game().message({ faction: faction, message:  `the mad despot launches an attack in <span class="highlight">the ${area.name}</span>` });
+            faction.game().message({ faction: faction, message:  `the mad despot launches an attack in the ${area.name}` });
             await faction.nonCombatAttack(5, 2, area );
         }
     }
@@ -145,50 +145,67 @@ class GoWithGod extends Card {
 
 
 class HighNoon extends Card {
-    async handle( faction, area ){
+    async handle( faction, area ) {
         let player, data;
 
         // get our unit types
         let unitTypes = {};
-        faction.data.units.forEach( unit => {
-            if( !unit.location && unit.basic ) unitTypes[unit.type] = true;
+        faction.data.units.forEach(unit => {
+            if (!unit.location && unit.basic) unitTypes[unit.type] = true;
         });
-        unitTypes = Object.keys( unitTypes );
+        unitTypes = Object.keys(unitTypes);
 
-        if( !unitTypes.length ){
-            faction.game().message({ faction : faction, message: 'High Noon cannot be resolved (no basic units in your reserves)', class: 'warning' });
+        if (!unitTypes.length) {
+            faction.game().message({
+                faction: faction,
+                message: 'High Noon cannot be resolved (no basic units in your reserves)',
+                class: 'warning'
+            });
             return;
         }
 
         let enemies = [];
         // get enemies with at least one matching unit type
-        _.forEach( faction.game().factions, enemy => {
-            if( enemy.name === faction.name ) return;
+        _.forEach(faction.game().factions, enemy => {
+            if (enemy.name === faction.name) return;
 
-            let matchingUnit = _.find( enemy.data.units, unit => {
-                return !unit.location && unitTypes.includes( unit.type );
+            let matchingUnit = _.find(enemy.data.units, unit => {
+                return !unit.location && unitTypes.includes(unit.type);
             });
 
-            if( matchingUnit ) enemies.push( enemy.name );
+            if (matchingUnit) enemies.push(enemy.name);
         });
 
 
-        if( !enemies.length ) {
-            faction.game().message({ faction : faction, message: 'High Noon cannot be resolved (no matching basic units in enemy reserves)', class : 'warning' });
+        if (!enemies.length) {
+            faction.game().message({
+                faction: faction,
+                message: 'High Noon cannot be resolved (no matching basic units in enemy reserves)',
+                class: 'warning'
+            });
             return;
         }
 
-        [player,data] = await faction.game().promise({ players: faction.playerId, name: 'high-noon', data : { area : area.name, types : unitTypes, enemies : enemies  } });
-        let units = data.units.map( id => faction.game().objectMap[id] );
-        let messageUnits = [];
-
-        units.forEach( unit => {
-            unit.location = area.name;
-            messageUnits.push( `<span class='faction-${unit.faction}'>${unit.faction} ${unit.name}</span>` );
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'high-noon',
+            data: {
+                area: area.name,
+                types: unitTypes,
+                enemies: enemies
+            }
         });
 
-        let message = `deploys ${messageUnits.join(', ')} to the ${area.name}`;
-        faction.game().message({ faction : faction, message: message });
+        let units = data.units.map(id => faction.game().objectMap[id]);
+
+        for( let unit of units ){
+            let deployFaction = faction.game().factions[unit.faction];
+            await deployFaction.processDeploy( deployFaction.playerId, {
+                cost: 0,
+                units: [unit.id],
+                toArea: area.name
+            });
+        }
     }
 }
 
@@ -217,7 +234,7 @@ class LetGodSortThemOut extends Card {
                         await faction.game().killUnit( unit, faction );
                     }
 
-                    let message = `sacrifices <span class="highlight">${unitNames.join(', ')}</span>`;
+                    let message = `sacrifices <span class="faction-${item.name}item">${unitNames.join(', ')}</span>`;
                     faction.game().message({ faction: item, message: message });
                     player.setPrompt({ active : false, playerUpdate : true });
                 }));
@@ -297,12 +314,7 @@ class Shakedown extends Card {
                promises.push( faction.game().promise({ players: item.playerId, name: 'discard-card', data : {} }).then( ([player, data]) => {
 
                    let eventFaction = faction.game().factions[data.faction];
-                   let card = faction.game().objectMap[data.cardId];
-                   let message = `discards <span class="highlight">${card.name}</span>`;
-
                    eventFaction.discardCard( data.cardId );
-
-                   faction.game().message({ faction : item, message: message, type: 'cards', cards: [card] });
                    player.setPrompt({ active : false, playerUpdate : true });
                }));
            }
@@ -315,6 +327,16 @@ class Shakedown extends Card {
 
 class SlipInTheBack extends Card {
     async handle( faction, area ){
+
+        if( !faction.data.units.find(
+            unit => unit.type === 'talent'
+                    && !unit.noDeploy
+                    && !unit.killed
+        )){
+            faction.game().message({ faction : faction, message: "No talents to deploy", class : 'warning'  });
+            return;
+        }
+
         let args = {
             free: true,
             deployLimit: 1,

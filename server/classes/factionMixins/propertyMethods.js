@@ -126,6 +126,7 @@ let mixin = {
             if( _.unitInPlay( unit )
                 && ( !options.types || options.types.includes( unit.type ) )
                 && ( !options.flipped || unit.flipped )
+                && ( !options.deployable || !unit.noDeploy )
             ){
                 areas[ unit.location ] = true;
             }

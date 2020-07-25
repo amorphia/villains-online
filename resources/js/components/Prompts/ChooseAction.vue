@@ -28,7 +28,7 @@
                 </div>
 
 
-                <div class="options">
+                <div class="options d-flex justify-center">
                     <button v-if="validActions.includes('pass')"
                             class="button button-empty"
                             :class="{ active: action === 'pass' }"
@@ -66,7 +66,7 @@
 
                 </div>
 
-                <button class="button pull-center" @click="chooseAction" :disabled="saveDisabled">SUBMIT</button>
+                <button class="button pull-center" @click="chooseAction" :disabled="saveDisabled">{{ buttonMessage }}</button>
             </div>
         </div>
     </player-prompt>
@@ -111,7 +111,7 @@
                         args = [this.area.name];
                         break;
                     case 'token':
-                        args = [this.firstUnrevealed( this.area ).id];
+                        args = [this.currentToken.id];
                         break;
                 }
 
@@ -161,6 +161,32 @@
         },
 
         computed : {
+
+            currentToken(){
+                return this.action === 'token' ? this.firstUnrevealed( this.area ) : null;
+            },
+
+            buttonMessage(){
+                let message;
+                switch( this.action ){
+                    case 'skill':
+                        message = `Activate the ${this.area.name} skill ability`;
+                        break;
+                    case 'token':
+                        message = `Reveal token in the ${this.area.name}`;
+                        break;
+                    case 'pass':
+                        message = `Pass for the turn`;
+                        break;
+                    case 'locked':
+                        message = `Declare yourself locked`;
+                        break;
+                    case 'xavier':
+                        message = `Reveal token on Xavier`;
+                        break;
+                }
+                return this.saveDisabled ? "Choose your action" : message;
+            },
 
             message(){
                 if( !this.action ) return "Choose an action";

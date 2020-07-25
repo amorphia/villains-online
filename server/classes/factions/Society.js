@@ -47,7 +47,7 @@ class Society extends Faction {
         // units
         this.units['patsy'].count = 5;
         this.units['talent'].count = 2;
-        this.units['talent'].noDeploy = true;
+        this.units['talent'].data.noDeploy = true;
 
         this.units['champion'] = {
             count: 1,

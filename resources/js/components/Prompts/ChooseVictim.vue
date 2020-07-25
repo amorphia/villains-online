@@ -17,7 +17,7 @@
 
                 <div class="">
                     <button v-if="data.optional" class="button button-empty" @click="resolve( false )">DECLINE</button>
-                    <button class="button" :disabled="!faction" @click="resolve( true )">SAVE</button>
+                    <button class="button" :disabled="!faction" @click="resolve( true )">SELECT VICTIM</button>
                 </div>
             </div>
         </div>

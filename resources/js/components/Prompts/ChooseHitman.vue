@@ -15,7 +15,7 @@
 
                 <div class="">
                     <button class="button button-empty" @click="resolve( false )">DECLINE</button>
-                    <button class="button" :disabled="!unit" @click="resolve( true )">SAVE</button>
+                    <button class="button" :disabled="!unit" @click="resolve( true )">save</button>
                 </div>
             </div>
         </div>

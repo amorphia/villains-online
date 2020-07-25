@@ -43,6 +43,7 @@ let helpers = {
     },
 
     moveItemById: function( id, source, target, mode = 'push' ){
+        if( typeof id !== 'string' ) id = id.id;
         let index = _.findIndex( source, item => item.id === id );
         let item = _.pullAt( source, index );
         target[mode]( item[0] );

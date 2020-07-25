@@ -2,7 +2,7 @@
     <player-prompt classes="">
         <div class="place-token px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
-                <div class="title">Choose {{ data.count }} {{ data.playerOnly ? 'of your ' : '' }}{{ data.revealedOnly ? 'revealed ' : '' }}{{ data.unrevealedOnly ? 'unrevealed ' : '' }}{{ data.enemyOnly ? 'enemy ' : '' }}token{{ data.count > 1 ? 's' : '' }}</div>
+                <div class="title">{{ message }}</div>
                 <area-flipper v-if="areas.length" :areas="areas" :index="index" @update="updateArea">
                     <div class="toggle area-map__toggle top-0 left-0">Selected: {{ selected.length }} / {{ data.count }}</div>
                     <token-row :area="area" effect="selecting" @token="tokenClicked"></token-row>
@@ -29,6 +29,17 @@
         },
 
         computed : {
+
+            message(){
+                let message = [];
+                message.push( `Choose ${ this.data.count }` );
+                //if( this.data.playerOnly ) message.push( 'of your' );
+                if( this.data.revealedOnly ) message.push( 'revealed' );
+                if( this.data.unrevealedOnly ) message.push( 'unrevealed' );
+                if( this.data.enemyOnly ) message.push( 'enemy' );
+                this.data.count  > 1 ? message.push( `tokens` ) : message.push( 'token' );
+                return message.join( ' ' );
+            },
 
             area(){
                 return this.shared.data.areas[ this.currentArea ];

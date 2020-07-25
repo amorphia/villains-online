@@ -3,8 +3,50 @@
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/app.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewArea.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewArea.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Huds/CardsHud.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Huds/CardsHud.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Huds/HudPopout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Huds/HudPopout.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ActivateDecline.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ActivateDecline.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/AssignHits.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/AssignHits.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseAction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseAction.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseArea.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseArea.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseHitman.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseHitman.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseSkill.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseSkill.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseSpy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseSpy.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseTarget.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseTarget.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseTokens.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseTokens.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseUnits.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseUnits.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseVictim.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseVictim.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseWild.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ChooseWild.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/DeployAction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/DeployAction.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/DeployXavier.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/DeployXavier.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/DiscardCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/DiscardCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/HighNoon.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/HighNoon.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAction.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAway.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAway.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/PlaceToken.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/PlaceToken.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/SacrificeUnits.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/SacrificeUnits.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ScorePlans.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ScorePlans.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/UI/HorizontalScroll.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/UI/HorizontalScroll.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/sass/app.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/app.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Areas.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Areas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Cards.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Cards.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/activatesSkills.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/activatesSkills.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/movesUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/movesUnits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/propertyMethods.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/propertyMethods.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Cultists.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Cultists.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Robots.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Robots.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Society.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Society.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Swarm.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Swarm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Vampires.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Vampires.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/games.db" beforeDir="false" afterPath="$PROJECT_DIR$/server/games.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/partials/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/partials/helpers.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -232,7 +274,7 @@
       <workItem from="1591223441450" duration="81406000" />
       <workItem from="1591417607847" duration="235785000" />
       <workItem from="1592157951059" duration="164940000" />
-      <workItem from="1594834562760" duration="167331000" />
+      <workItem from="1594834562760" duration="187259000" />
     </task>
     <servers />
   </component>
@@ -272,10 +314,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="110" y="111" width="1035" height="632" key="find.popup" timestamp="1595452871438">
+    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1595565995096">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="110" y="111" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1595452871438" />
+    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1595565995096" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1595179883912">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

@@ -29,7 +29,7 @@ let obj = {
             let area = this.areas[areaId];
             area.data.tokens.push( token );
             this.checkForCombatMarker( area );
-            message = `Place a token in <span class="highlight">the ${area.name}</span>`;
+            message = `Place a token in the ${area.name}`;
         }
 
         this.message({ message: message, faction : faction });

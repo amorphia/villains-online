@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="width-100 d-flex justify-center">
-            <button class="button" @click="saveChoices">SAVE</button>
+            <button class="button" @click="saveChoices">Discard selected card</button>
         </div>
     </player-prompt>
 </template>

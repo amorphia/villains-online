@@ -18,7 +18,7 @@
 
                 <div class="">
                     <button v-if="data.canDecline" class="button button-empty" @click="resolve( false )">DECLINE</button>
-                    <button class="button" @click="resolve( true )" :disabled="needToSelect > 0">SAVE</button>
+                    <button class="button" @click="resolve( true )" :disabled="needToSelect > 0">SELECTED UNITS</button>
                 </div>
             </div>
         </div>

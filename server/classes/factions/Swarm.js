@@ -107,7 +107,7 @@ class Swarm extends Faction {
         }
 
         this.game().sound( 'hatch' );
-        let message = `Broodnest hatches, spawning four drones in <span class="highlight">The ${area.name}</span>`;
+        let message = `Broodnest hatches, spawning four <span class="faction-swarm">drones</span> in The ${area.name}`;
         this.game().message({ faction : this, message: message });
     }
 

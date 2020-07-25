@@ -4451,6 +4451,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    buttonMessage: function buttonMessage() {
+      return this.hitsToAssign === 0 ? "confirm hit assignment" : "assign ".concat(this.hitsToAssign, " more hits");
+    },
     canDeflect: function canDeflect() {
       if (this.hitsToAssign === 0) return;
       var money = this.shared.faction.resources + this.shared.faction.energy;
@@ -4624,7 +4627,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           break;
 
         case 'token':
-          args = [this.firstUnrevealed(this.area).id];
+          args = [this.currentToken.id];
           break;
       }
 
@@ -4667,6 +4670,36 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     }
   },
   computed: {
+    currentToken: function currentToken() {
+      return this.action === 'token' ? this.firstUnrevealed(this.area) : null;
+    },
+    buttonMessage: function buttonMessage() {
+      var message;
+
+      switch (this.action) {
+        case 'skill':
+          message = "Activate the ".concat(this.area.name, " skill ability");
+          break;
+
+        case 'token':
+          message = "Reveal token in the ".concat(this.area.name);
+          break;
+
+        case 'pass':
+          message = "Pass for the turn";
+          break;
+
+        case 'locked':
+          message = "Declare yourself locked";
+          break;
+
+        case 'xavier':
+          message = "Reveal token on Xavier";
+          break;
+      }
+
+      return this.saveDisabled ? "Choose your action" : message;
+    },
     message: function message() {
       if (!this.action) return "Choose an action";
 
@@ -4842,6 +4875,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    buttonMessage: function buttonMessage() {
+      return "choose the ".concat(this.area.name);
+    },
     units: function units() {
       var _this = this;
 
@@ -4997,6 +5033,12 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    declineMessage: function declineMessage() {
+      return this.data.declineMessage ? this.data.declineMessage : 'decline';
+    },
+    saveMessage: function saveMessage() {
+      return this.data.saveMessage ? this.data.saveMessage : 'choose a card';
+    },
     message: function message() {
       return this.data.message ? this.data.message : "Play a card in the ".concat(this.area.name);
     },
@@ -5224,6 +5266,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    buttonMessage: function buttonMessage() {
+      return "Activate the ".concat(this.area.name, " skill");
+    },
     message: function message() {
       return this.data.message ? this.data.message : 'Choose a skill to activate';
     },
@@ -5314,6 +5359,11 @@ __webpack_require__.r(__webpack_exports__);
       shared: App.state,
       spy: null
     };
+  },
+  computed: {
+    buttonMessage: function buttonMessage() {
+      return this.spy ? "spy on the ".concat(this.spy) : "choose faction";
+    }
   },
   methods: {
     saveSpy: function saveSpy() {
@@ -5418,6 +5468,16 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    message: function message() {
+      var message = [];
+      message.push("Choose ".concat(this.data.count)); //if( this.data.playerOnly ) message.push( 'of your' );
+
+      if (this.data.revealedOnly) message.push('revealed');
+      if (this.data.unrevealedOnly) message.push('unrevealed');
+      if (this.data.enemyOnly) message.push('enemy');
+      this.data.count > 1 ? message.push("tokens") : message.push('token');
+      return message.join(' ');
+    },
     area: function area() {
       return this.shared.data.areas[this.currentArea];
     },
@@ -5848,6 +5908,9 @@ __webpack_require__.r(__webpack_exports__);
     this.shared.event.on('tokenClicked', this.selectToken);
   },
   computed: {
+    buttonMessage: function buttonMessage() {
+      return this.type ? "activate as a ".concat(this.type.name, " token") : 'Choose Basic Token';
+    },
     disabled: function disabled() {
       return !this.type || this.shared.faction.resources + this.shared.faction.energy < this.cost;
     },
@@ -6088,14 +6151,8 @@ __webpack_require__.r(__webpack_exports__);
     reserves: function reserves() {
       var _this4 = this;
 
-      if (this.data.unitTypes) {
-        return this.shared.faction.units.filter(function (unit) {
-          return !unit.selected && !unit.location && _this4.data.unitTypes.includes(unit.type);
-        });
-      }
-
       return this.shared.faction.units.filter(function (unit) {
-        return !unit.noDeploy && !unit.selected && !unit.location;
+        return !unit.selected && (!_this4.data.unitTypes || _this4.data.unitTypes.includes(unit.type)) && !unit.noDeploy && !unit.location;
       });
     },
     selected: function selected() {
@@ -6414,6 +6471,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    buttonMessage: function buttonMessage() {
+      return this.selected.length ? "deploy selected units to the ".concat(this.area.name) : "select a unit";
+    },
     enemies: function enemies() {
       var _this = this;
 
@@ -6903,6 +6963,9 @@ __webpack_require__.r(__webpack_exports__);
     this.shared.event.on('tokenClicked', this.tokenClicked);
   },
   computed: {
+    buttonMessage: function buttonMessage() {
+      return !this.saveDisabled ? "place token in ".concat(this.area.name) : 'PLACE TOKEN';
+    },
     xavier: function xavier() {
       if (this.shared.faction.name !== 'society') return;
       var xavier = this.shared.faction.units.find(function (unit) {
@@ -6933,6 +6996,9 @@ __webpack_require__.r(__webpack_exports__);
         return !token.location;
       });
     },
+    area: function area() {
+      return this.availableAreas[this.areaIndex];
+    },
     availableAreas: function availableAreas() {
       var areas = [];
 
@@ -6962,7 +7028,7 @@ __webpack_require__.r(__webpack_exports__);
       this.token = this.token && this.token.id === token.id ? null : token;
     },
     placeToken: function placeToken() {
-      var areaName = this.areaIndex === -1 ? 'xavier' : this.availableAreas[this.areaIndex].name;
+      var areaName = this.areaIndex === -1 ? 'xavier' : this.area.name;
       this.shared.respond('place-token', 'place', areaName, this.token.id);
     },
     passToken: function passToken() {
@@ -7124,6 +7190,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    buttonMessage: function buttonMessage() {
+      return this.canSave ? 'sacrifice selected units' : "choose ".concat(this.needToSacrifice, " more unit").concat(this.needToSacrifice > 1 ? 's' : '');
+    },
     needToSacrifice: function needToSacrifice() {
       return this.data.count - this.selected.length;
     },
@@ -7704,15 +7773,61 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'horizontal-scroll',
-  props: ['classes'],
+  props: ['classes', 'buttons'],
   data: function data() {
-    return {};
+    return {
+      isMounted: false,
+      wheelScroll: 100
+    };
+  },
+  mounted: function mounted() {
+    this.isMounted = true;
+
+    Math.easeInOutQuad = function (t, b, c, d) {
+      t /= d / 2;
+      if (t < 1) return c / 2 * t * t + b;
+      t--;
+      return -c / 2 * (t * (t - 2) - 1) + b;
+    };
   },
   methods: {
     wheel: function wheel(e) {
-      if (e.deltaY > 0) this.$refs.container.scrollLeft += 100;else this.$refs.container.scrollLeft -= 100;
+      if (e.deltaY > 0) this.$refs.container.scrollLeft += this.wheelScroll;else this.$refs.container.scrollLeft -= this.wheelScroll;
+    },
+    scroll: function scroll(sign) {
+      var buttonScroll = this.$refs.container.firstChild.clientWidth * 2;
+      this.scrollTo(this.$refs.container, sign * buttonScroll);
+    },
+    scrollTo: function scrollTo(element, shift) {
+      var duration = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 250;
+      var start = element.scrollLeft,
+          change = shift,
+          currentTime = 0,
+          increment = 20;
+
+      var animateScroll = function animateScroll() {
+        currentTime += increment;
+        var val = Math.easeInOutQuad(currentTime, start, change, duration);
+        element.scrollLeft = val;
+
+        if (currentTime < duration) {
+          setTimeout(animateScroll, increment);
+        }
+      };
+
+      animateScroll();
+    }
+  },
+  computed: {
+    addButtons: function addButtons() {
+      if (!this.isMounted) return;
+      return this.buttons && this.$refs.container.scrollWidth > this.$refs.container.clientWidth;
     }
   }
 });
@@ -9524,7 +9639,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.hud-popout {\n    white-space: nowrap;\n    overflow-x: auto;\n    overflow-y: hidden;\n    text-align: center;\n    position: absolute;\n    bottom: 100%;\n    left: 0;\n    z-index: 0;\n    margin-bottom: 5px;\n    background-color: rgba(0,0,0,.7);\n}\n.hud-popout .adjust-handle.top {\n    top: 4px;\n}\n.popout-hud__block {\n    border: 1px var(--highlight-color) solid;\n    margin: 0 .5rem;\n    display: inline-block;\n}\n.popout-hud__block[data-title]:before {\n    content: attr(data-title);\n    background-color: rgba(0,0,0,.9);\n    position: absolute;\n    left: 50%;\n    top: 0;\n    z-index: 6;\n    padding: .1rem .35rem;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    transform: translate(-50%,-60%);\n}\n\n", ""]);
+exports.push([module.i, "\n.hud-popout {\n    white-space: nowrap;\n    overflow-x: auto;\n    overflow-y: hidden;\n    text-align: center;\n    position: absolute;\n    bottom: 100%;\n    left: 0;\n    z-index: 0;\n    padding-bottom: 0.75rem;\n    background-color: rgba(0,0,0,.7);\n}\n.hud-popout .adjust-handle.top {\n    top: 4px;\n}\n.popout-hud__block {\n    border: 1px var(--highlight-color) solid;\n    margin: 0 .5rem;\n    display: inline-block;\n}\n.popout-hud__block[data-title]:before {\n    content: attr(data-title);\n    background-color: rgba(0,0,0,.9);\n    position: absolute;\n    left: 50%;\n    top: 0;\n    z-index: 6;\n    padding: .1rem .35rem;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    transform: translate(-50%,-60%);\n}\n\n", ""]);
 
 // exports
 
@@ -53381,7 +53496,7 @@ var render = function() {
     [
       _c(
         "horizontal-scroll",
-        { attrs: { classes: "cards-hud__cards height-100" } },
+        { attrs: { classes: "cards-hud__cards height-100", buttons: "true" } },
         _vm._l(_vm.shared.faction.cards.hand, function(card) {
           return _c(
             "div",
@@ -54840,7 +54955,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("decline")]
+              [_vm._v("Decline Token")]
             ),
             _vm._v(" "),
             _c(
@@ -54854,7 +54969,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("activate")]
+              [_vm._v("Activate Token")]
             )
           ])
         ],
@@ -54995,7 +55110,7 @@ var render = function() {
                 },
                 on: { click: _vm.resolve }
               },
-              [_vm._v("save")]
+              [_vm._v(_vm._s(_vm.buttonMessage))]
             )
           ])
         ]
@@ -55105,7 +55220,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _c("div", { staticClass: "options" }, [
+          _c("div", { staticClass: "options d-flex justify-center" }, [
             _vm.validActions.includes("pass")
               ? _c(
                   "button",
@@ -55202,7 +55317,7 @@ var render = function() {
               attrs: { disabled: _vm.saveDisabled },
               on: { click: _vm.chooseAction }
             },
-            [_vm._v("SUBMIT")]
+            [_vm._v(_vm._s(_vm.buttonMessage))]
           )
         ],
         1
@@ -55271,7 +55386,7 @@ var render = function() {
             _c(
               "button",
               { staticClass: "button", on: { click: _vm.resolve } },
-              [_vm._v("SAVE")]
+              [_vm._v(_vm._s(_vm.buttonMessage))]
             )
           ])
         ],
@@ -55381,7 +55496,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("decline")]
+              [_vm._v(_vm._s(_vm.declineMessage))]
             ),
             _vm._v(" "),
             _c(
@@ -55395,7 +55510,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("save")]
+              [_vm._v(_vm._s(_vm.saveMessage))]
             )
           ])
         ],
@@ -55643,7 +55758,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("SAVE")]
+              [_vm._v("save")]
             )
           ])
         ],
@@ -55706,7 +55821,7 @@ var render = function() {
             _c(
               "button",
               { staticClass: "button", on: { click: _vm.resolve } },
-              [_vm._v("SAVE")]
+              [_vm._v(_vm._s(_vm.buttonMessage))]
             )
           ])
         ],
@@ -55821,10 +55936,11 @@ var render = function() {
             attrs: { disabled: !_vm.spy },
             on: { click: _vm.saveSpy }
           },
-          [_vm._v("SAVE")]
+          [_vm._v(_vm._s(_vm.buttonMessage))]
         )
       ])
-    ])
+    ]),
+    _vm._v("}\n")
   ])
 }
 var staticRenderFns = []
@@ -55903,7 +56019,7 @@ var render = function() {
           },
           on: { click: _vm.saveChoices }
         },
-        [_vm._v("SAVE")]
+        [_vm._v("CONFIRM CHOICES")]
       )
     ])
   ])
@@ -55939,19 +56055,7 @@ var render = function() {
             "width-100 d-flex justify-center flex-column align-center"
         },
         [
-          _c("div", { staticClass: "title" }, [
-            _vm._v(
-              "Choose " +
-                _vm._s(_vm.data.count) +
-                " " +
-                _vm._s(_vm.data.playerOnly ? "of your " : "") +
-                _vm._s(_vm.data.revealedOnly ? "revealed " : "") +
-                _vm._s(_vm.data.unrevealedOnly ? "unrevealed " : "") +
-                _vm._s(_vm.data.enemyOnly ? "enemy " : "") +
-                "token" +
-                _vm._s(_vm.data.count > 1 ? "s" : "")
-            )
-          ]),
+          _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
           _vm._v(" "),
           _vm.areas.length
             ? _c(
@@ -56103,7 +56207,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("SAVE")]
+              [_vm._v("SELECTED UNITS")]
             )
           ])
         ],
@@ -56203,7 +56307,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("SAVE")]
+              [_vm._v("SELECT VICTIM")]
             )
           ])
         ],
@@ -56282,7 +56386,7 @@ var render = function() {
                 attrs: { disabled: _vm.disabled },
                 on: { click: _vm.resolve }
               },
-              [_vm._v("SAVE")]
+              [_vm._v(_vm._s(_vm.buttonMessage))]
             )
           ])
         ],
@@ -56555,7 +56659,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("save")]
+              [_vm._v("deploy selected units")]
             )
           ])
         ],
@@ -56615,7 +56719,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "width-100 d-flex justify-center" }, [
           _c("button", { staticClass: "button", on: { click: _vm.save } }, [
-            _vm._v("SAVE")
+            _vm._v(_vm._s("Deploy Xavier to the " + _vm.area.name))
           ])
         ])
       ],
@@ -56670,7 +56774,7 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "width-100 d-flex justify-center" }, [
       _c("button", { staticClass: "button", on: { click: _vm.saveChoices } }, [
-        _vm._v("SAVE")
+        _vm._v("Discard selected card")
       ])
     ])
   ])
@@ -56907,7 +57011,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("save")]
+              [_vm._v(_vm._s(_vm.buttonMessage))]
             )
           ])
         ],
@@ -57113,7 +57217,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("save")]
+              [_vm._v("move selected units")]
             )
           ])
         ],
@@ -57240,7 +57344,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("save")]
+              [_vm._v("move selected units")]
             )
           ])
         ],
@@ -57419,7 +57523,7 @@ var render = function() {
                 attrs: { disabled: _vm.saveDisabled },
                 on: { click: _vm.placeToken }
               },
-              [_vm._v("SAVE")]
+              [_vm._v(_vm._s(_vm.buttonMessage))]
             )
           ])
         ],
@@ -57618,7 +57722,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("save")]
+              [_vm._v(_vm._s(_vm.buttonMessage))]
             )
           ])
         ]
@@ -57725,7 +57829,7 @@ var render = function() {
                 attrs: { disabled: !_vm.canSave },
                 on: { click: _vm.resolve }
               },
-              [_vm._v("save")]
+              [_vm._v("confirm scored plans")]
             )
           ])
         ],
@@ -58011,17 +58115,49 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    {
-      ref: "container",
-      staticClass: "width-100 horizontal-scroll",
-      class: _vm.classes,
-      on: { wheel: _vm.wheel }
-    },
-    [_vm._t("default")],
-    2
-  )
+  return _c("div", { staticClass: "d-flex justify-center height-100" }, [
+    _vm.addButtons
+      ? _c(
+          "button",
+          {
+            staticClass: "flipper",
+            on: {
+              click: function($event) {
+                return _vm.scroll(-1)
+              }
+            }
+          },
+          [_c("i", { staticClass: "icon-left" })]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        ref: "container",
+        staticClass: "width-100 horizontal-scroll",
+        class: _vm.classes,
+        on: { wheel: _vm.wheel }
+      },
+      [_vm._t("default")],
+      2
+    ),
+    _vm._v(" "),
+    _vm.addButtons
+      ? _c(
+          "button",
+          {
+            staticClass: "flipper",
+            on: {
+              click: function($event) {
+                return _vm.scroll(1)
+              }
+            }
+          },
+          [_c("i", { staticClass: "icon-right" })]
+        )
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -81619,6 +81755,7 @@ var helpers = {
   },
   moveItemById: function moveItemById(id, source, target) {
     var mode = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'push';
+    if (typeof id !== 'string') id = id.id;
 
     var index = _.findIndex(source, function (item) {
       return item.id === id;

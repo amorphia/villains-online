@@ -8,7 +8,7 @@
                 </area-flipper>
 
                 <div class="">
-                    <button class="button" @click="resolve">SAVE</button>
+                    <button class="button" @click="resolve">{{ buttonMessage }}</button>
                 </div>
             </div>
         </div>
@@ -28,6 +28,10 @@
         },
 
         computed : {
+
+            buttonMessage(){
+                return `Activate the ${this.area.name} skill`
+            },
 
             message(){
                 return this.data.message ? this.data.message : 'Choose a skill to activate'

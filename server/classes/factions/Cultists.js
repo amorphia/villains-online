@@ -83,7 +83,7 @@ class Cultists extends Faction {
 
         await this.game().killUnit( unit, this );
 
-        message = `sacrifices <span class="faction-${unit.faction}">${unit.name}</span> in <span class="highlight">the ${event.from}</span>`;
+        message = `sacrifices <span class="faction-${unit.faction}">${unit.name}</span> in the ${event.from}`;
         this.game().message({ faction: targetFaction, message: message });
 
     }

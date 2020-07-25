@@ -8,7 +8,7 @@
             </area-flipper>
 
             <div class="width-100 d-flex justify-center">
-                <button class="button" @click="save">SAVE</button>
+                <button class="button" @click="save">{{ `Deploy Xavier to the ${area.name}` }}</button>
             </div>
         </div>
     </player-prompt>

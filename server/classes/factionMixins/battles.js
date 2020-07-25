@@ -38,7 +38,7 @@ let obj = {
 
         // no enemies with units in the from location
         if( targetFactions.length === 0 ){
-            this.game().message({ class : 'warning', message:  `No units in <span class="highlight">the ${area.name}</span> to attack` });
+            this.game().message({ class : 'warning', message:  `No units in the ${area.name} to attack` });
             return;
         }
 
@@ -101,7 +101,7 @@ let obj = {
         }
 
         if( !victim ){
-            this.game().message({ class : 'warning', message: `No units in <span class="highlight">the ${args.area.name}</span> to attack` });
+            this.game().message({ class : 'warning', message: `No units in the ${args.area.name} to attack` });
             return;
         }
 
@@ -158,7 +158,7 @@ let obj = {
         let units = this.unitsInArea( area );
 
         if( !units.length ){
-            this.game().message({ class : 'warning', message: `No units in <span class="highlight">the ${area.name}</span> to assign hits to` });
+            this.game().message({ class : 'warning', message: `No units in the ${area.name} to assign hits to` });
             return;
         }
 

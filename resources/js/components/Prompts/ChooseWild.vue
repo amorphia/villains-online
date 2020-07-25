@@ -13,7 +13,7 @@
                 <div v-if="cost" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to activate as a move?` )"></div>
 
                 <div class="">
-                    <button class="button" :disabled="disabled" @click="resolve">SAVE</button>
+                    <button class="button" :disabled="disabled" @click="resolve">{{ buttonMessage }}</button>
                 </div>
             </div>
         </div>
@@ -43,6 +43,9 @@
         },
 
         computed : {
+            buttonMessage(){
+                return this.type ? `activate as a ${this.type.name} token` : 'Choose Basic Token'
+            },
 
             disabled(){
                return !this.type || (this.shared.faction.resources + this.shared.faction.energy ) < this.cost;

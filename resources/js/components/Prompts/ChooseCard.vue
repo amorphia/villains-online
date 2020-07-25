@@ -19,10 +19,10 @@
                 <div v-if="selected.name" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to play this card?` )"></div>
 
                 <div class="flex-center">
-                    <button class="button button-empty" @click="resolve( false )">decline</button>
+                    <button class="button button-empty" @click="resolve( false )">{{ declineMessage }}</button>
                     <button class="button"
                             @click="resolve( true )"
-                            :disabled="canSave !== true">save</button>
+                            :disabled="canSave !== true">{{ saveMessage }}</button>
                 </div>
 
             </div>
@@ -68,6 +68,14 @@
         },
 
         computed : {
+
+            declineMessage(){
+                return this.data.declineMessage ? this.data.declineMessage : 'decline';
+            },
+
+            saveMessage(){
+                return this.data.saveMessage ? this.data.saveMessage : 'choose a card';
+            },
 
             message(){
                 return this.data.message ? this.data.message : `Play a card in the ${this.area.name}`;

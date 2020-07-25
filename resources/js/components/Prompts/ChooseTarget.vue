@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="width-100 d-flex justify-center">
-                <button class="button" @click="saveChoices" :disabled="!shared.faction.cards.hand[target].target">SAVE</button>
+                <button class="button" @click="saveChoices" :disabled="!shared.faction.cards.hand[target].target">CONFIRM CHOICES</button>
             </div>
     </player-prompt>
 

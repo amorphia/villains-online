@@ -21,7 +21,7 @@ class Faction {
 
         // core stats
         deployLimit : 2,
-        cardDraw : 3,
+        cardDraw : 30,
 
         // money
         resources : 0,
@@ -201,12 +201,21 @@ class Faction {
 
         // remove active cards
         this.data.cards.active.forEach( card => {
-            this.game().cards[ card.class ].handle( this );
-            _.moveItemById( card.id, this.data.cards.active, this.game().deck.discard );
+            this.game().cards[card.class].clear( this );
+            _.moveItemById(
+                card.id,
+                this.data.cards.active,
+                this.game().deck.discard
+            );
         });
 
+
         // discard target
-        _.moveItemById( this.data.cards.target[0].id, this.data.cards.target, this.game().deck.discard );
+        _.moveItemById(
+            this.data.cards.target[0].id,
+            this.data.cards.target,
+            this.game().deck.discard
+        );
 
         // reset dead units
         this.data.units.forEach( unit => {
@@ -252,11 +261,18 @@ class Faction {
             this.data.cards.hand.push( this.game().drawCard() );
         }
         let text = `Draw ${ n } card${ n > 1 ? 's' : ''}`;
-        this.message({  message : text, faction : this } );
+        this.message({
+            message : text,
+            faction : this
+        });
 
         if( messagePlayer ){
             let newCards = this.data.cards.hand.slice( -n );
-            this.messagePlayer( { message : 'You drew the following', type : 'cards', cards : newCards } );
+            this.messagePlayer({
+                message : 'You drew the following',
+                type : 'cards',
+                cards : newCards
+            });
         }
     }
 
@@ -264,7 +280,11 @@ class Faction {
 
     replaceUnit( unit ){
         if( typeof unit === 'string' ) unit = this.game().objectMap[ unit ];
-        let replacement = this.data.units.find( item => !item.location && item.type === unit.type && !item.killed );
+        let replacement = this.data.units.find(
+            item => !item.location
+                && item.type === unit.type
+                && !item.killed
+        );
 
         // replace unit
         replacement.location = unit.location;
@@ -282,20 +302,35 @@ class Faction {
         if( typeof card === 'string' ) card = this.game().objectMap[card];
 
         let message = `discard <span class="highlight">${card.name}</span>`;
-        this.game().message({ faction : this, message: message, type: 'cards', cards: [card] });
+        this.game().message({
+            faction : this,
+            message: message,
+            type: 'cards',
+            cards: [card]
+        });
 
-        _.moveItemById( card, this.data.cards.hand, this.game().deck.discard );
+        _.moveItemById(
+            card.id,
+            this.data.cards.hand,
+            this.game().deck.discard
+        );
     }
 
 
     gainAP( n = 1, options = {} ){
         this.data.ap += n;
-        if( options.message ) this.message({  message : `gain xAP${n}x`, faction : this } );
+        if( options.message ) this.message({
+            message : `gain xAP${n}x`,
+            faction : this
+        });
     }
 
     gainPP( n = 1, options = {}  ){
         this.data.pp += n;
-        if( options.message ) this.message({  message : `gain xPP${n}x`, faction : this } );
+        if( options.message ) this.message({
+            message : `gain xPP${n}x`,
+            faction : this
+        });
     }
 
     payCost( n, announce = false ){
@@ -312,7 +347,11 @@ class Faction {
                 this.data.resources = 0;
             }
         }
-        if( announce ) this.game().message({ message: message, faction : this });
+
+        if( announce ) this.game().message({
+            message: message,
+            faction : this
+        });
     }
 
     collectUpgrades(){
@@ -331,14 +370,20 @@ class Faction {
 
         if( newUpgrade ){
             this.processUpgrade( newUpgrade );
-            return { faction : this.name, upgrade: newUpgrade };
+            return {
+                faction : this.name,
+                upgrade: newUpgrade
+            };
         }
 
     }
 
     readySkilledUnits() {
         let controlsUniversity = this.controlsArea( 'university' );
-        if( controlsUniversity ) this.game().message({ message: `patsies have become readied`, faction : this });
+        if( controlsUniversity ) this.game().message({
+            message: `patsies have become readied`,
+            faction : this
+        });
 
         this.data.units.forEach( unit => {
             if( unit.skilled ) unit.ready = true;

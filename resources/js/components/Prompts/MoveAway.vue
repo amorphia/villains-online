@@ -29,7 +29,7 @@
                     <button class="button button-empty" @click="resolve( false )">decline</button>
                     <button class="button"
                             @click="resolve( true )"
-                            :disabled="!canSave">save</button>
+                            :disabled="!canSave">move selected units</button>
                 </div>
 
             </div>

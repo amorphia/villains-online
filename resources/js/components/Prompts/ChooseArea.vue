@@ -14,7 +14,7 @@
                 </area-flipper>
 
                 <div class="">
-                    <button class="button" @click="resolve">SAVE</button>
+                    <button class="button" @click="resolve">{{ buttonMessage }}</button>
                 </div>
             </div>
         </div>
@@ -41,6 +41,10 @@
         },
 
         computed : {
+
+            buttonMessage(){
+                return `choose the ${this.area.name}`
+            },
 
             units(){
                 let units = {};

@@ -34,7 +34,11 @@ class Area {
         // remove cards
         this.data.cards.forEach( card => {
             card.owner = null;
-            _.moveItemById( card.id, this.data.cards, this.game().deck.discard );
+            _.moveItemById(
+                card.id,
+                this.data.cards,
+                this.game().deck.discard
+            );
         } );
 
         // clear battle marker
@@ -57,9 +61,11 @@ class Area {
     herMajestyInArea(){
         if( !this.game().factions['loyalists'] ) return false;
 
-        return !! this.game().factions['loyalists'].data.units.find( unit => unit.type === 'champion'
-                                                                             && !unit.killed
-                                                                             && unit.location === this.name );
+        return !! this.game().factions['loyalists'].data.units.find(
+            unit => unit.type === 'champion'
+                    && !unit.killed
+                    && unit.location === this.name
+        );
     }
 
     determineControl(){
@@ -78,7 +84,8 @@ class Area {
         }
 
         let newController = newControllerName ? this.game().factions[newControllerName] : null;
-        let oldController = this.data.owner && this.data.owner !== 'neutral' ? this.game().factions[this.data.owner] : null;
+        let oldController = this.data.owner && this.data.owner !== 'neutral' ?
+                            this.game().factions[this.data.owner] : null;
 
         let data = {
             name : this.name,
@@ -154,7 +161,13 @@ class Capitol extends Area {
         let token = faction.game().capitolTokens[ this.game().data.turn - 1 ];
         faction.data.capitolTokens.push( token );
         faction.gainAP( token.ap );
-        this.game().message({ message: 'Collect', type : 'capitol-token', faction : faction, turn : this.game().data.turn });
+
+        this.game().message({
+            message: 'Collect',
+            type : 'capitol-token',
+            faction : faction,
+            turn : this.game().data.turn
+        });
         return token;
     }
 
@@ -165,12 +178,23 @@ class Capitol extends Area {
         // get legal areas
         let areasWithTwoTokens = this.areasWithTwoTokens();
         if( ! areasWithTwoTokens.length  ){
-            faction.game().message({ message: "No areas with 2+ tokens to swap", class: 'warning' });
+            faction.game().message({
+                message: "No areas with 2+ tokens to swap",
+                class: 'warning'
+            });
             return false;
         }
 
         // player chooses tokens
-        [player, data] = await faction.game().promise({ players: faction.playerId, name: 'choose-tokens', data : { count : 2, areas : areasWithTwoTokens, sameArea : true }});
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'choose-tokens',
+            data : {
+                count : 2,
+                areas : areasWithTwoTokens,
+                sameArea : true
+            }
+        });
 
         // swap tokens
         let tokens = [];
@@ -189,7 +213,10 @@ class Capitol extends Area {
     swapTokens( tokens, player, faction ){
 
         if( tokens.length !== 2 || tokens[0].location !== tokens[1].location ){
-            this.game().message({ message: "Token count wrong, or token locations don't match", class: 'warning' });
+            this.game().message({
+                message: "Token count wrong, or token locations don't match",
+                class: 'warning'
+            });
             return;
         }
 
@@ -200,7 +227,9 @@ class Capitol extends Area {
         area.tokens[tokenZeroIndex] = tokens[1];
         area.tokens[tokenOneIndex] = tokens[0];
 
-        this.game().message({ faction: faction, message: `swaps <span class="faction-${tokens[0].faction}">the ${tokens[0].faction}</span> token in spot ${tokenZeroIndex + 1} with <span class="faction-${tokens[1].faction}">the ${tokens[1].faction}</span> token in spot ${tokenOneIndex + 1} of <span class="highlight">the ${area.name}</span>` });
+        this.game().message({
+            faction: faction,
+            message: `swaps <span class="faction-${tokens[0].faction}">the ${tokens[0].faction}</span> token with <span class="faction-${tokens[1].faction}">the ${tokens[1].faction}</span> token in the ${area.name}` });
     }
 
 }
@@ -223,15 +252,6 @@ class Sewers extends Area {
         faction.data.deployLimit--;
     }
 
-    areasWithUnits( faction ){
-        let areasWithUnits = {};
-        _.forEach( faction.data.units, unit => {
-            if( _.unitInPlay( unit ) ) areasWithUnits[unit.location] = true;
-        });
-
-        // lets make a list of the areas with at least one of our units
-        return Object.keys( areasWithUnits );
-    }
 
     cloneableUnitTypes( faction, areasWithUnits ){
         // lets make a list of unit types we can deploy
@@ -268,21 +288,42 @@ class Sewers extends Area {
     async skill( faction ){
         let player, data;
 
-        let areasWithUnits = this.areasWithUnits( faction );
+
+        let areasWithUnits = faction.areasWithUnits( faction, { deployable : true } );
         if( ! areasWithUnits.length  ){
-            faction.game().message({ faction: faction, message: "No units in play", class: 'warning' });
+            faction.game().message({
+                faction: faction,
+                message: "No units in play",
+                class: 'warning'
+            });
             return false;
         }
 
 
         let unitTypes = this.cloneableUnitTypes( faction, areasWithUnits );
         if( !unitTypes.length ){
-            faction.game().message({ faction : faction, message: "No valid unit types to duplicate", class: 'warning' });
+            faction.game().message({
+                faction : faction,
+                message: "No valid unit types to duplicate",
+                class: 'warning'
+            });
             return false;
         }
 
-        [player, data] = await faction.game().promise({ players: faction.playerId, name: 'choose-units', data : { count : 1, areas : areasWithUnits, unitTypes: unitTypes, playerOnly : true, message: "Choose a unit to duplicate" }});
+
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'choose-units',
+            data : {
+                count : 1,
+                areas : areasWithUnits,
+                unitTypes: unitTypes,
+                playerOnly : true,
+                message: "Choose a unit to duplicate"
+            }
+        });
         let unit = faction.game().objectMap[ data.units[0] ];
+
 
         let args = {
             area: unit.location,
@@ -294,9 +335,11 @@ class Sewers extends Area {
         };
 
         let output = await faction.deploy( args );
-
         if ( output.declined ){
-            faction.game().message({ faction: faction, message: `Can't deploy to the <span class="highlight">${unit.location}</span>` });
+            faction.game().message({
+                faction: faction,
+                message: `Can't deploy to the ${unit.location}`
+            });
         }
 
     }
@@ -329,17 +372,36 @@ class Police extends Area {
         let areas = faction.areasWithAttackingUnits();
 
         if( ! areas.length  ){
-            faction.game().message({ faction : faction, message: "No attacks may be made", class: 'warning' });
+            faction.game().message({
+                faction : faction,
+                message: "No attacks may be made",
+                class: 'warning'
+            });
             return false;
         }
 
         // prompt player to select a unit
-        [player, data] = await faction.game().promise({ players: faction.playerId, name: 'choose-units', data : { count : 1, areas : areas, hasAttack: true, playerOnly : true, showEnemyUnits: true,  message: "Choose a unit to make an attack" }});
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'choose-units',
+            data : {
+                count : 1,
+                areas : areas,
+                hasAttack: true,
+                playerOnly : true,
+                showEnemyUnits: true,
+                message: "Choose a unit to make an attack"
+            }
+        });
         let unit = faction.game().objectMap[ data.units[0] ];
 
         // resolve attack with that unit
         let area = this.game().areas[ unit.location ];
-        await faction.attack( { area : area, attacks : unit.attack, unit : unit } );
+        await faction.attack({
+            area : area,
+            attacks : unit.attack,
+            unit : unit
+        });
     }
 }
 
@@ -367,21 +429,37 @@ class Laboratory extends Area {
         let player, data;
 
         faction.drawCards();
+
         let card = _.last( faction.data.cards.hand );
-        faction.game().message({ faction : faction, message: `reveals`, type : 'cards', cards : [card] });
+        faction.game().message({
+            faction : faction,
+            message: `reveals`,
+            type : 'cards',
+            cards : [card]
+        });
 
         let args = {
             area : 'laboratory',
             cards : [card],
             cost : 0,
             message : 'Play this card for free in the Laboratory?',
+            declineMessage : 'draw this card',
+            saveMessage : 'play this card in the laboratory',
             free : true
         };
 
-        [player, data] = await faction.game().promise({ players: faction.playerId, name: 'choose-card', data : args });
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'choose-card',
+            data : args
+        });
+
 
         if( data.decline ){
-            faction.game().message({ faction : faction, message: `chooses not to play the card` });
+            faction.game().message({
+                faction : faction,
+                message: `chooses not to play the card`
+            });
             return;
         }
 
@@ -423,12 +501,23 @@ class Factory extends Area {
         });
 
         if( !areaOptions.length ){
-            faction.game().message({ message: 'No valid areas to start a battle', class : 'warning' });
+            faction.game().message({
+                message: 'No valid areas to start a battle',
+                class : 'warning'
+            });
             return;
         }
 
         // choose from the above areas
-        [player, data] = await faction.game().promise({ players: faction.playerId, name: 'choose-area', data : { areas : areaOptions, show : 'units', message : 'Choose an area to start a battle' }})
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'choose-area',
+            data : {
+                areas : areaOptions,
+                show : 'units',
+                message : 'Choose an area to start a battle'
+            }
+        });
         let area = faction.game().areas[data.area];
 
         await faction.game().battle( area );
@@ -467,14 +556,29 @@ class University extends Area {
         let areas = faction.game().areasWithUnrevealedTokens();
 
         if( ! areas.length  ){
-            faction.game().message({ faction : faction, message: "No areas with unrevealed tokens", class: 'warning' });
+            faction.game().message({
+                faction : faction,
+                message: "No areas with unrevealed tokens",
+                class: 'warning'
+            });
             return false;
         }
 
-        [player, data] = await faction.game().promise({ players: faction.playerId, name: 'choose-area', data : { areas : areas, show : 'tokens', message : 'Choose area to spy on tokens' }})
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'choose-area',
+            data : {
+                areas : areas,
+                show : 'tokens',
+                message : 'Choose area to spy on tokens'
+            }
+        });
 
         faction.data.tokenSpy = data.area;
-        faction.game().message({ faction : faction, message: `looks at the tokens in <span class="highlight">the ${data.area}</span>` });
+        faction.game().message({
+            faction : faction,
+            message: `looks at the tokens in the ${data.area}`
+        });
 
     }
 }
@@ -501,7 +605,11 @@ class Subway extends Area {
         let output = await faction.deploy( args );
 
         if ( output.declined ){
-            faction.game().message({ faction : faction, message: `Failed to deploy`, class : 'warning' });
+            faction.game().message({
+                faction : faction,
+                message: `Failed to deploy`,
+                class : 'warning'
+            });
             return;
         }
 
@@ -529,7 +637,10 @@ class Church extends Area {
     areasWithRevealedTokens( faction ){
         let areasWithRevealedTokens = {};
         faction.data.tokens.forEach( token => {
-            if( token.location && token.location !== 'xavier' && token.revealed ) areasWithRevealedTokens[token.location] = true;
+            if( token.location
+                && token.location !== 'xavier'
+                && token.revealed
+            ) areasWithRevealedTokens[token.location] = true;
         });
         return Object.keys( areasWithRevealedTokens );
     }
@@ -537,17 +648,34 @@ class Church extends Area {
     async skill( faction ){
         let player, data;
 
+
         let areasWithRevealedTokens = this.areasWithRevealedTokens( faction );
         if( ! areasWithRevealedTokens.length  ){
-            faction.game().message({ faction : faction, message: "No tokens to flip with Church skill ability", class: 'warning' });
+            faction.game().message({
+                faction : faction,
+                message: "No tokens to flip with Church skill ability",
+                class: 'warning' });
             return false;
         }
 
-        [player, data] = await faction.game().promise({ players: faction.playerId, name: 'choose-tokens', data : { count : 1, areas : areasWithRevealedTokens, playerOnly : true, revealedOnly : true }})
+
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'choose-tokens',
+            data : {
+                count : 1,
+                areas : areasWithRevealedTokens,
+                playerOnly : true,
+                revealedOnly : true
+            }
+        });
         let token = faction.game().objectMap[ data.tokens[0] ];
         token.revealed = false;
 
-        faction.game().message({ faction : faction, message: `flips their <span class="highlight">${token.name}</span> token in <span class="highlight">the ${token.location}</span> face down` });
+        faction.game().message({
+            faction : faction,
+            message: `flips their <span class="faction-${token.faction}">${token.name}</span> token in the ${token.location} face down`
+        });
     }
 }
 

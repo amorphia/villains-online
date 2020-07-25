@@ -35,7 +35,7 @@
                             v-if="data.optional">decline</button>
                     <button class="button"
                             @click="resolve( true )"
-                            :disabled="canSave !== true">save</button>
+                            :disabled="canSave !== true">{{ buttonMessage }}</button>
                 </div>
 
             </div>
@@ -94,6 +94,10 @@
         },
 
         computed : {
+
+            buttonMessage(){
+                return this.canSave ? 'sacrifice selected units' : `choose ${this.needToSacrifice} more unit${this.needToSacrifice > 1 ? 's':''}`;
+            },
 
             needToSacrifice(){
                 return this.data.count - this.selected.length;

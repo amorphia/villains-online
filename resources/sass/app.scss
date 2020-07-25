@@ -23,7 +23,7 @@ body {
     background-image: url('/images/background.jpg');
     color: white;
     font-family: var(--primary-font);
-    background-size: cover;
+    background-size: 110% 110%;
 }
 
 .glass {
@@ -75,6 +75,7 @@ body {
     letter-spacing: 2px;
     box-shadow: 0 2px 2px rgba(0,0,0,.5);
     transition: color .3s;
+    white-space: nowrap;
 
     &:hover {
         color: var(--light-yellow);

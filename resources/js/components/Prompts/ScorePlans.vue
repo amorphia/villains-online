@@ -21,7 +21,7 @@
 
                 <div class="flex-center">
                     <button v-if="mode !== 'plans'" class="button" @click="mode = 'plans'">back</button>
-                    <button class="button" :disabled="!canSave" @click="resolve">save</button>
+                    <button class="button" :disabled="!canSave" @click="resolve">confirm scored plans</button>
                 </div>
 
             </div>

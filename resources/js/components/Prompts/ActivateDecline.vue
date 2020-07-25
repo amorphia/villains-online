@@ -9,10 +9,10 @@
 
                 <div v-if="data.cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${data.cost}x to activate this token?` )"></div>
                 <div class="flex-center">
-                    <button class="button button-empty" @click="resolve('decline' )">decline</button>
+                    <button class="button button-empty" @click="resolve('decline' )">Decline Token</button>
                     <button class="button"
                             @click="resolve( 'activate' )"
-                            :disabled="!canActivate">activate</button>
+                            :disabled="!canActivate">Activate Token</button>
                 </div>
 
             </div>

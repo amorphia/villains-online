@@ -1,6 +1,6 @@
 <template>
     <hud-popout :open="open" classes="cards-hud" @close="$emit( 'close')">
-        <horizontal-scroll classes="cards-hud__cards height-100" >
+        <horizontal-scroll classes="cards-hud__cards height-100" buttons="true">
             <div class="cards-hud__card d-inline-block height-100"
                  v-for="card in shared.faction.cards.hand"
                  @click="itemClicked( card )">

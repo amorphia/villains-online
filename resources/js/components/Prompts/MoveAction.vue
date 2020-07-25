@@ -39,7 +39,7 @@
                             v-if="canDecline">decline</button>
                     <button class="button"
                             @click="resolve( true )"
-                            :disabled="canSave !== true">save</button>
+                            :disabled="canSave !== true">move selected units</button>
                 </div>
 
             </div>
