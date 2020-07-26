@@ -1,6 +1,6 @@
 <template>
 <transition name="right">
-    <div v-if="area" class="view-area pos-absolute width-100 height-100 p-5  overflow-auto z-4">
+    <div v-if="area" class="view-area pos-absolute width-100 height-100 p-5 top-0 overflow-auto z-4">
         <button class="toggle fixed top right icon-x"
                 @click="closeViewArea"
         ></button>
@@ -37,7 +37,9 @@
                 <div class="view-player__title">Active Cards:</div>
                 <div v-if="area.cards.length" class="view-player__active-cards pt-4">
                     <div v-for="card in area.cards" class="pos-relative view-player__card">
-                        <img class="z-1 view-player__card" :src="`/images/cards/${card.file}.jpg`">
+                        <img class="z-1 view-player__card pointer"
+                             @click="shared.card = `/images/cards/${card.file}.jpg`"
+                             :src="`/images/cards/${card.file}.jpg`">
                         <img class="pos-absolute bottom-0 z-2 card-faction-icon" :src="factionIcon( card.owner )">
                     </div>
                 </div>
@@ -60,7 +62,7 @@
                 <div class="p-0 width-100 view-area__area pos-relative" :class="`area-${area.name}`">
 
                     <div class="view-area__tokens pos-absolute width-100 z-2">
-                        <token-row :area="area"></token-row>
+                        <token-row :area="area" :token="token"></token-row>
                     </div>
 
                     <div class="view-area__header area-zoom__header p-4 pos-relative grow-0 shrink-0"></div>
@@ -115,6 +117,11 @@
 
 
         computed : {
+            token(){
+                if( this.shared.token && this.shared.token.place === this.area.name ){
+                    return this.shared.token;
+                }
+            },
             exterminated(){
                 return _.areaExterminated( this.area, this.shared.data.factions );
             },

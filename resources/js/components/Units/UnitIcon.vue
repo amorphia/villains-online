@@ -46,7 +46,7 @@
 
             setClasses(){
                 let classes = [];
-                if( this.selected ) classes.push( 'selected' );
+                if( this.selected || (this.unit.isSelected && !this.unit.placeToken) ) classes.push( 'selected' );
                 if( this.unit.ready ) classes.push( 'ready' );
                 if( this.classes ) classes.push( this.classes );
                 return classes.join(' ');

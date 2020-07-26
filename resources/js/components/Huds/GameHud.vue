@@ -24,6 +24,11 @@
             <!-- CONTROLS -->
             <div class="control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap">
                 <game-sound></game-sound>
+                <div class="d-inline stat-icon highlight pointer"
+                    @click="shared.viewDiscard = !shared.viewDiscard"
+                     title="view discard pile">
+                    <i class='icon-delete'></i>
+                </div>
                 <div v-if="shared.admin" class="d-inline stat-icon highlight pointer" @click="saveGame">
                     <i class='icon-save' ></i>
                 </div>
@@ -43,11 +48,8 @@
 
 
 <script>
-    import EndGame from "../EndGame";
     export default {
-
         name: 'game-hud',
-        components: {EndGame},
         data() {
             return {
                 shared : App.state,

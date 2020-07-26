@@ -67,7 +67,7 @@ class Cultists extends Faction {
 
         this.game().sound( 'basta' );
         message = `<span class="faction-${targetFaction.name}">the ${targetFaction.name}</span> must pay tribute to Basta`;
-        this.game().message({ player: player, message: message });
+        this.game().message({ faction: targetFaction, message: message });
 
 
         let enemyUnits = _.factionUnitsInArea( targetFaction, area );

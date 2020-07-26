@@ -28,7 +28,13 @@
                :title="`The ${exterminated} have exterminated the ${area.name}`"></i>
 
             <!-- tokens -->
-            <div class="width-100 shrink-0 pos-absolute top-0"><token-row :area="area"></token-row></div>
+            <div class="width-100 shrink-0 pos-absolute top-0">
+                <token-row
+                    :area="area"
+                    :token="token"
+                    @token="emitToken"
+                ></token-row>
+            </div>
 
             <!-- graveyard -->
             <div v-if="graveyard" class="area-map__graveyard">
@@ -63,6 +69,11 @@
                     </div>
             </div>
 
+            <!-- Xavier -->
+            <div v-if="showXavier" class="pos-absolute-center area-map__xavier z-6" @click.stop="emitXavier">
+                <unit-row  :units="[xavier]"></unit-row>
+            </div>
+
             <!-- status icons -->
             <div class="area-map__stats-row pos-absolute bottom-0 width-100 flex-center shrink-0">
                 <i v-for="stat in stats"
@@ -95,7 +106,33 @@
 
             this.shared.event.on( 'unselectAreas', area => this.opacity = false );
         },
+
+        methods : {
+            emitToken( token ){
+                this.shared.event.emit( 'tokenClicked', token );
+            },
+
+            emitXavier(){
+                this.shared.event.emit( 'xavierClicked' );
+            }
+        },
+
         computed : {
+
+            showXavier(){
+                return this.shared.showXavier && this.xavier;
+            },
+
+            xavier(){
+                if( this.shared.faction.name !== 'society' ) return;
+                return this.shared.faction.units.find( unit => unit.type === 'champion' && unit.location === this.area.name );
+            },
+
+            token(){
+                if( this.shared.token && this.shared.token.place === this.area.name ){
+                    return this.shared.token;
+                }
+            },
 
             influence(){
                 return _.eachInfluenceInArea( this.area, this.shared.data.factions );
@@ -108,16 +145,6 @@
                     if( kills ) dead[faction.name] = kills;
                 });
 
-                /*
-                let dead = [];
-                _.forEach( this.shared.data.factions, faction => {
-                    dead =  _.concat( dead, faction.units.filter( unit => _.deadInArea( unit, this.area ) ) );
-                });
-
-                if( dead.length ){
-                    return this.shared.groupByCount( dead, 'faction' );
-                }
-                */
                 return Object.keys( dead ).length ? dead : false;
             },
 
@@ -176,6 +203,10 @@
 
     .area-map__core-content-container {
         padding: 3.5em .75em 2em;
+    }
+
+    .area-map__xavier {
+        top: 60%;
     }
 
     .stat-icon {

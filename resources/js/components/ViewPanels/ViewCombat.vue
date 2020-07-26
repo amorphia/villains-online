@@ -1,6 +1,8 @@
 <template>
     <transition name="right">
-        <div v-if="shared.data.combat" class="view-combat pos-absolute width-100 height-100 p-5  overflow-auto z-4">
+        <div v-if="shared.data.combat" class="view-combat pos-absolute width-100 height-100 p-5 top-0 overflow-auto z-4">
+
+
 
             <div class="d-flex align-stretch">
                 <div class="view-area__main-content width-35 pt-2 pr-5 pb-6">
@@ -20,6 +22,12 @@
                 <div class="view-player__main-content width-65 pt-2 pr-5 pb-3 h-100">
 
                     <div class="p-0 width-100 view-area__area pos-relative" :class="`area-${area.name}`">
+
+                        <!-- zoom -->
+                        <div class="toggle area-map__toggle top-0 right-0"
+                             @click.stop="shared.event.emit('viewArea', area )">
+                            <i class="icon-zoom_in"></i>
+                        </div>
 
                         <div class="view-combat__header area-zoom__header p-4 pos-relative grow-0 shrink-0"></div>
 

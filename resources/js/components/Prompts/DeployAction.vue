@@ -1,20 +1,21 @@
 <template>
     <player-prompt classes="">
-        <div class="choose-action overflow-auto px-2">
+        <div class="choose-action overflow-auto px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
 
 
                 <div class="title mb-4">Choose units to deploy</div>
                 <div class="mt-3 pb-4">
 
-                    <div v-if="fromAreaIndex === -1" class="px-3 width-100 d-flex justify-center">
-                        <button v-if="fromAreas.length > 0" class="flipper" @click="fromAreaIndex = fromAreas.length - 1"><i class="icon-left"></i></button>
-                        <div class="area-header unit-row p-4 pb-5 pos-relative area-header-reserves">
-                            <unit-set :units="reserves" classes="center-text p-0" noBorder="true" @unitClicked="addUnitFromReserves"></unit-set>
-                        </div>
-                        <button v-if="fromAreas.length > 0" class="flipper" @click="fromAreaIndex = 0"><i class="icon-right"></i></button>
-                    </div>
-
+                    <area-flipper
+                        v-if="fromAreaIndex === -1"
+                        :areas="fromAreas"
+                        :index="fromAreaIndex"
+                        isReserves="true"
+                        :hasReserves="reserves.length"
+                        @update="updateFromIndex">
+                        <unit-set :units="reserves" classes="center-text p-0" noBorder="true" @unitClicked="addUnitFromReserves"></unit-set>
+                    </area-flipper>
 
                     <area-flipper
                         v-if="fromAreaIndex !== -1"
@@ -73,7 +74,9 @@
 
         watch : {
             fromAreaIndex(){
-                if( this.fromAreaIndex === -1 ) App.event.emit('unselectAreas' );
+                if( this.fromAreaIndex === -1 ){
+                    App.event.emit('unselectAreas' );
+                }
             }
         },
 

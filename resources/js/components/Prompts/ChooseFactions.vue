@@ -20,9 +20,9 @@
             <div class="choose-factions__faction-container">
                 <div class="choose-factions__faction-list pb-4">
                     <div v-for="(faction, name) in shared.data.factions"
-                         :class="{active : selectedFaction === name, taken : faction.owner !== null }"
+                         :class="{active : selectedFaction === name, taken : faction.owner !== null, killer : faction.killer }"
                          @click="selectedFaction = name"
-                         class="choose-factions__faction pointer d-flex justify-end align-baseline">
+                         class="choose-factions__faction pointer d-flex justify-end align-center">
                             {{ name }}
                             <span class="choose-factions__circle pl-3" :class="name === selectedFaction ? 'icon-circle' : 'icon-circle-open'"></span>
                     </div>
@@ -75,6 +75,16 @@
 
 
 <style>
+    .choose-factions__faction.killer:before {
+        content: "";
+        background-image: url("/images/icons/killer.png");
+        height: 1em;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 5em;
+        margin-right: .2em;
+        background-size: contain;
+    }
 
 </style>
 

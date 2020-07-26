@@ -18,7 +18,8 @@
         data() {
             return {
                 isMounted: false,
-                wheelScroll : 100
+                wheelScroll : 100,
+                buttonScrollCards : 3
             };
         },
         mounted(){
@@ -39,12 +40,11 @@
             },
 
             scroll( sign ){
-                let buttonScroll = this.$refs.container.firstChild.clientWidth * 2;
+                let buttonScroll = this.$refs.container.firstChild.clientWidth * this.buttonScrollCards;
                 this.scrollTo( this.$refs.container, sign * buttonScroll );
             },
 
             scrollTo( element, shift, duration = 250 ) {
-
                 let start = element.scrollLeft,
                     change = shift,
                     currentTime = 0,
@@ -59,9 +59,9 @@
                     }
                 };
                 animateScroll();
-            }
-        },
+            },
 
+        },
 
 
     computed : {

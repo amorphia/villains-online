@@ -79,6 +79,11 @@ class Mutants extends Faction {
         });
         areasWithHealedOozes = Object.keys( areasWithHealedOozes );
 
+        if( areasWithHealedOozes.length ){
+            message = `spawn units as their wounded Mother Oozes heal`;
+            this.game().message({ faction: this, message: message });
+        }
+
         for( let area of areasWithHealedOozes ){
                 let args = {
                     area: area,

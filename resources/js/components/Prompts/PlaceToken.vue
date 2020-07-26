@@ -1,51 +1,18 @@
 <template>
-    <player-prompt classes="">
-        <div class="place-token px-5">
-            <div class="width-100 d-flex justify-center flex-column align-center">
-                    <div class="title">Place a token or pass</div>
+        <div v-if="shared.player.prompt.name === 'place-token'" class="place-token-top p-2 d-flex justify-center align-center">
+            <button class="button button-empty place-token__button right-text" @click="passToken">PASS</button>
 
-                    <div v-if="canXavier && areaIndex === -1" class="d-flex justify-center">
-                        <button v-if="availableAreas.length > 0" class="flipper" @click="areaIndex = availableAreas.length - 1"><i class="icon-left"></i></button>
-                        <area-flipper :areas="[xavierArea]" index="0">
-                            <unit-row :units="[xavier]"></unit-row>
-                        </area-flipper>
-                        <button v-if="availableAreas.length > 0" class="flipper" @click="areaIndex = 0"><i class="icon-right"></i></button>
-                    </div>
-
-                    <area-flipper v-else-if="availableAreas.length > 0 && areaIndex !== -1"
-                                  :areas="availableAreas"
-                                  :index="areaIndex"
-                                  :hasReserves="canXavier"
-                                  @update="update">
-                        <token-row :area="availableAreas[areaIndex]" effect="placing" @token="tokenClicked" :token="token"></token-row>
-                    </area-flipper>
-                    <div v-else class="view-player__empty center-text">No Area Selected</div>
-
-                <div v-if="canXavier" class="options center-text">
-                    <button class="button button-empty"
-                            :class="{ active: areaIndex === -1 }"
-                            @click="areaIndex = -1">
-                        XAVIER
-                    </button>
-
-                    <button class="button button-empty"
-                            :class="{ active: areaIndex !== -1 }"
-                            @click="areaIndex = 0">
-                        AREAS
-                    </button>
-                </div>
-
-                <div class="place-token__tokens mt-4">
-                    <token-set :tokens="reserves" classes="one-line" :selected="token"></token-set>
-                </div>
-
-                <div class="">
-                    <button class="button button-empty" @click="passToken">PASS</button>
-                    <button class="button" @click="placeToken" :disabled="saveDisabled">{{ buttonMessage }}</button>
-                </div>
+            <div class="place-token__tokens center-text">
+                <token-set
+                    :tokens="reserves"
+                    classes="one-line"
+                    :selected="token"
+                    noBorder="true"
+                ></token-set>
             </div>
+
+            <button class="button place-token__button" @click="placeToken" :disabled="saveDisabled">place token</button>
         </div>
-    </player-prompt>
 </template>
 
 
@@ -62,35 +29,41 @@
         },
 
         watch : {
-          'shared.data.playerAction'(){
-              this.reset();
-          }
+            areaIndex(){
+                if( this.xavier ){
+                    if( this.areaIndex === -1 ){
+                        this.$set( this.xavier, 'isSelected', true );
+                    } else {
+                        this.$set( this.xavier, 'isSelected', false );
+                    }
+                }
+                this.shared.event.emit('areaSelected', this.area );
+            },
+            'shared.data.playerAction'(){
+                this.reset();
+            }
         },
 
         mounted(){
             this.shared.event.on( 'tokenClicked', this.tokenClicked );
+            this.shared.event.on( 'areaClicked', this.areaClicked );
+            this.shared.event.on( 'xavierClicked', this.xavierClicked );
+
+            if( this.canXavier ){
+                this.shared.showXavier = true;
+            }
+
+            this.$nextTick( () => {
+                this.shared.event.emit('areaSelected', this.area );
+            });
+
         },
 
         computed : {
 
-            buttonMessage(){
-                return !this.saveDisabled ? `place token in ${this.area.name}` : 'PLACE TOKEN';
-            },
-
             xavier(){
                 if( this.shared.faction.name !== 'society' ) return;
-                let xavier = this.shared.faction.units.find( unit => unit.type === 'champion' );
-                if( this.token && this.areaIndex === -1 ) {
-                    this.$set( xavier, 'placeToken', this.token );
-                } else {
-                    this.$set( xavier, 'placeToken', null );
-                }
-                return xavier;
-            },
-
-            xavierArea(){
-                if( this.shared.faction.name !== 'society' ) return;
-                return this.shared.data.areas[ this.xavier.location ];
+                return this.shared.faction.units.find( unit => unit.type === 'champion' );
             },
 
             canXavier(){
@@ -107,6 +80,7 @@
             },
 
             area(){
+                if( this.areaIndex === -1 ) return { name : this.xavier.location, type: 'xavier' };
                 return this.availableAreas[this.areaIndex];
             },
 
@@ -123,33 +97,89 @@
 
         methods : {
 
-            update( n ){
-
-                this.areaIndex = n;
-            },
-
             reset(){
-                this.token = null;
+                this.removeToken();
             },
 
-            removeToken( token ){
-                if( !this.token || this.token.id !== token.id ) return;
-                this.token = null;
+            removeToken(){
+                if( this.token ){
+                    this.$set( this.token, 'place', null );
+                    this.token = null;
+                }
+
+                if( this.xavier && this.xavier.placeToken ){
+                    this.$set( this.xavier, 'placeToken', null );
+                }
+
+                this.shared.token = null;
+            },
+
+            setToken( token ) {
+                this.token = token;
+
+                if( this.area.type === 'xavier' ){
+                    this.placeXavierToken()
+                } else {
+                    this.$set( this.token, 'place', this.area.name );
+                }
+
+                this.shared.token = this.token;
             },
 
             tokenClicked( token ){
-                console.log( 'token clicked', token );
                 if( token.location ) return;
-                this.token = this.token && this.token.id === token.id  ? null : token;
+                if( this.token && this.token.id === token.id ){
+                    this.removeToken();
+                } else {
+                    this.setToken( token );
+                }
+            },
+
+            xavierClicked(){
+                if( this.xavier.token ) return;
+
+                console.log( 'xavier clicked' );
+
+                this.areaIndex = -1;
+                this.shared.event.emit('areaSelected', { name : this.xavier.location } );
+
+                if( this.xavier.placeToken && this.xavier.placeToken.id ===  this.token.id ){
+                    this.removeToken();
+                } else if( this.token ){
+                    this.placeXavierToken();
+                }
+            },
+
+            placeXavierToken(){
+                this.$set( this.xavier, 'placeToken', this.token );
+                this.$set( this.token, 'place', 'xavier' );
+            },
+
+            areaClicked( area ){
+                let index = _.findIndex( this.availableAreas, item => item.name === area.name );
+                if( index === -1 ) return;
+
+                console.log( 'area clicked' );
+                this.areaIndex = index;
+
+                if( this.token ){
+                    this.$set( this.token, 'place', this.area.name );
+                    if( this.xavier ){
+                        this.$set( this.xavier, 'placeToken', null );
+                    }
+                }
             },
 
             placeToken(){
-                let areaName = this.areaIndex === -1 ? 'xavier' : this.area.name;
-                this.shared.respond( 'place-token', 'place', areaName, this.token.id );
+                this.shared.respond( 'place-token', 'place', this.token.place, this.token.id );
+                this.shared.showXavier = false;
+                this.removeToken();
             },
 
             passToken(){
                 this.shared.respond( 'place-token', 'pass' );
+                this.shared.showXavier = false;
+                this.removeToken();
             }
         }
     }
@@ -158,10 +188,17 @@
 
 <style>
 
-    .place-token{
+    .place-token {
         min-width: 40rem;
     }
 
+    .place-token__button {
+        width: 12%
+    }
 
+    .place-token-top .tokens-hud__token {
+        width: 5.5vw;
+        height: 5.5vw;
+    }
 </style>
 

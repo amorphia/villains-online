@@ -56,7 +56,7 @@
         max-height: 98%;
         min-width: 20rem;
         padding: 0;
-        transition: all .1s;
+        transition: all .2s;
     }
 
     .player-prompt__slot-container {

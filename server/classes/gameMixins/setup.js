@@ -66,7 +66,7 @@ let setup = {
 
         // merge deck
         _.mergeWith( this.deck, saved.deck, linkFunc );
-
+        this.data.discard = this.deck.discard;
 
         //this.relinkSavedData( saved.data );
     },
@@ -206,6 +206,7 @@ let setup = {
         });
 
         this.shuffle( this.deck.deck );
+        this.data.discard = this.deck.discard;
     },
 
 

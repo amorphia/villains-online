@@ -54,6 +54,7 @@ class Game {
         maxAP : 10,
         maxPP :12,
         turn : 1,
+        discard : null,
         //firstPlayer : 0,
         activeIndex : 0,
         playerOrder : [],

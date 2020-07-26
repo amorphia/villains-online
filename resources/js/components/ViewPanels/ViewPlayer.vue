@@ -1,6 +1,6 @@
 <template>
     <transition name="right">
-        <div v-if="player" class="view-player pos-absolute width-100 height-100 p-5 d-flex align-stretch overflow-auto z-5">
+        <div v-if="player" class="view-player pos-absolute width-100 height-100 top-0 p-5 d-flex align-stretch overflow-auto z-5">
             <button class="toggle fixed top right icon-x"
                     @click="closeViewPlayer"
             ></button>
@@ -36,7 +36,8 @@
 
                     <div class="view-player__title">Active Cards:</div>
                     <div v-if="faction.cards.active.length" class="view-player__active-cards">
-                        <img v-for="card in faction.cards.active" class="view-player__card"
+                        <img v-for="card in faction.cards.active" class="view-player__card pointer"
+                             @click="shared.card = `/images/cards/${card.file}.jpg`"
                              :src="`/images/cards/${card.file}.jpg`">
                     </div>
                     <div v-else class="view-player__empty">No Active Cards</div>
