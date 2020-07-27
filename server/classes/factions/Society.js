@@ -103,6 +103,10 @@ class Society extends Faction {
 
     factionCleanUp(){
         this.data.tokensNotDiscarded = 0;
+        let xavier = this.getXavier();
+        if( xavier && xavier.token ){
+            xavier.token.location = 'xavier';
+        }
     }
 
 
