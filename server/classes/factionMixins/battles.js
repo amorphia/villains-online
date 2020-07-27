@@ -116,6 +116,22 @@ let obj = {
 
         this.game().message({ faction : this, type : 'attack', unit : args.unit, rolls : rolls, toHit : toHit, hits : hits, victim : victim.name });
 
+        let attackResult;
+        if( args.unit ){
+            attackResult = {
+                unit : args.unit.id,
+                faction : args.unit.faction,
+                rolls : rolls,
+                toHit : toHit,
+                hits : hits
+            };
+        }
+
+        if( this.game().data.combat ){
+            this.game().data.combat.lastAttack = attackResult;
+            this.game().data.combat.attacks[attackResult.unit] = attackResult;
+        }
+
         if( hits > 0 ){
 
             this.hitSound( hits );
@@ -128,18 +144,6 @@ let obj = {
         } else {
             this.game().sound( 'wiff' );
         }
-
-        let output;
-        if( args.unit ){
-            output = {
-                unit : args.unit.id,
-                rolls : rolls,
-                toHit : toHit,
-                hits : hits
-            };
-        }
-
-        return output;
 
     },
 

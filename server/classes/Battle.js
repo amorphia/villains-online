@@ -84,12 +84,7 @@ class Battle {
 
             // resolve attack with that unit
             let area = this.game().areas[ unit.location ];
-            let attackResult = await gameFaction.attack( { area : area, attacks : unit.attack, unit : unit, attackBonus : this.options.attackBonus } );
-
-            if( attackResult ){
-                this.data.lastAttack = attackResult;
-                this.data.attacks[attackResult.unit] = attackResult;
-            }
+            await gameFaction.attack( { area : area, attacks : unit.attack, unit : unit, attackBonus : this.options.attackBonus } );
 
             unit.needsToAttack = false;
             this.data.currentUnit = null;

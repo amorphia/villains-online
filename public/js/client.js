@@ -8520,7 +8520,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-icon',
-  props: ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes'],
+  props: ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect'],
   data: function data() {
     return {
       shared: App.state
@@ -8538,7 +8538,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     setClasses: function setClasses() {
       var classes = [];
-      if (this.selected || this.unit.isSelected && !this.unit.placeToken) classes.push('selected');
+      if (!this.noSelect && (this.selected || this.unit.isSelected && !this.unit.placeToken)) classes.push('selected');
       if (this.unit.ready) classes.push('ready');
       if (this.classes) classes.push(this.classes);
       return classes.join(' ');
@@ -9117,6 +9117,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-combat',
   data: function data() {
@@ -9130,6 +9140,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     combat: function combat() {
       return this.shared.data.combat;
+    },
+    lastAttackUnit: function lastAttackUnit() {
+      var _this = this;
+
+      if (!this.combat.lastAttack) return;
+      return this.shared.data.factions[this.combat.lastAttack.faction].units.find(function (unit) {
+        return unit.id === _this.combat.lastAttack.unit;
+      });
     }
   },
   methods: {
@@ -11504,7 +11522,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.view-combat {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 2;\n    font-size: 1.4rem;\n    color: var(--primary-light-color);\n}\n.view-combat__header {\n    width: 100%;\n    background-size: cover;\n    background-position: center bottom;\n    background-repeat: no-repeat;\n    min-height: 9rem;\n}\n.view-combat__body {\n    min-height: 28rem;\n    padding-top: 0;\n}\n\n\n\n", ""]);
+exports.push([module.i, "\n.view-combat {\n     background-image : url('/images/factory-background.jpg');\n     background-position: center;\n     background-size: cover;\n     z-index: 2;\n     font-size: 1.4rem;\n     color: var(--primary-light-color);\n}\n.last-attack-needs {\n     font-size: .7em;\n     color: var(--primary-light-color);\n     position: relative;\n     bottom: .15em;\n     left: .2rem;\n}\n.view-combat__last-attack {\n     color: var(--highlight-color);\n     background-image: url(/images/background-blurred.jpg);\n     background-position: center;\n     background-size: cover;\n     background-repeat: no-repeat;\n     border-radius: 1rem;\n     border: 1px solid white;\n     box-shadow: 0 0 0.5rem 0.2rem black;\n     padding: .5rem;\n     top: 40%;\n}\n.view-combat__last-attack .unit-hud__unit-image {\n     border: 2px solid;\n     box-shadow: 0 0 .4rem .2rem black;\n}\n.view-combat__last-attack-roll{\n    width: 4.55rem;\n    margin: 0 .1rem;\n}\n.view-combat__header {\n     width: 100%;\n     background-size: cover;\n     background-position: center bottom;\n     background-repeat: no-repeat;\n     min-height: 9rem;\n}\n.view-combat__body {\n     min-height: 28rem;\n     padding-top: 0;\n}\n\n\n\n", ""]);
 
 // exports
 
@@ -60695,10 +60713,76 @@ var render = function() {
                         [_c("i", { staticClass: "icon-zoom_in" })]
                       ),
                       _vm._v(" "),
-                      _c("div", {
-                        staticClass:
-                          "view-combat__header area-zoom__header p-4 pos-relative grow-0 shrink-0"
-                      }),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "view-combat__header area-zoom__header p-4 pos-relative grow-0 shrink-0"
+                        },
+                        [
+                          _vm.combat.lastAttack
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "view-combat__last-attack center-text pos-absolute-center d-flex flex-wrap align-center justify-center"
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    { staticClass: "width-100 uppercase" },
+                                    [
+                                      _vm._v("last attack "),
+                                      _c(
+                                        "span",
+                                        { staticClass: "last-attack-needs" },
+                                        [
+                                          _vm._v(
+                                            "needing " +
+                                              _vm._s(
+                                                _vm.combat.lastAttack.toHit
+                                              )
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("unit-icon", {
+                                    attrs: {
+                                      unit: _vm.lastAttackUnit,
+                                      noSelect: "true",
+                                      classes:
+                                        "faction-" +
+                                        _vm.combat.lastAttack.faction +
+                                        " mr-3"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.combat.lastAttack.rolls, function(
+                                    roll
+                                  ) {
+                                    return _c("img", {
+                                      staticClass:
+                                        "view-combat__last-attack-roll",
+                                      class: {
+                                        "saturate-0":
+                                          roll < _vm.combat.lastAttack.toHit
+                                      },
+                                      attrs: {
+                                        src:
+                                          "/images/icons/attack-" +
+                                          roll +
+                                          ".png"
+                                      }
+                                    })
+                                  })
+                                ],
+                                2
+                              )
+                            : _vm._e()
+                        ]
+                      ),
                       _vm._v(" "),
                       _c(
                         "div",

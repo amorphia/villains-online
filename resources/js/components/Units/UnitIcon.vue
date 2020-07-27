@@ -24,7 +24,7 @@
 
         name: 'unit-icon',
 
-        props : ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes' ],
+        props : ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect' ],
         data() {
             return {
                 shared : App.state
@@ -46,7 +46,7 @@
 
             setClasses(){
                 let classes = [];
-                if( this.selected || (this.unit.isSelected && !this.unit.placeToken) ) classes.push( 'selected' );
+                if( !this.noSelect && ( this.selected || (this.unit.isSelected && !this.unit.placeToken) ) ) classes.push( 'selected' );
                 if( this.unit.ready ) classes.push( 'ready' );
                 if( this.classes ) classes.push( this.classes );
                 return classes.join(' ');
