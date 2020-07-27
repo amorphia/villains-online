@@ -28,7 +28,7 @@
                         <div class="view-player__resources view-player__title width-50"> Upgrade: <span>{{ faction.upgrade ? faction.upgrade : 'none' }}</span></div>
                         <div class="view-player__hand view-player__title width-50">Cards in hand: <span>{{ faction.cards.hand.length }}</span> <span class="note">/ +{{ faction.cardDraw }}</span></div>
                         <div class="view-player__deploy view-player__title width-50">Deploy Limit: <span>{{ faction.deployLimit }}</span></div>
-                        <div class="view-player__defense-bonus view-player__title width-50">Defense Bonus: <span>+{{ faction.defenseBonus }}</span></div>
+                        <div class="view-player__defense-bonus view-player__title width-50">Defense Bonus: <span>+{{ defenseBonus }}</span></div>
                         <div class="view-player__attack-bonus view-player__title width-50">Attack Bonus: <span>+{{ faction.attackBonus }}</span></div>
                         <div class="view-player__bonus-dice view-player__title width-50">Bonus Attack Dice: <span>+{{ faction.bonusDice }}</span></div>
                         <div class="view-player__captured view-player__title width-100">Captured Markers: <span>{{ faction.captured.current }} / {{ faction.captured.max }}</span></div>
@@ -173,6 +173,11 @@
 
         computed : {
 
+            defenseBonus(){
+                let bonus = this.faction.defenseBonus;
+                if( this.faction.factionDefenseBonus ) bonus += this.faction.factionDefenseBonus;
+                return bonus;
+            },
             areas(){
                 let areaNames = _.factionAreas( this.faction, this.shared.data.areas );
                 let areas = [];

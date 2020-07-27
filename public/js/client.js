@@ -9322,6 +9322,11 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    defenseBonus: function defenseBonus() {
+      var bonus = this.faction.defenseBonus;
+      if (this.faction.factionDefenseBonus) bonus += this.faction.factionDefenseBonus;
+      return bonus;
+    },
     areas: function areas() {
       var _this2 = this;
 
@@ -60965,9 +60970,7 @@ var render = function() {
                       },
                       [
                         _vm._v("Defense Bonus: "),
-                        _c("span", [
-                          _vm._v("+" + _vm._s(_vm.faction.defenseBonus))
-                        ])
+                        _c("span", [_vm._v("+" + _vm._s(_vm.defenseBonus))])
                       ]
                     ),
                     _vm._v(" "),
