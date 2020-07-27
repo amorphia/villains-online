@@ -159,6 +159,10 @@ class Server {
         this.io.to( room ).emit( 'message', message );
     }
 
+    popup( room, popup ){
+        this.io.to( room ).emit( 'popup', popup );
+    }
+
     removePlayer( socket ) {
         let player =  this.getPlayer( socket );
         if( !player ) return;

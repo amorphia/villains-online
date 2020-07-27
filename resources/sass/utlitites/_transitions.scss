@@ -29,6 +29,26 @@
 
 
 /**
+    popup
+**/
+
+
+.popup-enter-active, .popup-leave-active {
+    transition: all .3s;
+}
+
+.popup-enter-to, .popup-leave {
+    transform: scale(1) translate(-50%,-50%);
+    opacity: 1;
+}
+
+.popup-enter, .popup-leave-to {
+    transform: scale(2) translate(-50%,-50%);
+    opacity: 0;
+}
+
+
+/**
     slide directions
 **/
 

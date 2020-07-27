@@ -316,6 +316,22 @@ let helpers = {
     },
 
 
+    allKilledUnitsInAreaByFaction( areaName, factions ){
+        if( typeof areaName !== 'string' ) areaName = areaName.name;
+        let areaDead = {};
+        this.forEach( factions, faction => {
+            faction.units.forEach( unit => {
+                if( unit.location === areaName && unit.killed ){
+                    if( areaDead.hasOwnProperty( unit.killed ) ){
+                        areaDead[unit.killed].push( unit );
+                    } else {
+                        areaDead[unit.killed] = [unit];
+                    }
+                }
+            });
+        });
+        return areaDead;
+    },
 
     killsInArea( factionName, areaName, factions ){
         if( typeof factionName !== 'string' ) factionName = factionName.name;

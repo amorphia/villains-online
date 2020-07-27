@@ -14,8 +14,8 @@
                 </div>
 
                 <div v-if="exterminated" class="title d-flex align-center view-area__controller">
-                    <img class="determine-control__faction-icon" :src="factionIcon( area.owner )">
-                    Exterminated by The {{ area.owner | startCase }}
+                    <img class="determine-control__faction-icon" :src="factionIcon( exterminated )">
+                    Exterminated by The {{ exterminated | startCase }}
                 </div>
 
                 <div class="view-player__title">Control Ability</div>
@@ -85,18 +85,28 @@
                         </area-units>
                     </div>
                 </div>
+
+                <div v-if="dead" class="view-area__dead">
+                    <div v-for="(units,faction) in dead" :key="faction" class="view-area__dead-block">
+                        <div class="title d-flex align-center view-area__controller"><img class="determine-control__faction-icon" :src="factionIcon( faction )"> {{ faction }} Kills</div>
+                        <unit-row :units="units"></unit-row>
+                    </div>
+                </div>
             </div>
 
         </div>
+
     </div>
 </transition>
 </template>
 
 
 <script>
+    import UnitRow from "../Units/UnitRow";
     export default {
 
         name: 'view-area',
+        components: {UnitRow},
         data() {
             return {
                 shared : App.state,
@@ -117,6 +127,10 @@
 
 
         computed : {
+            dead(){
+                let dead = _.allKilledUnitsInAreaByFaction( this.area.name, this.shared.data.factions );
+                return dead ?? false;
+            },
             token(){
                 if( this.shared.token && this.shared.token.place === this.area.name ){
                     return this.shared.token;
@@ -131,9 +145,12 @@
             },
 
             usedSkill(){
+                return [];
+
                 return Object.values( this.shared.data.factions ).map( faction => {
                     if( faction.usedSkills.includes( this.area.name ) ) return faction.name;
                 }).filter( item => item );
+
             }
         },
 
