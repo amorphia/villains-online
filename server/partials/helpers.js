@@ -73,6 +73,12 @@ let helpers = {
      *
      */
 
+    firstUnrevealedToken( area ){
+        return this.find( area.tokens, token => {
+            return token && token.revealed === false
+        });
+    },
+
     factionIcon( faction ){
         if( typeof faction !== 'string' ) faction = faction.name;
 

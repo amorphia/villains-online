@@ -1,75 +1,68 @@
 <template>
-    <player-prompt classes="">
+<div>
+
+    <!-- TOP BAR -->
+    <div v-if="hasTopAction" class="choose-action-top p-2 d-flex justify-center align-center">
+        <button v-if="showPass" @click="setPassAction" class="button">PASS</button>
+        <button v-if="showLocked" @click="setLockedAction" class="button" >DECLARE YOURSELF LOCKED</button>
+    </div>
+
+    <!-- TOP BAR -->
+    <player-prompt v-if="action" classes="">
         <div class="choose-action px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
 
-                <div class="title">{{ message }}</div>
+                <div class="title">Confirm Action</div>
 
-                <div v-if="action === 'xavier'" class="d-flex justify-center">
-                    <area-flipper :areas="[xavierArea]" index="0">
-                        <unit-row :units="[xavier]"></unit-row>
-                    </area-flipper>
-                </div>
 
-                <area-flipper v-if="collection.length" :areas="collection" :index="areaIndex" @update="update">
+                <!-- Skill / Token flipper -->
+                <area-flipper v-if="area"
+                              :areas="[area]"
+                              index="0">
 
-                    <token-row v-if="action === 'token'" :area="area" :highlight="firstToken"></token-row>
+                    <unit-row v-if="action.name === 'xavier'"
+                              :units="[xavier]"></unit-row>
 
-                    <div v-if="action === 'skill'" class="choose-action__skilled-units center-text">
-                        <unit-row :units="skilledUnitsInArea" allSelected="true"></unit-row>
+                    <!-- token display -->
+                    <token-row v-if="action.name === 'token'"
+                               :area="area"
+                               :highlight="firstToken">
+                    </token-row>
 
-                        <div class="width-100 choose-action__skill-ability" v-html="this.shared.filterText( this.area.skill )"></div>
+                    <!-- skill display -->
+                    <div v-if="action.name === 'skill'"
+                         class="choose-action__skilled-units center-text">
+
+                        <unit-row
+                            :units="skilledUnitsInArea"
+                            allSelected="true">
+                        </unit-row>
+
+                        <div class="width-100 choose-action__skill-ability"
+                             v-html="this.shared.filterText( this.area.skill )">
+                        </div>
+
                     </div>
-
                 </area-flipper>
 
-                <div v-if="!action" class="view-player__empty">
-                    No Action selected
+                <div class="d-flex justify-center">
+
+                    <button class="button button-empty"
+                        @click="clearAction">
+                        back
+                    </button>
+
+                    <button class="button pull-center"
+                            @click="saveAction"
+                            :disabled="saveDisabled">
+                        {{ buttonMessage }}
+                    </button>
                 </div>
 
-
-                <div class="options d-flex justify-center">
-                    <button v-if="validActions.includes('pass')"
-                            class="button button-empty"
-                            :class="{ active: action === 'pass' }"
-                            @click="action = 'pass'">
-                                PASS
-                    </button>
-
-                    <button v-if="validActions.includes('locked')"
-                            class="button button-empty"
-                            :class="{ active: action === 'locked' }"
-                            @click="action = 'locked'">
-                                LOCKED
-                    </button>
-
-                    <button v-if="validActions.includes('xavier')"
-                            class="button button-empty"
-                            :class="{ active: action === 'xavier' }"
-                            @click="setXavierAction">
-                                REVEAL XAVIER TOKEN
-                    </button>
-
-                    <button v-if="validActions.includes('token')"
-                            class="button button-empty"
-                            :class="{ active: action === 'token' }"
-                            @click="setTokenAction">
-                                REVEAL TOKEN
-                    </button>
-
-                    <button v-if="validActions.includes('skill')"
-                            class="button button-empty"
-                            :class="{ active: action === 'skill' }"
-                            @click="setSkillAction">
-                                ACTIVATE SKILL
-                    </button>
-
-                </div>
-
-                <button class="button pull-center" @click="chooseAction" :disabled="saveDisabled">{{ buttonMessage }}</button>
             </div>
         </div>
     </player-prompt>
+</div>
 </template>
 
 
@@ -82,93 +75,150 @@
             return {
                 shared : App.state,
                 action : null,
-                areaIndex : 0,
+                actions : {}
             };
         },
 
         mounted(){
-            //this.shared.event.on( 'areaClicked', this.areaClicked );
-            if( this.validActions.length === 1 ){
-                this.action = this.validActions[0];
-                if( this.validActions[0] === 'token' ) this.shared.event.emit('areaSelected', this.collection[ this.areaIndex ] );
-            }
-        },
-
-        watch : {
-            validActions(){
-
-            }
+            App.event.on( 'actionClicked', args => this.setAction( ...args ) );
+            this.generateActions();
+            this.setDefaultAction();
         },
 
         methods : {
 
-            chooseAction(){
+            setDefaultAction(){
+                let actionKeys = Object.keys( this.actions );
+                if( actionKeys.length === 1 ){
+                    let actionSet = this.actions[actionKeys[0]];
+                    if( actionKeys[0] === 'pass' || actionKeys[0] === 'locked' || actionSet.length === 1 ){
+                        this.setAction( actionKeys[0] );
+                    }
+                }
+            },
 
+            setAction( name, param ){
+
+                console.log( 'set action', name, param );
+
+                let action = { name : name };
+
+                if( name === 'token' ){
+                    action.area = param ?? this.actions[name][0];
+                    action.token = this.firstUnrevealed( action.area );
+                }
+
+                if( name === 'skill' ){
+                    action.area = param ?? this.actions[name][0];
+                }
+
+                if( name === 'xavier' ){
+                    action.area = this.xavier.location;
+                    action.token = this.xavier.token;
+                    this.$set( this.xavier, 'placedToken', this.xavier.token );
+                }
+
+                if( action.area ) this.shared.event.emit('areaSelected', { name : action.area } );
+
+                this.action = action;
+                this.shared.action = action;
+            },
+
+            clearAction(){
+                if( this.action.name === 'xavier' ) this.$set( this.xavier, 'placedToken', null );
+                this.action = null;
+                this.shared.action = null;
+                App.event.emit('unselectAreas' );
+            },
+
+            generateActions(){
+                let actions = {};
+
+                // can we activate skills?
+                if( this.useableSkills.length ) actions.skill = this.useableSkills;
+
+                // can we reveal tokens?
+                if( this.revealableTokens.length  ) actions.token = this.revealableTokens;
+
+                // can we pass?
+                if( !this.activeTokens.length ) actions.pass = true;
+
+                // can we declare ourselves locked?
+                if( !this.revealableTokens.length && this.activeTokens.length ) actions.locked = true;
+
+                // can we reveal an xavier token?
+                if( this.canXavier ) actions.xavier = this.xavier.location;
+
+                this.actions = actions;
+                this.shared.actions = actions;
+            },
+
+            saveAction(){
                 let args = [];
 
-                switch( this.action ){
+                switch( this.action.name ){
                     case 'skill':
-                        args = [this.area.name];
+                        args = [this.action.area];
                         break;
                     case 'token':
-                        args = [this.currentToken.id];
+                        args = [this.action.token.id];
                         break;
                 }
 
-                this.shared.respond( 'choose-action', this.action, ...args );
-                this.action = null;
-                this.areaIndex = 0;
+                this.shared.respond( 'choose-action', this.action.name, ...args );
+                this.shared.actions = null;
+                this.clearAction();
             },
 
-            update( n ){
-                this.areaIndex = n;
+            setPassAction(){
+                this.setAction( 'pass' );
             },
 
-            setSkillAction(){
-                this.action = 'skill';
-                // this.shared.event.emit('areaSelected', this.collection[ this.areaIndex ] );
+            setLockedAction(){
+                this.setAction( 'locked' );
             },
 
-            setTokenAction(){
-                this.action = 'token';
-                // this.shared.event.emit('areaSelected', this.collection[ this.areaIndex ] );
+            /*
+            setSkillAction( area ){
+                this.setAction( 'skill', area );
+            },
+
+            setTokenAction( area ){
+                this.setAction( 'token', area );
             },
 
             setXavierAction(){
-                this.action = 'xavier';
-                this.$set( this.xavier, 'placedToken', this.xavier.token );
+                this.setAction( 'xavier' );
             },
-
-            prev(){
-                this.areaIndex--;
-                if( this.areaIndex < 0 ){
-                    this.areaIndex = this.collection.length - 1;
-                }
-            },
-
-            next(){
-                this.areaIndex++;
-                if( this.areaIndex > this.collection.length - 1 ){
-                    this.areaIndex = 0;
-                }
-            },
+            */
 
             firstUnrevealed( area ){
-                return _.find( area.tokens, token => {
-                    return token && token.revealed === false
-                });
+                if( typeof area === 'string' ) area = this.shared.data.areas[ area ];
+                return _.firstUnrevealedToken( area );
             }
         },
 
         computed : {
 
+            hasTopAction(){
+                return this.actions.pass || this.actions.locked;
+            },
+
+            showPass(){
+                return this.actions.pass;
+            },
+
+            showLocked(){
+                return this.actions.locked;
+            },
+
             currentToken(){
-                return this.action === 'token' ? this.firstUnrevealed( this.area ) : null;
+                return this.action.name === 'token' ? this.firstUnrevealed( this.area ) : null;
             },
 
             buttonMessage(){
                 let message;
-                switch( this.action ){
+                switch( this.action.name ){
                     case 'skill':
                         message = `Activate the ${this.area.name} skill ability`;
                         break;
@@ -188,10 +238,11 @@
                 return this.saveDisabled ? "Choose your action" : message;
             },
 
+            /*
             message(){
                 if( !this.action ) return "Choose an action";
 
-                switch( this.action ){
+                switch( this.action.name ){
                     case 'skill':
                         return "Choose a skill to activate";
                         break;
@@ -209,52 +260,25 @@
                         break;
                 }
             },
-
-            validActions(){
-                let actions = [];
-
-                if( this.useableSkills.length ){
-                    actions.push( 'skill' );
-                }
-
-                if( this.canXavier ){
-                    actions.push( 'xavier' );
-                }
-
-                if( this.revealableTokens.length  ){
-                    actions.push( 'token' );
-                }
-
-                if( !this.activeTokens.length ){
-                    actions.push( 'pass' );
-                }
-
-                if( !this.revealableTokens.length && this.activeTokens.length ){
-                    actions.push( 'locked' );
-                }
-
-                return actions;
-            },
+             */
 
             area(){
-                return this.collection[this.areaIndex];
+                if( !this.action.area ) return;
+                return this.shared.data.areas[this.action.area];
             },
 
             firstToken(){
-                if( this.action === 'token' ){
-                    let area = this.collection[this.areaIndex];
-                    return this.firstUnrevealed( area );
+                if( this.action.name === 'token' ){
+                    return this.firstUnrevealed( this.area );
                 }
             },
 
-            collection(){
-                if( this.action === 'token' ) return this.revealableTokens;
-                if( this.action === 'skill' ) return this.useableSkills;
-                return [];
-            },
-
             activeTokens(){
-                return this.shared.faction.tokens.filter( token => token.location && token.revealed === false );
+                return this.shared.faction.tokens.filter(
+                    token => token.location
+                             && token.revealed === false
+                             && token.location !== 'xavier'
+                );
             },
 
             xavier(){
@@ -274,10 +298,10 @@
 
             revealableTokens(){
                 let areas = [];
-                _.forEach( this.shared.data.areas, (area, name) => {
+                _.forEach( this.shared.data.areas, area => {
                     let firstUnrevealed = this.firstUnrevealed( area );
                     if( firstUnrevealed && firstUnrevealed.faction === this.shared.faction.name ){
-                        areas.push( area );
+                        areas.push( area.name );
                     }
                 });
                 return areas;
@@ -292,7 +316,7 @@
 
                 _.forEach( this.shared.data.areas, area => {
                     if( !_.hasUsedSkill( this.shared.faction, area ) && _.find( this.shared.faction.units, unit => _.unitReadyInArea( unit, area ) ) ){
-                        areas.push( area );
+                        areas.push( area.name );
                     }
                 });
 

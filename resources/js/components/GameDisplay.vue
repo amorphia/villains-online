@@ -3,7 +3,10 @@
         <div v-if="shared.socket.disconnected" class="pos-absolute top-0 z-5 server-offline">
             <i class="icon-kill"></i>SERVER OFFLINE
         </div>
-        <component v-if="shared.player.prompt.name" :is="shared.player.prompt.name"></component>
+
+        <transition name="open">
+            <component v-if="shared.player.prompt.name" :is="shared.player.prompt.name"></component>
+        </transition>
         <view-combat></view-combat>
         <view-area></view-area>
         <view-player></view-player>

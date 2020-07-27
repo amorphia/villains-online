@@ -3,6 +3,7 @@
         <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="shared.event.emit( 'areaClicked', area )">
         <!-- Absolutes -->
 
+
             <!-- owner -->
             <img v-if="area.owner"
                  class="area-map__owner-portrait z-2"
@@ -56,6 +57,29 @@
                      :title="`the ${obj.faction} have ${obj.influence} influence in the ${area.name}`">{{ obj.influence }}</div>
             </div>
 
+            <!-- Xavier -->
+            <div v-if="showXavier" class="pos-absolute-center area-map__xavier z-6" @click.stop="emitXavier">
+                <unit-row  :units="[xavier]"></unit-row>
+            </div>
+
+
+            <!-- show actions -->
+            <transition name="fade">
+                <div v-if="actions.length"
+                     :class="{ closed : actionsClosed }"
+                     class="area-map__actions d-flex justify-center align-stretch z-7">
+                    <button @click="toggleCloseActions" class="toggle minimize-toggle top right">
+                        <i :class="actionsClosed ? 'icon-maximize' : 'icon-minimize'"></i>
+                    </button>
+                    <div class="area-map__actions-content ">
+                        <area-action v-for="action in actions"
+                                     :action="action"
+                                     :area="area"
+                                     :key="action"></area-action>
+                    </div>
+                </div>
+            </transition>
+
 
         <!-- Core Content -->
             <div class="width-100 height-100 area-map__core-content-container">
@@ -69,10 +93,7 @@
                     </div>
             </div>
 
-            <!-- Xavier -->
-            <div v-if="showXavier" class="pos-absolute-center area-map__xavier z-6" @click.stop="emitXavier">
-                <unit-row  :units="[xavier]"></unit-row>
-            </div>
+
 
             <!-- status icons -->
             <div class="area-map__stats-row pos-absolute bottom-0 width-100 flex-center shrink-0">
@@ -96,6 +117,7 @@
             return {
                 shared : App.state,
                 opacity : false,
+                actionsClosed : false,
             };
         },
         mounted(){
@@ -108,6 +130,10 @@
         },
 
         methods : {
+            toggleCloseActions(){
+                this.actionsClosed = !this.actionsClosed;
+                App.event.emit( 'sound', 'ui' );
+            },
             emitToken( token ){
                 this.shared.event.emit( 'tokenClicked', token );
             },
@@ -118,6 +144,17 @@
         },
 
         computed : {
+
+            actions(){
+                let actions = [];
+                if( !this.shared.actions ) return actions;
+
+                if( this.shared.actions.skill && this.shared.actions.skill.includes( this.area.name ) ) actions.push( 'skill' );
+                if( this.shared.actions.token && this.shared.actions.token.includes( this.area.name ) ) actions.push( 'token' );
+                if( this.shared.actions.xavier === this.area.name ) actions.push( 'xavier' );
+
+                return actions;
+            },
 
             showXavier(){
                 return this.shared.showXavier && this.xavier;
@@ -153,7 +190,13 @@
             },
 
             computedClasses(){
-                return `area-map-${this.area.name} ${this.opacity ? 'opacity-4' : ''}`;
+                let classes = `area-map-${this.area.name}`;
+
+                if( this.opacity || (this.shared.actions && !this.actions.length ) ){
+                    classes += ' opacity-4'
+                }
+
+                return classes;
             },
 
             stats(){
@@ -193,6 +236,49 @@
     .influence-marker {
         width: 1em;
         height: 1em;
+    }
+
+    .area-map__actions {
+        top: 55%;
+        transition: all .1s;
+        position: absolute;
+        right: 50%;
+        transform: translate(50%,-50%);
+        max-width: 95%;
+        max-height: 95%;
+    }
+
+    .area-map__actions .toggle {
+        transform: translateX(100%);
+        padding: .5rem;
+    }
+
+    .area-map__actions.closed {
+        right: 100%;
+        left: unset;
+        top: 0;
+        transform: translate(0, 0);
+    }
+
+    .area-map__actions-content {
+        display: flex;
+        padding: .5rem;
+        background-image: url(/images/background-blurred.jpg);
+        background-size: cover;
+        background-position: center;
+        max-height: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        opacity: 1;
+        transition: all .1s;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 10px 4px rgba(0,0,0,1);
+    }
+
+    .area-map__actions.closed .area-map__actions-content {
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
     }
 
     .area-map-container {

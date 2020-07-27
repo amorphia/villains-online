@@ -58,6 +58,8 @@ window.App.state = {
     game : null,
     player : null,
     faction : null,
+    actions : null,
+    action : null,
     card : null,
     token : null,
     showXavier : false,

@@ -3,7 +3,7 @@
  */
 
 .fade-enter-active, .fade-leave-active {
-    transition: all .05s;
+    transition: all .1s;
 }
 
 .fade-enter,
@@ -154,16 +154,11 @@
 **/
 
 .open-enter-active, .open-leave-active {
-    transition: max-height .5s;
-    overflow: hidden;
-}
-
-.open-enter-to, .open-leave {
-    max-height: 200vh;
-    overflow: hidden;
+    transition: max-height .2s;
+    max-height: 100vh;
 }
 
 .open-leave-to, .open-enter {
-    max-height: 0;
-    overflow: hidden;
+    max-height: 0vh;
+    opacity: 0;
 }

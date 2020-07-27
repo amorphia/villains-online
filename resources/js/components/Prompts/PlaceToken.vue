@@ -1,5 +1,5 @@
 <template>
-        <div v-if="shared.player.prompt.name === 'place-token'" class="place-token-top p-2 d-flex justify-center align-center">
+        <div class="place-token-top p-2 d-flex justify-center align-center">
             <button class="button button-empty place-token__button right-text" @click="passToken">PASS</button>
 
             <div class="place-token__tokens center-text">
@@ -187,6 +187,11 @@
 
 
 <style>
+
+    .place-token-top {
+        overflow: hidden;
+        transition: all .5s;
+    }
 
     .place-token {
         min-width: 40rem;

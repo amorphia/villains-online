@@ -2038,7 +2038,7 @@ a {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.05s;
+  transition: all 0.1s;
 }
 
 .fade-enter,
@@ -2180,20 +2180,14 @@ a {
 
 .open-enter-active,
 .open-leave-active {
-  transition: max-height 0.5s;
-  overflow: hidden;
-}
-
-.open-enter-to,
-.open-leave {
-  max-height: 200vh;
-  overflow: hidden;
+  transition: max-height 0.2s;
+  max-height: 100vh;
 }
 
 .open-leave-to,
 .open-enter {
-  max-height: 0;
-  overflow: hidden;
+  max-height: 0vh;
+  opacity: 0;
 }
 
 .login-button {
