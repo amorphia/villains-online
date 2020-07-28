@@ -296,6 +296,10 @@ class Faction {
         // remove replaced unit
         unit.location = null;
         if( unit.flipped ) unit.flipped = false;
+
+        if( this.game().combat ){
+            this.game().combat.removeUnitFromCombat( unit );
+        }
     }
 
     discardCard( card ){

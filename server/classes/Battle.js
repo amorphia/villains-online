@@ -8,7 +8,6 @@ class Battle {
         factionIndex : 0,
         areaName : null,
         currentUnit : null,
-        attackingUnits : {},
         factions : [],
         attacks : {},
         lastAttack : null,
@@ -56,7 +55,6 @@ class Battle {
 
         this.data.factionIndex = 0;
         this.data.currentUnit = null;
-        this.data.attackingUnits = {};
         this.data.factions = [];
         this.data.title = firstStrikePhase ? 'Resolving First Strike Attacks' : 'Resolving Attacks';
 
@@ -128,6 +126,14 @@ class Battle {
         });
 
         this.data.factions.sort( (a,b) => a.order - b.order );
+    }
+
+    removeUnitFromCombat( unit ){
+        if( unit.needsToAttack ) unit.needsToAttack = false;
+        for( let faction of this.data.factions ){
+            if( faction.name !== unit.faction ) continue;
+            faction.units = faction.units.filter( item => item.id !== unit.id );
+        }
     }
 
 }

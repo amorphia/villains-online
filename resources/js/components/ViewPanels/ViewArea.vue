@@ -102,11 +102,9 @@
 
 
 <script>
-    import UnitRow from "../Units/UnitRow";
     export default {
 
         name: 'view-area',
-        components: {UnitRow},
         data() {
             return {
                 shared : App.state,

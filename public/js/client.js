@@ -8847,7 +8847,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Units_UnitRow__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Units/UnitRow */ "./resources/js/components/Units/UnitRow.vue");
 //
 //
 //
@@ -8951,12 +8950,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-area',
-  components: {
-    UnitRow: _Units_UnitRow__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
   data: function data() {
     return {
       shared: App.state,
@@ -9127,12 +9122,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-combat',
   data: function data() {
     return {
-      shared: App.state
+      shared: App.state,
+      open: true
     };
+  },
+  watch: {
+    combat: function combat() {
+      if (this.combat) this.open = true;
+    }
   },
   computed: {
     area: function area() {
@@ -11522,7 +11525,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.view-combat {\n     background-image : url('/images/factory-background.jpg');\n     background-position: center;\n     background-size: cover;\n     z-index: 2;\n     font-size: 1.4rem;\n     color: var(--primary-light-color);\n}\n.last-attack-needs {\n     font-size: .7em;\n     color: var(--primary-light-color);\n     position: relative;\n     bottom: .15em;\n     left: .2rem;\n}\n.view-combat__last-attack {\n     color: var(--highlight-color);\n     background-image: url(/images/background-blurred.jpg);\n     background-position: center;\n     background-size: cover;\n     background-repeat: no-repeat;\n     border-radius: 1rem;\n     border: 1px solid white;\n     box-shadow: 0 0 0.5rem 0.2rem black;\n     padding: .5rem;\n     top: 40%;\n}\n.view-combat__last-attack .unit-hud__unit-image {\n     border: 2px solid;\n     box-shadow: 0 0 .4rem .2rem black;\n}\n.view-combat__last-attack-roll{\n    width: 4.55rem;\n    margin: 0 .1rem;\n}\n.view-combat__header {\n     width: 100%;\n     background-size: cover;\n     background-position: center bottom;\n     background-repeat: no-repeat;\n     min-height: 9rem;\n}\n.view-combat__body {\n     min-height: 28rem;\n     padding-top: 0;\n}\n\n\n\n", ""]);
+exports.push([module.i, "\n.view-combat {\n     background-image : url('/images/factory-background.jpg');\n     background-position: center;\n     background-size: cover;\n     z-index: 2;\n     font-size: 1.4rem;\n     color: var(--primary-light-color);\n     transition: transform .2s;\n}\n.last-attack-needs {\n     font-size: .7em;\n     color: var(--primary-light-color);\n     position: relative;\n     bottom: .15em;\n     left: .2rem;\n}\n.view-combat__last-attack {\n     color: var(--highlight-color);\n     background-image: url(/images/background-blurred.jpg);\n     background-position: center;\n     background-size: cover;\n     background-repeat: no-repeat;\n     border-radius: 1rem;\n     border: 1px solid white;\n     box-shadow: 0 0 0.5rem 0.2rem black;\n     padding: .5rem;\n     top: 40%;\n}\n.view-combat__last-attack .unit-hud__unit-image {\n     border: 2px solid;\n     box-shadow: 0 0 .4rem .2rem black;\n}\n.view-combat__last-attack-roll{\n    width: 4.55rem;\n    margin: 0 .1rem;\n}\n.view-combat__header {\n     width: 100%;\n     background-size: cover;\n     background-position: center bottom;\n     background-repeat: no-repeat;\n     min-height: 9rem;\n}\n.view-combat__body {\n     min-height: 28rem;\n     padding-top: 0;\n}\n.view-combat.closed {\n     transform: translate(-100%,0);\n}\n.view-combat .minimize-toggle {\n     font-size: 1rem;\n     padding: .75rem;\n}\n.view-combat.closed .minimize-toggle {\n     transform: translate(100%,0);\n}\n\n", ""]);
 
 // exports
 
@@ -60652,164 +60655,200 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("transition", { attrs: { name: "right" } }, [
-    _vm.shared.data.combat
+    _vm.combat
       ? _c(
           "div",
           {
             staticClass:
-              "view-combat pos-absolute width-100 height-100 p-5 top-0 overflow-auto z-4"
+              "view-combat pos-absolute width-100 height-100 top-0 z-4",
+            class: { closed: !_vm.open }
           },
           [
-            _c("div", { staticClass: "d-flex align-stretch" }, [
-              _c(
-                "div",
-                {
-                  staticClass: "view-area__main-content width-35 pt-2 pr-5 pb-6"
-                },
-                [
-                  _c("div", { staticClass: "title" }, [
-                    _vm._v(_vm._s(_vm.combat.title))
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "faction-list" },
-                    _vm._l(_vm.combat.factions, function(faction) {
-                      return _c("combat-faction", {
-                        key: faction.name,
-                        attrs: { faction: faction, combat: _vm.combat }
-                      })
-                    }),
-                    1
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass:
-                    "view-player__main-content width-65 pt-2 pr-5 pb-3 h-100"
-                },
-                [
+            _c(
+              "button",
+              {
+                staticClass: "toggle minimize-toggle top right",
+                on: {
+                  click: function($event) {
+                    _vm.open = !_vm.open
+                  }
+                }
+              },
+              [
+                _c("i", {
+                  class: !_vm.open ? "icon-maximize" : "icon-minimize"
+                })
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "width-100 height-100 overflow-auto p-5" },
+              [
+                _c("div", { staticClass: "d-flex align-stretch" }, [
                   _c(
                     "div",
                     {
-                      staticClass: "p-0 width-100 view-area__area pos-relative",
-                      class: "area-" + _vm.area.name
+                      staticClass:
+                        "view-area__main-content width-35 pt-2 pr-5 pb-6"
+                    },
+                    [
+                      _c("div", { staticClass: "title" }, [
+                        _vm._v(_vm._s(_vm.combat.title))
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "faction-list" },
+                        _vm._l(_vm.combat.factions, function(faction) {
+                          return _c("combat-faction", {
+                            key: faction.name,
+                            attrs: { faction: faction, combat: _vm.combat }
+                          })
+                        }),
+                        1
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "view-player__main-content width-65 pt-2 pr-5 pb-3 h-100"
                     },
                     [
                       _c(
                         "div",
                         {
-                          staticClass: "toggle area-map__toggle top-0 right-0",
-                          on: {
-                            click: function($event) {
-                              $event.stopPropagation()
-                              return _vm.shared.event.emit("viewArea", _vm.area)
-                            }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-zoom_in" })]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
                           staticClass:
-                            "view-combat__header area-zoom__header p-4 pos-relative grow-0 shrink-0"
+                            "p-0 width-100 view-area__area pos-relative",
+                          class: "area-" + _vm.area.name
                         },
                         [
-                          _vm.combat.lastAttack
-                            ? _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "view-combat__last-attack center-text pos-absolute-center d-flex flex-wrap align-center justify-center"
-                                },
-                                [
-                                  _c(
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "toggle area-map__toggle top-0 right-0",
+                              on: {
+                                click: function($event) {
+                                  $event.stopPropagation()
+                                  return _vm.shared.event.emit(
+                                    "viewArea",
+                                    _vm.area
+                                  )
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "icon-zoom_in" })]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "view-combat__header area-zoom__header p-4 pos-relative grow-0 shrink-0"
+                            },
+                            [
+                              _vm.combat.lastAttack
+                                ? _c(
                                     "div",
-                                    { staticClass: "width-100 uppercase" },
+                                    {
+                                      staticClass:
+                                        "view-combat__last-attack center-text pos-absolute-center d-flex flex-wrap align-center justify-center"
+                                    },
                                     [
-                                      _vm._v("last attack "),
                                       _c(
-                                        "span",
-                                        { staticClass: "last-attack-needs" },
+                                        "div",
+                                        { staticClass: "width-100 uppercase" },
                                         [
-                                          _vm._v(
-                                            "needing " +
-                                              _vm._s(
-                                                _vm.combat.lastAttack.toHit
+                                          _vm._v("last attack "),
+                                          _c(
+                                            "span",
+                                            {
+                                              staticClass: "last-attack-needs"
+                                            },
+                                            [
+                                              _vm._v(
+                                                "needing " +
+                                                  _vm._s(
+                                                    _vm.combat.lastAttack.toHit
+                                                  )
                                               )
+                                            ]
                                           )
                                         ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("unit-icon", {
+                                        attrs: {
+                                          unit: _vm.lastAttackUnit,
+                                          noSelect: "true",
+                                          classes:
+                                            "faction-" +
+                                            _vm.combat.lastAttack.faction +
+                                            " mr-3"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _vm._l(
+                                        _vm.combat.lastAttack.rolls,
+                                        function(roll) {
+                                          return _c("img", {
+                                            staticClass:
+                                              "view-combat__last-attack-roll",
+                                            class: {
+                                              "saturate-0":
+                                                roll <
+                                                _vm.combat.lastAttack.toHit
+                                            },
+                                            attrs: {
+                                              src:
+                                                "/images/icons/attack-" +
+                                                roll +
+                                                ".png"
+                                            }
+                                          })
+                                        }
                                       )
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c("unit-icon", {
-                                    attrs: {
-                                      unit: _vm.lastAttackUnit,
-                                      noSelect: "true",
-                                      classes:
-                                        "faction-" +
-                                        _vm.combat.lastAttack.faction +
-                                        " mr-3"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _vm._l(_vm.combat.lastAttack.rolls, function(
-                                    roll
-                                  ) {
-                                    return _c("img", {
-                                      staticClass:
-                                        "view-combat__last-attack-roll",
-                                      class: {
-                                        "saturate-0":
-                                          roll < _vm.combat.lastAttack.toHit
-                                      },
-                                      attrs: {
-                                        src:
-                                          "/images/icons/attack-" +
-                                          roll +
-                                          ".png"
-                                      }
-                                    })
-                                  })
-                                ],
-                                2
-                              )
-                            : _vm._e()
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "view-combat__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap"
-                        },
-                        _vm._l(_vm.combat.factions, function(faction) {
-                          return _c(
+                                    ],
+                                    2
+                                  )
+                                : _vm._e()
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
                             "div",
-                            { staticClass: "unit-row flex-center flex-wrap" },
-                            _vm._l(faction.units, function(unit) {
-                              return _c("unit-combat", {
-                                key: unit.id,
-                                attrs: { unit: unit }
-                              })
+                            {
+                              staticClass:
+                                "view-combat__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap"
+                            },
+                            _vm._l(_vm.combat.factions, function(faction) {
+                              return _c(
+                                "div",
+                                {
+                                  staticClass: "unit-row flex-center flex-wrap"
+                                },
+                                _vm._l(faction.units, function(unit) {
+                                  return _c("unit-combat", {
+                                    key: unit.id,
+                                    attrs: { unit: unit }
+                                  })
+                                }),
+                                1
+                              )
                             }),
-                            1
+                            0
                           )
-                        }),
-                        0
+                        ]
                       )
                     ]
                   )
-                ]
-              )
-            ])
+                ])
+              ]
+            )
           ]
         )
       : _vm._e()

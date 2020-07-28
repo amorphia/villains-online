@@ -8,14 +8,15 @@ let obj = {
             return;
         }
 
-        let combat = new Battle( area, this, options );
-        this.data.combat = combat.data;
+        this.combat = new Battle( area, this, options );
+        this.data.combat = this.combat.data;
         this.message({ message : `A battle begins in the ${area.name}`, class : 'highlight' });
-        await combat.init();
+        await this.combat.init();
         this.message({ message :  `The battle in the ${area.name} concludes`, class : 'highlight' });
 
         this.updateAll();
         await this.wait( 3 );
+        this.combat = null;
         this.data.combat = null;
     },
 
