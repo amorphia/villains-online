@@ -32,15 +32,9 @@
                             </div>
 
                             <div class="view-combat__header area-zoom__header p-4 pos-relative grow-0 shrink-0">
+
                                 <!-- last attack -->
-                                <div v-if="combat.lastAttack" class="view-combat__last-attack center-text pos-absolute-center d-flex flex-wrap align-center justify-center">
-                                    <div class="width-100 uppercase">last attack <span class="last-attack-needs">needing {{ combat.lastAttack.toHit }}</span></div>
-                                   <unit-icon :unit="lastAttackUnit" noSelect="true" :classes="`faction-${combat.lastAttack.faction} mr-3`"></unit-icon>
-                                    <img v-for="roll in combat.lastAttack.rolls"
-                                         class="view-combat__last-attack-roll"
-                                         :class="{'saturate-0' : roll < combat.lastAttack.toHit}"
-                                         :src="`/images/icons/attack-${roll}.png`">
-                                </div>
+                                <last-attack :attack="combat.lastAttack"></last-attack>
                             </div>
 
 
@@ -86,12 +80,7 @@
          combat(){
              return this.shared.data.combat;
          },
-         lastAttackUnit(){
-             if( ! this.combat.lastAttack ) return;
-             return this.shared.data.factions[this.combat.lastAttack.faction].units.find(
-                 unit => unit.id === this.combat.lastAttack.unit
-             );
-         }
+
      },
 
      methods : {
@@ -113,39 +102,10 @@
      z-index: 2;
      font-size: 1.4rem;
      color: var(--primary-light-color);
-     transition: transform .2s;
+     transition: transform .3s;
  }
 
- .last-attack-needs {
-     font-size: .7em;
-     color: var(--primary-light-color);
-     position: relative;
-     bottom: .15em;
-     left: .2rem;
- }
 
- .view-combat__last-attack {
-     color: var(--highlight-color);
-     background-image: url(/images/background-blurred.jpg);
-     background-position: center;
-     background-size: cover;
-     background-repeat: no-repeat;
-     border-radius: 1rem;
-     border: 1px solid white;
-     box-shadow: 0 0 0.5rem 0.2rem black;
-     padding: .5rem;
-     top: 40%;
- }
-
- .view-combat__last-attack .unit-hud__unit-image {
-     border: 2px solid;
-     box-shadow: 0 0 .4rem .2rem black;
- }
-
-.view-combat__last-attack-roll{
-    width: 4.55rem;
-    margin: 0 .1rem;
-}
 
  .view-combat__header {
      width: 100%;

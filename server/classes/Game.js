@@ -187,8 +187,8 @@ class Game {
         Server.message( this.data.id, message );
     }
 
-    popup( popup ){
-        Server.popup( this.data.id, popup );
+    popup( player, popup ){
+        Server.popup( player, this.data.id, popup );
     }
 
     messagePlayer( player, message ){

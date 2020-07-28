@@ -121,6 +121,7 @@ let obj = {
             attackResult = {
                 unit : args.unit.id,
                 faction : args.unit.faction,
+                victim : victim.name,
                 rolls : rolls,
                 toHit : toHit,
                 hits : hits

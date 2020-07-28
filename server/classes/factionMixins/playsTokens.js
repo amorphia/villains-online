@@ -6,7 +6,7 @@ let obj = {
         token.revealed = true;
 
         this.game().message({ message: 'reveal', type : 'reveal-token', faction : this, token : token });
-        this.game().popup({ token : token, area : area.name, faction: this.name });
+        this.game().popup( player, { token : token, area : area.name, faction: this.name });
 
         await this.onAfterReveal( token );
 

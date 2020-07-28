@@ -19,10 +19,10 @@
                 </div>
 
                 <div class="view-player__title">Control Ability</div>
-                <div class="p-3 primary-light">{{ area.control }}</div>
+                <div class="p-3 primary-light" v-html="shared.filterText( area.control )"></div>
 
                 <div class="view-player__title">Skill Ability</div>
-                <div class="p-3 primary-light">{{ area.skill }}</div>
+                <div class="p-3 primary-light" v-html="shared.filterText( area.skill )"></div>
 
                 <div class="view-player__title">Influence</div>
                 <div class="view-area__influence-container">

@@ -31,6 +31,12 @@
             };
         },
 
+        watch : {
+            actions(){
+                this.closed = false;
+            }
+        },
+
         methods : {
             toggleClose(){
                 this.closed = !this.closed;

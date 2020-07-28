@@ -6,9 +6,15 @@
       <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewArea.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewArea.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewCombat.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewCombat.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/Battle.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Battle.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/combat.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/combat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/areas/AreaActions.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/areas/AreaActions.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/areas/AreaMap.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/areas/AreaMap.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/areas/AreaPopup.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/areas/AreaPopup.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/activatesSkills.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/activatesSkills.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/games.db" beforeDir="false" afterPath="$PROJECT_DIR$/server/games.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -192,9 +198,9 @@
       <recent name="D:\Websites\villains-online\resources\js\partials" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Websites\villains-online\resources\js\components\ViewPanels" />
       <recent name="D:\Websites\villains-online\resources\js\components\areas" />
       <recent name="D:\Websites\villains-online\resources\js\components\Prompts" />
-      <recent name="D:\Websites\villains-online\resources\js\components\ViewPanels" />
       <recent name="D:\Websites\villains-online\resources\js\components\Huds" />
       <recent name="D:\Websites\villains-online\resources\js\components\Units" />
     </key>
@@ -237,7 +243,7 @@
       <workItem from="1591223441450" duration="81406000" />
       <workItem from="1591417607847" duration="235785000" />
       <workItem from="1592157951059" duration="164940000" />
-      <workItem from="1594834562760" duration="244663000" />
+      <workItem from="1594834562760" duration="248479000" />
     </task>
     <servers />
   </component>
@@ -277,10 +283,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1595956463032">
+    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1595969139019">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1595956463032" />
+    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1595969139019" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1595179883912">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

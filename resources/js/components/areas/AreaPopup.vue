@@ -42,9 +42,14 @@
 
         computed : {
             image(){
+
+                if( this.popup.place ){
+                    return `/images/factions/${this.popup.faction}/tokens/back.png`;
+                }
+
                 if( this.popup.token ){
                     let token = this.popup.token;
-                    return `/images/factions/${token.faction}/tokens/${token.type}.png`;
+                    return `/images/factions/${token.faction}/tokens/${token.name}.png`;
                 }
 
                 if( this.popup.skill ){

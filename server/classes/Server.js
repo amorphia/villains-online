@@ -159,8 +159,9 @@ class Server {
         this.io.to( room ).emit( 'message', message );
     }
 
-    popup( room, popup ){
-        this.io.to( room ).emit( 'popup', popup );
+    popup( player, room, popup ){
+        if( typeof player === 'string' ) player = this.players[player];
+        player.socket().to( room ).emit( 'popup', popup  );
     }
 
     removePlayer( socket ) {

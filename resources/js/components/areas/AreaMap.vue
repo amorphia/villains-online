@@ -3,7 +3,6 @@
         <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="shared.event.emit( 'areaClicked', area )">
         <!-- Absolutes -->
 
-
             <!-- owner -->
             <img v-if="area.owner"
                  class="area-map__owner-portrait z-2"
@@ -67,7 +66,7 @@
             <area-actions :area="area"></area-actions>
 
             <!-- area popups -->
-            <area-popup :area="area"></area-popup>
+            <area-popup :area="area" v-if="!hasActions"></area-popup>
 
         <!-- Core Content -->
             <div class="width-100 height-100 area-map__core-content-container">
@@ -96,11 +95,9 @@
 
 
 <script>
-    import AreaPopup from "./AreaPopup";
     export default {
 
         name: 'area-map',
-        components: {AreaPopup},
         props: ['area', 'classes'],
 
         data() {
