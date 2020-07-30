@@ -19,8 +19,6 @@ class Vampires extends Faction {
 
 
         // tokens
-        this.tokens['deploy'].count = 4;
-
         this.tokens['feast'] = {
             count: 1,
             data: {
@@ -34,7 +32,7 @@ class Vampires extends Faction {
         this.units['goon'].data.onHit = 'becomeVampire';
         this.units['talent'].data.onHit = 'becomeVampire';
         this.units['mole'].data.onHit = 'becomeVampire';
-        this.units['patsy'].count = 5;
+        this.units['patsy'].count = 6;
         this.units['patsy'].data.onHit = 'becomeVampire';
         this.units['patsy'].data.attack = [9];
 

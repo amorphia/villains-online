@@ -41,7 +41,7 @@
                 }
 
                 if( ( this.token && this.token.selected )
-                    || this.forcedtoken
+                    || this.forcedtoken && this.forcedtoken.faction
                     || this.highlight ){
                     classes.push( 'selected' );
                 }
@@ -66,7 +66,7 @@
                     token = this.token;
                     image = 'back';
                     if (token.revealed || this.canSeeToken ) image = token.name;
-                } else if( this.forcedtoken ){
+                } else if( this.forcedtoken && this.forcedtoken.faction ){
                     token = this.forcedtoken;
                     image = token.name;
                 }

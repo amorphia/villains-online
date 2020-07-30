@@ -8163,7 +8163,7 @@ __webpack_require__.r(__webpack_exports__);
         classes.push("".concat(this.area.name, "-").concat(this.index));
       }
 
-      if (this.token && this.token.selected || this.forcedtoken || this.highlight) {
+      if (this.token && this.token.selected || this.forcedtoken && this.forcedtoken.faction || this.highlight) {
         classes.push('selected');
       }
 
@@ -8181,7 +8181,7 @@ __webpack_require__.r(__webpack_exports__);
         token = this.token;
         image = 'back';
         if (token.revealed || this.canSeeToken) image = token.name;
-      } else if (this.forcedtoken) {
+      } else if (this.forcedtoken && this.forcedtoken.faction) {
         token = this.forcedtoken;
         image = token.name;
       }
