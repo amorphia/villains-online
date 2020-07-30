@@ -9494,6 +9494,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   watch: {
+    'shared.socket.disconnected': function sharedSocketDisconnected() {
+      if (this.shared.socket.disconnected) this.clearGame();
+    },
     'shared.game': function sharedGame() {
       if (this.shared.playerIndex === null) {
         this.setPlayerIndex();
@@ -9552,6 +9555,13 @@ __webpack_require__.r(__webpack_exports__);
 
       this.shared.factionName = faction;
     },
+    clearGame: function clearGame() {
+      this.shared.data = null;
+      this.shared.faction = null;
+      this.shared.factionName = null;
+      this.shared.player = null;
+      this.shared.game = null;
+    },
     initCoreSocketFunctions: function initCoreSocketFunctions() {
       var _this4 = this;
 
@@ -9564,12 +9574,7 @@ __webpack_require__.r(__webpack_exports__);
         _this4.shared.saveGame = game;
       }); // listen for concluded game
 
-      this.shared.socket.on('clearGame', function () {
-        _this4.shared.data = null;
-        _this4.faction = null;
-        _this4.factionName = null;
-        _this4.player = null;
-      }); // listen for full game data update
+      this.shared.socket.on('clearGame', this.clearGame); // listen for full game data update
 
       this.shared.socket.on('update', function (data) {
         App.event.emit('unselectAreas');

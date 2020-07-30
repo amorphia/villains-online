@@ -23,15 +23,19 @@
         },
 
         watch : {
-          'shared.game' : function(){
-              if( this.shared.playerIndex === null ){
-                  this.setPlayerIndex()
-              }
+            'shared.socket.disconnected' : function(){
+                if( this.shared.socket.disconnected ) this.clearGame();
+            },
 
-              if( this.shared.factionName === null ){
-                  this.setPlayerFactionName()
-              }
-          },
+              'shared.game' : function(){
+                  if( this.shared.playerIndex === null ){
+                      this.setPlayerIndex()
+                  }
+
+                  if( this.shared.factionName === null ){
+                      this.setPlayerFactionName()
+                  }
+              },
         },
 
         created(){
@@ -84,6 +88,14 @@
                 this.shared.factionName = faction;
             },
 
+            clearGame(){
+                this.shared.data = null;
+                this.shared.faction = null;
+                this.shared.factionName = null;
+                this.shared.player = null;
+                this.shared.game = null;
+            },
+
             initCoreSocketFunctions(){
                 // listen for open games
                 this.shared.socket.on( 'openGame', game => {
@@ -96,12 +108,7 @@
                 });
 
                 // listen for concluded game
-                this.shared.socket.on( 'clearGame', () => {
-                    this.shared.data = null;
-                    this.faction = null;
-                    this.factionName = null;
-                    this.player = null;
-                });
+                this.shared.socket.on( 'clearGame', this.clearGame );
 
                 // listen for full game data update
                 this.shared.socket.on( 'update', data => {

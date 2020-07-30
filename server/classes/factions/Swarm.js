@@ -65,7 +65,7 @@ class Swarm extends Faction {
 
         mods.push({
             type: 'goonDeflect',
-            text: `Goons attacking The Swarm throw one fewer dice`
+            text: `Units attacking The Swarm throw one fewer dice (to a minimum of 1)`
         });
 
         if ( this.data.factionDefenseBonus ) {

@@ -105,8 +105,8 @@ let obj = {
             return;
         }
 
-        // swarm goon defense mod
-        if( args.unit && victim.name === 'swarm' && args.unit.type === 'goon' ){
+        // swarm multi dice defense mod
+        if( args.unit && victim.name === 'swarm' && args.attacks.length > 1 ){
             args.attacks = args.attacks.slice(1);
         }
 
