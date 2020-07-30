@@ -5,6 +5,7 @@ class PlanTester {
     test( faction, plan ){
 
         if( this.debug ){
+            console.log('');
             console.log(
                 'plan:', plan.name,
                 'faction:', faction.name
@@ -37,7 +38,7 @@ class PlanTester {
 
         let returnData = {
             points : scorablePoints,
-            tests : results,
+            objectives : results,
             plan : plan,
             selected : scorablePoints > 0
         };
@@ -129,7 +130,7 @@ class PlanTester {
             if( faction.influenceInArea( area ) >= influenceCount ) areasWithEnoughInfluence++;
         });
 
-        let result = areasWithEnoughInfluence >= areaCount
+        let result = areasWithEnoughInfluence >= areaCount;
 
         if( this.debug ) console.log(
             'influenceInAreas',
@@ -180,7 +181,7 @@ class PlanTester {
             }) ) factionCount++;
         });
 
-        let result = count >= areaCount;
+        let result = factionCount >= areaCount;
 
         if( this.debug ) console.log(
             'tokensInAreas',

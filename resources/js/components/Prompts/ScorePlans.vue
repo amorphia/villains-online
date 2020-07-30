@@ -4,7 +4,7 @@
             <div class="width-100 d-flex justify-center flex-column align-center">
                 <div class="title mb-4">{{ message }}</div>
 
-                <horizontal-scroll classes="plans-wrap d-flex pb-3">
+                <horizontal-scroll classes="plans-wrap d-flex pb-3 width-100">
                     <plan-block v-if="mode === 'plans'" v-for="plan in data.plans"
                                 :faction="shared.faction"
                                 :plan="plan"
@@ -104,8 +104,10 @@
 
             cardsToDiscard(){
                 return this.selectedPlans.reduce( (acc, plan) => {
-                    for( let test of plan.tests ){
-                        if( test.passed && test.discardCards ) acc += test.discardCards;
+                    for( let objective of plan.objectives ){
+                        for( let test of objective.tests ) {
+                            if (test.result && test.discardCards) acc += test.discardCards;
+                        }
                     }
                     return acc;
                 }, 0 );

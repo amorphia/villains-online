@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex justify-center height-100">
+    <div class="horizontal-scroll d-flex justify-center height-100">
         <button v-if="addButtons" class="flipper" @click="scroll( -1 )"><i class="icon-left"></i></button>
         <div class="width-100 horizontal-scroll" ref="container" :class="classes" @wheel="wheel">
         <slot></slot>
@@ -76,6 +76,8 @@
 
 
 <style>
-
+    .horizontal-scroll {
+        max-width: 100%;
+    }
 </style>
 

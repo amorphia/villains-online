@@ -4,6 +4,7 @@ const PlanTester = require( "./PlanTester" );
 class Game {
 
     titleCardTimer = 3;
+    debug = true;
 
     static events = [
         'leaveGame',
