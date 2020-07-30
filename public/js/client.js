@@ -3035,12 +3035,10 @@ __webpack_require__.r(__webpack_exports__);
       return Object.keys(this.shared.game.players).length;
     },
     canJoin: function canJoin() {
-      if (true) return true;
       return this.currentPlayerCount < 5;
     },
     canStart: function canStart() {
-      if (true) return true;
-      return this.currentPlayerCount >= 3 && this.currentPlayerCount <= 5;
+      return this.currentPlayerCount >= 2 && this.currentPlayerCount <= 5;
     },
     joinedGame: function joinedGame() {
       for (var player in this.shared.game.players) {
