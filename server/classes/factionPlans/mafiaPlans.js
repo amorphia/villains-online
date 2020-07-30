@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: "An Offer You Can't Refuse",
         num : 1,
         faction : 'mafia',
         objectives : [
@@ -12,6 +13,7 @@ let obj = [
         ]
     },
     {
+        name: 'Set Up an Executive Game',
         num : 2,
         faction : 'mafia',
         objectives : [
@@ -31,6 +33,7 @@ let obj = [
     },
 
     {
+        name: 'Blackmail Some Dirty Cops',
         num : 3,
         faction : 'mafia',
         objectives : [
@@ -50,6 +53,7 @@ let obj = [
     },
 
     {
+        name: 'Collect Ghost Payrolls',
         num : 4,
         faction : 'mafia',
         objectives : [
@@ -75,6 +79,7 @@ let obj = [
     },
 
     {
+        name: 'Aggressive Loansharking',
         num : 5,
         faction : 'mafia',
         objectives : [
@@ -100,6 +105,7 @@ let obj = [
     },
 
     {
+        name: 'Senatorial Extortion',
         num : 6,
         faction : 'mafia',
         objectives : [
@@ -125,6 +131,7 @@ let obj = [
     },
 
     {
+        name: 'Expand Our Numbers Racket',
         num : 7,
         faction : 'mafia',
         objectives : [
@@ -150,6 +157,7 @@ let obj = [
     },
 
     {
+        name: 'Time to Come Heavy',
         num : 8,
         faction : 'mafia',
         objectives : [

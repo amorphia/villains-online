@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: 'Forward, To Victory!',
         num : 1,
         faction : 'commies',
         objectives : [
@@ -26,6 +27,7 @@ let obj = [
     },
 
     {
+        name: 'Eat the Rich!',
         num : 2,
         faction : 'commies',
         objectives : [
@@ -51,6 +53,7 @@ let obj = [
     },
 
     {
+        name: 'The First Up Against The Wall!',
         num : 3,
         faction : 'commies',
         objectives : [
@@ -71,6 +74,7 @@ let obj = [
     },
 
     {
+        name: 'No War But Class War!',
         num : 4,
         faction : 'commies',
         objectives : [
@@ -91,6 +95,7 @@ let obj = [
     },
 
     {
+        name: 'Workers of the World, Unite!',
         num : 5,
         faction : 'commies',
         objectives : [
@@ -111,6 +116,7 @@ let obj = [
     },
 
     {
+        name: 'Property is Theft!',
         num : 6,
         faction : 'commies',
         objectives : [
@@ -131,6 +137,7 @@ let obj = [
     },
 
     {
+        name: 'Seize the Means of Production!',
         num : 7,
         faction : 'commies',
         objectives : [
@@ -145,6 +152,7 @@ let obj = [
     },
 
     {
+        name: 'Nothing to Lose, But Your Chains!',
         num : 8,
         faction : 'commies',
         objectives : [

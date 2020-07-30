@@ -22,6 +22,7 @@ class Faction {
         // core stats
         deployLimit : 2,
         cardDraw : 3,
+        planLimit : 8,
 
         // money
         resources : 0,
@@ -240,7 +241,7 @@ class Faction {
     }
 
     drawPlans(){
-        let toDraw = 3 - this.data.plans.current.length;
+        let toDraw = this.data.planLimit - this.data.plans.current.length;
         for( let i = 0; i < toDraw; i++ ){
             this.drawPlan();
         }

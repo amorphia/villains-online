@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: 'Test the Death Ray',
         num : 1,
         faction : 'scientists',
         objectives : [
@@ -20,6 +21,7 @@ let obj = [
     },
 
     {
+        name: 'Dissect the Mind of God',
         num : 2,
         faction : 'scientists',
         objectives : [
@@ -40,6 +42,7 @@ let obj = [
     },
 
     {
+        name: 'Ascend Beyond Morality',
         num : 3,
         faction : 'scientists',
         objectives : [
@@ -60,6 +63,7 @@ let obj = [
     },
 
     {
+        name: 'Doomsday Device Research',
         num : 4,
         faction : 'scientists',
         objectives : [
@@ -80,6 +84,7 @@ let obj = [
     },
 
     {
+        name: 'Post-Human Ascension',
         num : 5,
         faction : 'scientists',
         objectives : [
@@ -100,6 +105,7 @@ let obj = [
     },
 
     {
+        name: 'And They Called Me Mad...',
         num : 6,
         faction : 'scientists',
         objectives : [
@@ -120,6 +126,7 @@ let obj = [
     },
 
     {
+        name: 'Enter the Final Infinite',
         num : 7,
         faction : 'scientists',
         objectives : [
@@ -133,6 +140,7 @@ let obj = [
     },
 
     {
+        name: 'What Man Was Not Meant to Know',
         num : 8,
         faction : 'scientists',
         objectives : [

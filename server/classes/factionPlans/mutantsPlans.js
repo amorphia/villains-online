@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: 'The Endless Spills',
         num : 1,
         faction : 'mutants',
         objectives : [
@@ -12,6 +13,7 @@ let obj = [
         ]
     },
     {
+        name: 'Found a Sludge Nest',
         num : 2,
         faction : 'mutants',
         objectives : [
@@ -31,6 +33,7 @@ let obj = [
         ]
     },
     {
+        name: 'Rise of the Deformed',
         num : 3,
         faction : 'mutants',
         objectives : [
@@ -55,6 +58,7 @@ let obj = [
         ]
     },
     {
+        name: 'Poison the Shadows',
         num : 4,
         faction : 'mutants',
         objectives : [
@@ -79,6 +83,7 @@ let obj = [
         ]
     },
     {
+        name: 'Pollute the Overworld',
         num : 5,
         faction : 'mutants',
         objectives : [
@@ -97,6 +102,7 @@ let obj = [
         ]
     },
     {
+        name: 'Spread the Foul Truths',
         num : 6,
         faction : 'mutants',
         objectives : [
@@ -121,6 +127,7 @@ let obj = [
         ]
     },
     {
+        name: 'Taint the Beautiful',
         num : 7,
         faction : 'mutants',
         objectives : [
@@ -145,6 +152,7 @@ let obj = [
         ]
     },
     {
+        name: 'Release the Forever Smog',
         num : 8,
         faction : 'mutants',
         objectives : [

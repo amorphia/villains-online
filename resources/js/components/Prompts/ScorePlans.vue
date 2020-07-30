@@ -32,11 +32,9 @@
 
 <script>
 
-    import HorizontalScroll from "../UI/HorizontalScroll";
     export default {
 
         name: 'score-plans',
-        components: {HorizontalScroll},
         data() {
             return {
                 shared : App.state,
@@ -106,7 +104,9 @@
 
             cardsToDiscard(){
                 return this.selectedPlans.reduce( (acc, plan) => {
-                    if( plan.discardCards )acc += plan.discardCards;
+                    for( let test of plan.tests ){
+                        if( test.passed && test.discardCards ) acc += test.discardCards;
+                    }
                     return acc;
                 }, 0 );
             },

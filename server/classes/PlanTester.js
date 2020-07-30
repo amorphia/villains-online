@@ -1,9 +1,17 @@
 class PlanTester {
 
+    debug = true;
+
     test( faction, plan ){
 
+        if( this.debug ){
+            console.log(
+                'plan:', plan.name,
+                'faction:', faction.name
+            );
+        }
+
         let results = [];
-        let discardCards = 0;
 
         // for each objective
         plan.objectives.forEach( objective => {
@@ -16,10 +24,10 @@ class PlanTester {
                     tests.push({ test: req.test, result : false });
                     passed = false;
                 } else {
-                    tests.push({ test: req.test, result : true });
+                    let testObject = { test: req.test, result : true };
+                    if( req.test === 'discardCards' ) testObject.discardCards = req.args[0];
+                    tests.push( testObject );
                 }
-
-                if( req.test === 'discardCards' ) discardCards += req.args[0];
             });
 
             results.push({ passed : passed, val : objective.value, tests : tests });
@@ -34,7 +42,6 @@ class PlanTester {
             selected : scorablePoints > 0
         };
 
-        if( discardCards ) returnData.discardCards = discardCards;
         return returnData;
     }
 
@@ -71,65 +78,157 @@ class PlanTester {
 
 
     unitsInPlay( faction, unitsInPlay ){
-        return faction.unitsInPlay().length >= unitsInPlay;
+        let factionUnitsInPlay = faction.unitsInPlay().length;
+        let result = factionUnitsInPlay >= unitsInPlay;
+
+        if( this.debug ) console.log(
+            'unitsInPlay',
+            'unitsInPlay req:', unitsInPlay,
+            'factionUnitsInPlay:', factionUnitsInPlay,
+            'result:', result
+        );
+
+        return result;
     }
 
 
     enemyMarkers( faction, enemyMarkers ){
-        return faction.data.captured.current >= enemyMarkers;
+        let factionEnemyMarkers = faction.data.captured.current;
+        let result = faction.data.captured.current >= enemyMarkers;
+
+        if( this.debug ) console.log(
+            'enemyMarkers',
+            'enemyMarkers req:', enemyMarkers,
+            'factionEnemyMarkers:', factionEnemyMarkers,
+            'result:', result
+        );
+
+        return result;
     }
 
 
     killUnits( faction, killedUnits ) {
-        return faction.totalKills() >= killedUnits;
+        let factionKilledUnits = faction.totalKills();
+        let result = factionKilledUnits >= killedUnits;
+
+        if( this.debug ) console.log(
+            'killUnits',
+            'killedUnits req:', killedUnits,
+            'factionKilledUnits:', factionKilledUnits,
+            'result:', result
+        );
+
+        return result;
     }
 
 
     influenceInAreas( faction, influenceCount, areaCount = 1 ) {
         let areasWithEnoughInfluence = 0;
+
         _.forEach( faction.game().areas, area => {
             if( faction.influenceInArea( area ) >= influenceCount ) areasWithEnoughInfluence++;
         });
 
-        return areasWithEnoughInfluence >= areaCount;
+        let result = areasWithEnoughInfluence >= areaCount
+
+        if( this.debug ) console.log(
+            'influenceInAreas',
+            'influenceCount req:', influenceCount,
+            'areaCount req:', areaCount,
+            'areasWithEnoughInfluence:', areasWithEnoughInfluence,
+            'result:', result
+        );
+
+        return result;
     }
 
 
     controlTarget( faction ) {
-        return faction.targetArea().data.owner === faction.name;
+        let targetController = faction.targetArea().data.owner;
+        let result = faction.targetArea().data.owner === faction.name;
+
+        if( this.debug ) console.log(
+            'controlTarget',
+            'targetController:', targetController,
+            'result:', result
+        );
+
+        return result;
     }
 
 
     controlArea( faction, areaName ) {
-        return faction.game().areas[ areaName ].data.owner === faction.name;
+        let areaController = faction.game().areas[ areaName ].data.owner;
+        let result = areaController === faction.name;
+
+        if( this.debug ) console.log(
+            'controlArea',
+            'areaName req:', areaName,
+            'areaController:', areaController,
+            'result:', result
+        );
+
+        return result;
     }
 
     tokensInAreas( faction, areaCount, type ) {
-        let count = 0;
+        let factionCount = 0;
+
         _.forEach( faction.game().areas, area => {
             if( _.find( area.data.tokens, token => {
                 if( token.faction === faction.name && (!type || token.type === type ) ) return true;
-            }) ) count++;
+            }) ) factionCount++;
         });
 
-        return count >= areaCount;
+        let result = count >= areaCount;
+
+        if( this.debug ) console.log(
+            'tokensInAreas',
+            'areaCount req:', areaCount,
+            'type req:', type,
+            'factionCount:', factionCount,
+            'result:', result
+        );
+
+        return result;
     }
 
     useSkills( faction, skillsUsed ){
-        return faction.data.usedSkills.length >= skillsUsed;
+        let factionSkillsUsed = faction.data.usedSkills.length;
+        let result = factionSkillsUsed >= skillsUsed;
+
+        if( this.debug ) console.log(
+            'useSkills',
+            'skillsUsed req:', skillsUsed,
+            'factionSkillsUsed:', factionSkillsUsed,
+            'result:', result
+        );
+
+        return  result;
     }
 
     loseUnits( faction, lostUnits ){
-        return faction.data.units.filter( unit => unit.killed && unit.killed !== faction.name ).length >= lostUnits;
+        let factionLostUnits = faction.data.units.filter( unit => unit.killed && unit.killed !== faction.name ).length;
+        let result = factionLostUnits >= lostUnits;
+
+        if( this.debug ) console.log (
+            'loseUnits',
+            'lostUnits req:', lostUnits,
+            'factionLostUnits:', factionLostUnits,
+            'result:', result
+        );
+
+        return result;
     }
 
     unitInEnemy( faction, unitType, unitCount ){
         let enemyAreas = [];
+
         _.forEach( faction.game().areas, area => {
             if( area.data.owner && area.data.owner !== faction.name ) enemyAreas.push( area.name );
         });
 
-        let count = faction.data.units.reduce( (acc, unit) => {
+        let factionUnitCount = faction.data.units.reduce( (acc, unit) => {
             if( unit.type === unitType
                 && !unit.killed
                 && enemyAreas.includes( unit.location )
@@ -137,16 +236,47 @@ class PlanTester {
             return acc;
         }, 0 );
 
-        return count >= unitCount;
+        let result = factionUnitCount >= unitCount;
+
+        if( this.debug ) console.log (
+            'unitInEnemy',
+            'unitType req:', unitType,
+            'unitCount req:', unitCount,
+            'factionUnitCount:', factionUnitCount,
+            'result:', result
+        );
+
+        return result;
     }
 
     unitsAtTarget( faction, unitCount, type = 'talent' ){
         let targetName = faction.targetArea().name;
-        return faction.data.units.filter( unit => unit.type === type && _.unitInArea( unit, targetName ) ).length;
+        let factionUnitsAtTarget = faction.data.units.filter( unit => unit.type === type && _.unitInArea( unit, targetName ) ).length;
+        let result = factionUnitsAtTarget >= unitCount;
+
+        if( this.debug ) console.log (
+            'unitsAtTarget',
+            'unitCount req:', unitCount,
+            'type req:', type,
+            'factionUnitsAtTarget:', factionUnitsAtTarget,
+            'result:', result
+        );
+
+        return result;
     }
 
     exterminateAreas( faction, exterminateCount = 1 ){
-        return faction.areasExterminated().length >= exterminateCount;
+        let factionExterminatedAreas = faction.areasExterminated().length;
+        let result = factionExterminatedAreas >= exterminateCount;
+
+        if( this.debug ) console.log (
+            'exterminateAreas',
+            'exterminateCount req:', exterminateCount,
+            'factionExterminatedAreas:', factionExterminatedAreas,
+            'result:', result
+        );
+
+        return result;
     }
 
     /**
@@ -158,7 +288,17 @@ class PlanTester {
      */
 
     controlAreas( faction, areaCount ){
-        return faction.areas().length >= areaCount;
+        let factionAreasControlled = faction.areas().length;
+        let result = factionAreasControlled >= areaCount;
+
+        if( this.debug ) console.log(
+            'controlAreas',
+            'areaCount req:', areaCount,
+            'factionAreasControlled:', factionAreasControlled,
+            'result:', result
+        );
+
+        return result;
     }
 
     controlEnemyTargets( faction, targetCount ){
@@ -168,9 +308,18 @@ class PlanTester {
             .map( item => {
                  return item.name !== faction.name // if this faction is not us
                         && areasControlled.includes( item.targetName() ); // and areas we control includes their target
-             }).filter( item => item ); // get rid of false values
+             }).filter( item => item ).length; // get rid of false values
 
-        return enemyTargetsControlled.length >= targetCount;
+        let result = enemyTargetsControlled >= targetCount;
+
+        if( this.debug ) console.log(
+            'controlEnemyTargets',
+            'targetCount req:', targetCount,
+            'factionEnemyTargetsControlled:', enemyTargetsControlled,
+            'result:', result
+        );
+
+        return result;
     }
 
     killMost( faction ){
@@ -181,44 +330,122 @@ class PlanTester {
 
         killCounts.sort( (a,b) => b.kills - a.kills );
 
-        return killCounts[0].kills // there was at least one kill
-               && killCounts[0].name === faction.name // our number of kills puts us at the top of the sort
-               && killCounts[0].kills !== killCounts[1].kills; // and there isn't a tie
+        let result = killCounts[0].kills // there was at least one kill
+                     && killCounts[0].name === faction.name // our number of kills puts us at the top of the sort
+                     && killCounts[0].kills !== killCounts[1].kills; // and there isn't a tie
+
+        if( this.debug ) console.log(
+            'killMost',
+            'killCounts[0]:',killCounts[0],
+            'result:', result
+        );
+
+        return result;
     }
 
     exterminateTarget( faction ){
-        return faction.hasExterminatedArea( faction.targetArea() );
+        let targetArea = faction.targetArea();
+        let result = faction.hasExterminatedArea( targetArea );
+
+        if( this.debug ) console.log(
+            'exterminateTarget',
+            'targetArea:', targetArea,
+            'result:', result
+        );
+
+        return result;
     }
 
     exterminateEnemyTarget( faction ){
+        let result;
+
         for( let item of Object.values( faction.game().factions ) ){
-            if( faction.hasExterminatedArea( item.targetArea() ) ) return true;
+            if( faction.hasExterminatedArea( item.targetArea() ) ) result = true;
         }
+
+        if( this.debug ) console.log(
+            'exterminateEnemyTarget',
+            'result:', result
+        );
+
+        return result;
     }
 
     unitsAtEnemyTargets( faction, unitCount, unitType ){
-        let count = 0;
+        let factionUnitsAtEnemyTargets = 0;
+
         for( let item of Object.values( faction.game().factions ) ) {
             if (item.name === faction.name) continue;
-            count += faction.unitsInArea( item.targetArea(), unitType ).length;
+            factionUnitsAtEnemyTargets += faction.unitsInArea( item.targetArea(), unitType ).length;
         }
-        return count >= unitCount;
+
+        let result = factionUnitsAtEnemyTargets >= unitCount;
+
+        if( this.debug ) console.log(
+            'unitsAtEnemyTargets',
+            'unitCount req:', unitCount,
+            'unitType req:', unitType,
+            'factionUnitsAtEnemyTargets:', factionUnitsAtEnemyTargets,
+            'result:', result
+        );
+
+        return result;
     }
 
     mrFusion( faction, fusionCount ){
-        return faction.data.fusion && faction.data.fusion >= fusionCount;
+        let factionFusionCount = faction.data.fusion;
+        let result = factionFusionCount && factionFusionCount >= fusionCount;
+
+        if( this.debug ) console.log(
+            'mrFusion',
+            'fusionCount req:', fusionCount,
+            'factionFusionCount:', factionFusionCount,
+            'result:', result
+        );
+
+        return result;
     }
 
     discardCards( faction, cardCount ){
-        return faction.data.cards.hand.length >= cardCount;
+        let factionCardsInHand = faction.data.cards.hand.length;
+        let result = factionCardsInHand >= cardCount;
+
+        if( this.debug ) console.log(
+            'discardCards',
+            'cardCount req:', cardCount,
+            'factionCardsInHand:', factionCardsInHand,
+            'result:', result
+        );
+
+        return result;
     }
 
     unitsInAreas( faction, areaCount ){
-        return faction.areasWithUnits().length >= areaCount;
+        let factionAreasWithUnits = faction.areasWithUnits().length;
+        let result =  factionAreasWithUnits >= areaCount;
+
+        if( this.debug ) console.log(
+            'unitsInAreas',
+            'areaCount req:', areaCount,
+            'factionAreasWithUnits:', factionAreasWithUnits,
+            'result:', result
+        );
+
+        return result;
     }
 
     killsInAreas( faction, areaCount ){
-        return faction.areasWithKills().length >= areaCount;
+        let factionAreasWithKills = faction.areasWithKills().length;
+        let result = factionAreasWithKills >= areaCount;
+
+        if( this.debug ) console.log(
+            'killsInAreas',
+            'areaCount req:', areaCount,
+            'factionAreasWithKills:', factionAreasWithKills,
+            'result:', result
+        );
+
+        return result;
     }
 
 }

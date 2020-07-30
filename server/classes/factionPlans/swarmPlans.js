@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: '',
         num : 1,
         faction : 'swarm',
         objectives : [
@@ -19,6 +20,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 2,
         faction : 'swarm',
         objectives : [
@@ -43,6 +45,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 3,
         faction : 'swarm',
         objectives : [
@@ -61,6 +64,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 4,
         faction : 'swarm',
         objectives : [
@@ -80,6 +84,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 5,
         faction : 'swarm',
         objectives : [
@@ -98,6 +103,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 6,
         faction : 'swarm',
         objectives : [
@@ -110,6 +116,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 7,
         faction : 'swarm',
         objectives : [
@@ -134,6 +141,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 8,
         faction : 'swarm',
         objectives : [

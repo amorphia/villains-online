@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: 'Call to the Last Shadow',
         num : 1,
         faction : 'cultists',
         objectives : [
@@ -19,6 +20,7 @@ let obj = [
     },
 
     {
+        name: 'Behold the Flayed Beauty',
         num : 2,
         faction : 'cultists',
         objectives : [
@@ -43,6 +45,7 @@ let obj = [
         ]
     },
     {
+        name: 'Cast Aside Your Earthly Husks',
         num : 3,
         faction : 'cultists',
         objectives : [
@@ -67,6 +70,7 @@ let obj = [
         ]
     },
     {
+        name: 'Surrender to the Lotus Milk',
         num : 4,
         faction : 'cultists',
         objectives : [
@@ -91,6 +95,7 @@ let obj = [
         ]
     },
     {
+        name: 'Set the Stars as Spears',
         num : 5,
         faction : 'cultists',
         objectives : [
@@ -115,6 +120,7 @@ let obj = [
         ]
     },
     {
+        name: 'Bind the Flesh Pentacle',
         num : 6,
         faction : 'cultists',
         objectives : [
@@ -134,6 +140,7 @@ let obj = [
         ]
     },
     {
+        name: 'Nine rites of Belzenubius',
         num : 7,
         faction : 'cultists',
         objectives : [
@@ -146,6 +153,7 @@ let obj = [
         ]
     },
     {
+        name: 'Tears of the Unborn God',
         num : 8,
         faction : 'cultists',
         objectives : [

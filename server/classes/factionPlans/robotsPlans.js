@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: 'Shadow Node Deployment',
         num : 1,
         faction : 'robots',
         objectives : [
@@ -24,6 +25,7 @@ let obj = [
         ]
     },
     {
+        name: 'Negation Algorithms',
         num : 2,
         faction : 'robots',
         objectives : [
@@ -48,6 +50,7 @@ let obj = [
         ]
     },
     {
+        name: 'Reformat the Creators',
         num : 3,
         faction : 'robots',
         objectives : [
@@ -72,6 +75,7 @@ let obj = [
         ]
     },
     {
+        name: 'Local Queue Defrag',
         num : 4,
         faction : 'robots',
         objectives : [
@@ -90,6 +94,7 @@ let obj = [
         ]
     },
     {
+        name: 'Bath Install Drones',
         num : 5,
         faction : 'robots',
         objectives : [
@@ -114,6 +119,7 @@ let obj = [
         ]
     },
     {
+        name: 'Osiris Configuration',
         num : 6,
         faction : 'robots',
         objectives : [
@@ -132,6 +138,7 @@ let obj = [
         ]
     },
     {
+        name: 'Gray Goo Seeding',
         num : 7,
         faction : 'robots',
         objectives : [
@@ -144,6 +151,7 @@ let obj = [
         ]
     },
     {
+        name: 'The Gulliver Worm',
         num : 8,
         faction : 'robots',
         objectives : [

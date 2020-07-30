@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: 'We Come In Peace',
         num : 1,
         faction : 'aliens',
         objectives : [
@@ -12,6 +13,7 @@ let obj = [
         ]
     },
     {
+        name: 'Elite Cloning Vats',
         num : 2,
         faction : 'aliens',
         objectives : [
@@ -30,6 +32,7 @@ let obj = [
         ]
     },
     {
+        name: 'Phased Operations',
         num : 3,
         faction : 'aliens',
         objectives : [
@@ -54,6 +57,7 @@ let obj = [
         ]
     },
     {
+        name: 'Uplink Salvos',
         num : 4,
         faction : 'aliens',
         objectives : [
@@ -73,6 +77,7 @@ let obj = [
         ]
     },
     {
+        name: 'Landing Site Omega',
         num : 5,
         faction : 'aliens',
         objectives : [
@@ -92,6 +97,7 @@ let obj = [
         ]
     },
     {
+        name: 'Death Spore Testing',
         num : 6,
         faction : 'aliens',
         objectives : [
@@ -111,6 +117,7 @@ let obj = [
         ]
     },
     {
+        name: 'Orbital Monitoring',
         num : 7,
         faction : 'aliens',
         objectives : [
@@ -130,6 +137,7 @@ let obj = [
         ]
     },
     {
+        name: 'Field Vivisections',
         num : 8,
         faction : 'aliens',
         objectives : [

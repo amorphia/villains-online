@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: 'Vertical Monopolies',
         num : 1,
         faction : 'bankers',
         objectives : [
@@ -13,6 +14,7 @@ let obj = [
         ]
     },
     {
+        name: 'Violent Arbitrage',
         num : 2,
         faction : 'bankers',
         objectives : [
@@ -32,6 +34,7 @@ let obj = [
         ]
     },
     {
+        name: 'Market Reallocation',
         num : 3,
         faction : 'bankers',
         objectives : [
@@ -51,6 +54,7 @@ let obj = [
         ]
     },
     {
+        name: 'Regulatory Capture',
         num : 4,
         faction : 'bankers',
         objectives : [
@@ -70,6 +74,7 @@ let obj = [
         ]
     },
     {
+        name: 'Mass Outsourcing',
         num : 5,
         faction : 'bankers',
         objectives : [
@@ -89,6 +94,7 @@ let obj = [
         ]
     },
     {
+        name: 'Asset Diversification',
         num : 6,
         faction : 'bankers',
         objectives : [
@@ -108,6 +114,7 @@ let obj = [
         ]
     },
     {
+        name: 'Liquidated Policies',
         num : 7,
         faction : 'bankers',
         objectives : [
@@ -127,6 +134,7 @@ let obj = [
         ]
     },
     {
+        name: 'Insider Trading',
         num : 8,
         faction : 'bankers',
         objectives : [

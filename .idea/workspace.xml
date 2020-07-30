@@ -4,17 +4,21 @@
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewArea.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewArea.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewCombat.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewCombat.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/areas/AreaActions.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/areas/AreaActions.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/areas/AreaMap.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/areas/AreaMap.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/areas/AreaPopup.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/areas/AreaPopup.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/Server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/activatesSkills.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/activatesSkills.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ScorePlans.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ScorePlans.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/PlanTester.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/PlanTester.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/aliensPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/aliensPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/bankersPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/bankersPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/commiesPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/commiesPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/cultistsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/cultistsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/loyalistsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/loyalistsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/mafiaPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/mafiaPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/mutantsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/mutantsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/robotsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/robotsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/scientistsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/scientistsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/societyPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/societyPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/swarmPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/swarmPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/vampiresPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/vampiresPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/games.db" beforeDir="false" afterPath="$PROJECT_DIR$/server/games.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -243,7 +247,7 @@
       <workItem from="1591223441450" duration="81406000" />
       <workItem from="1591417607847" duration="235785000" />
       <workItem from="1592157951059" duration="164940000" />
-      <workItem from="1594834562760" duration="248479000" />
+      <workItem from="1594834562760" duration="258778000" />
     </task>
     <servers />
   </component>
@@ -287,10 +291,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1595969139019" />
-    <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1595179883912">
+    <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1596068511372">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="425" y="189" width="672" height="677" key="run.anything.popup/0.0.1536.834@0.0.1536.834" timestamp="1595179883912" />
+    <state x="425" y="189" width="672" height="677" key="run.anything.popup/0.0.1536.834@0.0.1536.834" timestamp="1596068511372" />
     <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1595353834055">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

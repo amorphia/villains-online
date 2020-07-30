@@ -1,5 +1,6 @@
 let obj = [
     {
+        name: '',
         num : 1,
         faction : 'loyalists',
         objectives : [
@@ -24,6 +25,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 2,
         faction : 'loyalists',
         objectives : [
@@ -48,6 +50,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 3,
         faction : 'loyalists',
         objectives : [
@@ -66,6 +69,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 4,
         faction : 'loyalists',
         objectives : [
@@ -90,6 +94,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 5,
         faction : 'loyalists',
         objectives : [
@@ -114,6 +119,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 6,
         faction : 'loyalists',
         objectives : [
@@ -138,6 +144,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 7,
         faction : 'loyalists',
         objectives : [
@@ -162,6 +169,7 @@ let obj = [
         ]
     },
     {
+        name: '',
         num : 8,
         faction : 'loyalists',
         objectives : [
