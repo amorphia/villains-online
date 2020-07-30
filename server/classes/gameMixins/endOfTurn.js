@@ -58,7 +58,7 @@ let obj = {
 
     async collectUpgrades(){
         let slideSpeed = 4;
-        if( this.debug ) slideSpeed = 1;
+        if( this.fastMode ) slideSpeed = 1;
 
         let upgrades = Object.values( this.factions ).map( faction => faction.collectUpgrades() )
                                                      .filter( item => item );
@@ -121,7 +121,7 @@ let obj = {
         let promises = [];
         let results = [];
         let slideSpeed = 5;
-        if( this.debug ) slideSpeed = 1;
+        if( this.fastMode ) slideSpeed = 1;
 
         _.forEach( this.factions, faction => {
                 let plans = faction.testPlans();
@@ -162,7 +162,7 @@ let obj = {
 
         let targets = [];
         let slideSpeed = 3;
-        if( this.debug ) slideSpeed = 1;
+        if( this.fastMode ) slideSpeed = 1;
 
         _.forEach( this.factions, faction => {
             let card = faction.data.cards.target[0];
@@ -193,7 +193,7 @@ let obj = {
     async determineControlStep(){
 
         let slideSpeed = 4;
-        if( this.debug ) slideSpeed = 1;
+        if( this.fastMode ) slideSpeed = 1;
 
         await this.timedPrompt( 'title-card', this.titleCardTimer, { message : 'Determine Control Step' } );
 
