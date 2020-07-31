@@ -64,11 +64,13 @@ let mixin = {
         let areas = [];
 
         _.forEach( this.game().factions, faction => {
-            areas = _.union( areas, faction.areasWithUnits() );
+            if( faction.name !== this.name ){
+                areas = _.union( areas, faction.areasWithUnits() );
+            }
         });
 
         if( args.adjacent ){
-            if( typeof args.adjacent === 'string' ) args.adjacent = this.game().areas[ args.adjacent];
+            if( typeof args.adjacent === 'string' ) args.adjacent = this.game().areas[args.adjacent];
             areas = _.intersection( areas, args.adjacent.data.adjacent );
         }
 

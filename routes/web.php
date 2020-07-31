@@ -28,4 +28,14 @@ Route::get( '/preload/faction/{faction}', 'PreloadController@faction' );
 Route::get( '/preload', 'PreloadController@core' );
 
 // Home
-Route::get('/home', 'HomeController@index')->name('home' );
+Route::get('/home', 'HomeController@index' )->name('home' );
+
+Route::get( '/game', 'GameController@index' );
+Route::get( '/game/test', function(){
+    return 'worked';
+});
+Route::post( '/game', 'GameController@store' );
+Route::get( '/game/conclude/{game}', 'GameController@conclude' );
+
+Route::get( '/save/{save}', 'SaveController@show' );
+Route::post( '/save/{game}', 'SaveController@store' );

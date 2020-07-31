@@ -13,7 +13,7 @@ let obj = {
 
         this.setAllPlayersActive();
         this.setStartOfTurnPrompts();
-        Server.saveToDB( this );
+        Server.saveToDB( this, { type:'turn' } );
         this.updateAll();
     },
 

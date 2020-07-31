@@ -350,7 +350,7 @@ class PlanTester {
 
         if( this.debug ) console.log(
             'exterminateTarget',
-            'targetArea:', targetArea,
+            'targetArea:', targetArea.name,
             'result:', result
         );
 

@@ -80,7 +80,7 @@ class Robots extends Faction {
         let player, data;
 
         // get areas with units
-        let areas = this.areasWithEnemyUnits({ adjacent : event.unit.location });
+        let areas = this.areasWithEnemyUnits({ adjacent : event.unit.location } );
 
         if( ! areas.length  ){
             this.game().message({ faction : this, message: "Bully G.O.A.T couldn't lock on to a target", class: 'warning' });

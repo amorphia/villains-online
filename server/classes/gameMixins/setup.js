@@ -5,14 +5,14 @@ let setup = {
         this.data.state = 'loading';
         this.updatePlayerSockets( saved );
         this.generateGame( saved );
-        this.mergeSavedData( saved.data );
+        this.mergeSavedData( saved );
         _.forEach( this.factions, faction => faction.onSetup() );
         this.addPlayersToRoom();
         this.updateAll();
     },
 
     updatePlayerSockets( saved ){
-        _.forEach( saved.data.players, (player, id) =>{
+        _.forEach( saved.players, (player, id) =>{
             if( Server.players[id] ){
                 player.socketId = Server.players[id].socketId;
                 this.joinGame( Server.players[id] );
@@ -102,13 +102,14 @@ let setup = {
     startGame(){
         if( this.data.state !==  'open' ) return;
 
+        Server.saveNewGame( this );
+
         this.data.state = 'choose-factions';
         this.data.factions = _.cloneDeep( require('../data/factionList') );
 
         this.randomizePlayerOrder();
         this.addPlayersToRoom();
         Server.closeOpenGame();
-        Server.saveToDB( this );
         this.updateAll();
     },
 
@@ -142,7 +143,7 @@ let setup = {
 
     generateTempFactions( saved ){
         let factions = {};
-        _.forEach( saved.data.data.factions, (value, name) => {
+        _.forEach( saved.data.factions, (value, name) => {
             factions[name] = { owner : value.owner };
         });
         return factions;

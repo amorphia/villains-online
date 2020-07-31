@@ -52,6 +52,31 @@ class User extends Authenticatable
         self::creating( function ( $model ) {
             $model->uuid = (string) Uuid::generate( 4 );
         });
-
     }
+
+    /**
+     *
+     * Relationships
+     *
+     */
+    public function games()
+    {
+        return $this->belongsToMany( Game::class );
+    }
+
+    /**
+     *
+     *
+     *  Methods
+     *
+     */
+
+    public function getActiveGames()
+    {
+        return $this->games()
+            ->with(['players', 'manuals', 'automatics', 'turns'])
+            ->where('concluded', false )
+            ->get();
+    }
+
 }

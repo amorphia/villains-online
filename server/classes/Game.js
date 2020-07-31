@@ -78,9 +78,9 @@ class Game {
 
 
     constructor( saved ) {
-        this.id = saved ? saved['game_id'] : uuid();
+        this.id = saved ? saved.id : uuid();
         this.data.id = this.id;
-        this.created = saved ? saved.created : Date.now();
+        this.created = Date.now();
         this.planTester = new PlanTester();
     }
 

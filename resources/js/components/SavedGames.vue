@@ -1,5 +1,8 @@
 <template>
     <div class="saved-games">
+
+        <button @click="loadGame( 4 )">load</button>
+
         <div v-for="game in savedGames" class="d-flex" @click="loadGame( game['game_id'] )">
             <div class="primary-light">{{ gameDate( game ) }}</div>
             <div class="highlight ml-3">{{ game['save_type'] }}</div>

@@ -7,7 +7,7 @@ class Server {
 
     debug = false;
     messageNum = 0;
-    savedGames;
+    //savedGames;
     games = {};
     players = {};
     playerSocketMap = {};
@@ -16,8 +16,8 @@ class Server {
         this.db = new DB();
         this.io = io;
         this.server = server;
-        this.db.createTables();
-        this.loadSavesFromDB();
+        //this.db.createTables();
+        //this.loadSavesFromDB();
         this.initPlayerConnections();
     }
 
@@ -44,7 +44,7 @@ class Server {
             // conclude a finished (or not) game
             socket.on( 'concludeGame', () => { this.concludeGame( socket ) } );
 
-            // load last game
+            // manually save game
             socket.on( 'saveGame', gameId => { this.saveGame( socket, gameId ) } );
 
             Game.initEvents( socket );
@@ -55,9 +55,11 @@ class Server {
         this.db.save( game, options );
     }
 
+    /*
     async loadSavesFromDB( options ){
         this.savedGames = await this.db.load( options );
     }
+    */
 
     closeOpenGame(){
         this.io.to( 'lobby' ).emit( 'openGame', null );
@@ -75,6 +77,10 @@ class Server {
         this.getPlayer( socket ).game().conclude( socket );
     }
 
+    concludeDBGame( game ) {
+        this.db.conclude( game );
+    }
+
     getOpenGame(){
         for( let game in this.games ){
             if( this.games[ game ].isOpen() ){
@@ -83,15 +89,21 @@ class Server {
         }
     }
 
+    saveNewGame( game ){
+        console.log( 'saveNewGame' );
+        this.db.create( game );
+    }
+
     saveGame( socket, gameId ){
         let game = this.games[gameId];
         this.saveToDB( game,{ type : 'manual' });
         game.message( 'Game Saved' );
     }
 
-    loadGame( gameId ){
+
+    async loadGame( save ){
         this.message( 'lobby', { message : 'loading saved game' });
-        let saved = _.find( this.savedGames, save => save['game_id'] === gameId );
+        let saved = await this.db.load( save );
         let game = new Game( saved );
         this.games[game.id] = game;
         game.loadSavedGame( saved );
@@ -195,12 +207,13 @@ class Server {
             this.games[gameId].addPlayer( player );
         } else {
             this.sendSocketOpenGame( socket );
-            if( this.savedGames ) socket.emit( 'savedGames', this.getSavedGameList() );
+            //if( this.savedGames ) socket.emit( 'savedGames', this.getSavedGameList() );
         }
 
         console.log( `${player.data.name} connected` );
     }
 
+    /*
     getSavedGameList(){
         let games = [];
         _.forEach( this.savedGames, save => {
@@ -211,6 +224,7 @@ class Server {
 
         return games;
     }
+    */
 
     searchGamesForPlayer( player ){
         for( let gameId in this.games ){

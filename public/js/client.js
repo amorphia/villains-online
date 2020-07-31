@@ -7984,6 +7984,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'saved-games',
   data: function data() {
@@ -59680,29 +59683,43 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "saved-games" },
-    _vm._l(_vm.savedGames, function(game) {
-      return _c(
-        "div",
+    [
+      _c(
+        "button",
         {
-          staticClass: "d-flex",
           on: {
             click: function($event) {
-              return _vm.loadGame(game["game_id"])
+              return _vm.loadGame(4)
             }
           }
         },
-        [
-          _c("div", { staticClass: "primary-light" }, [
-            _vm._v(_vm._s(_vm.gameDate(game)))
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "highlight ml-3" }, [
-            _vm._v(_vm._s(game["save_type"]))
-          ])
-        ]
-      )
-    }),
-    0
+        [_vm._v("load")]
+      ),
+      _vm._v(" "),
+      _vm._l(_vm.savedGames, function(game) {
+        return _c(
+          "div",
+          {
+            staticClass: "d-flex",
+            on: {
+              click: function($event) {
+                return _vm.loadGame(game["game_id"])
+              }
+            }
+          },
+          [
+            _c("div", { staticClass: "primary-light" }, [
+              _vm._v(_vm._s(_vm.gameDate(game)))
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "highlight ml-3" }, [
+              _vm._v(_vm._s(game["save_type"]))
+            ])
+          ]
+        )
+      })
+    ],
+    2
   )
 }
 var staticRenderFns = []

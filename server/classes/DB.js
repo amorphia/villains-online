@@ -1,68 +1,52 @@
-const SQLite = require( "sqlite3" ).verbose();
+const axios = require( "axios" );
 
 class DB {
-    sqlite;
+
+    host;
+    prodHost = 'https://playvillains.jeremykalgreen.com';
+    localHost = "http://localhost";
 
     constructor() {
-        this.sqlite = SQLite;
+        if( process.env.HOMEPATH ===  '\\Users\\jerem' ){
+            this.host = this.localHost;
+        } else {
+            this.host = this.prodHost;
+        }
     }
 
-    openDB(){
-        return new this.sqlite.Database('./games.db', (err) => {
-            if (err) { console.error(err.message); }
-        });
+    create( game ){
+
+        let data = {
+            uuid: game.id,
+            players: Object.keys( game.players )
+        };
+
+        axios.post(this.host + '/game', data )
+            .then( result => {} )
+            .catch( errors => console.log( errors ) );
     }
 
+    conclude( game ){
+        axios.post(`${this.host}/game/conclude/${game.id}` )
+            .then( result => {} )
+            .catch( errors => console.log( errors ) );
+    }
 
     save( game, options = {} ) {
-        let type = options.type || 'automatic';
-        const db = this.openDB();
-        db.run("REPLACE INTO games (game_id,save_type,players,created,data) VALUES( ?,?,json(?),?,json(?))", [ game.id, type, JSON.stringify( game.socketMap ), game.created, JSON.stringify( game ) ], (err, rows) => {
-            if (err) { console.error(err.message) }
-        });
-        db.close();
+
+        let data = {
+            type: options.type || 'automatic',
+            data: JSON.stringify( game )
+        };
+
+        axios.post( `${this.host}/save/${game.id}`, data )
+            .then( result => {} )
+            .catch( errors => console.log( errors ) );
     }
 
-
-    async createTables(){
-        const db = this.openDB();
-        await db.run( "CREATE TABLE IF NOT EXISTS games (id INTEGER PRIMARY KEY AUTOINCREMENT, game_id TEXT, save_type TEXT, players TEXT, created INT, data TEXT, UNIQUE(game_id, save_type))" );
-        db.close();
-    }
-
-
-    load( options = {} ){
-
-        let limit = options.limit || 6;
-
-        let db = this.openDB();
-        let sql = `SELECT id, game_id, save_type, players, created, data FROM games ORDER BY created DESC LIMIT ${limit}`;
-        let result, savedGames = [];
-
-        return new Promise( ( resolve, reject ) => {
-            db.all( sql, ( err, rows ) => {
-
-                if (err){
-                    console.error( err.message );
-                    return db.close();
-                }
-
-                if( !rows.length ){
-                    resolve( false );
-                    return db.close();
-                }
-
-                rows.forEach( row => {
-                    let save = row;
-                    save.players = JSON.parse( row.players );
-                    save.data = JSON.parse( row.data );
-                    savedGames.push( save );
-                });
-
-                resolve( savedGames );
-                db.close();
-            });
-        });
+    async load( gameId ) {
+        let results = await axios.get(`${this.host}/save/${gameId}`);
+        return results.data;
     }
 
 }
