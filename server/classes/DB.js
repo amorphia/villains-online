@@ -26,8 +26,8 @@ class DB {
             .catch( errors => console.log( errors ) );
     }
 
-    conclude( game ){
-        axios.post(`${this.host}/game/conclude/${game.id}` )
+    conclude( gameId ){
+        axios.post(`${this.host}/game/conclude/${gameId}` )
             .then( result => {} )
             .catch( errors => console.log( errors ) );
     }

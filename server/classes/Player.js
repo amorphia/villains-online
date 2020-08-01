@@ -90,11 +90,20 @@ class Player {
 
     joinRoom( room ) {
         this.socket().leaveAll();
-        if( this.debug ) console.log( "leaving:", this.room );
+
+        let oldRoom = this.room;
+        if( this.debug ) console.log( "leaving:", oldRoom );
+
         this.room = room;
         this.socket().join( room );
         let roomName = room === 'lobby' ? 'lobby' : 'game';
         Server.message( this.room, { message: `joined ${roomName}`, player : this });
+
+        if( roomName === 'lobby' ){
+            Server.updateLobbyPopulation( this, true );
+        } else if( oldRoom === 'lobby' ) {
+            Server.updateLobbyPopulation( this, false );
+        }
     }
 
     socket(){

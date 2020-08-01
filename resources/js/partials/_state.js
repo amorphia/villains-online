@@ -56,6 +56,8 @@ window.App.state = {
     csrf : null,
     data : null,
     game : null,
+    lobbyPlayers : {},
+    savedGames : [],
     player : null,
     faction : null,
     actions : null,

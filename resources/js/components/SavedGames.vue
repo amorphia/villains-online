@@ -1,13 +1,12 @@
 <template>
-    <div class="saved-games">
 
-        <button @click="loadGame( 4 )">load</button>
-
-        <div v-for="game in savedGames" class="d-flex" @click="loadGame( game['game_id'] )">
-            <div class="primary-light">{{ gameDate( game ) }}</div>
-            <div class="highlight ml-3">{{ game['save_type'] }}</div>
+    <div class="saved-games game-hud drawer__aside height-100 pt-4">
+        <adjust-handle direction="right" max="600" min="125"></adjust-handle>
+        <div class="width-100 height-100  flex-column d-flex">
+            <save-game v-for="save in shared.savedGames" :key="save.id" :save="save"></save-game>
         </div>
     </div>
+
 </template>
 
 
@@ -23,18 +22,20 @@
             };
         },
 
-        created(){
-            this.shared.socket.on( 'savedGames', savedGames => this.savedGames = savedGames);
+        mounted(){
+            this.getSavedGames();
         },
 
         methods : {
-            loadGame( gameId ){
-                App.event.emit( 'sound', 'ui' );
-                this.shared.socket.emit( 'loadGame', gameId );
+
+            getSavedGames(){
+                axios.get( `/game` )
+                    .then( response => {
+                        console.log( response.data );
+                        this.shared.savedGames = response.data;
+                    })
+                    .catch( errors => console.log( errors ) );
             },
-            gameDate( game ){
-                return Moment( game.created ).format("LLL");
-            }
         }
 
     }
@@ -42,11 +43,6 @@
 
 
 <style>
-    .saved-games {
-        position: absolute;
-        top: 0;
-        left: 0;
-        padding: 1em;
-    }
+
 </style>
 

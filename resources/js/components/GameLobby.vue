@@ -1,31 +1,38 @@
 <template>
     <div class="d-flex flex-center height-100 pos-relative">
 
-        <a href="/logout" class="pos-absolute top-0 right-0 m-4 logout-link">logout</a>
-
         <saved-games v-if="shared.admin"></saved-games>
 
-        <div v-if="shared.game" class="open-game glass width-40">
-            <div class="d-flex align-center open-game__id text-uppercase justify-between">
-                <div>Game Id <span>{{ shared.game.id }}</span></div>
-                <div class="icon-x open-game__delete pointer" @click="deleteGame"></div>
+        <div class="d-flex flex-center width-100 height-100 pos-relative">
+
+            <a href="/logout" class="pos-absolute top-0 right-0 m-4 logout-link">logout</a>
+
+            <div class="pos-absolute top-0 width-100 d-flex justify-center">
+                <div v-for="player in shared.lobbyPlayers" class="highlight m-3">{{ player }}</div>
             </div>
-            <div class="open-game__players-title text-uppercase">Players</div>
-            <div class="open-game__players">
-                <div v-for="player in shared.game.players">{{ player.name | startCase }}</div>
-                <div v-if="Object.keys(shared.game.players).length === 0" class="open-game__empty">No Players</div>
+
+            <div v-if="shared.game" class="open-game glass width-40">
+                <div class="d-flex align-center open-game__id text-uppercase justify-between">
+                    <div>Game Id <span>{{ shared.game.id }}</span></div>
+                    <div class="icon-x open-game__delete pointer" @click="deleteGame"></div>
+                </div>
+                <div class="open-game__players-title text-uppercase">Players</div>
+                <div class="open-game__players">
+                    <div v-for="player in shared.game.players">{{ player.name | startCase }}</div>
+                    <div v-if="Object.keys(shared.game.players).length === 0" class="open-game__empty">No Players</div>
+                </div>
+                <div class="open-game__buttons center-text">
+                    <button v-if="!joinedGame" :disabled="!canJoin" class="button wide px-6" @click="joinGame">JOIN</button>
+                    <button v-if="joinedGame" class="button wide px-6 button-empty" @click="leaveGame">LEAVE</button>
+                    <button v-if="joinedGame" :disabled="!canStart" class="button wide px-6" @click="startGame">START</button>
+                </div>
             </div>
-            <div class="open-game__buttons center-text">
-                <button v-if="!joinedGame" :disabled="!canJoin" class="button wide px-6" @click="joinGame">JOIN</button>
-                <button v-if="joinedGame" class="button wide px-6 button-empty" @click="leaveGame">LEAVE</button>
-                <button v-if="joinedGame" :disabled="!canStart" class="button wide px-6" @click="startGame">START</button>
+            <div v-else class="">
+                <div v-if="shared.socket.disconnected" class="server-offline">
+                    <i class="icon-kill"></i>SERVER OFFLINE
+                </div>
+                <button v-else @click="newGame" class="button new-game-button">Create New Game</button>
             </div>
-        </div>
-        <div v-else class="">
-            <div v-if="shared.socket.disconnected" class="server-offline">
-                <i class="icon-kill"></i>SERVER OFFLINE
-            </div>
-            <button v-else @click="newGame" class="button new-game-button">Create New Game</button>
         </div>
     </div>
 </template>

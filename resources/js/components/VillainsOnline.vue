@@ -59,6 +59,8 @@
                 });
                 return players;
             });
+
+
         },
 
         methods : {
@@ -94,6 +96,8 @@
                 this.shared.factionName = null;
                 this.shared.player = null;
                 this.shared.game = null;
+                this.shared.lobbyPlayers = {};
+                this.shared.saveGames = [];
             },
 
             initCoreSocketFunctions(){
@@ -109,6 +113,11 @@
 
                 // listen for concluded game
                 this.shared.socket.on( 'clearGame', this.clearGame );
+
+                // listen for lobby players update
+                this.shared.socket.on( 'lobbyPlayers', data => {
+                    this.shared.lobbyPlayers = data;
+                });
 
                 // listen for full game data update
                 this.shared.socket.on( 'update', data => {

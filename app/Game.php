@@ -9,6 +9,12 @@ class Game extends Model
 
     protected $guarded = [];
 
+    protected $appends = [ 'turns', 'manuals', 'automatics' ];
+
+    protected $casts = [
+        'created_at' => 'datetime:M jS g:ia',
+    ];
+
     public function players()
     {
         return $this->belongsToMany( User::class );
@@ -19,21 +25,18 @@ class Game extends Model
         return $this->hasMany( Save::class );
     }
 
-    public function turns()
-    {
-        return $this->getSaveByType( 'turn' );
+    public function getTurnsAttribute(){
+        return $this->getSaveByType( 'turn' )->get();
     }
 
-    public function manuals()
-    {
-        return $this->getSaveByType( 'manual' );
+    public function getManualsAttribute(){
+        return $this->getSaveByType( 'manual' )->get();
     }
 
-    public function automatics()
-    {
-        return $this->getSaveByType( 'automatic' )
-                    ->take( 5 );
+    public function getAutomaticsAttribute(){
+        return $this->getSaveByType( 'automatic' )->take( 5 )->get();
     }
+
 
     public function getSaveByType( $type )
     {

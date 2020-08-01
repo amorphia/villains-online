@@ -10,6 +10,7 @@ class Server {
     //savedGames;
     games = {};
     players = {};
+    lobbyPlayers = {};
     playerSocketMap = {};
 
     constructor( server, io ) {
@@ -120,12 +121,14 @@ class Server {
 
 
     deleteGame( socket, gameId ){
+
         if( this.games[gameId].isOpen() ){
             this.io.to('lobby').emit( 'openGame', null );
             let player = this.getPlayer( socket );
             this.message( 'lobby', { message: 'deleted game', player: player });
         }
 
+        this.db.conclude( gameId );
         delete this.games[gameId];
     }
 
@@ -185,6 +188,10 @@ class Server {
             this.games[room].deleteSocketId( socket.id );
         }
 
+        if( room === 'lobby' ){
+            this.updateLobbyPopulation( player, false );
+        }
+
         this.message( room, { message: 'disconnected', player: player, class: 'warning' });
 
         delete this.players[ this.playerSocketMap[socket.id] ];
@@ -207,24 +214,20 @@ class Server {
             this.games[gameId].addPlayer( player );
         } else {
             this.sendSocketOpenGame( socket );
-            //if( this.savedGames ) socket.emit( 'savedGames', this.getSavedGameList() );
+
         }
 
         console.log( `${player.data.name} connected` );
     }
 
-    /*
-    getSavedGameList(){
-        let games = [];
-        _.forEach( this.savedGames, save => {
-            let item = _.clone( save );
-            delete item.data;
-            games.push( item );
-        });
-
-        return games;
+    updateLobbyPopulation( player, joining ){
+        if( joining ){
+            this.lobbyPlayers[player.id] = player.data.name;
+        } else {
+            delete this.lobbyPlayers[player.id];
+        }
+        this.io.to( 'lobby' ).emit( 'lobbyPlayers', this.lobbyPlayers );
     }
-    */
 
     searchGamesForPlayer( player ){
         for( let gameId in this.games ){

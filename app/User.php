@@ -74,9 +74,12 @@ class User extends Authenticatable
     public function getActiveGames()
     {
         return $this->games()
-            ->with(['players', 'manuals', 'automatics', 'turns'])
-            ->where('concluded', false )
+            ->with(['players'])
+            ->take( 3 )
+            ->orderByDesc( 'created_at' )
             ->get();
+
+            //->where('concluded', false )
     }
 
 }
