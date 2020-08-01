@@ -30,8 +30,23 @@
 
                 </div>
                 <area-flipper :areas="toAreas" locked="true" :index="toAreaIndex" @update="updateToIndex" classes="area-header__units">
-                    <div class="toggle area-map__toggle top-0 left-0">Deploy Limit: {{ selected.length }} / {{ data.deployLimit }} {{ shared.faction.bonusPatsies ? `[+${shared.faction.bonusPatsies} patsy]` : ''  }}</div>
+                    <!-- <div class="toggle area-map__toggle top-0 left-0">Deploy Limit: {{ selected.length }} / {{ data.deployLimit }} {{ shared.faction.bonusPatsies ? `[+${shared.faction.bonusPatsies} patsy]` : ''  }}</div> -->
                     <div class="toggle area-map__toggle top-0 right-0" @click.stop="shared.event.emit('viewArea', area )"><i class="icon-zoom_in"></i></div>
+
+                    <!-- deploy limit pips -->
+                    <div class="deploy-limit__pips d-flex justify-center flex-wrap mt-3">
+                        <!-- default deploy limit -->
+                        <i v-for="(n, index) in data.deployLimit"
+                           class="deploy-limit__pip"
+                           :class="index < usedDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
+
+                        <!-- commie bonus patsies -->
+                        <i v-if="shared.faction.bonusPatsies && data.fromToken" v-for="(n, index) in shared.faction.bonusPatsies"
+                           class="deploy-limit__pip commie-pip"
+                           :class="index < patsiesInDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
+
+                    </div>
+
                     <div class="popout-hud__block p-3 pos-relative"
                          v-for="(units, location) in groupBy( selected, 'location' )"
                          :data-count="location !== 'null' ? location : 'reserves'">
@@ -134,15 +149,9 @@
 
                 // commie bonus patsies
                 if( this.shared.faction.bonusPatsies && this.data.fromToken ){
-
-                    // non-patsies always count against our deploy limit
-                    usedDeploy = this.selected.filter( unit => unit.type !== 'patsy' ).length;
-
-                    let patsiesInDeploy = this.selected.filter( unit => unit.type === 'patsy' ).length;
-                    let netPatsies = patsiesInDeploy - this.shared.faction.bonusPatsies;
-                    usedDeploy += netPatsies > 0 ? netPatsies : 0;
-
-                    if( netPatsies < 0 && type === 'patsy' ) deployLimit++;
+                    usedDeploy = this.nonPatsyUsedDeploy;
+                    usedDeploy += this.netPatsies > 0 ? this.netPatsies : 0;
+                    if( this.netPatsies < 0 && type === 'patsy' ) deployLimit++;
                 }
 
                 return usedDeploy < deployLimit;
@@ -180,6 +189,28 @@
         },
 
         computed : {
+
+            netPatsies() {
+                return this.patsiesInDeploy - this.shared.faction.bonusPatsies;
+            },
+
+            patsiesInDeploy() {
+                return this.selected.filter(unit => unit.type === 'patsy').length;
+            },
+
+            nonPatsyUsedDeploy(){
+                return this.selected.filter( unit => unit.type !== 'patsy' ).length;
+            },
+
+            usedDeploy(){
+                if( this.shared.faction.bonusPatsies && this.data.fromToken ){
+                    let usedDeploy = this.nonPatsyUsedDeploy;
+                    usedDeploy += this.netPatsies > 0 ? this.netPatsies : 0;
+                    return usedDeploy;
+                }
+
+                return this.selected.length;
+            },
 
             canDecline(){
                 if( this.data.fromToken ) return true;
@@ -277,6 +308,25 @@
 
 
 <style>
+
+    .deploy-limit__pips {
+        margin-top: -.75rem;
+    }
+
+    .deploy-limit__pip {
+        display: block;
+        padding: .3em;
+        color: white;
+        text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;
+    }
+
+    .deploy-limit__pip.active {
+        color: var(--highlight-color);
+    }
+
+    .deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {
+        color: red;
+    }
 
     .area-header__units{
         text-align: center;

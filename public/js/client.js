@@ -6373,6 +6373,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'deploy-action',
   data: function data() {
@@ -6433,16 +6448,9 @@ __webpack_require__.r(__webpack_exports__);
       var deployLimit = this.data.deployLimit; // commie bonus patsies
 
       if (this.shared.faction.bonusPatsies && this.data.fromToken) {
-        // non-patsies always count against our deploy limit
-        usedDeploy = this.selected.filter(function (unit) {
-          return unit.type !== 'patsy';
-        }).length;
-        var patsiesInDeploy = this.selected.filter(function (unit) {
-          return unit.type === 'patsy';
-        }).length;
-        var netPatsies = patsiesInDeploy - this.shared.faction.bonusPatsies;
-        usedDeploy += netPatsies > 0 ? netPatsies : 0;
-        if (netPatsies < 0 && type === 'patsy') deployLimit++;
+        usedDeploy = this.nonPatsyUsedDeploy;
+        usedDeploy += this.netPatsies > 0 ? this.netPatsies : 0;
+        if (this.netPatsies < 0 && type === 'patsy') deployLimit++;
       }
 
       return usedDeploy < deployLimit;
@@ -6480,6 +6488,28 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    netPatsies: function netPatsies() {
+      return this.patsiesInDeploy - this.shared.faction.bonusPatsies;
+    },
+    patsiesInDeploy: function patsiesInDeploy() {
+      return this.selected.filter(function (unit) {
+        return unit.type === 'patsy';
+      }).length;
+    },
+    nonPatsyUsedDeploy: function nonPatsyUsedDeploy() {
+      return this.selected.filter(function (unit) {
+        return unit.type !== 'patsy';
+      }).length;
+    },
+    usedDeploy: function usedDeploy() {
+      if (this.shared.faction.bonusPatsies && this.data.fromToken) {
+        var usedDeploy = this.nonPatsyUsedDeploy;
+        usedDeploy += this.netPatsies > 0 ? this.netPatsies : 0;
+        return usedDeploy;
+      }
+
+      return this.selected.length;
+    },
     canDecline: function canDecline() {
       if (this.data.fromToken) return true;
       return !this.reserves.length && !this.hasFromAreaUnits || this.shared.faction.resources + this.shared.faction.energy < this.policePayoffs;
@@ -11269,7 +11299,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n\n", ""]);
+exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n\n", ""]);
 
 // exports
 
@@ -58365,25 +58395,6 @@ var render = function() {
             [
               _c(
                 "div",
-                { staticClass: "toggle area-map__toggle top-0 left-0" },
-                [
-                  _vm._v(
-                    "Deploy Limit: " +
-                      _vm._s(_vm.selected.length) +
-                      " / " +
-                      _vm._s(_vm.data.deployLimit) +
-                      " " +
-                      _vm._s(
-                        _vm.shared.faction.bonusPatsies
-                          ? "[+" + _vm.shared.faction.bonusPatsies + " patsy]"
-                          : ""
-                      )
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
                 {
                   staticClass: "toggle area-map__toggle top-0 right-0",
                   on: {
@@ -58394,6 +58405,38 @@ var render = function() {
                   }
                 },
                 [_c("i", { staticClass: "icon-zoom_in" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "deploy-limit__pips d-flex justify-center flex-wrap mt-3"
+                },
+                [
+                  _vm._l(_vm.data.deployLimit, function(n, index) {
+                    return _c("i", {
+                      staticClass: "deploy-limit__pip",
+                      class:
+                        index < _vm.usedDeploy
+                          ? "icon-circle active"
+                          : "icon-circle-open"
+                    })
+                  }),
+                  _vm._v(" "),
+                  _vm._l(_vm.shared.faction.bonusPatsies, function(n, index) {
+                    return _vm.shared.faction.bonusPatsies && _vm.data.fromToken
+                      ? _c("i", {
+                          staticClass: "deploy-limit__pip commie-pip",
+                          class:
+                            index < _vm.patsiesInDeploy
+                              ? "icon-circle active"
+                              : "icon-circle-open"
+                        })
+                      : _vm._e()
+                  })
+                ],
+                2
               ),
               _vm._v(" "),
               _vm._l(_vm.groupBy(_vm.selected, "location"), function(
