@@ -114,13 +114,16 @@ class Vampires extends Faction {
     }
 
     canActivateFeast( token, area ) {
-        return this.areasWithDeployTokens().length > 0;
+        return this.feastAreas().length > 0;
     }
 
+    feastAreas(){
+        return _.intersection( this.areasWithDeployTokens(), this.areasWithUnits() );
+    }
 
     async feastToken( args ) {
         let data, player;
-        let areas = this.areasWithDeployTokens();
+        let areas = this.feastAreas();
 
         for( let area of areas ){
             let message = `Feasts in The ${ area }`;

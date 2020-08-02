@@ -8984,6 +8984,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'last-attack',
   props: ['attack'],
@@ -9000,6 +9007,24 @@ __webpack_require__.r(__webpack_exports__);
       return this.shared.data.factions[this.attack.faction].units.find(function (unit) {
         return unit.id === _this.attack.unit;
       });
+    },
+    widthClass: function widthClass() {
+      switch (this.attack.rolls.length) {
+        case 1:
+          return 'width-40';
+
+        case 2:
+          return 'width-50';
+
+        case 3:
+          return 'width-60';
+
+        case 4:
+          return 'width-70';
+
+        default:
+          return 'width-90';
+      }
     }
   },
   methods: {
@@ -11679,7 +11704,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.last-attack__victim {\n    width: 2.5rem;\n    margin-left: -1rem;\n    margin-right: .5rem;\n    box-shadow: 0 0 0.3rem 0.15rem rgba(0,0,0,.5);\n}\n.last-attack__needs {\n    font-size: .7em;\n    color: var(--primary-light-color);\n    position: relative;\n    bottom: .15em;\n    left: .2rem;\n}\n.last-attack {\n    color: var(--highlight-color);\n    background-image: url(/images/background-blurred.jpg);\n    background-position: center;\n    background-size: cover;\n    background-repeat: no-repeat;\n    border-radius: 1rem;\n    border: 1px solid white;\n    box-shadow: 0 0 0.5rem 0.2rem black;\n    padding: .5rem;\n    top: 40%;\n}\n.last-attack .unit-hud__unit-image {\n    border: 2px solid;\n    box-shadow: 0 0 .4rem .2rem black;\n}\n.last-attack__roll{\n    width: 4.55rem;\n    margin: 0 .1rem;\n}\n", ""]);
+exports.push([module.i, "\n.last-attack__victim {\n    width: 2.5rem;\n    margin-left: -1rem;\n    margin-right: .5rem;\n    box-shadow: 0 0 0.3rem 0.15rem rgba(0,0,0,.5);\n}\n.last-attack__needs {\n    font-size: .7em;\n    color: var(--primary-light-color);\n    position: relative;\n    bottom: .15em;\n    left: .2rem;\n}\n.last-attack {\n    color: var(--highlight-color);\n    background-image: url(/images/background-blurred.jpg);\n    background-position: center;\n    background-size: cover;\n    background-repeat: no-repeat;\n    border-radius: 1rem;\n    border: 1px solid white;\n    box-shadow: 0 0 0.5rem 0.2rem black;\n    padding: .5rem;\n    top: 45%;\n}\n.last-attack .unit-hud__unit-image {\n    border: 2px solid;\n    box-shadow: 0 0 .4rem .2rem black;\n}\n.last-attack__roll{\n    width: 4.55rem;\n    margin: 0 .1rem;\n}\n", ""]);
 
 // exports
 
@@ -60691,7 +60716,8 @@ var render = function() {
         "div",
         {
           staticClass:
-            "last-attack center-text pos-absolute-center d-flex flex-wrap align-center justify-center"
+            "last-attack center-text pos-absolute-center d-flex flex-wrap align-center justify-center",
+          class: _vm.widthClass
         },
         [
           _c("div", { staticClass: "width-100 uppercase" }, [
@@ -60714,15 +60740,20 @@ var render = function() {
             attrs: { src: _vm.factionIcon(_vm.attack.victim) }
           }),
           _vm._v(" "),
-          _vm._l(_vm.attack.rolls, function(roll) {
-            return _c("img", {
-              staticClass: "last-attack__roll",
-              class: { "saturate-0": roll < _vm.attack.toHit },
-              attrs: { src: "/images/icons/attack-" + roll + ".png" }
-            })
-          })
+          _c(
+            "div",
+            { staticClass: "d-flex" },
+            _vm._l(_vm.attack.rolls, function(roll) {
+              return _c("img", {
+                staticClass: "last-attack__roll",
+                class: { "saturate-0": roll < _vm.attack.toHit },
+                attrs: { src: "/images/icons/attack-" + roll + ".png" }
+              })
+            }),
+            0
+          )
         ],
-        2
+        1
       )
     : _vm._e()
 }
