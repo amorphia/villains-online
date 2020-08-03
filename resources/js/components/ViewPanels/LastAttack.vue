@@ -4,9 +4,13 @@
          :class="widthClass">
 
         <div class="width-100 uppercase">last attack <span class="last-attack__needs">needing {{ attack.toHit }}</span></div>
-        <unit-icon :unit="unit" noSelect="true" :classes="`faction-${attack.faction} mr-3`"></unit-icon>
 
-        <img class="last-attack__victim" :src="factionIcon(attack.victim)">
+        <unit-icon v-if="unit" :unit="unit" noSelect="true" :classes="`faction-${attack.faction} mr-3`"></unit-icon>
+        <div v-else class="units-hud__unit d-inline-block pos-relative" :class="`faction-${attack.faction}`">
+            <img class="unit-hud__unit-image" :src="factionIcon( attack.faction )">
+        </div>
+
+        <img class="last-attack__victim" :src="victimImage">
 
         <div class="d-flex">
             <img v-for="roll in attack.rolls"
@@ -29,12 +33,24 @@
             };
         },
         computed : {
+            victimImage(){
+                if( this.attack.targetUnit ){
+                    let unit = this.attack.targetUnit;
+                    let src = `/images/factions/${unit.faction}/units/${unit.type}`;
+                    if( unit.flipped ) src += '-flipped';
+                    return src + '.png';
+                }
+
+                return this.factionIcon( this.attack.victim );
+            },
+
             unit(){
-                if( ! this.attack ) return;
+                if( ! this.attack || !this.attack.unit ) return;
                 return this.shared.data.factions[this.attack.faction].units.find(
-                    unit => unit.id === this.attack.unit
+                    unit => unit.id === this.attack.unit.id
                 );
             },
+
             widthClass(){
                 switch( this.attack.rolls.length ){
                     case 1 : return 'width-40';
@@ -45,6 +61,7 @@
                 }
             }
         },
+
         methods : {
             factionIcon( factionName ){
                 return _.factionIcon( factionName );
@@ -56,8 +73,8 @@
 
 <style>
     .last-attack__victim {
-        width: 2.5rem;
-        margin-left: -1rem;
+        width: 3rem;
+        margin-left: -.5rem;
         margin-right: .5rem;
         box-shadow: 0 0 0.3rem 0.15rem rgba(0,0,0,.5);
     }

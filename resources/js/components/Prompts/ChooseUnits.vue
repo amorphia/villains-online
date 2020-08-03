@@ -41,7 +41,7 @@
 
             enemyUnits(){
                 if( !this.data.showEnemyUnits ) return [];
-                return _.enemyUnitsInArea( this.shared.faction, this.area, this.shared.data.factions );
+                return _.enemyUnitsInArea( this.shared.faction, this.area, this.shared.data.factions, this.data.basicOnly );
             },
 
             message(){
@@ -83,6 +83,8 @@
                             if( !_.unitInArea( unit, this.area ) ) return;
                         }
 
+                        if( this.data.canHitOnly && unit.hidden ) return;
+                        if( this.data.basicOnly && !unit.basic ) return;
                         if( this.data.flippedOnly && !unit.flipped ) return;
                         if( this.data.hasAttack && !unit.attack.length ) return;
                         if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ) return;

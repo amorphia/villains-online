@@ -37,6 +37,7 @@
     --faction-swarm: #889941;
     --faction-society: #f43de8;
     --faction-vampires: #cc1d1d;
+    --faction-ninjas: #e8e8e8;
 }
 
 .faction-neutrals{color: white}
@@ -52,6 +53,7 @@
 .faction-swarm {color: var(--faction-swarm)}
 .faction-society {color: var(--faction-society)}
 .faction-vampires {color: var(--faction-vampires)}
+.faction-ninjas {color: var(--faction-ninjas)}
 
 .primary { color: var(--primary-color) }
 .primary-light { color: var(--primary-light-color) }

@@ -8,7 +8,9 @@ let obj = {
         this.game().message({ message: 'reveal', type : 'reveal-token', faction : this, token : token });
         this.game().popup( player, { token : token, area : area.name, faction: this.name });
 
-        await this.onAfterReveal( token );
+        for( let faction of Object.values( this.game().factions ) ){
+            await faction.onAfterReveal( token );
+        }
 
         if( ! this.canActivate( token, area ) ){
             this.sound( 'error' );

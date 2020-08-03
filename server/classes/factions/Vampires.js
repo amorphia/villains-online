@@ -73,6 +73,8 @@ class Vampires extends Faction {
 
 
     async onAfterReveal( token ){
+        if( token.faction !== this.name ) return;
+
         let player, data;
         let destinationAreaName = token.location;
 

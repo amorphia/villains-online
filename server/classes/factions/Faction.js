@@ -175,6 +175,7 @@ class Faction {
     afterCombatStep(){}
     startOfTurn(){}
     onAfterReveal(){}
+    onAfterBattle(){}
 
     startOfTurnPrompt() {
         return 'choose-target';

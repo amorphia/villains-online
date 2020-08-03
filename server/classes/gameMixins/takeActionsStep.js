@@ -94,8 +94,6 @@ let obj = {
         let token = this.objectMap[tokenId];
         let area = this.areas[token.location];
 
-        console.log( 'takeTokenAction', token, area  );
-
         let faction = player.faction();
         await faction.revealToken( player, token, area, this );
     },

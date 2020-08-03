@@ -12,6 +12,7 @@ let obj = {
     vampires : { owner : null, killer : true },
     society : { owner : null },
     //hackers : { owner : null },
+    ninjas : { owner : null, killer : true }
 };
 
 module.exports = Object.assign({}, obj );

@@ -23,7 +23,10 @@ class Battle {
 
     async init(){
         if( !this.area.canBattle() ){
-            this.game().message({ message : `Unable to battle in the ${this.area.name}` , class : 'warning' });
+            this.game().message({
+                message : `Unable to battle in the ${this.area.name}`,
+                class : 'warning'
+            });
             return;
         }
 
@@ -36,6 +39,7 @@ class Battle {
         return areaUnits.filter( unit => unit.firstStrike ).length > 0;
     }
 
+
     async resolveBattle(){
 
         if( this.hasFirstStrikeUnits() ){
@@ -47,6 +51,11 @@ class Battle {
             console.log( 'resolving regular strike phase' );
             await this.resolveStrikePhase();
         }
+
+        for( let faction of Object.values( this.game().factions ) ){
+            await faction.onAfterBattle( this );
+        }
+
         this.data.title = 'Battle completed';
         this.data.completed = true;
     }
@@ -63,26 +72,95 @@ class Battle {
         for( let i = 0; i < this.data.factions.length; i++ ){
             let faction = this.data.factions[i];
             this.data.factionIndex = i;
-            this.game().message({ faction : faction.name, message : `start their ${ firstStrikePhase ? 'first strike ' : '' }attacks` });
+
+            this.game().message({
+                faction : faction.name,
+                message : `start their ${ firstStrikePhase ? 'first strike ' : '' }attacks`
+            });
+
             await this.makeAttacks( faction );
-            this.game().message({ faction : faction.name, message : `have completed their ${ firstStrikePhase ? 'first strike ' : '' }attacks` });
+            this.game().message({
+                faction : faction.name,
+                message : `have completed their ${ firstStrikePhase ? 'first strike ' : '' }attacks`
+            });
         }
         this.data.factionIndex++;
 
     }
 
+    stillHasEnemiesThatCanAttack( faction ){
+        for( let fac of this.data.factions ){
+            if( fac.name === faction.name ) continue;
+            if( fac.units.find( unit => unit.needsToAttack ) ) return true;
+        }
+    }
+
+    async ninjaAttack( faction ){
+        let player, data;
+
+        [player, data] = await this.game().promise({
+            players: faction.playerId,
+            name: 'ninja-attack',
+            data : { area : this.area.name }
+        });
+
+        if( !data.ninjaAttack ) return;
+
+        let result = await faction.attack({
+                area : this.area,
+                attacks : [4],
+                chooseUnitTarget : true
+        });
+
+        if( result.hits && this.stillHasEnemiesThatCanAttack( faction ) ){
+            [player, data] = await this.game().promise({
+                players: faction.playerId,
+                name: 'choose-units',
+                data : {
+                    count : 1,
+                    areas : [this.area.name],
+                    playerOnly : true,
+                    message: "Choose a unit to become hidden"
+                }
+            });
+            let unit = this.game().objectMap[ data.units[0] ];
+            faction.becomeHidden( unit );
+        }
+
+        this.lastAttack = result;
+        faction.data.units.forEach( unit => unit.needsToAttack = false );
+    }
+
     async makeAttacks( factionData ){
         let player, data, gameFaction = this.game().factions[factionData.name];
 
+        if( gameFaction.name === 'ninjas' && this.stillHasUnitsToAttack( factionData, true ) ) await this.ninjaAttack( gameFaction );
+
         while( this.stillHasUnitsToAttack( factionData ) ){
-            [player, data] = await this.game().promise({ players: gameFaction.playerId, name: 'choose-units', data : { count : 1, areas : [this.area.name], needsToAttack: true, playerOnly : true,  message: "Choose a unit to make an attack" }});
+
+            [player, data] = await this.game().promise({
+                players: gameFaction.playerId,
+                name: 'choose-units',
+                data : {
+                    count : 1,
+                    areas : [this.area.name],
+                    needsToAttack: true,
+                    playerOnly : true,
+                    message: "Choose a unit to make an attack"
+                }
+            });
             let unit = this.game().objectMap[ data.units[0] ];
 
             this.data.currentUnit = unit.id;
 
             // resolve attack with that unit
             let area = this.game().areas[ unit.location ];
-            await gameFaction.attack( { area : area, attacks : unit.attack, unit : unit, attackBonus : this.options.attackBonus } );
+            await gameFaction.attack({
+                area : area,
+                attacks : unit.attack,
+                unit : unit,
+                attackBonus : this.options.attackBonus
+            });
 
             unit.needsToAttack = false;
             this.data.currentUnit = null;
@@ -93,9 +171,9 @@ class Battle {
         });
     }
 
-    stillHasUnitsToAttack( faction ){
+    stillHasUnitsToAttack( faction, basicOnly ){
         let unit = _.find( faction.units, unit => unit.needsToAttack );
-        let enemyUnits = this.game().factions[faction.name].hasEnemyUnitsInArea( this.area );
+        let enemyUnits = this.game().factions[faction.name].hasEnemyUnitsInArea( this.area, basicOnly );
         return unit && enemyUnits;
     }
 
@@ -125,7 +203,10 @@ class Battle {
             }
         });
 
-        this.data.factions.sort( (a,b) => a.order - b.order );
+        this.data.factions.sort( (a,b) => {
+            if( a.name === 'ninjas' ) return -1;
+            return a.order - b.order
+        });
     }
 
     removeUnitFromCombat( unit ){

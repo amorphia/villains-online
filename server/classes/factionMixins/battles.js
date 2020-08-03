@@ -70,24 +70,7 @@ let obj = {
     },
 
 
-    /**
-     *
-     * @param args
-     * area
-     * unit (optional)
-     * attacks
-     *
-     */
-    async attack( args ){
-
-        if( !args.attacks.length ){
-            this.game().message({ class : 'warning', message : 'Invalid attack value' });
-            return;
-        }
-
-        if( args.unit ){
-            args.attacks = this.addBonusDiceToAttack( args.attacks.slice() );
-        }
+    async chooseAttackVictim( args ){
 
         let message = '';
         args.attacks.forEach( n => message += `xA${n}x` );
@@ -102,51 +85,108 @@ let obj = {
 
         if( !victim ){
             this.game().message({ class : 'warning', message: `No units in the ${args.area.name} to attack` });
-            return;
         }
 
-        // swarm multi dice defense mod
+        return victim;
+    },
+
+    applyDroneDiceReduction( victim, args ){
         if( args.unit && victim.name === 'swarm' && args.attacks.length > 1 ){
             args.attacks = args.attacks.slice(1);
         }
+    },
 
+    canChooseAttackTarget( args ){
+        return args.chooseUnitTarget && this.enemyUnitTypesInArea( args.area, true ).length;
+    },
+
+
+    async setAttackTargets( args ){
+        let player, data;
+
+        if( ! this.canChooseAttackTarget( args ) ) {
+           return await this.chooseAttackVictim( args );
+        }
+
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'choose-units',
+            data : {
+                count : 1,
+                areas : [args.area.name],
+                enemyOnly : true,
+                basicOnly : true,
+                message: "Choose a basic unit to attack"
+            }
+        });
+
+        args.targetUnit = this.game().objectMap[ data.units[0] ];
+        return this.game().factions[ args.targetUnit.faction ];
+    },
+
+    /**
+     *
+     * @param args
+     * area
+     * unit (optional)
+     * attacks
+     *
+     */
+    async attack( args ){
+        let player, data;
+
+        // do we even have a valid attack set?
+        if( !args.attacks.length ) return this.game().message({ class : 'warning', message : 'Invalid attack value' });
+
+        // if this is a unit attacking, set bonus dice
+        if( args.unit ) args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice );
+
+        // set targets
+        let victim = await this.setAttackTargets( args );
+        if( !victim ) return console.log( 'no victim' );
+
+        // apply swarm multi dice defense mod
+        this.applyDroneDiceReduction( victim, args );
+
+        // resolve attack
         let rolls = [].concat( _.roll( args.attacks.length ) );
         let toHit = this.getToHitNumber( args, victim );
         let hits = this.calculateHits( rolls, toHit );
 
-        this.game().message({ faction : this, type : 'attack', unit : args.unit, rolls : rolls, toHit : toHit, hits : hits, victim : victim.name });
+        // report attack results
+        let attackResult = {
+            faction : this.name,
+            type : 'attack',
+            unit : args.unit,
+            targetUnit : args.targetUnit,
+            victim : victim.name,
+            rolls : rolls,
+            toHit : toHit,
+            hits : hits
+        };
 
-        let attackResult;
-        if( args.unit ){
-            attackResult = {
-                unit : args.unit.id,
-                faction : args.unit.faction,
-                victim : victim.name,
-                rolls : rolls,
-                toHit : toHit,
-                hits : hits
-            };
-        }
+        this.game().message( attackResult );
+        if( this.game().data.combat ) this.game().data.combat.lastAttack = attackResult;
 
-        if( this.game().data.combat ){
-            this.game().data.combat.lastAttack = attackResult;
-            this.game().data.combat.attacks[attackResult.unit] = attackResult;
-        }
+        // resolve hits
+        await this.resolveAttackHits( hits, victim, args );
 
-        if( hits > 0 ){
-
-            this.hitSound( hits );
-            if( args.unit ) {
-                await this.triggeredEvents('hit', [{unit: args.unit, hits: hits}]);
-            }
-
-            await victim.assignHits( hits, args.area, this );
-
-        } else {
-            this.game().sound( 'wiff' );
-        }
-
+        return attackResult;
     },
+
+    async resolveAttackHits( hits, victim, args ){
+        if( !hits ) return this.game().sound( 'wiff' );
+        this.hitSound( hits );
+        if( args.unit ) await this.triggeredEvents('hit', [{ unit: args.unit, hits: hits }] );
+
+        if( args.targetUnit ){
+            await this.game().assignHits( args.targetUnit, this, hits );
+            this.game().message({ faction: this, message: `hits <span class="faction-${args.targetUnit.faction}">${args.targetUnit.faction} ${args.targetUnit.name}</span> in the ${args.area.name}` });
+        } else {
+            await victim.assignHits( hits, args.area, this );
+        }
+    },
+
 
     hitSound( hits ){
         let sound;
@@ -206,17 +246,28 @@ let obj = {
         // check our attack bonus
         if( args.unit ) toHit -= this.data.attackBonus;
 
+        console.log( 'victim', victim );
+
         toHit += _.calculateDefenseBonus( this.data, victim.data, args.area );
         return toHit;
     },
 
-    addBonusDiceToAttack( attacks ){
-        if( this.data.bonusDice ){
+    addBonusDiceToAttack( attacks, bonusDice ){
+        let totalBonus = 0;
+        if( this.data.bonusDice ) totalBonus += this.data.bonusDice;
+        if( bonusDice ) totalBonus += bonusDice;
+
+        console.log( 'bonusDice', bonusDice );
+
+        if( totalBonus ){
             let attackVal = attacks[0];
-            for( let i = 0; i < this.data.bonusDice; i++ ){
+            for( let i = 0; i < totalBonus; i++ ){
                 attacks.push( attackVal );
             }
         }
+
+        console.log( 'attacks', attacks );
+
         return attacks;
     },
 
