@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/ViewPanels/LastAttack.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewPanels/LastAttack.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Game.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Game.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factions/Vampires.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Vampires.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -235,7 +235,7 @@
       <workItem from="1591417607847" duration="235785000" />
       <workItem from="1592157951059" duration="164940000" />
       <workItem from="1594834562760" duration="281533000" />
-      <workItem from="1596173954648" duration="14363000" />
+      <workItem from="1596173954648" duration="17317000" />
     </task>
     <servers />
   </component>
@@ -275,10 +275,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1596317807977">
+    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1596340346174">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1596317807977" />
+    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1596340346174" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1596068511372">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

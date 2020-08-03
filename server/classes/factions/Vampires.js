@@ -31,10 +31,12 @@ class Vampires extends Faction {
         // units
         this.units['goon'].data.onHit = 'becomeVampire';
         this.units['talent'].data.onHit = 'becomeVampire';
+        this.units['talent'].data.attack = [5];
         this.units['mole'].data.onHit = 'becomeVampire';
+        this.units['mole'].data.attack = [7];
         this.units['patsy'].count = 6;
         this.units['patsy'].data.onHit = 'becomeVampire';
-        this.units['patsy'].data.attack = [9];
+        this.units['patsy'].data.attack = [7];
 
         this.units['champion'] = {
             count: 1,
@@ -102,23 +104,23 @@ class Vampires extends Faction {
     }
 
 
-
-    areasWithDeployTokens(){
-        let areas = {};
-        this.data.tokens.forEach( token => {
-           if( token.type === 'deploy' && token.location && token.revealed ){
-               areas[token.location] = true;
-           }
-        });
-        return Object.keys( areas );
-    }
-
     canActivateFeast( token, area ) {
         return this.feastAreas().length > 0;
     }
 
     feastAreas(){
-        return _.intersection( this.areasWithDeployTokens(), this.areasWithUnits() );
+
+        let areas = {};
+        this.data.tokens.forEach( token => {
+            if( token.type === 'deploy' && token.location && token.revealed ){
+                let area = this.game().areas[token.location];
+                let hasUnit = !! this.data.units.find( unit => _.unitInArea( unit, area.name ) );
+                let hasCeaseFire = !! area.data.cards.find( card => card.class === 'cease-fire' );
+                if( hasUnit && !hasCeaseFire ) areas[area.name] = true;
+            }
+        });
+
+        return Object.keys( areas );
     }
 
     async feastToken( args ) {
@@ -156,7 +158,7 @@ class Vampires extends Faction {
     becomeVampire( event ) {
         let unit = event.unit;
 
-        if( !unit.flipped ){
+        if( !unit.flipped && !unit.killed ){
             unit.flipped = true;
             unit.attack = unit.attack.map( attack => attack - 2 );
             let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;

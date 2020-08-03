@@ -102,7 +102,10 @@ let obj = {
             });
 
             // heal wounded units, an unflip units coming in from the reserves
-            if( unit.flipped && ( unit.toughness || !unit.location ) ) unit.flipped = false;
+            if( unit.flipped && ( unit.toughness || !unit.location ) ){
+                unit.flipped = false;
+                this.unitUnflipped( unit );
+            }
 
             // update area
             unit.location = data.toArea;
