@@ -2105,6 +2105,11 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state
     };
+  },
+  methods: {
+    rollMiss: function rollMiss(roll) {
+      return roll < this.message.toHit;
+    }
   }
 });
 
@@ -7792,9 +7797,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'save-game',
-  props: ['save'],
+  props: ['save', 'open', 'index'],
   data: function data() {
     return {
       shared: App.state
@@ -7842,12 +7849,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'saved-games',
   data: function data() {
     return {
       shared: App.state,
-      savedGames: {}
+      savedGames: {},
+      open: 0
     };
   },
   mounted: function mounted() {
@@ -11210,7 +11224,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.save-game {\n    margin: 0 .5em .35em;\n    background-color: rgba(255, 131, 213, 0.11);\n    box-shadow: 0px 0px 2px rgba(0,0,0,.5);\n    padding: .5em;\n    font-family: var(--primary-font);\n    font-size: 1.15rem;\n}\n.save-game__date {\n    color: var(--primary-light-color);\n    font-size: 1.25rem;\n}\n.save-game__player {\n}\n.save-game__player.red {\n    color: red;\n}\n.save-game__save {\n    color: var(--highlight-color);\n    cursor: pointer;\n    opacity: .8;\n    transition: all .2s;\n}\n.save-game__save:hover {\n    opacity: 1;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.save-game {\n    margin: 0 .5em .35em;\n    background-color: rgba(255, 131, 213, 0.11);\n    box-shadow: 0px 0px 2px rgba(0,0,0,.5);\n    padding: .5em;\n    font-family: var(--primary-font);\n    font-size: 1.15rem;\n}\n.save-game__date {\n    color: var(--primary-light-color);\n    font-size: 1.25rem;\n}\n.save-game__player {\n}\n.save-game__player.red {\n    color: red;\n}\n.save-game__save {\n    color: var(--highlight-color);\n    cursor: pointer;\n    opacity: .8;\n    transition: all .2s;\n}\n.save-game__save:hover {\n    opacity: 1;\n}\n.save-game__saves {\n    transition: all .2s;\n    max-height: 0;\n    overflow: hidden;\n}\n.save-game__saves.open {\n    max-height: 100vh;\n}\n", ""]);
 
 // exports
 
@@ -53542,6 +53556,7 @@ var render = function() {
         _vm._l(_vm.message.rolls, function(roll) {
           return _c("img", {
             staticClass: "message__roll",
+            class: { "saturate-0": _vm.rollMiss(roll) },
             attrs: { src: "/images/icons/attack-" + roll + ".png" }
           })
         }),
@@ -59445,7 +59460,12 @@ var render = function() {
     "div",
     {
       staticClass: "save-game pos-relative overflow-hidden",
-      attrs: { disabled: !_vm.canLoad }
+      attrs: { disabled: !_vm.canLoad },
+      on: {
+        click: function($event) {
+          return _vm.$emit("open", _vm.index)
+        }
+      }
     },
     [
       _c("div", { staticClass: "save-game__date" }, [
@@ -59470,7 +59490,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "save-game__saves" },
+        { staticClass: "save-game__saves", class: { open: _vm.open } },
         [
           _vm._l(_vm.save.manuals, function(item) {
             return _c(
@@ -59555,8 +59575,16 @@ var render = function() {
       _c(
         "div",
         { staticClass: "width-100 height-100  flex-column d-flex" },
-        _vm._l(_vm.shared.savedGames, function(save) {
-          return _c("save-game", { key: save.id, attrs: { save: save } })
+        _vm._l(_vm.shared.savedGames, function(save, index) {
+          return _c("save-game", {
+            key: save.id,
+            attrs: { open: _vm.open === index, index: index, save: save },
+            on: {
+              open: function(i) {
+                return (_vm.open = i)
+              }
+            }
+          })
         }),
         1
       )

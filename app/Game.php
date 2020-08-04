@@ -34,7 +34,7 @@ class Game extends Model
     }
 
     public function getAutomaticsAttribute(){
-        return $this->getSaveByType( 'automatic' )->take( 4 )->get();
+        return $this->getSaveByType( 'automatic' )->get();
     }
 
 

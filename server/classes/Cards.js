@@ -25,7 +25,14 @@ class Card {
 class AllHollowsEve extends Card {
     handle( faction, area ){
         _.forEach( faction.game().factions, (item, name) =>{
-            item.data.units.forEach( unit => unit.killed = false );
+            item.data.units.forEach( unit => {
+                unit.killed = false;
+                if( unit.ready ) unit.ready = false;
+                if( unit.flipped ){
+                    unit.flipped = false;
+                    item.unitUnflipped( unit );
+                }
+            });
         });
     }
 }

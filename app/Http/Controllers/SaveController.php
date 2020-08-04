@@ -37,10 +37,17 @@ class SaveController extends Controller
     public function store( Request $request, $game )
     {
         $game = Game::where( 'uuid', $game )->first();
+
         $game->saves()->create([
             'type' => $request->type,
             'data' => $request->data
         ]);
+
+        // delete oldest save if we've hit max saves
+        $saves = $game->saves()->where('type', 'automatic')->orderBy( 'created_at' )->get();
+        if( $saves->count() > config( 'app.max_saves') ){
+            $saves->first()->delete();
+        }
     }
 
     /**

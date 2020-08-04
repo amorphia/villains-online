@@ -1,5 +1,7 @@
 <template>
-    <div class="save-game pos-relative overflow-hidden" :disabled="!canLoad">
+    <div class="save-game pos-relative overflow-hidden"
+         @click="$emit( 'open', index )"
+         :disabled="!canLoad">
 
         <div class="save-game__date">{{ save['created_at'] }}</div>
 
@@ -11,7 +13,7 @@
             </div>
         </div>
 
-        <div class="save-game__saves">
+        <div class="save-game__saves" :class="{ open : open }" >
             <div v-for="item in save.manuals" class="save-game__save" @click="loadGame( item.id )">manual - {{ item.created_at }}</div>
             <div v-for="item in save.automatics" class="save-game__save" @click="loadGame( item.id )">automatic - {{ item.created_at }}</div>
             <div v-for="item in save.turns" class="save-game__save" @click="loadGame( item.id )">turn - {{ item.created_at }}</div>
@@ -25,7 +27,7 @@
     export default {
 
         name: 'save-game',
-        props : ['save'],
+        props : [ 'save', 'open', 'index' ],
         data() {
             return {
                 shared : App.state
@@ -86,6 +88,14 @@
         opacity: 1;
     }
 
+    .save-game__saves {
+        transition: all .2s;
+        max-height: 0;
+        overflow: hidden;
+    }
 
+    .save-game__saves.open {
+        max-height: 100vh;
+    }
 </style>
 

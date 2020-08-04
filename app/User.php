@@ -75,7 +75,7 @@ class User extends Authenticatable
     {
         return $this->games()
             ->with(['players'])
-            ->take( 3 )
+            ->take( 4 )
             ->orderByDesc( 'created_at' )
             ->get();
 

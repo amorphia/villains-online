@@ -3,7 +3,13 @@
     <div class="saved-games game-hud drawer__aside height-100 pt-4">
         <adjust-handle direction="right" max="600" min="125"></adjust-handle>
         <div class="width-100 height-100  flex-column d-flex">
-            <save-game v-for="save in shared.savedGames" :key="save.id" :save="save"></save-game>
+            <save-game v-for="(save, index) in shared.savedGames"
+                       :open="open === index"
+                       :index="index"
+                       :key="save.id"
+                       :save="save"
+                       @open="i => open = i">
+            </save-game>
         </div>
     </div>
 
@@ -19,6 +25,7 @@
             return {
                 shared : App.state,
                 savedGames : {},
+                open : 0
             };
         },
 

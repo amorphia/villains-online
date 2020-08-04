@@ -2,6 +2,8 @@
 
 return [
 
+    'max_saves' => 6,
+
     'core_file_folders' => [
         '/images/areas',
         '/images/cards',

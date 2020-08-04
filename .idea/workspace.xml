@@ -2,7 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Hackers.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Hackers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Game.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Game.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SaveController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SaveController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Chat/AttackMessage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Chat/AttackMessage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/SaveGame.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/SaveGame.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/SavedGames.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/SavedGames.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Cards.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Cards.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,7 +240,7 @@
       <workItem from="1591417607847" duration="235785000" />
       <workItem from="1592157951059" duration="164940000" />
       <workItem from="1594834562760" duration="281533000" />
-      <workItem from="1596173954648" duration="61244000" />
+      <workItem from="1596173954648" duration="66225000" />
     </task>
     <servers />
   </component>
