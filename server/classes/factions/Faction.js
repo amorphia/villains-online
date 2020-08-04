@@ -21,8 +21,8 @@ class Faction {
 
         // core stats
         deployLimit : 2,
-        cardDraw : 15,
-        planLimit : 8,
+        cardDraw : 3,
+        planLimit : 3,
 
         // money
         resources : 0,

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewPlayer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewPanels/ViewPlayer.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,7 +231,7 @@
       <workItem from="1591417607847" duration="235785000" />
       <workItem from="1592157951059" duration="164940000" />
       <workItem from="1594834562760" duration="281533000" />
-      <workItem from="1596173954648" duration="68147000" />
+      <workItem from="1596173954648" duration="68458000" />
     </task>
     <servers />
   </component>
