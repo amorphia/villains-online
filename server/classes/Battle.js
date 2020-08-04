@@ -112,7 +112,11 @@ class Battle {
                 chooseUnitTarget : true
         });
 
-        if( result.hits && this.stillHasEnemiesThatCanAttack( faction ) ){
+        if(
+            result.hits
+            && this.stillHasEnemiesThatCanAttack( faction )
+            && faction.hasNonHiddenUnitsInArea( this.area )
+        ){
             [player, data] = await this.game().promise({
                 players: faction.playerId,
                 name: 'choose-units',

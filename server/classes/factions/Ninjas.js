@@ -84,6 +84,10 @@ class Ninjas extends Faction {
         }
     }
 
+    hasNonHiddenUnitsInArea( area ){
+        return !! this.data.units.find( unit => _.unitInArea( unit, area, { notHidden : true } ) );
+    }
+
     onAfterBattle( combat ) {
         let hiddenUnits = this.data.units.filter( unit => unit.hidden && _.unitInArea( unit, combat.area ) );
         hiddenUnits.forEach( unit => this.unitUnflipped( unit ) );
