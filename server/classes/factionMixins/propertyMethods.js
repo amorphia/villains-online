@@ -262,28 +262,16 @@ let mixin = {
 
 
     areasWithKills(){
-        let areas = {};
-
-        this.kills().forEach( kill => {
-            areas[kill.location] = true;
-        });
-
-        return Object.keys( areas );
+        return _.areasWithFactionKills( this, this.game().data.factions );
     },
 
 
     kills(){
-        let kills = [];
+        return _.factionKills( this, this.game().data.factions );
+    },
 
-        _.forEach( this.game().data.factions, faction => {
-            faction.units.forEach( unit => {
-                if( unit.killed === this.name ){
-                    kills.push( unit );
-                }
-            })
-        });
-
-        return kills;
+    unitTypesKilled(){
+        return _.factionTypesKilled( this, this.game().data.factions );
     },
 
 

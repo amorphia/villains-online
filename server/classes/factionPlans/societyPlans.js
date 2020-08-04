@@ -1,6 +1,6 @@
 let obj = [
     {
-        name: '',
+        name: '1',
         num : 1,
         faction : 'society',
         objectives : [
@@ -25,7 +25,7 @@ let obj = [
         ]
     },
     {
-        name: '',
+        name: '2',
         num : 2,
         faction : 'society',
         objectives : [
@@ -45,7 +45,7 @@ let obj = [
         ]
     },
     {
-        name: '',
+        name: '3',
         num : 3,
         faction : 'society',
         objectives : [
@@ -59,7 +59,7 @@ let obj = [
         ]
     },
     {
-        name: '',
+        name: '4',
         num : 4,
         faction : 'society',
         objectives : [
@@ -79,7 +79,7 @@ let obj = [
         ]
     },
     {
-        name: '',
+        name: '5',
         num : 5,
         faction : 'society',
         objectives : [
@@ -99,7 +99,7 @@ let obj = [
         ]
     },
     {
-        name: '',
+        name: '6',
         num : 6,
         faction : 'society',
         objectives : [
@@ -119,7 +119,7 @@ let obj = [
         ]
     },
     {
-        name: '',
+        name: '7',
         num : 7,
         faction : 'society',
         objectives : [
@@ -139,7 +139,7 @@ let obj = [
         ]
     },
     {
-        name: '',
+        name: '8',
         num : 8,
         faction : 'society',
         objectives : [

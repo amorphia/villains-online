@@ -109,7 +109,7 @@ class Ninjas extends Faction {
                     hasAttack: true,
                     playerOnly : true,
                     showEnemyUnits: true,
-                    message: "Choose a unit to attack"
+                    message: "Choose a unit to become hidden and make an attack"
                 }
             });
 

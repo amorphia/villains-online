@@ -85504,15 +85504,18 @@ var helpers = {
    *
    *
    */
-  firstUnrevealedToken: function firstUnrevealedToken(area) {
-    return this.find(area.tokens, function (token) {
-      return token && token.revealed === false;
-    });
-  },
   factionIcon: function factionIcon(faction) {
     if (typeof faction !== 'string') faction = faction.name;
     return "/images/factions/".concat(faction, "/icon.jpg");
   },
+
+  /**
+   *
+   *
+   *  COMBAT
+   *
+   *
+   */
   assignableHits: function assignableHits(units) {
     var assignableHits = 0;
     units.forEach(function (unit) {
@@ -85523,59 +85526,86 @@ var helpers = {
     });
     return assignableHits;
   },
-  factionUnitsInArea: function factionUnitsInArea(faction, area) {
-    var _this2 = this;
+  calculateDefenseBonus: function calculateDefenseBonus(attackingFaction, targetFaction, area) {
+    if (attackingFaction.data) attackingFaction = attackingFaction.data;
+    if (targetFaction.data) targetFaction = targetFaction.data;
+    if (area.data) area = area.data;
+    var defenseBonus = 0;
 
-    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    if (faction.data) faction = faction.data;
-    if (typeof area !== 'string') area = area.name;
-    return faction.units.filter(function (unit) {
-      return _this2.unitInArea(unit, area, options);
+    if (targetFaction.defenseBonus && !this.hasKauImmunity(attackingFaction, area)) {
+      defenseBonus += targetFaction.defenseBonus;
+    }
+
+    if (targetFaction.name === 'mutants' && _.find(area.tokens, function (token) {
+      return token.revealed && token.name === 'biohazard';
+    })) {
+      defenseBonus += 2;
+    }
+
+    if (targetFaction.factionDefenseBonus) {
+      defenseBonus += targetFaction.factionDefenseBonus;
+    }
+
+    return defenseBonus;
+  },
+
+  /**
+   *
+   *
+   *  TOKENS
+   *
+   *
+   */
+  getTokenCounts: function getTokenCounts(faction, area) {
+    var tokens = {};
+    area.tokens.forEach(function (token) {
+      if (token.faction === faction.name && token.revealed) {
+        tokens[token.type] = tokens[token.type] ? tokens[token.type] + 1 : 1;
+      }
+    });
+    return tokens;
+  },
+  firstUnrevealedToken: function firstUnrevealedToken(area) {
+    return this.find(area.tokens, function (token) {
+      return token && token.revealed === false;
     });
   },
-  hasUnitsInArea: function hasUnitsInArea(faction, area) {
-    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    if (faction.data) faction = faction.data;
-    if (typeof area !== 'string') area = area.name;
-    return !!this.find(faction.units, function (unit) {
-      return _.unitInArea(unit, area, options);
-    });
-  },
-  factionsWithUnitsInArea: function factionsWithUnitsInArea(factions, area, args) {
-    var _this3 = this;
+  discardToken: function discardToken(token, area) {
+    if (area.data) area = area.data;
+    var tokenSpace = false;
+    token.location = null;
 
-    if (typeof area !== 'string') area = area.name;
-    var factionsWithUnits = [];
-
-    _.forEach(factions, function (faction, name) {
-      if (_this3.hasUnitsInArea(faction, area, {
-        basic: args.basic,
-        notHidden: args.notHidden
-      }) && args.exclude !== name) {
-        factionsWithUnits.push(name);
+    _.forEach(area.tokens, function (item, index, collection) {
+      if (item.id && token.id === item.id) {
+        collection[index] = {};
+        tokenSpace = index + 1;
       }
     });
 
-    return factionsWithUnits;
+    return tokenSpace;
   },
+
+  /**
+   *
+   *
+   *  SKILLS
+   *
+   *
+   */
   hasUsedSkill: function hasUsedSkill(faction, area) {
     if (faction.data) faction = faction.data;
     if (typeof area !== 'string') area = area.name;
     return faction.usedSkills.includes(area);
   },
   canUseSkill: function canUseSkill(faction, area) {
-    var _this4 = this;
+    var _this2 = this;
 
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
     if (this.hasUsedSkill(faction, area)) return 0;
     return faction.units.filter(function (unit) {
-      return _this4.unitReadyInArea(unit, area);
+      return _this2.unitReadyInArea(unit, area);
     }).length;
-  },
-  deadInArea: function deadInArea(unit, area) {
-    if (typeof area !== 'string') area = area.name;
-    return unit.location === area && unit.killed;
   },
   unitReady: function unitReady(unit) {
     return !unit.killed && unit.ready && unit.location;
@@ -85588,10 +85618,52 @@ var helpers = {
     if (typeof area !== 'string') area = area.name;
     return unit.location === area && !unit.killed && !unit.ready;
   },
-  factionKilledUnitHere: function factionKilledUnitHere(faction, unit, area) {
-    if (typeof faction !== 'string') faction = faction.name;
+
+  /**
+   *
+   *
+   *  UNITS
+   *
+   *
+   */
+  factionUnitsInArea: function factionUnitsInArea(faction, area) {
+    var _this3 = this;
+
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    if (faction.data) faction = faction.data;
     if (typeof area !== 'string') area = area.name;
-    return unit.killed === faction && unit.location === area;
+    return faction.units.filter(function (unit) {
+      return _this3.unitInArea(unit, area, options);
+    });
+  },
+  hasUnitsInArea: function hasUnitsInArea(faction, area) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    if (faction.data) faction = faction.data;
+    if (typeof area !== 'string') area = area.name;
+    return !!this.find(faction.units, function (unit) {
+      return _.unitInArea(unit, area, options);
+    });
+  },
+  factionsWithUnitsInArea: function factionsWithUnitsInArea(factions, area, args) {
+    var _this4 = this;
+
+    if (typeof area !== 'string') area = area.name;
+    var factionsWithUnits = [];
+
+    _.forEach(factions, function (faction, name) {
+      if (_this4.hasUnitsInArea(faction, area, {
+        basic: args.basic,
+        notHidden: args.notHidden
+      }) && args.exclude !== name) {
+        factionsWithUnits.push(name);
+      }
+    });
+
+    return factionsWithUnits;
+  },
+  deadInArea: function deadInArea(unit, area) {
+    if (typeof area !== 'string') area = area.name;
+    return unit.location === area && unit.killed;
   },
   unitInArea: function unitInArea(unit, area) {
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
@@ -85628,42 +85700,6 @@ var helpers = {
   unitInPlay: function unitInPlay(unit) {
     return unit.location && !unit.killed;
   },
-  discardToken: function discardToken(token, area) {
-    if (area.data) area = area.data;
-    var tokenSpace = false;
-    token.location = null;
-
-    _.forEach(area.tokens, function (item, index, collection) {
-      if (item.id && token.id === item.id) {
-        collection[index] = {};
-        tokenSpace = index + 1;
-      }
-    });
-
-    return tokenSpace;
-  },
-  calculateDefenseBonus: function calculateDefenseBonus(attackingFaction, targetFaction, area) {
-    if (attackingFaction.data) attackingFaction = attackingFaction.data;
-    if (targetFaction.data) targetFaction = targetFaction.data;
-    if (area.data) area = area.data;
-    var defenseBonus = 0;
-
-    if (targetFaction.defenseBonus && !this.hasKauImmunity(attackingFaction, area)) {
-      defenseBonus += targetFaction.defenseBonus;
-    }
-
-    if (targetFaction.name === 'mutants' && _.find(area.tokens, function (token) {
-      return token.revealed && token.name === 'biohazard';
-    })) {
-      defenseBonus += 2;
-    }
-
-    if (targetFaction.factionDefenseBonus) {
-      defenseBonus += targetFaction.factionDefenseBonus;
-    }
-
-    return defenseBonus;
-  },
   factionAreas: function factionAreas(faction, areas) {
     var factionAreas = [];
     this.forEach(areas, function (area, name) {
@@ -85673,6 +85709,14 @@ var helpers = {
     });
     return factionAreas;
   },
+
+  /**
+   *
+   *
+   *  INFLUENCE
+   *
+   *
+   */
   eachInfluenceInArea: function eachInfluenceInArea(area, factions, withZeros) {
     var _this5 = this;
 
@@ -85705,6 +85749,15 @@ var helpers = {
     influence += this.churchInfluence(faction, area, factions);
     return influence;
   },
+  cardInfluence: function cardInfluence(faction, area) {
+    var influence = 0;
+    var cards = this.getCardCounts(faction, area);
+    var tokens = this.getTokenCounts(faction, area);
+    if (cards['rousing-speech']) influence += 2 * cards['rousing-speech'];
+    if (cards['march-the-streets'] && tokens['deploy']) influence += 2 * cards['march-the-streets'] * tokens['deploy'];
+    if (cards['display-of-brilliance'] && tokens['card']) influence += 2 * cards['display-of-brilliance'] * tokens['card'];
+    return influence;
+  },
   unitInfluence: function unitInfluence(faction, area) {
     var _this6 = this;
 
@@ -85732,6 +85785,19 @@ var helpers = {
     return !!this.find(area.tokens, function (token) {
       return token.name === 'rise-up' && token.revealed;
     });
+  },
+
+  /**
+   *
+   *
+   *  KILLS
+   *
+   *
+   */
+  factionKilledUnitHere: function factionKilledUnitHere(faction, unit, area) {
+    if (typeof faction !== 'string') faction = faction.name;
+    if (typeof area !== 'string') area = area.name;
+    return unit.killed === faction && unit.location === area;
   },
   areaExterminated: function areaExterminated(area, factions) {
     var _this7 = this;
@@ -85768,6 +85834,34 @@ var helpers = {
     });
     return areaDead;
   },
+  factionKills: function factionKills(faction, factions) {
+    var kills = [];
+
+    _.forEach(factions, function (fac) {
+      fac.units.forEach(function (unit) {
+        if (unit.killed === faction.name) {
+          kills.push(unit);
+        }
+      });
+    });
+
+    return kills;
+  },
+  areasWithFactionKills: function areasWithFactionKills(faction, factions) {
+    var areas = {};
+    this.factionKills(faction, factions).forEach(function (kill) {
+      areas[kill.location] = true;
+    });
+    return Object.keys(areas);
+  },
+  factionTypesKilled: function factionTypesKilled(faction, factions) {
+    var types = {};
+    var kills = this.factionKills(faction, factions);
+    kills.forEach(function (unit) {
+      if (types.hasOwnProperty(unit.type)) types[unit.type]++;else types[unit.type] = 1;
+    });
+    return Object.keys(types).length ? types : false;
+  },
   killsInArea: function killsInArea(factionName, areaName, factions) {
     var _this8 = this;
 
@@ -85795,24 +85889,14 @@ var helpers = {
     });
     return influence;
   },
-  cardInfluence: function cardInfluence(faction, area) {
-    var influence = 0;
-    var cards = this.getCardCounts(faction, area);
-    var tokens = this.getTokenCounts(faction, area);
-    if (cards['rousing-speech']) influence += 2 * cards['rousing-speech'];
-    if (cards['march-the-streets'] && tokens['deploy']) influence += 2 * cards['march-the-streets'] * tokens['deploy'];
-    if (cards['display-of-brilliance'] && tokens['card']) influence += 2 * cards['display-of-brilliance'] * tokens['card'];
-    return influence;
-  },
-  getTokenCounts: function getTokenCounts(faction, area) {
-    var tokens = {};
-    area.tokens.forEach(function (token) {
-      if (token.faction === faction.name && token.revealed) {
-        tokens[token.type] = tokens[token.type] ? tokens[token.type] + 1 : 1;
-      }
-    });
-    return tokens;
-  },
+
+  /**
+   *
+   *
+   *  AREAS
+   *
+   *
+   */
   getCardCounts: function getCardCounts(faction, area) {
     var cards = {};
     area.cards.forEach(function (card) {

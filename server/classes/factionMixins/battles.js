@@ -252,8 +252,6 @@ let obj = {
         // check our attack bonus
         if( args.unit ) toHit -= this.data.attackBonus;
 
-        console.log( 'victim', victim );
-
         toHit += _.calculateDefenseBonus( this.data, victim.data, args.area );
         return toHit;
     },

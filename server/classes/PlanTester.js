@@ -449,6 +449,41 @@ class PlanTester {
         return result;
     }
 
+    killTypeCount( faction, typeCount ){
+        let typesKilled = faction.unitTypesKilled();
+        let result = Object.keys( typesKilled ).length >= typeCount;
+
+        if( this.debug ) console.log(
+            'killTypeCount',
+            'typeCount req:', typeCount,
+            'typesKilled:', typesKilled,
+            'result:', result
+        );
+
+        return result;
+    }
+
+
+    killTypes( faction, types, killCount ){
+        let typesKilled = faction.unitTypesKilled();
+        let killsOfTypes = 0;
+
+        types.forEach( type => {
+            if( typesKilled.hasOwnProperty( type ) ) killsOfTypes += typesKilled[type];
+        });
+
+        let result = killsOfTypes >= killCount;
+
+        if( this.debug ) console.log(
+            'killTypeCount',
+            'types req:', types,
+            'killCount req:', killCount,
+            'typesKilled:', typesKilled,
+            'result:', result
+        );
+
+        return result;
+    }
 }
 
 module.exports = PlanTester;

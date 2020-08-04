@@ -26,7 +26,8 @@ let helpers = {
             });
         }
         return changes( object, base, this );
-},
+    },
+
 
     roll( count = 1, max = 10 ){
         let rolls = [];
@@ -38,9 +39,11 @@ let helpers = {
         return rolls;
     },
 
+
     popRandom( array ){
         return array.splice( Math.floor(Math.random() * array.length), 1 )[0];
     },
+
 
     moveItemById: function( id, source, target, mode = 'push' ){
         if( typeof id !== 'string' ) id = id.id;
@@ -49,6 +52,7 @@ let helpers = {
         target[mode]( item[0] );
         return true;
     },
+
 
     moveItem: function( index, source, target, mode = 'push' ){
         if(    !Array.isArray( source )
@@ -73,17 +77,21 @@ let helpers = {
      *
      */
 
-    firstUnrevealedToken( area ){
-        return this.find( area.tokens, token => {
-            return token && token.revealed === false
-        });
-    },
 
     factionIcon( faction ){
         if( typeof faction !== 'string' ) faction = faction.name;
-
         return `/images/factions/${faction}/icon.jpg`;
     },
+
+
+
+    /**
+     *
+     *
+     *  COMBAT
+     *
+     *
+     */
 
     assignableHits( units ){
         let assignableHits = 0;
@@ -98,6 +106,112 @@ let helpers = {
     },
 
 
+    calculateDefenseBonus( attackingFaction, targetFaction, area ){
+        if( attackingFaction.data ) attackingFaction = attackingFaction.data;
+        if( targetFaction.data ) targetFaction = targetFaction.data;
+        if( area.data ) area = area.data;
+
+        let defenseBonus = 0;
+
+        if( targetFaction.defenseBonus && !this.hasKauImmunity( attackingFaction, area ) ){
+            defenseBonus += targetFaction.defenseBonus;
+        }
+
+        if( targetFaction.name === 'mutants' && _.find( area.tokens, token => token.revealed && token.name === 'biohazard') ){
+            defenseBonus += 2;
+        }
+
+        if( targetFaction.factionDefenseBonus ){
+            defenseBonus += targetFaction.factionDefenseBonus;
+        }
+
+        return defenseBonus;
+    },
+
+
+    /**
+     *
+     *
+     *  TOKENS
+     *
+     *
+     */
+
+    getTokenCounts( faction, area ){
+        let tokens = {};
+        area.tokens.forEach( token => {
+            if( token.faction === faction.name && token.revealed ){
+                tokens[token.type] = tokens[token.type] ? tokens[token.type] + 1 : 1;
+            }
+        });
+        return tokens;
+    },
+
+    firstUnrevealedToken( area ){
+        return this.find( area.tokens, token => {
+            return token && token.revealed === false
+        });
+    },
+
+    discardToken( token, area ){
+        if( area.data ) area = area.data;
+        let tokenSpace = false;
+
+        token.location = null;
+        _.forEach( area.tokens, (item, index, collection ) => {
+            if( item.id && token.id === item.id ){
+                collection[index] = {};
+                tokenSpace = index + 1;
+            }
+        });
+        return tokenSpace;
+    },
+
+
+    /**
+     *
+     *
+     *  SKILLS
+     *
+     *
+     */
+
+    hasUsedSkill( faction, area ){
+        if( faction.data ) faction = faction.data;
+        if( typeof area !== 'string' ) area = area.name;
+        return faction.usedSkills.includes( area )
+    },
+
+
+    canUseSkill( faction, area ){
+        if( faction.data ) faction = faction.data;
+        if( area.data ) area = area.data;
+
+        if( this.hasUsedSkill( faction, area ) ) return 0;
+        return faction.units.filter( unit => this.unitReadyInArea( unit, area ) ).length;
+    },
+
+    unitReady( unit ){
+        return !unit.killed && unit.ready && unit.location;
+    },
+
+    unitReadyInArea( unit, area ){
+        if( typeof area !== 'string' ) area = area.name;
+        return unit.location === area && !unit.killed && unit.ready;
+    },
+
+    unitNotReadyInArea( unit, area ){
+        if( typeof area !== 'string' ) area = area.name;
+        return unit.location === area && !unit.killed && !unit.ready;
+    },
+
+    /**
+     *
+     *
+     *  UNITS
+     *
+     *
+     */
 
     factionUnitsInArea( faction, area, options = {} ){
         if( faction.data ) faction = faction.data;
@@ -129,47 +243,11 @@ let helpers = {
         return factionsWithUnits;
     },
 
-
-    hasUsedSkill( faction, area ){
-        if( faction.data ) faction = faction.data;
-        if( typeof area !== 'string' ) area = area.name;
-        return faction.usedSkills.includes( area )
-    },
-
-
-    canUseSkill( faction, area ){
-        if( faction.data ) faction = faction.data;
-        if( area.data ) area = area.data;
-
-        if( this.hasUsedSkill( faction, area ) ) return 0;
-        return faction.units.filter( unit => this.unitReadyInArea( unit, area ) ).length;
-    },
-
-
     deadInArea( unit, area ){
         if( typeof area !== 'string' ) area = area.name;
         return unit.location === area && unit.killed;
     },
 
-    unitReady( unit ){
-        return !unit.killed && unit.ready && unit.location;
-    },
-
-    unitReadyInArea( unit, area ){
-        if( typeof area !== 'string' ) area = area.name;
-        return unit.location === area && !unit.killed && unit.ready;
-    },
-
-    unitNotReadyInArea( unit, area ){
-        if( typeof area !== 'string' ) area = area.name;
-        return unit.location === area && !unit.killed && !unit.ready;
-    },
-
-    factionKilledUnitHere( faction, unit, area ){
-        if( typeof faction !== 'string' ) faction = faction.name;
-        if( typeof area !== 'string' ) area = area.name;
-        return unit.killed === faction && unit.location === area;
-    },
 
     unitInArea( unit, area, options = {} ){
         if( typeof area !== 'string' ) area = area.name;
@@ -207,41 +285,6 @@ let helpers = {
         return unit.location && !unit.killed;
     },
 
-    discardToken( token, area ){
-        if( area.data ) area = area.data;
-        let tokenSpace = false;
-
-        token.location = null;
-        _.forEach( area.tokens, (item, index, collection ) => {
-            if( item.id && token.id === item.id ){
-                collection[index] = {};
-                tokenSpace = index + 1;
-            }
-        });
-        return tokenSpace;
-    },
-
-    calculateDefenseBonus( attackingFaction, targetFaction, area ){
-        if( attackingFaction.data ) attackingFaction = attackingFaction.data;
-        if( targetFaction.data ) targetFaction = targetFaction.data;
-        if( area.data ) area = area.data;
-
-        let defenseBonus = 0;
-
-        if( targetFaction.defenseBonus && !this.hasKauImmunity( attackingFaction, area ) ){
-            defenseBonus += targetFaction.defenseBonus;
-        }
-
-        if( targetFaction.name === 'mutants' && _.find( area.tokens, token => token.revealed && token.name === 'biohazard') ){
-            defenseBonus += 2;
-        }
-
-        if( targetFaction.factionDefenseBonus ){
-            defenseBonus += targetFaction.factionDefenseBonus;
-        }
-
-        return defenseBonus;
-    },
 
     factionAreas( faction, areas ){
         let factionAreas = [];
@@ -253,6 +296,15 @@ let helpers = {
         });
         return factionAreas;
     },
+
+
+    /**
+     *
+     *
+     *  INFLUENCE
+     *
+     *
+     */
 
     eachInfluenceInArea( area, factions, withZeros ){
         let influences = [];
@@ -282,6 +334,17 @@ let helpers = {
     },
 
 
+    cardInfluence( faction, area ){
+        let influence = 0;
+        let cards = this.getCardCounts( faction, area );
+        let tokens = this.getTokenCounts( faction, area );
+
+        if( cards['rousing-speech'] ) influence += (2 * cards['rousing-speech']);
+        if( cards['march-the-streets'] && tokens['deploy'] ) influence += ( 2 * cards['march-the-streets'] * tokens['deploy'] );
+        if( cards['display-of-brilliance'] && tokens['card'] ) influence += ( 2 * cards['display-of-brilliance'] * tokens['card'] );
+        return influence;
+    },
+
     unitInfluence( faction, area ){
         if( faction.data ) faction = faction.data; if( area.data ) area = area.data;
 
@@ -306,6 +369,21 @@ let helpers = {
 
         if( faction.name !== 'commies' ) return false;
         return !!this.find( area.tokens, token => token.name === 'rise-up' && token.revealed );
+    },
+
+
+    /**
+     *
+     *
+     *  KILLS
+     *
+     *
+     */
+
+    factionKilledUnitHere( faction, unit, area ){
+        if( typeof faction !== 'string' ) faction = faction.name;
+        if( typeof area !== 'string' ) area = area.name;
+        return unit.killed === faction && unit.location === area;
     },
 
     areaExterminated( area, factions ){
@@ -340,6 +418,45 @@ let helpers = {
         return areaDead;
     },
 
+    factionKills( faction, factions ){
+        let kills = [];
+
+        _.forEach( factions, fac => {
+            fac.units.forEach( unit => {
+                if( unit.killed === faction.name ){
+                    kills.push( unit );
+                }
+            })
+        });
+
+        return kills;
+    },
+
+
+    areasWithFactionKills( faction, factions ){
+        let areas = {};
+
+        this.factionKills( faction, factions ).forEach( kill => {
+            areas[kill.location] = true;
+        });
+
+        return Object.keys( areas );
+    },
+
+
+    factionTypesKilled( faction, factions ){
+        let types = {};
+
+        let kills = this.factionKills( faction, factions );
+        kills.forEach( unit => {
+            if( types.hasOwnProperty( unit.type ) ) types[unit.type]++;
+            else types[unit.type] = 1;
+        });
+
+        return Object.keys( types ).length ? types : false;
+    },
+
+
     killsInArea( factionName, areaName, factions ){
         if( typeof factionName !== 'string' ) factionName = factionName.name;
         if( typeof areaName !== 'string' ) areaName = areaName.name;
@@ -353,10 +470,12 @@ let helpers = {
         return kills;
     },
 
+
     churchInfluence( faction, area, factions ){
         if( faction.name !== 'cultists' ) return 0;
         return this.killsInArea( faction.name, area.name, factions );
     },
+
 
     tokenInfluence( faction, area ){
         let influence = 0;
@@ -368,26 +487,15 @@ let helpers = {
         return influence;
     },
 
-    cardInfluence( faction, area ){
-        let influence = 0;
-        let cards = this.getCardCounts( faction, area );
-        let tokens = this.getTokenCounts( faction, area );
 
-        if( cards['rousing-speech'] ) influence += (2 * cards['rousing-speech']);
-        if( cards['march-the-streets'] && tokens['deploy'] ) influence += ( 2 * cards['march-the-streets'] * tokens['deploy'] );
-        if( cards['display-of-brilliance'] && tokens['card'] ) influence += ( 2 * cards['display-of-brilliance'] * tokens['card'] );
-        return influence;
-    },
+    /**
+     *
+     *
+     *  AREAS
+     *
+     *
+     */
 
-    getTokenCounts( faction, area ){
-        let tokens = {};
-        area.tokens.forEach( token => {
-            if( token.faction === faction.name && token.revealed ){
-                tokens[token.type] = tokens[token.type] ? tokens[token.type] + 1 : 1;
-            }
-        });
-        return tokens;
-    },
 
     getCardCounts( faction, area ){
         let cards = {};

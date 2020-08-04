@@ -21,7 +21,9 @@
 { test : 'controlTarget', args : [] },
 
 
- /// tokens in areas by type
+{ test : 'killTypeCount', args : [3] },
+
+{ test : 'killTypes', args : [ ['mole','talent'], 2 ] },
 
 
 { test : 'controlAreas', args : [3] },
@@ -32,6 +34,8 @@
 { test : 'exterminateEnemyTarget', args : [] },
 { test : 'unitsAtEnemyTarget', args : [2, 'mole'? ] },
 { test : 'mrFusion', args : [4] },
+
+
 
 
 

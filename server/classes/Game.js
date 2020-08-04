@@ -82,6 +82,11 @@ class Game {
         this.data.id = this.id;
         this.created = Date.now();
         this.planTester = new PlanTester();
+
+        if( process.env.HOMEPATH ===  '\\Users\\jerem' ) {
+            this.fastMode = true;
+        }
+
     }
 
     static initEvents( socket ){
