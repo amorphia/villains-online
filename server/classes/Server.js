@@ -7,7 +7,6 @@ class Server {
 
     debug = false;
     messageNum = 0;
-    //savedGames;
     games = {};
     players = {};
     lobbyPlayers = {};
@@ -17,8 +16,6 @@ class Server {
         this.db = new DB();
         this.io = io;
         this.server = server;
-        //this.db.createTables();
-        //this.loadSavesFromDB();
         this.initPlayerConnections();
     }
 
@@ -56,11 +53,6 @@ class Server {
         this.db.save( game, options );
     }
 
-    /*
-    async loadSavesFromDB( options ){
-        this.savedGames = await this.db.load( options );
-    }
-    */
 
     closeOpenGame(){
         this.io.to( 'lobby' ).emit( 'openGame', null );
@@ -142,7 +134,6 @@ class Server {
                 player = options.player;
             }
 
-            //player.socket().emit( 'sound', sound, options );
             player.callSocket( 'emit', 'sound', sound, options );
         } else {
             this.io.to( options.room ).emit( 'sound', sound, options );
@@ -157,7 +148,6 @@ class Server {
             player = this.players[player];
         }
 
-        //player.socket().emit( 'message', message );
         player.callSocket( 'emit', 'message', message );
     }
 
@@ -178,7 +168,6 @@ class Server {
 
     popup( player, room, popup ){
         if( typeof player === 'string' ) player = this.players[player];
-        //player.socket().to( room ).emit( 'popup', popup  );
         player.emitToOthers( room, 'popup', popup );
     }
 
@@ -202,8 +191,8 @@ class Server {
     }
 
 
-    sendSocketOpenGame( socket ){
-        socket.emit( 'openGame', this.getOpenGame() );
+    sendSocketOpenGame( socket ) {
+        if ( socket ) socket.emit('openGame', this.getOpenGame());
     }
 
     addPlayer( socket, data ) {
