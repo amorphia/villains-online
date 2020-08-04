@@ -9295,6 +9295,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-player',
   data: function data() {
@@ -9313,6 +9323,10 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    target: function target() {
+      if (!this.faction.cards.target || !this.shared.canSeeTarget(this.faction)) return;
+      return this.faction.cards.target[0];
+    },
     defenseBonus: function defenseBonus() {
       var bonus = this.faction.defenseBonus;
       if (this.faction.factionDefenseBonus) bonus += this.faction.factionDefenseBonus;
@@ -61228,6 +61242,29 @@ var render = function() {
                     )
                   ]
                 ),
+                _vm._v(" "),
+                _vm.target
+                  ? _c("div", [
+                      _c("div", { staticClass: "view-player__title" }, [
+                        _vm._v("Current Target:")
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "view-player__active-cards" }, [
+                        _c("img", {
+                          staticClass: "view-player__card pointer",
+                          attrs: {
+                            src: "/images/cards/" + _vm.target.file + ".jpg"
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.shared.card =
+                                "/images/cards/" + _vm.target.file + ".jpg"
+                            }
+                          }
+                        })
+                      ])
+                    ])
+                  : _vm._e(),
                 _vm._v(" "),
                 _c("div", { staticClass: "view-player__title" }, [
                   _vm._v("Active Cards:")

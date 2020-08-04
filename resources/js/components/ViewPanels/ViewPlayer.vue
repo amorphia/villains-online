@@ -34,6 +34,16 @@
                         <div class="view-player__captured view-player__title width-100">Captured Markers: <span>{{ faction.captured.current }} / {{ faction.captured.max }}</span></div>
                     </div>
 
+
+                    <div v-if="target">
+                        <div class="view-player__title">Current Target:</div>
+                        <div class="view-player__active-cards">
+                            <img class="view-player__card pointer"
+                                 @click="shared.card = `/images/cards/${target.file}.jpg`"
+                                 :src="`/images/cards/${target.file}.jpg`">
+                        </div>
+                    </div>
+
                     <div class="view-player__title">Active Cards:</div>
                     <div v-if="faction.cards.active.length" class="view-player__active-cards">
                         <img v-for="card in faction.cards.active" class="view-player__card pointer"
@@ -172,6 +182,11 @@
 
 
         computed : {
+
+            target(){
+                if( !this.faction.cards.target || !this.shared.canSeeTarget( this.faction ) ) return;
+                return this.faction.cards.target[0];
+            },
 
             defenseBonus(){
                 let bonus = this.faction.defenseBonus;
