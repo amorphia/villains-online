@@ -36,7 +36,8 @@ class Player {
             data : null
         };
 
-        this.socket().emit( 'clearGame' );
+        // this.socket().emit( 'clearGame' );
+        this.callSocket( 'emit', 'clearGame' );
         this.joinRoom( 'lobby' );
         Server.sendSocketOpenGame( this.socket() );
 
@@ -89,13 +90,15 @@ class Player {
     }
 
     joinRoom( room ) {
-        this.socket().leaveAll();
+        //this.socket().leaveAll();
+        this.callSocket( 'leaveAll' );
 
         let oldRoom = this.room;
-        if( this.debug ) console.log( "leaving:", oldRoom );
-
         this.room = room;
-        this.socket().join( room );
+
+        //this.socket().join( room );
+        this.callSocket( 'join', room );
+
         let roomName = room === 'lobby' ? 'lobby' : 'game';
         Server.message( this.room, { message: `joined ${roomName}`, player : this });
 
@@ -105,6 +108,25 @@ class Player {
             Server.updateLobbyPopulation( this, false );
         }
     }
+
+
+    emitToOthers( room, emit, ...args ){
+        let socket = this.socket();
+        if( socket ){
+            socket.to( room ).emit( emit, ...args );
+        }
+    }
+
+
+    callSocket( func, ...args ){
+        let socket = this.socket();
+        if( socket ){
+            socket[func]( ...args );
+        } else {
+            console.log( 'No Socket present' );
+        }
+    }
+
 
     socket(){
         return Server.io.sockets.connected[this.socketId];

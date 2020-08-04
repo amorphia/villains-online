@@ -142,7 +142,8 @@ class Server {
                 player = options.player;
             }
 
-            player.socket().emit( 'sound', sound, options );
+            //player.socket().emit( 'sound', sound, options );
+            player.callSocket( 'emit', 'sound', sound, options );
         } else {
             this.io.to( options.room ).emit( 'sound', sound, options );
         }
@@ -156,7 +157,8 @@ class Server {
             player = this.players[player];
         }
 
-        player.socket().emit( 'message', message );
+        //player.socket().emit( 'message', message );
+        player.callSocket( 'emit', 'message', message );
     }
 
     message( room, message ){
@@ -176,7 +178,8 @@ class Server {
 
     popup( player, room, popup ){
         if( typeof player === 'string' ) player = this.players[player];
-        player.socket().to( room ).emit( 'popup', popup  );
+        //player.socket().to( room ).emit( 'popup', popup  );
+        player.emitToOthers( room, 'popup', popup );
     }
 
     removePlayer( socket ) {
