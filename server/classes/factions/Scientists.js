@@ -51,7 +51,7 @@ class Scientists extends Faction {
     }
 
     factionCombatMods( mods, area ) {
-        if( this.data.units.find( unit => _.unitInArea( unit, area, 'champion' ) ) ){
+        if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
             mods.push( { type : 'drCards', text : `Draws a card for each hit scored by Dr. Tyrannosaurus` });
         }
 

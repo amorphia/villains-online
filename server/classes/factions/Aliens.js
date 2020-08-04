@@ -57,7 +57,7 @@ class Aliens extends Faction {
     }
 
     factionCombatMods( mods, area ) {
-        if( this.data.units.find( unit => _.unitInArea( unit, area, 'champion' ) ) ){
+        if( this.data.units.find( unit => _.unitInArea( unit, area, { type: 'champion' } ) ) ){
             mods.push( { type : 'kauImmunity', text : `Negates enemy defense bonuses that come from cards` });
         }
 

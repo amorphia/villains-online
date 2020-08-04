@@ -57,7 +57,7 @@ class Vampires extends Faction {
     }
 
     factionCombatMods( mods, area ) {
-        if (this.data.units.find(unit => _.unitInArea(unit, area, 'champion'))) {
+        if ( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ) {
             mods.push({
                 type: 'lilithHeal',
                 text: `If Lilith, Baroness of Czarkovia is assigned a hit while in vampire form, flip her face up rather than kill her`

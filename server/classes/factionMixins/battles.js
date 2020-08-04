@@ -6,7 +6,7 @@ let obj = {
         if( typeof area !== 'string' ) area = area.name;
 
         // find valid players
-        let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name });
+        let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name, notHidden : args.notHidden });
 
         // no enemies with units in the from location
         if( targetFactions.length === 0 ){
@@ -34,7 +34,11 @@ let obj = {
 
     getTargetFactions( area ){
         // find valid players
-        let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name });
+        let targetFactions = _.factionsWithUnitsInArea(
+            this.game().factions,
+            area,
+            { exclude : this.name, notHidden : true }
+        );
 
         // no enemies with units in the from location
         if( targetFactions.length === 0 ){
@@ -76,6 +80,7 @@ let obj = {
         args.attacks.forEach( n => message += `xA${n}x` );
         message = `Choose player to target with your attack of ${ message }`;
 
+        args.notHidden = true;
         let victim = await this.selectEnemyPlayerWithUnitsInArea( args.area, message, args );
 
         if( victim === 'declined' ){
@@ -97,7 +102,7 @@ let obj = {
     },
 
     canChooseAttackTarget( args ){
-        return args.chooseUnitTarget && this.enemyUnitTypesInArea( args.area, true ).length;
+        return args.chooseUnitTarget && this.enemyUnitTypesInArea( args.area, { basic : true } ).length;
     },
 
 
@@ -116,6 +121,7 @@ let obj = {
                 areas : [args.area.name],
                 enemyOnly : true,
                 basicOnly : true,
+                notHidden : true,
                 message: "Choose a basic unit to attack"
             }
         });
@@ -176,6 +182,7 @@ let obj = {
 
     async resolveAttackHits( hits, victim, args ){
         if( !hits ) return this.game().sound( 'wiff' );
+
         this.hitSound( hits );
         if( args.unit ) await this.triggeredEvents('hit', [{ unit: args.unit, hits: hits }] );
 
@@ -200,13 +207,12 @@ let obj = {
     async assignHits( hits, area, killer ){
         let player, data = {}, targets;
 
-        let units = this.unitsInArea( area );
+        let units = this.unitsInArea( area, { notHidden : true } );
 
         if( !units.length ){
             this.game().message({ class : 'warning', message: `No units in the ${area.name} to assign hits to` });
             return;
         }
-
 
         [player, data] = await this.game().promise({ players: this.playerId, name: 'assign-hits', data : { area : area.name, hits : hits } });
         targets = data.targets;

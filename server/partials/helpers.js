@@ -88,29 +88,30 @@ let helpers = {
     assignableHits( units ){
         let assignableHits = 0;
         units.forEach( unit => {
-            assignableHits += (unit.toughness && !unit.flipped)
-                              || (unit.flipped && unit.faction === 'vampires' && unit.type === 'champion') ? 2 : 1;
-            assignableHits -= unit.hits ? unit.hits : 0;
+            if( !unit.hidden ){
+                assignableHits += ( unit.toughness && !unit.flipped )
+                || (unit.flipped && unit.faction === 'vampires' && unit.type === 'champion') ? 2 : 1;
+                assignableHits -= unit.hits ? unit.hits : 0;
+            }
         });
         return assignableHits;
     },
 
 
 
-    factionUnitsInArea( faction, area, type ){
+    factionUnitsInArea( faction, area, options = {} ){
         if( faction.data ) faction = faction.data;
         if( typeof area !== 'string' ) area = area.name;
-        return faction.units.filter( unit => this.unitInArea( unit, area ) && ( !type || unit.type === type ) );
+        return faction.units.filter( unit => this.unitInArea( unit, area, options ) );
     },
 
 
-    hasUnitsInArea( faction, area, basic ){
+    hasUnitsInArea( faction, area, options = {} ){
         if( faction.data ) faction = faction.data;
         if( typeof area !== 'string' ) area = area.name;
 
         return !! this.find( faction.units, unit => {
-            if( basic ) return unit.basic && _.unitInArea( unit, area );
-            else return _.unitInArea( unit, area );
+            return _.unitInArea( unit, area, options );
         });
     },
 
@@ -120,7 +121,7 @@ let helpers = {
         let factionsWithUnits = [];
 
         _.forEach( factions, (faction, name) => {
-            if( this.hasUnitsInArea( faction, area, args.basic ) && args.exclude !== name ){
+            if( this.hasUnitsInArea( faction, area, { basic : args.basic, notHidden : args.notHidden } ) && args.exclude !== name ){
                 factionsWithUnits.push( name );
             }
         });
@@ -170,21 +171,27 @@ let helpers = {
         return unit.killed === faction && unit.location === area;
     },
 
-    unitInArea( unit, area, type ){
+    unitInArea( unit, area, options = {} ){
         if( typeof area !== 'string' ) area = area.name;
-        return unit.location === area && !unit.killed && (!type || type === unit.type );
+
+        return unit.location === area
+                && !unit.killed
+                && ( !options.basic || unit.basic )
+                && ( !options.type || options.type === unit.type )
+                && ( !options.notHidden || !unit.hidden );
     },
 
-    enemyUnitsInArea( faction, area, factions, basicOnly = false ){
+    enemyUnitsInArea( faction, area, factions, options = {} ){
         if( faction.data ) faction = faction.data;
-
         let units = {};
+
         _.forEach( factions, fac => {
             if( fac.name === faction.name ) return;
             let factionUnits = _.factionUnitsInArea( fac, area );
-            if( basicOnly ){
-                factionUnits = factionUnits.filter( unit => unit.basic)
-            }
+
+            if( options.basic ) factionUnits = factionUnits.filter( unit => unit.basic );
+            if( options.notHidden ) factionUnits = factionUnits.filter( unit => ! unit.hidden );
+
             if( factionUnits.length ){
                 units[fac.name] = factionUnits;
             }

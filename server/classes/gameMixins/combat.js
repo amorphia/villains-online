@@ -22,6 +22,10 @@ let obj = {
 
     async assignHits( unit, faction, count = 1 ){
 
+        if( unit.hidden ){
+            return 'hidden unit ignores hit'
+        }
+
         // Lilith heal ability
         if( count === 1
             && unit.faction === 'vampires'

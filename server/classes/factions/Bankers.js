@@ -46,7 +46,7 @@ class Bankers extends Faction {
     }
 
     factionCombatMods( mods, area ) {
-        if( this.data.units.find( unit => _.unitInArea( unit, area, 'champion' ) ) ){
+        if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
             mods.push( { type : 'gnomeCash', text : `Gains xRx for each hit scored by the Gnome of Zurich` });
             mods.push( { type : 'gnomeDeflect', text : `May pay xC2x to cancel hits assigned to them` });
         }

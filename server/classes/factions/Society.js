@@ -136,12 +136,12 @@ class Society extends Faction {
 
 
     canActivatePush( token, area ) {
-        return this.hasEnemyUnitsInArea( area, true );
+        return this.hasEnemyUnitsInArea( area, { basic : true } );
     }
 
     potentialHypnosisTypes( area ){
         let reservesTypes = this.unitTypesInReserves( true );
-        let enemyTypes = this.enemyUnitTypesInArea( area, true );
+        let enemyTypes = this.enemyUnitTypesInArea( area, { basic : true } );
         return _.intersection( reservesTypes, enemyTypes );
     }
 

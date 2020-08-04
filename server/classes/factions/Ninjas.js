@@ -74,8 +74,10 @@ class Ninjas extends Faction {
         let lotusDancer = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
         if( token.type !== 'battle' || !lotusDancer ) return;
 
+        let lotusDancerArea = this.game().areas[ lotusDancer.location ];
         let area = this.game().areas[ token.location ];
-        if( area.data.adjacent.includes( lotusDancer.location ) ){
+
+        if( !lotusDancerArea.isTrapped( this ) && area.data.adjacent.includes( lotusDancer.location ) ){
             lotusDancer.location = token.location;
             this.game().sound( 'wiff' );
             this.game().message({ faction : this, message: `Lotus Dancer slips into the ${token.location}` });
@@ -86,7 +88,7 @@ class Ninjas extends Faction {
         let hiddenUnits = this.data.units.filter( unit => unit.hidden && _.unitInArea( unit, combat.area ) );
         hiddenUnits.forEach( unit => this.unitUnflipped( unit ) );
 
-        if( hiddenUnits.length ) this.game().message({ faction : this, message: `hidden units in The ${combat.area} are revealed` });
+        if( hiddenUnits.length ) this.game().message({ faction : this, message: `hidden units in The ${combat.area.name} are revealed` });
     }
 
     canActivateBlades( token, area ) {

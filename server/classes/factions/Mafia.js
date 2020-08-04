@@ -101,7 +101,7 @@ class Mafia extends Faction {
 
 
     canActivateHitMan( token, area ) {
-        return _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name, basic : true }).length > 0;
+        return _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name, basic : true, notHidden : true }).length > 0;
     }
 }
 

@@ -124,7 +124,7 @@
             },
 
             units(){
-                return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area ) );
+                return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area, { notHidden : true } ) );
             },
 
             data(){

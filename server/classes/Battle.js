@@ -171,9 +171,9 @@ class Battle {
         });
     }
 
-    stillHasUnitsToAttack( faction, basicOnly ){
+    stillHasUnitsToAttack( faction, basic ){
         let unit = _.find( faction.units, unit => unit.needsToAttack );
-        let enemyUnits = this.game().factions[faction.name].hasEnemyUnitsInArea( this.area, basicOnly );
+        let enemyUnits = this.game().factions[faction.name].hasEnemyUnitsInArea( this.area, { basic : basic, notHidden : true } );
         return unit && enemyUnits;
     }
 

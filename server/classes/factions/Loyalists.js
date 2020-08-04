@@ -64,7 +64,7 @@ class Loyalists extends Faction {
     }
 
     factionCombatMods(mods, area) {
-        if (this.data.units.find(unit => _.unitInArea(unit, area, 'champion'))) {
+        if (this.data.units.find(unit => _.unitInArea(unit, area, { type : 'champion' } ))) {
             mods.push({
                 type: 'queenDeath',
                 text: `If Her Majesty dies, her killer may replace any loyalist unit in play with a matching one from their reserves`

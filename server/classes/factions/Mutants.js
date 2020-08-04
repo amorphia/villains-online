@@ -61,7 +61,7 @@ class Mutants extends Faction {
             }
         }
 
-        if( this.data.units.find( unit => _.unitInArea( unit, area, 'champion' ) ) ){
+        if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
             mods.push( { type : 'motherOoze', text : `Wounded Mother Ooozes heal and spawn new units at the end of the turn` });
         }
 

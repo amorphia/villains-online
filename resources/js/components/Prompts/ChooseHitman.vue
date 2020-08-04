@@ -40,7 +40,7 @@
 
 
             units(){
-                return _.enemyUnitsInArea( this.shared.faction, this.area, this.shared.data.factions, true );
+                return _.enemyUnitsInArea( this.shared.faction, this.area, this.shared.data.factions, { basic : true, notHidden : true } );
             },
 
             message(){

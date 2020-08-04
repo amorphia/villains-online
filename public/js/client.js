@@ -4500,7 +4500,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this2.area);
+        return _.unitInArea(unit, _this2.area, {
+          notHidden: true
+        });
       });
     },
     data: function data() {
@@ -5548,7 +5550,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     units: function units() {
-      return _.enemyUnitsInArea(this.shared.faction, this.area, this.shared.data.factions, true);
+      return _.enemyUnitsInArea(this.shared.faction, this.area, this.shared.data.factions, {
+        basic: true,
+        notHidden: true
+      });
     },
     message: function message() {
       return this.data.message ? this.data.message : 'Choose your victim';
@@ -5957,7 +5962,10 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     enemyUnits: function enemyUnits() {
       if (!this.data.showEnemyUnits) return [];
-      return _.enemyUnitsInArea(this.shared.faction, this.area, this.shared.data.factions, this.data.basicOnly);
+      return _.enemyUnitsInArea(this.shared.faction, this.area, this.shared.data.factions, {
+        basic: this.data.basicOnly,
+        notHidden: this.data.notHidden
+      });
     },
     message: function message() {
       if (this.data.message) return this.data.message;
@@ -5997,7 +6005,7 @@ __webpack_require__.r(__webpack_exports__);
             if (!_.unitInArea(unit, _this2.area)) return;
           }
 
-          if (_this2.data.canHitOnly && unit.hidden) return;
+          if (_this2.data.notHidden && unit.hidden) return;
           if (_this2.data.basicOnly && !unit.basic) return;
           if (_this2.data.flippedOnly && !unit.flipped) return;
           if (_this2.data.hasAttack && !unit.attack.length) return;
@@ -6133,7 +6141,9 @@ __webpack_require__.r(__webpack_exports__);
       _.forEach(this.shared.data.factions, function (faction) {
         if (faction.name === _this.data.faction) return;
 
-        var factionUnits = _.factionUnitsInArea(faction, _this.area.name);
+        var factionUnits = _.factionUnitsInArea(faction, _this.area.name, {
+          notHidden: true
+        });
 
         if (factionUnits.length) {
           units[faction.name] = factionUnits;
@@ -85506,25 +85516,29 @@ var helpers = {
   assignableHits: function assignableHits(units) {
     var assignableHits = 0;
     units.forEach(function (unit) {
-      assignableHits += unit.toughness && !unit.flipped || unit.flipped && unit.faction === 'vampires' && unit.type === 'champion' ? 2 : 1;
-      assignableHits -= unit.hits ? unit.hits : 0;
+      if (!unit.hidden) {
+        assignableHits += unit.toughness && !unit.flipped || unit.flipped && unit.faction === 'vampires' && unit.type === 'champion' ? 2 : 1;
+        assignableHits -= unit.hits ? unit.hits : 0;
+      }
     });
     return assignableHits;
   },
-  factionUnitsInArea: function factionUnitsInArea(faction, area, type) {
+  factionUnitsInArea: function factionUnitsInArea(faction, area) {
     var _this2 = this;
 
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (faction.data) faction = faction.data;
     if (typeof area !== 'string') area = area.name;
     return faction.units.filter(function (unit) {
-      return _this2.unitInArea(unit, area) && (!type || unit.type === type);
+      return _this2.unitInArea(unit, area, options);
     });
   },
-  hasUnitsInArea: function hasUnitsInArea(faction, area, basic) {
+  hasUnitsInArea: function hasUnitsInArea(faction, area) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (faction.data) faction = faction.data;
     if (typeof area !== 'string') area = area.name;
     return !!this.find(faction.units, function (unit) {
-      if (basic) return unit.basic && _.unitInArea(unit, area);else return _.unitInArea(unit, area);
+      return _.unitInArea(unit, area, options);
     });
   },
   factionsWithUnitsInArea: function factionsWithUnitsInArea(factions, area, args) {
@@ -85534,7 +85548,10 @@ var helpers = {
     var factionsWithUnits = [];
 
     _.forEach(factions, function (faction, name) {
-      if (_this3.hasUnitsInArea(faction, area, args.basic) && args.exclude !== name) {
+      if (_this3.hasUnitsInArea(faction, area, {
+        basic: args.basic,
+        notHidden: args.notHidden
+      }) && args.exclude !== name) {
         factionsWithUnits.push(name);
       }
     });
@@ -85576,12 +85593,13 @@ var helpers = {
     if (typeof area !== 'string') area = area.name;
     return unit.killed === faction && unit.location === area;
   },
-  unitInArea: function unitInArea(unit, area, type) {
+  unitInArea: function unitInArea(unit, area) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (typeof area !== 'string') area = area.name;
-    return unit.location === area && !unit.killed && (!type || type === unit.type);
+    return unit.location === area && !unit.killed && (!options.basic || unit.basic) && (!options.type || options.type === unit.type) && (!options.notHidden || !unit.hidden);
   },
   enemyUnitsInArea: function enemyUnitsInArea(faction, area, factions) {
-    var basicOnly = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
     if (faction.data) faction = faction.data;
     var units = {};
 
@@ -85590,11 +85608,12 @@ var helpers = {
 
       var factionUnits = _.factionUnitsInArea(fac, area);
 
-      if (basicOnly) {
-        factionUnits = factionUnits.filter(function (unit) {
-          return unit.basic;
-        });
-      }
+      if (options.basic) factionUnits = factionUnits.filter(function (unit) {
+        return unit.basic;
+      });
+      if (options.notHidden) factionUnits = factionUnits.filter(function (unit) {
+        return !unit.hidden;
+      });
 
       if (factionUnits.length) {
         units[fac.name] = factionUnits;

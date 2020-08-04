@@ -15,6 +15,7 @@ let mixin = {
         return this.game().players[this.playerId];
     },
 
+
     playerOrder(){
         return _.indexOf( this.game().data.playerOrder, this.playerId );
     },
@@ -26,9 +27,11 @@ let mixin = {
      *
      */
 
+
     hasVictory(){
         return this.data.ap >= this.game().data.maxAP || this.data.pp >= this.game().data.maxPP;
     },
+
 
     lastCapitolToken(){
         if( this.data.capitolTokens.length ){
@@ -60,12 +63,13 @@ let mixin = {
         return this.areas().includes( area );
     },
 
+
     areasWithEnemyUnits( args = {} ){
         let areas = [];
 
         _.forEach( this.game().factions, faction => {
             if( faction.name !== this.name ){
-                areas = _.union( areas, faction.areasWithUnits() );
+                areas = _.union( areas, faction.areasWithUnits( args ) );
             }
         });
 
@@ -76,6 +80,7 @@ let mixin = {
 
         return areas;
     },
+
 
     areasWithAttackingUnits(){
         let areas = {};
@@ -90,7 +95,7 @@ let mixin = {
         areas = areas.filter( areaName => {
             let area = this.game().areas[ areaName ];
             if( !_.find( area.data.cards, card => card.class === 'cease-fire' )
-                && _.factionsWithUnitsInArea( this.game().data.factions, areaName, { exclude : this.name } ).length
+                && _.factionsWithUnitsInArea( this.game().data.factions, areaName, { exclude : this.name, notHidden : true } ).length
             ) return true;
 
         });
@@ -98,14 +103,16 @@ let mixin = {
         return areas;
     },
 
-    hasEnemyUnitsInArea( area, basicOnly ){
-        let enemyUnits = this.enemyUnitsInArea( area, basicOnly );
+
+    hasEnemyUnitsInArea( area, options = {} ){
+        let enemyUnits = this.enemyUnitsInArea( area, options );
         return Object.keys( enemyUnits ).length > 0;
     },
 
-    enemyUnitTypesInArea( area, basicOnly ){
+
+    enemyUnitTypesInArea( area, options = {} ){
         let types = {};
-        let enemyUnits = this.enemyUnitsInArea( area, basicOnly );
+        let enemyUnits = this.enemyUnitsInArea( area, options );
 
         Object.values( enemyUnits ).forEach( factionUnits => {
             factionUnits.forEach( unit =>  {
@@ -116,9 +123,11 @@ let mixin = {
         return Object.keys( types );
     },
 
-    enemyUnitsInArea( area, basicOnly ){
-        return _.enemyUnitsInArea( this.data, area.name, this.game().data.factions, basicOnly );
+
+    enemyUnitsInArea( area, options = {} ){
+        return _.enemyUnitsInArea( this.data, area.name, this.game().data.factions, options );
     },
+
 
     areasWithUnits( options = {} ){
         if( typeof options.types === 'string' ) options.types = [ option.types ];
@@ -129,6 +138,7 @@ let mixin = {
                 && ( !options.types || options.types.includes( unit.type ) )
                 && ( !options.flipped || unit.flipped )
                 && ( !options.deployable || !unit.noDeploy )
+                && ( !options.notHidden || !unit.hidden )
             ){
                 areas[ unit.location ] = true;
             }
@@ -143,32 +153,37 @@ let mixin = {
         return areasArray;
     },
 
-    hasUnitsInArea( area ) {
-        return _.hasUnitsInArea( this.data, area );
+
+    hasUnitsInArea( area, options = {} ) {
+        return _.hasUnitsInArea( this.data, area, options );
     },
 
-    unitsInArea( area, type ) {
-        return _.factionUnitsInArea( this, area, type );
+
+    unitsInArea( area, options = {} ) {
+        return _.factionUnitsInArea( this, area, options );
     },
+
 
     influenceInArea( area ){
         return _.influence( this, area, this.game().data.factions );
     },
+
 
     targetArea(){
         let areaName = this.data.cards.target[0].target;
         return this.game().areas[areaName];
     },
 
+
     targetName(){
        return this.data.cards.target[0].target;
     },
+
 
     hasExterminatedArea( area ){
         if( typeof area === 'string' ) area = this.game().data.areas[area];
         return _.areaExterminated( area, this.game().data.factions ) === this.name;
     },
-
 
 
     totalKills(){
@@ -201,9 +216,11 @@ let mixin = {
         return _.hasUsedSkill( this, area );
     },
 
+
     canUseSkill( area ){
         return _.canUseSkill( this, area );
     },
+
 
     /**
      *
@@ -215,6 +232,7 @@ let mixin = {
         return this.data.units.filter( unit => _.unitInPlay( unit ) );
     },
 
+
     unitTypesInPlay( basicOnly ){
         let types = {};
         this.data.units.forEach( unit => {
@@ -222,6 +240,7 @@ let mixin = {
         });
         return Object.keys( types );
     },
+
 
     unitTypesInReserves( basicOnly ){
         let types = {};
@@ -241,6 +260,7 @@ let mixin = {
         return this.data.units.filter( unit => unit.killed );
     },
 
+
     areasWithKills(){
         let areas = {};
 
@@ -250,6 +270,7 @@ let mixin = {
 
         return Object.keys( areas );
     },
+
 
     kills(){
         let kills = [];
@@ -305,6 +326,7 @@ let mixin = {
         if( areas.includes( 'bank' ) ) resources++;
         return resources;
     },
+
 
     areasExterminated(){
         let areas = [];

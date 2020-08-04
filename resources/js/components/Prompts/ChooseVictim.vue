@@ -55,7 +55,7 @@
                 let units = {};
                 _.forEach( this.shared.data.factions, faction => {
                     if( faction.name === this.data.faction ) return;
-                    let factionUnits = _.factionUnitsInArea( faction, this.area.name );
+                    let factionUnits = _.factionUnitsInArea( faction, this.area.name, { notHidden : true } );
                     if( factionUnits.length ){
                         units[faction.name] = factionUnits;
                     }
