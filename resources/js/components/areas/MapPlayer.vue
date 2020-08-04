@@ -51,7 +51,7 @@
                 for( let unit of this.faction.units ) {
                     if (unit.location !== this.area.name || unit.killed) continue;
 
-                    if (unit.ready) status['skilled'] = 'has ready units';
+                    if ( _.canUseSkill( this.faction, this.area, this.shared.data.factions ) ) status['skilled'] = 'can activate area skill';
 
                     if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
 

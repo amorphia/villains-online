@@ -315,7 +315,7 @@
                 let areas = [];
 
                 _.forEach( this.shared.data.areas, area => {
-                    if( !_.hasUsedSkill( this.shared.faction, area ) && _.find( this.shared.faction.units, unit => _.unitReadyInArea( unit, area ) ) ){
+                    if( _.canUseSkill( this.shared.faction, area, this.shared.data.factions ) ){
                         areas.push( area.name );
                     }
                 });

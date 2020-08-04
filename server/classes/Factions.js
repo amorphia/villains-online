@@ -10,7 +10,7 @@ let Loyalists = require( './factions/Loyalists' );
 let Swarm = require( './factions/Swarm' );
 let Vampires = require( './factions/Vampires' );
 let Society = require( './factions/Society' );
-//let Hackers = require( './factions/Hackers' );
+let Hackers = require( './factions/Hackers' );
 let Ninjas = require( './factions/Ninjas' );
 
 module.exports = {
@@ -27,5 +27,5 @@ module.exports = {
     vampires : Vampires,
     society : Society,
     ninjas : Ninjas,
-    //hackers : Hackers,
+    hackers : Hackers,
 };

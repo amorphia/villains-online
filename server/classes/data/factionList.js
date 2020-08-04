@@ -11,7 +11,7 @@ let obj = {
     swarm : { owner : null },
     vampires : { owner : null, killer : true },
     society : { owner : null },
-    //hackers : { owner : null },
+    hackers : { owner : null },
     ninjas : { owner : null, killer : true }
 };
 

@@ -183,12 +183,23 @@ let helpers = {
     },
 
 
-    canUseSkill( faction, area ){
+    canUseSkill( faction, area, factions ){
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
 
-        if( this.hasUsedSkill( faction, area ) ) return 0;
-        return faction.units.filter( unit => this.unitReadyInArea( unit, area ) ).length;
+        if( this.hasUsedSkill( faction, area ) ) return;
+
+        if( faction.units.find( unit => this.unitReadyInArea( unit, area ) ) ) return true;
+
+        // Zero Day special ability
+        if( faction.name === 'hackers'
+            && faction.units.find( unit => this.unitInArea( unit, area ) && unit.type === 'champion' )
+        ){
+            for( let fac of Object.values( factions ) ){
+                if( fac.name === faction.name ) continue;
+                if( fac.units.find( unit => this.unitReadyInArea( unit, area ) ) ) return true;
+            }
+        }
     },
 
     unitReady( unit ){

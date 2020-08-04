@@ -218,7 +218,7 @@ let mixin = {
 
 
     canUseSkill( area ){
-        return _.canUseSkill( this, area );
+        return _.canUseSkill( this, area, this.game().data.factions );
     },
 
 

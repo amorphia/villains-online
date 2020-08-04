@@ -49,6 +49,14 @@ class Cultists extends Faction {
     }
 
     factionCombatMods( mods, area ) {
+
+        if( this.data.upgrade ){
+            mods.push({
+                type: 'patsies',
+                text: `Patsies throw ${this.data.upgrade} additional dice`
+            });
+        }
+
         mods.push( { type : 'cultistInfluence', text : `Gains xIx for each kill` });
         return mods;
     }

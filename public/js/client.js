@@ -4845,338 +4845,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var areas = [];
 
       _.forEach(this.shared.data.areas, function (area) {
-        if (!_.hasUsedSkill(_this4.shared.faction, area) && _.find(_this4.shared.faction.units, function (unit) {
-          return _.unitReadyInArea(unit, area);
-        })) {
+        if (_.canUseSkill(_this4.shared.faction, area, _this4.shared.data.factions)) {
           areas.push(area.name);
-        }
-      });
-
-      return areas;
-    },
-    saveDisabled: function saveDisabled() {
-      if (!this.action) return true;
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=script&lang=js&":
-/*!**********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=script&lang=js& ***!
-  \**********************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'choose-action-old',
-  data: function data() {
-    return {
-      shared: App.state,
-      action: null,
-      areaIndex: 0
-    };
-  },
-  mounted: function mounted() {
-    //this.shared.event.on( 'areaClicked', this.areaClicked );
-    if (this.validActions.length === 1) {
-      this.action = this.validActions[0];
-      if (this.validActions[0] === 'token') this.shared.event.emit('areaSelected', this.collection[this.areaIndex]);
-    }
-  },
-  watch: {
-    validActions: function validActions() {}
-  },
-  methods: {
-    chooseAction: function chooseAction() {
-      var _this$shared;
-
-      var args = [];
-
-      switch (this.action) {
-        case 'skill':
-          args = [this.area.name];
-          break;
-
-        case 'token':
-          args = [this.currentToken.id];
-          break;
-      }
-
-      (_this$shared = this.shared).respond.apply(_this$shared, ['choose-action', this.action].concat(_toConsumableArray(args)));
-
-      this.action = null;
-      this.areaIndex = 0;
-    },
-    update: function update(n) {
-      this.areaIndex = n;
-    },
-    setSkillAction: function setSkillAction() {
-      this.action = 'skill'; // this.shared.event.emit('areaSelected', this.collection[ this.areaIndex ] );
-    },
-    setTokenAction: function setTokenAction() {
-      this.action = 'token'; // this.shared.event.emit('areaSelected', this.collection[ this.areaIndex ] );
-    },
-    setXavierAction: function setXavierAction() {
-      this.action = 'xavier';
-      this.$set(this.xavier, 'placedToken', this.xavier.token);
-    },
-    prev: function prev() {
-      this.areaIndex--;
-
-      if (this.areaIndex < 0) {
-        this.areaIndex = this.collection.length - 1;
-      }
-    },
-    next: function next() {
-      this.areaIndex++;
-
-      if (this.areaIndex > this.collection.length - 1) {
-        this.areaIndex = 0;
-      }
-    },
-    firstUnrevealed: function firstUnrevealed(area) {
-      return _.find(area.tokens, function (token) {
-        return token && token.revealed === false;
-      });
-    }
-  },
-  computed: {
-    currentToken: function currentToken() {
-      return this.action === 'token' ? this.firstUnrevealed(this.area) : null;
-    },
-    buttonMessage: function buttonMessage() {
-      var message;
-
-      switch (this.action) {
-        case 'skill':
-          message = "Activate the ".concat(this.area.name, " skill ability");
-          break;
-
-        case 'token':
-          message = "Reveal token in the ".concat(this.area.name);
-          break;
-
-        case 'pass':
-          message = "Pass for the turn";
-          break;
-
-        case 'locked':
-          message = "Declare yourself locked";
-          break;
-
-        case 'xavier':
-          message = "Reveal token on Xavier";
-          break;
-      }
-
-      return this.saveDisabled ? "Choose your action" : message;
-    },
-    message: function message() {
-      if (!this.action) return "Choose an action";
-
-      switch (this.action) {
-        case 'skill':
-          return "Choose a skill to activate";
-          break;
-
-        case 'token':
-          return "Choose a token to reveal";
-          break;
-
-        case 'xavier':
-          return "Reveal Xavier's token";
-          break;
-
-        case 'pass':
-          return "Declare yourself passed";
-          break;
-
-        case 'locked':
-          return "Skip your turn";
-          break;
-      }
-    },
-    validActions: function validActions() {
-      var actions = [];
-
-      if (this.useableSkills.length) {
-        actions.push('skill');
-      }
-
-      if (this.canXavier) {
-        actions.push('xavier');
-      }
-
-      if (this.revealableTokens.length) {
-        actions.push('token');
-      }
-
-      if (!this.activeTokens.length) {
-        actions.push('pass');
-      }
-
-      if (!this.revealableTokens.length && this.activeTokens.length) {
-        actions.push('locked');
-      }
-
-      return actions;
-    },
-    area: function area() {
-      return this.collection[this.areaIndex];
-    },
-    firstToken: function firstToken() {
-      if (this.action === 'token') {
-        var area = this.collection[this.areaIndex];
-        return this.firstUnrevealed(area);
-      }
-    },
-    collection: function collection() {
-      if (this.action === 'token') return this.revealableTokens;
-      if (this.action === 'skill') return this.useableSkills;
-      return [];
-    },
-    activeTokens: function activeTokens() {
-      return this.shared.faction.tokens.filter(function (token) {
-        return token.location && token.revealed === false;
-      });
-    },
-    xavier: function xavier() {
-      if (this.shared.faction.name !== 'society') return;
-      return this.shared.faction.units.find(function (unit) {
-        return unit.type === 'champion';
-      });
-    },
-    xavierArea: function xavierArea() {
-      if (this.shared.faction.name !== 'society') return;
-      return this.shared.data.areas[this.xavier.location];
-    },
-    canXavier: function canXavier() {
-      if (this.shared.faction.name !== 'society') return;
-      return this.xavier.token;
-    },
-    revealableTokens: function revealableTokens() {
-      var _this = this;
-
-      var areas = [];
-
-      _.forEach(this.shared.data.areas, function (area, name) {
-        var firstUnrevealed = _this.firstUnrevealed(area);
-
-        if (firstUnrevealed && firstUnrevealed.faction === _this.shared.faction.name) {
-          areas.push(area);
-        }
-      });
-
-      return areas;
-    },
-    skilledUnitsInArea: function skilledUnitsInArea() {
-      var _this2 = this;
-
-      return this.shared.faction.units.filter(function (unit) {
-        return _.unitReadyInArea(unit, _this2.area);
-      });
-    },
-    useableSkills: function useableSkills() {
-      var _this3 = this;
-
-      var areas = [];
-
-      _.forEach(this.shared.data.areas, function (area) {
-        if (!_.hasUsedSkill(_this3.shared.faction, area) && _.find(_this3.shared.faction.units, function (unit) {
-          return _.unitReadyInArea(unit, area);
-        })) {
-          areas.push(area);
         }
       });
 
@@ -10507,7 +10177,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var unit = _step.value;
           if (unit.location !== this.area.name || unit.killed) continue;
-          if (unit.ready) status['skilled'] = 'has ready units';
+          if (_.canUseSkill(this.faction, this.area, this.shared.data.factions)) status['skilled'] = 'can activate area skill';
           if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
           if (!unit.toughness && unit.flipped && this.faction.statusIcon) status[this.faction.statusIcon] = this.faction.statusDescription;
           if (unit.firstStrike) status["".concat(unit.faction, "-first-strike")] = 'has units with first strike';
@@ -11190,25 +10860,6 @@ exports.push([module.i, "\n.gnome-deflects {\n    font-size: 1.4em;\n}\n.gnome-c
 /*!**************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction.vue?vue&type=style&index=0&lang=css& ***!
   \**************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.choose-action__skill-ability {\n    padding: 1rem;\n    background-color: rgba(0,0,0,.8);\n    color: var(--highlight-color);\n    margin: .5rem auto;\n    font-size: 1.2em;\n    letter-spacing: 1px;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=style&index=0&lang=css&":
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=style&index=0&lang=css& ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -51830,36 +51481,6 @@ if(false) {}
 
 /***/ }),
 
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=style&index=0&lang=css&":
-/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=style&index=0&lang=css& ***!
-  \*********************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseActionOld.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=style&index=0&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseArea.vue?vue&type=style&index=0&lang=css&":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseArea.vue?vue&type=style&index=0&lang=css& ***!
@@ -57128,213 +56749,6 @@ var render = function() {
     ],
     1
   )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=template&id=1e63337f&":
-/*!**************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=template&id=1e63337f& ***!
-  \**************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("player-prompt", { attrs: { classes: "" } }, [
-    _c("div", { staticClass: "choose-action px-5" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
-        },
-        [
-          _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
-          _vm._v(" "),
-          _vm.action === "xavier"
-            ? _c(
-                "div",
-                { staticClass: "d-flex justify-center" },
-                [
-                  _c(
-                    "area-flipper",
-                    { attrs: { areas: [_vm.xavierArea], index: "0" } },
-                    [_c("unit-row", { attrs: { units: [_vm.xavier] } })],
-                    1
-                  )
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.collection.length
-            ? _c(
-                "area-flipper",
-                {
-                  attrs: { areas: _vm.collection, index: _vm.areaIndex },
-                  on: { update: _vm.update }
-                },
-                [
-                  _vm.action === "token"
-                    ? _c("token-row", {
-                        attrs: { area: _vm.area, highlight: _vm.firstToken }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.action === "skill"
-                    ? _c(
-                        "div",
-                        {
-                          staticClass:
-                            "choose-action__skilled-units center-text"
-                        },
-                        [
-                          _c("unit-row", {
-                            attrs: {
-                              units: _vm.skilledUnitsInArea,
-                              allSelected: "true"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("div", {
-                            staticClass:
-                              "width-100 choose-action__skill-ability",
-                            domProps: {
-                              innerHTML: _vm._s(
-                                this.shared.filterText(this.area.skill)
-                              )
-                            }
-                          })
-                        ],
-                        1
-                      )
-                    : _vm._e()
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          !_vm.action
-            ? _c("div", { staticClass: "view-player__empty" }, [
-                _vm._v("\n                No Action selected\n            ")
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _c("div", { staticClass: "options d-flex justify-center" }, [
-            _vm.validActions.includes("pass")
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "button button-empty",
-                    class: { active: _vm.action === "pass" },
-                    on: {
-                      click: function($event) {
-                        _vm.action = "pass"
-                      }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\n                            PASS\n                "
-                    )
-                  ]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.validActions.includes("locked")
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "button button-empty",
-                    class: { active: _vm.action === "locked" },
-                    on: {
-                      click: function($event) {
-                        _vm.action = "locked"
-                      }
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\n                            LOCKED\n                "
-                    )
-                  ]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.validActions.includes("xavier")
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "button button-empty",
-                    class: { active: _vm.action === "xavier" },
-                    on: { click: _vm.setXavierAction }
-                  },
-                  [
-                    _vm._v(
-                      "\n                            REVEAL XAVIER TOKEN\n                "
-                    )
-                  ]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.validActions.includes("token")
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "button button-empty",
-                    class: { active: _vm.action === "token" },
-                    on: { click: _vm.setTokenAction }
-                  },
-                  [
-                    _vm._v(
-                      "\n                            REVEAL TOKEN\n                "
-                    )
-                  ]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.validActions.includes("skill")
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "button button-empty",
-                    class: { active: _vm.action === "skill" },
-                    on: { click: _vm.setSkillAction }
-                  },
-                  [
-                    _vm._v(
-                      "\n                            ACTIVATE SKILL\n                "
-                    )
-                  ]
-                )
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "button pull-center",
-              attrs: { disabled: _vm.saveDisabled },
-              on: { click: _vm.chooseAction }
-            },
-            [_vm._v(_vm._s(_vm.buttonMessage))]
-          )
-        ],
-        1
-      )
-    ])
-  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -75722,7 +75136,6 @@ var map = {
 	"./Prompts/ActivateDecline.vue": "./resources/js/components/Prompts/ActivateDecline.vue",
 	"./Prompts/AssignHits.vue": "./resources/js/components/Prompts/AssignHits.vue",
 	"./Prompts/ChooseAction.vue": "./resources/js/components/Prompts/ChooseAction.vue",
-	"./Prompts/ChooseActionOld.vue": "./resources/js/components/Prompts/ChooseActionOld.vue",
 	"./Prompts/ChooseArea.vue": "./resources/js/components/Prompts/ChooseArea.vue",
 	"./Prompts/ChooseCard.vue": "./resources/js/components/Prompts/ChooseCard.vue",
 	"./Prompts/ChooseFactions.vue": "./resources/js/components/Prompts/ChooseFactions.vue",
@@ -79616,93 +79029,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_vue_vue_type_template_id_15cba838___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_vue_vue_type_template_id_15cba838___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChooseActionOld.vue":
-/*!*************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseActionOld.vue ***!
-  \*************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ChooseActionOld_vue_vue_type_template_id_1e63337f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChooseActionOld.vue?vue&type=template&id=1e63337f& */ "./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=template&id=1e63337f&");
-/* harmony import */ var _ChooseActionOld_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChooseActionOld.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _ChooseActionOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ChooseActionOld.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _ChooseActionOld_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ChooseActionOld_vue_vue_type_template_id_1e63337f___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ChooseActionOld_vue_vue_type_template_id_1e63337f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Prompts/ChooseActionOld.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseActionOld.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=style&index=0&lang=css&":
-/*!**********************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=style&index=0&lang=css& ***!
-  \**********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseActionOld.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=template&id=1e63337f&":
-/*!********************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=template&id=1e63337f& ***!
-  \********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_template_id_1e63337f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseActionOld.vue?vue&type=template&id=1e63337f& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseActionOld.vue?vue&type=template&id=1e63337f&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_template_id_1e63337f___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseActionOld_vue_vue_type_template_id_1e63337f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -85597,15 +84923,27 @@ var helpers = {
     if (typeof area !== 'string') area = area.name;
     return faction.usedSkills.includes(area);
   },
-  canUseSkill: function canUseSkill(faction, area) {
+  canUseSkill: function canUseSkill(faction, area, factions) {
     var _this2 = this;
 
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
-    if (this.hasUsedSkill(faction, area)) return 0;
-    return faction.units.filter(function (unit) {
+    if (this.hasUsedSkill(faction, area)) return;
+    if (faction.units.find(function (unit) {
       return _this2.unitReadyInArea(unit, area);
-    }).length;
+    })) return true; // Zero Day special ability
+
+    if (faction.name === 'hackers' && faction.units.find(function (unit) {
+      return _this2.unitInArea(unit, area) && unit.type === 'champion';
+    })) {
+      for (var _i = 0, _Object$values = Object.values(factions); _i < _Object$values.length; _i++) {
+        var fac = _Object$values[_i];
+        if (fac.name === faction.name) continue;
+        if (fac.units.find(function (unit) {
+          return _this2.unitReadyInArea(unit, area);
+        })) return true;
+      }
+    }
   },
   unitReady: function unitReady(unit) {
     return !unit.killed && unit.ready && unit.location;

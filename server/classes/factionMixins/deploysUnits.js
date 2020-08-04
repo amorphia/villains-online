@@ -114,7 +114,7 @@ let obj = {
             if( data.readyUnits ){
                 unit.ready = true;
             } else {
-                if( unit.ready ) unit.ready = false;
+                if( unit.ready && unit.faction !== 'hackers' ) unit.ready = false;
             }
         });
 

@@ -21,7 +21,7 @@ class Faction {
 
         // core stats
         deployLimit : 2,
-        cardDraw : 30,
+        cardDraw : 15,
         planLimit : 8,
 
         // money
@@ -176,6 +176,7 @@ class Faction {
     startOfTurn(){}
     onAfterReveal(){}
     onAfterBattle(){}
+    onAfterSkill(){}
 
     startOfTurnPrompt() {
         return 'choose-target';
