@@ -63,7 +63,7 @@ class Hackers extends Faction {
     processUpgrade( n ){
         this.data.units.forEach( unit => {
             if( unit.type === 'talent' ){
-                unit.attack = n === 1 ? [7,7] : [7,7,7];
+                unit.attack = n === 1 ? [5] : [3];
             }
         });
     }
