@@ -1,7 +1,7 @@
 let obj = {
 
     async selectEnemyPlayerWithUnitsInArea( area, message, args ){
-        let player, data, targetFaction, selfAttack;
+        let player = {}, data = {}, targetFaction, selfAttack;
 
         if( typeof area !== 'string' ) area = area.name;
 
@@ -21,7 +21,7 @@ let obj = {
             optional : args.optional,
             unitAttack : !!args.unit,
             attackBonus : args.attackBonus
-        }});
+        }}).catch( error => console.error( error ) );
 
         if( data.declined ){
             return 'declined';
@@ -107,7 +107,7 @@ let obj = {
 
 
     async setAttackTargets( args ){
-        let player, data;
+        let player = {}, data = {};
 
         if( ! this.canChooseAttackTarget( args ) ) {
            return await this.chooseAttackVictim( args );
@@ -124,7 +124,7 @@ let obj = {
                 notHidden : true,
                 message: "Choose a basic unit to attack"
             }
-        });
+        }).catch( error => console.error( error ) );
 
         args.targetUnit = this.game().objectMap[ data.units[0] ];
         return this.game().factions[ args.targetUnit.faction ];
@@ -214,7 +214,12 @@ let obj = {
             return;
         }
 
-        [player, data] = await this.game().promise({ players: this.playerId, name: 'assign-hits', data : { area : area.name, hits : hits } });
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'assign-hits',
+            data : { area : area.name, hits : hits }
+        }).catch( error => console.error( error ) );
+
         targets = data.targets;
 
         if( data.cost > 0 ){

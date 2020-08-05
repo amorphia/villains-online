@@ -33,7 +33,11 @@ let obj = {
             moveLimit : args.moveLimit
         };
 
-        let result = await this.game().promise({ players: args.player, name: 'move-action', data : data });
+        let result = await this.game().promise({
+            players: args.player,
+            name: 'move-action',
+            data : data
+        }).catch( error => console.error( error ) );
         return await this.processMove( ...result );
     },
 
@@ -111,13 +115,13 @@ let obj = {
     },
 
     async moveAwayToken( args, options ){
-        let data, player;
+        let data = {}, player;
 
         [player, data] = await this.game().promise({
             players: this.playerId,
             name: 'move-away',
             data: options
-        });
+        }).catch( error => console.error( error ) );
 
         if( data.decline ){
             this.game().declineToken( this.playerId, args.token, true );

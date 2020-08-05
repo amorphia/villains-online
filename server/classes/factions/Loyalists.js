@@ -109,7 +109,17 @@ class Loyalists extends Faction {
             return;
         }
 
-        [player, data] = await this.game().promise({ players: killer.playerId, name: 'choose-units', data : { count : 1, areas : potentialAreas, belongsTo : this.name, unitTypes : potentialTypes, message: 'Choose a loyalist unit to replace'  } });
+        [player, data] = await this.game().promise({
+            players: killer.playerId,
+            name: 'choose-units',
+            data : {
+                count : 1,
+                areas : potentialAreas,
+                belongsTo : this.name,
+                unitTypes : potentialTypes,
+                message: 'Choose a loyalist unit to replace'
+            }
+        }).catch( error => console.error( error ) );
         let unit = this.game().objectMap[ data.units[0] ];
 
         let message = `Replaces <span class="faction-loyalists">The Loyalist ${unit.name}</span> in the ${unit.location}`;
@@ -135,7 +145,17 @@ class Loyalists extends Faction {
         let knightableUnitIds = this.data.units.filter( unit => this.knightable( unit, args.area ) ).map( unit => unit.id );
 
         if( knightableUnitIds.length > this.data.knightCount ){ // if we have more units here that could be knighted then we can knight, choose which ones
-            [player, data] = await this.game().promise({ players: this.playerId, name: 'choose-units', data : { count : this.data.knightCount, areas : [args.area.name], unitList: knightableUnitIds, playerOnly : true, message: "Choose units to knight" }});
+            [player, data] = await this.game().promise({
+                players: this.playerId,
+                name: 'choose-units',
+                data : {
+                    count : this.data.knightCount,
+                    areas : [args.area.name],
+                    unitList: knightableUnitIds,
+                    playerOnly : true,
+                    message: "Choose units to knight"
+                }
+            }).catch( error => console.error( error ) );
             knightableUnitIds = data.units;
         }
 

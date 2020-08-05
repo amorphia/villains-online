@@ -126,11 +126,16 @@ let obj = {
         _.forEach( this.factions, faction => {
                 let plans = faction.testPlans();
 
-                promises.push( this.promise({ players: faction.playerId, name: 'score-plans', data : { plans : plans  } }).then( ([player, data]) => {
+                promises.push( this.promise({
+                    players: faction.playerId,
+                    name: 'score-plans',
+                    data : { plans : plans  }
+                }).then( ([player, data]) => {
                     results.push( data );
                     this.message({ faction: faction, message: 'have scored their plans' });
                     player.setPrompt({ active : false, playerUpdate : true });
-                }));
+                }).catch( error => console.error( error ) )
+            );
         });
 
         await Promise.all( promises );

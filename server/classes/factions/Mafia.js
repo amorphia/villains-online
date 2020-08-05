@@ -84,7 +84,14 @@ class Mafia extends Faction {
     async hitManToken( args ){
         let player, data;
 
-        [player, data] = await this.game().promise({ players: this.playerId, name: 'choose-hitman', data : { faction : this.name, areas : [args.area.name]  } });
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'choose-hitman',
+            data : {
+                faction : this.name,
+                areas : [args.area.name]
+            }
+        }).catch( error => console.error( error ) );
 
         if( data.decline ){
             this.game().declineToken( this.playerId, args.token, true );

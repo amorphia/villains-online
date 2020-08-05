@@ -93,7 +93,7 @@ class Vampires extends Faction {
                     canDecline : true,
                     message: `Fly a vampire to the ${destinationAreaName}?`
                 }
-            });
+            }).catch( error => console.error( error ) );
 
         if( data.decline ) return false;
 
@@ -149,7 +149,7 @@ class Vampires extends Faction {
                         playerOnly : true,
                         showEnemyUnits: true,
                         message: "Choose a unit to attack" }
-                });
+                }).catch( error => console.error( error ) );
 
             let unit = this.game().objectMap[ data.units[0] ];
 

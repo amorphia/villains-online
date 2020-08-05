@@ -173,7 +173,7 @@ class Capitol extends Area {
 
 
     async skill( faction ){
-        let player, data;
+        let player = {}, data = {};
 
         // get legal areas
         let areasWithTwoTokens = this.areasWithTwoTokens();
@@ -194,7 +194,7 @@ class Capitol extends Area {
                 areas : areasWithTwoTokens,
                 sameArea : true
             }
-        });
+        }).catch( error => console.error( error ) );
 
         // swap tokens
         let tokens = [];
@@ -286,7 +286,7 @@ class Sewers extends Area {
     }
 
     async skill( faction ){
-        let player, data;
+        let player = {}, data = {};
 
 
         let areasWithUnits = faction.areasWithUnits( faction, { deployable : true } );
@@ -321,7 +321,7 @@ class Sewers extends Area {
                 playerOnly : true,
                 message: "Choose a unit to duplicate"
             }
-        });
+        }).catch( error => console.error( error ) );
         let unit = faction.game().objectMap[ data.units[0] ];
 
 
@@ -366,7 +366,7 @@ class Police extends Area {
 
 
     async skill( faction ){
-        let player, data;
+        let player = {}, data = {};
 
         // get areas with units
         let areas = faction.areasWithAttackingUnits();
@@ -392,7 +392,7 @@ class Police extends Area {
                 showEnemyUnits: true,
                 message: "Choose a unit to make an attack"
             }
-        });
+        }).catch( error => console.error( error ) );
         let unit = faction.game().objectMap[ data.units[0] ];
 
         // resolve attack with that unit
@@ -426,7 +426,7 @@ class Laboratory extends Area {
     }
 
     async skill( faction ){
-        let player, data;
+        let player = {}, data = {};
 
         faction.drawCards();
 
@@ -452,7 +452,7 @@ class Laboratory extends Area {
             players: faction.playerId,
             name: 'choose-card',
             data : args
-        });
+        }).catch( error => console.error( error ) );
 
 
         if( data.decline ){
@@ -488,7 +488,7 @@ class Factory extends Area {
     }
 
     async skill( faction ){
-        let player, data;
+        let player = {}, data = {};
 
         let areasWithFactionUnits = faction.areasWithUnits();
         let areaOptions = [];
@@ -517,7 +517,7 @@ class Factory extends Area {
                 show : 'units',
                 message : 'Choose an area to start a battle'
             }
-        });
+        }).catch( error => console.error( error ) );
         let area = faction.game().areas[data.area];
 
         await faction.game().battle( area );
@@ -551,7 +551,7 @@ class University extends Area {
     }
 
     async skill( faction ){
-        let player, data;
+        let player = {}, data = {};
 
         let areas = faction.game().areasWithUnrevealedTokens();
 
@@ -572,7 +572,7 @@ class University extends Area {
                 show : 'tokens',
                 message : 'Choose area to spy on tokens'
             }
-        });
+        }).catch( error => console.error( error ) );
 
         faction.data.tokenSpy = data.area;
         faction.game().message({
@@ -646,7 +646,7 @@ class Church extends Area {
     }
 
     async skill( faction ){
-        let player, data;
+        let player = {}, data = {};
 
 
         let areasWithRevealedTokens = this.areasWithRevealedTokens( faction );
@@ -668,7 +668,9 @@ class Church extends Area {
                 playerOnly : true,
                 revealedOnly : true
             }
-        });
+        }).catch( error => console.error( error ) );
+
+        if( !data.tokens ) return;
         let token = faction.game().objectMap[ data.tokens[0] ];
         token.revealed = false;
 

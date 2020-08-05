@@ -83,7 +83,11 @@ class Cultists extends Faction {
 
         // player sacrifices
         if( enemyUnits.length !== 1 ){
-            [player, data] = await this.game().promise({ players: targetFaction.playerId, name: 'sacrifice-units', data : { count : 1, areas : [event.from]  } });
+            [player, data] = await this.game().promise({
+                players: targetFaction.playerId,
+                name: 'sacrifice-units',
+                data : { count : 1, areas : [event.from]  }
+            }).catch( error => console.error( error ) );
             unit = this.game().objectMap[ data.units[0] ];
         } else {
             unit = enemyUnits[0];

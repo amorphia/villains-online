@@ -30,7 +30,9 @@ let obj = {
             fusion : args.fusion
         };
 
-        [ player, data ] = await this.game().promise({ players: player, name: 'choose-card', data : data });
+        [player, data] = await this.game().promise({ players: player, name: 'choose-card', data : data })
+            .catch( error => console.error( error ) );
+
         return this.processCard( args, data );
     },
 

@@ -72,7 +72,7 @@ class BlownCover extends Card {
 
 class BlackstoneEncryption extends Card {
     async handle( faction, area ){
-        let player, data, chosenArea;
+        let player = {}, data = {}, chosenArea;
 
         let areas = {};
         _.forEach( faction.game().areas, area => {
@@ -90,7 +90,11 @@ class BlackstoneEncryption extends Card {
         if( areas.length === 1 ){
             chosenArea = areas[0];
         } else {
-            [player, data] = await faction.game().promise({ players: faction.playerId, name: 'choose-skill', data : { areas : areas  } });
+            [player, data] = await faction.game().promise({
+                players: faction.playerId,
+                name: 'choose-skill',
+                data : { areas : areas  }
+            }).catch( error => console.error( error ) );
             chosenArea = data.area;
         }
 
@@ -167,7 +171,7 @@ class GoWithGod extends Card {
 
 class HighNoon extends Card {
     async handle( faction, area ) {
-        let player, data;
+        let player = {}, data = {};
 
         // get our unit types
         let unitTypes = {};
@@ -215,7 +219,7 @@ class HighNoon extends Card {
                 types: unitTypes,
                 enemies: enemies
             }
-        });
+        }).catch( error => console.error( error ) );
 
         let units = data.units.map(id => faction.game().objectMap[id]);
 
@@ -267,7 +271,7 @@ class LetGodSortThemOut extends Card {
                     let message = `sacrifices <span class="faction-${item.name}item">${unitNames.join(', ')}</span>`;
                     faction.game().message({ faction: item, message: message });
                     player.setPrompt({ active : false, playerUpdate : true });
-                }));
+                })).catch( error => console.error( error ) );;
             }
         });
 
@@ -351,7 +355,7 @@ class Shakedown extends Card {
                    let eventFaction = faction.game().factions[data.faction];
                    eventFaction.discardCard( data.cardId );
                    player.setPrompt({ active : false, playerUpdate : true });
-               }));
+               })).catch( error => console.error( error ) );;
            }
         });
 
@@ -403,7 +407,16 @@ class Stupor extends Card {
             return false;
         }
 
-        [player, data] = await faction.game().promise({ players: faction.playerId, name: 'choose-tokens', data : { count : 1, areas : [area.name], enemyOnly : true, unrevealedOnly : true }})
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'choose-tokens',
+            data : {
+                count : 1,
+                areas : [area.name],
+                enemyOnly : true,
+                unrevealedOnly : true
+            }
+        }).catch( error => console.error( error ) );
 
         let token = faction.game().objectMap[data.tokens[0]];
         let tokenSpot = _.discardToken( token, area );
@@ -415,7 +428,7 @@ class Stupor extends Card {
 
 class SuitcaseNuke extends Card {
     async handle( faction, area ){
-        let player, data;
+        let player = {}, data = {};
 
         // can we sacrifice a unit
         if( !_.find( faction.data.units, unit => _.unitInArea( unit, area ) ) ){
@@ -425,7 +438,15 @@ class SuitcaseNuke extends Card {
         }
 
         // do we want to sacrifice a unit
-        [player, data] = await faction.game().promise({ players: faction.playerId, name: 'sacrifice-units', data : { count : 1, areas : [area.name], optional : true  } })
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'sacrifice-units',
+            data : {
+                count : 1,
+                areas : [area.name],
+                optional : true
+            }
+        }).catch( error => console.error( error ) );
 
         if( !data.units.length ){
             faction.game().message({ faction : faction, message: "chose not to activate the suitcase nuke", class : 'text' });

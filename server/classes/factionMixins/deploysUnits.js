@@ -52,7 +52,7 @@ let obj = {
             players: args.player,
             name: 'deploy-action',
             data : data
-        });
+        }).catch( error => console.error( error ) );
         return await this.processDeploy( ...result );
     },
 

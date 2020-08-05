@@ -2,36 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Passives/UnitsShifted.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/AssignHits.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/AssignHits.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/HighNoon.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/HighNoon.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAction.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAway.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAway.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/PlaceToken.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/PlaceToken.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/SacrificeUnits.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/SacrificeUnits.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/Areas.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Areas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Battle.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Battle.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/Cards.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Cards.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/movesUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/movesUnits.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/playsCards.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/playsCards.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Aliens.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Aliens.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Hackers.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Hackers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Cultists.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Cultists.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factions/Loyalists.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Loyalists.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Mafia.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Mafia.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factions/Ninjas.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Ninjas.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factions/Robots.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Robots.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Scientists.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Scientists.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factions/Society.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Society.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Swarm.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Swarm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factions/Vampires.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Vampires.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/combatStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/combatStep.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/endOfTurn.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/endOfTurn.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/startOfTurn.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/startOfTurn.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/takeActionsStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/takeActionsStep.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -300,10 +285,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1596601703130">
+    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1596647524313">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1596601703130" />
+    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1596647524313" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1596599433744">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

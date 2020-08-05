@@ -120,7 +120,7 @@ class Ninjas extends Faction {
                     showEnemyUnits: true,
                     message: "Choose a unit to become hidden and make an attack"
                 }
-            });
+            }).catch( error => console.error( error ) );
 
         let unit = this.game().objectMap[ data.units[0] ];
 

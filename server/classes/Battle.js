@@ -96,13 +96,13 @@ class Battle {
     }
 
     async ninjaAttack( faction ){
-        let player, data;
+        let player = {}, data = {};
 
         [player, data] = await this.game().promise({
             players: faction.playerId,
             name: 'ninja-attack',
             data : { area : this.area.name }
-        });
+        }).catch( error => console.error( error ) );
 
         if( !data.ninjaAttack ) return;
 
@@ -113,7 +113,8 @@ class Battle {
         });
 
         if(
-            result.hits
+            result
+            && result.hits
             && this.stillHasEnemiesThatCanAttack( faction )
             && faction.hasNonHiddenUnitsInArea( this.area )
         ){
@@ -126,7 +127,9 @@ class Battle {
                     playerOnly : true,
                     message: "Choose a unit to become hidden"
                 }
-            });
+            }).catch( error => console.error( error ) );
+            if( !data.units ) return;
+
             let unit = this.game().objectMap[ data.units[0] ];
             faction.becomeHidden( unit );
         }
@@ -152,7 +155,8 @@ class Battle {
                     playerOnly : true,
                     message: "Choose a unit to make an attack"
                 }
-            });
+            }).catch( error => console.error( error ) );
+            if( !data.units ) return;
             let unit = this.game().objectMap[ data.units[0] ];
 
             this.data.currentUnit = unit.id;

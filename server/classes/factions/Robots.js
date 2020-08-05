@@ -90,7 +90,16 @@ class Robots extends Faction {
         this.message({ message: `<span class="faction-robots">Bully G.O.A.T</span> is searching for targets` });
 
         // prompt player to select a unit
-        [player, data] = await this.game().promise({ players: this.playerId, name: 'choose-area', data : { areas : areas, show: 'units', enemyOnly: true, message: "Choose an area to target with Bully G.O.A.T" }});
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'choose-area',
+            data : {
+                areas : areas,
+                show: 'units',
+                enemyOnly: true,
+                message: "Choose an area to target with Bully G.O.A.T"
+            }
+        }).catch( error => console.error( error ) );
         let area = this.game().areas[ data.area ];
 
         // resolve attack with that unit
@@ -100,7 +109,11 @@ class Robots extends Faction {
     async wildToken( args ){
         let player, data, output;
 
-        [player, data] = await this.game().promise({ players: this.playerId, name: 'choose-wild', data : { area : args.area.name } });
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'choose-wild',
+            data : { area : args.area.name }
+        }).catch( error => console.error( error ) );
         this.game().message({ message : `have chosen to treat their <span class="faction-robots">wild</span> token as a ${data.type} token`, faction : this });
         let tokenMethod = 'canActivate' + _.classCase( data.type );
         let canActivate = this[tokenMethod]( args.token, args.area );
