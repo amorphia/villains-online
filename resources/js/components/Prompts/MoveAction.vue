@@ -1,6 +1,6 @@
 <template>
     <player-prompt classes="">
-        <div class="choose-action overflow-auto px-2">
+        <div class="choose-action overflow-auto px-6">
             <div class="width-100 d-flex justify-center flex-column align-center">
 
 

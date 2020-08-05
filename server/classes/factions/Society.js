@@ -123,7 +123,8 @@ class Society extends Faction {
         let data = {
             cost : 0,
             units : [xavier.id],
-            toArea : area
+            toArea : area,
+            hidePrompt : true
         };
 
         await this.processDeploy( player, data );
@@ -161,9 +162,11 @@ class Society extends Faction {
             enemyOnly : true,
             basicOnly : true,
             limit : 1,
-            message : 'Choose a unit to push'
+            message : 'Choose a unit to push',
+            promptMessage : 'The Society push a unit from The ' + args.area.name,
+            sound : 'huh'
         });
-        this.game().sound( 'huh' );
+
         this.game().advancePlayer();
     }
 
@@ -196,7 +199,7 @@ class Society extends Faction {
         let message = `Replaces <span class="faction-${unit.faction}">The ${unit.faction} ${unit.name}</span> in the ${unit.location}`;
         this.game().message({ faction : this, message: message });
         this.game().sound( 'hypnotize' );
-        this.replaceUnit( unit );
+        await this.replaceUnit( unit, { message : `The Society hypnotizes a unit in The ${unit.location}` } );
 
         this.game().advancePlayer();
     }

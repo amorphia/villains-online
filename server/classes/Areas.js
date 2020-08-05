@@ -335,7 +335,7 @@ class Sewers extends Area {
         };
 
         let output = await faction.deploy( args );
-        if ( output.declined ){
+        if ( output && output.declined ){
             faction.game().message({
                 faction: faction,
                 message: `Can't deploy to the ${unit.location}`
@@ -604,7 +604,7 @@ class Subway extends Area {
 
         let output = await faction.deploy( args );
 
-        if ( output.declined ){
+        if ( output && output.declined ){
             faction.game().message({
                 faction : faction,
                 message: `Failed to deploy`,

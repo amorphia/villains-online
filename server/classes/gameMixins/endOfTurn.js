@@ -64,7 +64,7 @@ let obj = {
                                                      .filter( item => item );
 
         if( upgrades.length ){
-            await this.timedPrompt( 'score-upgrades', slideSpeed * upgrades.length, { slideSpeed : slideSpeed, upgrades : upgrades });
+            await this.timedPrompt( 'score-upgrades', { wait : slideSpeed * upgrades.length, slideSpeed : slideSpeed, upgrades : upgrades });
         }
     },
 
@@ -136,7 +136,7 @@ let obj = {
         await Promise.all( promises );
         this.processPlanResults( results );
 
-        await this.timedPrompt( 'plan-results', slideSpeed * ( results.length ), { slideSpeed : slideSpeed, results : results });
+        await this.timedPrompt( 'plan-results', { wait : slideSpeed * results.length, slideSpeed : slideSpeed, results : results });
 
     },
 
@@ -182,7 +182,7 @@ let obj = {
             targets.push( target );
         });
 
-        await this.timedPrompt( 'score-targets', slideSpeed * (targets.length + 1), { slideSpeed : slideSpeed, targets : targets });
+        await this.timedPrompt( 'score-targets', { wait : slideSpeed * (targets.length + 1), slideSpeed : slideSpeed, targets : targets });
 
     },
 
@@ -195,7 +195,7 @@ let obj = {
         let slideSpeed = 4;
         if( this.fastMode ) slideSpeed = 1;
 
-        await this.timedPrompt( 'title-card', this.titleCardTimer, { message : 'Determine Control Step' } );
+        await this.timedPrompt( 'title-card',{ wait: this.titleCardTimer, message : 'Determine Control Step' } );
 
         let areaData = [];
 
@@ -204,7 +204,7 @@ let obj = {
             areaData.push( area.determineControl() );
         }
 
-        await this.timedPrompt( 'determine-control', slideSpeed * 9, { slideSpeed : slideSpeed, areas : areaData });
+        await this.timedPrompt( 'determine-control', { wait : slideSpeed * 9, slideSpeed : slideSpeed, areas : areaData });
 
     }
 };

@@ -2,7 +2,7 @@ let obj = {
 
     async startTakeActionsStep(){
         this.data.phase = "take-actions";
-        await this.timedPrompt( 'title-card', this.titleCardTimer, { message : 'Take Actions Step' } );
+        await this.timedPrompt( 'title-card', { wait: this.titleCardTimer, message : 'Take Actions Step' } );
         this.defaultListener = 'choose-action';
 
         this.setActivePlayerByPlayerOrder();

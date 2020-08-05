@@ -2,7 +2,7 @@ let obj = {
     async startTurn() {
         this.data.state = "start-of-turn";
         this.data.phase = "plans-and-targets";
-        await this.timedPrompt( 'title-card', this.titleCardTimer, { message : 'Start of Turn' } );
+        await this.timedPrompt( 'title-card', { wait : this.titleCardTimer, message : 'Start of Turn' } );
 
 
         _.forEach(this.factions, (faction, name) => {

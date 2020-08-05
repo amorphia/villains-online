@@ -89,26 +89,34 @@ class Swarm extends Faction {
         this.data.factionDefenseBonus = n;
     }
 
-    afterCombatStep() {
+    async afterCombatStep() {
         let broodnest = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
         if ( !broodnest ) return;
 
-        this.placeDrones( broodnest.location );
+        await this.placeDrones( broodnest.location );
         broodnest.location = null;
 
     }
 
-    placeDrones( area ) {
+    async placeDrones( area ) {
         area = this.game().areas[area];
+
+        let units = [];
 
         for( let i = 0; i < 4; i++ ){
             let drone = this.data.units.find( unit => unit.type === 'drone' && _.unitInReserves( unit ) );
             drone.location = area.name;
+            units.push( drone );
         }
 
         this.game().sound( 'hatch' );
         let message = `Broodnest hatches, spawning four <span class="faction-swarm">drones</span> in The ${area.name}`;
         this.game().message({ faction : this, message: message });
+
+        await this.game().timedPrompt('units-shifted', {
+            message : `The Swarm Broodnest hatches, spawning drones in the ${area.name}`,
+            units: units
+        });
     }
 
     canActivateScatter( token, area ) {
@@ -116,14 +124,16 @@ class Swarm extends Faction {
     }
 
     async scatterToken( args ) {
+
         await this.moveAwayToken( args, {
             fromArea: args.area.name,
             toAreas: args.area.data.adjacent,
             noChampion : true,
-            message : 'Choose units to scatter'
+            message : 'Choose units to scatter',
+            promptMessage: 'The Swarm units scatter from The ' + args.area.name,
+            sound : 'hatch'
         });
 
-        this.game().sound( 'hatch' );
         this.game().advancePlayer();
     }
 }

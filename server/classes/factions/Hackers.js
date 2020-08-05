@@ -95,12 +95,12 @@ class Hackers extends Faction {
         // exhaust enemy units
         let zeroDay = this.data.units.find( unit => _.unitInArea( unit, area ) );
         if( zeroDay ){
-            this.exhaustEnemyUnitsInArea( area );
+            await this.exhaustEnemyUnitsInArea( area );
         }
     }
 
-    exhaustEnemyUnitsInArea( area ){
-        let exhaustedEnemyUnits = false;
+    async exhaustEnemyUnitsInArea( area ){
+        let units = [];
 
         Object.values( this.game().data.factions ).forEach( faction => {
             faction.units.forEach( unit => {
@@ -110,13 +110,17 @@ class Hackers extends Faction {
                     && unit.location === area.name
                 ){
                     unit.ready = false;
-                    exhaustedEnemyUnits = true;
+                    units.push( unit );
                 }
             })
         });
 
-        if( exhaustedEnemyUnits ){
+        if( units.length ){
             this.message({ message: `Zero day exhausts all enemy units in The ${area.name}`, faction : this } );
+            await this.game().timedPrompt('units-shifted', {
+                message : `Zero day hijacks ready enemy units in The ${area.name}`,
+                units: units
+            });
         }
     }
 

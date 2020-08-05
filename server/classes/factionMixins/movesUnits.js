@@ -9,7 +9,7 @@ let obj = {
         args.fromToken = true;
         let output = await this.move( args );
 
-        if( output.declined ){
+        if( output && output.declined ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
         }
@@ -61,6 +61,7 @@ let obj = {
     async processMove( player, data ){
         if( data.decline ) return { declined : true };
 
+        let units = [];
         let output = {
             cost : data.cost,
             units : [],
@@ -71,6 +72,7 @@ let obj = {
         data.units.forEach( unitId => {
             let unit = this.game().objectMap[unitId];
 
+            units.push( unit );
             output.units.push({
                 from : unit.location,
                 unit : unit
@@ -95,6 +97,14 @@ let obj = {
         }
 
         this.message({ message: message, faction : this });
+
+        if( !data.hidePrompt ) {
+            await this.game().timedPrompt('units-shifted', {
+                message : `The ${this.name} move units to the ${data.toArea}`,
+                units: units
+            });
+        }
+
         await this.triggeredEvents( 'move', output.units );
 
         return output;
@@ -116,9 +126,24 @@ let obj = {
 
         this.payCost( data.cost );
 
+        let units = [];
+
         for( let move of data.moves ){
+            move.units.forEach( unitId => {
+                let unit = this.game().objectMap[unitId];
+                units.push(unit);
+            });
+
+            move.hidePrompt = true;
             await this.processMove( player, move );
         }
+
+        if( data.sound ) this.game().sound( data.sound );
+        await this.game().timedPrompt('units-shifted', {
+            message : data.promptMessage,
+            units: units
+        });
+
     }
 
 };

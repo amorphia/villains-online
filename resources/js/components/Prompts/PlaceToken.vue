@@ -1,5 +1,5 @@
 <template>
-        <div class="place-token-top p-2 d-flex justify-center align-center">
+        <div class="place-token-top p-4 d-flex justify-center align-center">
             <button class="button button-empty place-token__button right-text" @click="passToken">PASS</button>
 
             <div class="place-token__tokens center-text">

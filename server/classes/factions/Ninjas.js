@@ -81,6 +81,11 @@ class Ninjas extends Faction {
             lotusDancer.location = token.location;
             this.game().sound( 'wiff' );
             this.game().message({ faction : this, message: `Lotus Dancer slips into the ${token.location}` });
+
+            await this.game().timedPrompt('units-shifted', {
+                message : `Lotus Dancer slips into the ${token.location}`,
+                units: lotusDancer
+            });
         }
     }
 

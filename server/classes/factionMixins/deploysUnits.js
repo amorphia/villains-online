@@ -18,7 +18,7 @@ let obj = {
         args.fromToken = true;
         let output = await this.deploy( args );
 
-        if( output.declined ){
+        if( output && output.declined ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
         }
@@ -48,7 +48,11 @@ let obj = {
             readyUnits : args.readyUnits
         };
 
-        let result = await this.game().promise({ players: args.player, name: 'deploy-action', data : data });
+        let result = await this.game().promise({
+            players: args.player,
+            name: 'deploy-action',
+            data : data
+        });
         return await this.processDeploy( ...result );
     },
 
@@ -86,6 +90,8 @@ let obj = {
     async processDeploy( player, data ){
         if( data.decline ) return { declined : true };
 
+        let units = [];
+
         let output = {
             cost : data.cost,
             units : [],
@@ -96,6 +102,7 @@ let obj = {
         data.units.forEach( unitId => {
             let unit = this.game().objectMap[unitId];
 
+            units.push( unit );
             output.units.push({
                 from : unit.location,
                 unit : unit
@@ -118,10 +125,21 @@ let obj = {
             }
         });
 
+        // prepare prompt and chat message
         let unitNames = [];
-        output.units.forEach( data => unitNames.push( data.unit.name ) );
+        units.forEach( unit => {
+            unitNames.push( unit.name )
+        });
+
         let message = `Pay xC${output.cost}x to deploy <span class="faction-${this.name}">${ unitNames.join(', ') }</span> to the ${output.units[0].unit.location}`;
         this.message({ message: message, faction : this });
+
+        if( !data.hidePrompt ) {
+            await this.game().timedPrompt('units-shifted', {
+                message: `The ${this.name} deploy units to the ${data.toArea}`,
+                units: units
+            });
+        }
 
         await this.triggeredEvents( 'deploy', output.units );
 

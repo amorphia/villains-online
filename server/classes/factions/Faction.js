@@ -164,8 +164,16 @@ class Faction {
         this.playerId = playerId;
         this.gameId = game.id;
         this.data.owner = playerId;
+
+        if( this.game().testMode ) this.testMode();
+
     }
 
+    testMode(){
+        this.data.cardDraw = 30;
+        this.data.planLimit = 8;
+        this.data.maxEnergy = 30;
+    }
 
     // abstract
     processUpgrade(){}
@@ -281,7 +289,9 @@ class Faction {
 
 
 
-    replaceUnit( unit ){
+    async replaceUnit( unit, options = {} ){
+        let units = [];
+
         if( typeof unit === 'string' ) unit = this.game().objectMap[ unit ];
         let replacement = this.data.units.find(
             item => !item.location
@@ -296,6 +306,9 @@ class Faction {
             replacement.ready = true;
         }
 
+        units.push( replacement );
+        units.push( _.clone( unit ) );
+
         // remove replaced unit
         unit.location = null;
         if( unit.flipped ) unit.flipped = false;
@@ -303,6 +316,12 @@ class Faction {
         if( this.game().combat ){
             this.game().combat.removeUnitFromCombat( unit );
         }
+
+        await this.game().timedPrompt('units-shifted', {
+            message : options.message,
+            units: units
+        });
+
     }
 
     discardCard( card ){

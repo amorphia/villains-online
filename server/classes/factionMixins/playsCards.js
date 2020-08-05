@@ -12,7 +12,7 @@ let obj = {
     async cardToken( args ) {
         let output = await this.playACard( args );
 
-        if( output.declined ){
+        if( output && output.declined ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
         }

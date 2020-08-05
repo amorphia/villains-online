@@ -1,7 +1,7 @@
 let obj = {
     async startCombatStep(){
         this.data.phase = "combat-phase";
-        await this.timedPrompt( 'title-card', this.titleCardTimer, { message : 'Combat Step' } );
+        await this.timedPrompt( 'title-card', { wait : this.titleCardTimer, message : 'Combat Step' } );
 
         this.defaultListener = null;
         this.allPlayers({ passed : false } );

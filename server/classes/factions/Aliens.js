@@ -86,7 +86,7 @@ class Aliens extends Faction {
 
         let output = await this.deploy( args );
 
-        if( output.declined ){
+        if( output && output.declined ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
         }

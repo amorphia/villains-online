@@ -100,8 +100,14 @@ class Vampires extends Faction {
         let unit = this.game().objectMap[ data.units[0] ];
 
         unit.location = destinationAreaName;
+
         this.game().sound( 'bats' );
         this.game().message({ faction : this, message: `Fly a vampire ${unit.name} to The ${destinationAreaName}` });
+
+        await this.game().timedPrompt('units-shifted', {
+            message : `A Vampire flies to The ${destinationAreaName}`,
+            units: unit
+        });
 
     }
 

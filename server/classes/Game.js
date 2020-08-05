@@ -3,8 +3,10 @@ const PlanTester = require( "./PlanTester" );
 
 class Game {
 
+    defaultSlideSpeed = 5;
     titleCardTimer = 3;
     fastMode = false;
+    testMode = false;
 
     static events = [
         'leaveGame',
@@ -100,7 +102,15 @@ class Game {
     }
 
 
-    async timedPrompt( prompt, seconds, data = {} ){
+    async timedPrompt( prompt, data = {} ){
+        if( !data.wait ){
+            if( prompt === 'units-shifted' && data.units.length > 4 ){
+                data.wait = 10;
+            } else {
+                data.wait = this.defaultSlideSpeed;
+            }
+        }
+
         data.passive = true;
         _.forEach( this.players, player => {
             player.setPrompt({
@@ -112,7 +122,7 @@ class Game {
 
         this.updateAll();
 
-        await this.wait( seconds );
+        await this.wait( data.wait );
 
         this.clearAllPrompts();
     }

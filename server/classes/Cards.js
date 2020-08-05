@@ -15,7 +15,7 @@ class Card {
         };
         Object.assign( args, newArgs );
         let output = await faction.deploy( args );
-        if ( output.declined ) return;
+        if ( output && output.declined ) return;
 
         return output;
     }
@@ -23,17 +23,32 @@ class Card {
 
 
 class AllHollowsEve extends Card {
-    handle( faction, area ){
+    async handle( faction, area ){
+
+        let units = [];
+
         _.forEach( faction.game().factions, (item, name) =>{
             item.data.units.forEach( unit => {
-                unit.killed = false;
-                if( unit.ready ) unit.ready = false;
-                if( unit.flipped ){
-                    unit.flipped = false;
-                    item.unitUnflipped( unit );
+                if( unit.killed && unit.location ){
+
+                    units.push( unit );
+
+                    unit.killed = false;
+                    if( unit.ready ) unit.ready = false;
+                    if( unit.flipped ){
+                        unit.flipped = false;
+                        item.unitUnflipped( unit );
+                    }
                 }
             });
         });
+
+
+        await faction.game().timedPrompt('units-shifted', {
+            message: `The ${faction.name} returns killed units to play`,
+            units: units
+        });
+
     }
 }
 
@@ -99,8 +114,7 @@ class ChicagoAirlift extends Card {
         };
 
         let output = await faction.move( args );
-        if ( output.declined ) return;
-
+        if ( output && output.declined ) return;
 
         return output;
     }
@@ -210,9 +224,15 @@ class HighNoon extends Card {
             await deployFaction.processDeploy( deployFaction.playerId, {
                 cost: 0,
                 units: [unit.id],
-                toArea: area.name
+                toArea: area.name,
+                hidePrompt : true
             });
         }
+
+        await faction.game().timedPrompt('units-shifted', {
+            message: `The ${faction.name} place units in the ${area.name}`,
+            units: units
+        });
     }
 }
 
@@ -220,6 +240,8 @@ class HighNoon extends Card {
 class LetGodSortThemOut extends Card {
     async handle( faction, area ){
         let promises = [];
+        let units = [];
+
 
         _.forEach( faction.game().factions, item => {
             let areasOwned = item.areas().length;
@@ -238,6 +260,7 @@ class LetGodSortThemOut extends Card {
                     for( let u of data.units ){
                         let unit = faction.game().objectMap[u];
                         unitNames.push( unit.name );
+                        units.push( unit );
                         await faction.game().killUnit( unit, faction );
                     }
 
@@ -249,7 +272,12 @@ class LetGodSortThemOut extends Card {
         });
 
 
-        return Promise.all( promises );
+        await Promise.all( promises );
+
+        await faction.game().timedPrompt('units-shifted', {
+            message: `The ${faction.name} killed the following units`,
+            units: units
+        });
     }
 }
 

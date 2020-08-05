@@ -127,7 +127,7 @@ class Robots extends Faction {
                 break;
         }
 
-        if( !canActivate || output.declined ){
+        if( !canActivate || ( output && output.declined ) ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
         }
