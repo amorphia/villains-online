@@ -6,11 +6,11 @@
         <div class="save-game__date">{{ save['created_at'] }}</div>
 
         <div class="save-game__players">
-            <div class="save-game__player ellipses"
-                 v-for="player in save.players"
+            <span class="save-game__player ellipses capitalize"
+                 v-for="(player, index) in save.players"
                  :class="{ red : !shared.lobbyPlayers[player.uuid]}">
                     {{ player.name }}
-            </div>
+            </span>
         </div>
 
         <div class="save-game__saves" :class="{ open : open }" >

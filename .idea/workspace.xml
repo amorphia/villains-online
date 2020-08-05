@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/GameLobby.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/GameLobby.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/SavedGames.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/SavedGames.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/SaveGame.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/SaveGame.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

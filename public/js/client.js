@@ -60208,11 +60208,11 @@ var render = function() {
       _c(
         "div",
         { staticClass: "save-game__players" },
-        _vm._l(_vm.save.players, function(player) {
+        _vm._l(_vm.save.players, function(player, index) {
           return _c(
-            "div",
+            "span",
             {
-              staticClass: "save-game__player ellipses",
+              staticClass: "save-game__player ellipses capitalize",
               class: { red: !_vm.shared.lobbyPlayers[player.uuid] }
             },
             [_vm._v("\n                " + _vm._s(player.name) + "\n        ")]
