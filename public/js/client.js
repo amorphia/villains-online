@@ -8195,19 +8195,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'saved-games',
   data: function data() {
     return {
       shared: App.state,
       savedGames: {},
-      open: 0
+      open: -1
     };
   },
   mounted: function mounted() {
     this.getSavedGames();
   },
   methods: {
+    openSave: function openSave(n) {
+      if (this.open === n) this.open = -1;else this.open = n;
+    },
     getSavedGames: function getSavedGames() {
       var _this = this;
 
@@ -55387,7 +55393,7 @@ var render = function() {
     "div",
     { staticClass: "d-flex flex-center height-100 pos-relative" },
     [
-      _vm.shared.admin ? _c("saved-games") : _vm._e(),
+      _c("saved-games"),
       _vm._v(" "),
       _c(
         "div",
@@ -60299,6 +60305,10 @@ var render = function() {
         attrs: { direction: "right", max: "600", min: "125" }
       }),
       _vm._v(" "),
+      _c("div", { staticClass: "highlight secondary-font center-text pb-4" }, [
+        _vm._v("\n        saved games\n    ")
+      ]),
+      _vm._v(" "),
       _c(
         "div",
         { staticClass: "width-100 height-100  flex-column d-flex" },
@@ -60306,11 +60316,7 @@ var render = function() {
           return _c("save-game", {
             key: save.id,
             attrs: { open: _vm.open === index, index: index, save: save },
-            on: {
-              open: function(i) {
-                return (_vm.open = i)
-              }
-            }
+            on: { open: _vm.openSave }
           })
         }),
         1

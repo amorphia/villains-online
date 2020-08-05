@@ -2,13 +2,16 @@
 
     <div class="saved-games game-hud drawer__aside height-100 pt-4">
         <adjust-handle direction="right" max="600" min="125"></adjust-handle>
+        <div class="highlight secondary-font center-text pb-4">
+            saved games
+        </div>
         <div class="width-100 height-100  flex-column d-flex">
             <save-game v-for="(save, index) in shared.savedGames"
                        :open="open === index"
                        :index="index"
                        :key="save.id"
                        :save="save"
-                       @open="i => open = i">
+                       @open="openSave">
             </save-game>
         </div>
     </div>
@@ -25,7 +28,7 @@
             return {
                 shared : App.state,
                 savedGames : {},
-                open : 0
+                open : -1
             };
         },
 
@@ -34,6 +37,11 @@
         },
 
         methods : {
+
+            openSave( n ){
+                if( this.open === n ) this.open = -1;
+                else this.open = n;
+            },
 
             getSavedGames(){
                 axios.get( `/game` )

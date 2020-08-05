@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-center height-100 pos-relative">
 
-        <saved-games v-if="shared.admin"></saved-games>
+        <saved-games></saved-games>
 
         <div class="d-flex flex-center width-100 height-100 pos-relative">
 
