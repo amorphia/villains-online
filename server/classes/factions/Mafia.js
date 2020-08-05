@@ -76,13 +76,13 @@ class Mafia extends Faction {
         if( this.data.upgrade ){
             let attack = this.data.upgrade === 1 ? 8 : 5;
             let area = this.game().areas[ fixer.location ];
-            await this.attack( { area : area, attacks : [attack], optional : true } );
+            await this.attack( { area : area, attacks : [attack], optional : true } ).catch( error => console.error( error ) );
         }
     }
 
 
     async hitManToken( args ){
-        let player, data;
+        let player, data, result;
 
         [player, data] = await this.game().promise({
             players: this.playerId,
@@ -100,7 +100,13 @@ class Mafia extends Faction {
 
         let unit = this.game().objectMap[data.unit];
         this.game().sound( 'hit' );
-        let result = await this.game().assignHits( unit, this );
+
+        try {
+            result = await this.game().assignHits( unit, this );
+        } catch( error ){
+            console.error( error );
+        }
+
         this.game().message({ message : `the hitman ${result} <span class="faction-${unit.faction}">the ${unit.faction}'s ${unit.name}</span> in <span class="highlight">the ${args.area.name}</span>`, faction : this });
 
         this.game().advancePlayer();

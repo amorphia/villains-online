@@ -124,7 +124,12 @@ class Loyalists extends Faction {
 
         let message = `Replaces <span class="faction-loyalists">The Loyalist ${unit.name}</span> in the ${unit.location}`;
         this.game().message({ faction : killer, message: message });
-        await killer.replaceUnit( unit, { message : `The ${killer.name} replace a unit in The ${unit.location}` } );
+
+        try {
+            await killer.replaceUnit( unit, { message : `The ${killer.name} replace a unit in The ${unit.location}` } );
+        } catch( error ){
+            console.error( error );
+        }
     }
 
     canActivateKnight( token, area ) {
@@ -175,7 +180,7 @@ class Loyalists extends Faction {
         await this.game().timedPrompt('units-shifted', {
             message : `The Loyalists knight units in The ${args.area.name}`,
             units: units
-        });
+        }).catch( error => console.error( error ) );
 
         this.game().advancePlayer();
     }

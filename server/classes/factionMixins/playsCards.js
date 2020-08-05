@@ -10,7 +10,13 @@ let obj = {
 
 
     async cardToken( args ) {
-        let output = await this.playACard( args );
+        let output;
+
+        try {
+            output = await this.playACard( args );
+        } catch( error ){
+            console.error( error );
+        }
 
         if( output && output.declined ){
             this.game().declineToken( this.playerId, args.token, true );
@@ -47,7 +53,12 @@ let obj = {
         let message = `Pay xC${data.cost}x to play <span class="highlight">${ card.name }</span>`;
         this.message({ message: message, faction : this, type: 'cards', cards: [card], area : args.area });
 
-        await this.game().cards[ card.class ].handle( this, args.area );
+        try {
+            await this.game().cards[ card.class ].handle( this, args.area );
+        } catch( error ){
+            console.error( error );
+        }
+
         return { cost: data.cost, card: card, area: data.areaName };
     },
 

@@ -31,7 +31,13 @@ class Battle {
         }
 
         this.game().sound( 'combat' );
-        await this.resolveBattle();
+
+        try{
+            await this.resolveBattle();
+        } catch( error ){
+            console.error( error );
+        }
+
     }
 
     hasFirstStrikeUnits(){
@@ -44,16 +50,31 @@ class Battle {
 
         if( this.hasFirstStrikeUnits() ){
             console.log( 'resolving first strike phase' );
-            await this.resolveStrikePhase( true );
+
+            try{
+                await this.resolveStrikePhase( true );
+            } catch( error ){
+                console.error( error );
+            }
+
         }
 
         if( this.area.canBattle() ){
             console.log( 'resolving regular strike phase' );
-            await this.resolveStrikePhase();
+
+            try{
+                await this.resolveStrikePhase();
+            } catch( error ){
+                console.error( error );
+            }
         }
 
-        for( let faction of Object.values( this.game().factions ) ){
-            await faction.onAfterBattle( this );
+        try {
+            for( let faction of Object.values( this.game().factions ) ){
+                await faction.onAfterBattle( this );
+            }
+        } catch( error ){
+            console.error( error );
         }
 
         this.data.title = 'Battle completed';
@@ -78,7 +99,12 @@ class Battle {
                 message : `start their ${ firstStrikePhase ? 'first strike ' : '' }attacks`
             });
 
-            await this.makeAttacks( faction );
+            try {
+                await this.makeAttacks( faction );
+            } catch( error ){
+                console.error( error );
+            }
+
             this.game().message({
                 faction : faction.name,
                 message : `have completed their ${ firstStrikePhase ? 'first strike ' : '' }attacks`
@@ -110,7 +136,7 @@ class Battle {
                 area : this.area,
                 attacks : [4],
                 chooseUnitTarget : true
-        });
+        }).catch( error => console.error( error ) );
 
         if(
             result
@@ -141,7 +167,13 @@ class Battle {
     async makeAttacks( factionData ){
         let player, data, gameFaction = this.game().factions[factionData.name];
 
-        if( gameFaction.name === 'ninjas' && this.stillHasUnitsToAttack( factionData, true ) ) await this.ninjaAttack( gameFaction );
+        if( gameFaction.name === 'ninjas' && this.stillHasUnitsToAttack( factionData, true ) ){
+            try {
+                await this.ninjaAttack( gameFaction );
+            } catch( error ){
+                console.error( error );
+            }
+        }
 
         while( this.stillHasUnitsToAttack( factionData ) ){
 
@@ -156,6 +188,7 @@ class Battle {
                     message: "Choose a unit to make an attack"
                 }
             }).catch( error => console.error( error ) );
+
             if( !data.units ) return;
             let unit = this.game().objectMap[ data.units[0] ];
 
@@ -168,7 +201,7 @@ class Battle {
                 attacks : unit.attack,
                 unit : unit,
                 attackBonus : this.options.attackBonus
-            });
+            }).catch( error => console.error( error ) );
 
             unit.needsToAttack = false;
             this.data.currentUnit = null;

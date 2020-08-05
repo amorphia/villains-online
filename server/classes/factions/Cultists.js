@@ -8,6 +8,7 @@ class Cultists extends Faction {
         super(owner, game);
 
         // data
+        this.data.focus = 'kills-focus';
         this.data.maxEnergy = 4;
         this.data.tokenCost = 0;
         this.data.name = this.name;
@@ -62,12 +63,18 @@ class Cultists extends Faction {
     }
 
     async bastaSacrifice( event ){
-        let player, data, message;
+        let player, data, message, targetFaction;
         if( !event.from || event.from === event.unit.location ) return;
         let area = event.from;
 
         message = `Choose player to target with Basta`;
-        let targetFaction = await this.selectEnemyPlayerWithUnitsInArea( area, message, {} );
+
+        try {
+            targetFaction = await this.selectEnemyPlayerWithUnitsInArea( area, message, {} );
+        } catch( error ){
+            console.error( error );
+        }
+
         if( !targetFaction ){
             this.game().message({ faction : this, message: "No souls for Basta to claim", class : 'warning' });
             return;

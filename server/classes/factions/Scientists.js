@@ -8,6 +8,7 @@ class Scientists extends Faction {
         super( owner, game );
 
         // data
+        this.data.focus = 'fusion-focus';
         this.data.name = this.name;
         this.data.title = "The Union of Mad Science";
         this.data.cardDraw = 4;
@@ -71,7 +72,11 @@ class Scientists extends Faction {
 
     async drTyrannosaurusDeploy( event ){
         let area = this.game().areas[ event.unit.location ];
-        await this.game().battle( area );
+        try {
+            await this.game().battle( area );
+        } catch( error ){
+            console.error( error );
+        }
     }
 
     factionCleanUp(){

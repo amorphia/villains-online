@@ -45,7 +45,7 @@ class DB {
     }
 
     async load( gameId ) {
-        let results = await axios.get(`${this.host}/save/${gameId}`);
+        let results = await axios.get(`${this.host}/save/${gameId}`).catch( error => console.error( error ) );
         return results.data;
     }
 

@@ -6,7 +6,11 @@ let obj = {
         let events = this.getTriggeredEvents( type, units );
 
         if( events.length ){
-            await this.processTriggeredEvents( events );
+            try {
+                await this.processTriggeredEvents( events );
+            } catch( error ){
+                console.error( error );
+            }
         }
     },
 
@@ -14,7 +18,12 @@ let obj = {
     async processTriggeredEvents( events ){
         for( let event of events ) {
             let faction = this.game().factions[ event.unit.faction ];
-            await faction[ event.event ]( event );
+
+            try {
+                await faction[ event.event ]( event );
+            } catch( error ){
+                console.error( error );
+            }
         }
     },
 

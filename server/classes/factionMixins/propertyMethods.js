@@ -130,27 +130,7 @@ let mixin = {
 
 
     areasWithUnits( options = {} ){
-        if( typeof options.types === 'string' ) options.types = [ option.types ];
-
-        let areas = {};
-        this.data.units.forEach( unit => {
-            if( _.unitInPlay( unit )
-                && ( !options.types || options.types.includes( unit.type ) )
-                && ( !options.flipped || unit.flipped )
-                && ( !options.deployable || !unit.noDeploy )
-                && ( !options.notHidden || !unit.hidden )
-            ){
-                areas[ unit.location ] = true;
-            }
-        });
-
-        let areasArray = Object.keys( areas );
-
-        if( options.excludesArea ){
-            areasArray = areasArray.filter( area => area !== options.excludesArea );
-        }
-
-        return areasArray;
+        return _.areasWithUnits( this, options );
     },
 
 
@@ -229,7 +209,7 @@ let mixin = {
      */
 
     unitsInPlay() {
-        return this.data.units.filter( unit => _.unitInPlay( unit ) );
+        return _.unitsInPlay( this );
     },
 
 

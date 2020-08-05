@@ -14,7 +14,7 @@ class Card {
             player: faction.playerId,
         };
         Object.assign( args, newArgs );
-        let output = await faction.deploy( args );
+        let output = await faction.deploy( args ).catch( error => console.error( error ) );
         if ( output && output.declined ) return;
 
         return output;
@@ -47,7 +47,7 @@ class AllHollowsEve extends Card {
         await faction.game().timedPrompt('units-shifted', {
             message: `The ${faction.name} returns killed units to play`,
             units: units
-        });
+        }).catch( error => console.error( error ) );
 
     }
 }
@@ -65,7 +65,7 @@ class AmpleCover extends Card {
 
 class BlownCover extends Card {
     async handle( faction, area ){
-        await faction.game().battle( area, { attackBonus : 3 } );
+        await faction.game().battle( area, { attackBonus : 3 } ).catch( error => console.error( error ) );
     }
 }
 
@@ -99,7 +99,11 @@ class BlackstoneEncryption extends Card {
         }
 
         // activate that skill
-        await faction.useSkill( chosenArea );
+        try {
+            await faction.useSkill( chosenArea );
+        } catch( error ){
+            console.error( error );
+        }
 
     }
 }
@@ -117,7 +121,9 @@ class ChicagoAirlift extends Card {
             farMove : true,
         };
 
-        let output = await faction.move( args );
+
+        let output = await faction.move( args ).catch( error => console.error( error ) );
+
         if ( output && output.declined ) return;
 
         return output;
@@ -131,7 +137,7 @@ class Despotism extends Card {
         for( let index in faction.areas() ){
             let area = faction.game().areas[areas[index]];
             faction.game().message({ faction: faction, message:  `the mad despot launches an attack in the ${area.name}` });
-            await faction.nonCombatAttack(5, 2, area );
+            await faction.nonCombatAttack(5, 2, area ).catch( error => console.error( error ) );
         }
     }
 }
@@ -139,7 +145,7 @@ class Despotism extends Card {
 
 class FishInABarrel extends Card {
     async handle( faction, area ){
-        await faction.nonCombatAttack(4, 3, area );
+        await faction.nonCombatAttack(4, 3, area ).catch( error => console.error( error ) );
     }
 }
 
@@ -230,13 +236,13 @@ class HighNoon extends Card {
                 units: [unit.id],
                 toArea: area.name,
                 hidePrompt : true
-            });
+            }).catch( error => console.error( error ) );
         }
 
         await faction.game().timedPrompt('units-shifted', {
             message: `The ${faction.name} place units in the ${area.name}`,
             units: units
-        });
+        }).catch( error => console.error( error ) );
     }
 }
 
@@ -265,7 +271,7 @@ class LetGodSortThemOut extends Card {
                         let unit = faction.game().objectMap[u];
                         unitNames.push( unit.name );
                         units.push( unit );
-                        await faction.game().killUnit( unit, faction );
+                        await faction.game().killUnit( unit, faction ).catch( error => console.error( error ) );
                     }
 
                     let message = `sacrifices <span class="faction-${item.name}item">${unitNames.join(', ')}</span>`;
@@ -276,12 +282,12 @@ class LetGodSortThemOut extends Card {
         });
 
 
-        await Promise.all( promises );
+        await Promise.all( promises ).catch( error => console.error( error ) );
 
         await faction.game().timedPrompt('units-shifted', {
             message: `The ${faction.name} killed the following units`,
             units: units
-        });
+        }).catch( error => console.error( error ) );
     }
 }
 
@@ -327,7 +333,7 @@ class Mobilize extends Card {
             free: true,
             deployLimit: 2
         };
-        return await this.cardDeploy( faction, area, args );
+        return await this.cardDeploy( faction, area, args ).catch( error => console.error( error ) );
     }
 }
 
@@ -337,7 +343,7 @@ class PolicePayoff extends Card {}
 
 class PublicBacklash extends Card {
     async handle( faction, area ){
-        await faction.nonCombatAttack(5, 2, area );
+        await faction.nonCombatAttack(5, 2, area ).catch( error => console.error( error ) );
     }
 }
 
@@ -382,7 +388,7 @@ class SlipInTheBack extends Card {
             unitTypes: ['talent'],
             readyUnits: true
         };
-        return await this.cardDeploy( faction, area, args );
+        return await this.cardDeploy( faction, area, args ).catch( error => console.error( error ) );
     }
 }
 

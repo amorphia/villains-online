@@ -2,7 +2,8 @@ let obj = {
 
     async startTakeActionsStep(){
         this.data.phase = "take-actions";
-        await this.timedPrompt( 'title-card', { wait: this.titleCardTimer, message : 'Take Actions Step' } );
+        await this.timedPrompt( 'title-card', { wait: this.titleCardTimer, message : 'Take Actions Step' } )
+            .catch( error => console.error( error ) );
         this.defaultListener = 'choose-action';
 
         this.setActivePlayerByPlayerOrder();
@@ -82,7 +83,13 @@ let obj = {
     async takeSkillAction( player, areaName ){
         let area = this.areas[areaName];
         let faction = player.faction();
-        await faction.useSkill( area );
+
+        try {
+            await faction.useSkill( area );
+        } catch( error ){
+            console.error( error );
+        }
+
         this.advancePlayer();
     },
 
@@ -95,7 +102,11 @@ let obj = {
         let area = this.areas[token.location];
 
         let faction = player.faction();
-        await faction.revealToken( player, token, area, this );
+        try {
+            await faction.revealToken( player, token, area, this );
+        } catch( error ){
+            console.error( error );
+        }
     },
 
     resetResolving(){

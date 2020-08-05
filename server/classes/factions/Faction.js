@@ -243,7 +243,11 @@ class Faction {
         this.data.tokenSpy = false;
 
         // faction specific end of turn shizz
-        await this.factionCleanUp();
+        try {
+            await this.factionCleanUp();
+        } catch( error ){
+            console.error( error );
+        }
     }
 
     resetEnergy(){

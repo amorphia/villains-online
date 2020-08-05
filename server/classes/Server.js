@@ -96,7 +96,7 @@ class Server {
 
     async loadGame( save ){
         this.message( 'lobby', { message : 'loading saved game' });
-        let saved = await this.db.load( save );
+        let saved = await this.db.load( save ).catch( error => console.error( error ) );
         let game = new Game( saved );
         this.games[game.id] = game;
         game.loadSavedGame( saved );

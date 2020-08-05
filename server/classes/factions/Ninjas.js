@@ -9,6 +9,7 @@ class Ninjas extends Faction {
 
         //data
         this.data.name = this.name;
+        this.data.focus = 'kill-types-focus';
         this.data.title = "The Clan of the Pale Moon";
         this.data.bladesBonusDice = 0;
 
@@ -85,7 +86,7 @@ class Ninjas extends Faction {
             await this.game().timedPrompt('units-shifted', {
                 message : `Lotus Dancer slips into the ${token.location}`,
                 units: lotusDancer
-            });
+            }).catch( error => console.error( error ) );
         }
     }
 

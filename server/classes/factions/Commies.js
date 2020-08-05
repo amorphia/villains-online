@@ -56,7 +56,7 @@ class Commies extends Faction {
             moveLimit: 3,
             farMove: true,
             player : this.playerId
-        });
+        }).catch( error => console.error( error ) );
     }
 
     riseUpToken( args ){

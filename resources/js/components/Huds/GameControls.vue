@@ -14,7 +14,7 @@
         </div>
         <div  class="game-controls__buttons width-100 pos-absolute bottom-0 left-0 d-flex p-4 justify-between">
 
-            <div class="game-controls__faction d-flex align-center width-33" @click="shared.event.emit( 'viewPlayer', shared.player )">
+            <div class="game-controls__faction d-flex align-center" @click="shared.event.emit( 'viewPlayer', shared.player )">
                 <div class="player-hud__champion-wrap d-flex grow-0 shrink-0 p-1">
                     <div class="player-hud__champion" :style="`background-image: url('/images/factions/${shared.faction.name}/icon.jpg')`"></div>
                 </div>
@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-center width-33">
+            <div class="d-flex justify-center width-25">
                 <div v-for="item in popouts"
                      class="game-controls__button game-controls__item" @click="setPopout( item )"
                      :class="{active : popout === item }">
@@ -39,21 +39,24 @@
             </div>
 
 
-            <div class="game-controls__faction width-33 d-flex justify-end">
+            <div class="game-controls__faction d-flex justify-end align-center">
 
-                <div class="game-controls__button game-controls__item scoreboard-text" @click="setPopout( 'score' )"
-                     :class="{active : popout === 'score' }">
-                    <i class="mr-2" :class="`icon-score`"></i> scoreboard
+                <component v-if="shared.faction.focus" :is="shared.faction.focus"></component>
+
+                <div  class="d-flex justify-end align-center" @click="setPopout( 'score' )">
+                    <div class="game-controls__button game-controls__item scoreboard-text"
+                         :class="{active : popout === 'score' }">
+                        <i :class="`icon-score`"></i>
+                    </div>
+
+                    <div class="game-controls__item">
+                        <i class="mr-2 icon-ap"></i>{{ shared.faction.ap }}
+                    </div>
+                    <div class="game-controls__item">
+                        <i class="mr-2 icon-pp"></i>{{ shared.faction.pp }}
+                    </div>
                 </div>
-
-                <div class="game-controls__item">
-                <i class="mr-2 icon-ap"></i>{{ shared.faction.ap }}
             </div>
-                <div class="game-controls__item">
-                    <i class="mr-2 icon-pp"></i>{{ shared.faction.pp }}
-                </div>
-            </div>
-
         </div>
         <loading-streak v-if="shared.player.active" position="bottom"></loading-streak>
     </div>
@@ -107,6 +110,7 @@
 
     .game-controls__faction {
         font-size: 1.6rem;
+        width: 37.5%;
     }
 
     .game-controls__faction .player-hud__champion {
@@ -152,5 +156,10 @@
         color: #8a1a6f;
     }
 
+    .plan-focus {
+        font-size: .9em;
+        position: relative;
+        top: .1em;
+    }
 </style>
 

@@ -21,9 +21,15 @@ let obj = {
         });
 
         this.game().popup( this.playerId, { skill : true, area : area.name, faction : this.name });
-        await area.skill( this );
-        await this.triggeredEvents( 'skill', triggered );
-        await this.onAfterSkill( area, triggered );
+
+        try {
+            await area.skill( this );
+            await this.triggeredEvents( 'skill', triggered );
+            await this.onAfterSkill( area, triggered );
+        } catch ( error ) {
+            console.error( error );
+        }
+
     },
 
 };

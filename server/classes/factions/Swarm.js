@@ -9,6 +9,7 @@ class Swarm extends Faction {
 
         //data
         this.data.name = this.name;
+        this.data.focus = 'unit-areas-focus';
         this.data.title = "The Swarm";
         this.data.factionDefenseBonus = 0;
 
@@ -93,7 +94,12 @@ class Swarm extends Faction {
         let broodnest = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
         if ( !broodnest ) return;
 
-        await this.placeDrones( broodnest.location );
+        try {
+            await this.placeDrones( broodnest.location );
+        } catch( error ){
+            console.error( error );
+        }
+
         broodnest.location = null;
 
     }
@@ -116,7 +122,7 @@ class Swarm extends Faction {
         await this.game().timedPrompt('units-shifted', {
             message : `The Swarm Broodnest hatches, spawning drones in the ${area.name}`,
             units: units
-        });
+        }).catch( error => console.error( error ) );
     }
 
     canActivateScatter( token, area ) {
@@ -125,14 +131,19 @@ class Swarm extends Faction {
 
     async scatterToken( args ) {
 
-        await this.moveAwayToken( args, {
-            fromArea: args.area.name,
-            toAreas: args.area.data.adjacent,
-            noChampion : true,
-            message : 'Choose units to scatter',
-            promptMessage: 'The Swarm units scatter from The ' + args.area.name,
-            sound : 'hatch'
-        });
+        try {
+            await this.moveAwayToken( args, {
+                fromArea: args.area.name,
+                toAreas: args.area.data.adjacent,
+                noChampion : true,
+                message : 'Choose units to scatter',
+                promptMessage: 'The Swarm units scatter from The ' + args.area.name,
+                sound : 'hatch'
+            });
+        } catch( error ){
+            console.error( error );
+        }
+
 
         this.game().advancePlayer();
     }

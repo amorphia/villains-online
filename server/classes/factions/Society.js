@@ -9,6 +9,7 @@ class Society extends Faction {
 
         //data
         this.data.name = this.name;
+        this.data.focus = 'token-focus';
         this.data.title = "The Blackstone Society";
         this.data.maxEnergy = 10;
         this.data.tokensNotDiscarded = 0;
@@ -127,7 +128,11 @@ class Society extends Faction {
             hidePrompt : true
         };
 
-        await this.processDeploy( player, data );
+        try {
+            await this.processDeploy( player, data );
+        } catch( error ){
+            console.error( error );
+        }
 
         player.setPrompt({ name : 'choose-target' });
         this.game().data.playerAction++;
@@ -156,23 +161,31 @@ class Society extends Faction {
 
     async pushToken( args ) {
 
-        await this.moveAwayToken( args, {
-            fromArea: args.area.name,
-            toAreas: args.area.data.adjacent,
-            enemyOnly : true,
-            basicOnly : true,
-            limit : 1,
-            message : 'Choose a unit to push',
-            promptMessage : 'The Society push a unit from The ' + args.area.name,
-            sound : 'huh'
-        });
+        try {
+            await this.moveAwayToken( args, {
+                fromArea: args.area.name,
+                toAreas: args.area.data.adjacent,
+                enemyOnly : true,
+                basicOnly : true,
+                limit : 1,
+                message : 'Choose a unit to push',
+                promptMessage : 'The Society push a unit from The ' + args.area.name,
+                sound : 'huh'
+            });
+        } catch( error ){
+            console.error( error );
+        }
 
         this.game().advancePlayer();
     }
 
 
     async wordOfCommandToken( args ) {
-        await this.useSkill( args.area );
+        try {
+            await this.useSkill( args.area );
+        } catch( error ){
+            console.error( error );
+        }
         this.game().advancePlayer();
     }
 

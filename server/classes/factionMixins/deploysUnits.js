@@ -16,7 +16,7 @@ let obj = {
 
     async deployToken( args ) {
         args.fromToken = true;
-        let output = await this.deploy( args );
+        let output = await this.deploy( args ).catch( error => console.error( error ) );
 
         if( output && output.declined ){
             this.game().declineToken( this.playerId, args.token, true );
@@ -53,7 +53,7 @@ let obj = {
             name: 'deploy-action',
             data : data
         }).catch( error => console.error( error ) );
-        return await this.processDeploy( ...result );
+        return await this.processDeploy( ...result ).catch( error => console.error( error ) );
     },
 
 
@@ -138,10 +138,14 @@ let obj = {
             await this.game().timedPrompt('units-shifted', {
                 message: `The ${this.name} deploy units to the ${data.toArea}`,
                 units: units
-            });
+            }).catch( error => console.error( error ) );
         }
 
-        await this.triggeredEvents( 'deploy', output.units );
+        try {
+            await this.triggeredEvents( 'deploy', output.units );
+        } catch( error ){
+            console.error( error );
+        }
 
         return output;
     }

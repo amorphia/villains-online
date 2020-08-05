@@ -7,7 +7,7 @@ let obj = {
 
     async moveToken( args ) {
         args.fromToken = true;
-        let output = await this.move( args );
+        let output = await this.move( args ).catch( error => console.error( error ) );
 
         if( output && output.declined ){
             this.game().declineToken( this.playerId, args.token, true );
@@ -38,7 +38,7 @@ let obj = {
             name: 'move-action',
             data : data
         }).catch( error => console.error( error ) );
-        return await this.processMove( ...result );
+        return await this.processMove( ...result ).catch( error => console.error( error ) );
     },
 
 
@@ -106,10 +106,14 @@ let obj = {
             await this.game().timedPrompt('units-shifted', {
                 message : `The ${this.name} move units to the ${data.toArea}`,
                 units: units
-            });
+            }).catch( error => console.error( error ) );
         }
 
-        await this.triggeredEvents( 'move', output.units );
+        try {
+            await this.triggeredEvents( 'move', output.units );
+        } catch( error ){
+            console.error( error );
+        }
 
         return output;
     },
@@ -139,14 +143,14 @@ let obj = {
             });
 
             move.hidePrompt = true;
-            await this.processMove( player, move );
+            await this.processMove( player, move ).catch( error => console.error( error ) );
         }
 
         if( data.sound ) this.game().sound( data.sound );
         await this.game().timedPrompt('units-shifted', {
             message : data.promptMessage,
             units: units
-        });
+        }).catch( error => console.error( error ) );
 
     }
 

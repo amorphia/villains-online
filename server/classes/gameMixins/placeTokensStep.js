@@ -3,7 +3,8 @@ let obj = {
     async startPlaceTokensStep(){
         this.data.state = "action-step";
         this.data.phase = "place-tokens";
-        await this.timedPrompt( 'title-card',{ wait : 4, message : 'Place Tokens Step' } );
+        await this.timedPrompt( 'title-card',{ wait : 4, message : 'Place Tokens Step' } )
+            .catch( error => console.error( error ) );
         this.defaultListener = 'place-token';
 
         this.setActivePlayerByPlayerOrder();

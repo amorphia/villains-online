@@ -11,7 +11,13 @@ let obj = {
         this.combat = new Battle( area, this, options );
         this.data.combat = this.combat.data;
         this.message({ message : `A battle begins in the ${area.name}`, class : 'highlight' });
-        await this.combat.init();
+
+        try {
+            await this.combat.init();
+        } catch( error ){
+            console.error( error );
+        }
+
         this.message({ message :  `The battle in the ${area.name} concludes`, class : 'highlight' });
 
         this.updateAll();
@@ -41,7 +47,12 @@ let obj = {
             return 'wounds';
         }
 
-        await this.killUnit( unit, faction );
+        try {
+            await this.killUnit( unit, faction );
+        } catch( error ){
+            console.error( error );
+        }
+
         return 'kills';
     },
 
@@ -56,7 +67,12 @@ let obj = {
             this.factions[faction].unitUnflipped( unit );
         }
 
-        await this.factions[faction].triggeredEvents( 'killed', [{ unit : unit }] );
+        try {
+            await this.factions[faction].triggeredEvents( 'killed', [{ unit : unit }] );
+        } catch( error ){
+            console.error( error );
+        }
+
     },
 };
 

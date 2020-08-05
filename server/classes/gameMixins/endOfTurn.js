@@ -2,16 +2,28 @@ let obj = {
     async startEndOfTurnStep(){
 
         this.data.phase = "determine-control";
-        await this.determineControlStep();
+        try {
+            await this.determineControlStep();
+        } catch( error ){
+            console.error( error );
+        }
 
         this.collectResourcesStep();
 
         this.data.phase = "score-targets";
-        await this.scoreTargetsStep();
+        try {
+            await this.scoreTargetsStep();
+        } catch( error ){
+            console.error( error );
+        }
+
 
         this.data.phase = "score-plans";
-        await this.scorePlansStep();
-
+        try {
+            await this.scorePlansStep();
+        } catch( error ){
+            console.error( error );
+        }
 
         if( this.checkForVictory() ){
             this.concludeGame();
@@ -20,15 +32,22 @@ let obj = {
 
 
         this.data.phase = "collect-upgrades";
-        await this.collectUpgrades();
+        try {
+            await this.collectUpgrades();
+        } catch( error ){
+            console.error( error );
+        }
+
 
 
         this.data.phase = "cleanup-step";
-        await this.cleanUpStep();
-
+        try {
+            await this.cleanUpStep();
+        } catch( error ){
+            console.error( error );
+        }
 
         this.readySkilledUnits();
-
 
         this.startNextTurn();
     },
@@ -43,8 +62,12 @@ let obj = {
     async cleanUpStep(){
         _.forEach( this.areas, area => area.cleanUp() );
 
-        for( let faction of Object.values( this.factions ) ){
-            await faction.cleanUp();
+        try {
+            for( let faction of Object.values( this.factions ) ){
+                await faction.cleanUp();
+            }
+        } catch( error ){
+            console.error( error );
         }
     },
 
@@ -64,7 +87,13 @@ let obj = {
                                                      .filter( item => item );
 
         if( upgrades.length ){
-            await this.timedPrompt( 'score-upgrades', { wait : slideSpeed * upgrades.length, slideSpeed : slideSpeed, upgrades : upgrades });
+            await this.timedPrompt(
+                'score-upgrades',
+                {
+                    wait : slideSpeed * upgrades.length,
+                    slideSpeed : slideSpeed,
+                    upgrades : upgrades
+                }).catch( error => console.error( error ) );
         }
     },
 
@@ -138,10 +167,11 @@ let obj = {
             );
         });
 
-        await Promise.all( promises );
+        await Promise.all( promises ).catch( error => console.error( error ) );
         this.processPlanResults( results );
 
-        await this.timedPrompt( 'plan-results', { wait : slideSpeed * results.length, slideSpeed : slideSpeed, results : results });
+        await this.timedPrompt( 'plan-results', { wait : slideSpeed * results.length, slideSpeed : slideSpeed, results : results })
+            .catch( error => console.error( error ) );
 
     },
 
@@ -187,7 +217,8 @@ let obj = {
             targets.push( target );
         });
 
-        await this.timedPrompt( 'score-targets', { wait : slideSpeed * (targets.length + 1), slideSpeed : slideSpeed, targets : targets });
+        await this.timedPrompt( 'score-targets', { wait : slideSpeed * (targets.length + 1), slideSpeed : slideSpeed, targets : targets })
+            .catch( error => console.error( error ) );
 
     },
 
@@ -200,7 +231,8 @@ let obj = {
         let slideSpeed = 4;
         if( this.fastMode ) slideSpeed = 1;
 
-        await this.timedPrompt( 'title-card',{ wait: this.titleCardTimer, message : 'Determine Control Step' } );
+        await this.timedPrompt( 'title-card',{ wait: this.titleCardTimer, message : 'Determine Control Step' } )
+            .catch( error => console.error( error ) );
 
         let areaData = [];
 
@@ -209,7 +241,8 @@ let obj = {
             areaData.push( area.determineControl() );
         }
 
-        await this.timedPrompt( 'determine-control', { wait : slideSpeed * 9, slideSpeed : slideSpeed, areas : areaData });
+        await this.timedPrompt( 'determine-control', { wait : slideSpeed * 9, slideSpeed : slideSpeed, areas : areaData })
+            .catch( error => console.error( error ) );
 
     }
 };

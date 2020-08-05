@@ -288,6 +288,11 @@ let helpers = {
         return units;
     },
 
+    unitsInPlay( faction ){
+        if( faction.data ) faction = faction.data;
+        return faction.units.filter( unit => this.unitInPlay( unit ) );
+    },
+
     unitInReserves( unit ){
         return !unit.location && !unit.killed;
     },
@@ -508,6 +513,47 @@ let helpers = {
      */
 
 
+    areasWithTokensCount( faction, areas, type ){
+        let count = 0;
+
+        _.forEach( areas, area => {
+            if( _.find( area.tokens, token => {
+                if( token.revealed
+                    && token.faction === faction.name
+                    && ( !type || token.type === type )
+                ) return true;
+            }) ) count++;
+        });
+
+        return count;
+    },
+
+    areasWithUnits( faction, options = {} ){
+        if( faction.data ) faction = faction.data;
+        if( typeof options.types === 'string' ) options.types = [ options.types ];
+
+        let areas = {};
+        faction.units.forEach( unit => {
+            if( _.unitInPlay( unit )
+                && ( !options.types || options.types.includes( unit.type ) )
+                && ( !options.flipped || unit.flipped )
+                && ( !options.deployable || !unit.noDeploy )
+                && ( !options.notHidden || !unit.hidden )
+            ){
+                areas[ unit.location ] = true;
+            }
+        });
+
+        let areasArray = Object.keys( areas );
+
+        if( options.excludesArea ){
+            areasArray = areasArray.filter( area => area !== options.excludesArea );
+        }
+
+        return areasArray;
+    },
+
+
     getCardCounts( faction, area ){
         let cards = {};
         area.cards.forEach( card => {
@@ -519,13 +565,11 @@ let helpers = {
     },
 
     shouldStandDown( faction, area ) {
-
         let standDowns = area.cards.map(card => card.class === 'stand-down' ? card.owner : false);
         standDowns = standDowns.filter(name => name); // filter out false values
 
         if ( !this.hasKauImmunity( faction, area ) ) return standDowns.length > 0;
         return standDowns.filter( owner => owner === 'aliens' ).length > 0;
-
     },
 
     areaIsTrapped( faction, area ){

@@ -173,13 +173,7 @@ class PlanTester {
     }
 
     tokensInAreas( faction, areaCount, type ) {
-        let factionCount = 0;
-
-        _.forEach( faction.game().areas, area => {
-            if( _.find( area.data.tokens, token => {
-                if( token.faction === faction.name && (!type || token.type === type ) ) return true;
-            }) ) factionCount++;
-        });
+        let factionCount = _.areasWithTokensCount( faction, faction.game().data.areas, type );
 
         let result = factionCount >= areaCount;
 

@@ -105,9 +105,9 @@ class Game {
     async timedPrompt( prompt, data = {} ){
         if( !data.wait ){
             if( prompt === 'units-shifted' && data.units.length > 4 ){
-                data.wait = 10;
+                data.wait = this.fastMode ? 1 : 10;
             } else {
-                data.wait = this.defaultSlideSpeed;
+                data.wait = this.fastMode ? 1 : this.defaultSlideSpeed;
             }
         }
 
@@ -122,7 +122,7 @@ class Game {
 
         this.updateAll();
 
-        await this.wait( data.wait );
+        await this.wait( data.wait ).catch( error => console.error( error ) );
 
         this.clearAllPrompts();
     }

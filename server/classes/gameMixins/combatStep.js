@@ -1,7 +1,9 @@
 let obj = {
     async startCombatStep(){
         this.data.phase = "combat-phase";
-        await this.timedPrompt( 'title-card', { wait : this.titleCardTimer, message : 'Combat Step' } );
+
+        await this.timedPrompt( 'title-card', { wait : this.titleCardTimer, message : 'Combat Step' } )
+            .catch( error => console.error( error ) );
 
         this.defaultListener = null;
         this.allPlayers({ passed : false } );
@@ -22,16 +24,19 @@ let obj = {
     async resolveCombatStep(){
         let areas = this.areasWithBattleMarkers();
 
-        if( areas.length ){
-            for( let i = 0; i < areas.length; i++ ){
-                await this.battle( areas[i] );
+        try {
+            if (areas.length) {
+                for (let i = 0; i < areas.length; i++) {
+                    await this.battle(areas[i]);
+                }
             }
-        }
 
-        for( let faction in this.factions ){
-            await this.factions[faction].afterCombatStep();
+            for (let faction in this.factions) {
+                await this.factions[faction].afterCombatStep();
+            }
+        } catch( error ){
+            console.error( error );
         }
-
         this.startEndOfTurnStep();
     }
 

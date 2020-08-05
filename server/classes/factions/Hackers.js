@@ -9,6 +9,7 @@ class Hackers extends Faction {
 
         //data
         this.data.name = this.name;
+        this.data.focus = 'skills-focus';
         this.data.title = "The Kaos Klub";
 
         // icons
@@ -81,7 +82,12 @@ class Hackers extends Faction {
 
         if( leetTalent ){
             this.game().message({ message: `double activates the skill ability of the ${area.name}`, faction : this });
-            await area.skill( this );
+
+            try {
+                await area.skill( this );
+            } catch( error ){
+                console.error( error );
+            }
         }
 
         // make leet unit
@@ -95,7 +101,11 @@ class Hackers extends Faction {
         // exhaust enemy units
         let zeroDay = this.data.units.find( unit => _.unitInArea( unit, area ) );
         if( zeroDay ){
-            await this.exhaustEnemyUnitsInArea( area );
+            try {
+                await this.exhaustEnemyUnitsInArea( area );
+            } catch( error ){
+                console.error( error );
+            }
         }
     }
 
@@ -120,7 +130,7 @@ class Hackers extends Faction {
             await this.game().timedPrompt('units-shifted', {
                 message : `Zero day hijacks ready enemy units in The ${area.name}`,
                 units: units
-            });
+            }).catch( error => console.error( error ) );
         }
     }
 

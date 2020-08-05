@@ -2,8 +2,12 @@ let obj = {
     async startTurn() {
         this.data.state = "start-of-turn";
         this.data.phase = "plans-and-targets";
-        await this.timedPrompt( 'title-card', { wait : this.titleCardTimer, message : 'Start of Turn' } );
 
+        try{
+            await this.timedPrompt( 'title-card', { wait : this.titleCardTimer, message : 'Start of Turn' } );
+        } catch( error ){
+            console.error( error );
+        }
 
         _.forEach(this.factions, (faction, name) => {
             faction.drawTurnCards();
