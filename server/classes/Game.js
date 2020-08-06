@@ -3,7 +3,7 @@ const PlanTester = require( "./PlanTester" );
 
 class Game {
 
-    maxTimeout =  60 * 60 * 2 * 1000; // two hours
+    maxTimeout =  60 * 60 * 1000; // an hour
     timeout;
 
     defaultSlideSpeed = 5;

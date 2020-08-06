@@ -15,7 +15,7 @@ class GameController extends Controller
      */
     public function index()
     {
-        return auth()->user()->getActiveGames();
+        return auth()->user()->getSaveGames();
     }
 
 

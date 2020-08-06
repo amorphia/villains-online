@@ -1,5 +1,5 @@
 <template>
-    <div class="save-game pos-relative overflow-hidden" :class="{disabled : !canLoad}"
+    <div class="save-game pos-relative overflow-hidden" :class="{ disabled : !canLoad }"
          @click="$emit( 'open', index )">
 
         <div class="save-game__date">{{ save['created_at'] }}</div>
@@ -40,7 +40,8 @@
                     if( !this.shared.lobbyPlayers[player.uuid] ) canLoad = false;
                 });
                 return canLoad;
-            }
+            },
+
         },
         methods : {
             loadGame( gameId ){
@@ -61,6 +62,7 @@
         font-family: var(--primary-font);
         font-size: 1.15rem;
     }
+
 
     .save-game.disabled {
         opacity: .8;

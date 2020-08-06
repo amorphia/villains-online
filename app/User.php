@@ -71,10 +71,11 @@ class User extends Authenticatable
      *
      */
 
-    public function getActiveGames()
+    public function getSaveGames()
     {
         return $this->games()
             ->with(['players'])
+            ->has('saves')
             ->take( 4 )
             ->orderByDesc( 'created_at' )
             ->get();
