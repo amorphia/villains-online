@@ -113,11 +113,13 @@ class Server {
 
 
     deleteGame( socket, gameId ){
-
         if( this.games[gameId].isOpen() ){
             this.io.to('lobby').emit( 'openGame', null );
-            let player = this.getPlayer( socket );
-            this.message( 'lobby', { message: 'deleted game', player: player });
+
+            if( socket ) {
+                let player = this.getPlayer( socket );
+                this.message( 'lobby', { message: 'deleted game', player: player });
+            }
         }
 
         this.db.conclude( gameId );

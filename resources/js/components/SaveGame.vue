@@ -1,7 +1,6 @@
 <template>
-    <div class="save-game pos-relative overflow-hidden"
-         @click="$emit( 'open', index )"
-         :disabled="!canLoad">
+    <div class="save-game pos-relative overflow-hidden" :class="{disabled : !canLoad}"
+         @click="$emit( 'open', index )">
 
         <div class="save-game__date">{{ save['created_at'] }}</div>
 
@@ -61,7 +60,11 @@
         padding: .5em;
         font-family: var(--primary-font);
         font-size: 1.15rem;
+    }
 
+    .save-game.disabled {
+        opacity: .8;
+        pointer-events: none;
     }
 
     .save-game__date {

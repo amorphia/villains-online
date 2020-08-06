@@ -3,6 +3,9 @@ const PlanTester = require( "./PlanTester" );
 
 class Game {
 
+    maxTimeout =  60 * 60 * 2 * 1000; // two hours
+    timeout;
+
     defaultSlideSpeed = 5;
     titleCardTimer = 3;
     fastMode = false;
@@ -101,6 +104,13 @@ class Game {
         });
     }
 
+    setTimeout(){
+        if( this.timeout ) clearTimeout( this.timeout );
+        this.timeout = setTimeout( () => {
+            this.message({ message : 'Game timed out due to inactivity', class : 'warning' });
+            this.conclude( null );
+        }, this.maxTimeout )
+    }
 
     async timedPrompt( prompt, data = {} ){
         if( !data.wait ){

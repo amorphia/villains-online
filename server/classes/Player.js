@@ -36,7 +36,7 @@ class Player {
             data : null
         };
 
-        // this.socket().emit( 'clearGame' );
+
         this.callSocket( 'emit', 'clearGame' );
         this.joinRoom( 'lobby' );
         Server.sendSocketOpenGame( this.socket() );

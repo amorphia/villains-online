@@ -97,6 +97,7 @@ let mixin = {
         this.advanceActivePlayer();
         this.setActivePlayerListener( listener );
         Server.saveToDB( this );
+        this.setTimeout();
         this.updateAll();
     },
 

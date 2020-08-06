@@ -111,6 +111,7 @@ let setup = {
         this.addPlayersToRoom();
         Server.closeOpenGame();
         this.updateAll();
+        this.setTimeout();
     },
 
 
