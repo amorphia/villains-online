@@ -11585,7 +11585,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.save-game {\n    margin: 0 .5em .35em;\n    background-color: rgba(255, 131, 213, 0.11);\n    box-shadow: 0px 0px 2px rgba(0,0,0,.5);\n    padding: .5em;\n    font-family: var(--primary-font);\n    font-size: 1.15rem;\n}\n.save-game.disabled {\n    opacity: .8;\n    pointer-events: none;\n}\n.save-game__date {\n    color: var(--primary-light-color);\n    font-size: 1.25rem;\n}\n.save-game__players {\n    max-width: 100%;\n    display: flex;\n    flex-wrap: wrap;\n}\n.save-game__player.red {\n    color: red;\n}\n.save-game__save {\n    color: var(--highlight-color);\n    cursor: pointer;\n    opacity: .8;\n    transition: all .2s;\n}\n.save-game__save:hover {\n    opacity: 1;\n}\n.save-game__saves {\n    transition: all .2s;\n    max-height: 0;\n    overflow: hidden;\n}\n.save-game__saves.open {\n    max-height: 100vh;\n}\n", ""]);
+exports.push([module.i, "\n.save-game {\n    margin: 0 .5em .35em;\n    background-color: rgba(255, 131, 213, 0.11);\n    box-shadow: 0px 0px 2px rgba(0,0,0,.5);\n    padding: .5em;\n    font-family: var(--primary-font);\n    font-size: 1.15rem;\n}\n.save-game.disabled {\n    opacity: .8;\n    pointer-events: none;\n}\n.save-game__date {\n    color: var(--primary-light-color);\n    font-size: 1.25rem;\n}\n.save-game__players {\n    max-width: 100%;\n    display: flex;\n    flex-wrap: wrap;\n}\n.save-game__player.missing {\n    color: #d85082\n}\n.save-game__save {\n    color: var(--highlight-color);\n    cursor: pointer;\n    opacity: .8;\n    transition: all .2s;\n}\n.save-game__save:hover {\n    opacity: 1;\n}\n.save-game__saves {\n    transition: all .2s;\n    max-height: 0;\n    overflow: hidden;\n}\n.save-game__saves.open {\n    max-height: 100vh;\n}\n", ""]);
 
 // exports
 
@@ -60213,8 +60213,8 @@ var render = function() {
           return _c(
             "span",
             {
-              staticClass: "save-game__player ellipses capitalize mx-2",
-              class: { red: !_vm.shared.lobbyPlayers[player.uuid] }
+              staticClass: "save-game__player ellipses capitalize mr-2",
+              class: { missing: !_vm.shared.lobbyPlayers[player.uuid] }
             },
             [_vm._v("\n                " + _vm._s(player.name) + "\n        ")]
           )

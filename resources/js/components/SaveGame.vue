@@ -5,9 +5,9 @@
         <div class="save-game__date">{{ save['created_at'] }}</div>
 
         <div class="save-game__players">
-            <span class="save-game__player ellipses capitalize mx-2"
+            <span class="save-game__player ellipses capitalize mr-2"
                  v-for="(player, index) in save.players"
-                 :class="{ red : !shared.lobbyPlayers[player.uuid]}">
+                 :class="{ missing : !shared.lobbyPlayers[player.uuid]}">
                     {{ player.name }}
             </span>
         </div>
@@ -80,8 +80,8 @@
         flex-wrap: wrap;
     }
 
-    .save-game__player.red {
-        color: red;
+    .save-game__player.missing {
+        color: #d85082
     }
 
     .save-game__save {
