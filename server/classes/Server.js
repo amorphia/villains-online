@@ -6,11 +6,13 @@ const DB = require( "./DB");
 class Server {
 
     debug = false;
+    gameTimeout = 60 * 60 * 1000 ; // an hour
     messageNum = 0;
     games = {};
     players = {};
     lobbyPlayers = {};
     playerSocketMap = {};
+    gameTimeouts = {};
 
     constructor( server, io ) {
         this.db = new DB();
@@ -111,6 +113,14 @@ class Server {
         this.io.to('lobby').emit( 'openGame', game.data );
     }
 
+
+    setTimeout( gameId ){
+        if( this.gameTimeouts[gameId] ) clearTimeout( this.gameTimeouts[gameId] );
+        this.gameTimeouts[gameId] = setTimeout( () => {
+            let game = this.games[gameId];
+            if( game ) game.conclude( null, true );
+        }, this.gameTimeout );
+    }
 
     deleteGame( socket, gameId ){
         if( this.games[gameId].isOpen() ){

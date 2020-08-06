@@ -3,9 +3,6 @@ const PlanTester = require( "./PlanTester" );
 
 class Game {
 
-    maxTimeout =  60 * 60 * 1000; // an hour
-    timeout;
-
     defaultSlideSpeed = 5;
     titleCardTimer = 3;
     fastMode = false;
@@ -105,11 +102,7 @@ class Game {
     }
 
     setTimeout(){
-        if( this.timeout ) clearTimeout( this.timeout );
-        this.timeout = setTimeout( () => {
-            this.message({ message : 'Game timed out due to inactivity', class : 'warning' });
-            this.conclude( null );
-        }, this.maxTimeout )
+        Server.setTimeout( this.id );
     }
 
     async timedPrompt( prompt, data = {} ){
@@ -270,7 +263,8 @@ class Game {
         return this.deck.deck.pop();
     }
 
-    conclude( socket ){
+    conclude( socket, timeout ){
+        if( timeout ) this.message({ message : 'Game timed out due to inactivity', class : 'warning' });
         _.forEach( this.players, player => player.clearGameData() );
         Server.deleteGame( socket, this.id );
     }
