@@ -5,7 +5,7 @@
         <div class="save-game__date">{{ save['created_at'] }}</div>
 
         <div class="save-game__players">
-            <span class="save-game__player ellipses capitalize"
+            <span class="save-game__player ellipses capitalize mx-2"
                  v-for="(player, index) in save.players"
                  :class="{ red : !shared.lobbyPlayers[player.uuid]}">
                     {{ player.name }}
@@ -74,8 +74,10 @@
         font-size: 1.25rem;
     }
 
-    .save-game__player {
-
+    .save-game__players {
+        max-width: 100%;
+        display: flex;
+        flex-wrap: wrap;
     }
 
     .save-game__player.red {
