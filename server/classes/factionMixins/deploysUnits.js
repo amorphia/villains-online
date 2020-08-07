@@ -114,15 +114,17 @@ let obj = {
                 this.unitUnflipped( unit );
             }
 
-            // update area
-            unit.location = data.toArea;
-
             // ready units
             if( data.readyUnits ){
                 unit.ready = true;
             } else {
-                if( unit.ready && unit.faction !== 'hackers' ) unit.ready = false;
+                if( unit.ready && ( unit.faction !== 'hackers' || !unit.location ) ) unit.ready = false;
             }
+
+            // update area
+            unit.location = data.toArea;
+
+
         });
 
         // prepare prompt and chat message

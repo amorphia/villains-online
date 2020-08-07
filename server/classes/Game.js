@@ -6,7 +6,7 @@ class Game {
     defaultSlideSpeed = 5;
     titleCardTimer = 3;
     fastMode = false;
-    testMode = false;
+    testMode = true;
 
     static events = [
         'leaveGame',

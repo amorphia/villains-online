@@ -60,13 +60,6 @@ let obj = {
         if( typeof faction !== 'string' ) faction = faction.name;
         unit.killed = faction;
 
-        if( unit.ready ) unit.ready = false;
-
-        if( unit.flipped ){
-            unit.flipped = false;
-            this.factions[faction].unitUnflipped( unit );
-        }
-
         try {
             await this.factions[faction].triggeredEvents( 'killed', [{ unit : unit }] );
         } catch( error ){

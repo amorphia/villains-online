@@ -61,10 +61,10 @@ class Hackers extends Faction {
         return mods;
     }
 
-    processUpgrade( n ){
+    processUpgrade( upgrade ){
         this.data.units.forEach( unit => {
             if( unit.type === 'talent' ){
-                unit.attack = n === 1 ? [5] : [3];
+                unit.attack = upgrade === 1 ? [5] : [3];
             }
         });
     }
@@ -72,7 +72,6 @@ class Hackers extends Faction {
 
     async onAfterSkill( area, units ){
 
-        console.log( 'onAfterSkill', units );
 
         // double skill
         let leetTalent = units.find(
@@ -99,7 +98,7 @@ class Hackers extends Faction {
         if( unLeetTalent ) this.becomeLeet( unLeetTalent.unit );
 
         // exhaust enemy units
-        let zeroDay = this.data.units.find( unit => _.unitInArea( unit, area ) );
+        let zeroDay = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, area ) );
         if( zeroDay ){
             try {
                 await this.exhaustEnemyUnitsInArea( area );
@@ -139,8 +138,12 @@ class Hackers extends Faction {
     }
 
     async bootUpToken( args ) {
+
+        let skilledPatsies = this.controlsArea( 'university' );
+
         this.data.units
-            .filter( unit => unit.skilled && _.unitInArea( unit, args.area ) )
+            .filter( unit => _.unitInArea( unit, args.area.name )
+                && ( unit.skilled || ( skilledPatsies && unit.type === 'patsy' ) ) )
             .forEach( unit => unit.ready = true );
 
         this.message({ message: `Skilled units became ready in The ${args.area.name}`, faction : this } );

@@ -8198,7 +8198,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'saved-games',
   data: function data() {
@@ -60302,10 +60301,6 @@ var render = function() {
     "div",
     { staticClass: "saved-games game-hud drawer__aside height-100 pt-4" },
     [
-      _c("adjust-handle", {
-        attrs: { direction: "right", max: "600", min: "125" }
-      }),
-      _vm._v(" "),
       _c("div", { staticClass: "highlight secondary-font center-text pb-4" }, [
         _vm._v("\n        saved games\n    ")
       ]),
@@ -60330,8 +60325,7 @@ var render = function() {
           )
         ]
       )
-    ],
-    1
+    ]
   )
 }
 var staticRenderFns = []
@@ -85101,6 +85095,7 @@ getToken();
  */
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+Vue.config.devtools = true;
 /**
  * Set core app object
  */

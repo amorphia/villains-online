@@ -229,12 +229,7 @@ class Faction {
         );
 
         // reset dead units
-        this.data.units.forEach( unit => {
-            if( unit.killed ){
-                unit.killed = null;
-                unit.location = null;
-            }
-        });
+        this.cleanUpKilled();
 
         // reset used skills
         this.data.usedSkills = [];
@@ -248,6 +243,22 @@ class Faction {
         } catch( error ){
             console.error( error );
         }
+    }
+
+    cleanUpKilled(){
+        this.data.units.forEach( unit => {
+            if( unit.killed ){
+
+                unit.killed = null;
+                unit.location = null;
+                if( unit.ready ) unit.ready = false;
+
+                if( unit.flipped ){
+                    unit.flipped = false;
+                    this.unitUnflipped( unit );
+                }
+            }
+        });
     }
 
     resetEnergy(){
@@ -416,7 +427,7 @@ class Faction {
         });
 
         this.data.units.forEach( unit => {
-            if( unit.skilled ) unit.ready = true;
+            if( _.unitInPlay( unit ) && unit.skilled ) unit.ready = true;
 
             if( controlsUniversity && unit.type === 'patsy' ){
                 unit.ready = true;

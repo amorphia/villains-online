@@ -1,7 +1,6 @@
 <template>
 
     <div class="saved-games game-hud drawer__aside height-100 pt-4">
-        <adjust-handle direction="right" max="600" min="125"></adjust-handle>
         <div class="highlight secondary-font center-text pb-4">
             saved games
         </div>

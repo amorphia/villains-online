@@ -124,8 +124,8 @@ class Vampires extends Faction {
             if( token.type === 'deploy' && token.location && token.revealed ){
                 let area = this.game().areas[token.location];
                 let hasUnit = !! this.data.units.find( unit => _.unitInArea( unit, area.name ) );
-                let hasCeaseFire = !! area.data.cards.find( card => card.class === 'cease-fire' );
-                if( hasUnit && !hasCeaseFire ) areas[area.name] = true;
+                let canBattle = area.canBattle();
+                if( hasUnit && !canBattle ) areas[area.name] = true;
             }
         });
 
@@ -156,7 +156,12 @@ class Vampires extends Faction {
 
             // resolve attack with that unit
             let attackArea = this.game().areas[ unit.location ];
-            await this.attack( { area : attackArea, attacks : unit.attack, unit : unit, selfAttack : true, noDecline : true } );
+            await this.attack({
+                area : attackArea,
+                attacks : unit.attack,
+                unit : unit,
+                noDecline : true
+            });
         }
 
         let message = `Has finished feasting`;

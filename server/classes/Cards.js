@@ -481,14 +481,15 @@ class SuitcaseNuke extends Card {
         // remove all tokens
         area.data.tokens.forEach( token => {
            token.location = null;
+           token.revealed = false;
         });
         area.data.tokens = [];
 
         // kill all units
         _.forEach( faction.game().factions, fac => {
             fac.data.units.forEach( unit => {
-                if( _.unitInArea(unit, area ) ){
-                    unit.killed = faction.name;
+                if( _.unitInArea( unit, area ) ){
+                    faction.game().killUnit( unit, faction );
                 }
             });
         });

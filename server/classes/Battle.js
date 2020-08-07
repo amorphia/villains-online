@@ -134,7 +134,7 @@ class Battle {
 
         let result = await faction.attack({
                 area : this.area,
-                attacks : [4],
+                attacks : [5],
                 chooseUnitTarget : true
         }).catch( error => console.error( error ) );
 

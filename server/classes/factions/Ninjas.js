@@ -19,7 +19,7 @@ class Ninjas extends Faction {
 
         // tokens
         this.tokens['blades'] = {
-            count: 2,
+            count: 1,
             data: {
                 influence: 1,
                 type: 'blades',
@@ -145,7 +145,7 @@ class Ninjas extends Faction {
         if( !unit.flipped && !unit.killed ){
             unit.flipped = true;
             unit.hidden = true;
-            let message = `<span class="faction-ninjas">${unit.name}</span> becomes a hidden in The ${unit.location}`;
+            let message = `<span class="faction-ninjas">${unit.name}</span> becomes hidden in The ${unit.location}`;
             this.message({ message: message, faction : this });
         }
     }
