@@ -102,6 +102,7 @@
 <style>
     .game-controls {
         font-size: 1.3rem;
+        height: 9vh;
     }
 
     .game-controls .loader-bar {

@@ -219,8 +219,6 @@
 
 
     .area-map-container {
-        width: 33%;
-        height: 33%;
         padding: .40rem;
     }
 

@@ -10797,6 +10797,25 @@ exports.push([module.i, "\n.loader-bar-shift {\n    margin-top: -1em;\n}\n", ""]
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameDisplay.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GameDisplay.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.game-display {\n    height: 91vh;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameLobby.vue?vue&type=style&index=0&lang=css&":
 /*!***************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GameLobby.vue?vue&type=style&index=0&lang=css& ***!
@@ -10828,7 +10847,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.game-map {\n        display: flex;\n        flex-wrap: wrap;\n        width: 100%;\n        height: 100%;\n    /*\n    display: grid;\n    grid-gap: 1rem;\n    grid-template-columns: repeat(3, 1fr);\n    grid-auto-rows: 1fr;\n    */\n}\n\n", ""]);
+exports.push([module.i, "\n.game-map {\n        display: grid;\n        grid-template-columns: repeat(3, 1fr);\n        width: 100%;\n        height: 100%;\n    /*\n    display: grid;\n    grid-gap: 1rem;\n    grid-template-columns: repeat(3, 1fr);\n    grid-auto-rows: 1fr;\n    */\n}\n\n", ""]);
 
 // exports
 
@@ -10885,7 +10904,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.game-controls {\n    font-size: 1.3rem;\n}\n.game-controls .loader-bar {\n    height: 3px;\n}\n.game-controls__faction {\n    font-size: 1.6rem;\n    width: 37.5%;\n}\n.game-controls__faction .player-hud__champion {\n    bottom: 0;\n}\n.game-controls__faction .game-controls__item {\n    color: var(--highlight-color);\n}\n.game-controls__faction i, .game-controls__button.scoreboard-text {\n    color: var(--primary-light-color);\n}\n.game-controls__buttons {\n    z-index: 2;\n    background-color: black;\n}\n.game-controls__item {\n    display: flex;\n    align-items: center;\n    padding: 0 .2em;\n    color: var(--primary-light-color);\n    cursor: pointer;\n}\n.game-controls .icon-ap:before, .game-controls .icon-pp:before {\n    bottom: 0;\n}\n.game-controls__button {\n    padding: 0 .5em;\n    font-size: 1.2rem;\n    color: var(--primary-light-color);\n}\n.game-controls__button.active {\n    color: var(--highlight-color);\n}\n.game-controls__button .note {\n    color: #8a1a6f;\n}\n.plan-focus {\n    font-size: .9em;\n    position: relative;\n    top: .1em;\n}\n", ""]);
+exports.push([module.i, "\n.game-controls {\n    font-size: 1.3rem;\n    height: 9vh;\n}\n.game-controls .loader-bar {\n    height: 3px;\n}\n.game-controls__faction {\n    font-size: 1.6rem;\n    width: 37.5%;\n}\n.game-controls__faction .player-hud__champion {\n    bottom: 0;\n}\n.game-controls__faction .game-controls__item {\n    color: var(--highlight-color);\n}\n.game-controls__faction i, .game-controls__button.scoreboard-text {\n    color: var(--primary-light-color);\n}\n.game-controls__buttons {\n    z-index: 2;\n    background-color: black;\n}\n.game-controls__item {\n    display: flex;\n    align-items: center;\n    padding: 0 .2em;\n    color: var(--primary-light-color);\n    cursor: pointer;\n}\n.game-controls .icon-ap:before, .game-controls .icon-pp:before {\n    bottom: 0;\n}\n.game-controls__button {\n    padding: 0 .5em;\n    font-size: 1.2rem;\n    color: var(--primary-light-color);\n}\n.game-controls__button.active {\n    color: var(--highlight-color);\n}\n.game-controls__button .note {\n    color: #8a1a6f;\n}\n.plan-focus {\n    font-size: .9em;\n    position: relative;\n    top: .1em;\n}\n", ""]);
 
 // exports
 
@@ -11911,7 +11930,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.influence-marker {\n    width: 1em;\n    height: 1em;\n}\n.area-map-container {\n    width: 33%;\n    height: 33%;\n    padding: .40rem;\n}\n.area-map__core-content-container {\n    padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n    top: 60%;\n}\n.stat-icon {\n    width: 1.5em;\n    height: 1.5em;\n    display: inline-flex;\n    justify-content: center;\n    align-items: center;\n    background-color: rgba(0,0,0,.8);\n    border-radius: .25em;\n    margin: 0 .1em;\n    font-size: 1.2rem;\n}\n.area-map__toggle {\n    display: flex;\n    padding: .45vw;\n    z-index: 3;\n}\n.area-map__owner-portrait, .area-map__battle-marker, .area-map__exterminated {\n    width: 2.5rem;\n    height: 2.5rem;\n    position: absolute;\n\n    border: 2px solid rgba(255,255,255,1);\n    outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n    bottom:0;\n    left:0;\n    transform: translate(-15%,15%);\n}\n.area-map__owner-portrait {\n    top:0;\n    left:0;\n    transform: translate(-15%,-15%);\n}\n.area-map__graveyard {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    right: 3px;\n    top: 50%;\n}\n.area-map__graveyard-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__influence {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    left: 3px;\n    top: 50%;\n}\n.area-map__influence-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__exterminated {\n    bottom: 0;\n    right:0;\n    transform: translate(15%,15%);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1.8em;\n    background-color: black;\n}\n.area-map {\n    background-position: center top, center;\n    background-repeat: no-repeat, no-repeat;\n    background-size: 100% 2vw, 100% auto;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n    background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n    background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n    background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n    background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n    background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n    background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n    background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n    background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n    background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n\n\n", ""]);
+exports.push([module.i, "\n.influence-marker {\n    width: 1em;\n    height: 1em;\n}\n.area-map-container {\n    padding: .40rem;\n}\n.area-map__core-content-container {\n    padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n    top: 60%;\n}\n.stat-icon {\n    width: 1.5em;\n    height: 1.5em;\n    display: inline-flex;\n    justify-content: center;\n    align-items: center;\n    background-color: rgba(0,0,0,.8);\n    border-radius: .25em;\n    margin: 0 .1em;\n    font-size: 1.2rem;\n}\n.area-map__toggle {\n    display: flex;\n    padding: .45vw;\n    z-index: 3;\n}\n.area-map__owner-portrait, .area-map__battle-marker, .area-map__exterminated {\n    width: 2.5rem;\n    height: 2.5rem;\n    position: absolute;\n\n    border: 2px solid rgba(255,255,255,1);\n    outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n    bottom:0;\n    left:0;\n    transform: translate(-15%,15%);\n}\n.area-map__owner-portrait {\n    top:0;\n    left:0;\n    transform: translate(-15%,-15%);\n}\n.area-map__graveyard {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    right: 3px;\n    top: 50%;\n}\n.area-map__graveyard-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__influence {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    left: 3px;\n    top: 50%;\n}\n.area-map__influence-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__exterminated {\n    bottom: 0;\n    right:0;\n    transform: translate(15%,15%);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1.8em;\n    background-color: black;\n}\n.area-map {\n    background-position: center top, center;\n    background-repeat: no-repeat, no-repeat;\n    background-size: 100% 2vw, 100% auto;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n    background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n    background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n    background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n    background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n    background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n    background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n    background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n    background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n    background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n\n\n", ""]);
 
 // exports
 
@@ -51183,6 +51202,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameDisplay.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GameDisplay.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./GameDisplay.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameDisplay.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameLobby.vue?vue&type=style&index=0&lang=css&":
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GameLobby.vue?vue&type=style&index=0&lang=css& ***!
@@ -55260,7 +55309,10 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "width-100 grow-1 pos-relative z-0 overflow-auto" },
+    {
+      staticClass:
+        "width-100 grow-1 pos-relative z-0 overflow-auto game-display"
+    },
     [
       _vm.shared.socket.disconnected
         ? _c("div", { staticClass: "pos-absolute top-0 z-5 server-offline" }, [
@@ -78298,7 +78350,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _GameDisplay_vue_vue_type_template_id_0764b355___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GameDisplay.vue?vue&type=template&id=0764b355& */ "./resources/js/components/GameDisplay.vue?vue&type=template&id=0764b355&");
 /* harmony import */ var _GameDisplay_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GameDisplay.vue?vue&type=script&lang=js& */ "./resources/js/components/GameDisplay.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _GameDisplay_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./GameDisplay.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/GameDisplay.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -78306,7 +78360,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _GameDisplay_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _GameDisplay_vue_vue_type_template_id_0764b355___WEBPACK_IMPORTED_MODULE_0__["render"],
   _GameDisplay_vue_vue_type_template_id_0764b355___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -78335,6 +78389,22 @@ component.options.__file = "resources/js/components/GameDisplay.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GameDisplay_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./GameDisplay.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameDisplay.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GameDisplay_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/GameDisplay.vue?vue&type=style&index=0&lang=css&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/GameDisplay.vue?vue&type=style&index=0&lang=css& ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GameDisplay_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./GameDisplay.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameDisplay.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GameDisplay_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GameDisplay_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GameDisplay_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GameDisplay_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_GameDisplay_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
