@@ -186,9 +186,11 @@ let obj = {
                 }
             });
 
+            /*
             if( result.discard ){
                 result.discard.forEach( card => faction.discardCard( card ) );
             }
+            */
 
         });
     },

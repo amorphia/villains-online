@@ -354,18 +354,23 @@ class Shakedown extends Card {
     handle( faction, area ){
         let promises = [];
 
-        _.forEach( faction.game().factions, item => {
-           if( item.data.cards.hand.length > 0 && item.name !== faction.name ){
-               promises.push( faction.game().promise({ players: item.playerId, name: 'discard-card', data : {} }).then( ([player, data]) => {
+        try {
+            _.forEach( faction.game().factions, item => {
+               if( item.data.cards.hand.length > 0 && item.name !== faction.name ){
+                   console.log( 'shakedown sent to', item.name );
+                   promises.push( faction.game().promise({ players: item.playerId, name: 'discard-card', data : {} }).then( ([player, data]) => {
+                       let eventFaction = faction.game().factions[data.faction];
+                       eventFaction.discardCard( data.cardId );
+                       player.setPrompt({ active : false, playerUpdate : true });
+                   }));
+               }
+            });
+        } catch (error ){
+            console.error( error );
+        }
 
-                   let eventFaction = faction.game().factions[data.faction];
-                   eventFaction.discardCard( data.cardId );
-                   player.setPrompt({ active : false, playerUpdate : true });
-               })).catch( error => console.error( error ) );;
-           }
-        });
+        return Promise.all( promises );
 
-        return Promise.all( promises ).then();
     }
 }
 

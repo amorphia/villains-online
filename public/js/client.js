@@ -7788,6 +7788,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'player-prompt',
   props: ['classes'],
@@ -7964,19 +7968,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -8016,86 +8007,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       if (plan.points === 0) return;
       plan.selected = !plan.selected;
     },
-    toggleCard: function toggleCard(card) {
-      this.$set(card, 'selected', !card.selected);
-    },
     resolve: function resolve() {
-      if (this.cardsToDiscard && this.mode === 'plans') {
-        this.mode = 'discard';
-      } else {
-        var data = {
-          faction: this.shared.faction.name,
-          plans: this.data.plans
-        };
-
-        if (this.cardsToDiscard) {
-          data.discard = [];
-          this.shared.faction.cards.hand.forEach(function (card) {
-            if (card.selected) data.discard.push(card.id);
-          });
-        }
-
-        this.shared.respond('score-plans', data);
-      }
+      var data = {
+        faction: this.shared.faction.name,
+        plans: this.data.plans
+      };
+      this.shared.respond('score-plans', data);
     }
   },
   computed: {
-    canSave: function canSave() {
-      switch (this.mode) {
-        case 'plans':
-          return this.canDiscard;
-
-        case 'discard':
-          return this.selectedCards.length === this.cardsToDiscard;
-      }
-    },
-    selectedCards: function selectedCards() {
-      return this.shared.faction.cards.hand.filter(function (card) {
-        return card.selected;
-      });
-    },
-    message: function message() {
-      return this.mode === 'plans' ? "Score Plans" : "Choose cards to discard";
-    },
-    canDiscard: function canDiscard() {
-      return this.shared.faction.cards.hand.length >= this.cardsToDiscard;
-    },
     selectedPlans: function selectedPlans() {
       return this.data.plans.filter(function (plan) {
         return plan.selected;
       });
-    },
-    cardsToDiscard: function cardsToDiscard() {
-      return this.selectedPlans.reduce(function (acc, plan) {
-        var _iterator = _createForOfIteratorHelper(plan.objectives),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var objective = _step.value;
-
-            var _iterator2 = _createForOfIteratorHelper(objective.tests),
-                _step2;
-
-            try {
-              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-                var test = _step2.value;
-                if (test.result && test.discardCards) acc += test.discardCards;
-              }
-            } catch (err) {
-              _iterator2.e(err);
-            } finally {
-              _iterator2.f();
-            }
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-
-        return acc;
-      }, 0);
     },
     data: function data() {
       return this.shared.player.prompt.data;
@@ -9977,6 +9901,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'area-actions',
   props: ['area'],
@@ -11698,7 +11626,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.loader-bar.top {\n    top: 0;\n}\n.loader-bar.bottom {\n    bottom: 0;\n}\n", ""]);
+exports.push([module.i, "\n.loader-bar.top {\n    top: 0;\n}\n.loader-bar.bottom {\n    bottom: 0;\n}\n.loader-bar.right {\n    right: 0;\n    left: unset;\n}\n", ""]);
 
 // exports
 
@@ -11945,7 +11873,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.area-map__actions {\n    top: 55%;\n    transition: all .1s;\n    position: absolute;\n    right: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 95%;\n}\n.area-map__actions .toggle {\n    transform: translateX(100%);\n    padding: .5rem;\n}\n.area-map__actions.closed {\n    right: 100%;\n    left: unset;\n    top: 0;\n    transform: translate(0, 0);\n}\n.area-map__actions-content {\n    display: flex;\n    padding: .5rem;\n    background-image: url(/images/background-blurred.jpg);\n    background-size: cover;\n    background-position: center;\n    max-height: 100%;\n    max-width: 100%;\n    overflow: hidden;\n    opacity: 1;\n    transition: all .1s;\n    border: 1px solid #ffffff;\n    box-shadow: 0 0 10px 4px rgba(0,0,0,1);\n}\n.area-map__actions.closed .area-map__actions-content {\n    max-height: 0;\n    max-width: 0;\n    opacity: 0;\n}\n\n", ""]);
+exports.push([module.i, "\n.area-map__actions {\n    top: 55%;\n    transition: all .1s;\n    position: absolute;\n    right: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 95%;\n}\n.area-map__actions .toggle {\n    transform: translateX(100%);\n    padding: .5rem;\n    height: 2em;\n}\n.area-map__actions.closed {\n    right: 100%;\n    left: unset;\n    top: 0;\n    transform: translate(0, 0);\n}\n.area-map__actions-content {\n    display: flex;\n    padding: .5rem;\n    background-image: url(/images/background-blurred.jpg);\n    background-size: cover;\n    background-position: center;\n    max-height: 100%;\n    max-width: 100%;\n    overflow: hidden;\n    opacity: 1;\n    transition: all .1s;\n    border: 1px solid #ffffff;\n    box-shadow: 0 0 10px 4px rgba(0,0,0,1);\n}\n.area-map__actions.closed .area-map__actions-content {\n    max-height: 0;\n    max-width: 0;\n    opacity: 0;\n}\n\n", ""]);
 
 // exports
 
@@ -56201,7 +56129,7 @@ var render = function() {
     },
     [
       _vm.player.active
-        ? _c("loading-streak", { attrs: { position: "side" } })
+        ? _c("loading-streak", { attrs: { position: "left" } })
         : _vm._e(),
       _vm._v(" "),
       _c(
@@ -59891,7 +59819,26 @@ var render = function() {
             staticClass: "toggle minimize-toggle top right",
             on: { click: _vm.close }
           },
-          [_c("i", { class: _vm.closed ? "icon-maximize" : "icon-minimize" })]
+          [
+            _c("i", { class: _vm.closed ? "icon-maximize" : "icon-minimize" }),
+            _vm._v(" "),
+            _vm.closed
+              ? _c("loading-streak", { attrs: { position: "left" } })
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.closed
+              ? _c("loading-streak", { attrs: { position: "right" } })
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.closed
+              ? _c("loading-streak", { attrs: { position: "top" } })
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.closed
+              ? _c("loading-streak", { attrs: { position: "bottom" } })
+              : _vm._e()
+          ],
+          1
         ),
         _vm._v(" "),
         _c(
@@ -60090,74 +60037,31 @@ var render = function() {
             "width-100 d-flex justify-center flex-column align-center"
         },
         [
-          _c("div", { staticClass: "title mb-4" }, [
-            _vm._v(_vm._s(_vm.message))
-          ]),
+          _c("div", { staticClass: "title mb-4" }, [_vm._v("Score Plans")]),
           _vm._v(" "),
           _c(
             "horizontal-scroll",
             { attrs: { classes: "plans-wrap d-flex pb-3 width-100" } },
-            [
-              _vm._l(_vm.data.plans, function(plan) {
-                return _vm.mode === "plans"
-                  ? _c("plan-block", {
-                      key: plan.plan.id,
-                      attrs: { faction: _vm.shared.faction, plan: plan },
-                      on: {
-                        clicked: function($event) {
-                          return _vm.toggle(plan)
-                        }
-                      }
-                    })
-                  : _vm._e()
-              }),
-              _vm._v(" "),
-              _vm._l(_vm.shared.faction.cards.hand, function(card) {
-                return _vm.mode === "discard"
-                  ? _c("card-block", {
-                      key: card.id,
-                      attrs: { card: card },
-                      on: { clicked: _vm.toggleCard }
-                    })
-                  : _vm._e()
-              })
-            ],
-            2
-          ),
-          _vm._v(" "),
-          _vm.cardsToDiscard > 0
-            ? _c("div", { staticClass: "prompt-question mt-3" }, [
-                _vm._v(
-                  "Discard " +
-                    _vm._s(_vm.cardsToDiscard) +
-                    " action cards to score these plans?"
-                )
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _c("div", { staticClass: "flex-center" }, [
-            _vm.mode !== "plans"
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "button",
+            _vm._l(_vm.data.plans, function(plan) {
+              return _vm.mode === "plans"
+                ? _c("plan-block", {
+                    key: plan.plan.id,
+                    attrs: { faction: _vm.shared.faction, plan: plan },
                     on: {
-                      click: function($event) {
-                        _vm.mode = "plans"
+                      clicked: function($event) {
+                        return _vm.toggle(plan)
                       }
                     }
-                  },
-                  [_vm._v("back")]
-                )
-              : _vm._e(),
-            _vm._v(" "),
+                  })
+                : _vm._e()
+            }),
+            1
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "flex-center" }, [
             _c(
               "button",
-              {
-                staticClass: "button",
-                attrs: { disabled: !_vm.canSave },
-                on: { click: _vm.resolve }
-              },
+              { staticClass: "button", on: { click: _vm.resolve } },
               [_vm._v("confirm scored plans")]
             )
           ])
@@ -62546,8 +62450,25 @@ var render = function() {
               [
                 _c("i", {
                   class: _vm.closed ? "icon-maximize" : "icon-minimize"
-                })
-              ]
+                }),
+                _vm._v(" "),
+                _vm.closed
+                  ? _c("loading-streak", { attrs: { position: "left" } })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.closed
+                  ? _c("loading-streak", { attrs: { position: "right" } })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.closed
+                  ? _c("loading-streak", { attrs: { position: "top" } })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.closed
+                  ? _c("loading-streak", { attrs: { position: "bottom" } })
+                  : _vm._e()
+              ],
+              1
             ),
             _vm._v(" "),
             _c(
@@ -86270,7 +86191,7 @@ var helpers = {
     });
     return assignableHits;
   },
-  calculateDefenseBonus: function calculateDefenseBonus(attackingFaction, targetFaction, area) {
+  calculateDefenseBonus: function calculateDefenseBonus(attackingFaction, targetFaction, area, debug) {
     if (attackingFaction.data) attackingFaction = attackingFaction.data;
     if (targetFaction.data) targetFaction = targetFaction.data;
     if (area.data) area = area.data;
@@ -86278,18 +86199,22 @@ var helpers = {
 
     if (targetFaction.defenseBonus && !this.hasKauImmunity(attackingFaction, area)) {
       defenseBonus += targetFaction.defenseBonus;
+      if (debug) console.log('Apply targetFaction.defenseBonus defense bonus:', defenseBonus);
     }
 
     if (targetFaction.name === 'mutants' && _.find(area.tokens, function (token) {
       return token.revealed && token.name === 'biohazard';
     })) {
       defenseBonus += 2;
+      if (debug) console.log('Apply bioHazard defense bonus:', defenseBonus);
     }
 
     if (targetFaction.factionDefenseBonus) {
       defenseBonus += targetFaction.factionDefenseBonus;
+      if (debug) console.log('Apply targetFaction.factionDefenseBonus defense bonus:', defenseBonus);
     }
 
+    if (debug) console.log('Final defense bonus:', defenseBonus);
     return defenseBonus;
   },
 

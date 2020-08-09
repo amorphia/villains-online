@@ -106,7 +106,7 @@ let helpers = {
     },
 
 
-    calculateDefenseBonus( attackingFaction, targetFaction, area ){
+    calculateDefenseBonus( attackingFaction, targetFaction, area, debug ){
         if( attackingFaction.data ) attackingFaction = attackingFaction.data;
         if( targetFaction.data ) targetFaction = targetFaction.data;
         if( area.data ) area = area.data;
@@ -115,16 +115,20 @@ let helpers = {
 
         if( targetFaction.defenseBonus && !this.hasKauImmunity( attackingFaction, area ) ){
             defenseBonus += targetFaction.defenseBonus;
+            if( debug ) console.log( 'Apply targetFaction.defenseBonus defense bonus:', defenseBonus  );
         }
 
         if( targetFaction.name === 'mutants' && _.find( area.tokens, token => token.revealed && token.name === 'biohazard') ){
             defenseBonus += 2;
+            if( debug ) console.log( 'Apply bioHazard defense bonus:', defenseBonus  );
         }
 
         if( targetFaction.factionDefenseBonus ){
             defenseBonus += targetFaction.factionDefenseBonus;
+            if( debug ) console.log( 'Apply targetFaction.factionDefenseBonus defense bonus:', defenseBonus  );
         }
 
+        if( debug ) console.log( 'Final defense bonus:', defenseBonus  );
         return defenseBonus;
     },
 

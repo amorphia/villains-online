@@ -373,7 +373,7 @@ let obj = [
     {
         class : 'public-backlash',
         file : 'public-backlash-1',
-        name : "Public Baklash",
+        name : "Public Backlash",
         cost : 0,
         target : 'police',
         type : 'event',
@@ -382,7 +382,7 @@ let obj = [
     {
         class : 'public-backlash',
         file : 'public-backlash-2',
-        name : "Public Baklash",
+        name : "Public Backlash",
         cost : 0,
         target : 'sewers',
         type : 'event',

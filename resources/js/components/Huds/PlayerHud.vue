@@ -1,6 +1,6 @@
 <template>
     <div class="player-hud d-flex flex-wrap pos-relative overflow-hidden" :class="{'opacity-5' : player.passed}" @click="shared.event.emit( 'viewPlayer', player )">
-        <loading-streak v-if="player.active" position="side"></loading-streak>
+        <loading-streak v-if="player.active" position="left"></loading-streak>
         <div class="player-hud__core d-flex flex-wrap width-100 align-center shrink-0">
             <div class="player-hud__champion-wrap d-flex grow-0 shrink-0 p-1">
                 <div class="player-hud__champion" :style="`background-image: url('/images/factions/${faction.name}/icon.jpg')`"></div>

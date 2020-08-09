@@ -170,7 +170,7 @@ class Faction {
     }
 
     testMode(){
-        this.data.cardDraw = 30;
+        this.data.cardDraw = 15;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;
     }

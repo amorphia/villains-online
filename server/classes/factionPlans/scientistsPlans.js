@@ -90,8 +90,8 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'discardCards', args : [3] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'cardsInHand', args : [5] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 1
             },
@@ -117,8 +117,8 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'discardCards', args : [3] },
-                    { test : 'unitInEnemy', args : ['mole', 1] },
+                    { test : 'cardsInHand', args : [5] },
+                    { test : 'controlTarget', args : [] },
                 ],
                 value : 2
             },

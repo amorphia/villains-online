@@ -26,5 +26,10 @@
     .loader-bar.bottom {
         bottom: 0;
     }
+
+    .loader-bar.right {
+        right: 0;
+        left: unset;
+    }
 </style>
 

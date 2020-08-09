@@ -3,18 +3,26 @@
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/app.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/SavedGames.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/SavedGames.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/dependencies.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/dependencies.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/Battle.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Battle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Huds/PlayerHud.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Huds/PlayerHud.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/PlayerPrompt.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/PlayerPrompt.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/ScorePlans.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/ScorePlans.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/UI/LoadingStreak.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/UI/LoadingStreak.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/areas/AreaActions.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/areas/AreaActions.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/sass/app.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/app.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/sass/utlitites/_animations.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/utlitites/_animations.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/Cards.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Cards.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/DB.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/DB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/PlanTester.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/PlanTester.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/data/cards.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/data/cards.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/scientistsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionPlans/scientistsPlans.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Hackers.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Hackers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Ninjas.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Ninjas.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/classes/factions/Vampires.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Vampires.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/combat.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/combat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/endOfTurn.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/endOfTurn.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/setup.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/setup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/partials/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/partials/helpers.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,7 +252,7 @@
       <workItem from="1592157951059" duration="164940000" />
       <workItem from="1594834562760" duration="281533000" />
       <workItem from="1596173954648" duration="81477000" />
-      <workItem from="1596694614039" duration="7847000" />
+      <workItem from="1596694614039" duration="23427000" />
     </task>
     <servers />
   </component>
@@ -252,10 +260,10 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="747" y="217" key="FileChooserDialogImpl" timestamp="1591836817129">
+    <state x="747" y="217" key="FileChooserDialogImpl" timestamp="1596836189820">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="747" y="217" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1591836817129" />
+    <state x="747" y="217" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1596836189820" />
     <state width="1493" height="213" key="GridCell.Tab.0.bottom" timestamp="1595222076331">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
@@ -284,10 +292,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1596762724724">
+    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1596949552606">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1596762724724" />
+    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1596949552606" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1596656317816">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

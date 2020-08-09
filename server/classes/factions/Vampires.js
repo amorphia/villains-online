@@ -101,6 +101,7 @@ class Vampires extends Faction {
         let unit = this.game().objectMap[ data.units[0] ];
 
         unit.location = destinationAreaName;
+        if( unit.ready ) unit.ready = false;
 
         this.game().sound( 'bats' );
         this.game().message({ faction : this, message: `Fly a vampire ${unit.name} to The ${destinationAreaName}` });
@@ -124,8 +125,8 @@ class Vampires extends Faction {
             if( token.type === 'deploy' && token.location && token.revealed ){
                 let area = this.game().areas[token.location];
                 let hasUnit = !! this.data.units.find( unit => _.unitInArea( unit, area.name ) );
-                let canBattle = area.canBattle();
-                if( hasUnit && !canBattle ) areas[area.name] = true;
+                let hasEnemy = Object.keys( _.enemyUnitsInArea( this, area.name, this.game().data.factions ) ).length;
+                if( hasUnit && hasEnemy ) areas[area.name] = true;
             }
         });
 
@@ -181,6 +182,7 @@ class Vampires extends Faction {
     }
 
     unitUnflipped( unit ) {
+        console.log( 'unflip unit', unit );
         unit.flipped = false;
         unit.attack = unit.attack.map( attack => attack + 2 );
     }

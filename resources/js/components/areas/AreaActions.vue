@@ -6,6 +6,10 @@
              class="area-map__actions d-flex justify-center align-stretch z-7">
             <button @click="toggleClose" class="toggle minimize-toggle top right">
                 <i :class="closed ? 'icon-maximize' : 'icon-minimize'"></i>
+                <loading-streak v-if="closed" position="left"></loading-streak>
+                <loading-streak v-if="closed" position="right"></loading-streak>
+                <loading-streak v-if="closed" position="top"></loading-streak>
+                <loading-streak v-if="closed" position="bottom"></loading-streak>
             </button>
             <div class="area-map__actions-content ">
                 <area-action v-for="action in actions"
@@ -74,6 +78,7 @@
     .area-map__actions .toggle {
         transform: translateX(100%);
         padding: .5rem;
+        height: 2em;
     }
 
     .area-map__actions.closed {

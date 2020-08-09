@@ -251,13 +251,27 @@ let obj = {
 
     getToHitNumber( args, victim ){
         let toHit = args.attacks[0];
+        console.log( 'calculate to hit number' );
+        console.log( 'base attack:', toHit );
 
-        if( args.attackBonus ) toHit -= args.attackBonus;
+        if( args.attackBonus ){
+            toHit -= args.attackBonus;
+            console.log( 'apply combat effect attack bonus: -', args.attackBonus, 'toHit:', toHit );
+        }
 
         // check our attack bonus
-        if( args.unit ) toHit -= this.data.attackBonus;
+        if( args.unit && this.data.attackBonus ){
+            toHit -= this.data.attackBonus;
+            console.log( 'apply faction attack bonus: -', this.data.attackBonus, 'toHit:', toHit );
+        }
 
-        toHit += _.calculateDefenseBonus( this.data, victim.data, args.area );
+        let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, true );
+        if( defenseBonus ) {
+            toHit += defenseBonus;
+            console.log( 'apply defense penalty:', defenseBonus, 'toHit:', toHit );
+        }
+
+        console.log( 'final toHit number:', toHit );
         return toHit;
     },
 

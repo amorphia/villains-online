@@ -43,7 +43,7 @@ let setup = {
         _.merge( this.data, saved.data );
 
         // merge objectMap
-        _.merge( this.objectMap, saved.objectMap );
+        _.mergeWith( this.objectMap, saved.objectMap, linkFunc );
 
         // merge factions
         _.forEach( this.factions, (faction, name) => {

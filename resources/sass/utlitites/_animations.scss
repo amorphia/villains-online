@@ -20,3 +20,115 @@
     20% { background-color: #FF6; }
     100% { background-color: var(--primary-color); }
 }
+
+
+
+@keyframes loader-animation {
+    0% {
+        width: 0%;
+        background-color: #ff00fa;
+    }
+    25% {
+        width: 100%;
+        left: 0%
+    }
+    50% {
+        left: 100%;
+        width: 0;
+        background-color: gold;
+    }
+    75% {
+        left: 0%;
+        width: 100%
+    }
+    100% {
+        left: 0%;
+        width: 0%;
+        background-color: #ff00fa;
+    }
+}
+
+
+@keyframes loader-animation-reverse {
+    0% {
+        width: 100%;
+        right: -100%;
+        background-color: #ff00fa;
+    }
+    25% {
+        width: 100%;
+        right: 0;
+    }
+    50% {
+        right: 100%;
+        width: 100%;
+        background-color: gold;
+    }
+    75% {
+        right: 0;
+        width: 100%
+    }
+    100% {
+        right: -100%;
+        width: 100%;
+        background-color: #ff00fa;
+    }
+}
+
+@keyframes loader-animation-side {
+    0% {
+        height: 0%;
+        background-color: #ff00fa;
+    }
+    25% {
+        height: 100%;
+        top: 0%
+    }
+    50% {
+        top: 100%;
+        height: 0;
+        background-color: gold;
+    }
+    75% {
+        top: 0%;
+        height: 100%
+    }
+    100% {
+        top: 0%;
+        height: 0%;
+        background-color: #ff00fa;
+    }
+}
+
+
+@keyframes loader-animation-side-reverse {
+    0% {
+        bottom: -100%;
+        height: 100%;
+        background-color: #ff00fa;
+    }
+    25% {
+        height: 100%;
+        bottom: 0%;
+    }
+    50% {
+        bottom: 100%;
+        height: 0;
+        background-color: gold;
+    }
+    75% {
+        bottom: 0%;
+        height: 100%
+    }
+    100% {
+        bottom: -100%;
+        height: 100%;
+        background-color: #ff00fa;
+    }
+}
+
+
+@keyframes selected {
+    from {transform: translate(-50%, -50%) rotate(0);}
+    to   {transform: translate(-50%, -50%) rotate(360deg);}
+}

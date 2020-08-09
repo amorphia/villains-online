@@ -26,7 +26,7 @@ class PlanTester {
                     passed = false;
                 } else {
                     let testObject = { test: req.test, result : true };
-                    if( req.test === 'discardCards' ) testObject.discardCards = req.args[0];
+                    //if( req.test === 'discardCards' ) testObject.discardCards = req.args[0];
                     tests.push( testObject );
                 }
             });
@@ -36,14 +36,12 @@ class PlanTester {
 
         let scorablePoints = this.scorablePoints( faction, results );
 
-        let returnData = {
+        return {
             points : scorablePoints,
             objectives : results,
             plan : plan,
             selected : scorablePoints > 0
         };
-
-        return returnData;
     }
 
     scorablePoints( faction, results ) {
@@ -401,6 +399,22 @@ class PlanTester {
         return result;
     }
 
+
+    cardsInHand( faction, cardCount ){
+        let factionCardsInHand = faction.data.cards.hand.length;
+        let result = factionCardsInHand >= cardCount;
+
+        if( this.debug ) console.log(
+            'discardCards',
+            'cardCount req:', cardCount,
+            'factionCardsInHand:', factionCardsInHand,
+            'result:', result
+        );
+
+        return result;
+    }
+
+    /*
     discardCards( faction, cardCount ){
         let factionCardsInHand = faction.data.cards.hand.length;
         let result = factionCardsInHand >= cardCount;
@@ -414,6 +428,7 @@ class PlanTester {
 
         return result;
     }
+    */
 
     unitsInAreas( faction, areaCount ){
         let factionAreasWithUnits = faction.areasWithUnits().length;
