@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex align-stretch main-container pos-relative">
+    <div class="villains-online d-flex align-stretch main-container pos-relative">
         <div class="main-content height-100 drawer__main" :class="{'drawer--closed' : chatClosed}">
             <game-lobby v-if="!shared.data"></game-lobby>
             <choose-factions v-else-if="shared.data.state == 'choose-factions'"></choose-factions>

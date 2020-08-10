@@ -1,5 +1,5 @@
 <template>
-    <div class="width-100 grow-1 pos-relative z-0 overflow-auto game-display">
+    <div class="width-100 pos-relative z-0 overflow-auto game-display game-display-height">
         <div v-if="shared.socket.disconnected" class="pos-absolute top-0 z-5 server-offline">
             <i class="icon-kill"></i>SERVER OFFLINE
         </div>
@@ -31,7 +31,7 @@
 
 
 <style>
-    .game-display {
+    .game-display-height {
         height: 91vh;
     }
 </style>

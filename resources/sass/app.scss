@@ -14,7 +14,7 @@
     font-size: 1vw;
 }
 
-* {
+.villains-online * {
     user-select: none;
 }
 
@@ -28,7 +28,10 @@ body {
 
 .glass {
     background-color: rgba(255,255,255,.05);
-    backdrop-filter: blur(10px) saturate(150%);
+    background-image: url(/images/background-blurred.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     box-shadow: 0px 0px 6px rgba(0,0,0,.5);
 }
 

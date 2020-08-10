@@ -219,6 +219,8 @@
 
 
     .area-map-container {
+        width: 33%;
+        height: 33%;
         padding: .40rem;
     }
 
@@ -323,7 +325,7 @@
     .area-map {
         background-position: center top, center;
         background-repeat: no-repeat, no-repeat;
-        background-size: 100% 2vw, 100% auto;
+        background-size: 100% 2vw, cover;
         box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);
         border: 2px solid rgba(255,255,255,.3);
         transition: opacity .3s;

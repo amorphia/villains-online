@@ -3375,8 +3375,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-map',
   data: function data() {
@@ -10809,7 +10807,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.game-display {\n    height: 91vh;\n}\n", ""]);
+exports.push([module.i, "\n.game-display-height {\n    height: 91vh;\n}\n", ""]);
 
 // exports
 
@@ -10847,7 +10845,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.game-map {\n        display: grid;\n        grid-template-columns: repeat(3, 1fr);\n        width: 100%;\n        height: 100%;\n    /*\n    display: grid;\n    grid-gap: 1rem;\n    grid-template-columns: repeat(3, 1fr);\n    grid-auto-rows: 1fr;\n    */\n}\n\n", ""]);
+exports.push([module.i, "\n.game-map {\n        display: flex;\n        flex-wrap: wrap;\n        width: 100%;\n}\n\n", ""]);
 
 // exports
 
@@ -11930,7 +11928,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.influence-marker {\n    width: 1em;\n    height: 1em;\n}\n.area-map-container {\n    padding: .40rem;\n}\n.area-map__core-content-container {\n    padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n    top: 60%;\n}\n.stat-icon {\n    width: 1.5em;\n    height: 1.5em;\n    display: inline-flex;\n    justify-content: center;\n    align-items: center;\n    background-color: rgba(0,0,0,.8);\n    border-radius: .25em;\n    margin: 0 .1em;\n    font-size: 1.2rem;\n}\n.area-map__toggle {\n    display: flex;\n    padding: .45vw;\n    z-index: 3;\n}\n.area-map__owner-portrait, .area-map__battle-marker, .area-map__exterminated {\n    width: 2.5rem;\n    height: 2.5rem;\n    position: absolute;\n\n    border: 2px solid rgba(255,255,255,1);\n    outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n    bottom:0;\n    left:0;\n    transform: translate(-15%,15%);\n}\n.area-map__owner-portrait {\n    top:0;\n    left:0;\n    transform: translate(-15%,-15%);\n}\n.area-map__graveyard {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    right: 3px;\n    top: 50%;\n}\n.area-map__graveyard-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__influence {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    left: 3px;\n    top: 50%;\n}\n.area-map__influence-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__exterminated {\n    bottom: 0;\n    right:0;\n    transform: translate(15%,15%);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1.8em;\n    background-color: black;\n}\n.area-map {\n    background-position: center top, center;\n    background-repeat: no-repeat, no-repeat;\n    background-size: 100% 2vw, 100% auto;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n    background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n    background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n    background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n    background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n    background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n    background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n    background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n    background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n    background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n\n\n", ""]);
+exports.push([module.i, "\n.influence-marker {\n    width: 1em;\n    height: 1em;\n}\n.area-map-container {\n    width: 33%;\n    height: 33%;\n    padding: .40rem;\n}\n.area-map__core-content-container {\n    padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n    top: 60%;\n}\n.stat-icon {\n    width: 1.5em;\n    height: 1.5em;\n    display: inline-flex;\n    justify-content: center;\n    align-items: center;\n    background-color: rgba(0,0,0,.8);\n    border-radius: .25em;\n    margin: 0 .1em;\n    font-size: 1.2rem;\n}\n.area-map__toggle {\n    display: flex;\n    padding: .45vw;\n    z-index: 3;\n}\n.area-map__owner-portrait, .area-map__battle-marker, .area-map__exterminated {\n    width: 2.5rem;\n    height: 2.5rem;\n    position: absolute;\n\n    border: 2px solid rgba(255,255,255,1);\n    outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n    bottom:0;\n    left:0;\n    transform: translate(-15%,15%);\n}\n.area-map__owner-portrait {\n    top:0;\n    left:0;\n    transform: translate(-15%,-15%);\n}\n.area-map__graveyard {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    right: 3px;\n    top: 50%;\n}\n.area-map__graveyard-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__influence {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    left: 3px;\n    top: 50%;\n}\n.area-map__influence-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__exterminated {\n    bottom: 0;\n    right:0;\n    transform: translate(15%,15%);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1.8em;\n    background-color: black;\n}\n.area-map {\n    background-position: center top, center;\n    background-repeat: no-repeat, no-repeat;\n    background-size: 100% 2vw, cover;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n    background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n    background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n    background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n    background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n    background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n    background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n    background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n    background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n    background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n\n\n", ""]);
 
 // exports
 
@@ -55311,7 +55309,7 @@ var render = function() {
     "div",
     {
       staticClass:
-        "width-100 grow-1 pos-relative z-0 overflow-auto game-display"
+        "width-100 pos-relative z-0 overflow-auto game-display game-display-height"
     },
     [
       _vm.shared.socket.disconnected
@@ -55529,17 +55527,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "p-2 pr-0 width-100 height-100 pos-relative z-0" },
-    [
-      _c(
-        "div",
-        { staticClass: "game-map width-100 height-100" },
-        _vm._l(_vm.shared.data.areas, function(area) {
-          return _c("area-map", { key: area.name, attrs: { area: area } })
-        }),
-        1
-      )
-    ]
+    { staticClass: "game-map p-2 pr-0 game-display-height pos-relative z-0" },
+    _vm._l(_vm.shared.data.areas, function(area) {
+      return _c("area-map", { key: area.name, attrs: { area: area } })
+    }),
+    1
   )
 }
 var staticRenderFns = []
@@ -62392,7 +62384,10 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "d-flex align-stretch main-container pos-relative" },
+    {
+      staticClass:
+        "villains-online d-flex align-stretch main-container pos-relative"
+    },
     [
       _c(
         "div",

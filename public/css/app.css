@@ -2212,8 +2212,16 @@ a {
 
  */
 
+.landing {
+  /*
+  [required] {
+      scroll-margin-top: 10rem;
+  }
+  */
+}
+
 .landing .form-group {
-  padding: 0.75vw 1vw;
+  padding: 0.75em 1em;
   width: 100%;
 }
 
@@ -2223,7 +2231,7 @@ a {
   display: block;
   margin-bottom: 0;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.25em;
   text-transform: uppercase;
 }
 
@@ -2235,12 +2243,11 @@ a {
 .landing .form-element,
 .landing .form-control {
   width: 100%;
-  padding: 0.75rem;
-  margin: 0.25rem 0;
+  padding: 0.5em;
+  margin: 0.25em 0;
   line-height: 1.25;
   background-color: rgba(255, 255, 255, 0.25);
   border: none;
-  font-size: 1.5rem;
   color: white;
   letter-spacing: 2px;
 }
@@ -2273,21 +2280,17 @@ a {
 .landing .form-submit,
 .landing button[type=submit] {
   width: 100%;
-  padding: 0.75rem;
-  margin: 0.5rem 0 1rem;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
   line-height: 1.25;
   text-transform: uppercase;
   background-color: var(--primary-color);
   color: white;
   transition: background-color 0.2s;
   border-radius: 3px;
-  font-size: 1.5rem;
+  font-size: 1.5em;
   cursor: pointer;
   letter-spacing: 2px;
-}
-
-.landing [required] {
-  scroll-margin-top: 10rem;
 }
 
 .landing input[type=checkbox] + label:before {
@@ -2477,6 +2480,22 @@ a {
   opacity: 0;
 }
 
+@media (max-width: 767px) {
+  .landing {
+    flex-wrap: wrap;
+  }
+
+  .landing .landing__panel {
+    width: 85%;
+    font-size: 4rem;
+  }
+
+  .landing .landing__logo {
+    width: 50%;
+    margin: auto;
+  }
+}
+
 .login-button {
   width: 50%;
   padding: 1vw;
@@ -2615,7 +2634,7 @@ a {
   font-size: 1vw;
 }
 
-* {
+.villains-online * {
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -2632,8 +2651,10 @@ body {
 
 .glass {
   background-color: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(10px) saturate(150%);
-          backdrop-filter: blur(10px) saturate(150%);
+  background-image: url(/images/background-blurred.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
 }
 
