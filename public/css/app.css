@@ -2212,16 +2212,8 @@ a {
 
  */
 
-.landing {
-  /*
-  [required] {
-      scroll-margin-top: 10rem;
-  }
-  */
-}
-
 .landing .form-group {
-  padding: 0.75em 1em;
+  padding: 0.75vw 1vw;
   width: 100%;
 }
 
@@ -2231,7 +2223,7 @@ a {
   display: block;
   margin-bottom: 0;
   color: white;
-  font-size: 1.25em;
+  font-size: 1.5rem;
   text-transform: uppercase;
 }
 
@@ -2243,11 +2235,12 @@ a {
 .landing .form-element,
 .landing .form-control {
   width: 100%;
-  padding: 0.5em;
-  margin: 0.25em 0;
+  padding: 0.75rem;
+  margin: 0.25rem 0;
   line-height: 1.25;
   background-color: rgba(255, 255, 255, 0.25);
   border: none;
+  font-size: 1.5rem;
   color: white;
   letter-spacing: 2px;
 }
@@ -2280,17 +2273,21 @@ a {
 .landing .form-submit,
 .landing button[type=submit] {
   width: 100%;
-  padding: 0.5em;
-  margin-bottom: 0.5em;
+  padding: 0.75rem;
+  margin: 0.5rem 0 1rem;
   line-height: 1.25;
   text-transform: uppercase;
   background-color: var(--primary-color);
   color: white;
   transition: background-color 0.2s;
   border-radius: 3px;
-  font-size: 1.5em;
+  font-size: 1.5rem;
   cursor: pointer;
   letter-spacing: 2px;
+}
+
+.landing [required] {
+  scroll-margin-top: 10rem;
 }
 
 .landing input[type=checkbox] + label:before {
@@ -2478,22 +2475,6 @@ a {
 .open-enter {
   max-height: 0vh;
   opacity: 0;
-}
-
-@media (max-width: 767px) {
-  .landing {
-    flex-wrap: wrap;
-  }
-
-  .landing .landing__panel {
-    width: 85%;
-    font-size: 4rem;
-  }
-
-  .landing .landing__logo {
-    width: 50%;
-    margin: auto;
-  }
 }
 
 .login-button {

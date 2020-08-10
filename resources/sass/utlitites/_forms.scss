@@ -8,7 +8,7 @@
 .landing {
 
     .form-group {
-        padding: .75em 1em;
+        padding: .75vw 1vw;
         width: 100%;
     }
 
@@ -17,7 +17,7 @@
         display: block;
         margin-bottom: 0;
         color: white;
-        font-size: 1.25em;
+        font-size: 1.5rem;
         text-transform: uppercase;
 
         &.icon-checkbox {
@@ -27,11 +27,12 @@
 
     .form-element, .form-control {
         width: 100%;
-        padding: .5em;
-        margin: .25em 0;
+        padding: .75rem;
+        margin: .25rem 0;
         line-height: 1.25;
         background-color: rgba(255, 255, 255, 0.25);
         border: none;
+        font-size: 1.5rem;
         color: white;
         letter-spacing: 2px;
 
@@ -51,24 +52,22 @@
 
     .form-submit, button[type="submit"] {
         width: 100%;
-        padding: .5em;
-        margin-bottom: .5em;
+        padding: .75rem;
+        margin: .5rem 0 1rem;
         line-height: 1.25;
         text-transform: uppercase;
         background-color: var(--primary-color);
         color: white;
         transition: background-color 0.2s;
         border-radius: 3px;
-        font-size: 1.5em;
+        font-size: 1.5rem;
         cursor: pointer;
         letter-spacing: 2px;
     }
 
-    /*
     [required] {
         scroll-margin-top: 10rem;
     }
-    */
 
     input[type=checkbox] + label:before {
         content: "\ea53"; // unchecked
