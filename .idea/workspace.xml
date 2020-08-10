@@ -5,14 +5,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/app.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/GameDisplay.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/GameDisplay.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/GameMap.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/GameMap.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/VillainsOnline.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/VillainsOnline.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/areas/AreaMap.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/areas/AreaMap.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Prompts/MoveAction.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/sass/app.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/app.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/sass/partials/_landing.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/partials/_landing.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/sass/utlitites/_forms.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/utlitites/_forms.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/welcome.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/welcome.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/home.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/home.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/landing.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/landing.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

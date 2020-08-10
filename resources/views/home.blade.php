@@ -14,6 +14,7 @@
 @section( 'page', 'home' )
 
 @section( 'content' )
+
     <villains-online></villains-online>
 @endsection
 

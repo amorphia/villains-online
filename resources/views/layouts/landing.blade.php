@@ -4,7 +4,7 @@
 
 @section( 'content' )
 
-<main class='splash mt-5 width-100 pull-center d-flex flex-column'>
+<main class='splash pt-5 width-100 pull-center d-flex flex-column'>
 
     @yield( 'main' )
 

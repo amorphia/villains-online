@@ -3,9 +3,11 @@
         <div class="choose-action overflow-auto px-6">
             <div class="width-100 d-flex justify-center flex-column align-center">
 
+                <div class="title mb-4">{{ message }}</div>
 
-                <div class="title mb-4">Choose units to move</div>
-                <div class="mt-3 pb-4">
+
+
+                <div v-if="!confirm" class="mt-3 pb-4">
                     <area-flipper
                         :areas="fromAreas"
                         :index="fromAreaIndex"
@@ -14,8 +16,8 @@
                         <div class="toggle area-map__toggle top-0 left-0">Move from the {{ fromAreas[fromAreaIndex].name }}</div>
                         <unit-row :units="currentFromAreaUnits" @unit="addUnitFromPlay"></unit-row>
                     </area-flipper>
-
                 </div>
+
                 <area-flipper :areas="[area]" locked="true" :index="0" classes="area-header__units">
                     <div class="toggle area-map__toggle top-0 right-0" @click.stop="shared.event.emit('viewArea', area )"><i class="icon-zoom_in"></i></div>
                     <div v-if="data.moveLimit" class="toggle area-map__toggle top-0 left-0">Move Limit: {{ selected.length }} / {{ data.moveLimit }}</div>
@@ -26,7 +28,7 @@
                         <div v-for="unit in units" class="units-hud__unit d-inline-block pos-relative">
                             <img
                                 class="unit-hud__unit-image"
-                                @click="unit.selected = false"
+                                @click="unselectUnit( unit )"
                                 :src="`/images/factions/${unit.faction}/units/${unit.type}${unit.flipped ? '-flipped' : ''}.png`">
                         </div>
                     </div>
@@ -34,12 +36,24 @@
 
                 <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to move these units?` )"></div>
 
+
                 <div class="flex-center">
-                    <button class="button button-empty" @click="resolve( false )"
-                            v-if="canDecline">decline</button>
-                    <button class="button"
-                            @click="resolve( true )"
-                            :disabled="canSave !== true">move selected units</button>
+                    <div v-if="confirm">
+                        <button class="button button-empty" @click="confirm = false"
+                                >back</button>
+                        <button class="button"
+                                @click="resolve( true )"
+                                :disabled="canSave !== true">finalize move</button>
+                    </div>
+                    <div v-else>
+                        <button class="button button-empty" @click="resolve( false )"
+                                v-if="canDecline">decline move</button>
+                        <button class="button"
+                                @click="confirm = true"
+                                :disabled="canSave !== true">confirm move</button>
+                    </div>
+
+
                 </div>
 
             </div>
@@ -55,7 +69,8 @@
         data() {
             return {
                 shared : App.state,
-                fromAreaIndex : 0
+                fromAreaIndex : 0,
+                confirm : false,
             };
         },
 
@@ -73,6 +88,10 @@
 
                 data = Object.assign( {}, this.data, data );
                 this.shared.respond( 'move-action', data );
+            },
+
+            unselectUnit( unit ){
+                if( ! this.confirm ) unit.selected = false;
             },
 
             updateFromIndex( index ){
@@ -96,6 +115,10 @@
         },
 
         computed : {
+
+            message(){
+                return this.confirm ? 'Are you sure you are done moving?' : 'Choose units to move';
+            },
 
             canDecline(){
                 if( this.data.fromToken ) return true;

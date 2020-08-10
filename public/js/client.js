@@ -7005,12 +7005,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'move-action',
   data: function data() {
     return {
       shared: App.state,
-      fromAreaIndex: 0
+      fromAreaIndex: 0,
+      confirm: false
     };
   },
   methods: {
@@ -7027,6 +7042,9 @@ __webpack_require__.r(__webpack_exports__);
 
       data = Object.assign({}, this.data, data);
       this.shared.respond('move-action', data);
+    },
+    unselectUnit: function unselectUnit(unit) {
+      if (!this.confirm) unit.selected = false;
     },
     updateFromIndex: function updateFromIndex(index) {
       this.fromAreaIndex = index;
@@ -7048,6 +7066,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    message: function message() {
+      return this.confirm ? 'Are you sure you are done moving?' : 'Choose units to move';
+    },
     canDecline: function canDecline() {
       if (this.data.fromToken) return true;
       return !this.hasFromAreaUnits || this.shared.faction.resources + this.shared.faction.energy < this.policePayoffs;
@@ -59180,45 +59201,47 @@ var render = function() {
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
-            _vm._v("Choose units to move")
+            _vm._v(_vm._s(_vm.message))
           ]),
           _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "mt-3 pb-4" },
-            [
-              _c(
-                "area-flipper",
-                {
-                  attrs: {
-                    areas: _vm.fromAreas,
-                    index: _vm.fromAreaIndex,
-                    classes: "area-header__units pt-0"
-                  },
-                  on: { update: _vm.updateFromIndex }
-                },
+          !_vm.confirm
+            ? _c(
+                "div",
+                { staticClass: "mt-3 pb-4" },
                 [
                   _c(
-                    "div",
-                    { staticClass: "toggle area-map__toggle top-0 left-0" },
+                    "area-flipper",
+                    {
+                      attrs: {
+                        areas: _vm.fromAreas,
+                        index: _vm.fromAreaIndex,
+                        classes: "area-header__units pt-0"
+                      },
+                      on: { update: _vm.updateFromIndex }
+                    },
                     [
-                      _vm._v(
-                        "Move from the " +
-                          _vm._s(_vm.fromAreas[_vm.fromAreaIndex].name)
-                      )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("unit-row", {
-                    attrs: { units: _vm.currentFromAreaUnits },
-                    on: { unit: _vm.addUnitFromPlay }
-                  })
+                      _c(
+                        "div",
+                        { staticClass: "toggle area-map__toggle top-0 left-0" },
+                        [
+                          _vm._v(
+                            "Move from the " +
+                              _vm._s(_vm.fromAreas[_vm.fromAreaIndex].name)
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("unit-row", {
+                        attrs: { units: _vm.currentFromAreaUnits },
+                        on: { unit: _vm.addUnitFromPlay }
+                      })
+                    ],
+                    1
+                  )
                 ],
                 1
               )
-            ],
-            1
-          ),
+            : _vm._e(),
           _vm._v(" "),
           _c(
             "area-flipper",
@@ -59291,7 +59314,7 @@ var render = function() {
                           },
                           on: {
                             click: function($event) {
-                              unit.selected = false
+                              return _vm.unselectUnit(unit)
                             }
                           }
                         })
@@ -59319,34 +59342,65 @@ var render = function() {
             : _vm._e(),
           _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
-            _vm.canDecline
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "button button-empty",
-                    on: {
-                      click: function($event) {
-                        return _vm.resolve(false)
+            _vm.confirm
+              ? _c("div", [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button button-empty",
+                      on: {
+                        click: function($event) {
+                          _vm.confirm = false
+                        }
                       }
-                    }
-                  },
-                  [_vm._v("decline")]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "button",
-                attrs: { disabled: _vm.canSave !== true },
-                on: {
-                  click: function($event) {
-                    return _vm.resolve(true)
-                  }
-                }
-              },
-              [_vm._v("move selected units")]
-            )
+                    },
+                    [_vm._v("back")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button",
+                      attrs: { disabled: _vm.canSave !== true },
+                      on: {
+                        click: function($event) {
+                          return _vm.resolve(true)
+                        }
+                      }
+                    },
+                    [_vm._v("finalize move")]
+                  )
+                ])
+              : _c("div", [
+                  _vm.canDecline
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "button button-empty",
+                          on: {
+                            click: function($event) {
+                              return _vm.resolve(false)
+                            }
+                          }
+                        },
+                        [_vm._v("decline move")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button",
+                      attrs: { disabled: _vm.canSave !== true },
+                      on: {
+                        click: function($event) {
+                          _vm.confirm = true
+                        }
+                      }
+                    },
+                    [_vm._v("confirm move")]
+                  )
+                ])
           ])
         ],
         1

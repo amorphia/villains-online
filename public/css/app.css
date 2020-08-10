@@ -2627,7 +2627,7 @@ body {
   background-image: url("/images/background.jpg");
   color: white;
   font-family: var(--primary-font);
-  background-size: 110% 110%;
+  background-size: cover;
 }
 
 .glass {
