@@ -37,9 +37,15 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 2] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
-                value : 2
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'exterminateAreas', args : [1] },
+                ],
+                value : 1
             },
         ]
     },
