@@ -1,5 +1,7 @@
 <?php
 
+ini_set( 'session.gc_maxlifetime', 43200 );
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
