@@ -147,32 +147,36 @@ let obj = {
 
 
     async scorePlansStep(){
+
         let promises = [];
         let results = [];
         let slideSpeed = 5;
         if( this.fastMode ) slideSpeed = 1;
 
-        _.forEach( this.factions, faction => {
-                let plans = faction.testPlans();
+        try {
+            _.forEach( this.factions, faction => {
+                    let plans = faction.testPlans();
 
-                promises.push( this.promise({
-                    players: faction.playerId,
-                    name: 'score-plans',
-                    data : { plans : plans  }
-                }).then( ([player, data]) => {
-                    results.push( data );
-                    this.message({ faction: faction, message: 'have scored their plans' });
-                    player.setPrompt({ active : false, playerUpdate : true });
-                }).catch( error => console.error( error ) )
-            );
-        });
+                    promises.push( this.promise({
+                        players: faction.playerId,
+                        name: 'score-plans',
+                        data : { plans : plans  }
+                    }).then( ([player, data]) => {
+                        results.push( data );
+                        this.message({ faction: faction, message: 'have scored their plans' });
+                        player.setPrompt({ active : false, playerUpdate : true });
+                    })
+                );
+            });
 
-        await Promise.all( promises ).catch( error => console.error( error ) );
-        this.processPlanResults( results );
+            await Promise.all( promises );
+            this.processPlanResults( results );
 
-        await this.timedPrompt( 'plan-results', { wait : slideSpeed * results.length, slideSpeed : slideSpeed, results : results })
-            .catch( error => console.error( error ) );
+            await this.timedPrompt( 'plan-results', { wait : slideSpeed * results.length, slideSpeed : slideSpeed, results : results });
 
+        } catch( error ){
+            console.error( error );
+        }
     },
 
     processPlanResults( results ){

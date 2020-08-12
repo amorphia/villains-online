@@ -252,42 +252,46 @@ class LetGodSortThemOut extends Card {
         let promises = [];
         let units = [];
 
+        try {
+            _.forEach( faction.game().factions, item => {
+                let areasOwned = item.areas().length;
+                let unitsInPlay = item.data.units.filter( unit => unit.location && !unit.killed );
+                let unitsToSacrifice = Math.min( areasOwned, unitsInPlay.length );
 
-        _.forEach( faction.game().factions, item => {
-            let areasOwned = item.areas().length;
-            let unitsInPlay = item.data.units.filter( unit => unit.location && !unit.killed );
-            let unitsToSacrifice = Math.min( areasOwned, unitsInPlay.length );
+                if( unitsToSacrifice > 0 ){
 
-            if( unitsToSacrifice > 0 ){
+                    let areas = {};
+                    unitsInPlay.forEach( unit => areas[unit.location] = true );
+                    areas = Object.keys( areas );
 
-                let areas = {};
-                unitsInPlay.forEach( unit => areas[unit.location] = true );
-                areas = Object.keys( areas );
+                    promises.push( faction.game().promise({ players: item.playerId, name: 'sacrifice-units', data : { count : unitsToSacrifice, areas : areas  } }).then( async ([player, data]) => {
 
-                promises.push( faction.game().promise({ players: item.playerId, name: 'sacrifice-units', data : { count : unitsToSacrifice, areas : areas  } }).then( async ([player, data]) => {
+                        let unitNames = [];
+                        for( let u of data.units ){
+                            let unit = faction.game().objectMap[u];
+                            unitNames.push( unit.name );
+                            units.push( unit );
+                            await faction.game().killUnit( unit, faction );
+                        }
 
-                    let unitNames = [];
-                    for( let u of data.units ){
-                        let unit = faction.game().objectMap[u];
-                        unitNames.push( unit.name );
-                        units.push( unit );
-                        await faction.game().killUnit( unit, faction ).catch( error => console.error( error ) );
-                    }
-
-                    let message = `sacrifices <span class="faction-${item.name}item">${unitNames.join(', ')}</span>`;
-                    faction.game().message({ faction: item, message: message });
-                    player.setPrompt({ active : false, playerUpdate : true });
-                })).catch( error => console.error( error ) );;
-            }
-        });
+                        let message = `sacrifices <span class="faction-${item.name}item">${unitNames.join(', ')}</span>`;
+                        faction.game().message({ faction: item, message: message });
+                        player.setPrompt({ active : false, playerUpdate : true });
+                    }));
+                }
+            });
 
 
-        await Promise.all( promises ).catch( error => console.error( error ) );
+            await Promise.all( promises );
 
-        await faction.game().timedPrompt('units-shifted', {
-            message: `The ${faction.name} killed the following units`,
-            units: units
-        }).catch( error => console.error( error ) );
+            await faction.game().timedPrompt('units-shifted', {
+                message: `The ${faction.name} killed the following units`,
+                units: units
+            });
+
+        } catch( error ){
+            console.error( error );
+        }
     }
 }
 
