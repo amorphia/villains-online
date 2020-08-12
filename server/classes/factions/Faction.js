@@ -165,11 +165,11 @@ class Faction {
         this.gameId = game.id;
         this.data.owner = playerId;
 
-        if( this.game().testMode ) this.testMode();
+        if( this.game().testMode && this.game().localServer ) this.godMode();
 
     }
 
-    testMode(){
+    godMode(){
         this.data.cardDraw = 15;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;

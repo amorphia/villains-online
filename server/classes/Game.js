@@ -6,7 +6,8 @@ class Game {
     defaultSlideSpeed = 5;
     titleCardTimer = 3;
     fastMode = false;
-    testMode = false;
+    testMode = true;
+    localServer = false;
 
     static events = [
         'leaveGame',
@@ -86,6 +87,7 @@ class Game {
         this.planTester = new PlanTester();
 
         if( process.env.HOMEPATH ===  '\\Users\\jerem' ) {
+            this.localServer = true;
             this.fastMode = true;
         }
 
