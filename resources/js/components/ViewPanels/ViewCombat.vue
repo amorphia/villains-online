@@ -11,6 +11,8 @@
 
                         <div class="title">{{combat.title}}</div>
 
+                        <div v-if="combat.attackBonus" class="highlight px-4 pt-0 pb-4">All units gain +{{ combat.attackBonus }} to their attacks</div>
+
                         <div class="faction-list">
                             <combat-faction v-for="faction in combat.factions"
                                             :faction="faction"

@@ -9250,6 +9250,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-combat',
   data: function data() {
@@ -61246,6 +61248,20 @@ var render = function() {
                       _c("div", { staticClass: "title" }, [
                         _vm._v(_vm._s(_vm.combat.title))
                       ]),
+                      _vm._v(" "),
+                      _vm.combat.attackBonus
+                        ? _c(
+                            "div",
+                            { staticClass: "highlight px-4 pt-0 pb-4" },
+                            [
+                              _vm._v(
+                                "All units gain +" +
+                                  _vm._s(_vm.combat.attackBonus) +
+                                  " to their attacks"
+                              )
+                            ]
+                          )
+                        : _vm._e(),
                       _vm._v(" "),
                       _c(
                         "div",

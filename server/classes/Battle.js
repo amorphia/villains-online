@@ -6,6 +6,7 @@ class Battle {
     data = {
         title : '',
         factionIndex : 0,
+        attackBonus : null,
         areaName : null,
         currentUnit : null,
         factions : [],
@@ -19,6 +20,7 @@ class Battle {
         this.data.areaName = area.name;
         this.gameId = game.id;
         this.options = options;
+        if( this.options.attackBonus ) this.data.attackBonus = this.options.attackBonus;
     }
 
     async init(){
