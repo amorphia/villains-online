@@ -33,18 +33,20 @@ class DB {
     }
 
     save( game, options = {} ) {
-
+        console.log( 'saving game' );
         let data = {
             type: options.type || 'automatic',
             data: JSON.stringify( game )
         };
 
+        if( !game || !game.id ) return;
         axios.post( `${this.host}/save/${game.id}`, data )
             .then( result => {} )
             .catch( errors => console.log( errors ) );
     }
 
     async load( gameId ) {
+        console.log( 'loading game' );
         let results = await axios.get(`${this.host}/save/${gameId}`).catch( error => console.error( error ) );
         return results.data;
     }
