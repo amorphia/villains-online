@@ -20,7 +20,7 @@ let obj = {
 
         this.message({ message :  `The battle in the ${area.name} concludes`, class : 'highlight' });
 
-        this.updateAll();
+        await this.updateAll();
         await this.wait( 3 );
         this.combat = null;
         this.data.combat = null;

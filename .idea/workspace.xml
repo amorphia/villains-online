@@ -3,9 +3,20 @@
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/Authenticate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/Authenticate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/session.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/session.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Chat/ChatMessage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Chat/ChatMessage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Player.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Player.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Mafia.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Mafia.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Society.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Society.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/combat.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/combat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/combatStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/combatStep.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/placeTokensStep.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/players.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/players.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/setup.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/setup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/startOfTurn.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/startOfTurn.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/takeActionsStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/takeActionsStep.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -243,10 +254,10 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="747" y="217" key="FileChooserDialogImpl" timestamp="1596836189820">
+    <state x="747" y="217" key="FileChooserDialogImpl" timestamp="1597340916054">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="747" y="217" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1596836189820" />
+    <state x="747" y="217" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1597340916054" />
     <state width="1493" height="213" key="GridCell.Tab.0.bottom" timestamp="1595222076331">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
@@ -275,10 +286,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1597257001692">
+    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1597353455247">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1597257001692" />
+    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1597353455247" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1596656317816">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

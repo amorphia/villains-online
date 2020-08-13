@@ -18,7 +18,7 @@ let obj = {
         this.setAllPlayersActive();
         this.setStartOfTurnPrompts();
         Server.saveToDB( this, { type:'turn' } );
-        this.updateAll();
+        await this.updateAll();
     },
 
     setStartOfTurnPrompts(){
@@ -29,7 +29,7 @@ let obj = {
         });
     },
 
-    chooseTargetPlan( player, planIndex, targetIndex ){
+    async chooseTargetPlan( player, planIndex, targetIndex ){
         if( ! player.data.active ) return;
 
         let faction = player.faction();
@@ -48,7 +48,7 @@ let obj = {
             this.startPlaceTokensStep();
         } else {
             Server.saveToDB( this );
-            this.updateAll();
+            await this.updateAll();
         }
     },
 

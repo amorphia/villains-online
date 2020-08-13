@@ -8,6 +8,8 @@ class Game {
     fastMode = false;
     testMode = true;
     localServer = false;
+    playerTimeoutLength = 10; // seconds
+    maxPlayerTimeouts = 50;
 
     static events = [
         'leaveGame',
@@ -125,7 +127,7 @@ class Game {
             });
         });
 
-        this.updateAll();
+        await this.updateAll();
 
         await this.wait( data.wait ).catch( error => console.error( error ) );
 
@@ -159,10 +161,10 @@ class Game {
 
     async promise( args = {}, updateAll = true ){
 
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             args.callback = args => resolve( args );
             this.listen( args );
-            if( updateAll ) this.updateAll();
+            if( updateAll ) await this.updateAll();
         });
     }
 
@@ -223,9 +225,11 @@ class Game {
         return object;
     }
 
+
     joinGame( player ){
         this.addPlayer( player );
     }
+
 
     leaveGame( player ){
         this.removePlayer( player );
@@ -239,7 +243,35 @@ class Game {
     }
 
 
-    updateAll(){
+    missingPlayers(){
+        let missing = [];
+        _.forEach( this.players, player => {
+            if( !player.socket() ) missing.push( player.data.name );
+        });
+
+        return missing.length ? missing : false;
+    }
+
+    async waitForMissingPlayers(){
+
+        let tries = 0;
+        while( this.missingPlayers() && tries < this.maxPlayerTimeouts ){
+            this.message({ message: `waiting for players to rejoin: ${this.missingPlayers().join(', ') }`, class : 'red' });
+            await this.wait( this.playerTimeoutLength );
+            tries++;
+        }
+
+        if( this.missingPlayers() ){
+            this.conclude( null, true );
+        }
+    }
+
+    async updateAll(){
+        // await check for all player sockets to exist
+        if( this.missingPlayers() ){
+            await this.waitForMissingPlayers();
+        }
+
         Server.io.to( this.id ).emit( 'update', this.data );
     }
 

@@ -22,7 +22,7 @@ class Player {
 
     };
 
-    clearGameData(){
+    async clearGameData(){
         this.gameId = null;
         this.listeners = {};
 
@@ -56,7 +56,7 @@ class Player {
         if( removePrompt ) this.setPrompt({ active : false });
     }
 
-    setPrompt( prompt ){
+    async setPrompt( prompt ){
         if( typeof prompt === 'string' ){
             prompt = { name : prompt };
         }
@@ -66,7 +66,7 @@ class Player {
         this.data.active = prompt.hasOwnProperty( 'active' ) ? prompt.active : true; // if we don't set the active flag, assume true
 
         if( prompt.update ){
-            this.game().updateAll();
+            await this.game().updateAll();
         }
 
         if( prompt.playerUpdate ){
@@ -89,7 +89,7 @@ class Player {
         this.joinRoom('lobby' );
     }
 
-    joinRoom( room ) {
+    async joinRoom( room ) {
         //this.socket().leaveAll();
         this.callSocket( 'leaveAll' );
 

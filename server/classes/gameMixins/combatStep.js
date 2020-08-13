@@ -8,7 +8,7 @@ let obj = {
         this.defaultListener = null;
         this.allPlayers({ passed : false } );
         this.clearAllPlayerPrompts();
-        this.updateAll();
+        await this.updateAll();
 
         this.resolveCombatStep();
     },

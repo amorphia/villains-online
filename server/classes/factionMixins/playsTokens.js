@@ -22,7 +22,7 @@ let obj = {
         } else {
             let cost = this.tokenCost( token, area );
             this.game().listen({ name : 'activate-decline', players : player, data : { token : token, cost : cost } });
-            this.game().updateAll();
+            await this.game().updateAll();
         }
     },
 

@@ -45,7 +45,7 @@
         text-transform: capitalize;
     }
 
-    .chat__message .warning {
+    .chat__message .warning, .chat__message .red {
         color: #fd4a4a;
         text-transform: capitalize;
     }

@@ -88,17 +88,17 @@ let mixin = {
         _.forEach( this.players, player => player.setPrompt({ active : false }) );
     },
 
-    clearPlayerPrompt( player ){
+    async clearPlayerPrompt( player ){
         player.setPrompt({ active : false });
-        this.updateAll();
+        await this.updateAll();
     },
 
-    advancePlayer( listener ){
+    async advancePlayer( listener ){
         this.advanceActivePlayer();
         this.setActivePlayerListener( listener );
         Server.saveToDB( this );
         this.setTimeout();
-        this.updateAll();
+        await this.updateAll();
     },
 
     resetToFirstPlayer(){
@@ -176,7 +176,7 @@ let mixin = {
         });
     },
 
-    addPlayer( player ){
+    async addPlayer( player ){
         if( !player ) return;
 
         this.addPlayerId( player.socketId, player.id );
@@ -187,7 +187,7 @@ let mixin = {
             Server.io.to( 'lobby' ).emit( 'openGame', this.data );
         } else if( this.data.state !== 'loading' ) {
             player.joinRoom( this.data.id );
-            this.updateAll();
+            await this.updateAll();
         }
     },
 

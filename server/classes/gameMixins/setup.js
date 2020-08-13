@@ -1,14 +1,14 @@
 
 let setup = {
 
-    loadSavedGame( saved ){
+    async loadSavedGame( saved ){
         this.data.state = 'loading';
         this.updatePlayerSockets( saved );
         this.generateGame( saved );
         this.mergeSavedData( saved );
         _.forEach( this.factions, faction => faction.onSetup() );
         this.addPlayersToRoom();
-        this.updateAll();
+        await this.updateAll();
     },
 
     updatePlayerSockets( saved ){
@@ -99,7 +99,7 @@ let setup = {
         });
     },
 
-    startGame(){
+    async startGame(){
         if( this.data.state !==  'open' ) return;
 
         Server.saveNewGame( this );
@@ -110,12 +110,12 @@ let setup = {
         this.randomizePlayerOrder();
         this.addPlayersToRoom();
         Server.closeOpenGame();
-        this.updateAll();
+        await this.updateAll();
         this.setTimeout();
     },
 
 
-    chooseFaction( player, factionName ){
+    async chooseFaction( player, factionName ){
         if( ! player.data.active ) return;
 
         let faction = this.data.factions[ factionName ];
@@ -127,7 +127,7 @@ let setup = {
         this.advanceActivePlayer();
 
         this.message({ message: `chose the ${factionName}`, player : player });
-        this.updateAll();
+        await this.updateAll();
 
         if( this.allPlayersHaveFactions() ){
             this.generateGame();

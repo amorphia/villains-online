@@ -10695,7 +10695,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.chat__message {\n    padding: .5em 0;\n    color: var(--primary-light-color);\n    font-family: var(--secondary-font);\n}\n.chat__message .name {\n}\n.chat__message .info {\n    color: white;\n    text-transform: capitalize;\n}\n.chat__message .warning {\n    color: #fd4a4a;\n    text-transform: capitalize;\n}\n.message-box {\n    width: 100%;\n    overflow: hidden;\n    padding: 1rem .5rem;\n    justify-content: center;\n    align-items: center;\n    background-color: rgba(0,0,0,.5);\n    display: flex;\n    flex-direction: column;\n    border-radius: .5rem;\n    margin-top: .5rem;\n}\n", ""]);
+exports.push([module.i, "\n.chat__message {\n    padding: .5em 0;\n    color: var(--primary-light-color);\n    font-family: var(--secondary-font);\n}\n.chat__message .name {\n}\n.chat__message .info {\n    color: white;\n    text-transform: capitalize;\n}\n.chat__message .warning, .chat__message .red {\n    color: #fd4a4a;\n    text-transform: capitalize;\n}\n.message-box {\n    width: 100%;\n    overflow: hidden;\n    padding: 1rem .5rem;\n    justify-content: center;\n    align-items: center;\n    background-color: rgba(0,0,0,.5);\n    display: flex;\n    flex-direction: column;\n    border-radius: .5rem;\n    margin-top: .5rem;\n}\n", ""]);
 
 // exports
 
