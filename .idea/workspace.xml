@@ -2,19 +2,32 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/Area.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/Bank.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/Capitol.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/Church.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/Factory.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/Laboratory.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/Police.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/Sewers.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/Subway.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/classes/areas/University.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/Areas.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Areas.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/DB.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/DB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/DB_old.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Plan_old.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/activatesSkills.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/activatesSkills.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/battles.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/battles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/deploysUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/deploysUnits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/movesUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/movesUnits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/playsCards.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/playsCards.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/playsTokens.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/playsTokens.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/propertyMethods.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/propertyMethods.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/setup.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/setup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionMixins/triggeredEvents.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/triggeredEvents.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/aliensPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/aliensPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/bankersPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/bankersPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/commiesPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/commiesPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/cultistsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/cultistsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/hackersPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/hackersPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/loyalistsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/loyalistsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/mafiaPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/mafiaPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/mutantsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/mutantsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/ninjasPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/ninjasPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/robotsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/robotsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/scientistsPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/scientistsPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/societyPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/societyPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/swarmPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/swarmPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factionPlans/vampiresPlans.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/plans/vampiresPlans.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,11 +210,11 @@
       <recent name="D:\Websites\villains-online\server\classes\factions" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Websites\villains-online\server\classes\factions" />
       <recent name="D:\Websites\villains-online\resources\js\components\Focus" />
       <recent name="D:\Websites\villains-online\resources\js\components\Prompts" />
       <recent name="D:\Websites\villains-online\resources\js\components\ViewPanels" />
       <recent name="D:\Websites\villains-online\resources\js\components\areas" />
-      <recent name="D:\Websites\villains-online\resources\js\components\Huds" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -284,10 +297,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1597355736554">
+    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1597355937627">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1597355736554" />
+    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1597355937627" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1596656317816">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

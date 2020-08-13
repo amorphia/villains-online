@@ -509,14 +509,14 @@ class Faction {
  *  Mixins
  *
  */
-Object.assign( Faction.prototype, require( "../factionMixins/setup" ) );
-Object.assign( Faction.prototype, require( "../factionMixins/propertyMethods" ) );
-Object.assign( Faction.prototype, require( "../factionMixins/playsTokens" ) );
-Object.assign( Faction.prototype, require( "../factionMixins/deploysUnits" ) );
-Object.assign( Faction.prototype, require( "../factionMixins/playsCards" ) );
-Object.assign( Faction.prototype, require( "../factionMixins/movesUnits" ) );
-Object.assign( Faction.prototype, require( "../factionMixins/battles" ) );
-Object.assign( Faction.prototype, require( "../factionMixins/triggeredEvents" ) );
-Object.assign( Faction.prototype, require( "../factionMixins/activatesSkills" ) );
+Object.assign( Faction.prototype, require( "./mixins/setup" ) );
+Object.assign( Faction.prototype, require( "./mixins/propertyMethods" ) );
+Object.assign( Faction.prototype, require( "./mixins/playsTokens" ) );
+Object.assign( Faction.prototype, require( "./mixins/deploysUnits" ) );
+Object.assign( Faction.prototype, require( "./mixins/playsCards" ) );
+Object.assign( Faction.prototype, require( "./mixins/movesUnits" ) );
+Object.assign( Faction.prototype, require( "./mixins/battles" ) );
+Object.assign( Faction.prototype, require( "./mixins/triggeredEvents" ) );
+Object.assign( Faction.prototype, require( "./mixins/activatesSkills" ) );
 
 module.exports = Faction;

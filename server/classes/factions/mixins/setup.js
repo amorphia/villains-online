@@ -1,6 +1,6 @@
 //let PlanTester = require( '../Plans' );
-let Token = require( '../Token' );
-let Unit = require( '../Unit' );
+let Token = require( '../../Token' );
+let Unit = require( '../../Unit' );
 
 let obj = {
 
@@ -27,7 +27,7 @@ let obj = {
 
 
     setupPlans(){
-        let plans = _.cloneDeep( require( `../factionPlans/${this.name}Plans` ) );
+        let plans = _.cloneDeep( require( `../factions/factionPlans` ) );
 
         plans.forEach( item => {
             let plan = _.clone( item );
