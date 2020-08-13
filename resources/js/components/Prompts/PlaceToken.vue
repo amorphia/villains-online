@@ -1,6 +1,18 @@
 <template>
         <div class="place-token-top p-4 d-flex justify-center align-center">
-            <button class="button button-empty place-token__button right-text" @click="passToken">PASS</button>
+
+
+            <player-prompt v-if="confirmingPass" classes="">
+                <div class="px-5">
+                    <div class="title">Are you sure you want to pass?</div>
+                    <div class="flex-center">
+                        <button class="button button-empty" @click="confirmingPass = false">no</button>
+                        <button class="button" @click="passToken">Yes Pass</button>
+                    </div>
+                </div>
+            </player-prompt>
+
+            <button class="button button-empty place-token__button right-text" @click="confirmingPass = true">PASS</button>
 
             <div class="place-token__tokens center-text">
                 <token-set
@@ -25,6 +37,7 @@
                 shared : App.state,
                 areaIndex : 0,
                 token : null,
+                confirmingPass : false,
             };
         },
 

@@ -7427,13 +7427,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'place-token',
   data: function data() {
     return {
       shared: App.state,
       areaIndex: 0,
-      token: null
+      token: null,
+      confirmingPass: false
     };
   },
   watch: {
@@ -7585,160 +7598,6 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.respond('place-token', 'pass');
       this.shared.showXavier = false;
       this.removeToken();
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=script&lang=js&":
-/*!********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'place-token-old',
-  data: function data() {
-    return {
-      shared: App.state,
-      areaIndex: 0,
-      token: null
-    };
-  },
-  watch: {
-    'shared.data.playerAction': function sharedDataPlayerAction() {
-      this.reset();
-    }
-  },
-  mounted: function mounted() {
-    this.shared.event.on('tokenClicked', this.tokenClicked);
-  },
-  computed: {
-    buttonMessage: function buttonMessage() {
-      return !this.saveDisabled ? "place token in ".concat(this.area.name) : 'PLACE TOKEN';
-    },
-    xavier: function xavier() {
-      if (this.shared.faction.name !== 'society') return;
-      var xavier = this.shared.faction.units.find(function (unit) {
-        return unit.type === 'champion';
-      });
-
-      if (this.token && this.areaIndex === -1) {
-        this.$set(xavier, 'placeToken', this.token);
-      } else {
-        this.$set(xavier, 'placeToken', null);
-      }
-
-      return xavier;
-    },
-    xavierArea: function xavierArea() {
-      if (this.shared.faction.name !== 'society') return;
-      return this.shared.data.areas[this.xavier.location];
-    },
-    canXavier: function canXavier() {
-      if (this.shared.faction.name !== 'society') return;
-      return !this.xavier.token;
-    },
-    saveDisabled: function saveDisabled() {
-      if (!this.token || this.shared.faction.resources + this.shared.faction.energy < this.shared.faction.tokenCost) return true;
-    },
-    reserves: function reserves() {
-      return this.shared.faction.tokens.filter(function (token) {
-        return !token.location;
-      });
-    },
-    area: function area() {
-      return this.availableAreas[this.areaIndex];
-    },
-    availableAreas: function availableAreas() {
-      var areas = [];
-
-      _.forEach(this.shared.data.areas, function (area) {
-        if (area.tokens.length < area.maxTokens) {
-          areas.push(area);
-        }
-      });
-
-      return areas;
-    }
-  },
-  methods: {
-    update: function update(n) {
-      this.areaIndex = n;
-    },
-    reset: function reset() {
-      this.token = null;
-    },
-    removeToken: function removeToken(token) {
-      if (!this.token || this.token.id !== token.id) return;
-      this.token = null;
-    },
-    tokenClicked: function tokenClicked(token) {
-      console.log('token clicked', token);
-      if (token.location) return;
-      this.token = this.token && this.token.id === token.id ? null : token;
-    },
-    placeToken: function placeToken() {
-      var areaName = this.areaIndex === -1 ? 'xavier' : this.area.name;
-      this.shared.respond('place-token', 'place', areaName, this.token.id);
-    },
-    passToken: function passToken() {
-      this.shared.respond('place-token', 'pass');
     }
   }
 });
@@ -11456,25 +11315,6 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.place-token-top {\n    overflow: hidden;\n    transition: all .5s;\n}\n.place-token {\n    min-width: 40rem;\n}\n.place-token__button {\n    width: 12%\n}\n.place-token-top .tokens-hud__token {\n    width: 5.5vw;\n    height: 5.5vw;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=style&index=0&lang=css&":
-/*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=style&index=0&lang=css& ***!
-  \***************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.place-token{\n    min-width: 40rem;\n}\n\n\n", ""]);
 
 // exports
 
@@ -52241,36 +52081,6 @@ if(false) {}
 
 /***/ }),
 
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=style&index=0&lang=css&":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=style&index=0&lang=css& ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./PlaceTokenOld.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=style&index=0&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlayerPrompt.vue?vue&type=style&index=0&lang=css&":
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/PlayerPrompt.vue?vue&type=style&index=0&lang=css& ***!
@@ -59647,11 +59457,46 @@ var render = function() {
     "div",
     { staticClass: "place-token-top p-4 d-flex justify-center align-center" },
     [
+      _vm.confirmingPass
+        ? _c("player-prompt", { attrs: { classes: "" } }, [
+            _c("div", { staticClass: "px-5" }, [
+              _c("div", { staticClass: "title" }, [
+                _vm._v("Are you sure you want to pass?")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "flex-center" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "button button-empty",
+                    on: {
+                      click: function($event) {
+                        _vm.confirmingPass = false
+                      }
+                    }
+                  },
+                  [_vm._v("no")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  { staticClass: "button", on: { click: _vm.passToken } },
+                  [_vm._v("Yes Pass")]
+                )
+              ])
+            ])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _c(
         "button",
         {
           staticClass: "button button-empty place-token__button right-text",
-          on: { click: _vm.passToken }
+          on: {
+            click: function($event) {
+              _vm.confirmingPass = true
+            }
+          }
         },
         [_vm._v("PASS")]
       ),
@@ -59681,187 +59526,9 @@ var render = function() {
         },
         [_vm._v("place token")]
       )
-    ]
+    ],
+    1
   )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=template&id=51a3b11a&":
-/*!************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=template&id=51a3b11a& ***!
-  \************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("player-prompt", { attrs: { classes: "" } }, [
-    _c("div", { staticClass: "place-token px-5" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
-        },
-        [
-          _c("div", { staticClass: "title" }, [
-            _vm._v("Place a token or pass")
-          ]),
-          _vm._v(" "),
-          _vm.canXavier && _vm.areaIndex === -1
-            ? _c(
-                "div",
-                { staticClass: "d-flex justify-center" },
-                [
-                  _vm.availableAreas.length > 0
-                    ? _c(
-                        "button",
-                        {
-                          staticClass: "flipper",
-                          on: {
-                            click: function($event) {
-                              _vm.areaIndex = _vm.availableAreas.length - 1
-                            }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-left" })]
-                      )
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c(
-                    "area-flipper",
-                    { attrs: { areas: [_vm.xavierArea], index: "0" } },
-                    [_c("unit-row", { attrs: { units: [_vm.xavier] } })],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _vm.availableAreas.length > 0
-                    ? _c(
-                        "button",
-                        {
-                          staticClass: "flipper",
-                          on: {
-                            click: function($event) {
-                              _vm.areaIndex = 0
-                            }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-right" })]
-                      )
-                    : _vm._e()
-                ],
-                1
-              )
-            : _vm.availableAreas.length > 0 && _vm.areaIndex !== -1
-            ? _c(
-                "area-flipper",
-                {
-                  attrs: {
-                    areas: _vm.availableAreas,
-                    index: _vm.areaIndex,
-                    hasReserves: _vm.canXavier
-                  },
-                  on: { update: _vm.update }
-                },
-                [
-                  _c("token-row", {
-                    attrs: {
-                      area: _vm.availableAreas[_vm.areaIndex],
-                      effect: "placing",
-                      token: _vm.token
-                    },
-                    on: { token: _vm.tokenClicked }
-                  })
-                ],
-                1
-              )
-            : _c("div", { staticClass: "view-player__empty center-text" }, [
-                _vm._v("No Area Selected")
-              ]),
-          _vm._v(" "),
-          _vm.canXavier
-            ? _c("div", { staticClass: "options center-text" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "button button-empty",
-                    class: { active: _vm.areaIndex === -1 },
-                    on: {
-                      click: function($event) {
-                        _vm.areaIndex = -1
-                      }
-                    }
-                  },
-                  [_vm._v("\n                    XAVIER\n                ")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "button button-empty",
-                    class: { active: _vm.areaIndex !== -1 },
-                    on: {
-                      click: function($event) {
-                        _vm.areaIndex = 0
-                      }
-                    }
-                  },
-                  [_vm._v("\n                    AREAS\n                ")]
-                )
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "place-token__tokens mt-4" },
-            [
-              _c("token-set", {
-                attrs: {
-                  tokens: _vm.reserves,
-                  classes: "one-line",
-                  selected: _vm.token
-                }
-              })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("div", {}, [
-            _c(
-              "button",
-              {
-                staticClass: "button button-empty",
-                on: { click: _vm.passToken }
-              },
-              [_vm._v("PASS")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "button",
-                attrs: { disabled: _vm.saveDisabled },
-                on: { click: _vm.placeToken }
-              },
-              [_vm._v(_vm._s(_vm.buttonMessage))]
-            )
-          ])
-        ],
-        1
-      )
-    ])
-  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -75974,7 +75641,6 @@ var map = {
 	"./Prompts/MoveAway.vue": "./resources/js/components/Prompts/MoveAway.vue",
 	"./Prompts/NinjaAttack.vue": "./resources/js/components/Prompts/NinjaAttack.vue",
 	"./Prompts/PlaceToken.vue": "./resources/js/components/Prompts/PlaceToken.vue",
-	"./Prompts/PlaceTokenOld.vue": "./resources/js/components/Prompts/PlaceTokenOld.vue",
 	"./Prompts/PlaceTop.vue": "./resources/js/components/Prompts/PlaceTop.vue",
 	"./Prompts/PlayerPrompt.vue": "./resources/js/components/Prompts/PlayerPrompt.vue",
 	"./Prompts/SacrificeUnits.vue": "./resources/js/components/Prompts/SacrificeUnits.vue",
@@ -82100,93 +81766,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceToken_vue_vue_type_template_id_0982ef06___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceToken_vue_vue_type_template_id_0982ef06___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/PlaceTokenOld.vue":
-/*!***********************************************************!*\
-  !*** ./resources/js/components/Prompts/PlaceTokenOld.vue ***!
-  \***********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _PlaceTokenOld_vue_vue_type_template_id_51a3b11a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlaceTokenOld.vue?vue&type=template&id=51a3b11a& */ "./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=template&id=51a3b11a&");
-/* harmony import */ var _PlaceTokenOld_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PlaceTokenOld.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _PlaceTokenOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./PlaceTokenOld.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _PlaceTokenOld_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _PlaceTokenOld_vue_vue_type_template_id_51a3b11a___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _PlaceTokenOld_vue_vue_type_template_id_51a3b11a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Prompts/PlaceTokenOld.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=script&lang=js&":
-/*!************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=script&lang=js& ***!
-  \************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./PlaceTokenOld.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=style&index=0&lang=css&":
-/*!********************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=style&index=0&lang=css& ***!
-  \********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./PlaceTokenOld.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=template&id=51a3b11a&":
-/*!******************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=template&id=51a3b11a& ***!
-  \******************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_template_id_51a3b11a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./PlaceTokenOld.vue?vue&type=template&id=51a3b11a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTokenOld.vue?vue&type=template&id=51a3b11a&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_template_id_51a3b11a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTokenOld_vue_vue_type_template_id_51a3b11a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
