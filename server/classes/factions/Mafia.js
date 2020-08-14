@@ -76,7 +76,12 @@ class Mafia extends Faction {
         if( this.data.upgrade ){
             let attack = this.data.upgrade === 1 ? 8 : 5;
             let area = this.game().areas[ fixer.location ];
-            await this.attack( { area : area, attacks : [attack], optional : true } ).catch( error => console.error( error ) );
+            let output = await this.attack( { area : area, attacks : [attack], optional : true } ).catch( error => console.error( error ) );
+
+            if( output ){
+                await this.game().timedPrompt('noncombat-attack', { output : [output] } )
+                    .catch( error => console.error( error ) );
+            }
         }
     }
 

@@ -136,6 +136,7 @@ class Vampires extends Faction {
     async feastToken( args ) {
         let data, player;
         let areas = this.feastAreas();
+        let output = [];
 
         for( let area of areas ){
             let message = `Feasts in The ${ area }`;
@@ -157,16 +158,24 @@ class Vampires extends Faction {
 
             // resolve attack with that unit
             let attackArea = this.game().areas[ unit.location ];
-            await this.attack({
+            output.push( await this.attack({
                 area : attackArea,
                 attacks : unit.attack,
                 unit : unit,
                 noDecline : true
-            });
+            }) );
         }
 
         let message = `Has finished feasting`;
         this.message({ message: message, faction : this });
+
+        output = output.filter( item => item );
+
+        if( output.length ){
+            await this.game().timedPrompt('noncombat-attack', { output : output } )
+                .catch( error => console.error( error ) );
+        }
+
         this.game().advancePlayer();
     }
 

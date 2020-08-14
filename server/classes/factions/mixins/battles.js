@@ -50,7 +50,7 @@ let obj = {
     },
 
     async nonCombatAttack( attack, count, area ){
-
+        let output = [];
         let targetFactions = this.getTargetFactions( area );
 
         if( ! targetFactions ){
@@ -60,17 +60,18 @@ let obj = {
         // if we only have one target, bundle up the attacks
         if( targetFactions.length === 1 ){
             let attacks = Array( count ).fill( attack );
-            await this.attack( { area:area, attacks : attacks });
-            return;
-        }
-
-        // otherwise, resolve them one at a time
-        for( let i = 0; i < count; i++ ){
-            if( _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name }).length ){
-                await this.attack( { area : area, attacks : [ attack ] } );
+            output.push( await this.attack( { area:area, attacks : attacks }) );
+        } else {
+            // otherwise, resolve them one at a time
+            for( let i = 0; i < count; i++ ){
+                if( _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name }).length ){
+                    output.push( await this.attack( { area : area, attacks : [ attack ] } ) );
+                }
             }
         }
 
+        await this.game().timedPrompt('noncombat-attack', { output : output } )
+            .catch( error => console.error( error ) );
     },
 
 
@@ -162,6 +163,7 @@ let obj = {
         // report attack results
         let attackResult = {
             faction : this.name,
+            area : args.area.name,
             type : 'attack',
             unit : args.unit,
             targetUnit : args.targetUnit,

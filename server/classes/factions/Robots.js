@@ -103,7 +103,12 @@ class Robots extends Faction {
         let area = this.game().areas[ data.area ];
 
         // resolve attack with that unit
-        await this.attack( { area : area, attacks : event.unit.attack, unit : event.unit } );
+        let output = await this.attack( { area : area, attacks : event.unit.attack, unit : event.unit } );
+
+        if( output ){
+            await this.game().timedPrompt('noncombat-attack', { output : [output] } )
+                .catch( error => console.error( error ) );
+        }
     }
 
     async wildToken( args ){

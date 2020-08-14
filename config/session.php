@@ -35,7 +35,7 @@ return [
 
     'expire_on_close' => false,
 
-    'expired-session-redirect' => url( env('APP_URL') ),
+    'expired-session-redirect' => env('APP_URL'),
 
     /*
     |--------------------------------------------------------------------------

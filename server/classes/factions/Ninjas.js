@@ -130,13 +130,18 @@ class Ninjas extends Faction {
 
         // resolve attack with that unit
         let attackArea = this.game().areas[ unit.location ];
-        await this.attack({
+        let output = await this.attack({
             area : attackArea,
             attacks : unit.attack,
             unit : unit,
             noDecline : true,
             bonusDice: this.data.bladesBonusDice
         });
+
+        if( output ){
+            await this.game().timedPrompt('noncombat-attack', { output : [output] } )
+                .catch( error => console.error( error ) );
+        }
 
         this.game().advancePlayer();
     }

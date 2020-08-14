@@ -51,11 +51,17 @@ class Police extends Area {
 
         // resolve attack with that unit
         let area = this.game().areas[ unit.location ];
-        await faction.attack({
+        let output = await faction.attack({
             area : area,
             attacks : unit.attack,
             unit : unit
         });
+
+        if( output ){
+            await this.game().timedPrompt('noncombat-attack', { output : [output] } )
+                .catch( error => console.error( error ) );
+        }
+
     }
 }
 
