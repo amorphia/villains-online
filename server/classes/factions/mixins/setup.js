@@ -27,7 +27,7 @@ let obj = {
 
 
     setupPlans(){
-        let plans = _.cloneDeep( require( `../factions/factionPlans` ) );
+        let plans = _.cloneDeep( require( `../plans/${this.name}Plans` ) );
 
         plans.forEach( item => {
             let plan = _.clone( item );

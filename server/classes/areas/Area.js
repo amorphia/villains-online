@@ -68,16 +68,28 @@ class Area {
         );
     }
 
+    hasCard( cardClass ){
+        return !! this.data.cards.find( card => card.class === cardClass );
+    }
+
+    getDeployableAdjacentAreas(){
+        return this.data.adjacent.map( areaName => {
+            let area = this.game().areas[areaName];
+            return area.hasCard( 'suitcase-nuke' ) ? false : area.name;
+        }).filter( area => area );
+    }
+
     determineControl(){
         let newControllerName;
         let influences = this.eachInfluenceHere();
 
-        if( this.herMajestyInArea() ){
+        if( this.data.cards.find( card => card.class === 'suitcase-nuke' )){ // nuked areas can't be controlled
+            newControllerName = null;
+        } else if( this.herMajestyInArea() ){ // Queen trumps everything else
             newControllerName = 'loyalists';
-        } else {
+        } else { // otherwise whomever has the most influence gets its
             newControllerName = this.playerWithMostInfluence( influences );
         }
-
 
         if( !newControllerName && this.data.owner ){
             newControllerName = this.data.owner;

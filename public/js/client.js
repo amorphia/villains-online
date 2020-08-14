@@ -4258,7 +4258,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     message: function message() {
       var data = this.currentAreaData;
-      if (data.oldController === data.newController || !data.newController && data.oldController) return "The ".concat(data.oldController, " retain the ").concat(this.currentAreaData.name);
+      if (data.oldController && data.oldController === data.newController || !data.newController && data.oldController) return "The ".concat(data.oldController, " retain the ").concat(this.currentAreaData.name);
       if (!data.newController) return "The ".concat(data.name, " remains uncontrolled");
       if (!data.oldController) return "The ".concat(data.newController, " take the ").concat(this.currentAreaData.name);
       return "The ".concat(data.newController, " take the ").concat(this.currentAreaData.name, " from the ").concat(data.oldController);
@@ -5451,6 +5451,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -57523,6 +57528,19 @@ var render = function() {
     "div",
     { staticClass: "choose-factions d-flex align-stretch height-100" },
     [
+      _c(
+        "div",
+        { staticClass: "pos-absolute bottom-0 left-0 p-4 highlight" },
+        [
+          _c("end-game", [
+            _c("div", { staticClass: "pointer conclude" }, [
+              _vm._v("conclude game")
+            ])
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
       _c(
         "div",
         {

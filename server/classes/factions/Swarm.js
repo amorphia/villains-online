@@ -134,7 +134,7 @@ class Swarm extends Faction {
         try {
             await this.moveAwayToken( args, {
                 fromArea: args.area.name,
-                toAreas: args.area.data.adjacent,
+                toAreas: args.area.getDeployableAdjacentAreas(),
                 noChampion : true,
                 message : 'Choose units to scatter',
                 promptMessage: 'The Swarm units scatter from The ' + args.area.name,

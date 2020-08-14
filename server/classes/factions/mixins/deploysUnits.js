@@ -35,7 +35,12 @@ let obj = {
             if( typeof args.area === 'string' ) areas.push( args.area );
             else areas.push( args.area.name );
         } else {
-            areas = Object.keys( this.game().areas );
+            areas = Object.values( this.game().areas )
+                .map( area => {
+                    if( area.data.cards.find( card => card.class === 'suitcase-nuke' ) ) return false;
+                    return area.name;
+                })
+                .filter( area => area );
         }
 
         let data = {

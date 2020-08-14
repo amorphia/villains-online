@@ -4,8 +4,8 @@ let Faction = require( './Faction' );
 class Society extends Faction {
     name = 'society';
 
-    constructor(owner, game) {
-        super(owner, game);
+    constructor( owner, game ) {
+        super( owner, game );
 
         //data
         this.data.name = this.name;
@@ -164,7 +164,7 @@ class Society extends Faction {
         try {
             await this.moveAwayToken( args, {
                 fromArea: args.area.name,
-                toAreas: args.area.data.adjacent,
+                toAreas: args.area.getDeployableAdjacentAreas(),
                 enemyOnly : true,
                 basicOnly : true,
                 limit : 1,

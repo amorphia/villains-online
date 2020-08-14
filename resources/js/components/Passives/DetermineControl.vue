@@ -85,7 +85,7 @@
             message(){
                 let data = this.currentAreaData;
 
-                if( data.oldController === data.newController || !data.newController && data.oldController ) return `The ${data.oldController} retain the ${this.currentAreaData.name}`;
+                if( ( data.oldController && data.oldController === data.newController ) || !data.newController && data.oldController ) return `The ${data.oldController} retain the ${this.currentAreaData.name}`;
                 if( !data.newController ) return `The ${data.name} remains uncontrolled`;
                 if( !data.oldController ) return `The ${data.newController} take the ${this.currentAreaData.name}`;
                 return `The ${data.newController} take the ${this.currentAreaData.name} from the ${data.oldController}`;

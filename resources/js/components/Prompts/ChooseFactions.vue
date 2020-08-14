@@ -1,5 +1,10 @@
 <template>
     <div class="choose-factions d-flex align-stretch height-100">
+
+        <div class="pos-absolute bottom-0 left-0 p-4 highlight">
+            <end-game><div class="pointer conclude">conclude game</div></end-game>
+        </div>
+
         <div class="players width-40 height-100 p-5 d-flex flex-center flex-wrap">
             <div class="choose-factions__player-container">
                 <div v-for="(player, index) in shared.orderedPlayers()"
