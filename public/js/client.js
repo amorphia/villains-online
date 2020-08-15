@@ -3244,6 +3244,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-display',
   data: function data() {
@@ -3377,6 +3378,49 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-map',
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameSettings.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GameSettings.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'game-settings',
   data: function data() {
     return {
       shared: App.state
@@ -3707,11 +3751,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-hud',
   data: function data() {
     return {
-      shared: App.state
+      shared: App.state,
+      openSettings: false
     };
   },
   methods: {
@@ -8877,6 +8927,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-discards',
   data: function data() {
@@ -8889,6 +8942,9 @@ __webpack_require__.r(__webpack_exports__);
       return this.shared.data.discard.sort(function (a, b) {
         return a.file < b.file ? -1 : a.file > b.file ? 1 : 0;
       });
+    },
+    shuffleMessage: function shuffleMessage() {
+      return this.shared.data.reshuffled ? 'Reshuffled' : 'Never Reshuffled';
     }
   },
   watch: {
@@ -10881,7 +10937,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.conclude {\n    padding: .2em;\n    opacity: .6;\n}\n.rules-link {\n    padding: .1rem .5rem;\n    background-color: rgba(0,0,0,.8);\n    margin-left: .15rem;\n    display: inline-flex;\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.player-panel {\n    max-height: 90%;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    z-index: 1;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n.game-hud__title {\n}\n", ""]);
+exports.push([module.i, "\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link {\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    z-index: 1;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n.game-hud__title {\n}\n", ""]);
 
 // exports
 
@@ -55300,6 +55356,8 @@ var render = function() {
       _vm._v(" "),
       _c("view-discards"),
       _vm._v(" "),
+      _c("game-settings"),
+      _vm._v(" "),
       _c("game-map")
     ],
     1
@@ -55493,6 +55551,93 @@ var render = function() {
     }),
     1
   )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameSettings.vue?vue&type=template&id=b136a8c0&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GameSettings.vue?vue&type=template&id=b136a8c0& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("transition", { attrs: { name: "fade" } }, [
+    _vm.shared.openSettings
+      ? _c("div", { staticClass: "player-prompt view-card z-8" }, [
+          _c(
+            "button",
+            {
+              staticClass: "toggle minimize-toggle top right",
+              on: {
+                click: function($event) {
+                  _vm.shared.openSettings = false
+                }
+              }
+            },
+            [_c("i", { staticClass: "icon-x" })]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "player-prompt__slot-container" }, [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "px-5 pb-5 d-flex flex-column align-stretch center-text"
+              },
+              [
+                _c("div", { staticClass: "title" }, [_vm._v("Game Options")]),
+                _vm._v(" "),
+                _c("div", { staticClass: "pt-4" }, [
+                  _c(
+                    "a",
+                    {
+                      staticClass: " width-100 d-block button",
+                      attrs: {
+                        href:
+                          "https://www.docdroid.net/BmzN8Dy/villains-v310-pdf",
+                        target: "_blank"
+                      }
+                    },
+                    [
+                      _vm._v("\n                   view game rules "),
+                      _c("i", { staticClass: "icon-launch" })
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "pt-3" },
+                  [
+                    _c("end-game", [
+                      _c(
+                        "button",
+                        { staticClass: "conclude button width-100 d-block" },
+                        [_vm._v("conclude game")]
+                      )
+                    ])
+                  ],
+                  1
+                )
+              ]
+            )
+          ])
+        ])
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -55913,7 +56058,7 @@ var render = function() {
             _c(
               "div",
               {
-                staticClass: "d-inline stat-icon highlight pointer",
+                staticClass: "d-inline stat-icon highlight pointer deck-icon",
                 attrs: { title: "view discard pile" },
                 on: {
                   click: function($event) {
@@ -55921,33 +56066,38 @@ var render = function() {
                   }
                 }
               },
-              [_c("i", { staticClass: "icon-delete" })]
+              [
+                _c("i", { staticClass: "icon-card" }),
+                _vm._v(" "),
+                _c("span", { staticClass: "deck-count" }, [
+                  _vm._v(_vm._s(_vm.shared.data.deckCount))
+                ])
+              ]
             ),
             _vm._v(" "),
             _vm.shared.admin
               ? _c(
                   "div",
                   {
-                    staticClass: "d-inline stat-icon highlight pointer",
+                    staticClass:
+                      "d-inline stat-icon highlight pointer save-icon",
                     on: { click: _vm.saveGame }
                   },
                   [_c("i", { staticClass: "icon-save" })]
                 )
               : _vm._e(),
             _vm._v(" "),
-            _vm._m(0),
-            _vm._v(" "),
             _c(
               "div",
-              { staticClass: "width-100" },
-              [
-                _c("end-game", [
-                  _c("div", { staticClass: "pointer conclude" }, [
-                    _vm._v("conclude game")
-                  ])
-                ])
-              ],
-              1
+              {
+                staticClass: "d-inline stat-icon highlight pointer",
+                on: {
+                  click: function($event) {
+                    _vm.shared.openSettings = !_vm.shared.openSettings
+                  }
+                }
+              },
+              [_c("i", { staticClass: "icon-plans" })]
             )
           ],
           1
@@ -55957,25 +56107,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "align-center rules-link" }, [
-      _c(
-        "a",
-        {
-          attrs: {
-            href: "https://www.docdroid.net/BmzN8Dy/villains-v310-pdf",
-            target: "_blank"
-          }
-        },
-        [_vm._v("rules"), _c("i", { staticClass: "icon-launch" })]
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -60834,7 +60966,7 @@ var render = function() {
           "div",
           {
             staticClass:
-              "view-discard pos-absolute width-100 height-100 p-5 overflow-auto z-3"
+              "view-discard pos-absolute width-100 height-100 p-5 overflow-auto z-3 top-0"
           },
           [
             _c("button", {
@@ -60845,6 +60977,18 @@ var render = function() {
                 }
               }
             }),
+            _vm._v(" "),
+            _c("div", { staticClass: "title" }, [
+              _vm._v(
+                "Cards in Deck: " +
+                  _vm._s(_vm.shared.data.deckCount) +
+                  " (" +
+                  _vm._s(_vm.shuffleMessage) +
+                  ")"
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "spacer mt-4" }, [_vm._v(" ")]),
             _vm._v(" "),
             _c("div", { staticClass: "title" }, [_vm._v("Discard Pile")]),
             _vm._v(" "),
@@ -75834,6 +75978,7 @@ var map = {
 	"./GameDisplay.vue": "./resources/js/components/GameDisplay.vue",
 	"./GameLobby.vue": "./resources/js/components/GameLobby.vue",
 	"./GameMap.vue": "./resources/js/components/GameMap.vue",
+	"./GameSettings.vue": "./resources/js/components/GameSettings.vue",
 	"./GameSound.vue": "./resources/js/components/GameSound.vue",
 	"./Huds/CardsHud.vue": "./resources/js/components/Huds/CardsHud.vue",
 	"./Huds/GameControls.vue": "./resources/js/components/Huds/GameControls.vue",
@@ -78546,6 +78691,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GameMap_vue_vue_type_template_id_0167186f___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GameMap_vue_vue_type_template_id_0167186f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/GameSettings.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/components/GameSettings.vue ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _GameSettings_vue_vue_type_template_id_b136a8c0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GameSettings.vue?vue&type=template&id=b136a8c0& */ "./resources/js/components/GameSettings.vue?vue&type=template&id=b136a8c0&");
+/* harmony import */ var _GameSettings_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GameSettings.vue?vue&type=script&lang=js& */ "./resources/js/components/GameSettings.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _GameSettings_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _GameSettings_vue_vue_type_template_id_b136a8c0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _GameSettings_vue_vue_type_template_id_b136a8c0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/GameSettings.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/GameSettings.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/GameSettings.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GameSettings_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./GameSettings.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameSettings.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GameSettings_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/GameSettings.vue?vue&type=template&id=b136a8c0&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/GameSettings.vue?vue&type=template&id=b136a8c0& ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GameSettings_vue_vue_type_template_id_b136a8c0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./GameSettings.vue?vue&type=template&id=b136a8c0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GameSettings.vue?vue&type=template&id=b136a8c0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GameSettings_vue_vue_type_template_id_b136a8c0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GameSettings_vue_vue_type_template_id_b136a8c0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -85945,6 +86159,7 @@ window.App.state = {
   game: null,
   lobbyPlayers: {},
   savedGames: [],
+  openSettings: false,
   player: null,
   faction: null,
   actions: null,

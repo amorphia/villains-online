@@ -12,6 +12,7 @@
         <view-player></view-player>
         <view-card></view-card>
         <view-discards></view-discards>
+        <game-settings></game-settings>
         <game-map></game-map>
     </div>
 </template>

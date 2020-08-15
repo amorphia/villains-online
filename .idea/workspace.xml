@@ -3,14 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/session.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/session.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/areas/Police.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/areas/Police.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Mafia.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Mafia.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Ninjas.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Ninjas.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Robots.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Robots.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/Vampires.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Vampires.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/factions/mixins/battles.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/battles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/GameDisplay.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/GameDisplay.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Huds/GameHud.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Huds/GameHud.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/ViewDiscards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewDiscards.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/partials/_state.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/partials/_state.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/setup.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/setup.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,17 +279,17 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="277" y="60" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1591920629908" />
-    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1597378884444">
+    <state x="98" y="105" width="1035" height="632" key="find.popup" timestamp="1597464208654">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1597378884444" />
+    <state x="98" y="105" width="1035" height="632" key="find.popup/0.0.1536.834@0.0.1536.834" timestamp="1597464208654" />
     <state x="425" y="189" width="672" height="677" key="run.anything.popup" timestamp="1596656317816">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="425" y="189" width="672" height="677" key="run.anything.popup/0.0.1536.834@0.0.1536.834" timestamp="1596656317816" />
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1596581290999">
+    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1597463476085">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1596581290999" />
+    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1597463476085" />
   </component>
 </project>

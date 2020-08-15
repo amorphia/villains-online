@@ -61,7 +61,8 @@ class Game {
         maxPP :12,
         turn : 1,
         discard : null,
-        //firstPlayer : 0,
+        deckCount : 0,
+        reshuffled : false,
         activeIndex : 0,
         playerOrder : [],
         players : {},
@@ -287,14 +288,16 @@ class Game {
     }
 
     drawCard(){
-
         if( !this.deck.deck.length ){
             this.deck.deck = this.deck.discard;
             this.shuffle( this.deck.deck );
             this.message({ message: 'Deck Reshuffled' });
+            this.data.reshuffled = true;
         }
 
-        return this.deck.deck.pop();
+        let card = this.deck.deck.pop();
+        this.data.deckCount = this.deck.deck.length;
+        return card;
     }
 
     conclude( socket, timeout ){

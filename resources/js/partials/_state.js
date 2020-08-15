@@ -58,6 +58,7 @@ window.App.state = {
     game : null,
     lobbyPlayers : {},
     savedGames : [],
+    openSettings : false,
     player : null,
     faction : null,
     actions : null,

@@ -209,6 +209,7 @@ let setup = {
 
         this.shuffle( this.deck.deck );
         this.data.discard = this.deck.discard;
+        this.data.deckCount = this.deck.deck.length;
     },
 
 

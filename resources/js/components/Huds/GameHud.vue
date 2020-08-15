@@ -23,21 +23,26 @@
 
             <!-- CONTROLS -->
             <div class="control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap">
+
+                <!-- SOUND CONTROL -->
                 <game-sound></game-sound>
-                <div class="d-inline stat-icon highlight pointer"
+
+                <!-- DECK AND DISCARDS -->
+                <div class="d-inline stat-icon highlight pointer deck-icon"
                     @click="shared.viewDiscard = !shared.viewDiscard"
                      title="view discard pile">
-                    <i class='icon-delete'></i>
-                </div>
-                <div v-if="shared.admin" class="d-inline stat-icon highlight pointer" @click="saveGame">
-                    <i class='icon-save' ></i>
-                </div>
-                <div class="align-center rules-link">
-                    <a href="https://www.docdroid.net/BmzN8Dy/villains-v310-pdf" target="_blank">rules<i class="icon-launch"></i></a>
+                    <i class='icon-card'></i>
+                    <span class="deck-count">{{ shared.data.deckCount }}</span>
                 </div>
 
-                <div class="width-100">
-                    <end-game><div class="pointer conclude">conclude game</div></end-game>
+                <!-- MANUAL SAVE -->
+                <div v-if="shared.admin" class="d-inline stat-icon highlight pointer save-icon" @click="saveGame">
+                    <i class='icon-save' ></i>
+                </div>
+
+                <!-- GAME OPTIONS BUTTON -->
+                <div class="d-inline stat-icon highlight pointer" @click="shared.openSettings = !shared.openSettings">
+                    <i class='icon-plans'></i>
                 </div>
 
             </div>
@@ -53,6 +58,7 @@
         data() {
             return {
                 shared : App.state,
+                openSettings : false,
             };
         },
 
@@ -78,16 +84,23 @@
 
 <style>
 
-    .conclude {
-        padding: .2em;
-        opacity: .6;
+    .deck-count {
+        font-family: var(--primary-font);
+        position: relative;
+        top: .05em;
+        margin-left: .2em;
+        color: #ffffff94;
+    }
+
+    .stat-icon.deck-icon {
+        font-size: 1.2em;
+    }
+
+    .stat-icon.save-icon {
+        font-size: .95em;
     }
 
     .rules-link {
-        padding: .1rem .5rem;
-        background-color: rgba(0,0,0,.8);
-        margin-left: .15rem;
-        display: inline-flex;
     }
 
     .rules-link i {
@@ -96,6 +109,12 @@
 
     .control-panel {
         background-color: rgba(0,0,0,.25);
+    }
+
+    .control-panel .stat-icon {
+        height: unset;
+        width: unset;
+        flex-grow: 1;
     }
 
     .player-panel {
