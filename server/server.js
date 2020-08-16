@@ -23,6 +23,8 @@ global.Server = require('./classes/Server')( server, io );
 
 
 Server.server.listen( port );
+
+process.on('uncaughtException', ( error) => console.log( error ) );
 console.log( "Websockets listening on port :" + port );
 
 

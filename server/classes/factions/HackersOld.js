@@ -11,14 +11,10 @@ class Hackers extends Faction {
         this.data.name = this.name;
         this.data.focus = 'skills-focus';
         this.data.title = "The Kaos Klub";
-        this.data.baseMaxEnergy = this.data.maxEnergy = 9;
 
-        this.capturedRewards = [
-            { ap : 1, cardDraw : 1 },
-            { ap : 1 },
-            { ap : 1 }
-        ];
-
+        // icons
+        this.data.statusIcon = 'leet';
+        this.data.statusDescription = 'has l33t unit';
 
         // tokens
         this.tokens['boot-up'] = {
@@ -26,15 +22,16 @@ class Hackers extends Faction {
             data: {
                 influence: 1,
                 type: 'boot-up',
+                resource: 1,
                 cost: 0,
             }
         };
-
 
         // units
         this.units['goon'].count = [3];
         this.units['mole'].count = [3];
         this.units['talent'].count = [8];
+        this.units['talent'].data.flipped = false;
 
         this.units['champion'] = {
             count: 1,
@@ -52,38 +49,54 @@ class Hackers extends Faction {
         };
     }
 
+    factionCombatMods( mods, area ) {
 
-    processUpgrade( upgrade ){
-        this.data.maxEnergy = this.data.baseMaxEnergy + upgrade;
-    }
-
-
-    async onBeforeSkill( area ){
-        let player = {}, data = {};
-        if( this.data.resources <= 0 ) return console.log( 'No resources to double skill' );
-
-
-        // prompt player to select a unit
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'double-resolve',
-            data: {
-                count : 1,
-                area : area.name
-            }
-        }).catch( error => console.error( error ) );
-
-        if( !data.doubleResolve ){
-            this.message({ message: `The hackers decline to resolve the ${area.name} skill twice`, faction : this });
-            return;
+        if( this.data.upgrade ){
+            mods.push({
+                type: 'talents',
+                text: `Talents throw ${this.data.upgrade} additional dice`
+            });
         }
 
-        this.data.resources--;
-        this.message({ message: `The hackers pay xRx to resolve the ${area.name} skill twice`, faction : this });
-        return { doubleResolve : true };
+        return mods;
     }
 
+    processUpgrade( upgrade ){
+        this.data.units.forEach( unit => {
+            if( unit.type === 'talent' ){
+                unit.attack = upgrade === 1 ? [5] : [3];
+            }
+        });
+    }
+
+
     async onAfterSkill( area, units ){
+
+
+        // double skill
+        let leetTalent = units.find(
+            unit => unit.unit.type === 'talent'
+                    && unit.unit.flipped
+        );
+
+        if( leetTalent ){
+            this.game().message({ message: `double activates the skill ability of the ${area.name}`, faction : this });
+
+            try {
+                await area.skill( this );
+            } catch( error ){
+                console.error( error );
+            }
+        }
+
+        // make leet unit
+        let unLeetTalent = units.find(
+            unit => unit.unit.type === 'talent'
+                    && !unit.unit.flipped
+        );
+
+        if( unLeetTalent ) this.becomeLeet( unLeetTalent.unit );
+
         // exhaust enemy units
         let zeroDay = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, area ) );
         if( zeroDay ){
@@ -121,9 +134,7 @@ class Hackers extends Faction {
     }
 
     canActivateBootUp( token, area ) {
-        return !! this.data.units.find( unit => _.unitInArea( unit, area )
-            && ( unit.skilled || ( unit.type === 'patsy' && this.controlsArea( 'university' ) ) )
-            && !unit.ready );
+        return !! this.data.units.find( unit => _.unitInArea( unit, area ) && unit.skilled && !unit.ready );
     }
 
     async bootUpToken( args ) {
@@ -137,6 +148,20 @@ class Hackers extends Faction {
 
         this.message({ message: `Skilled units became ready in The ${args.area.name}`, faction : this } );
         this.game().advancePlayer();
+    }
+
+    becomeLeet( unit ) {
+        if( !unit.flipped && !unit.killed ){
+            unit.flipped = true;
+            unit.influence = 2;
+            let message = `${unit.name} becomes l33t in The ${unit.location}`;
+            this.message({ message: message, faction : this });
+        }
+    }
+
+    unitUnflipped( unit ) {
+        unit.flipped = false;
+        unit.influence = 1;
     }
 
 }

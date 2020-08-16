@@ -2,14 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fa3b5a4b-193a-44b8-b288-30044ee17ca0" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/server/classes/factions/HackersOld.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/client.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/GameDisplay.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/GameDisplay.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/Huds/GameHud.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Huds/GameHud.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/ViewDiscards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ViewDiscards.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/partials/_state.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/partials/_state.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/Game.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/Game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/classes/gameMixins/setup.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/gameMixins/setup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Faction.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Faction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/Hackers.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/Hackers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/classes/factions/mixins/activatesSkills.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/classes/factions/mixins/activatesSkills.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,25 +177,25 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="HTML" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/server/classes/areas" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/server/classes/factions" />
     <property name="list.type.of.created.stylesheet" value="SCSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="web-ide.project.structure" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Websites\villains-online\resources\js\components\Prompts" />
+      <recent name="D:\Websites\villains-online\resources\js\components\Passives" />
+      <recent name="D:\Websites\villains-online\server\classes\factions" />
+      <recent name="D:\Websites\villains-online\resources\js\components\Focus" />
+      <recent name="D:\Websites\villains-online\resources\js\components\ViewPanels" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Websites\villains-online\server\classes\factions" />
       <recent name="D:\Websites\villains-online\server\classes\areas" />
       <recent name="D:\Websites\villains-online\resources\js\components\Focus" />
       <recent name="D:\Websites\villains-online\resources\js\components\Passives" />
       <recent name="D:\Websites\villains-online\server\classes\factionPlans" />
-      <recent name="D:\Websites\villains-online\server\classes\factions" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Websites\villains-online\resources\js\components\Passives" />
-      <recent name="D:\Websites\villains-online\server\classes\factions" />
-      <recent name="D:\Websites\villains-online\resources\js\components\Focus" />
-      <recent name="D:\Websites\villains-online\resources\js\components\Prompts" />
-      <recent name="D:\Websites\villains-online\resources\js\components\ViewPanels" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -240,6 +239,7 @@
       <workItem from="1594834562760" duration="281533000" />
       <workItem from="1596173954648" duration="81477000" />
       <workItem from="1596694614039" duration="30403000" />
+      <workItem from="1597511946109" duration="4642000" />
     </task>
     <servers />
   </component>
