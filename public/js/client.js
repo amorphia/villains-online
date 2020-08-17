@@ -6902,10 +6902,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'double-resolve',
   data: function data() {
@@ -6922,9 +6918,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
-    canActivate: function canActivate() {
-      return this.shared.faction.resources >= 1;
-    },
     data: function data() {
       return this.shared.player.prompt.data;
     },
@@ -59189,7 +59182,7 @@ var render = function() {
         },
         [
           _c("div", { staticClass: "title" }, [
-            _vm._v("Resolve this skill twice?")
+            _vm._v("Activate this skill in response?")
           ]),
           _vm._v(" "),
           _c("area-flipper", { attrs: { areas: [_vm.area], index: 0 } }, [
@@ -59200,17 +59193,6 @@ var render = function() {
               }
             })
           ]),
-          _vm._v(" "),
-          _c("div", {
-            staticClass: "prompt-question",
-            domProps: {
-              innerHTML: _vm._s(
-                _vm.shared.filterText(
-                  "Pay xRx to resolve this skill a second time?"
-                )
-              )
-            }
-          }),
           _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
             _c(
@@ -59230,14 +59212,13 @@ var render = function() {
               "button",
               {
                 staticClass: "button",
-                attrs: { disabled: !_vm.canActivate },
                 on: {
                   click: function($event) {
                     return _vm.resolve(true)
                   }
                 }
               },
-              [_vm._v("Resolve Twice")]
+              [_vm._v("Activate Skill")]
             )
           ])
         ],
