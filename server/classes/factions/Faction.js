@@ -171,7 +171,7 @@ class Faction {
 
     godMode(){
         console.log( 'god mode enabled' );
-        this.data.cardDraw = 30;
+        this.data.cardDraw = 16;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;
     }
@@ -215,12 +215,11 @@ class Faction {
         // remove active cards
         this.data.cards.active.forEach( card => {
             this.game().cards[card.class].clear( this );
-            _.moveItemById(
-                card.id,
-                this.data.cards.active,
-                this.game().deck.discard
-            );
+            card.owner = null;
         });
+
+        let cards = this.data.cards.active.splice( 0 );
+        cards.forEach( card => this.game().deck.discard.push( card ) );
 
 
         // discard target

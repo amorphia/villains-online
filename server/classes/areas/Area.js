@@ -31,15 +31,12 @@ class Area {
         // clear tokens
         this.data.tokens = [];
 
-        // remove cards
-        this.data.cards.forEach( card => {
-            card.owner = null;
-            _.moveItemById(
-                card.id,
-                this.data.cards,
-                this.game().deck.discard
-            );
-        } );
+        // clear card owners
+        this.data.cards.forEach( card => card.owner = null );
+
+        // move cards to discard
+        let cards = this.data.cards.splice( 0 );
+        cards.forEach( card => this.game().deck.discard.push( card ) );
 
         // clear battle marker
         this.data.battle = false;

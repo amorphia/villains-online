@@ -276,9 +276,11 @@ class Game {
         Server.io.to( this.id ).emit( 'update', this.data );
     }
 
+
     updatePlayerData(){
         Server.io.to( this.id ).emit( 'updatePlayerData', this.data.players );
     }
+
 
     updateResources(){
         let data = Object.values( this.data.factions ).map( faction => {
@@ -287,13 +289,18 @@ class Game {
         Server.io.to( this.id ).emit( 'updateResources', data );
     }
 
+
+    reshuffleDiscard(){
+        let cards = this.deck.discard.splice( 0 );
+        cards.forEach( card => this.deck.deck.push( card ) );
+        this.shuffle( this.deck.deck );
+        this.message({ message: 'Deck Reshuffled' });
+        this.data.reshuffled = true;
+        this.data.discard = this.deck.discard;
+    }
+
     drawCard(){
-        if( !this.deck.deck.length ){
-            this.deck.deck = this.deck.discard;
-            this.shuffle( this.deck.deck );
-            this.message({ message: 'Deck Reshuffled' });
-            this.data.reshuffled = true;
-        }
+        if( !this.deck.deck.length ) this.reshuffleDiscard();
 
         let card = this.deck.deck.pop();
         this.data.deckCount = this.deck.deck.length;
