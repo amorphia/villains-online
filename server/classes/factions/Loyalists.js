@@ -57,6 +57,7 @@ class Loyalists extends Faction {
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
+                onMove: 'placeServants',
                 onDeploy: 'placeServants',
                 onKilled: 'queenDeath'
             }
