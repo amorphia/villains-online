@@ -201,7 +201,7 @@ let helpers = {
         ){
             for( let fac of Object.values( factions ) ){
                 if( fac.name === faction.name ) continue;
-                if( fac.units.find( unit => this.unitReadyInArea( unit, area ) ) ) return true;
+                if( fac.units.find( unit => this.unitReadyInArea( unit, area ) && unit.basic ) ) return true;
             }
         }
     },

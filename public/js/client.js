@@ -86725,7 +86725,7 @@ var helpers = {
         var fac = _Object$values[_i];
         if (fac.name === faction.name) continue;
         if (fac.units.find(function (unit) {
-          return _this2.unitReadyInArea(unit, area);
+          return _this2.unitReadyInArea(unit, area) && unit.basic;
         })) return true;
       }
     }
