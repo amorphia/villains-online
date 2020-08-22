@@ -2324,6 +2324,7 @@ __webpack_require__.r(__webpack_exports__);
     concludeGame: function concludeGame() {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('concludeGame');
+      this.shared.openSettings = false;
     }
   }
 });

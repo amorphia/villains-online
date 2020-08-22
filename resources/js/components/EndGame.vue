@@ -25,6 +25,7 @@
             concludeGame(){
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'concludeGame' );
+                this.shared.openSettings = false;
             }
         }
     }
