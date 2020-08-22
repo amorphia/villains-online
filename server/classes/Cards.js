@@ -461,7 +461,7 @@ class SuitcaseNuke extends Card {
                 areas : [area.name],
                 optional : true
             }
-        }).catch( error => console.error( error ) );
+        });
 
         if( !data.units.length ){
             faction.game().message({ faction : faction, message: "chose not to activate the suitcase nuke", class : 'text' });
@@ -495,16 +495,14 @@ class SuitcaseNuke extends Card {
         area.data.tokens = [];
 
         // kill all units
-        _.forEach( faction.game().factions, fac => {
-            fac.data.units.forEach( unit => {
+        for( let fac of Object.values( faction.game().factions ) ){
+            for( let unit of fac.data.units ) {
                 if( _.unitInArea( unit, area ) ){
-                    faction.game().killUnit( unit, faction );
+                    await faction.game().killUnit( unit, faction );
                 }
-            });
-        });
+            }
+        }
     }
-
-
 }
 
 

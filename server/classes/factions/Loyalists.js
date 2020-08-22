@@ -120,17 +120,13 @@ class Loyalists extends Faction {
                 unitTypes : potentialTypes,
                 message: 'Choose a loyalist unit to replace'
             }
-        }).catch( error => console.error( error ) );
+        });
         let unit = this.game().objectMap[ data.units[0] ];
 
         let message = `Replaces <span class="faction-loyalists">The Loyalist ${unit.name}</span> in the ${unit.location}`;
         this.game().message({ faction : killer, message: message });
 
-        try {
-            await killer.replaceUnit( unit, { message : `The ${killer.name} replace a unit in The ${unit.location}` } );
-        } catch( error ){
-            console.error( error );
-        }
+        await killer.replaceUnit( unit, { message : `The ${killer.name} replace a unit in The ${unit.location}` } );
     }
 
     canActivateKnight( token, area ) {
