@@ -126,7 +126,7 @@ class Vampires extends Faction {
                 let area = this.game().areas[token.location];
                 let hasUnit = !! this.data.units.find( unit => _.unitInArea( unit, area.name ) );
                 let hasEnemy = Object.keys( _.enemyUnitsInArea( this, area.name, this.game().data.factions ) ).length;
-                if( hasUnit && hasEnemy ) areas[area.name] = true;
+                if( hasUnit && hasEnemy && !area.hasCard( 'cease-fire' ) ) areas[area.name] = true;
             }
         });
 
