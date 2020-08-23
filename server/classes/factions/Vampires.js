@@ -75,40 +75,43 @@ class Vampires extends Faction {
 
     async onAfterReveal( token ){
         if( token.faction !== this.name ) return;
+        let player, data, destinationAreaName = token.location;
 
-        let player, data;
-        let destinationAreaName = token.location;
-
+        // check for areas with vampires (that aren't this area)
         let potentialAreas = this.areasWithUnits({ flipped : true, excludesArea : destinationAreaName });
-
         if( !potentialAreas.length ) return;
+
+        let message = this.data.batMove > 1 ? `Fly up to ${this.data.batMove} vampires to the ${destinationAreaName}` : `Fly a vampire to the ${destinationAreaName}?`;
 
         [player, data] = await this.game().promise({
             players: this.playerId,
             name: 'choose-units',
             data: {
-                    count : 1,
+                    count : this.data.batMove,
                     areas : potentialAreas,
                     playerOnly : true,
                     flippedOnly : true,
                     canDecline : true,
-                    message: `Fly a vampire to the ${destinationAreaName}?`
+                    optionalMax : true,
+                    message: message
                 }
             }).catch( error => console.error( error ) );
-
         if( data.decline ) return false;
 
-        let unit = this.game().objectMap[ data.units[0] ];
+        let units = data.units.map( unitId => this.game().objectMap[ unitId ] );
 
-        unit.location = destinationAreaName;
-        if( unit.ready ) unit.ready = false;
+        units.forEach( unit => {
+            unit.location = destinationAreaName;
+            if( unit.ready ) unit.ready = false;
+        });
+
 
         this.game().sound( 'bats' );
-        this.game().message({ faction : this, message: `Fly a vampire ${unit.name} to The ${destinationAreaName}` });
+        this.game().message({ faction : this, message: `Fly a vampire${units.length > 1 ? 's':'' } to The ${destinationAreaName}` });
 
         await this.game().timedPrompt('units-shifted', {
-            message : `A Vampire flies to The ${destinationAreaName}`,
-            units: unit
+            message : `${units.length === 1 ? 'A Vampire flies' : 'Vampires fly'} to The ${destinationAreaName}`,
+            units: units
         });
 
     }

@@ -6093,6 +6093,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-units',
   data: function data() {
@@ -6102,6 +6110,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    canSubmit: function canSubmit() {
+      if (this.needToSelect === 0 || this.data.optionalMax && this.selected.length > 0) return true;
+    },
     enemyUnits: function enemyUnits() {
       if (!this.data.showEnemyUnits) return [];
       return _.enemyUnitsInArea(this.shared.faction, this.area, this.shared.data.factions, {
@@ -58570,6 +58581,23 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
+          _vm.data.count > 1
+            ? _c(
+                "div",
+                { staticClass: "d-flex justify-center flex-wrap mt-3" },
+                _vm._l(_vm.data.count, function(n, index) {
+                  return _c("i", {
+                    staticClass: "deploy-limit__pip",
+                    class:
+                      index < _vm.selected.length
+                        ? "icon-circle active"
+                        : "icon-circle-open"
+                  })
+                }),
+                0
+              )
+            : _vm._e(),
+          _vm._v(" "),
           _c("div", {}, [
             _vm.data.canDecline
               ? _c(
@@ -58590,7 +58618,7 @@ var render = function() {
               "button",
               {
                 staticClass: "button",
-                attrs: { disabled: _vm.needToSelect > 0 },
+                attrs: { disabled: !_vm.canSubmit },
                 on: {
                   click: function($event) {
                     return _vm.resolve(true)

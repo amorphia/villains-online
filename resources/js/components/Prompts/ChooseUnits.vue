@@ -16,9 +16,17 @@
 
                 </area-flipper>
 
+                <!-- deploy limit pips -->
+                <div v-if="data.count > 1" class="d-flex justify-center flex-wrap mt-3">
+                    <!-- default deploy limit -->
+                    <i v-for="(n, index) in data.count"
+                       class="deploy-limit__pip"
+                       :class="index < selected.length ? 'icon-circle active' : 'icon-circle-open'"></i>
+                </div>
+
                 <div class="">
                     <button v-if="data.canDecline" class="button button-empty" @click="resolve( false )">DECLINE</button>
-                    <button class="button" @click="resolve( true )" :disabled="needToSelect > 0">SELECTED UNITS</button>
+                    <button class="button" @click="resolve( true )" :disabled="!canSubmit">SELECTED UNITS</button>
                 </div>
             </div>
         </div>
@@ -38,6 +46,12 @@
         },
 
         computed : {
+
+            canSubmit(){
+                if( this.needToSelect === 0
+                    || ( this.data.optionalMax && this.selected.length > 0 )
+                ) return true;
+            },
 
             enemyUnits(){
                 if( !this.data.showEnemyUnits ) return [];
