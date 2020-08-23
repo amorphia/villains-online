@@ -145,6 +145,9 @@ let obj = {
         // do we even have a valid attack set?
         if( !args.attacks.length ) return this.game().message({ class : 'warning', message : 'Invalid attack value' });
 
+        // if this is a unit attacking, but there is a cease fire in the area abort
+        if( args.unit && args.area.hasCard( 'cease-fire' ) ) return this.game().message({ class : 'warning', message : 'Cease fire prevents unit from attacking' });
+
         // if this is a unit attacking, set bonus dice
         if( args.unit ) args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice );
 
