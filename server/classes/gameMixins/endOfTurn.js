@@ -217,7 +217,8 @@ let obj = {
             };
 
             if( target.owner && this.factions[target.owner] ){
-                this.factions[target.owner].gainAP( 1 );
+                let points = this.data.turn === 4 ? 2 : 1;
+                this.factions[target.owner].gainAP( points );
             }
 
             targets.push( target );

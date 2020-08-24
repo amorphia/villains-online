@@ -4700,6 +4700,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'title-card',
   data: function data() {
@@ -11236,7 +11243,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.title-card {\n    background-image: url(\"/images/background-blurred.jpg\");\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: 100% 100%;\n    box-shadow: inset 0 0 15px rgba(0,0,0,.5),\n                0 0 0px 3px rgba(255,103,149,.75),\n                0 0 0px 8px rgba(0,0,0,1),\n                0px 0px 6px rgba(0,0,0,.5);\n    position: absolute;\n    right: 50%;\n    top: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 98%;\n    padding: 5rem;\n    font-size: 5rem;\n    text-transform: uppercase;\n    z-index: 3;\n    color: #ffff2a;\n    text-shadow: 0 0 5px var(--highlight-color);\n    letter-spacing: .1em;\n    white-space: nowrap;\n}\n\n", ""]);
+exports.push([module.i, "\n.title-card {\n    background-image: url(\"/images/background-blurred.jpg\");\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: 100% 100%;\n    box-shadow: inset 0 0 15px rgba(0,0,0,.5),\n                0 0 0px 3px rgba(255,103,149,.75),\n                0 0 0px 8px rgba(0,0,0,1),\n                0px 0px 6px rgba(0,0,0,.5);\n    position: absolute;\n    right: 50%;\n    top: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 98%;\n    padding: 5rem;\n    text-transform: uppercase;\n    z-index: 3;\n    color: #ffff2a;\n    text-shadow: 0 0 5px var(--highlight-color);\n    letter-spacing: .1em;\n    white-space: nowrap;\n}\n.title-card__message {\n    font-size: 5rem;\n}\n\n", ""]);
 
 // exports
 
@@ -57219,7 +57226,12 @@ var render = function() {
                 _vm._v(" "),
                 _c("img", {
                   staticClass: "target-block__ap-icon",
-                  attrs: { src: "/images/icons/ap-1.png" }
+                  attrs: {
+                    src:
+                      "/images/icons/ap-" +
+                      (_vm.shared.data.turn === 4 ? "2" : "1") +
+                      ".png"
+                  }
                 })
               ])
             : _c("div", { staticClass: "center-text primary-light" }, [
@@ -57253,7 +57265,18 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "title-card" }, [
-    _vm._v(_vm._s(_vm.data.message))
+    _c("div", { staticClass: "title" }, [
+      _vm._v("\n        TURN " + _vm._s(_vm.shared.data.turn) + "\n        "),
+      _vm.data.showDoubleAP
+        ? _c("div", { staticClass: "prompt-question" }, [
+            _vm._v("TARGETS WORTH 2AP")
+          ])
+        : _vm._e()
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "title-card__message" }, [
+      _vm._v(_vm._s(_vm.data.message))
+    ])
   ])
 }
 var staticRenderFns = []

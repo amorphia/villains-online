@@ -6,7 +6,7 @@ class Game {
     defaultSlideSpeed = 5;
     titleCardTimer = 3;
     fastMode = false;
-    testMode = true;
+    godMode = false;
     localServer = false;
     playerTimeoutLength = 10; // seconds
     maxPlayerTimeouts = 50;
@@ -56,8 +56,9 @@ class Game {
         playerAction : 0,
         id : null,
         state : 'open',
+        upgradePoints : [ 4, 8 ],
         phase : null,
-        maxAP : 10,
+        maxAP : 12,
         maxPP :12,
         turn : 1,
         discard : null,

@@ -165,7 +165,7 @@ class Faction {
         this.gameId = game.id;
         this.data.owner = playerId;
 
-        if( this.game().testMode && this.game().localServer ) this.godMode();
+        if( this.game().godMode && this.game().localServer ) this.godMode();
 
     }
 
@@ -400,12 +400,12 @@ class Faction {
         let maxPoints = Math.max( this.data.ap, this.data.pp );
         let newUpgrade;
 
-        if( maxPoints >= 4 && this.data.upgrade < 1 ) {
+        if( maxPoints >= this.game().data.upgradePoints[0] && this.data.upgrade < 1 ) {
             this.data.upgrade = 1;
             newUpgrade = 1;
         }
 
-        if( maxPoints >= 7 && this.data.upgrade < 2 ){
+        if( maxPoints >= this.game().data.upgradePoints[1] && this.data.upgrade < 2 ){
             this.data.upgrade = 2;
             newUpgrade = 2;
         }

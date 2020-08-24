@@ -4,7 +4,15 @@ let obj = {
         this.data.phase = "plans-and-targets";
 
         try{
-            await this.timedPrompt( 'title-card', { wait : this.titleCardTimer, message : 'Start of Turn' } );
+
+            let data = {
+                wait : this.titleCardTimer,
+                message : 'Start of Turn'
+            };
+
+            if( this.data.turn === 4 ) data.showDoubleAP = true;
+
+            await this.timedPrompt( 'title-card', data );
         } catch( error ){
             console.error( error );
         }

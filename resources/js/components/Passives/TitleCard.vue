@@ -1,5 +1,12 @@
 <template>
-    <div class="title-card">{{ data.message }}</div>
+    <div class="title-card">
+        <div class="title">
+            TURN {{ shared.data.turn }}
+            <div v-if="data.showDoubleAP" class="prompt-question">TARGETS WORTH 2AP</div>
+        </div>
+
+        <div class="title-card__message">{{ data.message }}</div>
+    </div>
 </template>
 
 
@@ -45,13 +52,16 @@
         max-width: 95%;
         max-height: 98%;
         padding: 5rem;
-        font-size: 5rem;
         text-transform: uppercase;
         z-index: 3;
         color: #ffff2a;
         text-shadow: 0 0 5px var(--highlight-color);
         letter-spacing: .1em;
         white-space: nowrap;
+    }
+
+    .title-card__message {
+        font-size: 5rem;
     }
 
 </style>
