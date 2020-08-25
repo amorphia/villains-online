@@ -42,12 +42,15 @@ class Faction {
         usedSkills : [],
         tokenSpy : null,
 
-
         // objects
         plans : {
             current : [],
             deck : [],
             completed : [],
+        },
+        objective : {
+            card : null,
+            tests : {}
         },
         units : [],
         tokens : [],
@@ -237,6 +240,9 @@ class Faction {
 
         // reset token spy
         this.data.tokenSpy = false;
+
+        // clear objective tests
+        this.data.objective.tests = {};
 
         // faction specific end of turn shizz
         try {

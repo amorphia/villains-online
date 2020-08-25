@@ -304,7 +304,15 @@ let mixin = {
         return areas;
     },
 
+    areasWithMinInfluence( influenceCount ){
+        let areasWithMinInfluence = 0;
 
+        _.forEach( this.game().areas, area => {
+            if( this.influenceInArea( area ) >= influenceCount ) areasWithMinInfluence++;
+        });
+
+        return areasWithMinInfluence;
+    },
 
     /**
      *

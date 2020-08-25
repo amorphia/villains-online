@@ -122,12 +122,7 @@ class PlanTester {
 
 
     influenceInAreas( faction, influenceCount, areaCount = 1 ) {
-        let areasWithEnoughInfluence = 0;
-
-        _.forEach( faction.game().areas, area => {
-            if( faction.influenceInArea( area ) >= influenceCount ) areasWithEnoughInfluence++;
-        });
-
+        let areasWithEnoughInfluence = faction.areasWithMinInfluence( influenceCount );
         let result = areasWithEnoughInfluence >= areaCount;
 
         if( this.debug ) console.log(

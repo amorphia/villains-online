@@ -5,8 +5,8 @@ class Game {
 
     defaultSlideSpeed = 5;
     titleCardTimer = 3;
-    fastMode = false;
-    godMode = false;
+    fastMode = true;
+    godMode = true;
     localServer = false;
     playerTimeoutLength = 10; // seconds
     maxPlayerTimeouts = 50;
