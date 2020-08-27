@@ -1,7 +1,7 @@
 let obj = {
 
     canActivateMove( token, area ){
-        return this.money() >= 2 && this.moveFromAreas( { area:area } ).length > 0;
+        return this.money() >= token.cost && this.moveFromAreas( { area:area } ).length > 0;
     },
 
 
