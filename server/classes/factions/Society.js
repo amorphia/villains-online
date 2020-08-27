@@ -71,7 +71,7 @@ class Society extends Faction {
 
     processUpgrade( n ) {
         switch( n ) {
-            case 1 : this.data.tokensNotDiscardedMax = 0; break;
+            case 1 : this.data.tokensNotDiscardedMax = 1; break;
             case 2 : this.data.tokensNotDiscardedMax = 11; break;
         }
     }
