@@ -465,7 +465,9 @@ class Faction {
         _.forEach( rewards, (value, prop ) => {
             if( prop === 'ap' ){
                 this.gainAP( value );
-            } else {
+            } else if( prop === 'pp' ){
+                this.gainPP( value );
+            } {
                 this.data[prop] += value;
             }
         });

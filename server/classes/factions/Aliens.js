@@ -19,7 +19,7 @@ class Aliens extends Faction {
             { ap : 1, cardDraw : 1 },
             { ap : 1, maxEnergy : 1 },
             { ap : 1, cardDraw : 1 },
-            { ap : 2 },
+            { ap : 1, pp : 1 },
         ];
 
         // tokens

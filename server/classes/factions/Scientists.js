@@ -12,6 +12,7 @@ class Scientists extends Faction {
         this.data.name = this.name;
         this.data.title = "The Union of Mad Science";
         this.data.cardDraw = 4;
+        this.data.maxEnergy = 10;
         this.data.fusion = 0;
         this.data.upgradeCardDraw = 0;
 
