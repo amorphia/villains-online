@@ -67,10 +67,10 @@ class Aliens extends Faction {
     processUpgrade( n ){
         switch( n ){
             case 2 :
-                this.data.farMove = true;
-                // intentional fallthrough
-            case 1 :
                 this.data.tokens.forEach( token => token.cost = 0 );
+                break;
+            case 1 :
+                this.data.tokens.forEach( token => token.cost = 1 );
                 break;
         }
     }
