@@ -22,8 +22,6 @@ class Mafia extends Faction {
             }
         };
 
-        this.tokens['deploy'].count = 4;
-
         // units
         this.units['talent'].count = 2;
         this.units['patsy'].count = 5;
