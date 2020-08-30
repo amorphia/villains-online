@@ -174,7 +174,7 @@ class Faction {
 
     godMode(){
         console.log( 'god mode enabled' );
-        this.data.cardDraw = 33;
+        this.data.cardDraw = 16;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;
     }
@@ -467,7 +467,7 @@ class Faction {
                 this.gainAP( value );
             } else if( prop === 'pp' ){
                 this.gainPP( value );
-            } {
+            } else {
                 this.data[prop] += value;
             }
         });
