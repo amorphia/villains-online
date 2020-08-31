@@ -46,11 +46,13 @@ class Area {
         return _.eachInfluenceInArea( this, this.game().data.factions );
     }
 
-    playerWithMostInfluence( influences ){
+    mostInfluence( influences ){
         let max = _.maxBy(influences, 'influence');
-        if( !max ) return false;
+        return max ? max.influence : 0;
+    }
 
-        max = max.influence;
+    playerWithMostInfluence( influences ){
+        let max = this.mostInfluence( influences );
         let maxes = influences.filter( item => item.influence === max );
         return maxes.length === 1 ? maxes[0].faction : false;
     }
@@ -84,7 +86,7 @@ class Area {
             newControllerName = null;
         } else if( this.herMajestyInArea() ){ // Queen trumps everything else
             newControllerName = 'loyalists';
-        } else { // otherwise whomever has the most influence gets its
+        } else if( this.data.owner !== 'neutral' || this.mostInfluence( influences ) > 1 ){ // otherwise whomever has the most influence gets its
             newControllerName = this.playerWithMostInfluence( influences );
         }
 
