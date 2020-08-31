@@ -58618,22 +58618,20 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
-          _vm.data.count > 1
-            ? _c(
-                "div",
-                { staticClass: "d-flex justify-center flex-wrap mt-3" },
-                _vm._l(_vm.data.count, function(n, index) {
-                  return _c("i", {
-                    staticClass: "deploy-limit__pip",
-                    class:
-                      index < _vm.selected.length
-                        ? "icon-circle active"
-                        : "icon-circle-open"
-                  })
-                }),
-                0
-              )
-            : _vm._e(),
+          _c(
+            "div",
+            { staticClass: "d-flex justify-center flex-wrap mt-3" },
+            _vm._l(_vm.data.count, function(n, index) {
+              return _c("i", {
+                staticClass: "deploy-limit__pip",
+                class:
+                  index < _vm.selected.length
+                    ? "icon-circle active"
+                    : "icon-circle-open"
+              })
+            }),
+            0
+          ),
           _vm._v(" "),
           _c("div", {}, [
             _vm.data.canDecline

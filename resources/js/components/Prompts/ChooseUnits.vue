@@ -17,7 +17,7 @@
                 </area-flipper>
 
                 <!-- deploy limit pips -->
-                <div v-if="data.count > 1" class="d-flex justify-center flex-wrap mt-3">
+                <div class="d-flex justify-center flex-wrap mt-3">
                     <!-- default deploy limit -->
                     <i v-for="(n, index) in data.count"
                        class="deploy-limit__pip"
