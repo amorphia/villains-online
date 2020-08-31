@@ -2,7 +2,7 @@
 
 return [
 
-    'max_saves' => 6,
+    'max_saves' => 10,
 
     'core_file_folders' => [
         '/images/areas',
