@@ -118,8 +118,25 @@
                 return units;
             },
 
+            unitsPool(){
+                // belongs to current player
+                if( this.data.playerOnly ) return this.shared.faction.units;
+
+                // belongs to specific player
+                if( this.data.belongsTo ) return this.shared.data.faction[ this.data.belongsTo ].units;
+
+                // multiple players
+                let units = [];
+                _.forEach( this.shared.data.factions, faction => {
+                    // enemy only
+                    if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
+                    units = _.concat( units, faction.units );
+                });
+                return units;
+            },
+
             selected(){
-                return this.areaUnits.filter( unit => unit.selected );
+                return this.unitsPool.filter( unit => unit.selected );
             },
 
             data(){
@@ -145,7 +162,7 @@
 
             updateArea( n ){
                 if( n === this.index ) return;
-                this.areaUnits.forEach( unit => this.$set( unit, 'selected', false ) );
+                //this.areaUnits.forEach( unit => this.$set( unit, 'selected', false ) );
                 this.index = n;
             },
 
@@ -166,7 +183,7 @@
                         if( this.data.count > 1) {
                             return;
                         }
-                        this.areaUnits.forEach( unit => this.$set( unit, 'selected', false ) );
+                        this.selected.forEach( unit => this.$set( unit, 'selected', false ) );
                     }
                     this.$set( unit, 'selected', true );
                 }

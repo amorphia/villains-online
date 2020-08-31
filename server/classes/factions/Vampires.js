@@ -107,7 +107,7 @@ class Vampires extends Faction {
 
 
         this.game().sound( 'bats' );
-        this.game().message({ faction : this, message: `Fly a vampire${units.length > 1 ? 's':'' } to The ${destinationAreaName}` });
+        this.game().message({ faction : this, message: `Fly ${units.length} vampire${units.length > 1 ? 's':'' } to The ${destinationAreaName}` });
 
         await this.game().timedPrompt('units-shifted', {
             message : `${units.length === 1 ? 'A Vampire flies' : 'Vampires fly'} to The ${destinationAreaName}`,

@@ -6176,8 +6176,26 @@ __webpack_require__.r(__webpack_exports__);
 
       return units;
     },
+    unitsPool: function unitsPool() {
+      var _this3 = this;
+
+      // belongs to current player
+      if (this.data.playerOnly) return this.shared.faction.units; // belongs to specific player
+
+      if (this.data.belongsTo) return this.shared.data.faction[this.data.belongsTo].units; // multiple players
+
+      var units = [];
+
+      _.forEach(this.shared.data.factions, function (faction) {
+        // enemy only
+        if (_this3.data.enemyOnly && faction.name === _this3.shared.faction.name) return;
+        units = _.concat(units, faction.units);
+      });
+
+      return units;
+    },
     selected: function selected() {
-      return this.areaUnits.filter(function (unit) {
+      return this.unitsPool.filter(function (unit) {
         return unit.selected;
       });
     },
@@ -6199,12 +6217,8 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.respond('choose-units', data);
     },
     updateArea: function updateArea(n) {
-      var _this3 = this;
+      if (n === this.index) return; //this.areaUnits.forEach( unit => this.$set( unit, 'selected', false ) );
 
-      if (n === this.index) return;
-      this.areaUnits.forEach(function (unit) {
-        return _this3.$set(unit, 'selected', false);
-      });
       this.index = n;
     },
     unitClicked: function unitClicked(unit) {
@@ -6222,7 +6236,7 @@ __webpack_require__.r(__webpack_exports__);
             return;
           }
 
-          this.areaUnits.forEach(function (unit) {
+          this.selected.forEach(function (unit) {
             return _this4.$set(unit, 'selected', false);
           });
         }
