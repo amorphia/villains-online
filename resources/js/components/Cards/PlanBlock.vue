@@ -3,7 +3,7 @@
 
         <div class="plan-block__container d-flex">
             <div class="plan-block__pips">
-                <div v-for="test in plan.objectives" class="plan-block__pip highlight" :class="test.passed ? 'icon-circle' : 'icon-circle-open'"></div>
+                <div v-for="test in plan.objectives" class="plan-block__pip primary-light" :class="{ 'icon-circle' : test.passed, 'icon-circle-open' : !test.passed, 'highlight' : test.scoreable }"></div>
             </div>
             <div class='plan-block__image-wrap' @click="$emit('clicked')" :class="{ selected : plan.selected }">
                 <img class="plan-block__image" :src="image">
@@ -23,7 +23,7 @@
     export default {
 
         name: 'plan-block',
-        props : ['plan','faction'],
+        props : ['plan','faction','scorablePips'],
         data() {
             return {
                 shared : App.state

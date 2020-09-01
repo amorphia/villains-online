@@ -1,6 +1,6 @@
 <template>
     <div class="message-box">
-        <img class="width-75" :src="`/images/tokens/capitol-${message.turn}-points.png`">
+        <img class="width-75" :src="`/images/tokens/capitol-${message.turn}.png`">
     </div>
 </template>
 

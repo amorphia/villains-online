@@ -37,12 +37,12 @@ let obj = {
         });
     },
 
-    async chooseTargetPlan( player, planIndex, targetIndex ){
+    async chooseTargetPlan( player, plan, target ){
         if( ! player.data.active ) return;
 
         let faction = player.faction();
-        _.moveItem( planIndex, faction.data.plans.current, faction.data.plans.deck );
-        _.moveItem( targetIndex, faction.data.cards.hand, faction.data.cards.target );
+        _.moveItemById( plan.id, faction.data.plans.current, faction.data.plans.deck );
+        _.moveItemById( target.id, faction.data.cards.hand, faction.data.cards.target );
 
         player.setPrompt({
             name : null,

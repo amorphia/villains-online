@@ -367,7 +367,7 @@ class Faction {
 
     gainAP( n = 1, options = {} ){
         this.data.ap += n;
-        if( options.message ) this.message({
+        this.message({
             message : `gain xAP${n}x`,
             faction : this
         });
@@ -375,7 +375,7 @@ class Faction {
 
     gainPP( n = 1, options = {}  ){
         this.data.pp += n;
-        if( options.message ) this.message({
+        this.message({
             message : `gain xPP${n}x`,
             faction : this
         });

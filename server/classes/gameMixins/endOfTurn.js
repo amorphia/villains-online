@@ -172,7 +172,11 @@ let obj = {
             await Promise.all( promises );
             this.processPlanResults( results );
 
-            await this.timedPrompt( 'plan-results', { wait : slideSpeed * results.length, slideSpeed : slideSpeed, results : results });
+            await this.timedPrompt( 'plan-results', {
+                wait : slideSpeed * results.length,
+                slideSpeed : slideSpeed,
+                results : results
+            });
 
         } catch( error ){
             console.error( error );
@@ -185,7 +189,19 @@ let obj = {
             let faction = this.factions[result.faction];
             result.plans.forEach( plan => {
                 if( plan.selected ){
+                    console.log( plan );
+
+                    // gain plan points
                     faction.gainPP( plan.points );
+
+                    // tag plan with data on when/how scored
+                    let planObject = this.objectMap[ plan.plan.id ];
+                    planObject.turnScored = this.data.turn;
+                    planObject.objectives = plan.objectives;
+                    planObject.plan = { num : plan.num };
+                    planObject.points = plan.points;
+
+                    // move plan to completed array
                     _.moveItemById( plan.plan.id , faction.data.plans.current, faction.data.plans.completed );
                 }
             });

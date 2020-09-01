@@ -13,6 +13,7 @@ class PlanTester {
         }
 
         let results = [];
+        let hasFailedObjective = false;
 
         // for each objective
         plan.objectives.forEach( objective => {
@@ -20,10 +21,10 @@ class PlanTester {
             let tests = [];
             // test each requirement
             objective.requirements.forEach( req => {
-
                 if( !this.checkRequirement( req, faction ) ){
-                    tests.push({ test: req.test, result : false });
+                    tests.push({ test: req.test, result : false  });
                     passed = false;
+                    hasFailedObjective = true;
                 } else {
                     let testObject = { test: req.test, result : true };
                     //if( req.test === 'discardCards' ) testObject.discardCards = req.args[0];
@@ -31,7 +32,8 @@ class PlanTester {
                 }
             });
 
-            results.push({ passed : passed, val : objective.value, tests : tests });
+            let scoreable = passed && ( !hasFailedObjective || faction.controlsArea('church') );
+            results.push({ passed : passed, scoreable : scoreable, val : objective.value, tests : tests });
         });
 
         let scorablePoints = this.scorablePoints( faction, results );

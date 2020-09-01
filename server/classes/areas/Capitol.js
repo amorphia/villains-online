@@ -17,7 +17,7 @@ class Capitol extends Area {
         faction.gainAP( token.ap );
 
         this.game().message({
-            message: 'Collect',
+            message: `Collects this turn's capitol token`,
             type : 'capitol-token',
             faction : faction,
             turn : this.game().data.turn

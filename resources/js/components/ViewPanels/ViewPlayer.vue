@@ -62,6 +62,20 @@
                     </div>
                     <div v-else class="view-player__empty">No Areas Controlled</div>
 
+                    <div class="view-player__title">Unrevealed Tokens:</div>
+                    <div v-if="unrevealedTokens" class="view-player__tokens d-flex justify-center">
+                        <div v-for="(count, type) in unrevealedTokens"
+                             class="view-player__token-wrap p-2 ratio-square pos-relative">
+                            <div class="width-100 pos-relative height-100">
+                                <div class="view-player__token" :data-count="count" >
+                                    <img class="view-player__token"
+                                         :src="`/images/factions/${faction.name}/tokens/${type}.png`">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else class="view-player__empty">No Unrevealed Tokens</div>
+
                     <div class="view-player__title">Current Upgrade:</div>
                     <div v-if="faction.upgrade" class="view-player__areas">
                         <div class="view-player__upgrade-card p-3 center-text">
@@ -91,27 +105,29 @@
 
 
                     <div class="view-player__title">Completed Plans:</div>
-                    <div v-if="faction.plans.completed.length" class="view-player__completed-plans py-4">
-                        <img v-for="plan in faction.plans.completed"
-                             class="view-player__card"
-                             :src="`/images/factions/${faction.name}/plans/${plan.num}.jpg`">
+                    <div v-if="completedPlans" class="view-player__completed-plans py-4">
+
+                        <div v-for="(plans, turn) in completedPlans" class="completed-plan__block">
+                            <div class="prompt-question center-text">TURN {{ turn }}</div>
+
+                            <div class="d-flex flex-wrap">
+                                <div v-for="plan in plans" class="plan-block__container d-flex my-3">
+                                    <div class="plan-block__pips">
+                                        <div v-for="test in plan.objectives" class="plan-block__pip primary-light" :class="{ 'icon-circle' : test.passed, 'icon-circle-open' : !test.passed, 'highlight' : test.scoreable }"></div>
+                                    </div>
+                                    <div class='plan-block__image-wrap pos-relative'>
+                                        <img class="completed-plans__points" :src="`/images/icons/pp-${plan.points}.png`">
+                                        <img class="plan-block__image" :src="`/images/factions/${faction.name}/plans/${plan.num}.jpg`">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
                     <div v-else class="view-player__empty">No Completed Plans</div>
 
 
-                    <div class="view-player__title">Unrevealed Tokens:</div>
-                    <div v-if="unrevealedTokens" class="view-player__tokens d-flex justify-center">
-                        <div v-for="(count, type) in unrevealedTokens"
-                             class="view-player__token-wrap p-2 ratio-square pos-relative">
-                            <div class="width-100 pos-relative height-100">
-                                <div class="view-player__token" :data-count="count" >
-                                    <img class="view-player__token"
-                                         :src="`/images/factions/${faction.name}/tokens/${type}.png`">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-else class="view-player__empty">No Unrevealed Tokens</div>
                 </div>
 
 
@@ -183,6 +199,10 @@
 
         computed : {
 
+            completedPlans(){
+                return _.groupBy( this.faction.plans.completed, 'turnScored' );
+            },
+
             target(){
                 if( !this.faction.cards.target || !this.shared.canSeeTarget( this.faction ) ) return;
                 return this.faction.cards.target[0];
@@ -218,8 +238,6 @@
         },
 
         methods : {
-
-
 
             sendBribe(){
                 App.event.emit( 'sound', 'ui' );
@@ -370,6 +388,15 @@
         width: 5.5rem;
         border-radius: 50%;
         border: 3px solid rgba(0,0,0,.3);
+    }
+
+    .completed-plans__points {
+        position: absolute;
+        bottom: .5rem;
+        z-index: 4;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4rem;
     }
 
 </style>

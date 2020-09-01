@@ -2060,7 +2060,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'plan-block',
-  props: ['plan', 'faction'],
+  props: ['plan', 'faction', 'scorablePips'],
   data: function data() {
     return {
       shared: App.state
@@ -4448,6 +4448,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'plan-results',
   data: function data() {
@@ -5926,19 +5931,97 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-target',
   data: function data() {
     return {
       shared: App.state,
-      plan: 0,
-      target: 0
+      plan: null,
+      target: null,
+      mode: 'plans'
     };
   },
   methods: {
     saveChoices: function saveChoices() {
+      if (this.mode !== 'confirm') return this.mode = 'confirm';
       App.event.emit('sound', 'ui');
       this.shared.socketEmit('chooseTargetPlan', this.plan, this.target);
+    },
+    itemClicked: function itemClicked(type, object) {
+      // clicking the selected object unselects it
+      if (this[type] && this[type].id === object.id) return this[type] = null; // if this card doesn't have a target, do nothing
+
+      if (type === 'card' && !object.target) return App.event.emit('sound', 'error'); // otherwise set the object as the type
+
+      this[type] = object;
+    }
+  },
+  computed: {
+    message: function message() {
+      switch (this.mode) {
+        case 'plans':
+          return "Choose a plan to discard";
+
+        case 'cards':
+          return "Choose your target";
+
+        case 'confirm':
+          return "Confirm Choices";
+      }
+    },
+    canConfirm: function canConfirm() {
+      return this.plan && this.target;
     }
   }
 });
@@ -9681,6 +9764,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-player',
   data: function data() {
@@ -9699,6 +9798,9 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    completedPlans: function completedPlans() {
+      return _.groupBy(this.faction.plans.completed, 'turnScored');
+    },
     target: function target() {
       if (!this.faction.cards.target || !this.shared.canSeeTarget(this.faction)) return;
       return this.faction.cards.target[0];
@@ -11428,7 +11530,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.choose-target {\n}\n", ""]);
+exports.push([module.i, "\n.choose-target__wrap {\n    max-width: 100%;\n}\n.choose-target__wrap .cards-hud__card {\n    width: 16vw;\n    height: 23vw;\n}\n", ""]);
 
 // exports
 
@@ -11960,7 +12062,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.icon-image {\n    height: 1.4em;\n    margin: 0 .1em;\n    position: relative;\n    top: .3em;\n}\n.view-player {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n}\n.view-player__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__token-wrap, .view-player__unit-wrap {\n    width: 6vw;\n}\n.view-player__token, .view-player__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__upgrade-card-image{\n     border: 3px solid rgba(0,0,0,.2);\n     border-radius: 5%/8%;\n}\n.view-player__token {\n    border-radius: 50%;\n}\n.view-player__title {\n    letter-spacing: 1px;\n    margin-bottom: .5em;\n    border-bottom: 1px solid;\n    border-left: 1px solid;\n    font-size: 1.2em;\n    text-transform: uppercase;\n    padding: .2em .5em;\n    margin-top: .5em;\n    white-space: nowrap;\n    font-family: var(--secondary-font);\n    border-color: #e953cd;\n    font-weight: 200;\n}\n.view-player__title span {\n    font-family: var(--primary-font);\n    color: var(--highlight-color);\n    font-size: 1.3em;\n}\n.view-player__title span.note {\n    color: var(--off-white);\n    font-size: .85em;\n}\n.view-player__core-stats .view-player__title {\n    margin: 0;\n}\n.view-player__empty {\n    padding: 1vw;\n    font-size: 1.3em;\n    text-align: center;\n    color: var(--primary-light-color);\n}\n.view-player .icon-ap,  .view-player .icon-pp {\n    width: 2.3rem;\n    position: relative;\n    height: 2.3rem;\n    display: inline-block;\n}\n.view-player .icon-ap:before, .view-player .icon-pp:before {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    position: absolute;\n    bottom: 0;\n}\n.view-player__areas {\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--highlight-color);\n    text-align: center;\n    text-transform: capitalize;\n}\n.view-player__card {\n    width: 11.5rem;\n    border-radius: 11%/8%;\n    border: 2px solid rgba(0,0,0,.2);\n    margin: 0 .2rem;\n}\n.view-player__areas-control {\n    font-size: 0.7em;\n    color: var(--primary-light-color);\n    letter-spacing: 1px;\n}\n.view-player__capitol-token__image {\n    width: 5.5rem;\n    border-radius: 50%;\n    border: 3px solid rgba(0,0,0,.3);\n}\n\n", ""]);
+exports.push([module.i, "\n.icon-image {\n    height: 1.4em;\n    margin: 0 .1em;\n    position: relative;\n    top: .3em;\n}\n.view-player {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n}\n.view-player__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__token-wrap, .view-player__unit-wrap {\n    width: 6vw;\n}\n.view-player__token, .view-player__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__upgrade-card-image{\n     border: 3px solid rgba(0,0,0,.2);\n     border-radius: 5%/8%;\n}\n.view-player__token {\n    border-radius: 50%;\n}\n.view-player__title {\n    letter-spacing: 1px;\n    margin-bottom: .5em;\n    border-bottom: 1px solid;\n    border-left: 1px solid;\n    font-size: 1.2em;\n    text-transform: uppercase;\n    padding: .2em .5em;\n    margin-top: .5em;\n    white-space: nowrap;\n    font-family: var(--secondary-font);\n    border-color: #e953cd;\n    font-weight: 200;\n}\n.view-player__title span {\n    font-family: var(--primary-font);\n    color: var(--highlight-color);\n    font-size: 1.3em;\n}\n.view-player__title span.note {\n    color: var(--off-white);\n    font-size: .85em;\n}\n.view-player__core-stats .view-player__title {\n    margin: 0;\n}\n.view-player__empty {\n    padding: 1vw;\n    font-size: 1.3em;\n    text-align: center;\n    color: var(--primary-light-color);\n}\n.view-player .icon-ap,  .view-player .icon-pp {\n    width: 2.3rem;\n    position: relative;\n    height: 2.3rem;\n    display: inline-block;\n}\n.view-player .icon-ap:before, .view-player .icon-pp:before {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    position: absolute;\n    bottom: 0;\n}\n.view-player__areas {\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--highlight-color);\n    text-align: center;\n    text-transform: capitalize;\n}\n.view-player__card {\n    width: 11.5rem;\n    border-radius: 11%/8%;\n    border: 2px solid rgba(0,0,0,.2);\n    margin: 0 .2rem;\n}\n.view-player__areas-control {\n    font-size: 0.7em;\n    color: var(--primary-light-color);\n    letter-spacing: 1px;\n}\n.view-player__capitol-token__image {\n    width: 5.5rem;\n    border-radius: 50%;\n    border: 3px solid rgba(0,0,0,.3);\n}\n.completed-plans__points {\n    position: absolute;\n    bottom: .5rem;\n    z-index: 4;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 4rem;\n}\n\n", ""]);
 
 // exports
 
@@ -53910,8 +54012,12 @@ var render = function() {
         { staticClass: "plan-block__pips" },
         _vm._l(_vm.plan.objectives, function(test) {
           return _c("div", {
-            staticClass: "plan-block__pip highlight",
-            class: test.passed ? "icon-circle" : "icon-circle-open"
+            staticClass: "plan-block__pip primary-light",
+            class: {
+              "icon-circle": test.passed,
+              "icon-circle-open": !test.passed,
+              highlight: test.scoreable
+            }
           })
         }),
         0
@@ -54038,9 +54144,7 @@ var render = function() {
   return _c("div", { staticClass: "message-box" }, [
     _c("img", {
       staticClass: "width-75",
-      attrs: {
-        src: "/images/tokens/capitol-" + _vm.message.turn + "-points.png"
-      }
+      attrs: { src: "/images/tokens/capitol-" + _vm.message.turn + ".png" }
     })
   ])
 }
@@ -57056,7 +57160,11 @@ var render = function() {
               _vm._l(_vm.currentScoredPlans, function(plan) {
                 return _c("plan-block", {
                   key: plan.plan.id,
-                  attrs: { plan: plan, faction: _vm.currentFaction }
+                  attrs: {
+                    scorablePips: "true",
+                    plan: plan,
+                    faction: _vm.currentFaction
+                  }
                 })
               }),
               1
@@ -58405,56 +58513,183 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("player-prompt", { attrs: { classes: "" } }, [
     _c("div", { staticClass: "d-flex justify-center px-5" }, [
-      _c(
-        "div",
-        { staticClass: "choose-target__plans p-3" },
-        [
-          _c("card-picker", {
-            attrs: {
-              cards: _vm.shared.faction.plans.current,
-              type: "plan",
-              faction: _vm.shared.faction.name,
-              title: "Choose a plan to discard"
-            },
-            on: {
-              updated: function(selected) {
-                return (_vm.plan = selected)
-              }
-            }
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "choose-target__plans p-3" },
-        [
-          _c("card-picker", {
-            attrs: {
-              cards: _vm.shared.faction.cards.hand,
-              type: "card",
-              title: "Choose your Target"
-            },
-            on: {
-              updated: function(selected) {
-                return (_vm.target = selected)
-              }
-            }
-          })
-        ],
-        1
-      )
+      _vm.mode === "confirm"
+        ? _c("div", { staticClass: "d-flex align-center justify-center" }, [
+            _c("div", { staticClass: "p-4" }, [
+              _c("div", { staticClass: "title" }, [
+                _vm._v("Discard this plan")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "plan-block__image-wrap" }, [
+                _c("img", {
+                  staticClass: "plan-block__image",
+                  attrs: {
+                    src:
+                      "/images/factions/" +
+                      _vm.shared.faction.name +
+                      "/plans/" +
+                      _vm.plan.num +
+                      ".jpg"
+                  }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "p-4" }, [
+              _c("div", { staticClass: "title" }, [
+                _vm._v("Choose this target")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "plan-block__image-wrap" }, [
+                _c("img", {
+                  staticClass: "plan-block__image",
+                  attrs: { src: "/images/cards/" + _vm.target.file + ".jpg" }
+                })
+              ])
+            ])
+          ])
+        : _c("div", { staticClass: "width-100 center-text" }, [
+            _c("div", { staticClass: "title d-inline-block" }, [
+              _vm._v(_vm._s(_vm.message))
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              [
+                _c(
+                  "horizontal-scroll",
+                  {
+                    attrs: {
+                      classes:
+                        "choose-target__wrap d-flex pb-3 width-100 plan-block",
+                      buttons: "true"
+                    }
+                  },
+                  [
+                    _vm._l(_vm.shared.faction.plans.current, function(object) {
+                      return _vm.mode === "plans"
+                        ? _c("div", { staticClass: "d-flex pb-3 width-100" }, [
+                            _c(
+                              "div",
+                              {
+                                staticClass: "plan-block__image-wrap",
+                                class: {
+                                  selected:
+                                    _vm.plan && _vm.plan.id === object.id
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.itemClicked("plan", object)
+                                  }
+                                }
+                              },
+                              [
+                                _c("img", {
+                                  staticClass: "plan-block__image",
+                                  attrs: {
+                                    src:
+                                      "/images/factions/" +
+                                      _vm.shared.faction.name +
+                                      "/plans/" +
+                                      object.num +
+                                      ".jpg"
+                                  }
+                                })
+                              ]
+                            )
+                          ])
+                        : _vm._e()
+                    }),
+                    _vm._v(" "),
+                    _vm._l(_vm.shared.faction.cards.hand, function(object) {
+                      return _vm.mode === "cards"
+                        ? _c("div", { staticClass: "d-flex pb-3 width-100" }, [
+                            _c(
+                              "div",
+                              {
+                                staticClass: "plan-block__image-wrap",
+                                class: {
+                                  selected:
+                                    _vm.target && _vm.target.id === object.id
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.itemClicked("target", object)
+                                  }
+                                }
+                              },
+                              [
+                                _c("img", {
+                                  staticClass: "plan-block__image",
+                                  attrs: {
+                                    src: "/images/cards/" + object.file + ".jpg"
+                                  }
+                                })
+                              ]
+                            )
+                          ])
+                        : _vm._e()
+                    })
+                  ],
+                  2
+                )
+              ],
+              1
+            )
+          ])
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "width-100 d-flex justify-center" }, [
+    _c("div", { staticClass: "width-100 d-flex justify-center mt-4" }, [
+      _vm.mode === "cards"
+        ? _c(
+            "button",
+            {
+              staticClass: "button button-empty",
+              on: {
+                click: function($event) {
+                  _vm.mode = "plans"
+                }
+              }
+            },
+            [_vm._v("VIEW PLANS")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.mode === "plans"
+        ? _c(
+            "button",
+            {
+              staticClass: "button",
+              on: {
+                click: function($event) {
+                  _vm.mode = "cards"
+                }
+              }
+            },
+            [_vm._v("VIEW TARGETS")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.mode === "confirm"
+        ? _c(
+            "button",
+            {
+              staticClass: "button button-empty",
+              on: {
+                click: function($event) {
+                  _vm.mode = "cards"
+                }
+              }
+            },
+            [_vm._v("BACK")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
       _c(
         "button",
         {
           staticClass: "button",
-          attrs: {
-            disabled: !_vm.shared.faction.cards.hand[_vm.target].target
-          },
+          attrs: { disabled: !_vm.canConfirm },
           on: { click: _vm.saveChoices }
         },
         [_vm._v("CONFIRM CHOICES")]
@@ -62296,6 +62531,61 @@ var render = function() {
                     ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "view-player__title" }, [
+                  _vm._v("Unrevealed Tokens:")
+                ]),
+                _vm._v(" "),
+                _vm.unrevealedTokens
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "view-player__tokens d-flex justify-center"
+                      },
+                      _vm._l(_vm.unrevealedTokens, function(count, type) {
+                        return _c(
+                          "div",
+                          {
+                            staticClass:
+                              "view-player__token-wrap p-2 ratio-square pos-relative"
+                          },
+                          [
+                            _c(
+                              "div",
+                              {
+                                staticClass: "width-100 pos-relative height-100"
+                              },
+                              [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "view-player__token",
+                                    attrs: { "data-count": count }
+                                  },
+                                  [
+                                    _c("img", {
+                                      staticClass: "view-player__token",
+                                      attrs: {
+                                        src:
+                                          "/images/factions/" +
+                                          _vm.faction.name +
+                                          "/tokens/" +
+                                          type +
+                                          ".png"
+                                      }
+                                    })
+                                  ]
+                                )
+                              ]
+                            )
+                          ]
+                        )
+                      }),
+                      0
+                    )
+                  : _c("div", { staticClass: "view-player__empty" }, [
+                      _vm._v("No Unrevealed Tokens")
+                    ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "view-player__title" }, [
                   _vm._v("Current Upgrade:")
                 ]),
                 _vm._v(" "),
@@ -62403,74 +62693,84 @@ var render = function() {
                   _vm._v("Completed Plans:")
                 ]),
                 _vm._v(" "),
-                _vm.faction.plans.completed.length
+                _vm.completedPlans
                   ? _c(
                       "div",
                       { staticClass: "view-player__completed-plans py-4" },
-                      _vm._l(_vm.faction.plans.completed, function(plan) {
-                        return _c("img", {
-                          staticClass: "view-player__card",
-                          attrs: {
-                            src:
-                              "/images/factions/" +
-                              _vm.faction.name +
-                              "/plans/" +
-                              plan.num +
-                              ".jpg"
-                          }
-                        })
-                      }),
-                      0
-                    )
-                  : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Completed Plans")
-                    ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Unrevealed Tokens:")
-                ]),
-                _vm._v(" "),
-                _vm.unrevealedTokens
-                  ? _c(
-                      "div",
-                      {
-                        staticClass: "view-player__tokens d-flex justify-center"
-                      },
-                      _vm._l(_vm.unrevealedTokens, function(count, type) {
+                      _vm._l(_vm.completedPlans, function(plans, turn) {
                         return _c(
                           "div",
-                          {
-                            staticClass:
-                              "view-player__token-wrap p-2 ratio-square pos-relative"
-                          },
+                          { staticClass: "completed-plan__block" },
                           [
                             _c(
                               "div",
-                              {
-                                staticClass: "width-100 pos-relative height-100"
-                              },
-                              [
-                                _c(
+                              { staticClass: "prompt-question center-text" },
+                              [_vm._v("TURN " + _vm._s(turn))]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "d-flex flex-wrap" },
+                              _vm._l(plans, function(plan) {
+                                return _c(
                                   "div",
                                   {
-                                    staticClass: "view-player__token",
-                                    attrs: { "data-count": count }
+                                    staticClass:
+                                      "plan-block__container d-flex my-3"
                                   },
                                   [
-                                    _c("img", {
-                                      staticClass: "view-player__token",
-                                      attrs: {
-                                        src:
-                                          "/images/factions/" +
-                                          _vm.faction.name +
-                                          "/tokens/" +
-                                          type +
-                                          ".png"
-                                      }
-                                    })
+                                    _c(
+                                      "div",
+                                      { staticClass: "plan-block__pips" },
+                                      _vm._l(plan.objectives, function(test) {
+                                        return _c("div", {
+                                          staticClass:
+                                            "plan-block__pip primary-light",
+                                          class: {
+                                            "icon-circle": test.passed,
+                                            "icon-circle-open": !test.passed,
+                                            highlight: test.scoreable
+                                          }
+                                        })
+                                      }),
+                                      0
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "plan-block__image-wrap pos-relative"
+                                      },
+                                      [
+                                        _c("img", {
+                                          staticClass:
+                                            "completed-plans__points",
+                                          attrs: {
+                                            src:
+                                              "/images/icons/pp-" +
+                                              plan.points +
+                                              ".png"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("img", {
+                                          staticClass: "plan-block__image",
+                                          attrs: {
+                                            src:
+                                              "/images/factions/" +
+                                              _vm.faction.name +
+                                              "/plans/" +
+                                              plan.num +
+                                              ".jpg"
+                                          }
+                                        })
+                                      ]
+                                    )
                                   ]
                                 )
-                              ]
+                              }),
+                              0
                             )
                           ]
                         )
@@ -62478,7 +62778,7 @@ var render = function() {
                       0
                     )
                   : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Unrevealed Tokens")
+                      _vm._v("No Completed Plans")
                     ])
               ]
             ),

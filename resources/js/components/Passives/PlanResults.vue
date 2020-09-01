@@ -8,7 +8,12 @@
 
             <div class="width-100 d-flex justify-center mt-4">
                 <div v-if="currentScoredPlans.length" class="d-flex">
-                    <plan-block v-for="plan in currentScoredPlans" :plan="plan" :key="plan.plan.id" :faction="currentFaction"></plan-block>
+                    <plan-block v-for="plan in currentScoredPlans"
+                                scorablePips="true"
+                                :plan="plan"
+                                :key="plan.plan.id"
+                                :faction="currentFaction">
+                    </plan-block>
                 </div>
                 <div v-else class="primary-light no-plans-scored py-5">
                     The {{ currentFactionName | startCase }} did not score any plans
