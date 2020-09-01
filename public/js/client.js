@@ -6008,6 +6008,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    confirmMessage: function confirmMessage() {
+      if (this.mode === 'confirm') return "FINALIZE CHOICES";
+      return "CONFIRM CHOICES";
+    },
     message: function message() {
       switch (this.mode) {
         case 'plans':
@@ -58692,7 +58696,7 @@ var render = function() {
           attrs: { disabled: !_vm.canConfirm },
           on: { click: _vm.saveChoices }
         },
-        [_vm._v("CONFIRM CHOICES")]
+        [_vm._v(_vm._s(_vm.confirmMessage))]
       )
     ])
   ])

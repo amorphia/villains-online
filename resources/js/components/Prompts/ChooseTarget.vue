@@ -70,7 +70,7 @@
                         class="button button-empty"
                         @click="mode = 'cards'">BACK</button>
 
-                <button :disabled="!canConfirm" class="button" @click="saveChoices" >CONFIRM CHOICES</button>
+                <button :disabled="!canConfirm" class="button" @click="saveChoices">{{ confirmMessage }}</button>
             </div>
     </player-prompt>
 
@@ -111,6 +111,12 @@
         },
 
         computed : {
+
+            confirmMessage(){
+                if( this.mode === 'confirm' ) return "FINALIZE CHOICES";
+
+                return "CONFIRM CHOICES";
+            },
 
             message(){
                 switch( this.mode ) {
