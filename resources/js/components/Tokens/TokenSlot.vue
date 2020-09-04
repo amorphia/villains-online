@@ -2,7 +2,7 @@
     <div class="area-map__token-space ratio-square"
          :class="computeClasses"
          @click="emitToken">
-        <img v-if="tokenImage" class="area-map__token" :class="{'saturate-5 opacity-8' : canSeeToken && !highlight,  }" :src="tokenImage">
+        <img v-if="tokenImage" class="area-map__token" :src="tokenImage">
     </div>
 </template>
 
@@ -36,6 +36,10 @@
             computeClasses(){
                 let classes = [];
 
+                if( this.canSeeToken && !this.highlight ){
+                    classes.push( 'unrevealed' );
+                }
+
                 if( this.area ){
                     classes.push( `${this.area.name}-${this.index}` );
                 }
@@ -45,6 +49,8 @@
                     || this.highlight ){
                     classes.push( 'selected' );
                 }
+
+
 
                 return classes.join(' ');
             },
@@ -98,6 +104,26 @@
         border-radius: 50%;
         z-index: 2;
     }
+
+    .area-map__token-space.unrevealed .area-map__token {
+        opacity : .8;
+        filter: saturate(50%);
+    }
+
+    .area-map__token-space.unrevealed:before {
+        content: "";
+        position: absolute;
+        width: 40%;
+        height: 40%;
+        background-image: url(/images/icons/hidden.png);
+        z-index: 3;
+        left: 50%;
+        top: 100%;
+        background-size: contain;
+        transform: translate(-50%, -70%);
+    }
+
+
 
     .church-1 { background-image: url(/images/areas/church-1.png) }
     .church-2 { background-image: url(/images/areas/church-2.png) }
