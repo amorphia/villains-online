@@ -6269,7 +6269,7 @@ __webpack_require__.r(__webpack_exports__);
       // belongs to current player
       if (this.data.playerOnly) return this.shared.faction.units; // belongs to specific player
 
-      if (this.data.belongsTo) return this.shared.data.faction[this.data.belongsTo].units; // multiple players
+      if (this.data.belongsTo) return this.shared.data.factions[this.data.belongsTo].units; // multiple players
 
       var units = [];
 

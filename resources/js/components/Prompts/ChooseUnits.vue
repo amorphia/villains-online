@@ -123,7 +123,7 @@
                 if( this.data.playerOnly ) return this.shared.faction.units;
 
                 // belongs to specific player
-                if( this.data.belongsTo ) return this.shared.data.faction[ this.data.belongsTo ].units;
+                if( this.data.belongsTo ) return this.shared.data.factions[ this.data.belongsTo ].units;
 
                 // multiple players
                 let units = [];
