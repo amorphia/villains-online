@@ -187,7 +187,7 @@ let mixin = {
             Server.io.to( 'lobby' ).emit( 'openGame', this.data );
         } else if( this.data.state !== 'loading' ) {
             player.joinRoom( this.data.id );
-            await this.updateAll();
+            await this.updateAll( player );
         }
     },
 

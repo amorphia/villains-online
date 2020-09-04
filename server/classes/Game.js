@@ -267,13 +267,21 @@ class Game {
         }
     }
 
-    async updateAll(){
+    async updateAll( player = null ){
+        let recipient;
+
         // await check for all player sockets to exist
         if( this.missingPlayers() ){
             await this.waitForMissingPlayers();
         }
 
-        Server.io.to( this.id ).emit( 'update', this.data );
+        if( player ){ // update single player
+            recipient = player.socket();
+        } else { // update all players
+            recipient = Server.io.to( this.id );
+        }
+
+        recipient.emit( 'update', this.data );
     }
 
 
