@@ -7,7 +7,7 @@
                 <div class="px-5 pb-5 d-flex flex-column align-stretch center-text">
                     <div class="title">Game Options</div>
 
-                    <div class="pt-4"><a href="https://www.docdroid.net/BmzN8Dy/villains-v310-pdf" target="_blank" class=" width-100 d-block button">
+                    <div class="pt-4"><a href="/files/villains_v3.1.0.pdf" target="_blank" class=" width-100 d-block button">
                        view game rules <i class="icon-launch"></i>
                     </a></div>
 

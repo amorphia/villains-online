@@ -55806,8 +55806,7 @@ var render = function() {
                     {
                       staticClass: " width-100 d-block button",
                       attrs: {
-                        href:
-                          "https://www.docdroid.net/BmzN8Dy/villains-v310-pdf",
+                        href: "/files/villains_v3.1.0.pdf",
                         target: "_blank"
                       }
                     },
