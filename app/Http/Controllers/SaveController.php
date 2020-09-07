@@ -40,6 +40,9 @@ class SaveController extends Controller
 
         $game->saves()->create([
             'type' => $request->type,
+            'active_player' => $request->active,
+            'action' => $request->action,
+            'turn' => $request->turn,
             'data' => $request->data
         ]);
 

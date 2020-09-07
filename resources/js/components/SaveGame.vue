@@ -13,11 +13,22 @@
         </div>
 
         <div class="save-game__saves" :class="{ open : open }" >
-            <div v-for="item in save.manuals" class="save-game__save" @click="loadGame( item.id )">manual - {{ item.created_at }}</div>
-            <div v-for="item in save.automatics" class="save-game__save" @click="loadGame( item.id )">automatic - {{ item.created_at }}</div>
-            <div v-for="item in save.turns" class="save-game__save" @click="loadGame( item.id )">turn - {{ item.created_at }}</div>
-        </div>
+            <div v-if="save.manuals.length" class="save-game__type-block">
+                <div class="save-game__type">manual save</div>
+                <div v-for="item in save.manuals" class="save-game__save" @click="loadGame( item.id )">action {{ item.action }} - {{ item.active_player }}</div>
+            </div>
 
+            <div v-if="save.automatics.length" class="save-game__type-block">
+                <div class="save-game__type">player actions</div>
+                <div v-for="item in save.automatics" class="save-game__save" @click="loadGame( item.id )">action {{ item.action }} - {{ item.active_player }}</div>
+            </div>
+
+            <div v-if="save.turns.length" class="save-game__type-block">
+                <div class="save-game__type">start of turn</div>
+                <div v-for="item in save.turns" class="save-game__save" @click="loadGame( item.id )">turn {{ item.turn }} - {{ item.created_at }}</div>
+            </div>
+
+        </div>
     </div>
 </template>
 
@@ -63,6 +74,10 @@
         font-size: 1.15rem;
     }
 
+    .save-game__type {
+        color: var(--primary-light-color);
+        padding-left: .5em;
+    }
 
     .save-game.disabled {
         opacity: .8;

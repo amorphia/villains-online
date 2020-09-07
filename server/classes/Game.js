@@ -30,6 +30,7 @@ class Game {
 
     defaultListener;
     listening = {};
+    action = 0;
     id;
     socketMap = {};
     objectMap = {};

@@ -33,9 +33,12 @@ class DB {
     }
 
     save( game, options = {} ) {
-        console.log( 'saving game' );
+
         let data = {
             type: options.type || 'automatic',
+            active : game.currentPlayerFactionName(),
+            action : game.action,
+            turn : game.data.turn,
             data: JSON.stringify( game )
         };
 

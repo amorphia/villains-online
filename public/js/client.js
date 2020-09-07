@@ -8247,6 +8247,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'save-game',
   props: ['save', 'open', 'index'],
@@ -11747,7 +11758,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.save-game {\n    margin: 0 .5em .35em;\n    background-color: rgba(255, 131, 213, 0.11);\n    box-shadow: 0px 0px 2px rgba(0,0,0,.5);\n    padding: .5em;\n    font-family: var(--primary-font);\n    font-size: 1.15rem;\n}\n.save-game.disabled {\n    opacity: .8;\n    pointer-events: none;\n}\n.save-game__date {\n    color: var(--primary-light-color);\n    font-size: 1.25rem;\n}\n.save-game__players {\n    max-width: 100%;\n    display: flex;\n    flex-wrap: wrap;\n}\n.save-game__player.missing {\n    color: #d85082\n}\n.save-game__save {\n    color: var(--highlight-color);\n    cursor: pointer;\n    opacity: .8;\n    transition: all .2s;\n}\n.save-game__save:hover {\n    opacity: 1;\n}\n.save-game__saves {\n    transition: all .2s;\n    max-height: 0;\n    overflow: hidden;\n}\n.save-game__saves.open {\n    max-height: 100vh;\n}\n", ""]);
+exports.push([module.i, "\n.save-game {\n    margin: 0 .5em .35em;\n    background-color: rgba(255, 131, 213, 0.11);\n    box-shadow: 0px 0px 2px rgba(0,0,0,.5);\n    padding: .5em;\n    font-family: var(--primary-font);\n    font-size: 1.15rem;\n}\n.save-game__type {\n    color: var(--primary-light-color);\n    padding-left: .5em;\n}\n.save-game.disabled {\n    opacity: .8;\n    pointer-events: none;\n}\n.save-game__date {\n    color: var(--primary-light-color);\n    font-size: 1.25rem;\n}\n.save-game__players {\n    max-width: 100%;\n    display: flex;\n    flex-wrap: wrap;\n}\n.save-game__player.missing {\n    color: #d85082\n}\n.save-game__save {\n    color: var(--highlight-color);\n    cursor: pointer;\n    opacity: .8;\n    transition: all .2s;\n}\n.save-game__save:hover {\n    opacity: 1;\n}\n.save-game__saves {\n    transition: all .2s;\n    max-height: 0;\n    overflow: hidden;\n}\n.save-game__saves.open {\n    max-height: 100vh;\n}\n", ""]);
 
 // exports
 
@@ -60689,52 +60700,111 @@ var render = function() {
         "div",
         { staticClass: "save-game__saves", class: { open: _vm.open } },
         [
-          _vm._l(_vm.save.manuals, function(item) {
-            return _c(
-              "div",
-              {
-                staticClass: "save-game__save",
-                on: {
-                  click: function($event) {
-                    return _vm.loadGame(item.id)
-                  }
-                }
-              },
-              [_vm._v("manual - " + _vm._s(item.created_at))]
-            )
-          }),
+          _vm.save.manuals.length
+            ? _c(
+                "div",
+                { staticClass: "save-game__type-block" },
+                [
+                  _c("div", { staticClass: "save-game__type" }, [
+                    _vm._v("manual save")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.save.manuals, function(item) {
+                    return _c(
+                      "div",
+                      {
+                        staticClass: "save-game__save",
+                        on: {
+                          click: function($event) {
+                            return _vm.loadGame(item.id)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "action " +
+                            _vm._s(item.action) +
+                            " - " +
+                            _vm._s(item.active_player)
+                        )
+                      ]
+                    )
+                  })
+                ],
+                2
+              )
+            : _vm._e(),
           _vm._v(" "),
-          _vm._l(_vm.save.automatics, function(item) {
-            return _c(
-              "div",
-              {
-                staticClass: "save-game__save",
-                on: {
-                  click: function($event) {
-                    return _vm.loadGame(item.id)
-                  }
-                }
-              },
-              [_vm._v("automatic - " + _vm._s(item.created_at))]
-            )
-          }),
+          _vm.save.automatics.length
+            ? _c(
+                "div",
+                { staticClass: "save-game__type-block" },
+                [
+                  _c("div", { staticClass: "save-game__type" }, [
+                    _vm._v("player actions")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.save.automatics, function(item) {
+                    return _c(
+                      "div",
+                      {
+                        staticClass: "save-game__save",
+                        on: {
+                          click: function($event) {
+                            return _vm.loadGame(item.id)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "action " +
+                            _vm._s(item.action) +
+                            " - " +
+                            _vm._s(item.active_player)
+                        )
+                      ]
+                    )
+                  })
+                ],
+                2
+              )
+            : _vm._e(),
           _vm._v(" "),
-          _vm._l(_vm.save.turns, function(item) {
-            return _c(
-              "div",
-              {
-                staticClass: "save-game__save",
-                on: {
-                  click: function($event) {
-                    return _vm.loadGame(item.id)
-                  }
-                }
-              },
-              [_vm._v("turn - " + _vm._s(item.created_at))]
-            )
-          })
-        ],
-        2
+          _vm.save.turns.length
+            ? _c(
+                "div",
+                { staticClass: "save-game__type-block" },
+                [
+                  _c("div", { staticClass: "save-game__type" }, [
+                    _vm._v("start of turn")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.save.turns, function(item) {
+                    return _c(
+                      "div",
+                      {
+                        staticClass: "save-game__save",
+                        on: {
+                          click: function($event) {
+                            return _vm.loadGame(item.id)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "turn " +
+                            _vm._s(item.turn) +
+                            " - " +
+                            _vm._s(item.created_at)
+                        )
+                      ]
+                    )
+                  })
+                ],
+                2
+              )
+            : _vm._e()
+        ]
       )
     ]
   )

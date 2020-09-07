@@ -41,7 +41,7 @@ class Game extends Model
     public function getSaveByType( $type )
     {
         return $this->saves()
-            ->select( 'id', 'type', 'created_at' )
+            ->select( 'id', 'type', 'created_at', 'active_player', 'action', 'turn' )
             ->where( 'type', $type )
             ->orderByDesc( 'created_at' );
     }

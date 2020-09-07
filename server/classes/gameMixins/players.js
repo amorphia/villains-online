@@ -80,6 +80,10 @@ let mixin = {
         });
     },
 
+    currentPlayerFactionName(){
+        return this.getPlayerFaction( this.currentPlayer() ).name;
+    },
+
     currentPlayer(){
         return this.players[ this.data.playerOrder[this.data.activeIndex] ];
     },
@@ -96,6 +100,7 @@ let mixin = {
     async advancePlayer( listener ){
         this.advanceActivePlayer();
         this.setActivePlayerListener( listener );
+        this.action++;
         Server.saveToDB( this );
         this.setTimeout();
         await this.updateAll();
