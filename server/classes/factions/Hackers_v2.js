@@ -16,6 +16,7 @@ class Hackers extends Faction {
         this.capturedRewards = [
             { ap : 1, cardDraw : 1 },
             { ap : 1 },
+            { ap : 1 },
             { ap : 1 }
         ];
 

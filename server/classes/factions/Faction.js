@@ -64,6 +64,7 @@ class Faction {
     capturedRewards = [
         { ap : 1, maxEnergy : 1 },
         { ap : 1, cardDraw : 1 },
+        { ap : 1 },
         { ap : 2 },
     ];
 
