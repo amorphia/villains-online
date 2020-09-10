@@ -7,6 +7,7 @@ class Game {
     titleCardTimer = 3;
     godMode = true;
     localServer = false;
+    doubleTargetsFourthTurn = false;
     playerTimeoutLength = 10; // seconds
     maxPlayerTimeouts = 50;
 

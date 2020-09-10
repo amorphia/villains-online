@@ -10,7 +10,7 @@ let obj = {
                 message : 'Start of Turn'
             };
 
-            if( this.data.turn === 4 ) data.showDoubleAP = true;
+            if( this.data.turn === 4 && this.doubleTargetsFourthTurn ) data.showDoubleAP = true;
 
             await this.timedPrompt( 'title-card', data );
         } catch( error ){
