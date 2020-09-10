@@ -16,7 +16,7 @@ class Faction {
         upgrade : 0,
         captured : {
             current : 0,
-            max : 3
+            max : null // set by constructor
         },
 
         // core stats
@@ -168,6 +168,7 @@ class Faction {
         this.playerId = playerId;
         this.gameId = game.id;
         this.data.owner = playerId;
+        this.data.captured.max = this.capturedRewards.length;
 
         if( this.game().godMode && this.game().localServer ) this.godMode();
 

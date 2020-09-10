@@ -10,7 +10,6 @@ class Aliens extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Centari Invasion";
-        this.data.captured.max = 5;
         this.data.kau = null;
         this.data.farMove = false;
 
