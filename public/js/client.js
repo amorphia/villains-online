@@ -87371,6 +87371,8 @@ var helpers = {
   areaExterminated: function areaExterminated(area, factions) {
     var _this8 = this;
 
+    if (area.data) area = area.data;
+
     var suitcaseNuke = _.find(area.cards, function (card) {
       return card["class"] === 'suitcase-nuke';
     });

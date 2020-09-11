@@ -299,7 +299,8 @@ let mixin = {
     areasExterminated(){
         let areas = [];
         _.forEach( this.game().areas, area => {
-            if( _.areaExterminated( area, this.game().data.factions ) === this.name ) areas.push( area.name );
+            let areaExterminatedBy = _.areaExterminated( area, this.game().data.factions );
+            if( areaExterminatedBy === this.name ) areas.push( area.name );
         });
         return areas;
     },

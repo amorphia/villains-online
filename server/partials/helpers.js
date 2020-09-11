@@ -407,6 +407,7 @@ let helpers = {
     },
 
     areaExterminated( area, factions ){
+        if( area.data ) area = area.data;
 
         let suitcaseNuke = _.find( area.cards, card => card.class === 'suitcase-nuke' );
         if( suitcaseNuke ) return suitcaseNuke.owner;
