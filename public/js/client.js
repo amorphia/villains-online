@@ -9799,6 +9799,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-player',
   data: function data() {
@@ -9859,6 +9871,14 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    setPoints: function setPoints(type, val) {
+      App.event.emit('sound', 'ui');
+      this.shared.socketEmit('setPoints', {
+        faction: this.faction.name,
+        type: type,
+        val: val
+      });
+    },
     sendBribe: function sendBribe() {
       App.event.emit('sound', 'ui');
       this.shared.socketEmit('sendBribe', this.faction.name, this.bribe);
@@ -10017,6 +10037,13 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.socket.on('updateResources', function (data) {
         data.forEach(function (item) {
           _this4.shared.data.factions[item.faction].resources = item.resources;
+        });
+      }); // listen for points update
+
+      this.shared.socket.on('updatePoints', function (data) {
+        data.forEach(function (item) {
+          _this4.shared.data.factions[item.faction].pp = item.pp;
+          _this4.shared.data.factions[item.faction].ap = item.ap;
         });
       });
     },
@@ -62365,7 +62392,30 @@ var render = function() {
                         _vm._v(" "),
                         _c("span", { staticClass: "note" }, [
                           _vm._v("/ " + _vm._s(_vm.shared.data.maxAP))
-                        ])
+                        ]),
+                        _vm._v(" "),
+                        _vm.shared.admin
+                          ? _c("i", {
+                              staticClass: "icon-minimize pr-2",
+                              attrs: { disabled: _vm.faction.ap === 0 },
+                              on: {
+                                click: function($event) {
+                                  return _vm.setPoints("ap", -1)
+                                }
+                              }
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.shared.admin
+                          ? _c("i", {
+                              staticClass: "icon-maximize pr-2",
+                              on: {
+                                click: function($event) {
+                                  return _vm.setPoints("ap", 1)
+                                }
+                              }
+                            })
+                          : _vm._e()
                       ]
                     ),
                     _vm._v(" "),
@@ -62382,7 +62432,30 @@ var render = function() {
                         _vm._v(" "),
                         _c("span", { staticClass: "note" }, [
                           _vm._v("/ " + _vm._s(_vm.shared.data.maxPP))
-                        ])
+                        ]),
+                        _vm._v(" "),
+                        _vm.shared.admin
+                          ? _c("i", {
+                              staticClass: "icon-minimize pr-2",
+                              attrs: { disabled: _vm.faction.pp === 0 },
+                              on: {
+                                click: function($event) {
+                                  return _vm.setPoints("pp", -1)
+                                }
+                              }
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.shared.admin
+                          ? _c("i", {
+                              staticClass: "icon-maximize pr-2",
+                              on: {
+                                click: function($event) {
+                                  return _vm.setPoints("pp", 1)
+                                }
+                              }
+                            })
+                          : _vm._e()
                       ]
                     ),
                     _vm._v(" "),

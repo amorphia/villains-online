@@ -20,6 +20,7 @@ class Game {
         'factionStartOfTurnResponse',
         'passToken',
         'sendBribe',
+        'setPoints',
         'initPassAction',
         'initLockedAction',
         'initSkillAction',
@@ -291,6 +292,12 @@ class Game {
         Server.io.to( this.id ).emit( 'updatePlayerData', this.data.players );
     }
 
+    updatePoints(){
+        let data = Object.values( this.data.factions ).map( faction => {
+            return { 'faction' : faction.name, 'ap' : faction.ap, 'pp' : faction.pp };
+        });
+        Server.io.to( this.id ).emit( 'updatePoints', data );
+    }
 
     updateResources(){
         let data = Object.values( this.data.factions ).map( faction => {

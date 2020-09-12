@@ -142,6 +142,15 @@
                         this.shared.data.factions[ item.faction ].resources = item.resources;
                     });
                 });
+
+                // listen for points update
+                this.shared.socket.on( 'updatePoints', data => {
+
+                    data.forEach( item => {
+                        this.shared.data.factions[ item.faction ].pp = item.pp;
+                        this.shared.data.factions[ item.faction ].ap = item.ap;
+                    });
+                });
             },
 
             initSocket(){

@@ -21,8 +21,20 @@
                     </div>
 
                     <div class="d-flex flex-wrap view-player__core-stats my-6">
-                        <div class="view-player__AP view-player__title width-50 d-flex align-center"><i class="icon-ap mr-3"></i> <span>{{ faction.ap }}</span> <span class="note">/ {{ shared.data.maxAP }}</span></div>
-                        <div class="view-player__PP view-player__title width-50 d-flex align-center"><i class="icon-pp mr-3"></i> <span>{{ faction.pp }}</span> <span class="note">/ {{ shared.data.maxPP }}</span></div>
+                        <div class="view-player__AP view-player__title width-50 d-flex align-center">
+                            <i class="icon-ap mr-3"></i>
+                            <span>{{ faction.ap }}</span>
+                            <span class="note">/ {{ shared.data.maxAP }}</span>
+                            <i v-if="shared.admin" :disabled="faction.ap === 0" @click="setPoints( 'ap', -1)" class="icon-minimize pr-2"></i>
+                            <i v-if="shared.admin" @click="setPoints( 'ap', 1)" class="icon-maximize pr-2"></i>
+                        </div>
+                        <div class="view-player__PP view-player__title width-50 d-flex align-center">
+                            <i class="icon-pp mr-3"></i>
+                            <span>{{ faction.pp }}</span>
+                            <span class="note">/ {{ shared.data.maxPP }}</span>
+                            <i v-if="shared.admin" :disabled="faction.pp === 0" @click="setPoints( 'pp', -1)" class="icon-minimize pr-2"></i>
+                            <i v-if="shared.admin" @click="setPoints( 'pp', 1)" class="icon-maximize pr-2"></i>
+                        </div>
                         <div class="view-player__energy view-player__title width-50">Energy: <span>{{ faction.energy }}</span> <span class="note">/ {{ faction.maxEnergy }}</span></div>
                         <div class="view-player__resources view-player__title width-50">Resources: <span>{{ faction.resources }}</span></div>
                         <div class="view-player__resources view-player__title width-50"> Upgrade: <span>{{ faction.upgrade ? faction.upgrade : 'none' }}</span></div>
@@ -238,6 +250,15 @@
         },
 
         methods : {
+
+            setPoints( type, val ){
+                App.event.emit( 'sound', 'ui' );
+                this.shared.socketEmit( 'setPoints', {
+                    faction : this.faction.name,
+                    type: type,
+                    val: val
+                });
+            },
 
             sendBribe(){
                 App.event.emit( 'sound', 'ui' );

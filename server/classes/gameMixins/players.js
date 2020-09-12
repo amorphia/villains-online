@@ -1,5 +1,21 @@
 let mixin = {
 
+    setPoints( player, data ){
+        let pointsTypeText;
+
+        if( data.type === 'ap' ){
+            pointsTypeText = 'Area Points';
+            this.factions[data.faction].gainAP( data.val );
+        }
+        else if( data.type === 'pp' ){
+            pointsTypeText = 'Area Points';
+            this.factions[data.faction].gainPP( data.val );
+        }
+
+        this.message({ message: `manually adjusted the ${data.faction} ${pointsTypeText}`, class: 'warning', player : player });
+        this.updatePoints();
+    },
+
     sendBribe( player, recipient, bribe ){
         player.faction().data.resources -= bribe;
         this.factions[recipient].gainResources( bribe );
