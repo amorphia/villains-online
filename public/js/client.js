@@ -10697,6 +10697,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'map-player',
   props: ['neutral', 'area', 'faction'],
@@ -10714,9 +10727,24 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this = this;
 
       if (!this.faction) return [];
-      return this.shared.groupByCount(this.faction.units.filter(function (unit) {
+      var units = {};
+      this.faction.units.filter(function (unit) {
         return _.unitInArea(unit, _this.area);
-      }), 'type');
+      }).forEach(function (unit) {
+        if (units[unit.type]) {
+          units[unit.type].count++;
+        } else {
+          units[unit.type] = {
+            count: 1,
+            flipped: 0
+          };
+        }
+
+        if (unit.flipped) {
+          units[unit.type].flipped++;
+        }
+      });
+      return units;
     },
     kills: function kills() {
       if (!this.faction) return 0;
@@ -10754,10 +10782,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }];
       var stats = [];
 
-      _.forEach(this.units, function (count, type) {
+      _.forEach(this.units, function (data, type) {
         stats.push({
           name: type,
-          val: count,
+          val: data.count,
+          flipped: data.flipped,
           description: "".concat(type, "s")
         });
       });
@@ -12222,7 +12251,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.icon-color-skill:before {\n     content: \"\";\n     width: 1em;\n     height: 1em;\n     background-image: url(/images/icons/skilled.png);\n     display: block;\n     background-position: center;\n     background-size: cover;\n}\n.map-player {\n     margin-bottom: .1em;\n}\n.map-player__content {\n     background-color: rgba(0,0,0,.75);\n     border-radius: .2em;\n     padding: .25em;\n     font-size: 1.5rem;\n     display: inline-flex;\n}\n.map-player__content i {\n     font-size: .9em;\n}\n.map-player__content span {\n     color: var(--highlight-color);\n     height: .9em;\n     padding: 0 .1em;\n}\n.map-player__stat {\n     line-height: 1em;\n     padding: 0 .1em;\n     display: flex;\n     align-items: center;\n}\n.map-player__champion {\n    width: .9em;\n    height: .9em;\n    margin-left: .1em;\n}\n.map-player__icon {\n     width: 1em;\n     height: 1em;\n     margin-right: .1em;\n}\n", ""]);
+exports.push([module.i, "\n.icon-color-skill:before {\n     content: \"\";\n     width: 1em;\n     height: 1em;\n     background-image: url(/images/icons/skilled.png);\n     display: block;\n     background-position: center;\n     background-size: cover;\n}\n.map-player {\n     margin-bottom: .1em;\n}\n.map-player__content {\n     background-color: rgba(0,0,0,.75);\n     border-radius: .2em;\n     padding: .3em .25em .3em .25em;\n     font-size: 1.5rem;\n     display: inline-flex;\n}\n.map-player__content i {\n     font-size: .9em;\n}\n.map-player_champion-wrap {\n     width: .9em;\n     height: .9em;\n     position: relative;\n     margin-left: .1em;\n}\n.map-player__pips {\n     bottom: -.2em;\n}\n.map-player_champion-wrap .map-player__pips {\n     bottom: -.3em;\n}\n.map-player__pips i {\n     font-size: .2em;\n}\n.map-player__content span {\n     color: var(--highlight-color);\n     height: .9em;\n     padding: 0 .1em;\n}\n.map-player__stat {\n     line-height: 1em;\n     padding: 0 .1em;\n     display: flex;\n     align-items: center;\n     position: relative;\n}\n.map-player__champion, .map-player__status {\n    width: .9em;\n    height: .9em;\n}\n.map-player__champion {\n}\n.map-player__icon {\n     width: 1em;\n     height: 1em;\n     margin-right: .1em;\n}\n\n", ""]);
 
 // exports
 
@@ -63731,16 +63760,57 @@ var render = function() {
                 : _vm._e(),
               _vm._v(" "),
               stat.name === "champion"
-                ? _c("img", {
-                    staticClass: "map-player__champion",
-                    attrs: {
-                      src: "/images/factions/" + _vm.name + "/portrait.png"
-                    }
-                  })
-                : _c("i", {
-                    class: "icon-" + stat.name,
-                    attrs: { title: stat.description }
-                  })
+                ? _c("i", { staticClass: "map-player_champion-wrap" }, [
+                    _c("img", {
+                      staticClass: "map-player__champion",
+                      attrs: {
+                        src: "/images/factions/" + _vm.name + "/portrait.png"
+                      }
+                    }),
+                    _vm._v(" "),
+                    stat.flipped > 0
+                      ? _c(
+                          "div",
+                          {
+                            staticClass:
+                              "pos-absolute map-player__pips d-flex justify-center width-100"
+                          },
+                          _vm._l(stat.flipped, function(n) {
+                            return _c("i", {
+                              staticClass: "icon-circle",
+                              class: "faction-" + _vm.faction.name
+                            })
+                          }),
+                          0
+                        )
+                      : _vm._e()
+                  ])
+                : _c(
+                    "i",
+                    {
+                      staticClass: "pos-relative",
+                      class: "icon-" + stat.name,
+                      attrs: { title: stat.description }
+                    },
+                    [
+                      stat.flipped > 0
+                        ? _c(
+                            "div",
+                            {
+                              staticClass:
+                                "pos-absolute map-player__pips d-flex justify-center width-100"
+                            },
+                            _vm._l(stat.flipped, function(n) {
+                              return _c("i", {
+                                staticClass: "icon-circle",
+                                class: "faction-" + _vm.faction.name
+                              })
+                            }),
+                            0
+                          )
+                        : _vm._e()
+                    ]
+                  )
             ])
           }),
           _vm._v(" "),
@@ -63750,7 +63820,7 @@ var render = function() {
               { staticClass: "map-player__stat", attrs: { title: desc } },
               [
                 _c("img", {
-                  staticClass: "map-player__champion",
+                  staticClass: "map-player__status",
                   attrs: { src: "/images/icons/" + icon + ".png" }
                 })
               ]
