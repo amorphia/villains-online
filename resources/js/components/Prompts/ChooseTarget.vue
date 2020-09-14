@@ -102,8 +102,11 @@
                 // clicking the selected object unselects it
                 if( this[type] && this[type].id === object.id ) return this[type] = null;
 
+
                 // if this card doesn't have a target, do nothing
-                if( type === 'card' && !object.target ) return App.event.emit( 'sound', 'error' );
+                if( type === 'target' && !object.target ){
+                    return App.event.emit( 'sound', 'error' );
+                }
 
                 // otherwise set the object as the type
                 this[type] = object;
