@@ -104,12 +104,17 @@
 
                 // try to reconnect on disconnect
                 this.shared.socket.on( 'disconnect', () => {
-                    this.shared.socket.connect();
 
-                    this.shared.socket.emit( 'newPlayer', {
-                        name : App.user.name,
-                        id : App.user.uuid
-                    });
+                    let socket = this.shared.socket;
+
+                    setTimeout(() => {
+                        socket.connect();
+                        socket.emit( 'newPlayer', {
+                            name : App.user.name,
+                            id : App.user.uuid
+                        });
+                    }, 1000 );
+
                 });
 
                 // listen for open games

@@ -10011,12 +10011,14 @@ __webpack_require__.r(__webpack_exports__);
 
       // try to reconnect on disconnect
       this.shared.socket.on('disconnect', function () {
-        _this4.shared.socket.connect();
-
-        _this4.shared.socket.emit('newPlayer', {
-          name: App.user.name,
-          id: App.user.uuid
-        });
+        var socket = _this4.shared.socket;
+        setTimeout(function () {
+          socket.connect();
+          socket.emit('newPlayer', {
+            name: App.user.name,
+            id: App.user.uuid
+          });
+        }, 1000);
       }); // listen for open games
 
       this.shared.socket.on('openGame', function (game) {
