@@ -10009,7 +10009,16 @@ __webpack_require__.r(__webpack_exports__);
     initCoreSocketFunctions: function initCoreSocketFunctions() {
       var _this4 = this;
 
-      // listen for open games
+      // try to reconnect on disconnect
+      this.shared.socket.on('disconnect', function () {
+        _this4.shared.socket.connect();
+
+        _this4.shared.socket.emit('newPlayer', {
+          name: App.user.name,
+          id: App.user.uuid
+        });
+      }); // listen for open games
+
       this.shared.socket.on('openGame', function (game) {
         _this4.$set(_this4.shared, 'game', game);
       }); // listen for saved games

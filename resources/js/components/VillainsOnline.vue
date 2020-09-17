@@ -101,6 +101,17 @@
             },
 
             initCoreSocketFunctions(){
+
+                // try to reconnect on disconnect
+                this.shared.socket.on( 'disconnect', () => {
+                    this.shared.socket.connect();
+
+                    this.shared.socket.emit( 'newPlayer', {
+                        name : App.user.name,
+                        id : App.user.uuid
+                    });
+                });
+
                 // listen for open games
                 this.shared.socket.on( 'openGame', game => {
                     this.$set( this.shared, 'game', game );
