@@ -5634,6 +5634,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-factions',
   data: function data() {
@@ -5646,9 +5650,36 @@ __webpack_require__.r(__webpack_exports__);
     this.selectedFaction = Object.keys(this.shared.data.factions)[0];
   },
   watch: {},
+  computed: {
+    remainingPlayers: function remainingPlayers() {
+      return Object.values(this.shared.data.players).filter(function (player) {
+        return !player.faction;
+      }).length;
+    }
+  },
   methods: {
     factionText: function factionText(player) {
       if (player.active) return "Choosing...";else if (player.faction) return player.faction;
+    },
+    chooseRandomFaction: function chooseRandomFaction() {
+      var unselectedFactions = [];
+      var killerSelected = false;
+
+      _.forEach(this.shared.data.factions, function (faction, name) {
+        if (faction.killer && faction.owner) killerSelected = true;else if (!faction.owner) unselectedFactions.push({
+          name: name,
+          killer: faction.killer
+        });
+      });
+
+      if (!killerSelected && this.remainingPlayers === 1) {
+        unselectedFactions = unselectedFactions.filter(function (faction) {
+          return faction.killer;
+        });
+      }
+
+      this.selectedFaction = _.sample(unselectedFactions).name;
+      this.chooseFaction();
     },
     chooseFaction: function chooseFaction() {
       App.event.emit('sound', 'ui');
@@ -58278,19 +58309,36 @@ var render = function() {
             ),
             _vm._v(" "),
             _c(
-              "button",
+              "div",
               {
-                staticClass: "button",
-                attrs: {
-                  disabled:
-                    _vm.shared.data.factions[_vm.selectedFaction] &&
-                    _vm.shared.data.factions[_vm.selectedFaction].owner !==
-                      null,
-                  inivisible: !_vm.shared.isActive()
-                },
-                on: { click: _vm.chooseFaction }
+                staticClass: "d-flex justify-end",
+                attrs: { inivisible: !_vm.shared.isActive() }
               },
-              [_vm._v("Choose")]
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "button button-empty",
+                    on: { click: _vm.chooseRandomFaction }
+                  },
+                  [_vm._v("Random")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "button",
+                    attrs: {
+                      disabled:
+                        _vm.shared.data.factions[_vm.selectedFaction] &&
+                        _vm.shared.data.factions[_vm.selectedFaction].owner !==
+                          null
+                    },
+                    on: { click: _vm.chooseFaction }
+                  },
+                  [_vm._v("Choose")]
+                )
+              ]
             )
           ]),
           _vm._v(" "),

@@ -32,10 +32,14 @@
                             <span class="choose-factions__circle pl-3" :class="name === selectedFaction ? 'icon-circle' : 'icon-circle-open'"></span>
                     </div>
                 </div>
-                <button :disabled="shared.data.factions[ selectedFaction ] && shared.data.factions[ selectedFaction ].owner !== null"
-                        class="button"
-                        :inivisible="!shared.isActive()"
-                        @click="chooseFaction">Choose</button>
+                <div class="d-flex justify-end" :inivisible="!shared.isActive()">
+                    <button class="button button-empty"
+                            @click="chooseRandomFaction">Random</button>
+
+                    <button :disabled="shared.data.factions[ selectedFaction ] && shared.data.factions[ selectedFaction ].owner !== null"
+                            class="button"
+                            @click="chooseFaction">Choose</button>
+                </div>
             </div>
             <div v-if="selectedFaction" class="choose-factions__faction-sheet"
                  :style="`background-image : url('/images/factions/${selectedFaction}/sheet.jpg')`"
@@ -64,10 +68,35 @@
 
         },
 
+        computed : {
+            remainingPlayers(){
+                return Object.values( this.shared.data.players ).filter( player => !player.faction ).length;
+            }
+        },
+
         methods : {
             factionText( player ){
                 if( player.active ) return "Choosing..."
                 else if( player.faction ) return player.faction;
+            },
+
+            chooseRandomFaction(){
+
+                let unselectedFactions = [];
+                let killerSelected = false;
+
+                _.forEach( this.shared.data.factions, (faction, name) => {
+                   if( faction.killer && faction.owner ) killerSelected = true;
+                   else if ( !faction.owner ) unselectedFactions.push( { name : name, killer : faction.killer } );
+                });
+
+                if( !killerSelected && this.remainingPlayers === 1 ){
+                    unselectedFactions = unselectedFactions.filter( faction => faction.killer );
+                }
+
+                this.selectedFaction = _.sample( unselectedFactions ).name;
+
+                this.chooseFaction();
             },
 
             chooseFaction(){
