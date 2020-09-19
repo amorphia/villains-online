@@ -34,6 +34,7 @@ class DB {
 
     save( game, options = {} ) {
 
+
         let data = {
             type: options.type || 'automatic',
             active : game.currentPlayerFactionName(),

@@ -136,7 +136,7 @@ class Society extends Faction {
 
         player.setPrompt({ name : 'choose-target' });
         this.game().data.playerAction++;
-        Server.saveToDB( this );
+        Server.saveToDB( this.game() );
         await this.game().updateAll();
     }
 

@@ -7,7 +7,7 @@ class Subway extends Area {
 
         this.data.control = "Your MOVE tokens are not limited by adjacency";
         this.data.skill = "Deploy one unit to any area (pay costs normally).";
-        this.data.adjacent = [ 'university', 'captiol', 'church' ];
+        this.data.adjacent = [ 'university', 'capitol', 'church' ];
     }
 
 
