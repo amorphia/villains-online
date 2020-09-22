@@ -12,7 +12,10 @@ let obj = {
     vampires : { owner : null, killer : true },
     society : { owner : null },
     hackers : { owner : null },
-    ninjas : { owner : null, killer : true }
+    ninjas : { owner : null, killer : true },
+    //guerrillas : { owner : null, killer : true },
+    //parasites : { owner : null },
+    //conquistadors : { owner : null, killer : true },
 };
 
 module.exports = Object.assign({}, obj );
