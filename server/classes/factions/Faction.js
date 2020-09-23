@@ -186,10 +186,11 @@ class Faction {
     factionCleanUp(){}
     factionCombatMods( mods ){ return mods }
     unitUnflipped( unit ){}
-    afterCombatStep(){}
     startOfTurn(){}
     onAfterReveal(){}
+    onControlArea(){}
     onAfterBattle(){}
+    onAfterCombatStep(){}
     onAfterSkill(){}
     onBeforeSkill(){}
 

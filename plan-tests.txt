@@ -35,7 +35,7 @@
 { test : 'unitsAtEnemyTarget', args : [2, 'mole'? ] },
 { test : 'mrFusion', args : [4] },
 
-
+{ test : 'conquerAreas', args : [3] },
 
 
 

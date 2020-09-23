@@ -149,7 +149,7 @@ let obj = {
         if( args.unit && args.area.hasCard( 'cease-fire' ) ) return this.game().message({ class : 'warning', message : 'Cease fire prevents unit from attacking' });
 
         // if this is a unit attacking, set bonus dice
-        if( args.unit ) args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice );
+        if( args.unit ) args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice, args.area );
 
         // set targets
         let victim = await this.setAttackTargets( args );
@@ -280,9 +280,10 @@ let obj = {
         return toHit;
     },
 
-    addBonusDiceToAttack( attacks, bonusDice ){
+    addBonusDiceToAttack( attacks, bonusDice, area ){
         let totalBonus = 0;
         if( this.data.bonusDice ) totalBonus += this.data.bonusDice;
+        if( this.data.bonusDiceInUnconquered && !area.data.conquered  ) totalBonus += this.data.bonusDiceInUnconquered;
         if( bonusDice ) totalBonus += bonusDice;
 
         console.log( 'bonusDice', bonusDice );

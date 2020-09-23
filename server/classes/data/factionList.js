@@ -15,7 +15,7 @@ let obj = {
     ninjas : { owner : null, killer : true },
     //guerrillas : { owner : null, killer : true },
     //parasites : { owner : null },
-    //conquistadors : { owner : null, killer : true },
+    conquistadors : { owner : null, killer : true },
 };
 
 module.exports = Object.assign({}, obj );

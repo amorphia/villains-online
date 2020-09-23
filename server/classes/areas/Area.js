@@ -14,7 +14,8 @@ class Area {
         skill : "",
         owner : null,
         battle : false,
-        adjacent : []
+        adjacent : [],
+        conquered : false
     };
 
     game(){
@@ -111,8 +112,9 @@ class Area {
             newController.gainControlOfArea( this );
         }
 
-        if( newController ){
-            data.capitolToken = this.onControl( newController );
+        if( newController ) {
+            data.capitolToken = this.onControl(newController);
+            newController.onControlArea( this );
         }
 
         return data;

@@ -30,7 +30,6 @@
 
                 </div>
                 <area-flipper :areas="toAreas" locked="true" :index="toAreaIndex" @update="updateToIndex" classes="area-header__units">
-                    <!-- <div class="toggle area-map__toggle top-0 left-0">Deploy Limit: {{ selected.length }} / {{ data.deployLimit }} {{ shared.faction.bonusPatsies ? `[+${shared.faction.bonusPatsies} patsy]` : ''  }}</div> -->
                     <div class="toggle area-map__toggle top-0 right-0" @click.stop="shared.event.emit('viewArea', area )"><i class="icon-zoom_in"></i></div>
 
                     <!-- deploy limit pips -->
@@ -40,10 +39,15 @@
                            class="deploy-limit__pip"
                            :class="index < usedDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
 
-                        <!-- commie bonus patsies -->
+                        <!-- commie bonus patsies
                         <i v-if="shared.faction.bonusPatsies && data.fromToken" v-for="(n, index) in shared.faction.bonusPatsies"
                            class="deploy-limit__pip commie-pip"
                            :class="index < patsiesInDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
+                        -->
+
+                        <i v-if="showBonusPips" v-for="(n, index) in bonusDeployCount"
+                           class="deploy-limit__pip commie-pip"
+                           :class="index < bonusUnitsInDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
 
                     </div>
 
@@ -148,10 +152,10 @@
                 let deployLimit = this.data.deployLimit;
 
                 // commie bonus patsies
-                if( this.shared.faction.bonusPatsies && this.data.fromToken ){
-                    usedDeploy = this.nonPatsyUsedDeploy;
-                    usedDeploy += this.netPatsies > 0 ? this.netPatsies : 0;
-                    if( this.netPatsies < 0 && type === 'patsy' ) deployLimit++;
+                if( this.shared.faction.bonusDeploy && this.data.fromToken ){
+                    usedDeploy = this.nonBonusUsedDeploy;
+                    usedDeploy += this.netBonusUnits > 0 ? this.netBonusUnits : 0;
+                    if( this.netBonusUnits < 0 && type === this.shared.faction.bonusDeploy.type ) deployLimit++;
                 }
 
                 return usedDeploy < deployLimit;
@@ -190,22 +194,34 @@
 
         computed : {
 
-            netPatsies() {
-                return this.patsiesInDeploy - this.shared.faction.bonusPatsies;
+            bonusDeployCount(){
+                if( ! this.showBonusPips ) return 0;
+                return this.shared.faction.bonusDeploy.count;
             },
 
-            patsiesInDeploy() {
-                return this.selected.filter(unit => unit.type === 'patsy').length;
+            showBonusPips() {
+             return this.shared.faction.hasOwnProperty( 'bonusDeploy' ) && this.data.fromToken;
             },
 
-            nonPatsyUsedDeploy(){
-                return this.selected.filter( unit => unit.type !== 'patsy' ).length;
+            netBonusUnits() {
+                if( ! this.shared.faction.bonusDeploy ) return 0;
+                return this.bonusUnitsInDeploy - this.shared.faction.bonusDeploy.count;
+            },
+
+            bonusUnitsInDeploy() {
+                if( !this.shared.faction.bonusDeploy ) return 0;
+                return this.selected.filter(unit => unit.type === this.shared.faction.bonusDeploy.type ).length;
+            },
+
+            nonBonusUsedDeploy(){
+                if( !this.shared.faction.bonusDeploy ) return this.selected.length;
+                return this.selected.filter( unit => unit.type !== this.shared.faction.bonusDeploy.type ).length;
             },
 
             usedDeploy(){
-                if( this.shared.faction.bonusPatsies && this.data.fromToken ){
-                    let usedDeploy = this.nonPatsyUsedDeploy;
-                    usedDeploy += this.netPatsies > 0 ? this.netPatsies : 0;
+                if( this.shared.faction.bonusDeploy && this.data.fromToken ){
+                    let usedDeploy = this.nonBonusUsedDeploy;
+                    usedDeploy += this.netBonusUnits > 0 ? this.netBonusUnits : 0;
                     return usedDeploy;
                 }
 

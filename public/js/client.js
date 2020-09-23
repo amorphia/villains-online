@@ -2442,6 +2442,40 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'areas-conquered-focus',
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    focus: function focus() {
+      return Object.values(this.shared.data.areas).filter(function (area) {
+        return area.conquered;
+      }).length;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/FusionFocus.vue?vue&type=script&lang=js&":
 /*!****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/FusionFocus.vue?vue&type=script&lang=js& ***!
@@ -6695,6 +6729,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'deploy-action',
   data: function data() {
@@ -6754,10 +6792,10 @@ __webpack_require__.r(__webpack_exports__);
       var usedDeploy = this.selected.length;
       var deployLimit = this.data.deployLimit; // commie bonus patsies
 
-      if (this.shared.faction.bonusPatsies && this.data.fromToken) {
-        usedDeploy = this.nonPatsyUsedDeploy;
-        usedDeploy += this.netPatsies > 0 ? this.netPatsies : 0;
-        if (this.netPatsies < 0 && type === 'patsy') deployLimit++;
+      if (this.shared.faction.bonusDeploy && this.data.fromToken) {
+        usedDeploy = this.nonBonusUsedDeploy;
+        usedDeploy += this.netBonusUnits > 0 ? this.netBonusUnits : 0;
+        if (this.netBonusUnits < 0 && type === this.shared.faction.bonusDeploy.type) deployLimit++;
       }
 
       return usedDeploy < deployLimit;
@@ -6795,23 +6833,37 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
-    netPatsies: function netPatsies() {
-      return this.patsiesInDeploy - this.shared.faction.bonusPatsies;
+    bonusDeployCount: function bonusDeployCount() {
+      if (!this.showBonusPips) return 0;
+      return this.shared.faction.bonusDeploy.count;
     },
-    patsiesInDeploy: function patsiesInDeploy() {
+    showBonusPips: function showBonusPips() {
+      return this.shared.faction.hasOwnProperty('bonusDeploy') && this.data.fromToken;
+    },
+    netBonusUnits: function netBonusUnits() {
+      if (!this.shared.faction.bonusDeploy) return 0;
+      return this.bonusUnitsInDeploy - this.shared.faction.bonusDeploy.count;
+    },
+    bonusUnitsInDeploy: function bonusUnitsInDeploy() {
+      var _this2 = this;
+
+      if (!this.shared.faction.bonusDeploy) return 0;
       return this.selected.filter(function (unit) {
-        return unit.type === 'patsy';
+        return unit.type === _this2.shared.faction.bonusDeploy.type;
       }).length;
     },
-    nonPatsyUsedDeploy: function nonPatsyUsedDeploy() {
+    nonBonusUsedDeploy: function nonBonusUsedDeploy() {
+      var _this3 = this;
+
+      if (!this.shared.faction.bonusDeploy) return this.selected.length;
       return this.selected.filter(function (unit) {
-        return unit.type !== 'patsy';
+        return unit.type !== _this3.shared.faction.bonusDeploy.type;
       }).length;
     },
     usedDeploy: function usedDeploy() {
-      if (this.shared.faction.bonusPatsies && this.data.fromToken) {
-        var usedDeploy = this.nonPatsyUsedDeploy;
-        usedDeploy += this.netPatsies > 0 ? this.netPatsies : 0;
+      if (this.shared.faction.bonusDeploy && this.data.fromToken) {
+        var usedDeploy = this.nonBonusUsedDeploy;
+        usedDeploy += this.netBonusUnits > 0 ? this.netBonusUnits : 0;
         return usedDeploy;
       }
 
@@ -6827,19 +6879,19 @@ __webpack_require__.r(__webpack_exports__);
       return unitsSelectedTest && costTest;
     },
     fromAreas: function fromAreas() {
-      var _this2 = this;
+      var _this4 = this;
 
       var areas = [];
       this.data.fromAreas.forEach(function (areaName) {
-        areas.push(_this2.shared.data.areas[areaName]);
+        areas.push(_this4.shared.data.areas[areaName]);
       });
       return areas;
     },
     hasFromAreaUnits: function hasFromAreaUnits() {
-      var _this3 = this;
+      var _this5 = this;
 
       this.data.fromAreas.forEach(function (area) {
-        if (_this3.fromAreaUnits(area).length > 0) return true;
+        if (_this5.fromAreaUnits(area).length > 0) return true;
       });
     },
     currentArea: function currentArea() {
@@ -6849,10 +6901,10 @@ __webpack_require__.r(__webpack_exports__);
       return this.fromAreaUnits(this.currentArea);
     },
     reserves: function reserves() {
-      var _this4 = this;
+      var _this6 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return !unit.selected && (!_this4.data.unitTypes || _this4.data.unitTypes.includes(unit.type)) && !unit.noDeploy && !unit.location;
+        return !unit.selected && (!_this6.data.unitTypes || _this6.data.unitTypes.includes(unit.type)) && !unit.noDeploy && !unit.location;
       });
     },
     selected: function selected() {
@@ -6861,15 +6913,15 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     policePayoffs: function policePayoffs() {
-      var _this5 = this;
+      var _this7 = this;
 
       var policePayoff = 0;
 
       _.forEach(this.area.cards, function (card) {
         if (card["class"] === 'police-payoff' // if there is a police payoff here
-        && card.owner !== _this5.shared.faction.name // which we don't own
-        && !_.hasKauImmunity(_this5.shared.faction, _this5.area) // and we don't already have kau immunity in this area
-        && !_.find(_this5.selected, function (unit) {
+        && card.owner !== _this7.shared.faction.name // which we don't own
+        && !_.hasKauImmunity(_this7.shared.faction, _this7.area) // and we don't already have kau immunity in this area
+        && !_.find(_this7.selected, function (unit) {
           return unit.type === 'champion' && unit.faction === 'aliens';
         })) // and we aren't deploying kau
           {
@@ -6895,11 +6947,11 @@ __webpack_require__.r(__webpack_exports__);
       return this.shared.player.prompt.data;
     },
     toAreas: function toAreas() {
-      var _this6 = this;
+      var _this8 = this;
 
       var areas = [];
       this.data.toAreas.forEach(function (areaName) {
-        areas.push(_this6.shared.data.areas[areaName]);
+        areas.push(_this8.shared.data.areas[areaName]);
       });
       return areas;
     },
@@ -10477,6 +10529,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'area-map',
   props: ['area', 'classes'],
@@ -12258,7 +12318,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.influence-marker {\n    width: 1em;\n    height: 1em;\n}\n.area-map-container {\n    width: 33%;\n    height: 33%;\n    padding: .40rem;\n}\n.area-map__core-content-container {\n    padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n    top: 60%;\n}\n.stat-icon {\n    width: 1.5em;\n    height: 1.5em;\n    display: inline-flex;\n    justify-content: center;\n    align-items: center;\n    background-color: rgba(0,0,0,.8);\n    border-radius: .25em;\n    margin: 0 .1em;\n    font-size: 1.2rem;\n}\n.area-map__toggle {\n    display: flex;\n    padding: .45vw;\n    z-index: 3;\n}\n.area-map__owner-portrait, .area-map__battle-marker, .area-map__exterminated {\n    width: 2.5rem;\n    height: 2.5rem;\n    position: absolute;\n\n    border: 2px solid rgba(255,255,255,1);\n    outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n    bottom:0;\n    left:0;\n    transform: translate(-15%,15%);\n}\n.area-map__owner-portrait {\n    top:0;\n    left:0;\n    transform: translate(-15%,-15%);\n}\n.area-map__graveyard {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    right: 3px;\n    top: 50%;\n}\n.area-map__graveyard-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__influence {\n    background-color: rgba(0,0,0,.8);\n    padding: .25em;\n    align-items: center;\n    justify-content: center;\n    color: var(--highlight-color);\n    border-radius: .2em;\n    transform: translateY(-50%);\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    left: 3px;\n    top: 50%;\n}\n.area-map__influence-count {\n    text-align: center;\n    font-weight: 700;\n}\n.area-map__exterminated {\n    bottom: 0;\n    right:0;\n    transform: translate(15%,15%);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1.8em;\n    background-color: black;\n}\n.area-map {\n    background-position: center top, center;\n    background-repeat: no-repeat, no-repeat;\n    background-size: 100% 2vw, cover;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n    background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n    background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n    background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n    background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n    background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n    background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n    background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n    background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n    background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n\n\n", ""]);
+exports.push([module.i, "\n.influence-marker {\n      width: 1em;\n      height: 1em;\n}\n.area-map-container {\n      width: 33%;\n      height: 33%;\n      padding: .40rem;\n}\n.area-map__core-content-container {\n      padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n      top: 60%;\n}\n.stat-icon {\n      width: 1.5em;\n      height: 1.5em;\n      display: inline-flex;\n      justify-content: center;\n      align-items: center;\n      background-color: rgba(0,0,0,.8);\n      border-radius: .25em;\n      margin: 0 .1em;\n      font-size: 1.2rem;\n}\n.area-map__toggle {\n      display: flex;\n      padding: .45vw;\n      z-index: 3;\n}\n.area-map__owner-wrap {\n      position: absolute;\n      top:0;\n      left:0;\n      transform: translate(-15%,-15%);\n      display: flex;\n}\n.area-map__owner-portrait {\n      width: 2.5rem;\n      height: 2.5rem;\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__conquered-icon {\n      display: flex;\n      align-items: center;\n      background-color: rgb(72 62 0);\n      padding: .25rem;\n      box-shadow: inset 0px 0px 1px rgba(0,0,0,1), inset 0px 0px 2px rgba(0,0,0,1), 0px 0px 4px rgba(0,0,0,1);\n      border: 2px solid;\n}\n.area-map__battle-marker, .area-map__exterminated {\n      width: 2.5rem;\n      height: 2.5rem;\n      position: absolute;\n\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n      bottom:0;\n      left:0;\n      transform: translate(-15%,15%);\n}\n.area-map__graveyard {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      right: 3px;\n      top: 50%;\n}\n.area-map__graveyard-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__influence {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      left: 3px;\n      top: 50%;\n}\n.area-map__influence-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__exterminated {\n      bottom: 0;\n      right:0;\n      transform: translate(15%,15%);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.8em;\n      background-color: black;\n}\n.area-map {\n      background-position: center top, center;\n      background-repeat: no-repeat, no-repeat;\n      background-size: 100% 2vw, cover;\n      box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n      border: 2px solid rgba(255,255,255,.3);\n      transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n      background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n      background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n      background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n      background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n      background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n      background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n      background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n      background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n      background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n\n\n", ""]);
 
 // exports
 
@@ -54680,6 +54740,40 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=template&id=8e26fa8c&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=template&id=8e26fa8c& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass:
+        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+    },
+    [
+      _vm._v("\n    conquered areas :"),
+      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/FusionFocus.vue?vue&type=template&id=54c8f1fc&":
 /*!********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/FusionFocus.vue?vue&type=template&id=54c8f1fc& ***!
@@ -59363,12 +59457,12 @@ var render = function() {
                     })
                   }),
                   _vm._v(" "),
-                  _vm._l(_vm.shared.faction.bonusPatsies, function(n, index) {
-                    return _vm.shared.faction.bonusPatsies && _vm.data.fromToken
+                  _vm._l(_vm.bonusDeployCount, function(n, index) {
+                    return _vm.showBonusPips
                       ? _c("i", {
                           staticClass: "deploy-limit__pip commie-pip",
                           class:
-                            index < _vm.patsiesInDeploy
+                            index < _vm.bonusUnitsInDeploy
                               ? "icon-circle active"
                               : "icon-circle-open"
                         })
@@ -63496,15 +63590,25 @@ var render = function() {
           }
         },
         [
-          _vm.area.owner
-            ? _c("img", {
-                staticClass: "area-map__owner-portrait z-2",
-                attrs: {
-                  src: "/images/factions/" + _vm.area.owner + "/icon.jpg",
-                  title: "The " + _vm.area.owner + " control this area"
-                }
-              })
-            : _vm._e(),
+          _c("div", { staticClass: "area-map__owner-wrap z-2" }, [
+            _vm.area.owner
+              ? _c("img", {
+                  staticClass: "area-map__owner-portrait z-2",
+                  attrs: {
+                    src: "/images/factions/" + _vm.area.owner + "/icon.jpg",
+                    title: "The " + _vm.area.owner + " control this area"
+                  }
+                })
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.area.conquered
+              ? _c("div", {
+                  staticClass:
+                    "area-map__conquered-icon z-1 icon-flag faction-conquistadors",
+                  attrs: { title: "The Conquistadors have conquered this area" }
+                })
+              : _vm._e()
+          ]),
           _vm._v(" "),
           _c(
             "div",
@@ -76736,6 +76840,7 @@ var map = {
 	"./EndGame.vue": "./resources/js/components/EndGame.vue",
 	"./FactionScore.vue": "./resources/js/components/FactionScore.vue",
 	"./FinalScores.vue": "./resources/js/components/FinalScores.vue",
+	"./Focus/AreasConqueredFocus.vue": "./resources/js/components/Focus/AreasConqueredFocus.vue",
 	"./Focus/FusionFocus.vue": "./resources/js/components/Focus/FusionFocus.vue",
 	"./Focus/KillAreasFocus.vue": "./resources/js/components/Focus/KillAreasFocus.vue",
 	"./Focus/KillTypesFocus.vue": "./resources/js/components/Focus/KillTypesFocus.vue",
@@ -77883,6 +77988,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FinalScores_vue_vue_type_template_id_695c589c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FinalScores_vue_vue_type_template_id_695c589c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/AreasConqueredFocus.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/components/Focus/AreasConqueredFocus.vue ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AreasConqueredFocus_vue_vue_type_template_id_8e26fa8c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AreasConqueredFocus.vue?vue&type=template&id=8e26fa8c& */ "./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=template&id=8e26fa8c&");
+/* harmony import */ var _AreasConqueredFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AreasConqueredFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AreasConqueredFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AreasConqueredFocus_vue_vue_type_template_id_8e26fa8c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AreasConqueredFocus_vue_vue_type_template_id_8e26fa8c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/AreasConqueredFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AreasConqueredFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./AreasConqueredFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AreasConqueredFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=template&id=8e26fa8c&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=template&id=8e26fa8c& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AreasConqueredFocus_vue_vue_type_template_id_8e26fa8c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./AreasConqueredFocus.vue?vue&type=template&id=8e26fa8c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/AreasConqueredFocus.vue?vue&type=template&id=8e26fa8c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AreasConqueredFocus_vue_vue_type_template_id_8e26fa8c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AreasConqueredFocus_vue_vue_type_template_id_8e26fa8c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

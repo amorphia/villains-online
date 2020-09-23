@@ -32,7 +32,7 @@ let obj = {
             }
 
             for (let faction in this.factions) {
-                await this.factions[faction].afterCombatStep();
+                await this.factions[faction].onAfterCombatStep();
             }
         } catch( error ){
             console.error( error );

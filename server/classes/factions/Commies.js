@@ -10,7 +10,8 @@ class Commies extends Faction {
         // data
         this.data.name = this.name;
         this.data.title = "The New Collective";
-        this.data.bonusPatsies = 1;
+        //this.data.bonusPatsies = 1;
+        this.data.bonusDeploy = { type: 'patsy', count : 1 };
 
         // tokens
         this.tokens['rise-up'] = {
@@ -68,7 +69,7 @@ class Commies extends Faction {
     }
 
     processUpgrade( n ){
-        this.data.bonusPatsies = n + 1;
+        this.data.bonusDeploy.count = n + 1;
     }
 
 }

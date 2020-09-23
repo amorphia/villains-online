@@ -3,11 +3,19 @@
         <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="shared.event.emit( 'areaClicked', area )">
         <!-- Absolutes -->
 
+            <div class="area-map__owner-wrap z-2">
+                <img v-if="area.owner"
+                     class="area-map__owner-portrait z-2"
+                     :src="`/images/factions/${area.owner}/icon.jpg`"
+                     :title="`The ${area.owner} control this area`">
+
+                <div v-if="area.conquered"
+                     class="area-map__conquered-icon z-1 icon-flag faction-conquistadors"
+                     title="The Conquistadors have conquered this area">
+                </div>
+            </div>
             <!-- owner -->
-            <img v-if="area.owner"
-                 class="area-map__owner-portrait z-2"
-                 :src="`/images/factions/${area.owner}/icon.jpg`"
-                 :title="`The ${area.owner} control this area`">
+
 
             <!-- zoom -->
             <div class="toggle area-map__toggle top-0 right-0"
@@ -250,7 +258,31 @@
         z-index: 3;
     }
 
-    .area-map__owner-portrait, .area-map__battle-marker, .area-map__exterminated {
+    .area-map__owner-wrap {
+        position: absolute;
+        top:0;
+        left:0;
+        transform: translate(-15%,-15%);
+        display: flex;
+    }
+
+    .area-map__owner-portrait {
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 2px solid rgba(255,255,255,1);
+        outline: 3px solid rgba(0,0,0,.5);
+    }
+
+    .area-map__conquered-icon {
+        display: flex;
+        align-items: center;
+        background-color: rgb(72 62 0);
+        padding: .25rem;
+        box-shadow: inset 0px 0px 1px rgba(0,0,0,1), inset 0px 0px 2px rgba(0,0,0,1), 0px 0px 4px rgba(0,0,0,1);
+        border: 2px solid;
+    }
+
+  .area-map__battle-marker, .area-map__exterminated {
         width: 2.5rem;
         height: 2.5rem;
         position: absolute;
@@ -265,11 +297,6 @@
         transform: translate(-15%,15%);
     }
 
-    .area-map__owner-portrait {
-        top:0;
-        left:0;
-        transform: translate(-15%,-15%);
-    }
 
     .area-map__graveyard {
         background-color: rgba(0,0,0,.8);

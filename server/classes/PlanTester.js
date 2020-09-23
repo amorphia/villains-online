@@ -490,6 +490,21 @@ class PlanTester {
 
         return result;
     }
+
+    conquerAreas( faction, areaCount ){
+        let factionAreasConquered = faction.data.conqueredAreas.length;
+        let result = factionAreasConquered >= areaCount;
+
+        if( this.debug ) console.log(
+            'conquerAreas',
+            'areaCount req:', areaCount,
+            'factionAreasConquered:', factionAreasConquered,
+            'result:', result
+        );
+
+        return result;
+    }
+
 }
 
 module.exports = PlanTester;

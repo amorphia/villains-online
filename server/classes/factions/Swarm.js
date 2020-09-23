@@ -90,7 +90,7 @@ class Swarm extends Faction {
         this.data.factionDefenseBonus = n;
     }
 
-    async afterCombatStep() {
+    async onAfterCombatStep() {
         let broodnest = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
         if ( !broodnest ) return;
 

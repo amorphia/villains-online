@@ -13,7 +13,7 @@ let Society = require( './factions/Society' );
 let Hackers = require( './factions/Hackers' );
 let Ninjas = require( './factions/Ninjas' );
 //let Parasites = require( './factions/Parasites' );
-//let Conquistadors = require( './factions/Conquistadors' );
+let Conquistadors = require( './factions/Conquistadors' );
 //let Guerrillas = require( './factions/Guerrillas' );
 
 module.exports = {
@@ -32,6 +32,6 @@ module.exports = {
     ninjas : Ninjas,
     hackers : Hackers,
     //parasites : Parasites,
-    //conquistadors : Conquistadors,
+    conquistadors : Conquistadors,
     //guerrillas : Guerrillas,
 };
