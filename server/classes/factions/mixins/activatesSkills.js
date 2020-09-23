@@ -10,6 +10,9 @@ let obj = {
 
         this.game().message({ message: `activate the skill ability of the ${area.name}`, faction : this });
 
+        let modifySkill = await this.onBeforeSkill( area );
+        console.log( 'modifySkill', modifySkill );
+
         let triggered = [];
         this.data.usedSkills.push( area.name );
 
@@ -30,6 +33,7 @@ let obj = {
             for( let faction of Object.values( this.game().factions ) ){
                 if( faction.name === this.name ) continue;
                 await faction.onAfterSkill( this, area, triggered );
+                if( modifySkill && modifySkill.doubleResolve ) await area.skill( this );
             }
         } catch ( error ) {
             console.error( error );

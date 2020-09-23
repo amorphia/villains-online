@@ -11,7 +11,15 @@ class Hackers extends Faction {
         this.data.name = this.name;
         this.data.focus = 'skills-focus';
         this.data.title = "The Kaos Klub";
-        this.data.baseMaxEnergy = this.data.maxEnergy = 8;
+        this.data.baseMaxEnergy = this.data.maxEnergy = 9;
+
+        this.capturedRewards = [
+            { ap : 1, cardDraw : 1 },
+            { ap : 1 },
+            { ap : 1 },
+            { ap : 1 }
+        ];
+
 
         // tokens
         this.tokens['boot-up'] = {
@@ -20,7 +28,6 @@ class Hackers extends Faction {
                 influence: 1,
                 type: 'boot-up',
                 cost: 0,
-                resource : 1
             }
         };
 
@@ -52,37 +59,37 @@ class Hackers extends Faction {
     }
 
 
-    async onAfterSkill( faction, area, units ){
+    async onBeforeSkill( area ){
         let player = {}, data = {};
+        if( this.data.resources <= 0 ) return console.log( 'No resources to double skill' );
 
-        // Zero Day Exhaust ability
-        if( faction.name === this.name ){
-            let zeroDay = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, area ) );
-            if( zeroDay ){
-                try {
-                    await this.exhaustEnemyUnitsInArea( area );
-                } catch( error ){
-                    console.error( error );
-                }
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'double-resolve',
+            data: {
+                count : 1,
+                area : area.name
             }
-        } else {
-            let mole = this.data.units.find( unit => unit.type === 'mole' && _.unitInArea( unit, area ) );
-            if( mole && ! this.hasUsedSkill( area ) ){
-                // prompt player to select a unit
-                [player, data] = await this.game().promise({
-                    players: this.playerId,
-                    name: 'double-resolve',
-                    data: {
-                        area : area.name
-                    }
-                }).catch( error => console.error( error ) );
+        }).catch( error => console.error( error ) );
 
-                if( !data.doubleResolve ){
-                    this.message({ message: `The hackers decline to resolve the ${area.name} skill`, faction : this });
-                    return;
-                }
+        if( !data.doubleResolve ){
+            this.message({ message: `The hackers decline to resolve the ${area.name} skill twice`, faction : this });
+            return;
+        }
 
-                await this.useSkill( area );
+        this.data.resources--;
+        this.message({ message: `The hackers pay xRx to resolve the ${area.name} skill twice`, faction : this });
+        return { doubleResolve : true };
+    }
+
+    async onAfterSkill( area, units ){
+        // exhaust enemy units
+        let zeroDay = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, area ) );
+        if( zeroDay ){
+            try {
+                await this.exhaustEnemyUnitsInArea( area );
+            } catch( error ){
+                console.error( error );
             }
         }
     }

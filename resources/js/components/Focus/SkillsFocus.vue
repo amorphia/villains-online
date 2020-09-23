@@ -1,5 +1,6 @@
 <template>
     <div  class="d-flex justify-center plan-focus mr-4 primary-light align-center">
+        resources :<span class="highlight ml-2 mr-4">{{ shared.faction.resources }}</span>
         skills used :<span class="highlight ml-2">{{ focus }}</span>
     </div>
 </template>
