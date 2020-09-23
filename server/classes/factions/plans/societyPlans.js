@@ -32,9 +32,14 @@ let obj = [
             {
                 requirements : [
                     { test : 'tokensInAreas', args : [5] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'killUnits', args : [4] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
@@ -65,13 +70,13 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [7] },
+                    { test : 'loseUnits', args : [3] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'loseUnits', args : [3] },
+                    { test : 'tokensInAreas', args : [7] },
                 ],
                 value : 1
             },
@@ -90,16 +95,22 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [7] },
+                    { test : 'tokensInAreas', args : [6] },
                 ],
                 value : 1
             },
             {
                 requirements : [
                     { test : 'exterminateAreas', args : [1] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
+
                     { test : 'unitsInPlay', args : [8] },
                 ],
-                value : 2
+                value : 1
             },
         ]
     },
@@ -110,10 +121,15 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [6] },
+                    { test : 'tokensInAreas', args : [7] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'unitsInPlay', args : [8] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
