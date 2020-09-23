@@ -5717,7 +5717,9 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     sortFactions: function sortFactions(a, b) {
       if (a.status > b.status) return -1;
+      if (a.status < b.status) return 1;
       if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
     },
     factionText: function factionText(player) {
       if (player.active) return "Choosing...";else if (player.faction) return player.faction;
@@ -11789,7 +11791,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.choose-factions__faction.killer:before {\n    content: \"\";\n    background-image: url(\"/images/icons/killer.png\");\n    height: 1em;\n    background-repeat: no-repeat;\n    background-position: center;\n    width: 5em;\n    margin-right: .2em;\n    background-size: contain;\n}\n.choose-factions__basic-factions {\n    border-right: 1px dotted var(--highlight-color);\n}\n.choose-factions__status {\n    width: .5em;\n    height: .5em;\n    border-radius: .1em;\n    margin-left: .1em;\n}\n.choose-factions__status-0 { background-color: red;\n}\n.choose-factions__status-1 { background-color: #ff8800;\n}\n.choose-factions__status-2 { background-color: #a7cc00;\n}\n.choose-factions__status-3 { background-color: green;\n}\n\n", ""]);
+exports.push([module.i, "\n.choose-factions__faction.killer:before {\n    content: \"\";\n    background-image: url(\"/images/icons/killer-square.png\");\n    height: 1em;\n    background-repeat: no-repeat;\n    background-position: center;\n    width: 1em;\n    position: relative;\n    bottom: 1px;\n    margin-right: .4em;\n    background-size: contain;\n}\n.choose-factions__basic-factions {\n    border-right: 1px dotted var(--highlight-color);\n}\n.choose-factions__status {\n    width: .5em;\n    height: .5em;\n    border-radius: .1em;\n    margin-left: .1em;\n}\n.choose-factions__status-0 { background-color: red;\n}\n.choose-factions__status-1 { background-color: #ff8800;\n}\n.choose-factions__status-2 { background-color: #a7cc00;\n}\n.choose-factions__status-3 { background-color: green;\n}\n\n", ""]);
 
 // exports
 

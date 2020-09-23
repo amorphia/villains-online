@@ -96,7 +96,9 @@
         methods : {
             sortFactions( a ,b ){
                 if( a.status > b.status ) return -1;
+                if( a.status < b.status ) return 1;
                 if( a.name > b.name ) return 1;
+                if( a.name < b.name ) return -1;
             },
 
             factionText( player ){
@@ -150,12 +152,14 @@
 <style>
     .choose-factions__faction.killer:before {
         content: "";
-        background-image: url("/images/icons/killer.png");
+        background-image: url("/images/icons/killer-square.png");
         height: 1em;
         background-repeat: no-repeat;
         background-position: center;
-        width: 5em;
-        margin-right: .2em;
+        width: 1em;
+        position: relative;
+        bottom: 1px;
+        margin-right: .4em;
         background-size: contain;
     }
 
