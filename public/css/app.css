@@ -2596,8 +2596,8 @@ a {
 }
 
 .choose-factions__faction-container {
-  width: 15rem;
-  flex-basis: 15rem;
+  width: 20rem;
+  flex-basis: 20rem;
   text-align: right;
   padding-right: 1rem;
 }

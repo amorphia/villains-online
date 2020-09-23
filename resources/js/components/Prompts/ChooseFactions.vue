@@ -5,7 +5,7 @@
             <end-game><div class="pointer conclude">conclude game</div></end-game>
         </div>
 
-        <div class="players width-40 height-100 p-5 d-flex flex-center flex-wrap">
+        <div class="players width-35 height-100 p-5 d-flex flex-center flex-wrap">
             <div class="choose-factions__player-container">
                 <div v-for="(player, index) in shared.orderedPlayers()"
                      class="choose-factions__player pull-center d-flex align-stretch"
@@ -21,16 +21,28 @@
                 </div>
             </div>
         </div>
-        <div class="factions width-60 height-100 p-5 d-flex align-center">
+        <div class="factions width-65 height-100 p-5 d-flex align-center">
             <div class="choose-factions__faction-container">
                 <div class="choose-factions__faction-list pb-4">
-                    <div v-for="(faction, name) in shared.data.factions"
-                         :class="{active : selectedFaction === name, taken : faction.owner !== null, killer : faction.killer }"
-                         @click="selectedFaction = name"
-                         class="choose-factions__faction pointer d-flex justify-end align-center">
-                            {{ name }}
-                            <span class="choose-factions__circle pl-3" :class="name === selectedFaction ? 'icon-circle' : 'icon-circle-open'"></span>
+
+                    <div class="choose-factions__basic-factions mb-4 pr-3">
+                        <faction-choice
+                            v-for="faction in basicFactions"
+                            @clicked="e => selectedFaction = e"
+                            :faction="faction"
+                            :selected="selectedFaction"
+                        ></faction-choice>
                     </div>
+
+                    <div class="pr-3">
+                        <faction-choice
+                            v-for="faction in expansionFactions"
+                            @clicked="e => selectedFaction = e"
+                            :faction="faction"
+                            :selected="selectedFaction"
+                        ></faction-choice>
+                    </div>
+
                 </div>
                 <div class="d-flex justify-end" :inivisible="!shared.isActive()">
                     <button class="button button-empty"
@@ -53,7 +65,6 @@
     export default {
 
         name: 'choose-factions',
-
         data() {
             return {
                 shared : App.state,
@@ -69,12 +80,25 @@
         },
 
         computed : {
+            basicFactions(){
+                return Object.values( this.shared.data.factions ).filter( faction => faction.basic ).sort( this.sortFactions );
+            },
+
+            expansionFactions(){
+                return Object.values( this.shared.data.factions ).filter( faction => !faction.basic ).sort( this.sortFactions );
+            },
+
             remainingPlayers(){
                 return Object.values( this.shared.data.players ).filter( player => !player.faction ).length;
             }
         },
 
         methods : {
+            sortFactions( a ,b ){
+                if( a.status > b.status ) return -1;
+                if( a.name > b.name ) return 1;
+            },
+
             factionText( player ){
                 if( player.active ) return "Choosing..."
                 else if( player.faction ) return player.faction;
@@ -83,15 +107,30 @@
             chooseRandomFaction(){
 
                 let unselectedFactions = [];
-                let killerSelected = false;
+                let picked = {
+                    killer : false,
+                    experimental : false
+                };
 
                 _.forEach( this.shared.data.factions, (faction, name) => {
-                   if( faction.killer && faction.owner ) killerSelected = true;
+                   if( faction.killer && faction.owner ) picked.killer = true;
+                   if( faction.status === 0 && faction.owner ) picked.experimental = true;
                    else if ( !faction.owner ) unselectedFactions.push( { name : name, killer : faction.killer } );
                 });
 
-                if( !killerSelected && this.remainingPlayers === 1 ){
+                // if no killer has been selected and we are the last player to pick, make sure we pick a killer
+                if( !picked.killer && this.remainingPlayers === 1 ){
                     unselectedFactions = unselectedFactions.filter( faction => faction.killer );
+                }
+
+                // if a killer has already been selected make sure we don't also pick a killer
+                if( picked.killer ){
+                    unselectedFactions = unselectedFactions.filter( faction => !faction.killer );
+                }
+
+                // if an experimental faction has already been selected make sure we don't also pick one
+                if( picked.experimental ){
+                    unselectedFactions = unselectedFactions.filter( faction => faction.status !== 0 );
                 }
 
                 this.selectedFaction = _.sample( unselectedFactions ).name;
@@ -119,6 +158,23 @@
         margin-right: .2em;
         background-size: contain;
     }
+
+
+    .choose-factions__basic-factions {
+        border-right: 1px dotted var(--highlight-color);
+    }
+
+    .choose-factions__status {
+        width: .5em;
+        height: .5em;
+        border-radius: .1em;
+        margin-left: .1em;
+    }
+
+    .choose-factions__status-0 { background-color: red; }
+    .choose-factions__status-1 { background-color: #ff8800; }
+    .choose-factions__status-2 { background-color: #a7cc00; }
+    .choose-factions__status-3 { background-color: green; }
 
 </style>
 

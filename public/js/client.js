@@ -5673,6 +5673,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-factions',
   data: function data() {
@@ -5686,6 +5698,16 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {},
   computed: {
+    basicFactions: function basicFactions() {
+      return Object.values(this.shared.data.factions).filter(function (faction) {
+        return faction.basic;
+      }).sort(this.sortFactions);
+    },
+    expansionFactions: function expansionFactions() {
+      return Object.values(this.shared.data.factions).filter(function (faction) {
+        return !faction.basic;
+      }).sort(this.sortFactions);
+    },
     remainingPlayers: function remainingPlayers() {
       return Object.values(this.shared.data.players).filter(function (player) {
         return !player.faction;
@@ -5693,23 +5715,46 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    sortFactions: function sortFactions(a, b) {
+      if (a.status > b.status) return -1;
+      if (a.name > b.name) return 1;
+    },
     factionText: function factionText(player) {
       if (player.active) return "Choosing...";else if (player.faction) return player.faction;
     },
     chooseRandomFaction: function chooseRandomFaction() {
       var unselectedFactions = [];
-      var killerSelected = false;
+      var picked = {
+        killer: false,
+        experimental: false
+      };
 
       _.forEach(this.shared.data.factions, function (faction, name) {
-        if (faction.killer && faction.owner) killerSelected = true;else if (!faction.owner) unselectedFactions.push({
+        if (faction.killer && faction.owner) picked.killer = true;
+        if (faction.status === 0 && faction.owner) picked.experimental = true;else if (!faction.owner) unselectedFactions.push({
           name: name,
           killer: faction.killer
         });
-      });
+      }); // if no killer has been selected and we are the last player to pick, make sure we pick a killer
 
-      if (!killerSelected && this.remainingPlayers === 1) {
+
+      if (!picked.killer && this.remainingPlayers === 1) {
         unselectedFactions = unselectedFactions.filter(function (faction) {
           return faction.killer;
+        });
+      } // if a killer has already been selected make sure we don't also pick a killer
+
+
+      if (picked.killer) {
+        unselectedFactions = unselectedFactions.filter(function (faction) {
+          return !faction.killer;
+        });
+      } // if an experimental faction has already been selected make sure we don't also pick one
+
+
+      if (picked.experimental) {
+        unselectedFactions = unselectedFactions.filter(function (faction) {
+          return faction.status !== 0;
         });
       }
 
@@ -7204,6 +7249,42 @@ __webpack_require__.r(__webpack_exports__);
     area: function area() {
       return this.shared.data.areas[this.data.area];
     }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionChoice.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/FactionChoice.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'faction-choice',
+  props: ['faction', 'selected'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
   }
 });
 
@@ -11708,7 +11789,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.choose-factions__faction.killer:before {\n    content: \"\";\n    background-image: url(\"/images/icons/killer.png\");\n    height: 1em;\n    background-repeat: no-repeat;\n    background-position: center;\n    width: 5em;\n    margin-right: .2em;\n    background-size: contain;\n}\n\n", ""]);
+exports.push([module.i, "\n.choose-factions__faction.killer:before {\n    content: \"\";\n    background-image: url(\"/images/icons/killer.png\");\n    height: 1em;\n    background-repeat: no-repeat;\n    background-position: center;\n    width: 5em;\n    margin-right: .2em;\n    background-size: contain;\n}\n.choose-factions__basic-factions {\n    border-right: 1px dotted var(--highlight-color);\n}\n.choose-factions__status {\n    width: .5em;\n    height: .5em;\n    border-radius: .1em;\n    margin-left: .1em;\n}\n.choose-factions__status-0 { background-color: red;\n}\n.choose-factions__status-1 { background-color: #ff8800;\n}\n.choose-factions__status-2 { background-color: #a7cc00;\n}\n.choose-factions__status-3 { background-color: green;\n}\n\n", ""]);
 
 // exports
 
@@ -58385,7 +58466,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "players width-40 height-100 p-5 d-flex flex-center flex-wrap"
+            "players width-35 height-100 p-5 d-flex flex-center flex-wrap"
         },
         [
           _c(
@@ -58438,47 +58519,42 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "factions width-60 height-100 p-5 d-flex align-center" },
+        { staticClass: "factions width-65 height-100 p-5 d-flex align-center" },
         [
           _c("div", { staticClass: "choose-factions__faction-container" }, [
-            _c(
-              "div",
-              { staticClass: "choose-factions__faction-list pb-4" },
-              _vm._l(_vm.shared.data.factions, function(faction, name) {
-                return _c(
-                  "div",
-                  {
-                    staticClass:
-                      "choose-factions__faction pointer d-flex justify-end align-center",
-                    class: {
-                      active: _vm.selectedFaction === name,
-                      taken: faction.owner !== null,
-                      killer: faction.killer
-                    },
+            _c("div", { staticClass: "choose-factions__faction-list pb-4" }, [
+              _c(
+                "div",
+                { staticClass: "choose-factions__basic-factions mb-4 pr-3" },
+                _vm._l(_vm.basicFactions, function(faction) {
+                  return _c("faction-choice", {
+                    attrs: { faction: faction, selected: _vm.selectedFaction },
                     on: {
-                      click: function($event) {
-                        _vm.selectedFaction = name
+                      clicked: function(e) {
+                        return (_vm.selectedFaction = e)
                       }
                     }
-                  },
-                  [
-                    _vm._v(
-                      "\n                        " +
-                        _vm._s(name) +
-                        "\n                        "
-                    ),
-                    _c("span", {
-                      staticClass: "choose-factions__circle pl-3",
-                      class:
-                        name === _vm.selectedFaction
-                          ? "icon-circle"
-                          : "icon-circle-open"
-                    })
-                  ]
-                )
-              }),
-              0
-            ),
+                  })
+                }),
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "pr-3" },
+                _vm._l(_vm.expansionFactions, function(faction) {
+                  return _c("faction-choice", {
+                    attrs: { faction: faction, selected: _vm.selectedFaction },
+                    on: {
+                      clicked: function(e) {
+                        return (_vm.selectedFaction = e)
+                      }
+                    }
+                  })
+                }),
+                1
+              )
+            ]),
             _vm._v(" "),
             _c(
               "div",
@@ -59934,6 +60010,60 @@ var render = function() {
       )
     ])
   ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionChoice.vue?vue&type=template&id=6b5ad862&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/FactionChoice.vue?vue&type=template&id=6b5ad862& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass:
+        "choose-factions__faction pointer d-flex justify-end align-center",
+      class: {
+        active: _vm.selected === _vm.faction.name,
+        taken: _vm.faction.owner !== null,
+        killer: _vm.faction.killer,
+        basic: _vm.faction.basic
+      },
+      on: {
+        click: function($event) {
+          return _vm.$emit("clicked", _vm.faction.name)
+        }
+      }
+    },
+    [
+      _vm._v("\n    " + _vm._s(_vm.faction.name)),
+      _c("span", {
+        staticClass: "choose-factions__status pl-3",
+        class: "choose-factions__status-" + _vm.faction.status
+      }),
+      _vm._v(" "),
+      _c("span", {
+        staticClass: "choose-factions__circle pl-1",
+        class:
+          _vm.faction.name === _vm.selected ? "icon-circle" : "icon-circle-open"
+      })
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -77082,6 +77212,7 @@ var map = {
 	"./Prompts/DiscardCard.vue": "./resources/js/components/Prompts/DiscardCard.vue",
 	"./Prompts/DoubleResolve-mole.vue": "./resources/js/components/Prompts/DoubleResolve-mole.vue",
 	"./Prompts/DoubleResolve.vue": "./resources/js/components/Prompts/DoubleResolve.vue",
+	"./Prompts/FactionChoice.vue": "./resources/js/components/Prompts/FactionChoice.vue",
 	"./Prompts/FactionFlipper.vue": "./resources/js/components/Prompts/FactionFlipper.vue",
 	"./Prompts/HighNoon.vue": "./resources/js/components/Prompts/HighNoon.vue",
 	"./Prompts/MoveAction.vue": "./resources/js/components/Prompts/MoveAction.vue",
@@ -83126,6 +83257,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DoubleResolve_vue_vue_type_template_id_553c2b60___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DoubleResolve_vue_vue_type_template_id_553c2b60___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/FactionChoice.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/Prompts/FactionChoice.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _FactionChoice_vue_vue_type_template_id_6b5ad862___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FactionChoice.vue?vue&type=template&id=6b5ad862& */ "./resources/js/components/Prompts/FactionChoice.vue?vue&type=template&id=6b5ad862&");
+/* harmony import */ var _FactionChoice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FactionChoice.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/FactionChoice.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _FactionChoice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _FactionChoice_vue_vue_type_template_id_6b5ad862___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _FactionChoice_vue_vue_type_template_id_6b5ad862___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Prompts/FactionChoice.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/FactionChoice.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/FactionChoice.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./FactionChoice.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionChoice.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/FactionChoice.vue?vue&type=template&id=6b5ad862&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/FactionChoice.vue?vue&type=template&id=6b5ad862& ***!
+  \******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_template_id_6b5ad862___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./FactionChoice.vue?vue&type=template&id=6b5ad862& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionChoice.vue?vue&type=template&id=6b5ad862&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_template_id_6b5ad862___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_template_id_6b5ad862___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
