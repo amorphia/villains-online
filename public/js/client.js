@@ -5685,6 +5685,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-factions',
   data: function data() {
@@ -58530,6 +58532,7 @@ var render = function() {
                 { staticClass: "choose-factions__basic-factions mb-4 pr-3" },
                 _vm._l(_vm.basicFactions, function(faction) {
                   return _c("faction-choice", {
+                    key: faction.name,
                     attrs: { faction: faction, selected: _vm.selectedFaction },
                     on: {
                       clicked: function(e) {
@@ -58546,6 +58549,7 @@ var render = function() {
                 { staticClass: "pr-3" },
                 _vm._l(_vm.expansionFactions, function(faction) {
                   return _c("faction-choice", {
+                    key: faction.name,
                     attrs: { faction: faction, selected: _vm.selectedFaction },
                     on: {
                       clicked: function(e) {

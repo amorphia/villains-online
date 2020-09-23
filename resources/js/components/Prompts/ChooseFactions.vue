@@ -31,6 +31,7 @@
                             @clicked="e => selectedFaction = e"
                             :faction="faction"
                             :selected="selectedFaction"
+                            :key="faction.name"
                         ></faction-choice>
                     </div>
 
@@ -40,6 +41,7 @@
                             @clicked="e => selectedFaction = e"
                             :faction="faction"
                             :selected="selectedFaction"
+                            :key="faction.name"
                         ></faction-choice>
                     </div>
 
