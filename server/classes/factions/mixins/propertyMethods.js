@@ -255,6 +255,11 @@ let mixin = {
     },
 
 
+    killsInEnemy(){
+        return _.factionKillsInEnemy( this, this.game().data.factions, this.game().data.areas );
+    },
+
+
     killsIn( area ){
         area = typeof area === 'string' ? area : area.name;
         let kills = [];

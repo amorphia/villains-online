@@ -2,7 +2,7 @@
     <player-prompt classes="">
         <div class="place-token px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
-                <div class="title">{{ message }}</div>
+                <div class="title" v-html="shared.filterText( message )"></div>
                 <area-flipper :areas="areas" :index="index" @update="updateArea">
                     <div v-if="data.show === 'units'" class="">
                         <unit-row v-for="(set, name) in units"
@@ -49,8 +49,9 @@
             units(){
                 let units = {};
                 _.forEach( this.shared.data.factions, faction => {
-                    if( this.data.enemyOnly && faction.name === this.data.faction ) return;
-                    if( this.data.playerOnly && faction.name !== this.data.faction ) return;
+                    if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
+                    if( this.data.playerOnly && faction.name !== this.shared.faction.name ) return;
+
                     let factionUnits = _.factionUnitsInArea( faction, this.area.name );
                     if( factionUnits.length ){
                         units[faction.name] = factionUnits;

@@ -110,7 +110,7 @@
         filter: saturate(50%);
     }
 
-    .area-map__token-space.unrevealed:before {
+    .area-map__token-space.unrevealed:not(.selected):before {
         content: "";
         position: absolute;
         width: 40%;

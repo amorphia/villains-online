@@ -47,6 +47,9 @@
 .icon-toughness-solid:before {
     content: "\e95c";
 }
+.icon-traps:before {
+    content: "\e901";
+}
 .icon-drone:before {
     content: "\e964";
 }
@@ -154,15 +157,6 @@
 }
 .icon-units:before {
     content: "\e93a";
-}
-.icon-save:before {
-    content: "\e962";
-}
-.icon-volume-high:before {
-    content: "\ea26";
-}
-.icon-volume-mid:before {
-    content: "\ea27";
 }
 .icon-save:before {
     content: "\e962";

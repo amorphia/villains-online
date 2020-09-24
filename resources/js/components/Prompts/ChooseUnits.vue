@@ -4,7 +4,7 @@
             <div class="width-100 d-flex justify-center flex-column align-center">
                 <div class="title">{{ message }}</div>
                 <area-flipper v-if="areas.length" :areas="areas" :index="index" @update="updateArea">
-                    <div class="toggle area-map__toggle top-0 left-0">Selected: {{ selected.length }} / {{ data.count }}</div>
+                    <div v-if="!data.hideMax" class="toggle area-map__toggle top-0 left-0">Selected: {{ selected.length }} / {{ data.count }}</div>
                     <unit-row :units="areaUnits" @unit="unitClicked"></unit-row>
 
                     <div v-if="data.showEnemyUnits">
@@ -17,7 +17,7 @@
                 </area-flipper>
 
                 <!-- deploy limit pips -->
-                <div class="d-flex justify-center flex-wrap mt-3">
+                <div v-if="!data.hideMax" class="d-flex justify-center flex-wrap mt-3">
                     <!-- default deploy limit -->
                     <i v-for="(n, index) in data.count"
                        class="deploy-limit__pip"

@@ -14,7 +14,7 @@ let Hackers = require( './factions/Hackers' );
 let Ninjas = require( './factions/Ninjas' );
 //let Parasites = require( './factions/Parasites' );
 let Conquistadors = require( './factions/Conquistadors' );
-//let Guerrillas = require( './factions/Guerrillas' );
+let Guerrillas = require( './factions/Guerrillas' );
 
 module.exports = {
     mutants : Mutants,
@@ -33,5 +33,5 @@ module.exports = {
     hackers : Hackers,
     //parasites : Parasites,
     conquistadors : Conquistadors,
-    //guerrillas : Guerrillas,
+    guerrillas : Guerrillas,
 };

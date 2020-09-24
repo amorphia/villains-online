@@ -82,6 +82,7 @@
                 this.$set( unit, 'selected', null );
             },
 
+            /*
             policePayoffs( area ){
                 let policePayoff = 0;
 
@@ -97,6 +98,8 @@
 
                 return policePayoff;
             },
+            */
+
         },
 
         computed : {
@@ -150,11 +153,13 @@
                 let cost = 0;
 
                 this.toAreas.forEach( area => {
-                   let payoffs =  this.policePayoffs( area );
+                   let payoffs = _.policePayoffs( this.shared.faction, area, this.selected );
                    if( this.fromAreaUnits.filter( unit => unit.selected === area.name ).length ){
                        cost += payoffs;
                    }
                 });
+
+                cost += _.trapsCost( this.shared.faction, this.selected, this.shared.data.factions );
 
                 return cost;
             },

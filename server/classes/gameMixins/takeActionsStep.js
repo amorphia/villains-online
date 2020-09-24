@@ -79,6 +79,16 @@ let obj = {
         this.advancePlayer();
     },
 
+    takeSkipAction( player ){
+        let faction = player.faction();
+        faction.data.skips.used++;
+
+        let remainingSkips = faction.data.skips.max - faction.data.skips.used;
+        this.message({ message: `skip their turn <span class="highlight">(${remainingSkips} skips remaining)</span>`, faction : faction });
+
+        this.data.playerAction++;
+        this.advancePlayer();
+    },
 
     async takeSkillAction( player, areaName ){
         let area = this.areas[areaName];

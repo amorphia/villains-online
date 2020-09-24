@@ -47,6 +47,9 @@
 .icon-toughness-solid:before {
     content: "\E95C";
 }
+.icon-traps:before {
+    content: "\E901";
+}
 .icon-drone:before {
     content: "\E964";
 }
@@ -154,15 +157,6 @@
 }
 .icon-units:before {
     content: "\E93A";
-}
-.icon-save:before {
-    content: "\E962";
-}
-.icon-volume-high:before {
-    content: "\EA26";
-}
-.icon-volume-mid:before {
-    content: "\EA27";
 }
 .icon-save:before {
     content: "\E962";
@@ -475,6 +469,8 @@ a {
   --faction-ninjas: #e8e8e8;
   --faction-hackers: #6cf832;
   --faction-conquistadors: #e1a600;
+  --faction-guerrillas: #27b200;
+  --faction-parasites: #ff0043;
 }
 
 .faction-neutrals {
@@ -539,6 +535,14 @@ a {
 
 .faction-conquistadors {
   color: var(--faction-conquistadors);
+}
+
+.faction-guerrillas {
+  color: var(--faction-guerrillas);
+}
+
+.faction-parasites {
+  color: var(--faction-parasites);
 }
 
 .primary {

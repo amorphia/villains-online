@@ -55,7 +55,10 @@ let obj = {
 
         areas = areas.filter( area => {
             let hasUnits = !! _.find( this.data.units, unit => _.unitInArea( unit, area ) );
-            let isTrapped = this.game().areas[area].data.cards.filter( card => card.class === 'trapped-like-rats' ).length && ! _.hasKauImmunity( this.data, area );
+
+            //let isTrapped = this.game().areas[area].data.cards.filter( card => card.class === 'trapped-like-rats' ).length && ! _.hasKauImmunity( this.data, area );
+            let isTrapped = _.areaIsTrapped( this, this.game().areas[area] );
+
             return hasUnits && ! isTrapped;
         });
 

@@ -155,6 +155,7 @@
                 return this.shared.faction.units.filter( unit => unit.selected );
             },
 
+            /*
             policePayoffs(){
                 let policePayoff = 0;
 
@@ -170,10 +171,12 @@
 
                 return policePayoff;
             },
+            */
 
             cost(){
                 let cost = 0;
-                cost += this.policePayoffs * this.selected.length;
+                cost += _.policePayoffs( this.shared.faction, this.area, this.selected ) * this.selected.length;
+                cost += _.trapsCost( this.shared.faction, this.selected, this.shared.data.factions );
                 return cost;
             },
 

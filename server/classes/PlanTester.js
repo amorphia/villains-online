@@ -505,6 +505,21 @@ class PlanTester {
         return result;
     }
 
+
+    killsInEnemy( faction, killCount ){
+        let factionKillsInEnemy = faction.killsInEnemy().length;
+        let result = factionKillsInEnemy >= killCount;
+
+        if( this.debug ) console.log(
+            'killsInEnemy',
+            'killCount req:', killCount,
+            'factionKillsInEnemy:', factionKillsInEnemy,
+            'result:', result
+        );
+
+        return result;
+    }
+
 }
 
 module.exports = PlanTester;

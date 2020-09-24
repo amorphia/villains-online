@@ -12,6 +12,7 @@ class Bankers extends Faction {
         this.data.resources = 2;
         this.data.title = "Omni Financial Group";
         this.data.bonusResources = 2;
+        this.data.focus = 'control-focus';
 
         // tokens
         this.tokens['credit-freeze'] = {

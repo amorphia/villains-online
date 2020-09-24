@@ -80,8 +80,12 @@ let obj = {
         });
 
         _.forEach( areas, (data, name) => {
-            let cards = this.game().areas[name].data.cards;
-            let trapped = _.find( cards, card => card.class === 'trapped-like-rats' ) && ! data.kau;
+            let area = this.game().areas[name];
+            let cards = area.data.cards;
+
+            //let trapped = _.find( cards, card => card.class === 'trapped-like-rats' ) && ! data.kau;
+            let trapped = _.areaIsTrapped( this, area );
+
             let nuked = _.find( cards, card => card.class === 'suitcase-nuke' );
 
             if( nuked || trapped ){

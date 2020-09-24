@@ -28,13 +28,15 @@ let obj = {
         try {
             await area.skill( this );
             await this.triggeredEvents( 'skill', triggered );
-            await this.onAfterSkill( this, area, triggered );
+            await this.onAfterSkill( area, triggered );
+            if( modifySkill && modifySkill.doubleResolve ) await area.skill( this );
 
+            /*
             for( let faction of Object.values( this.game().factions ) ){
                 if( faction.name === this.name ) continue;
-                await faction.onAfterSkill( this, area, triggered );
-                if( modifySkill && modifySkill.doubleResolve ) await area.skill( this );
+                //await faction.onAfterSkill( this, area, triggered );
             }
+            */
         } catch ( error ) {
             console.error( error );
         }

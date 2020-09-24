@@ -2476,6 +2476,77 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/ControlFocus.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/ControlFocus.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'control-focus',
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    leading: function leading() {
+      var _this = this;
+
+      return Object.values(this.shared.areaLeaders).filter(function (leader) {
+        return leader === _this.shared.faction.name;
+      }).length;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'enemy-kills-focus',
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    kills: function kills() {
+      return _.factionKillsInEnemy(this.shared.faction, this.shared.data.factions, this.shared.data.areas, this.shared.areaLeaders).length;
+    },
+    skips: function skips() {
+      return this.shared.faction.skips.max - this.shared.faction.skips.used;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/FusionFocus.vue?vue&type=script&lang=js&":
 /*!****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/FusionFocus.vue?vue&type=script&lang=js& ***!
@@ -5119,6 +5190,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-action',
   data: function data() {
@@ -5144,7 +5216,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       if (actionKeys.length === 1) {
         var actionSet = this.actions[actionKeys[0]];
 
-        if (actionKeys[0] === 'pass' || actionKeys[0] === 'locked' || actionSet.length === 1) {
+        if (actionKeys[0] === 'pass' || actionKeys[0] === 'locked' || actionKeys[0] === 'skip' || actionSet.length === 1) {
           this.setAction(actionKeys[0]);
         }
       }
@@ -5189,7 +5261,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       if (this.revealableTokens.length) actions.token = this.revealableTokens; // can we pass?
 
-      if (!this.activeTokens.length) actions.pass = true; // can we declare ourselves locked?
+      if (!this.activeTokens.length) actions.pass = true; // can we skip?
+
+      if (this.shared.faction.hasOwnProperty('skips') && this.shared.faction.skips.used < this.shared.faction.skips.max) actions.skip = true; // can we declare ourselves locked?
 
       if (!this.revealableTokens.length && this.activeTokens.length) actions.locked = true; // can we reveal an xavier token?
 
@@ -5223,6 +5297,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     setLockedAction: function setLockedAction() {
       this.setAction('locked');
     },
+    setSkipAction: function setSkipAction() {
+      this.setAction('skip');
+    },
 
     /*
     setSkillAction( area ){
@@ -5242,10 +5319,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   computed: {
     hasTopAction: function hasTopAction() {
-      return this.actions.pass || this.actions.locked;
+      return this.actions.pass || this.actions.locked || this.actions.skip;
     },
     showPass: function showPass() {
       return this.actions.pass;
+    },
+    showSkip: function showSkip() {
+      return this.actions.skip;
     },
     showLocked: function showLocked() {
       return this.actions.locked;
@@ -5267,6 +5347,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         case 'pass':
           message = "Pass for the turn";
+          break;
+
+        case 'skip':
+          message = "Skip this action";
           break;
 
         case 'locked':
@@ -5430,8 +5514,8 @@ __webpack_require__.r(__webpack_exports__);
       var units = {};
 
       _.forEach(this.shared.data.factions, function (faction) {
-        if (_this.data.enemyOnly && faction.name === _this.data.faction) return;
-        if (_this.data.playerOnly && faction.name !== _this.data.faction) return;
+        if (_this.data.enemyOnly && faction.name === _this.shared.faction.name) return;
+        if (_this.data.playerOnly && faction.name !== _this.shared.faction.name) return;
 
         var factionUnits = _.factionUnitsInArea(faction, _this.area.name);
 
@@ -6962,46 +7046,44 @@ __webpack_require__.r(__webpack_exports__);
         return unit.selected;
       });
     },
-    policePayoffs: function policePayoffs() {
-      var _this7 = this;
 
-      var policePayoff = 0;
-
-      _.forEach(this.area.cards, function (card) {
-        if (card["class"] === 'police-payoff' // if there is a police payoff here
-        && card.owner !== _this7.shared.faction.name // which we don't own
-        && !_.hasKauImmunity(_this7.shared.faction, _this7.area) // and we don't already have kau immunity in this area
-        && !_.find(_this7.selected, function (unit) {
-          return unit.type === 'champion' && unit.faction === 'aliens';
-        })) // and we aren't deploying kau
-          {
-            policePayoff++; // increase out police payoff cost by one
-          }
-      });
-
-      return policePayoff;
+    /*
+    policePayoffs(){
+        let policePayoff = 0;
+         _.forEach( this.area.cards, card => {
+            if( card.class === 'police-payoff' // if there is a police payoff here
+                && card.owner !== this.shared.faction.name // which we don't own
+                && !_.hasKauImmunity( this.shared.faction, this.area ) // and we don't already have kau immunity in this area
+                && !_.find(this.selected, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
+            {
+                policePayoff++; // increase out police payoff cost by one
+            }
+        });
+         return policePayoff;
     },
+    */
     cost: function cost() {
       var cost = 0;
 
       if (!this.data.free) {
         this.selected.forEach(function (unit) {
-          cost += unit.cost;
+          if (!(unit.redeployFree && unit.location)) cost += unit.cost;
         });
       }
 
-      cost += this.policePayoffs * this.selected.length;
+      cost += _.policePayoffs(this.shared.faction, this.area, this.selected) * this.selected.length;
+      cost += _.trapsCost(this.shared.faction, this.selected, this.shared.data.factions);
       return cost;
     },
     data: function data() {
       return this.shared.player.prompt.data;
     },
     toAreas: function toAreas() {
-      var _this8 = this;
+      var _this7 = this;
 
       var areas = [];
       this.data.toAreas.forEach(function (areaName) {
-        areas.push(_this8.shared.data.areas[areaName]);
+        areas.push(_this7.shared.data.areas[areaName]);
       });
       return areas;
     },
@@ -7657,28 +7739,26 @@ __webpack_require__.r(__webpack_exports__);
         return unit.selected;
       });
     },
-    policePayoffs: function policePayoffs() {
-      var _this3 = this;
 
-      var policePayoff = 0;
-
-      _.forEach(this.area.cards, function (card) {
-        if (card["class"] === 'police-payoff' // if there is a police payoff here
-        && card.owner !== _this3.shared.faction.name // which we don't own
-        && !_.hasKauImmunity(_this3.shared.faction, _this3.area) // and we don't already have kau immunity in this area
-        && !_.find(_this3.selected, function (unit) {
-          return unit.type === 'champion' && unit.faction === 'aliens';
-        })) // and we aren't deploying kau
-          {
-            policePayoff++; // increase out police payoff cost by one
-          }
-      });
-
-      return policePayoff;
+    /*
+    policePayoffs(){
+        let policePayoff = 0;
+         _.forEach( this.area.cards, card => {
+            if( card.class === 'police-payoff' // if there is a police payoff here
+                && card.owner !== this.shared.faction.name // which we don't own
+                && !_.hasKauImmunity( this.shared.faction, this.area ) // and we don't already have kau immunity in this area
+                && !_.find(this.selected, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
+            {
+                policePayoff++; // increase out police payoff cost by one
+            }
+        });
+         return policePayoff;
     },
+    */
     cost: function cost() {
       var cost = 0;
-      cost += this.policePayoffs * this.selected.length;
+      cost += _.policePayoffs(this.shared.faction, this.area, this.selected) * this.selected.length;
+      cost += _.trapsCost(this.shared.faction, this.selected, this.shared.data.factions);
       return cost;
     },
     data: function data() {
@@ -7780,26 +7860,23 @@ __webpack_require__.r(__webpack_exports__);
     },
     removeUnitFromArea: function removeUnitFromArea(unit) {
       this.$set(unit, 'selected', null);
-    },
-    policePayoffs: function policePayoffs(area) {
-      var _this = this;
-
-      var policePayoff = 0;
-
-      _.forEach(area.cards, function (card) {
-        if (card["class"] === 'police-payoff' // if there is a police payoff here
-        && card.owner !== _this.shared.faction.name // which we don't own
-        && !_.hasKauImmunity(_this.shared.faction, area) // and we don't already have kau immunity in this area
-        && !_.find(_this.selected, function (unit) {
-          return unit.type === 'champion' && unit.faction === 'aliens';
-        })) // and we aren't deploying kau
-          {
-            policePayoff++; // increase our police payoff cost by one
-          }
-      });
-
-      return policePayoff;
     }
+    /*
+    policePayoffs( area ){
+        let policePayoff = 0;
+         _.forEach( area.cards, card => {
+            if( card.class === 'police-payoff' // if there is a police payoff here
+                && card.owner !== this.shared.faction.name // which we don't own
+                && !_.hasKauImmunity( this.shared.faction, area ) // and we don't already have kau immunity in this area
+                && !_.find( this.selected, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
+            {
+                policePayoff++; // increase our police payoff cost by one
+            }
+        });
+         return policePayoff;
+    },
+    */
+
   },
   computed: {
     fromArea: function fromArea() {
@@ -7809,7 +7886,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.shared.data.areas[this.data.toAreas[this.toAreaIndex]];
     },
     fromAreaUnits: function fromAreaUnits() {
-      var _this2 = this;
+      var _this = this;
 
       var units = [];
 
@@ -7824,14 +7901,14 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return units.filter(function (unit) {
-        return _.unitInArea(unit, _this2.fromArea) && (!_this2.data.noChampion || unit.type !== 'champion') && (!_this2.data.basicOnly || unit.basic);
+        return _.unitInArea(unit, _this.fromArea) && (!_this.data.noChampion || unit.type !== 'champion') && (!_this.data.basicOnly || unit.basic);
       });
     },
     currentAreaUnits: function currentAreaUnits() {
-      var _this3 = this;
+      var _this2 = this;
 
       return this.fromAreaUnits.filter(function (unit) {
-        return unit.selected === _this3.area.name;
+        return unit.selected === _this2.area.name;
       });
     },
     selected: function selected() {
@@ -7845,27 +7922,28 @@ __webpack_require__.r(__webpack_exports__);
       return unitsSelectedTest && costTest;
     },
     toAreas: function toAreas() {
-      var _this4 = this;
+      var _this3 = this;
 
       var areas = [];
       this.data.toAreas.forEach(function (areaName) {
-        areas.push(_this4.shared.data.areas[areaName]);
+        areas.push(_this3.shared.data.areas[areaName]);
       });
       return areas;
     },
     cost: function cost() {
-      var _this5 = this;
+      var _this4 = this;
 
       var cost = 0;
       this.toAreas.forEach(function (area) {
-        var payoffs = _this5.policePayoffs(area);
+        var payoffs = _.policePayoffs(_this4.shared.faction, area, _this4.selected);
 
-        if (_this5.fromAreaUnits.filter(function (unit) {
+        if (_this4.fromAreaUnits.filter(function (unit) {
           return unit.selected === area.name;
         }).length) {
           cost += payoffs;
         }
       });
+      cost += _.trapsCost(this.shared.faction, this.selected, this.shared.data.factions);
       return cost;
     },
     data: function data() {
@@ -10721,6 +10799,18 @@ __webpack_require__.r(__webpack_exports__);
     },
     emitXavier: function emitXavier() {
       this.shared.event.emit('xavierClicked');
+    },
+    mostInfluence: function mostInfluence(influences) {
+      var max = _.maxBy(influences, 'influence');
+
+      return max ? max.influence : 0;
+    },
+    playerWithMostInfluence: function playerWithMostInfluence(influences) {
+      var max = this.mostInfluence(influences);
+      var maxes = influences.filter(function (item) {
+        return item.influence === max;
+      });
+      return maxes.length === 1 ? maxes[0].faction : false;
     }
   },
   computed: {
@@ -10745,7 +10835,17 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     influence: function influence() {
-      return _.eachInfluenceInArea(this.area, this.shared.data.factions);
+      var influences = _.eachInfluenceInArea(this.area, this.shared.data.factions);
+
+      var leader = null;
+
+      if (influences.length) {
+        var mostInfluence = this.playerWithMostInfluence(influences);
+        if (mostInfluence) leader = mostInfluence;else if (this.area.owner) leader = this.area.owner;
+      }
+
+      this.shared.areaLeaders[this.area.name] = leader;
+      return influences;
     },
     graveyard: function graveyard() {
       var _this3 = this;
@@ -12116,7 +12216,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.area-map__token-space {\n    background-repeat: no-repeat;\n    background-size:cover;\n    position: relative;\n    bottom: .5vw;\n    width: 13%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 50%;\n    box-shadow: inset 0 0 0.5em 0px rgba(0,0,0,1);\n}\n.area-map__token {\n    width: 90%;\n    height: 90%;\n    border-radius: 50%;\n    z-index: 2;\n}\n.area-map__token-space.unrevealed .area-map__token {\n    opacity : .8;\n    filter: saturate(50%);\n}\n.area-map__token-space.unrevealed:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    background-image: url(/images/icons/hidden.png);\n    z-index: 3;\n    left: 50%;\n    top: 100%;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.church-1 { background-image: url(/images/areas/church-1.png)\n}\n.church-2 { background-image: url(/images/areas/church-2.png)\n}\n.church-3 { background-image: url(/images/areas/church-3.png)\n}\n.church-4 { background-image: url(/images/areas/church-4.png)\n}\n.church-5 { background-image: url(/images/areas/church-5.png)\n}\n.sewers-1 { background-image: url(/images/areas/sewers-1.png)\n}\n.sewers-2 { background-image: url(/images/areas/sewers-2.png)\n}\n.sewers-3 { background-image: url(/images/areas/sewers-3.png)\n}\n.sewers-4 { background-image: url(/images/areas/sewers-4.png)\n}\n.sewers-5 { background-image: url(/images/areas/sewers-5.png)\n}\n.police-1 { background-image: url(/images/areas/police-1.png)\n}\n.police-2 { background-image: url(/images/areas/police-2.png)\n}\n.police-3 { background-image: url(/images/areas/police-3.png)\n}\n.police-4 { background-image: url(/images/areas/police-4.png)\n}\n.police-5 { background-image: url(/images/areas/police-5.png)\n}\n.subway-1 { background-image: url(/images/areas/subway-1.png)\n}\n.subway-2 { background-image: url(/images/areas/subway-2.png)\n}\n.subway-3 { background-image: url(/images/areas/subway-3.png)\n}\n.subway-4 { background-image: url(/images/areas/subway-4.png)\n}\n.subway-5 { background-image: url(/images/areas/subway-5.png)\n}\n.capitol-1 { background-image: url(/images/areas/capitol-1.png)\n}\n.capitol-2 { background-image: url(/images/areas/capitol-2.png)\n}\n.capitol-3 { background-image: url(/images/areas/capitol-3.png)\n}\n.capitol-4 { background-image: url(/images/areas/capitol-4.png)\n}\n.capitol-5 { background-image: url(/images/areas/capitol-5.png)\n}\n.capitol-6 { background-image: url(/images/areas/capitol-6.png)\n}\n.laboratory-1 { background-image: url(/images/areas/laboratory-1.png)\n}\n.laboratory-2 { background-image: url(/images/areas/laboratory-2.png)\n}\n.laboratory-3 { background-image: url(/images/areas/laboratory-3.png)\n}\n.laboratory-4 { background-image: url(/images/areas/laboratory-4.png)\n}\n.laboratory-5 { background-image: url(/images/areas/laboratory-5.png)\n}\n.university-1 { background-image: url(/images/areas/university-1.png)\n}\n.university-2 { background-image: url(/images/areas/university-2.png)\n}\n.university-3 { background-image: url(/images/areas/university-3.png)\n}\n.university-4 { background-image: url(/images/areas/university-4.png)\n}\n.university-5 { background-image: url(/images/areas/university-5.png)\n}\n.bank-1 { background-image: url(/images/areas/bank-1.png)\n}\n.bank-2 { background-image: url(/images/areas/bank-2.png)\n}\n.bank-3 { background-image: url(/images/areas/bank-3.png)\n}\n.bank-4 { background-image: url(/images/areas/bank-4.png)\n}\n.bank-5 { background-image: url(/images/areas/bank-5.png)\n}\n.factory-1 { background-image: url(/images/areas/factory-1.png)\n}\n.factory-2 { background-image: url(/images/areas/factory-2.png)\n}\n.factory-3 { background-image: url(/images/areas/factory-3.png)\n}\n.factory-4 { background-image: url(/images/areas/factory-4.png)\n}\n.factory-5 { background-image: url(/images/areas/factory-5.png)\n}\n", ""]);
+exports.push([module.i, "\n.area-map__token-space {\n    background-repeat: no-repeat;\n    background-size:cover;\n    position: relative;\n    bottom: .5vw;\n    width: 13%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 50%;\n    box-shadow: inset 0 0 0.5em 0px rgba(0,0,0,1);\n}\n.area-map__token {\n    width: 90%;\n    height: 90%;\n    border-radius: 50%;\n    z-index: 2;\n}\n.area-map__token-space.unrevealed .area-map__token {\n    opacity : .8;\n    filter: saturate(50%);\n}\n.area-map__token-space.unrevealed:not(.selected):before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    background-image: url(/images/icons/hidden.png);\n    z-index: 3;\n    left: 50%;\n    top: 100%;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.church-1 { background-image: url(/images/areas/church-1.png)\n}\n.church-2 { background-image: url(/images/areas/church-2.png)\n}\n.church-3 { background-image: url(/images/areas/church-3.png)\n}\n.church-4 { background-image: url(/images/areas/church-4.png)\n}\n.church-5 { background-image: url(/images/areas/church-5.png)\n}\n.sewers-1 { background-image: url(/images/areas/sewers-1.png)\n}\n.sewers-2 { background-image: url(/images/areas/sewers-2.png)\n}\n.sewers-3 { background-image: url(/images/areas/sewers-3.png)\n}\n.sewers-4 { background-image: url(/images/areas/sewers-4.png)\n}\n.sewers-5 { background-image: url(/images/areas/sewers-5.png)\n}\n.police-1 { background-image: url(/images/areas/police-1.png)\n}\n.police-2 { background-image: url(/images/areas/police-2.png)\n}\n.police-3 { background-image: url(/images/areas/police-3.png)\n}\n.police-4 { background-image: url(/images/areas/police-4.png)\n}\n.police-5 { background-image: url(/images/areas/police-5.png)\n}\n.subway-1 { background-image: url(/images/areas/subway-1.png)\n}\n.subway-2 { background-image: url(/images/areas/subway-2.png)\n}\n.subway-3 { background-image: url(/images/areas/subway-3.png)\n}\n.subway-4 { background-image: url(/images/areas/subway-4.png)\n}\n.subway-5 { background-image: url(/images/areas/subway-5.png)\n}\n.capitol-1 { background-image: url(/images/areas/capitol-1.png)\n}\n.capitol-2 { background-image: url(/images/areas/capitol-2.png)\n}\n.capitol-3 { background-image: url(/images/areas/capitol-3.png)\n}\n.capitol-4 { background-image: url(/images/areas/capitol-4.png)\n}\n.capitol-5 { background-image: url(/images/areas/capitol-5.png)\n}\n.capitol-6 { background-image: url(/images/areas/capitol-6.png)\n}\n.laboratory-1 { background-image: url(/images/areas/laboratory-1.png)\n}\n.laboratory-2 { background-image: url(/images/areas/laboratory-2.png)\n}\n.laboratory-3 { background-image: url(/images/areas/laboratory-3.png)\n}\n.laboratory-4 { background-image: url(/images/areas/laboratory-4.png)\n}\n.laboratory-5 { background-image: url(/images/areas/laboratory-5.png)\n}\n.university-1 { background-image: url(/images/areas/university-1.png)\n}\n.university-2 { background-image: url(/images/areas/university-2.png)\n}\n.university-3 { background-image: url(/images/areas/university-3.png)\n}\n.university-4 { background-image: url(/images/areas/university-4.png)\n}\n.university-5 { background-image: url(/images/areas/university-5.png)\n}\n.bank-1 { background-image: url(/images/areas/bank-1.png)\n}\n.bank-2 { background-image: url(/images/areas/bank-2.png)\n}\n.bank-3 { background-image: url(/images/areas/bank-3.png)\n}\n.bank-4 { background-image: url(/images/areas/bank-4.png)\n}\n.bank-5 { background-image: url(/images/areas/bank-5.png)\n}\n.factory-1 { background-image: url(/images/areas/factory-1.png)\n}\n.factory-2 { background-image: url(/images/areas/factory-2.png)\n}\n.factory-3 { background-image: url(/images/areas/factory-3.png)\n}\n.factory-4 { background-image: url(/images/areas/factory-4.png)\n}\n.factory-5 { background-image: url(/images/areas/factory-5.png)\n}\n", ""]);
 
 // exports
 
@@ -54933,6 +55033,82 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/ControlFocus.vue?vue&type=template&id=51a5821d&":
+/*!*********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/ControlFocus.vue?vue&type=template&id=51a5821d& ***!
+  \*********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass:
+        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+    },
+    [
+      _vm._v("\n    areas winning :"),
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.leading))
+      ])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=template&id=692f400e&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=template&id=692f400e& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass:
+        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+    },
+    [
+      _c("span", { staticClass: "mr-4" }, [
+        _vm._v("skips :"),
+        _c("span", { staticClass: "highlight ml-2" }, [
+          _vm._v(_vm._s(_vm.skips))
+        ])
+      ]),
+      _vm._v(" kills in enemy areas :"),
+      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.kills))])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/FusionFocus.vue?vue&type=template&id=54c8f1fc&":
 /*!********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/FusionFocus.vue?vue&type=template&id=54c8f1fc& ***!
@@ -58106,6 +58282,14 @@ var render = function() {
                 "choose-action-top p-2 d-flex justify-center align-center"
             },
             [
+              _vm.showSkip
+                ? _c(
+                    "button",
+                    { staticClass: "button", on: { click: _vm.setSkipAction } },
+                    [_vm._v("SKIP THIS ACTION")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
               _vm.showPass
                 ? _c(
                     "button",
@@ -58264,7 +58448,10 @@ var render = function() {
             "width-100 d-flex justify-center flex-column align-center"
         },
         [
-          _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
+          _c("div", {
+            staticClass: "title",
+            domProps: { innerHTML: _vm._s(_vm.shared.filterText(_vm.message)) }
+          }),
           _vm._v(" "),
           _c(
             "area-flipper",
@@ -59208,18 +59395,20 @@ var render = function() {
                   on: { update: _vm.updateArea }
                 },
                 [
-                  _c(
-                    "div",
-                    { staticClass: "toggle area-map__toggle top-0 left-0" },
-                    [
-                      _vm._v(
-                        "Selected: " +
-                          _vm._s(_vm.selected.length) +
-                          " / " +
-                          _vm._s(_vm.data.count)
+                  !_vm.data.hideMax
+                    ? _c(
+                        "div",
+                        { staticClass: "toggle area-map__toggle top-0 left-0" },
+                        [
+                          _vm._v(
+                            "Selected: " +
+                              _vm._s(_vm.selected.length) +
+                              " / " +
+                              _vm._s(_vm.data.count)
+                          )
+                        ]
                       )
-                    ]
-                  ),
+                    : _vm._e(),
                   _vm._v(" "),
                   _c("unit-row", {
                     attrs: { units: _vm.areaUnits },
@@ -59243,20 +59432,22 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "d-flex justify-center flex-wrap mt-3" },
-            _vm._l(_vm.data.count, function(n, index) {
-              return _c("i", {
-                staticClass: "deploy-limit__pip",
-                class:
-                  index < _vm.selected.length
-                    ? "icon-circle active"
-                    : "icon-circle-open"
-              })
-            }),
-            0
-          ),
+          !_vm.data.hideMax
+            ? _c(
+                "div",
+                { staticClass: "d-flex justify-center flex-wrap mt-3" },
+                _vm._l(_vm.data.count, function(n, index) {
+                  return _c("i", {
+                    staticClass: "deploy-limit__pip",
+                    class:
+                      index < _vm.selected.length
+                        ? "icon-circle active"
+                        : "icon-circle-open"
+                  })
+                }),
+                0
+              )
+            : _vm._e(),
           _vm._v(" "),
           _c("div", {}, [
             _vm.data.canDecline
@@ -77156,6 +77347,8 @@ var map = {
 	"./FactionScore.vue": "./resources/js/components/FactionScore.vue",
 	"./FinalScores.vue": "./resources/js/components/FinalScores.vue",
 	"./Focus/AreasConqueredFocus.vue": "./resources/js/components/Focus/AreasConqueredFocus.vue",
+	"./Focus/ControlFocus.vue": "./resources/js/components/Focus/ControlFocus.vue",
+	"./Focus/EnemyKillsFocus.vue": "./resources/js/components/Focus/EnemyKillsFocus.vue",
 	"./Focus/FusionFocus.vue": "./resources/js/components/Focus/FusionFocus.vue",
 	"./Focus/KillAreasFocus.vue": "./resources/js/components/Focus/KillAreasFocus.vue",
 	"./Focus/KillTypesFocus.vue": "./resources/js/components/Focus/KillTypesFocus.vue",
@@ -78374,6 +78567,144 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AreasConqueredFocus_vue_vue_type_template_id_8e26fa8c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AreasConqueredFocus_vue_vue_type_template_id_8e26fa8c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/ControlFocus.vue":
+/*!********************************************************!*\
+  !*** ./resources/js/components/Focus/ControlFocus.vue ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ControlFocus_vue_vue_type_template_id_51a5821d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ControlFocus.vue?vue&type=template&id=51a5821d& */ "./resources/js/components/Focus/ControlFocus.vue?vue&type=template&id=51a5821d&");
+/* harmony import */ var _ControlFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ControlFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/ControlFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ControlFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ControlFocus_vue_vue_type_template_id_51a5821d___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ControlFocus_vue_vue_type_template_id_51a5821d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/ControlFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/ControlFocus.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/Focus/ControlFocus.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ControlFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/ControlFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/ControlFocus.vue?vue&type=template&id=51a5821d&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/Focus/ControlFocus.vue?vue&type=template&id=51a5821d& ***!
+  \***************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlFocus_vue_vue_type_template_id_51a5821d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ControlFocus.vue?vue&type=template&id=51a5821d& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/ControlFocus.vue?vue&type=template&id=51a5821d&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlFocus_vue_vue_type_template_id_51a5821d___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlFocus_vue_vue_type_template_id_51a5821d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/EnemyKillsFocus.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/Focus/EnemyKillsFocus.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _EnemyKillsFocus_vue_vue_type_template_id_692f400e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EnemyKillsFocus.vue?vue&type=template&id=692f400e& */ "./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=template&id=692f400e&");
+/* harmony import */ var _EnemyKillsFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EnemyKillsFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _EnemyKillsFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _EnemyKillsFocus_vue_vue_type_template_id_692f400e___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _EnemyKillsFocus_vue_vue_type_template_id_692f400e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/EnemyKillsFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EnemyKillsFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./EnemyKillsFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EnemyKillsFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=template&id=692f400e&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=template&id=692f400e& ***!
+  \******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EnemyKillsFocus_vue_vue_type_template_id_692f400e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./EnemyKillsFocus.vue?vue&type=template&id=692f400e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/EnemyKillsFocus.vue?vue&type=template&id=692f400e&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EnemyKillsFocus_vue_vue_type_template_id_692f400e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EnemyKillsFocus_vue_vue_type_template_id_692f400e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -87652,6 +87983,17 @@ window.App.state = {
   factionName: null,
   id: null,
   name: null,
+  areaLeaders: {
+    'capitol': null,
+    'sewers': null,
+    'police': null,
+    'laboratory': null,
+    'factory': null,
+    'bank': null,
+    'university': null,
+    'subway': null,
+    'church': null
+  },
   errorReport: function errorReport(error) {
     console.log(error.message);
     console.log(error.data);
@@ -87786,6 +88128,9 @@ window.App.state = {
     });
 
     return output;
+  },
+  currentCash: function currentCash() {
+    return this.faction.resources + this.faction.energy;
   }
 };
 
@@ -88253,6 +88598,25 @@ var helpers = {
 
     return kills;
   },
+  factionKillsInEnemy: function factionKillsInEnemy(faction, factions, areas) {
+    var areaLeaders = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var enemyAreas = [];
+
+    if (areaLeaders) {
+      Object.keys(areas).forEach(function (areaName) {
+        if (areaLeaders[areaName] !== faction.name) enemyAreas.push(areaName);
+      });
+    } else {
+      Object.values(areas).forEach(function (area) {
+        if (area.owner !== faction.name) enemyAreas.push(area.name);
+      });
+    }
+
+    console.log('enemyAreas', enemyAreas);
+    return this.factionKills(faction, factions).filter(function (unit) {
+      return enemyAreas.includes(unit.location);
+    });
+  },
   areasWithFactionKills: function areasWithFactionKills(faction, factions) {
     var areas = {};
     this.factionKills(faction, factions).forEach(function (kill) {
@@ -88358,7 +88722,11 @@ var helpers = {
   },
   areaIsTrapped: function areaIsTrapped(faction, area) {
     if (faction.data) faction = faction.data;
-    if (area.data) area = area.data; // let make an array of all the players that have played a trapped like rats here
+    if (area.data) area = area.data; // if this area is trapped by the guerrillas and we have no money return true
+
+    if (faction.name !== 'guerrillas' && area.tokens.find(function (token) {
+      return token.type === 'traps' && token.revealed && faction.resources + faction.energy < 1;
+    })) return true; // let make an array of all the players that have played a trapped like rats here
 
     var traps = [];
     area.cards.forEach(function (card) {
@@ -88372,6 +88740,37 @@ var helpers = {
     if (_.remove(traps, function (name) {
       return name !== faction.name;
     }).length) return true;
+  },
+  trapsCost: function trapsCost(faction, units, factions) {
+    if (faction.name === 'guerrillas' || !factions['guerrillas']) return 0;
+    var traps = factions['guerrillas'].tokens.find(function (token) {
+      return token.type === 'traps' && token.revealed && token.location;
+    });
+    if (!traps) return 0;
+    return units.filter(function (unit) {
+      return unit.location === traps.location;
+    }).length;
+  },
+  policePayoffs: function policePayoffs(faction, area, units) {
+    var _this10 = this;
+
+    if (faction.data) faction = faction.data;
+    if (area.data) area = area.data;
+    var policePayoff = 0;
+
+    _.forEach(area.cards, function (card) {
+      if (card["class"] === 'police-payoff' // if there is a police payoff here
+      && card.owner !== faction.name // which we don't own
+      && !_this10.hasKauImmunity(faction, area) // and we don't already have kau immunity in this area
+      && !_this10.find(units, function (unit) {
+        return unit.type === 'champion' && unit.faction === 'aliens';
+      })) // and we aren't deploying kau
+        {
+          policePayoff++; // increase our police payoff cost by one
+        }
+    });
+
+    return policePayoff;
   },
   hasKauImmunity: function hasKauImmunity(faction, area) {
     return faction.kau && faction.kau.location === area.name && !faction.kau.killed;

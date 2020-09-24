@@ -131,6 +131,17 @@
 
             emitXavier(){
                 this.shared.event.emit( 'xavierClicked' );
+            },
+
+            mostInfluence( influences ){
+                let max = _.maxBy(influences, 'influence');
+                return max ? max.influence : 0;
+            },
+
+            playerWithMostInfluence( influences ){
+                let max = this.mostInfluence( influences );
+                let maxes = influences.filter( item => item.influence === max );
+                return maxes.length === 1 ? maxes[0].faction : false;
             }
         },
 
@@ -159,7 +170,19 @@
             },
 
             influence(){
-                return _.eachInfluenceInArea( this.area, this.shared.data.factions );
+                let influences = _.eachInfluenceInArea( this.area, this.shared.data.factions );
+                let leader = null;
+
+                if( influences.length ){
+                    let mostInfluence = this.playerWithMostInfluence( influences );
+
+                    if( mostInfluence ) leader = mostInfluence;
+                    else if( this.area.owner ) leader = this.area.owner;
+                }
+
+                this.shared.areaLeaders[this.area.name] = leader;
+
+                return influences;
             },
 
             graveyard(){

@@ -273,6 +273,7 @@
                 return this.shared.faction.units.filter( unit => unit.selected );
             },
 
+            /*
             policePayoffs(){
                 let policePayoff = 0;
 
@@ -288,16 +289,18 @@
 
                 return policePayoff;
             },
+            */
 
             cost(){
                 let cost = 0;
                 if( !this.data.free ) {
-                    this.selected.forEach(unit => {
-                        cost += unit.cost;
+                    this.selected.forEach( unit => {
+                        if( ! (unit.redeployFree && unit.location) ) cost += unit.cost;
                     });
                 }
 
-                cost += this.policePayoffs * this.selected.length;
+                cost += _.policePayoffs( this.shared.faction, this.area, this.selected ) * this.selected.length;
+                cost += _.trapsCost( this.shared.faction, this.selected, this.shared.data.factions );
                 return cost;
             },
 

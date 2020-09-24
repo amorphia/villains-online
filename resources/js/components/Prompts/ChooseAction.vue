@@ -3,6 +3,7 @@
 
     <!-- TOP BAR -->
     <div v-if="hasTopAction" class="choose-action-top p-2 d-flex justify-center align-center">
+        <button v-if="showSkip" @click="setSkipAction" class="button">SKIP THIS ACTION</button>
         <button v-if="showPass" @click="setPassAction" class="button">PASS</button>
         <button v-if="showLocked" @click="setLockedAction" class="button" >DECLARE YOURSELF LOCKED</button>
     </div>
@@ -91,7 +92,7 @@
                 let actionKeys = Object.keys( this.actions );
                 if( actionKeys.length === 1 ){
                     let actionSet = this.actions[actionKeys[0]];
-                    if( actionKeys[0] === 'pass' || actionKeys[0] === 'locked' || actionSet.length === 1 ){
+                    if( actionKeys[0] === 'pass' || actionKeys[0] === 'locked' || actionKeys[0] === 'skip' || actionSet.length === 1 ){
                         this.setAction( actionKeys[0] );
                     }
                 }
@@ -143,6 +144,9 @@
                 // can we pass?
                 if( !this.activeTokens.length ) actions.pass = true;
 
+                // can we skip?
+                if( this.shared.faction.hasOwnProperty( 'skips' ) && this.shared.faction.skips.used < this.shared.faction.skips.max ) actions.skip = true;
+
                 // can we declare ourselves locked?
                 if( !this.revealableTokens.length && this.activeTokens.length ) actions.locked = true;
 
@@ -178,6 +182,9 @@
                 this.setAction( 'locked' );
             },
 
+            setSkipAction(){
+                this.setAction( 'skip' );
+            },
             /*
             setSkillAction( area ){
                 this.setAction( 'skill', area );
@@ -201,11 +208,15 @@
         computed : {
 
             hasTopAction(){
-                return this.actions.pass || this.actions.locked;
+                return this.actions.pass || this.actions.locked || this.actions.skip;
             },
 
             showPass(){
                 return this.actions.pass;
+            },
+
+            showSkip(){
+                return this.actions.skip;
             },
 
             showLocked(){
@@ -227,6 +238,9 @@
                         break;
                     case 'pass':
                         message = `Pass for the turn`;
+                        break;
+                    case 'skip':
+                        message = `Skip this action`;
                         break;
                     case 'locked':
                         message = `Declare yourself locked`;

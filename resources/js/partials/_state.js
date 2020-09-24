@@ -72,6 +72,17 @@ window.App.state = {
     factionName : null,
     id : null,
     name : null,
+    areaLeaders : {
+        'capitol' : null,
+        'sewers' : null,
+        'police' : null,
+        'laboratory' : null,
+        'factory' : null,
+        'bank' : null,
+        'university' : null,
+        'subway' : null,
+        'church' : null,
+    },
 
     errorReport( error ) {
         console.log( error.message );
@@ -194,6 +205,10 @@ window.App.state = {
         let output = _.groupBy( collection, grouping );
         _.forEach( output, ( object, prop ) => output[prop] =  output[prop].length );
         return output;
+    },
+
+    currentCash(){
+        return this.faction.resources + this.faction.energy;
     }
 
 }

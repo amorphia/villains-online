@@ -37,6 +37,8 @@
 
 { test : 'conquerAreas', args : [3] },
 
+{ test : 'killsInEnemy', args : [3] },
+
 
 
 

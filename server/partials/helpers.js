@@ -454,6 +454,24 @@ let helpers = {
     },
 
 
+    factionKillsInEnemy( faction, factions, areas, areaLeaders = false ){
+        let enemyAreas = [];
+
+        if( areaLeaders ){
+            Object.keys( areas ).forEach( areaName => {
+                if( areaLeaders[areaName] !== faction.name ) enemyAreas.push( areaName );
+            });
+        } else {
+            Object.values( areas ).forEach( area => {
+                if( area.owner !== faction.name ) enemyAreas.push( area.name );
+            });
+        }
+
+        console.log( 'enemyAreas', enemyAreas );
+
+        return this.factionKills( faction, factions ).filter( unit => enemyAreas.includes( unit.location ) );
+    },
+
     areasWithFactionKills( faction, factions ){
         let areas = {};
 
@@ -581,6 +599,12 @@ let helpers = {
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
 
+        // if this area is trapped by the guerrillas and we have no money return true
+        if( faction.name !== 'guerrillas' && area.tokens.find(
+            token => token.type === 'traps'
+                          && token.revealed
+                          && (faction.resources + faction.energy ) < 1  ) ) return true;
+
         // let make an array of all the players that have played a trapped like rats here
         let traps = [];
         area.cards.forEach( card => {
@@ -595,6 +619,33 @@ let helpers = {
 
         // but even if we do have Kau immunity we still get trapped by our own TLR
         if( _.remove( traps, name => name !== faction.name ).length ) return true;
+    },
+
+    trapsCost( faction, units, factions ){
+        if( faction.name === 'guerrillas' || ! factions['guerrillas'] ) return 0;
+        let traps = factions['guerrillas'].tokens.find( token => token.type === 'traps' && token.revealed && token.location );
+        if( !traps ) return 0;
+
+        return units.filter( unit => unit.location === traps.location ).length;
+    },
+
+    policePayoffs( faction, area, units ){
+        if( faction.data ) faction = faction.data;
+        if( area.data ) area = area.data;
+        let policePayoff = 0;
+
+        _.forEach( area.cards, card => {
+            if( card.class === 'police-payoff' // if there is a police payoff here
+                && card.owner !== faction.name // which we don't own
+                && !this.hasKauImmunity( faction, area ) // and we don't already have kau immunity in this area
+                && !this.find( units, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
+            {
+                policePayoff++; // increase our police payoff cost by one
+            }
+        });
+
+        return policePayoff;
+
     },
 
     hasKauImmunity( faction, area ){
