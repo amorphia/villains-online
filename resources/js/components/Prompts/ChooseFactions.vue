@@ -74,7 +74,7 @@
             };
         },
         mounted(){
-            this.selectedFaction = Object.keys( this.shared.data.factions )[0];
+            this.selectedFaction = this.basicFactions[0].name;
         },
 
         watch : {
@@ -167,7 +167,7 @@
 
 
     .choose-factions__basic-factions {
-        border-right: 1px dotted var(--highlight-color);
+        border-right: 2px dotted #ffa70080;
     }
 
     .choose-factions__status {
