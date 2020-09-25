@@ -69,7 +69,7 @@ let obj = {
         _.forEach( this.data.units, (unit, index) => {
             // if our deploy is limited to a certain unit type only include areas with those
             let unitMatches = !args.unitTypes || args.unitTypes.includes( unit.type );
-            let canPayFor = args.free || money >= unit.cost;
+            let canPayFor = args.free || unit.redeployFree || money >= unit.cost;
 
             if( !unit.noDeploy && canPayFor && unitMatches && _.unitInPlay( unit ) ){
                 areas[ unit.location ] = { val : true };

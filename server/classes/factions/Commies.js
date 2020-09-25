@@ -28,7 +28,7 @@ class Commies extends Faction {
         this.units['goon'].count = 4;
         this.units['mole'].count = 4;
         this.units['talent'].count = 2;
-        this.units['patsy'].count = 10;
+        this.units['patsy'].count = 12;
         this.units['champion'] = {
             count: 1,
             data: {
