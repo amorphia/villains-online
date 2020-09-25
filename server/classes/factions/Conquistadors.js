@@ -49,7 +49,7 @@ class Conquistadors extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 1,
-                attack: [3],
+                attack: [2],
                 cost: 0,
                 killed: false,
                 selected: false,
@@ -97,8 +97,9 @@ class Conquistadors extends Faction {
     }
 
 
-    canActivatePox(token, area) {
-        return true;
+    canActivatePox( token, area ) {
+        let enemyUnits = this.enemyUnitsInArea( area, { basic : true } );
+        return Object.keys( enemyUnits ).length > 0;
     }
 
 
@@ -116,13 +117,14 @@ class Conquistadors extends Faction {
                 if( item.name === this.name ) return;
 
                 // if opponent has no units skip them
-                if( ! item.data.units.find( unit => _.unitInArea( unit, args.area ) ) ) return;
+                if( ! item.data.units.find( unit => _.unitInArea( unit, args.area, { basic : true } ) ) ) return;
 
                 promises.push( this.game().promise({
                     players: item.playerId,
                     name: 'sacrifice-units',
                     data : {
                         count : 1,
+                        basicOnly : true,
                         areas : [ args.area.name ]
                     }
                 }).then( async ([player, data]) => {

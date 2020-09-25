@@ -67,5 +67,9 @@
         color: var(--highlight-color);
         font-size: 1.4em;
     }
+
+    .prompt-question.red {
+        color: #ff0000;
+    }
 </style>
 

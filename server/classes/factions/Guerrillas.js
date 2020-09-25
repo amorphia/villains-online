@@ -54,8 +54,8 @@ class Guerrillas extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 0,
-                attack: [7, 7],
-                cost: 0,
+                attack: [6, 6],
+                cost: 1,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
@@ -131,17 +131,18 @@ class Guerrillas extends Faction {
             players: this.playerId,
             name: 'choose-units',
             data: {
-                count : 20,
+                count : 2,
                 areas : [event.from],
                 playerOnly : true,
                 canDecline : true,
                 optionalMax : true,
-                hideMax : true,
+                policePayoff : event.unit.location,
                 message: `Choose units to move with Red Viper to The ${event.from}`
             }
         }).catch( error => console.error( error ) );
         if( data.decline ) return false;
 
+        if( data.cost ) this.payCost( data.cost );
         let units = data.units.map( unitId => this.game().objectMap[ unitId ] );
 
         units.forEach( unit => {

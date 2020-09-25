@@ -26,6 +26,7 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+
 .icon-goon:before {
     content: "\e956";
 }
@@ -46,6 +47,9 @@
 }
 .icon-toughness-solid:before {
     content: "\e95c";
+}
+.icon-henchman:before {
+    content: "\e902";
 }
 .icon-traps:before {
     content: "\e901";

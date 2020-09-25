@@ -64,6 +64,9 @@
                 </area-flipper>
 
                 <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to deploy these units?` )"></div>
+                <div v-if="trapsCost > 0" class="prompt-question red center-text" v-html="shared.filterText( `Traps cost xC${trapsCost}x` )"></div>
+                <div v-if="policePayoffs > 0" class="prompt-question red center-text" v-html="shared.filterText( `Police Payoff cost xC${policePayoffs}x` )"></div>
+
 
                 <div class="flex-center">
                     <button class="button button-empty" @click="resolve( false )"
@@ -273,35 +276,28 @@
                 return this.shared.faction.units.filter( unit => unit.selected );
             },
 
-            /*
             policePayoffs(){
-                let policePayoff = 0;
-
-                _.forEach( this.area.cards, card => {
-                    if( card.class === 'police-payoff' // if there is a police payoff here
-                        && card.owner !== this.shared.faction.name // which we don't own
-                        && !_.hasKauImmunity( this.shared.faction, this.area ) // and we don't already have kau immunity in this area
-                        && !_.find(this.selected, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
-                    {
-                        policePayoff++; // increase out police payoff cost by one
-                    }
-                });
-
-                return policePayoff;
+                return _.policePayoffs( this.shared.faction, this.area, this.selected ) * this.selected.length;
             },
-            */
 
-            cost(){
+            trapsCost(){
+                return _.trapsCost( this.shared.faction, this.selected, this.shared.data.factions );
+            },
+
+            unitCost(){
                 let cost = 0;
+
                 if( !this.data.free ) {
                     this.selected.forEach( unit => {
                         if( ! (unit.redeployFree && unit.location) ) cost += unit.cost;
                     });
                 }
 
-                cost += _.policePayoffs( this.shared.faction, this.area, this.selected ) * this.selected.length;
-                cost += _.trapsCost( this.shared.faction, this.selected, this.shared.data.factions );
                 return cost;
+            },
+
+            cost(){
+                return this.unitCost + this.policePayoffs + this.trapsCost;
             },
 
             data(){

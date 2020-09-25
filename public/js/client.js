@@ -5776,6 +5776,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       shared: App.state,
+      random: false,
       selectedFaction: null
     };
   },
@@ -5816,6 +5817,7 @@ __webpack_require__.r(__webpack_exports__);
         killer: false,
         experimental: false
       };
+      this.random = true;
 
       _.forEach(this.shared.data.factions, function (faction, name) {
         if (faction.killer && faction.owner) picked.killer = true;
@@ -5851,7 +5853,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     chooseFaction: function chooseFaction() {
       App.event.emit('sound', 'ui');
-      this.shared.socket.emit('chooseFaction', this.shared.data.id, this.selectedFaction);
+      this.shared.socket.emit('chooseFaction', this.shared.data.id, this.selectedFaction, this.random);
     }
   }
 });
@@ -6397,6 +6399,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-units',
   data: function data() {
@@ -6406,6 +6410,10 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    cost: function cost() {
+      if (!this.data.policePayoff) return 0;
+      return _.policePayoffs(this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected) * this.selected.length;
+    },
     canSubmit: function canSubmit() {
       if (this.needToSelect === 0 || this.data.optionalMax && this.selected.length > 0) return true;
     },
@@ -6498,6 +6506,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (action) {
         data.units = _.map(this.selected, 'id');
+        data.cost = this.cost;
       } else {
         data.decline = true;
       }
@@ -6867,6 +6876,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'deploy-action',
   data: function data() {
@@ -7046,23 +7058,13 @@ __webpack_require__.r(__webpack_exports__);
         return unit.selected;
       });
     },
-
-    /*
-    policePayoffs(){
-        let policePayoff = 0;
-         _.forEach( this.area.cards, card => {
-            if( card.class === 'police-payoff' // if there is a police payoff here
-                && card.owner !== this.shared.faction.name // which we don't own
-                && !_.hasKauImmunity( this.shared.faction, this.area ) // and we don't already have kau immunity in this area
-                && !_.find(this.selected, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
-            {
-                policePayoff++; // increase out police payoff cost by one
-            }
-        });
-         return policePayoff;
+    policePayoffs: function policePayoffs() {
+      return _.policePayoffs(this.shared.faction, this.area, this.selected) * this.selected.length;
     },
-    */
-    cost: function cost() {
+    trapsCost: function trapsCost() {
+      return _.trapsCost(this.shared.faction, this.selected, this.shared.data.factions);
+    },
+    unitCost: function unitCost() {
       var cost = 0;
 
       if (!this.data.free) {
@@ -7071,9 +7073,10 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
 
-      cost += _.policePayoffs(this.shared.faction, this.area, this.selected) * this.selected.length;
-      cost += _.trapsCost(this.shared.faction, this.selected, this.shared.data.factions);
       return cost;
+    },
+    cost: function cost() {
+      return this.unitCost + this.policePayoffs + this.trapsCost;
     },
     data: function data() {
       return this.shared.player.prompt.data;
@@ -7653,6 +7656,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'move-action',
   data: function data() {
@@ -7739,27 +7744,14 @@ __webpack_require__.r(__webpack_exports__);
         return unit.selected;
       });
     },
-
-    /*
-    policePayoffs(){
-        let policePayoff = 0;
-         _.forEach( this.area.cards, card => {
-            if( card.class === 'police-payoff' // if there is a police payoff here
-                && card.owner !== this.shared.faction.name // which we don't own
-                && !_.hasKauImmunity( this.shared.faction, this.area ) // and we don't already have kau immunity in this area
-                && !_.find(this.selected, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
-            {
-                policePayoff++; // increase out police payoff cost by one
-            }
-        });
-         return policePayoff;
+    policePayoffs: function policePayoffs() {
+      return _.policePayoffs(this.shared.faction, this.area, this.selected) * this.selected.length;
     },
-    */
+    trapsCost: function trapsCost() {
+      return _.trapsCost(this.shared.faction, this.selected, this.shared.data.factions);
+    },
     cost: function cost() {
-      var cost = 0;
-      cost += _.policePayoffs(this.shared.faction, this.area, this.selected) * this.selected.length;
-      cost += _.trapsCost(this.shared.faction, this.selected, this.shared.data.factions);
-      return cost;
+      return this.policePayoffs + this.trapsCost;
     },
     data: function data() {
       return this.shared.player.prompt.data;
@@ -8421,8 +8413,12 @@ __webpack_require__.r(__webpack_exports__);
       return _.groupBy(array, prop);
     },
     areaUnits: function areaUnits(area) {
+      var _this2 = this;
+
       return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, area);
+        return _.unitInArea(unit, area, {
+          basic: _this2.data.basicOnly
+        });
       });
     }
   },
@@ -8437,11 +8433,11 @@ __webpack_require__.r(__webpack_exports__);
       return this.needToSacrifice === 0;
     },
     areas: function areas() {
-      var _this2 = this;
+      var _this3 = this;
 
       var areas = [];
       this.data.areas.forEach(function (areaName) {
-        areas.push(_this2.shared.data.areas[areaName]);
+        areas.push(_this3.shared.data.areas[areaName]);
       });
       return areas;
     },
@@ -8705,6 +8701,11 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state
     };
+  },
+  computed: {
+    tokenSlots: function tokenSlots() {
+      return Math.max(this.area.tokens.length, this.area.maxTokens);
+    }
   },
   methods: {
     checkHighlight: function checkHighlight(n) {
@@ -11817,7 +11818,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.prompt-question {\n    color: var(--highlight-color);\n    font-size: 1.4em;\n}\n", ""]);
+exports.push([module.i, "\n.prompt-question {\n    color: var(--highlight-color);\n    font-size: 1.4em;\n}\n.prompt-question.red {\n    color: #ff0000;\n}\n", ""]);
 
 // exports
 
@@ -59449,6 +59450,19 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
+          _vm.cost > 0
+            ? _c("div", {
+                staticClass: "prompt-question",
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.shared.filterText(
+                      "Pay xC" + _vm.cost + "x to choose these units?"
+                    )
+                  )
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
           _c("div", {}, [
             _vm.data.canDecline
               ? _c(
@@ -59877,6 +59891,30 @@ var render = function() {
                   innerHTML: _vm._s(
                     _vm.shared.filterText(
                       "Pay xC" + _vm.cost + "x to deploy these units?"
+                    )
+                  )
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.trapsCost > 0
+            ? _c("div", {
+                staticClass: "prompt-question red center-text",
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.shared.filterText("Traps cost xC" + _vm.trapsCost + "x")
+                  )
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.policePayoffs > 0
+            ? _c("div", {
+                staticClass: "prompt-question red center-text",
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.shared.filterText(
+                      "Police Payoff cost xC" + _vm.policePayoffs + "x"
                     )
                   )
                 }
@@ -60673,6 +60711,36 @@ var render = function() {
                   )
                 }
               })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.cost > 0 && _vm.confirm
+            ? _c("div", [
+                _vm.trapsCost > 0
+                  ? _c("div", {
+                      staticClass: "prompt-question red center-text",
+                      domProps: {
+                        innerHTML: _vm._s(
+                          _vm.shared.filterText(
+                            "Traps cost xC" + _vm.trapsCost + "x"
+                          )
+                        )
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.policePayoffs > 0
+                  ? _c("div", {
+                      staticClass: "prompt-question red center-text",
+                      domProps: {
+                        innerHTML: _vm._s(
+                          _vm.shared.filterText(
+                            "Police Payoff cost xC" + _vm.policePayoffs + "x"
+                          )
+                        )
+                      }
+                    })
+                  : _vm._e()
+              ])
             : _vm._e(),
           _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
@@ -61607,7 +61675,7 @@ var render = function() {
     {
       staticClass: "area-map__tokens d-flex justify-center width-100 no-select"
     },
-    _vm._l(_vm.area.maxTokens, function(n) {
+    _vm._l(_vm.tokenSlots, function(n) {
       return _c("token-slot", {
         key: _vm.area.name + "-" + n,
         attrs: {

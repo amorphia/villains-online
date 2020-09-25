@@ -1,6 +1,6 @@
 <template>
     <div class="area-map__tokens d-flex justify-center width-100 no-select">
-        <token-slot v-for="n in area.maxTokens"
+        <token-slot v-for="n in tokenSlots"
                     :area="area"
                     :token="area.tokens[n-1]"
                     :forcedtoken="forcedToken(n)"
@@ -25,6 +25,11 @@
             return {
                 shared : App.state
             };
+        },
+        computed : {
+            tokenSlots(){
+                return Math.max( this.area.tokens.length, this.area.maxTokens )
+            }
         },
         methods : {
             checkHighlight( n ){

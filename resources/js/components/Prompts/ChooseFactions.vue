@@ -70,6 +70,7 @@
         data() {
             return {
                 shared : App.state,
+                random: false,
                 selectedFaction : null,
             };
         },
@@ -109,12 +110,13 @@
             },
 
             chooseRandomFaction(){
-
                 let unselectedFactions = [];
                 let picked = {
                     killer : false,
                     experimental : false
                 };
+
+                this.random = true;
 
                 _.forEach( this.shared.data.factions, (faction, name) => {
                    if( faction.killer && faction.owner ) picked.killer = true;
@@ -144,7 +146,7 @@
 
             chooseFaction(){
                 App.event.emit( 'sound', 'ui' );
-                this.shared.socket.emit( 'chooseFaction', this.shared.data.id, this.selectedFaction );
+                this.shared.socket.emit( 'chooseFaction', this.shared.data.id, this.selectedFaction, this.random );
             }
         }
     }

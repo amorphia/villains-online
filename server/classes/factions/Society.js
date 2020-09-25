@@ -21,13 +21,13 @@ class Society extends Faction {
             data: {
                 influence: 1,
                 type: 'hypnosis',
-                cost: 1,
+                cost: 0,
             }
         };
 
         // tokens
         this.tokens['word-of-command'] = {
-            count: 1,
+            count: 2,
             data: {
                 influence: 1,
                 type: 'word-of-command',
@@ -42,13 +42,32 @@ class Society extends Faction {
                 influence: 1,
                 type: 'push',
                 cost: 0,
+                resource : 1
             }
         };
 
         // units
         this.units['patsy'].count = 5;
-        this.units['talent'].count = 2;
-        this.units['talent'].data.noDeploy = true;
+        this.units['goon'].count = 6;
+        this.units['mole'].count = 6;
+        delete this.units['talent'];
+
+        this.units['henchman'] = {
+            count: 1,
+            data: {
+                name: "henchman",
+                type: "henchman",
+                basic: false,
+                cost: 0,
+                noDeploy: true,
+                influence: 0,
+                attack: [4],
+                firstStrike: true,
+                killed: false,
+                selected: false,
+                hitsAssigned: 0,
+            }
+        };
 
         this.units['champion'] = {
             count: 1,
@@ -57,13 +76,15 @@ class Society extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 1,
-                attack: [4],
+                attack: [],
                 cost: 0,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
                 token: null,
-                onKilled: 'clearXavierToken'
+                onKilled: 'clearXavierToken',
+                onMove: 'placeHenchman',
+                onDeploy: 'placeHenchman',
             }
         };
     }
@@ -72,8 +93,13 @@ class Society extends Faction {
     processUpgrade( n ) {
         switch( n ) {
             case 1 : this.data.tokensNotDiscardedMax = 1; break;
-            case 2 : this.data.tokensNotDiscardedMax = 11; break;
+            case 2 : this.data.tokensNotDiscardedMax = 12; break;
         }
+    }
+
+    placeHenchman( event ){
+        let henchman = this.data.units.find( unit => unit.type === 'henchman' && !unit.killed );
+        if( henchman ) henchman.location = event.unit.location;
     }
 
     clearXavierToken( event ){

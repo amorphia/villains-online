@@ -83,7 +83,7 @@ class Capitol extends Area {
 
         this.game().message({
             faction: faction,
-            message: `swaps <span class="faction-${tokens[0].faction}">the ${tokens[0].faction}</span> token with <span class="faction-${tokens[1].faction}">the ${tokens[1].faction}</span> token in the ${area.name}` });
+            message: `swaps <span class="faction-${tokens[0].faction}">the ${tokens[0].faction}</span> token (${tokenZeroIndex + 1} ) with <span class="faction-${tokens[1].faction}">the ${tokens[1].faction}</span> token (${tokenOneIndex + 1}) in the ${area.name}` });
     }
 
 }

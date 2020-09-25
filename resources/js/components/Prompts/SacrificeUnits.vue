@@ -89,7 +89,7 @@
             },
 
             areaUnits( area ){
-                return this.shared.faction.units.filter( unit => _.unitInArea( unit, area ) );
+                return this.shared.faction.units.filter( unit => _.unitInArea( unit, area, { basic : this.data.basicOnly } ) );
             },
         },
 

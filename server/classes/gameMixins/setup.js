@@ -115,7 +115,7 @@ let setup = {
     },
 
 
-    async chooseFaction( player, factionName ){
+    async chooseFaction( player, factionName, random ){
         if( ! player.data.active ) return;
 
         let faction = this.data.factions[ factionName ];
@@ -126,7 +126,9 @@ let setup = {
         Server.io.to( this.id ).emit( 'factionSelected', factionName );
         this.advanceActivePlayer();
 
-        this.message({ message: `chose the ${factionName}`, player : player });
+        let message = `chose the ${factionName}`;
+        if( random ) message = `Like the mighty eagle ${player.data.name} randomly chooses the ${factionName} `;
+        this.message({ message: message, player : player, class : random ? 'highlight' : ''  });
         await this.updateAll();
 
         if( this.allPlayersHaveFactions() ){

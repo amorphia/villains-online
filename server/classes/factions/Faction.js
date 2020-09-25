@@ -176,7 +176,7 @@ class Faction {
 
     godMode(){
         console.log( 'god mode enabled' );
-        this.data.cardDraw = 16;
+        this.data.cardDraw = 34;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;
     }
@@ -289,7 +289,17 @@ class Faction {
     }
 
     drawTurnCards(){
-        this.drawCards( this.data.cardDraw );
+        let cardsToDraw = this.data.cardDraw;
+
+        // if we are the last player in a 5 player game then draw an extra card
+        if( this.game().data.turn === 1
+         && this.game().data.playerOrder[4] === this.playerId
+        ){
+            this.game().message({ faction : this, message: 'Draws an extra card for going last in a 5 player game' });
+            cardsToDraw++;
+        }
+
+        this.drawCards( cardsToDraw );
     }
 
     drawCards( n = 1, messagePlayer ){

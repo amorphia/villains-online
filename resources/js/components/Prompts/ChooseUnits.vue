@@ -24,6 +24,8 @@
                        :class="index < selected.length ? 'icon-circle active' : 'icon-circle-open'"></i>
                 </div>
 
+                <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to choose these units?` )"></div>
+
                 <div class="">
                     <button v-if="data.canDecline" class="button button-empty" @click="resolve( false )">DECLINE</button>
                     <button class="button" @click="resolve( true )" :disabled="!canSubmit">SELECTED UNITS</button>
@@ -46,6 +48,11 @@
         },
 
         computed : {
+
+            cost(){
+                if( !this.data.policePayoff ) return 0;
+                return _.policePayoffs( this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected ) * this.selected.length;
+            },
 
             canSubmit(){
                 if( this.needToSelect === 0
@@ -151,6 +158,7 @@
 
                 if( action ){
                     data.units = _.map( this.selected, 'id' );
+                    data.cost = this.cost;
                 } else {
                     data.decline = true;
                 }
