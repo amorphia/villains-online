@@ -21,27 +21,19 @@
 { test : 'controlTarget', args : [] },
 
 
+
 { test : 'killTypeCount', args : [3] },
-
 { test : 'killTypes', args : [ ['mole','talent'], 2 ] },
-
-
 { test : 'controlAreas', args : [3] },
-
 { test : 'killMost', args : [] },
-
 { test : 'controlEnemyTargets', args : [1] },
 { test : 'exterminateEnemyTarget', args : [] },
 { test : 'unitsAtEnemyTarget', args : [2, 'mole'? ] },
 { test : 'mrFusion', args : [4] },
-
 { test : 'conquerAreas', args : [3] },
-
 { test : 'killsInEnemy', args : [3] },
-
-
-
-
+{ test : 'playRules', args : [2, 'areas'] },
+{ test : 'areasMostUnits', args : [3] },
 
 
 

@@ -24,6 +24,11 @@
                        :class="index < selected.length ? 'icon-circle active' : 'icon-circle-open'"></i>
                 </div>
 
+                <div v-if="data.showReserves" class="mt-3">
+                    <div class="prompt-question center-text">The Parasites can infect these unit types</div>
+                    <unit-row :units="reserves"></unit-row>
+                </div>
+
                 <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to choose these units?` )"></div>
 
                 <div class="">
@@ -71,6 +76,17 @@
                         notHidden : this.data.notHidden
                     }
                 );
+            },
+
+            reserves(){
+                let reserves = {};
+                if( !this.data.showReserves ) return [];
+
+                this.shared.data.factions[this.data.showReserves].units.forEach( unit => {
+                    if( unit.basic && _.unitInReserves( unit ) && !reserves[unit.type] ) reserves[unit.type] = unit;
+                });
+
+                return Object.values( reserves );
             },
 
             message(){

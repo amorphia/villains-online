@@ -42,12 +42,12 @@ let obj = {
 
     activateToken( player, token ){
         let area = this.game().areas[token.location];
-        this.payCost( this.tokenCost( token, area ), true );
-        this.game().message({ message: `Activate their <span class="highlight">${token.name}</span> token`, faction : this });
+
+        let message = `Activate their <span class="highlight">${token.name}</span> token`;
+        this.game().message({ message: message, faction : this });
 
         let action = _.camelCase( token.name ) + 'Token';
         this[action]({ player : player, token : token, area : area });
-
     }
 
 };

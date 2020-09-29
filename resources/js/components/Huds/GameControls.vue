@@ -20,6 +20,7 @@
                 </div>
                 <div class="game-controls__item">
                     <i class="mr-2 icon-money"></i>{{ shared.faction.energy + shared.faction.resources }}
+                    <i v-if="shared.faction.hasOwnProperty('darkEnergy')" class="faction-witches game-controls__darkenergy" title="Dark Energy (may be spent to play action cards)">{{ shared.faction.darkEnergy }}</i>
                 </div>
                 <div class="game-controls__item">
                     <i class="mr-2 icon-cards"></i>{{ shared.faction.cards.hand.length }}
@@ -161,6 +162,12 @@
         font-size: .9em;
         position: relative;
         top: .1em;
+    }
+
+    i.game-controls__darkenergy {
+        color: var(--faction-witches);
+        margin-left: .15em;
+        font-size: .8em;
     }
 </style>
 

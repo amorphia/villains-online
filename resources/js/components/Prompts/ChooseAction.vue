@@ -44,6 +44,21 @@
                         </div>
 
                     </div>
+
+                    <!-- magick display -->
+                    <div v-if="action.name === 'magick'"
+                         class="choose-action__skilled-units center-text">
+
+                        <unit-row
+                            :units="flippedUnitsInArea"
+                            allSelected="true">
+                        </unit-row>
+
+                        <div class="width-100 choose-action__skill-ability">
+                            Use your magick ability in this area?
+                        </div>
+
+                    </div>
                 </area-flipper>
 
                 <div class="d-flex justify-center">
@@ -119,6 +134,10 @@
                     this.$set( this.xavier, 'placedToken', this.xavier.token );
                 }
 
+                if( name === 'magick' ){
+                    action.area = param ?? this.actions[name][0];
+                }
+
                 if( action.area ) this.shared.event.emit('areaSelected', { name : action.area } );
 
                 this.action = action;
@@ -147,6 +166,9 @@
                 // can we skip?
                 if( this.shared.faction.hasOwnProperty( 'skips' ) && this.shared.faction.skips.used < this.shared.faction.skips.max ) actions.skip = true;
 
+                // can we magick?
+                if( this.useableMagick.length ) actions.magick = this.useableMagick;
+
                 // can we declare ourselves locked?
                 if( !this.revealableTokens.length && this.activeTokens.length ) actions.locked = true;
 
@@ -167,6 +189,9 @@
                     case 'token':
                         args = [this.action.token.id];
                         break;
+                    case 'magick':
+                        args = [this.action.area];
+                        break;
                 }
 
                 this.shared.respond( 'choose-action', this.action.name, ...args );
@@ -185,19 +210,6 @@
             setSkipAction(){
                 this.setAction( 'skip' );
             },
-            /*
-            setSkillAction( area ){
-                this.setAction( 'skill', area );
-            },
-
-            setTokenAction( area ){
-                this.setAction( 'token', area );
-            },
-
-            setXavierAction(){
-                this.setAction( 'xavier' );
-            },
-            */
 
             firstUnrevealed( area ){
                 if( typeof area === 'string' ) area = this.shared.data.areas[ area ];
@@ -248,33 +260,13 @@
                     case 'xavier':
                         message = `Reveal token on Xavier`;
                         break;
+                    case 'magick':
+                        message = `Use magick in the ${this.area.name}`;
+                        break;
                 }
                 return this.saveDisabled ? "Choose your action" : message;
             },
 
-            /*
-            message(){
-                if( !this.action ) return "Choose an action";
-
-                switch( this.action.name ){
-                    case 'skill':
-                        return "Choose a skill to activate";
-                        break;
-                    case 'token':
-                        return "Choose a token to reveal";
-                        break;
-                    case 'xavier':
-                        return "Reveal Xavier's token";
-                        break;
-                    case 'pass':
-                        return "Declare yourself passed";
-                        break;
-                    case 'locked':
-                        return "Skip your turn";
-                        break;
-                }
-            },
-             */
 
             area(){
                 if( !this.action.area ) return;
@@ -325,11 +317,27 @@
                 return this.shared.faction.units.filter( unit => _.unitReadyInArea( unit, this.area ) );
             },
 
+            flippedUnitsInArea(){
+                return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area ) && unit.flipped );
+            },
+
             useableSkills(){
                 let areas = [];
 
                 _.forEach( this.shared.data.areas, area => {
                     if( _.canUseSkill( this.shared.faction, area, this.shared.data.factions ) ){
+                        areas.push( area.name );
+                    }
+                });
+
+                return areas;
+            },
+
+            useableMagick(){
+                let areas = [];
+
+                _.forEach( this.shared.data.areas, area => {
+                    if( _.canUseMagick( this.shared.faction, area, this.shared.data.factions ) ){
                         areas.push( area.name );
                     }
                 });

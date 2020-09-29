@@ -98,6 +98,13 @@
                 this.shared.game = null;
                 this.shared.lobbyPlayers = {};
                 this.shared.saveGames = [];
+                this.shared.actions = null;
+                this.shared.openSettings = false;
+                this.shared.action = null;
+                this.shared.card = null;
+                this.shared.token = null;
+                this.shared.showXavier = false;
+                this.shared.viewDiscard = false;
             },
 
             initCoreSocketFunctions(){

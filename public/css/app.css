@@ -475,6 +475,7 @@ a {
   --faction-conquistadors: #e1a600;
   --faction-guerrillas: #44b200;
   --faction-parasites: #ff0043;
+  --faction-witches: #d127f4;
 }
 
 .faction-neutrals {
@@ -547,6 +548,10 @@ a {
 
 .faction-parasites {
   color: var(--faction-parasites);
+}
+
+.faction-witches {
+  color: var(--faction-witches);
 }
 
 .primary {

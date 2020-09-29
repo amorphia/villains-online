@@ -31,6 +31,7 @@
             icon(){
                 if( this.token ) return `/images/factions/${this.token.faction}/tokens/${this.token.type}.png`;
                 if( this.action === 'skill' ) return `/images/icons/skilled.png`;
+                if( this.action === 'magick' ) return `/images/icons/enchanted.png`;
             },
 
             xavier(){
@@ -48,6 +49,7 @@
                     case 'token': return `reveal token`;
                     case 'skill': return 'use skill';
                     case 'xavier': return `xavier token`;
+                    case 'magick': return 'use magick';
                 }
             }
         }

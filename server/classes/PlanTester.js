@@ -505,6 +505,19 @@ class PlanTester {
         return result;
     }
 
+    areasMostUnits( faction, areaCount ){
+        let factionAreasMostUnits = faction.areasMostUnits();
+        let result = factionAreasMostUnits >= areaCount;
+
+        if( this.debug ) console.log(
+            'areasMostUnits',
+            'areaCount req:', areaCount,
+            'factionAreasMostUnits:', factionAreasMostUnits,
+            'result:', result
+        );
+
+        return result;
+    }
 
     killsInEnemy( faction, killCount ){
         let factionKillsInEnemy = faction.killsInEnemy().length;
@@ -514,6 +527,33 @@ class PlanTester {
             'killsInEnemy',
             'killCount req:', killCount,
             'factionKillsInEnemy:', factionKillsInEnemy,
+            'result:', result
+        );
+
+        return result;
+    }
+
+
+    playRules( faction, count, mode = 'total' ){
+        let result;
+        let rulesPlayed = faction.rulesPlayed();
+
+        switch( mode ){
+            case 'total':
+                result = rulesPlayed.total >= count;
+                break;
+            case 'areas':
+                result = rulesPlayed.areas >= count;
+                break;
+            case 'stack':
+                result = rulesPlayed.stack >= count;
+                break;
+        }
+
+        if( this.debug ) console.log(
+            'playRules',
+            'count req:', count,
+            'rulesPlayed:', rulesPlayed,
             'result:', result
         );
 

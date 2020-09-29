@@ -187,6 +187,17 @@ let helpers = {
     },
 
 
+    canUseMagick( faction, area, factions ){
+
+        if( faction.data ) faction = faction.data;
+        if( area.data ) area = area.data;
+
+        if( faction.name !== 'witches') return;
+
+        if( faction.units.find( unit => this.unitInArea( unit, area ) && unit.flipped ) ) return true;
+
+    },
+
     canUseSkill( faction, area, factions ){
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
@@ -272,6 +283,35 @@ let helpers = {
                 && ( !options.basic || unit.basic )
                 && ( !options.type || options.type === unit.type )
                 && ( !options.notHidden || !unit.hidden );
+    },
+
+    areasMostUnits( faction, factions ){
+        if( faction.data ) faction = faction.data;
+        let mostUnits = {};
+
+        // cycle through each faction
+        Object.values( factions ).forEach( faction => {
+            let unitsInArea = {};
+
+            // make a list of how many units this faction in each area
+            faction.units.forEach( unit => {
+                if( this.unitInPlay( unit ) ){
+                    if( unitsInArea[unit.location] ) unitsInArea[unit.location]++;
+                    else unitsInArea[unit.location] = 1;
+                }
+            });
+
+            // compare this list of units per area to our list of most by area, if this faction has more than
+            // the existing entry (if any) it takes the top spot
+            for (const [key, value] of Object.entries( unitsInArea ) ) {
+                if( !mostUnits[key] || mostUnits[key].count < value ) mostUnits[key] = { faction : faction.name, count : value }
+            }
+        });
+
+        // convert most units object to array and filter out areas where we don't have the most units
+        mostUnits = Object.values( mostUnits ).filter( item => item.faction === faction.name );
+
+        return mostUnits.length;
     },
 
     enemyUnitsInArea( faction, area, factions, options = {} ){
@@ -651,6 +691,50 @@ let helpers = {
     hasKauImmunity( faction, area ){
         return faction.kau && faction.kau.location === area.name && !faction.kau.killed;
     },
+
+
+    /**
+     *
+     *  Others
+     *
+     */
+
+     rulesPlayed( faction, areas ){
+        if( faction.data ) faction = faction.data;
+
+        let rules = {
+            total : faction.cards.active.length,
+            areas : 0,
+            stack : 0,
+        };
+
+        let globalAreas = {};
+
+        for( let card of faction.cards.active ){
+            if( globalAreas[card.playedIn] ) globalAreas[card.playedIn]++;
+            else globalAreas[card.playedIn] = 1;
+        }
+
+        for( let area of Object.values( areas ) ){
+            let areaRules = area.cards.filter( card => card.owner === faction.name );
+            if( areaRules.length ) {
+                rules.total += areaRules.length;
+                if( globalAreas[area.name] ) globalAreas[area.name]++;
+                else globalAreas[area.name] = 1;
+            }
+        }
+
+        rules.areas = Object.keys( globalAreas ).length;
+        console.log( Object.keys( globalAreas ) );
+        globalAreas = Object.values( globalAreas );
+
+        if( globalAreas.length ){
+            rules.stack = globalAreas.reduce( (val, n) => val > n ? val : n );
+        }
+
+        return rules;
+    }
+
 
 };
 

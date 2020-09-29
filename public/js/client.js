@@ -2693,6 +2693,72 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'most-units-areas-focus',
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    focus: function focus() {
+      return _.areasMostUnits(this.shared.faction, this.shared.data.factions);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/RuleFocus.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/RuleFocus.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'rule-focus',
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    rules: function rules() {
+      return _.rulesPlayed(this.shared.faction, this.shared.data.areas);
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/SkillsFocus.vue?vue&type=script&lang=js&":
 /*!****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/SkillsFocus.vue?vue&type=script&lang=js& ***!
@@ -3766,6 +3832,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-controls',
   data: function data() {
@@ -3983,6 +4050,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
 //
 //
 //
@@ -5191,6 +5262,21 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-action',
   data: function data() {
@@ -5242,6 +5328,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.$set(this.xavier, 'placedToken', this.xavier.token);
       }
 
+      if (name === 'magick') {
+        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
+      }
+
       if (action.area) this.shared.event.emit('areaSelected', {
         name: action.area
       });
@@ -5263,7 +5353,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       if (!this.activeTokens.length) actions.pass = true; // can we skip?
 
-      if (this.shared.faction.hasOwnProperty('skips') && this.shared.faction.skips.used < this.shared.faction.skips.max) actions.skip = true; // can we declare ourselves locked?
+      if (this.shared.faction.hasOwnProperty('skips') && this.shared.faction.skips.used < this.shared.faction.skips.max) actions.skip = true; // can we magick?
+
+      if (this.useableMagick.length) actions.magick = this.useableMagick; // can we declare ourselves locked?
 
       if (!this.revealableTokens.length && this.activeTokens.length) actions.locked = true; // can we reveal an xavier token?
 
@@ -5284,6 +5376,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         case 'token':
           args = [this.action.token.id];
           break;
+
+        case 'magick':
+          args = [this.action.area];
+          break;
       }
 
       (_this$shared = this.shared).respond.apply(_this$shared, ['choose-action', this.action.name].concat(_toConsumableArray(args)));
@@ -5300,18 +5396,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     setSkipAction: function setSkipAction() {
       this.setAction('skip');
     },
-
-    /*
-    setSkillAction( area ){
-        this.setAction( 'skill', area );
-    },
-     setTokenAction( area ){
-        this.setAction( 'token', area );
-    },
-     setXavierAction(){
-        this.setAction( 'xavier' );
-    },
-    */
     firstUnrevealed: function firstUnrevealed(area) {
       if (typeof area === 'string') area = this.shared.data.areas[area];
       return _.firstUnrevealedToken(area);
@@ -5360,33 +5444,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         case 'xavier':
           message = "Reveal token on Xavier";
           break;
+
+        case 'magick':
+          message = "Use magick in the ".concat(this.area.name);
+          break;
       }
 
       return this.saveDisabled ? "Choose your action" : message;
     },
-
-    /*
-    message(){
-        if( !this.action ) return "Choose an action";
-         switch( this.action.name ){
-            case 'skill':
-                return "Choose a skill to activate";
-                break;
-            case 'token':
-                return "Choose a token to reveal";
-                break;
-            case 'xavier':
-                return "Reveal Xavier's token";
-                break;
-            case 'pass':
-                return "Declare yourself passed";
-                break;
-            case 'locked':
-                return "Skip your turn";
-                break;
-        }
-    },
-     */
     area: function area() {
       if (!this.action.area) return;
       return this.shared.data.areas[this.action.area];
@@ -5437,13 +5502,33 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         return _.unitReadyInArea(unit, _this3.area);
       });
     },
-    useableSkills: function useableSkills() {
+    flippedUnitsInArea: function flippedUnitsInArea() {
       var _this4 = this;
+
+      return this.shared.faction.units.filter(function (unit) {
+        return _.unitInArea(unit, _this4.area) && unit.flipped;
+      });
+    },
+    useableSkills: function useableSkills() {
+      var _this5 = this;
 
       var areas = [];
 
       _.forEach(this.shared.data.areas, function (area) {
-        if (_.canUseSkill(_this4.shared.faction, area, _this4.shared.data.factions)) {
+        if (_.canUseSkill(_this5.shared.faction, area, _this5.shared.data.factions)) {
+          areas.push(area.name);
+        }
+      });
+
+      return areas;
+    },
+    useableMagick: function useableMagick() {
+      var _this6 = this;
+
+      var areas = [];
+
+      _.forEach(this.shared.data.areas, function (area) {
+        if (_.canUseMagick(_this6.shared.faction, area, _this6.shared.data.factions)) {
           areas.push(area.name);
         }
       });
@@ -5950,6 +6035,69 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'choose-pod',
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    buttonMessage: function buttonMessage() {
+      return "Take ".concat(this.data.token.type, " action");
+    },
+    message: function message() {
+      return "Take a ".concat(this.data.token.type, " action in the ").concat(this.area.name, "?");
+    },
+    area: function area() {
+      return this.shared.data.areas[this.data.area];
+    },
+    data: function data() {
+      return this.shared.player.prompt.data;
+    }
+  },
+  methods: {
+    resolve: function resolve(activate) {
+      var data = {};
+      if (!activate) data.decline = true;
+      data = Object.assign({}, this.data, data);
+      this.shared.respond('choose-pod', data);
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseSkill.vue?vue&type=script&lang=js&":
 /*!******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseSkill.vue?vue&type=script&lang=js& ***!
@@ -6401,6 +6549,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-units',
   data: function data() {
@@ -6423,6 +6576,14 @@ __webpack_require__.r(__webpack_exports__);
         basic: this.data.basicOnly,
         notHidden: this.data.notHidden
       });
+    },
+    reserves: function reserves() {
+      var reserves = {};
+      if (!this.data.showReserves) return [];
+      this.shared.data.factions[this.data.showReserves].units.forEach(function (unit) {
+        if (unit.basic && _.unitInReserves(unit) && !reserves[unit.type]) reserves[unit.type] = unit;
+      });
+      return Object.values(reserves);
     },
     message: function message() {
       if (this.data.message) return this.data.message;
@@ -10326,6 +10487,13 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.game = null;
       this.shared.lobbyPlayers = {};
       this.shared.saveGames = [];
+      this.shared.actions = null;
+      this.shared.openSettings = false;
+      this.shared.action = null;
+      this.shared.card = null;
+      this.shared.token = null;
+      this.shared.showXavier = false;
+      this.shared.viewDiscard = false;
     },
     initCoreSocketFunctions: function initCoreSocketFunctions() {
       var _this4 = this;
@@ -10431,6 +10599,7 @@ __webpack_require__.r(__webpack_exports__);
     icon: function icon() {
       if (this.token) return "/images/factions/".concat(this.token.faction, "/tokens/").concat(this.token.type, ".png");
       if (this.action === 'skill') return "/images/icons/skilled.png";
+      if (this.action === 'magick') return "/images/icons/enchanted.png";
     },
     xavier: function xavier() {
       var _this = this;
@@ -10454,6 +10623,9 @@ __webpack_require__.r(__webpack_exports__);
 
         case 'xavier':
           return "xavier token";
+
+        case 'magick':
+          return 'use magick';
       }
     }
   }
@@ -10521,6 +10693,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.shared.actions.skill && this.shared.actions.skill.includes(this.area.name)) actions.push('skill');
       if (this.shared.actions.token && this.shared.actions.token.includes(this.area.name)) actions.push('token');
       if (this.shared.actions.xavier === this.area.name) actions.push('xavier');
+      if (this.shared.actions.magick && this.shared.actions.magick.includes(this.area.name)) actions.push('magick');
       return actions;
     }
   }
@@ -11552,7 +11725,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.game-controls {\n    font-size: 1.3rem;\n    height: 9vh;\n}\n.game-controls .loader-bar {\n    height: 3px;\n}\n.game-controls__faction {\n    font-size: 1.6rem;\n    width: 37.5%;\n}\n.game-controls__faction .player-hud__champion {\n    bottom: 0;\n}\n.game-controls__faction .game-controls__item {\n    color: var(--highlight-color);\n}\n.game-controls__faction i, .game-controls__button.scoreboard-text {\n    color: var(--primary-light-color);\n}\n.game-controls__buttons {\n    z-index: 2;\n    background-color: black;\n}\n.game-controls__item {\n    display: flex;\n    align-items: center;\n    padding: 0 .2em;\n    color: var(--primary-light-color);\n    cursor: pointer;\n}\n.game-controls .icon-ap:before, .game-controls .icon-pp:before {\n    bottom: 0;\n}\n.game-controls__button {\n    padding: 0 .5em;\n    font-size: 1.2rem;\n    color: var(--primary-light-color);\n}\n.game-controls__button.active {\n    color: var(--highlight-color);\n}\n.game-controls__button .note {\n    color: #8a1a6f;\n}\n.plan-focus {\n    font-size: .9em;\n    position: relative;\n    top: .1em;\n}\n", ""]);
+exports.push([module.i, "\n.game-controls {\n    font-size: 1.3rem;\n    height: 9vh;\n}\n.game-controls .loader-bar {\n    height: 3px;\n}\n.game-controls__faction {\n    font-size: 1.6rem;\n    width: 37.5%;\n}\n.game-controls__faction .player-hud__champion {\n    bottom: 0;\n}\n.game-controls__faction .game-controls__item {\n    color: var(--highlight-color);\n}\n.game-controls__faction i, .game-controls__button.scoreboard-text {\n    color: var(--primary-light-color);\n}\n.game-controls__buttons {\n    z-index: 2;\n    background-color: black;\n}\n.game-controls__item {\n    display: flex;\n    align-items: center;\n    padding: 0 .2em;\n    color: var(--primary-light-color);\n    cursor: pointer;\n}\n.game-controls .icon-ap:before, .game-controls .icon-pp:before {\n    bottom: 0;\n}\n.game-controls__button {\n    padding: 0 .5em;\n    font-size: 1.2rem;\n    color: var(--primary-light-color);\n}\n.game-controls__button.active {\n    color: var(--highlight-color);\n}\n.game-controls__button .note {\n    color: #8a1a6f;\n}\n.plan-focus {\n    font-size: .9em;\n    position: relative;\n    top: .1em;\n}\ni.game-controls__darkenergy {\n    color: var(--faction-witches);\n    margin-left: .15em;\n    font-size: .8em;\n}\n", ""]);
 
 // exports
 
@@ -11628,7 +11801,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.player-hud__stats-row {\n    color: var(--highlight-color);\n    font-size: .8em;\n    padding: .3em 0 0;\n}\n.player-hud__stats-row i {\n    background-color: transparent;\n    height: 1.2rem;\n    width: 1.2em;\n}\n.icon-ap:before, .icon-pp:before {\n    content: \"\";\n    background-image: url(/images/icons/ap.png);\n    background-size: contain;\n    background-position: center;\n    width: 1.3em;\n    height: 1.3em;\n    display: inline-block;\n    background-repeat: no-repeat;\n    position: relative;\n    bottom: .1em;\n}\n.icon-pp:before {\n    background-image: url(/images/icons/pp.png);\n}\n.player-hud {\n    margin: 0 .5em .35em;\n    background-color: rgba(255, 131, 213, 0.11);\n    box-shadow: 0px 0px 2px rgba(0,0,0,.5);\n    padding: .5em;\n    cursor: pointer;\n    font-size: 1.15rem;\n}\n.player-hud__pip {\n    display: inline-flex;\n    padding: .15em;\n    flex-grow: 1;\n}\n.player-hud__pip-content {\n    display: flex;\n    align-items: center;\n    flex-grow: 1;\n    justify-content: space-around;\n    background-color: rgba(0,0,0,.5);\n    padding: .1em .5em 0;\n    border-radius: .25em;\n    font-family: var(--primary-font);\n    color: var(--off-white);\n}\n.player-hud__pip-content__item {\n    display: flex;\n    align-items: baseline;\n}\n.player-hud__pip-content span {\n    font-size: 1.2em;\n    padding: 0 .2em;\n}\n.pip-icon {\n    color: var(--highlight-color);\n    font-size: 1em;\n}\n.player-hud__name {\n    font-family: var(--primary-font);\n    font-size: 1.1em;\n    line-height: 1.1;\n}\n.player-hud__faction {\n    font-family: var(--primary-font);\n    font-weight: 100;\n    color: var(--primary-light-color);\n}\n.player-hud__scores span {\n    font-family: var(--primary-font);\n    min-width: 1.2em;\n    text-align: center;\n    color: var(--highlight-color);\n}\n.player-hud__champion{\n    width: 30px;\n    background-size: cover;\n    background-repeat: no-repeat;\n    background-position: center;\n    position: relative;\n    bottom: .15em;\n    height: 30px;\n}\n.player-hud__champion-wrap {\n    padding-right: .3em;\n}\n.player-hud__title {\n    flex-basis: 0;\n    flex-shrink: 1;\n    overflow: hidden;\n}\n.player-hud__target {\n    background-size: cover;\n    background-position: center;\n    background-repeat: no-repeat;\n}\n.player-hud__target {\n    width: 100%;\n    font-size: .9em;\n    text-align: center;\n    box-shadow: inset 0px 0px 20px rgba(0,0,0,.7);\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    font-family: var(--primary-font);\n    text-shadow: 0px 0px 8px black, 0 0 4px black, 0 0 2px black;\n    height: 1.4rem;\n    line-height: 1.2rem;\n    border-radius: 3px;\n}\n.player-hud__target i {\n    line-height: .8;\n    margin-right: .2em;\n    color: var(--highlight-color);\n}\n.player-hud__message {\n    width: 100%;\n    font-size: .8em;\n    margin-bottom: .2em;\n    background-color: rgba(0,0,0,.3);\n}\n\n", ""]);
+exports.push([module.i, "\n.player-hud__stats-row {\n    color: var(--highlight-color);\n    font-size: .8em;\n    padding: .3em 0 0;\n}\n.player-hud__stats-row i {\n    background-color: transparent;\n    height: 1.2rem;\n    width: 1.2em;\n}\n.icon-ap:before, .icon-pp:before {\n    content: \"\";\n    background-image: url(/images/icons/ap.png);\n    background-size: contain;\n    background-position: center;\n    width: 1.3em;\n    height: 1.3em;\n    display: inline-block;\n    background-repeat: no-repeat;\n    position: relative;\n    bottom: .1em;\n}\n.icon-pp:before {\n    background-image: url(/images/icons/pp.png);\n}\n.player-hud {\n    margin: 0 .5em .35em;\n    background-color: rgba(255, 131, 213, 0.11);\n    box-shadow: 0px 0px 2px rgba(0,0,0,.5);\n    padding: .5em;\n    cursor: pointer;\n    font-size: 1.15rem;\n}\n.player-hud__pip {\n    display: inline-flex;\n    padding: .15em;\n    flex-grow: 1;\n}\n.player-hud__pip-content {\n    display: flex;\n    align-items: center;\n    flex-grow: 1;\n    justify-content: space-around;\n    background-color: rgba(0,0,0,.5);\n    padding: .1em .5em 0;\n    border-radius: .25em;\n    font-family: var(--primary-font);\n    color: var(--off-white);\n}\n.player-hud__pip-content__item {\n    display: flex;\n    align-items: baseline;\n}\n.player-hud__pip-content span {\n    font-size: 1.2em;\n    padding: 0 .2em;\n}\n.pip-icon {\n    color: var(--highlight-color);\n    font-size: 1em;\n}\n.player-hud__name {\n    font-family: var(--primary-font);\n    font-size: 1.1em;\n    line-height: 1.1;\n}\n.player-hud__faction {\n    font-family: var(--primary-font);\n    font-weight: 100;\n    color: var(--primary-light-color);\n}\n.player-hud__scores span {\n    font-family: var(--primary-font);\n    min-width: 1.2em;\n    text-align: center;\n    color: var(--highlight-color);\n}\n.player-hud__champion{\n    width: 30px;\n    background-size: cover;\n    background-repeat: no-repeat;\n    background-position: center;\n    position: relative;\n    bottom: .15em;\n    height: 30px;\n}\n.player-hud__champion-wrap {\n    padding-right: .3em;\n}\n.player-hud__title {\n    flex-basis: 0;\n    flex-shrink: 1;\n    overflow: hidden;\n}\n.player-hud__target {\n    background-size: cover;\n    background-position: center;\n    background-repeat: no-repeat;\n}\n.player-hud__target {\n    width: 100%;\n    font-size: .9em;\n    text-align: center;\n    box-shadow: inset 0px 0px 20px rgba(0,0,0,.7);\n    text-transform: uppercase;\n    letter-spacing: 1px;\n    font-family: var(--primary-font);\n    text-shadow: 0px 0px 8px black, 0 0 4px black, 0 0 2px black;\n    height: 1.4rem;\n    line-height: 1.2rem;\n    border-radius: 3px;\n}\n.player-hud__target i {\n    line-height: .8;\n    margin-right: .2em;\n    color: var(--highlight-color);\n}\n.player-hud__message {\n    width: 100%;\n    font-size: .8em;\n    margin-bottom: .2em;\n    background-color: rgba(0,0,0,.3);\n}\n.player-hud__darkenergy {\n    margin-left: -.15em;\n    margin-right: .15em;\n}\n\n", ""]);
 
 // exports
 
@@ -11905,6 +12078,25 @@ exports.push([module.i, "\n.choose-factions__faction.killer:before {\n    conten
 /*!**************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseHitman.vue?vue&type=style&index=0&lang=css& ***!
   \**************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.place-token{\n    min-width: 40rem;\n}\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=style&index=0&lang=css&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChoosePod.vue?vue&type=style&index=0&lang=css& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -52600,6 +52792,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=style&index=0&lang=css&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChoosePod.vue?vue&type=style&index=0&lang=css& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChoosePod.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseSkill.vue?vue&type=style&index=0&lang=css&":
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseSkill.vue?vue&type=style&index=0&lang=css& ***!
@@ -55274,6 +55496,84 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=template&id=590f028c&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=template&id=590f028c& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass:
+        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+    },
+    [
+      _vm._v("\n    areas with most units :"),
+      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/RuleFocus.vue?vue&type=template&id=2141eeec&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/RuleFocus.vue?vue&type=template&id=2141eeec& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass:
+        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+    },
+    [
+      _vm._v("\n    total :"),
+      _c("span", { staticClass: "highlight ml-2 mr-3" }, [
+        _vm._v(_vm._s(_vm.rules.total))
+      ]),
+      _vm._v("\n    areas :"),
+      _c("span", { staticClass: "highlight ml-2 mr-3" }, [
+        _vm._v(_vm._s(_vm.rules.areas))
+      ]),
+      _vm._v("\n    stack :"),
+      _c("span", { staticClass: "highlight ml-2 mr-3" }, [
+        _vm._v(_vm._s(_vm.rules.stack))
+      ])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/SkillsFocus.vue?vue&type=template&id=5fcdd884&":
 /*!********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/SkillsFocus.vue?vue&type=template&id=5fcdd884& ***!
@@ -56601,8 +56901,22 @@ var render = function() {
                 _vm._v(
                   _vm._s(
                     _vm.shared.faction.energy + _vm.shared.faction.resources
-                  ) + "\n            "
-                )
+                  ) + "\n                "
+                ),
+                _vm.shared.faction.hasOwnProperty("darkEnergy")
+                  ? _c(
+                      "i",
+                      {
+                        staticClass:
+                          "faction-witches game-controls__darkenergy",
+                        attrs: {
+                          title:
+                            "Dark Energy (may be spent to play action cards)"
+                        }
+                      },
+                      [_vm._v(_vm._s(_vm.shared.faction.darkEnergy))]
+                    )
+                  : _vm._e()
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "game-controls__item" }, [
@@ -57108,9 +57422,23 @@ var render = function() {
       _c("div", { staticClass: "player-hud__pip-content overflow-hidden" }, [
         _c("div", { staticClass: "player-hud__pip-content__item" }, [
           _c("i", { staticClass: "icon-money pip-icon" }),
+          _vm._v(" "),
           _c("span", [
             _vm._v(_vm._s(_vm.faction.energy + _vm.faction.resources))
-          ])
+          ]),
+          _vm._v(" "),
+          _vm.faction.hasOwnProperty("darkEnergy")
+            ? _c(
+                "i",
+                {
+                  staticClass: "faction-witches player-hud__darkenergy",
+                  attrs: {
+                    title: "Dark Energy (may be spent to play action cards)"
+                  }
+                },
+                [_vm._v(_vm._s(_vm.faction.darkEnergy))]
+              )
+            : _vm._e()
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "player-hud__pip-content__item" }, [
@@ -58372,6 +58700,38 @@ var render = function() {
                                 ],
                                 1
                               )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.action.name === "magick"
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "choose-action__skilled-units center-text"
+                                },
+                                [
+                                  _c("unit-row", {
+                                    attrs: {
+                                      units: _vm.flippedUnitsInArea,
+                                      allSelected: "true"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "width-100 choose-action__skill-ability"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                            Use your magick ability in this area?\n                        "
+                                      )
+                                    ]
+                                  )
+                                ],
+                                1
+                              )
                             : _vm._e()
                         ],
                         1
@@ -58883,6 +59243,87 @@ var render = function() {
                 }
               },
               [_vm._v("save")]
+            )
+          ])
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("player-prompt", { attrs: { classes: "" } }, [
+    _c("div", { staticClass: "place-token px-5" }, [
+      _c(
+        "div",
+        {
+          staticClass:
+            "width-100 d-flex justify-center flex-column align-center"
+        },
+        [
+          _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
+          _vm._v(" "),
+          _c(
+            "area-flipper",
+            { attrs: { areas: [_vm.area], index: "0" } },
+            [
+              _c("token-set", {
+                attrs: {
+                  tokens: [_vm.data.token],
+                  classes: "center-text",
+                  noBorder: "true"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("div", {}, [
+            _c(
+              "button",
+              {
+                staticClass: "button button-empty",
+                on: {
+                  click: function($event) {
+                    return _vm.resolve(false)
+                  }
+                }
+              },
+              [_vm._v("decline")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "button",
+                on: {
+                  click: function($event) {
+                    return _vm.resolve(true)
+                  }
+                }
+              },
+              [_vm._v(_vm._s(_vm.buttonMessage))]
             )
           ])
         ],
@@ -59447,6 +59888,21 @@ var render = function() {
                   })
                 }),
                 0
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.data.showReserves
+            ? _c(
+                "div",
+                { staticClass: "mt-3" },
+                [
+                  _c("div", { staticClass: "prompt-question center-text" }, [
+                    _vm._v("The Parasites can infect these unit types")
+                  ]),
+                  _vm._v(" "),
+                  _c("unit-row", { attrs: { units: _vm.reserves } })
+                ],
+                1
               )
             : _vm._e(),
           _vm._v(" "),
@@ -77421,6 +77877,8 @@ var map = {
 	"./Focus/KillAreasFocus.vue": "./resources/js/components/Focus/KillAreasFocus.vue",
 	"./Focus/KillTypesFocus.vue": "./resources/js/components/Focus/KillTypesFocus.vue",
 	"./Focus/KillsFocus.vue": "./resources/js/components/Focus/KillsFocus.vue",
+	"./Focus/MostUnitsAreasFocus.vue": "./resources/js/components/Focus/MostUnitsAreasFocus.vue",
+	"./Focus/RuleFocus.vue": "./resources/js/components/Focus/RuleFocus.vue",
 	"./Focus/SkillsFocus.vue": "./resources/js/components/Focus/SkillsFocus.vue",
 	"./Focus/TokenFocus.vue": "./resources/js/components/Focus/TokenFocus.vue",
 	"./Focus/UnitAreasFocus.vue": "./resources/js/components/Focus/UnitAreasFocus.vue",
@@ -77467,6 +77925,7 @@ var map = {
 	"./Prompts/ChooseCard.vue": "./resources/js/components/Prompts/ChooseCard.vue",
 	"./Prompts/ChooseFactions.vue": "./resources/js/components/Prompts/ChooseFactions.vue",
 	"./Prompts/ChooseHitman.vue": "./resources/js/components/Prompts/ChooseHitman.vue",
+	"./Prompts/ChoosePod.vue": "./resources/js/components/Prompts/ChoosePod.vue",
 	"./Prompts/ChooseSkill.vue": "./resources/js/components/Prompts/ChooseSkill.vue",
 	"./Prompts/ChooseSpy.vue": "./resources/js/components/Prompts/ChooseSpy.vue",
 	"./Prompts/ChooseTarget.vue": "./resources/js/components/Prompts/ChooseTarget.vue",
@@ -79049,6 +79508,144 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_KillsFocus_vue_vue_type_template_id_12f47825___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_KillsFocus_vue_vue_type_template_id_12f47825___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/MostUnitsAreasFocus.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/components/Focus/MostUnitsAreasFocus.vue ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MostUnitsAreasFocus_vue_vue_type_template_id_590f028c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MostUnitsAreasFocus.vue?vue&type=template&id=590f028c& */ "./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=template&id=590f028c&");
+/* harmony import */ var _MostUnitsAreasFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MostUnitsAreasFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _MostUnitsAreasFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MostUnitsAreasFocus_vue_vue_type_template_id_590f028c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MostUnitsAreasFocus_vue_vue_type_template_id_590f028c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/MostUnitsAreasFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MostUnitsAreasFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./MostUnitsAreasFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MostUnitsAreasFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=template&id=590f028c&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=template&id=590f028c& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MostUnitsAreasFocus_vue_vue_type_template_id_590f028c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./MostUnitsAreasFocus.vue?vue&type=template&id=590f028c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MostUnitsAreasFocus.vue?vue&type=template&id=590f028c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MostUnitsAreasFocus_vue_vue_type_template_id_590f028c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MostUnitsAreasFocus_vue_vue_type_template_id_590f028c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/RuleFocus.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/Focus/RuleFocus.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _RuleFocus_vue_vue_type_template_id_2141eeec___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RuleFocus.vue?vue&type=template&id=2141eeec& */ "./resources/js/components/Focus/RuleFocus.vue?vue&type=template&id=2141eeec&");
+/* harmony import */ var _RuleFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RuleFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/RuleFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _RuleFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _RuleFocus_vue_vue_type_template_id_2141eeec___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _RuleFocus_vue_vue_type_template_id_2141eeec___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/RuleFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/RuleFocus.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/Focus/RuleFocus.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RuleFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./RuleFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/RuleFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RuleFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/RuleFocus.vue?vue&type=template&id=2141eeec&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/Focus/RuleFocus.vue?vue&type=template&id=2141eeec& ***!
+  \************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RuleFocus_vue_vue_type_template_id_2141eeec___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./RuleFocus.vue?vue&type=template&id=2141eeec& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/RuleFocus.vue?vue&type=template&id=2141eeec&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RuleFocus_vue_vue_type_template_id_2141eeec___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RuleFocus_vue_vue_type_template_id_2141eeec___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -82690,6 +83287,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseHitman_vue_vue_type_template_id_0dc5232e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseHitman_vue_vue_type_template_id_0dc5232e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChoosePod.vue":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/Prompts/ChoosePod.vue ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChoosePod.vue?vue&type=template&id=ab793f9a& */ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a&");
+/* harmony import */ var _ChoosePod_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChoosePod.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ChoosePod_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ChoosePod.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _ChoosePod_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Prompts/ChoosePod.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChoosePod.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=style&index=0&lang=css&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/ChoosePod.vue?vue&type=style&index=0&lang=css& ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChoosePod.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a& ***!
+  \**************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChoosePod.vue?vue&type=template&id=ab793f9a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -88222,6 +88906,20 @@ window.App.state = {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var helpers = {
   /***
    *
@@ -88394,24 +89092,34 @@ var helpers = {
     if (typeof area !== 'string') area = area.name;
     return faction.usedSkills.includes(area);
   },
-  canUseSkill: function canUseSkill(faction, area, factions) {
+  canUseMagick: function canUseMagick(faction, area, factions) {
     var _this2 = this;
+
+    if (faction.data) faction = faction.data;
+    if (area.data) area = area.data;
+    if (faction.name !== 'witches') return;
+    if (faction.units.find(function (unit) {
+      return _this2.unitInArea(unit, area) && unit.flipped;
+    })) return true;
+  },
+  canUseSkill: function canUseSkill(faction, area, factions) {
+    var _this3 = this;
 
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
     if (this.hasUsedSkill(faction, area)) return;
     if (faction.units.find(function (unit) {
-      return _this2.unitReadyInArea(unit, area);
+      return _this3.unitReadyInArea(unit, area);
     })) return true; // Zero Day special ability
 
     if (faction.name === 'hackers' && faction.units.find(function (unit) {
-      return _this2.unitInArea(unit, area) && unit.type === 'champion';
+      return _this3.unitInArea(unit, area) && unit.type === 'champion';
     })) {
       for (var _i = 0, _Object$values = Object.values(factions); _i < _Object$values.length; _i++) {
         var fac = _Object$values[_i];
         if (fac.name === faction.name) continue;
         if (fac.units.find(function (unit) {
-          return _this2.unitReadyInArea(unit, area) && unit.basic;
+          return _this3.unitReadyInArea(unit, area) && unit.basic;
         })) return true;
       }
     }
@@ -88436,13 +89144,13 @@ var helpers = {
    *
    */
   factionUnitsInArea: function factionUnitsInArea(faction, area) {
-    var _this3 = this;
+    var _this4 = this;
 
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (faction.data) faction = faction.data;
     if (typeof area !== 'string') area = area.name;
     return faction.units.filter(function (unit) {
-      return _this3.unitInArea(unit, area, options);
+      return _this4.unitInArea(unit, area, options);
     });
   },
   hasUnitsInArea: function hasUnitsInArea(faction, area) {
@@ -88454,13 +89162,13 @@ var helpers = {
     });
   },
   factionsWithUnitsInArea: function factionsWithUnitsInArea(factions, area, args) {
-    var _this4 = this;
+    var _this5 = this;
 
     if (typeof area !== 'string') area = area.name;
     var factionsWithUnits = [];
 
     _.forEach(factions, function (faction, name) {
-      if (_this4.hasUnitsInArea(faction, area, {
+      if (_this5.hasUnitsInArea(faction, area, {
         basic: args.basic,
         notHidden: args.notHidden
       }) && args.exclude !== name) {
@@ -88478,6 +89186,39 @@ var helpers = {
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (typeof area !== 'string') area = area.name;
     return unit.location === area && !unit.killed && (!options.basic || unit.basic) && (!options.type || options.type === unit.type) && (!options.notHidden || !unit.hidden);
+  },
+  areasMostUnits: function areasMostUnits(faction, factions) {
+    var _this6 = this;
+
+    if (faction.data) faction = faction.data;
+    var mostUnits = {}; // cycle through each faction
+
+    Object.values(factions).forEach(function (faction) {
+      var unitsInArea = {}; // make a list of how many units this faction in each area
+
+      faction.units.forEach(function (unit) {
+        if (_this6.unitInPlay(unit)) {
+          if (unitsInArea[unit.location]) unitsInArea[unit.location]++;else unitsInArea[unit.location] = 1;
+        }
+      }); // compare this list of units per area to our list of most by area, if this faction has more than
+      // the existing entry (if any) it takes the top spot
+
+      for (var _i2 = 0, _Object$entries = Object.entries(unitsInArea); _i2 < _Object$entries.length; _i2++) {
+        var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
+            key = _Object$entries$_i[0],
+            value = _Object$entries$_i[1];
+
+        if (!mostUnits[key] || mostUnits[key].count < value) mostUnits[key] = {
+          faction: faction.name,
+          count: value
+        };
+      }
+    }); // convert most units object to array and filter out areas where we don't have the most units
+
+    mostUnits = Object.values(mostUnits).filter(function (item) {
+      return item.faction === faction.name;
+    });
+    return mostUnits.length;
   },
   enemyUnitsInArea: function enemyUnitsInArea(faction, area, factions) {
     var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
@@ -88504,11 +89245,11 @@ var helpers = {
     return units;
   },
   unitsInPlay: function unitsInPlay(faction) {
-    var _this5 = this;
+    var _this7 = this;
 
     if (faction.data) faction = faction.data;
     return faction.units.filter(function (unit) {
-      return _this5.unitInPlay(unit);
+      return _this7.unitInPlay(unit);
     });
   },
   unitInReserves: function unitInReserves(unit) {
@@ -88535,7 +89276,7 @@ var helpers = {
    *
    */
   eachInfluenceInArea: function eachInfluenceInArea(area, factions, withZeros) {
-    var _this6 = this;
+    var _this8 = this;
 
     var influences = [];
     if (area.owner === 'neutral') influences.push({
@@ -88543,7 +89284,7 @@ var helpers = {
       influence: 1
     });
     this.forEach(factions, function (faction) {
-      var influence = _this6.influence(faction, area, factions);
+      var influence = _this8.influence(faction, area, factions);
 
       if (withZeros || influence) influences.push({
         faction: faction.name,
@@ -88576,7 +89317,7 @@ var helpers = {
     return influence;
   },
   unitInfluence: function unitInfluence(faction, area) {
-    var _this7 = this;
+    var _this9 = this;
 
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
@@ -88586,7 +89327,7 @@ var helpers = {
     if (!this.shouldStandDown(faction, area)) {
       if (faction.data) faction = faction.data;
       faction.units.forEach(function (unit) {
-        if (_this7.unitInArea(unit, area)) {
+        if (_this9.unitInArea(unit, area)) {
           influence += unit.influence;
           if (shouldRiseUp && unit.type === 'patsy') influence++;
         }
@@ -88617,7 +89358,7 @@ var helpers = {
     return unit.killed === faction && unit.location === area;
   },
   areaExterminated: function areaExterminated(area, factions) {
-    var _this8 = this;
+    var _this10 = this;
 
     if (area.data) area = area.data;
 
@@ -88631,7 +89372,7 @@ var helpers = {
     _.forEach(factions, function (faction, name) {
       if (faction.data) faction = faction.data;
       if (_.find(faction.units, function (unit) {
-        return _this8.unitInArea(unit, area);
+        return _this10.unitInArea(unit, area);
       })) factionsWithUnitsHere.push(name);
     });
 
@@ -88701,7 +89442,7 @@ var helpers = {
     return Object.keys(types).length ? types : false;
   },
   killsInArea: function killsInArea(factionName, areaName, factions) {
-    var _this9 = this;
+    var _this11 = this;
 
     if (typeof factionName !== 'string') factionName = factionName.name;
     if (typeof areaName !== 'string') areaName = areaName.name;
@@ -88709,7 +89450,7 @@ var helpers = {
     this.forEach(factions, function (faction, name) {
       if (name === factionName) return;
       kills += faction.units.filter(function (unit) {
-        return _this9.factionKilledUnitHere(factionName, unit, areaName);
+        return _this11.factionKilledUnitHere(factionName, unit, areaName);
       }).length;
     });
     return kills;
@@ -88820,7 +89561,7 @@ var helpers = {
     }).length;
   },
   policePayoffs: function policePayoffs(faction, area, units) {
-    var _this10 = this;
+    var _this12 = this;
 
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
@@ -88829,8 +89570,8 @@ var helpers = {
     _.forEach(area.cards, function (card) {
       if (card["class"] === 'police-payoff' // if there is a police payoff here
       && card.owner !== faction.name // which we don't own
-      && !_this10.hasKauImmunity(faction, area) // and we don't already have kau immunity in this area
-      && !_this10.find(units, function (unit) {
+      && !_this12.hasKauImmunity(faction, area) // and we don't already have kau immunity in this area
+      && !_this12.find(units, function (unit) {
         return unit.type === 'champion' && unit.faction === 'aliens';
       })) // and we aren't deploying kau
         {
@@ -88842,6 +89583,59 @@ var helpers = {
   },
   hasKauImmunity: function hasKauImmunity(faction, area) {
     return faction.kau && faction.kau.location === area.name && !faction.kau.killed;
+  },
+
+  /**
+   *
+   *  Others
+   *
+   */
+  rulesPlayed: function rulesPlayed(faction, areas) {
+    if (faction.data) faction = faction.data;
+    var rules = {
+      total: faction.cards.active.length,
+      areas: 0,
+      stack: 0
+    };
+    var globalAreas = {};
+
+    var _iterator = _createForOfIteratorHelper(faction.cards.active),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var card = _step.value;
+        if (globalAreas[card.playedIn]) globalAreas[card.playedIn]++;else globalAreas[card.playedIn] = 1;
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+
+    for (var _i3 = 0, _Object$values2 = Object.values(areas); _i3 < _Object$values2.length; _i3++) {
+      var area = _Object$values2[_i3];
+      var areaRules = area.cards.filter(function (card) {
+        return card.owner === faction.name;
+      });
+
+      if (areaRules.length) {
+        rules.total += areaRules.length;
+        if (globalAreas[area.name]) globalAreas[area.name]++;else globalAreas[area.name] = 1;
+      }
+    }
+
+    rules.areas = Object.keys(globalAreas).length;
+    console.log(Object.keys(globalAreas));
+    globalAreas = Object.values(globalAreas);
+
+    if (globalAreas.length) {
+      rules.stack = globalAreas.reduce(function (val, n) {
+        return val > n ? val : n;
+      });
+    }
+
+    return rules;
   }
 };
 module.exports = helpers;

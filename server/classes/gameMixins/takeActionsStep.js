@@ -90,6 +90,19 @@ let obj = {
         this.advancePlayer();
     },
 
+    async takeMagickAction( player, areaName ){
+        let faction = player.faction();
+        let area = this.areas[areaName];
+
+        try {
+            await faction.magickAction( area );
+        } catch( error ){
+            console.error( error );
+        }
+
+        this.advancePlayer();
+    },
+
     async takeSkillAction( player, areaName ){
         let area = this.areas[areaName];
         let faction = player.faction();

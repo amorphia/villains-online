@@ -41,6 +41,7 @@ class Faction {
         spyAll : false,
         usedSkills : [],
         tokenSpy : null,
+        areasCapturedThisTurn : [],
 
         // objects
         plans : {
@@ -176,7 +177,7 @@ class Faction {
 
     godMode(){
         console.log( 'god mode enabled' );
-        this.data.cardDraw = 34;
+        this.data.cardDraw = 17;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;
     }
@@ -190,6 +191,7 @@ class Faction {
     onAfterReveal(){}
     onControlArea(){}
     onAfterBattle(){}
+    onAfterActivateToken(){}
     onAfterCombatStep(){}
     onAfterSkill(){}
     onBeforeSkill(){}
@@ -222,6 +224,7 @@ class Faction {
         this.data.cards.active.forEach( card => {
             this.game().cards[card.class].clear( this );
             card.owner = null;
+            card.playedIn = null;
         });
 
         let cards = this.data.cards.active.splice( 0 );
@@ -234,9 +237,6 @@ class Faction {
             this.data.cards.target,
             this.game().deck.discard
         );
-
-        // reset dead units
-        this.cleanUpKilled();
 
         // reset used skills
         this.data.usedSkills = [];
@@ -253,6 +253,12 @@ class Faction {
         } catch( error ){
             console.error( error );
         }
+
+        // reset dead units
+        this.cleanUpKilled();
+
+        // clear captured this turn
+        this.data.areasCapturedThisTurn = [];
     }
 
     cleanUpKilled(){
@@ -334,6 +340,9 @@ class Faction {
                 && !item.killed
         );
 
+        if( !replacement ) return this.game().message({ faction : this, message: "Unable to replace unit", class : 'warning' });
+
+
         // replace unit
         replacement.location = unit.location;
         if( unit.ready ) {
@@ -402,10 +411,21 @@ class Faction {
         });
     }
 
-    payCost( n, announce = false ){
+    payCost( n, announce = false, type = null ){
         if( !n ) return;
 
         let message = `Pay xC${n}x`;
+
+        if( this.data.darkEnergy && type === 'card' ){
+            if( this.data.darkEnergy >= n ){
+                this.data.darkEnergy -= n;
+                n = 0;
+            } else {
+                n -= this.data.darkEnergy;
+                this.data.darkEnergy = 0;
+            }
+        }
+
         if( this.data.energy >= n ){
             this.data.energy -= n;
         } else {
@@ -457,7 +477,7 @@ class Faction {
         this.data.units.forEach( unit => {
             if( _.unitInPlay( unit ) && unit.skilled ) unit.ready = true;
 
-            if( controlsUniversity && unit.type === 'patsy' ){
+            if( controlsUniversity && unit.type === 'patsy' && _.unitInPlay( unit ) ){
                 unit.ready = true;
             }
         });
@@ -497,6 +517,8 @@ class Faction {
 
 
     captureEnemyMarker( area ){
+        this.data.areasCapturedThisTurn.push( area.name );
+
         if( area.data.owner
             && area.data.owner !== this.name
             && this.data.captured.current < this.data.captured.max

@@ -19,8 +19,14 @@ let obj = {
         }
 
         if( output && output.declined ){
-            this.game().declineToken( this.playerId, args.token, true );
+            if( !args.pod ) this.game().declineToken( this.playerId, args.token, true );
             return;
+        }
+
+        if( args.pod ) return;
+
+        for( let faction of Object.values( this.game().factions ) ){
+            await faction.onAfterActivateToken( args.token );
         }
 
         this.game().advancePlayer();
@@ -47,7 +53,9 @@ let obj = {
         if( data.decline ) return { declined : true };
 
         let card = this.game().objectMap[ data.cardId ];
-        this.payCost( data.cost );
+
+        this.payCost( data.cost, false, 'card' );
+
         this.placeCardInProperArray( card, args.area );
 
         let message = `Pay xC${data.cost}x to play <span class="highlight">${ card.name }</span>`;
@@ -71,6 +79,7 @@ let obj = {
             card.owner = this.name;
             target = area.data.cards;
         } else {
+            card.playedIn = area.name;
             target = this.data.cards.active;
         }
 

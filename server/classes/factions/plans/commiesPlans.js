@@ -59,8 +59,8 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'influenceInAreas', args : [4,3] },
-                    { test : 'killUnits', args : [5] },
+                    { test : 'influenceInAreas', args : [5,2] },
+                    { test : 'killUnits', args : [4] },
                 ],
                 value : 2
             },

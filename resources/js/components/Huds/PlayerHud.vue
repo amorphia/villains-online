@@ -27,7 +27,11 @@
             </div>
 
         <div class="player-hud__pip-content overflow-hidden">
-            <div class="player-hud__pip-content__item"><i class="icon-money pip-icon"></i><span>{{ (faction.energy + faction.resources) }}</span></div>
+            <div class="player-hud__pip-content__item">
+                <i class="icon-money pip-icon"></i>
+                <span>{{ (faction.energy + faction.resources) }}</span>
+                <i v-if="faction.hasOwnProperty('darkEnergy')"  title="Dark Energy (may be spent to play action cards)" class="faction-witches player-hud__darkenergy">{{ faction.darkEnergy }}</i>
+            </div>
             <div class="player-hud__pip-content__item"><i class="icon-cards pip-icon"></i><span>{{ faction.cards.hand.length }}</span></div>
             <div class="player-hud__pip-content__item "><i class="icon-flag pip-icon"></i><span class="ellipses">{{ faction.captured.current }} / {{ faction.captured.max }}</span></div>
         </div>
@@ -227,6 +231,11 @@
         font-size: .8em;
         margin-bottom: .2em;
         background-color: rgba(0,0,0,.3);
+    }
+
+    .player-hud__darkenergy {
+        margin-left: -.15em;
+        margin-right: .15em;
     }
 
 </style>

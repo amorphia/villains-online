@@ -56,7 +56,7 @@
                 if( this.shared.actions.skill && this.shared.actions.skill.includes( this.area.name ) ) actions.push( 'skill' );
                 if( this.shared.actions.token && this.shared.actions.token.includes( this.area.name ) ) actions.push( 'token' );
                 if( this.shared.actions.xavier === this.area.name ) actions.push( 'xavier' );
-
+                if( this.shared.actions.magick && this.shared.actions.magick.includes( this.area.name ) ) actions.push( 'magick' );
                 return actions;
             },
         }

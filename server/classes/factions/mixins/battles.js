@@ -6,7 +6,7 @@ let obj = {
         if( typeof area !== 'string' ) area = area.name;
 
         // find valid players
-        let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name, notHidden : args.notHidden });
+        let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name, notHidden : args.notHidden, basic : args.basic });
 
         // no enemies with units in the from location
         if( targetFactions.length === 0 ){
@@ -306,6 +306,13 @@ let obj = {
 
     async battleToken( args ) {
         await this.game().battle( args.area );
+
+        if( args.pod ) return;
+
+        for( let faction of Object.values( this.game().factions ) ){
+            await faction.onAfterActivateToken( args.token );
+        }
+
         this.game().advancePlayer();
     }
 

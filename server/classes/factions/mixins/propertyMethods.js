@@ -185,6 +185,11 @@ let mixin = {
     },
 
 
+    areasMostUnits(){
+        return _.areasMostUnits( this, this.game().data.factions );
+    },
+
+
     /**
      *
      *
@@ -340,8 +345,18 @@ let mixin = {
         if( this.data.bonusDice ) mods.push( { type : 'bonusDice', text : `Units gain +${this.data.bonusDice} extra dice`, val : this.data.bonusDice });
 
         return this.factionCombatMods( mods, area );
-    }
+    },
 
+
+    /**
+     *
+     * MISC
+     *
+     */
+
+    rulesPlayed(){
+        return _.rulesPlayed( this, this.game().data.areas );
+    }
 };
 
 module.exports = mixin;

@@ -12,9 +12,10 @@ let Vampires = require( './factions/Vampires' );
 let Society = require( './factions/Society' );
 let Hackers = require( './factions/Hackers' );
 let Ninjas = require( './factions/Ninjas' );
-//let Parasites = require( './factions/Parasites' );
+let Parasites = require( './factions/Parasites' );
 let Conquistadors = require( './factions/Conquistadors' );
 let Guerrillas = require( './factions/Guerrillas' );
+let Witches = require( './factions/Witches' );
 
 module.exports = {
     mutants : Mutants,
@@ -31,7 +32,8 @@ module.exports = {
     society : Society,
     ninjas : Ninjas,
     hackers : Hackers,
-    //parasites : Parasites,
+    parasites : Parasites,
     conquistadors : Conquistadors,
     guerrillas : Guerrillas,
+    witches : Witches,
 };
