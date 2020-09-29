@@ -499,15 +499,13 @@ let helpers = {
 
         if( areaLeaders ){
             Object.keys( areas ).forEach( areaName => {
-                if( areaLeaders[areaName] !== faction.name ) enemyAreas.push( areaName );
+                if( areaLeaders[areaName] && areaLeaders[areaName] !== faction.name ) enemyAreas.push( areaName );
             });
         } else {
             Object.values( areas ).forEach( area => {
-                if( area.owner !== faction.name ) enemyAreas.push( area.name );
+                if( area.owner && area.owner !== faction.name ) enemyAreas.push( area.name );
             });
         }
-
-        console.log( 'enemyAreas', enemyAreas );
 
         return this.factionKills( faction, factions ).filter( unit => enemyAreas.includes( unit.location ) );
     },

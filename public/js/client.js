@@ -10597,7 +10597,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     icon: function icon() {
-      if (this.token) return "/images/factions/".concat(this.token.faction, "/tokens/").concat(this.token.type, ".png");
+      if (this.token) return "/images/factions/".concat(this.token.faction, "/tokens/").concat(this.token.name, ".png");
       if (this.action === 'skill') return "/images/icons/skilled.png";
       if (this.action === 'magick') return "/images/icons/enchanted.png";
     },
@@ -89413,15 +89413,14 @@ var helpers = {
 
     if (areaLeaders) {
       Object.keys(areas).forEach(function (areaName) {
-        if (areaLeaders[areaName] !== faction.name) enemyAreas.push(areaName);
+        if (areaLeaders[areaName] && areaLeaders[areaName] !== faction.name) enemyAreas.push(areaName);
       });
     } else {
       Object.values(areas).forEach(function (area) {
-        if (area.owner !== faction.name) enemyAreas.push(area.name);
+        if (area.owner && area.owner !== faction.name) enemyAreas.push(area.name);
       });
     }
 
-    console.log('enemyAreas', enemyAreas);
     return this.factionKills(faction, factions).filter(function (unit) {
       return enemyAreas.includes(unit.location);
     });
