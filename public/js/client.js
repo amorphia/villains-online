@@ -59074,10 +59074,10 @@ var render = function() {
         { staticClass: "factions width-65 height-100 p-5 d-flex align-center" },
         [
           _c("div", { staticClass: "choose-factions__faction-container" }, [
-            _c("div", { staticClass: "choose-factions__faction-list pb-4" }, [
+            _c("div", { staticClass: "choose-factions__faction-list pb-3" }, [
               _c(
                 "div",
-                { staticClass: "choose-factions__basic-factions mb-4 pr-3" },
+                { staticClass: "choose-factions__basic-factions pr-3" },
                 _vm._l(_vm.basicFactions, function(faction) {
                   return _c("faction-choice", {
                     key: faction.name,

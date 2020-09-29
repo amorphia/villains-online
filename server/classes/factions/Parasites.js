@@ -39,12 +39,11 @@ class Parasites extends Faction {
                 basic: false,
                 influence: 2,
                 attack: [],
-                cost: 1,
-                toughness : true,
-                flipped : false,
+                cost: 0,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
+                onKilled: 'returnUnitToReserves'
             }
         };
     }
@@ -123,11 +122,6 @@ class Parasites extends Faction {
     async onAfterBattle( combat ) {
         let firstHost = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, combat.area ) );
         if (!firstHost) return;
-
-        if( firstHost.flipped ){
-            firstHost.flipped = false;
-            this.game().message({ faction : this, message: `The First Host heals itself` });
-        }
 
         for( let i = 0; i < this.data.hostInfect; i++ ){
             await this.infect( combat.area );

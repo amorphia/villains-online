@@ -23,9 +23,9 @@
         </div>
         <div class="factions width-65 height-100 p-5 d-flex align-center">
             <div class="choose-factions__faction-container">
-                <div class="choose-factions__faction-list pb-4">
+                <div class="choose-factions__faction-list pb-3">
 
-                    <div class="choose-factions__basic-factions mb-4 pr-3">
+                    <div class="choose-factions__basic-factions pr-3">
                         <faction-choice
                             v-for="faction in basicFactions"
                             @clicked="e => selectedFaction = e"
