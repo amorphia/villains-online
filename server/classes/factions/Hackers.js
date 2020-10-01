@@ -17,7 +17,7 @@ class Hackers extends Faction {
             { ap : 1, cardDraw : 1 },
             { ap : 1 },
             { ap : 1 },
-            { ap : 1 }
+            { ap : 2 }
         ];
 
 
