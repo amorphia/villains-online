@@ -178,7 +178,7 @@ class Society extends Faction {
     }
 
     canActivateHypnosis( token, area ) {
-        return this.potentialHypnosisTypes( area ).length && this.money() >= 1;
+        return this.potentialHypnosisTypes( area ).length;
     }
 
     canActivateWordOfCommand( token, area ) {
