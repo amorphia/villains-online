@@ -11,7 +11,8 @@ class Parasites extends Faction {
         this.data.name = this.name;
         this.data.title = "The Tau Ceti Parasites";
         this.data.focus = 'most-units-areas-focus';
-        this.data.hostInfect = 1;
+        this.data.playersToInfect = 1;
+        this.sacrificeAction = null;
 
 
         // tokens
@@ -25,14 +26,14 @@ class Parasites extends Faction {
         };
 
         // units
-        this.units['goon'].count = 7;
-        this.units['talent'].count = 6;
-        this.units['mole'].count = 7;
-        this.units['patsy'].count = 7;
+        this.units['goon'].count = 8;
+        this.units['talent'].count = 7;
+        this.units['mole'].count = 8;
+        this.units['patsy'].count = 9;
 
 
         this.units['champion'] = {
-            count: 1,
+            count: 2,
             data: {
                 name: "Host",
                 type: 'champion',
@@ -43,7 +44,9 @@ class Parasites extends Faction {
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                onKilled: 'returnUnitToReserves'
+                onKilled: 'returnUnitToReserves',
+                onMove: 'hostSacrifice',
+                onDeploy : 'hostSacrifice'
             }
         };
     }
@@ -51,14 +54,9 @@ class Parasites extends Faction {
     factionCombatMods( mods, area ) {
         if ( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ) {
 
-            let countWord = 'once';
-
-            if( this.data.hostInfect === 2 ) countWord = 'twice';
-            if( this.data.hostInfect === 3 ) countWord = 'three times';
-
             mods.push({
                 type: 'hostInfect',
-                text: `If the First Host survives this combat the Parasites infect this area ${countWord}`
+                text: `If the First Host survives this combat the Parasites infect this area`
             });
         }
 
@@ -66,51 +64,76 @@ class Parasites extends Faction {
     }
 
     processUpgrade( n ) {
-        this.data.hostInfect = n + 1;
+        this.data.playersToInfect = n + 1;
+    }
+
+
+    async hostSacrifice( event ){
+        let hostsInArea = this.data.units.filter( unit => unit.type === 'champion' && _.unitInArea( unit, event.unit.location) );
+        if( hostsInArea.length <= 1 ) return;
+
+        this.game().message({ faction : this, message: "Two hosts cannot survive in the same area, one whithers and dies", class : 'warning' });
+        await this.game().killUnit( event.unit, this );
     }
 
 
     async infect( area ){
-        console.log( 'infecting' );
-        let player, data, targetFaction, message = `Choose player to infect`;
+        let player, data, targetFaction;
 
-        try {
-            targetFaction = await this.selectEnemyPlayerWithUnitsInArea( area, message, { basic : true } );
-        } catch( error ){
-            console.error( error );
+        let factionsToExclude = [];
+
+        for( let i = 0; i < this.data.playersToInfect; i++ ) {
+
+            console.log( 'factionsToExclude', factionsToExclude );
+
+            try {
+                targetFaction = await this.selectEnemyPlayerWithUnitsInArea( area, 'Choose player to infect', { basic: true, exclude : factionsToExclude });
+            } catch (error) {
+                console.error(error);
+            }
+
+            if ( !targetFaction ) {
+                this.game().message({
+                    faction: this,
+                    message: "No victims for The Parasites to Infect",
+                    class: 'warning'
+                });
+                return;
+            }
+
+            factionsToExclude.push( targetFaction.name );
+
+            let message = `<span class="faction-${targetFaction.name}">the ${targetFaction.name}</span> must choose a unit to become infected`;
+            this.game().message({ faction: targetFaction, message: message });
+
+            let enemyUnits = _.factionUnitsInArea(targetFaction, area, {basic: true});
+            let unit;
+
+            // player chooses unit to be replaced
+            if ( enemyUnits.length !== 1 ){
+                [player, data] = await this.game().promise({
+                    players: targetFaction.playerId,
+                    name: 'choose-units',
+                    data: {
+                        count: 1,
+                        basicOnly: true,
+                        playerOnly: true,
+                        showReserves: this.name,
+                        message: 'Choose a unit to become infected',
+                        areas: [area.name]
+                    }
+                }).catch(error => console.error(error));
+                unit = this.game().objectMap[data.units[0]];
+            } else {
+                unit = enemyUnits[0];
+            }
+
+            let result = await this.replaceUnit(unit, {message: `A ${unit.type} becomes infected`});
+            if (result === false) {
+                this.game().message({faction: this, message: "The infected unit dies"});
+                await this.game().killUnit(unit, this);
+            }
         }
-
-        if( !targetFaction ){
-            this.game().message({ faction : this, message: "No victims for The Parasites to Infect", class : 'warning' });
-            return;
-        }
-
-        message = `<span class="faction-${targetFaction.name}">the ${targetFaction.name}</span> must choose a unit to become infected`;
-        this.game().message({ faction: targetFaction, message: message });
-
-        let enemyUnits = _.factionUnitsInArea( targetFaction, area, { basic : true } );
-        let unit;
-
-        // player chooses unit to be replaced
-        if( enemyUnits.length !== 1 ){
-            [player, data] = await this.game().promise({
-                players: targetFaction.playerId,
-                name: 'choose-units',
-                data : {
-                    count : 1,
-                    basicOnly : true,
-                    playerOnly : true,
-                    showReserves : this.name,
-                    message : 'Choose a unit to become infected',
-                    areas : [area.name]
-                }
-            }).catch( error => console.error( error ) );
-            unit = this.game().objectMap[ data.units[0] ];
-        } else {
-            unit = enemyUnits[0];
-        }
-
-        await this.replaceUnit( unit, { message: `A ${unit.type} becomes infected` } );
     }
 
 
@@ -123,9 +146,7 @@ class Parasites extends Faction {
         let firstHost = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, combat.area ) );
         if (!firstHost) return;
 
-        for( let i = 0; i < this.data.hostInfect; i++ ){
-            await this.infect( combat.area );
-        }
+        await this.infect( combat.area );
     }
 
 

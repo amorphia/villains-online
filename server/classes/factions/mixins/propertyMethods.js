@@ -190,6 +190,15 @@ let mixin = {
     },
 
 
+    enemiesWithUnitsInArea( area, options = {} ){
+        let enemies = [];
+        for( let faction of Object.values( this.game().data.factions ) ){
+            if( faction.name !== this.name && _.hasUnitsInArea( faction, area, options ) ) enemies.push( faction.name );
+        }
+        return enemies;
+    },
+
+
     /**
      *
      *

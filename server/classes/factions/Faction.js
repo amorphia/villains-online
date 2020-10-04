@@ -340,7 +340,10 @@ class Faction {
                 && !item.killed
         );
 
-        if( !replacement ) return this.game().message({ faction : this, message: "Unable to replace unit", class : 'warning' });
+        if( !replacement ) {
+            this.game().message({ faction : this, message: "Unable to replace unit", class : 'warning' });
+            return false;
+        }
 
 
         // replace unit
@@ -366,6 +369,7 @@ class Faction {
             units: units
         });
 
+        return true;
     }
 
     discardCard( card ){

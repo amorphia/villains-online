@@ -57,6 +57,7 @@ let obj = {
     },
 
     async killUnit( unit, faction ){
+        console.log( 'killUnit init' );
         if( typeof faction !== 'string' ) faction = faction.name;
         unit.killed = faction;
 

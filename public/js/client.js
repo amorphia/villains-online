@@ -6773,6 +6773,7 @@ __webpack_require__.r(__webpack_exports__);
 
       _.forEach(this.shared.data.factions, function (faction) {
         if (faction.name === _this.data.faction) return;
+        if (_this.data.targetFactions && _this.data.targetFactions.length && !_this.data.targetFactions.includes(faction.name)) return;
 
         var factionUnits = _.factionUnitsInArea(faction, _this.area.name, {
           notHidden: true
@@ -89168,10 +89169,18 @@ var helpers = {
     var factionsWithUnits = [];
 
     _.forEach(factions, function (faction, name) {
+      var exclude = false;
+      console.log('factionsWithUnitsInArea args', args);
+
+      if (args.exclude) {
+        if (Array.isArray(args.exclude) && args.exclude.includes(name)) exclude = true;else if (args.exclude === name) exclude = true;
+        console.log('factionsWithUnitsInArea exclude', exclude);
+      }
+
       if (_this5.hasUnitsInArea(faction, area, {
         basic: args.basic,
         notHidden: args.notHidden
-      }) && args.exclude !== name) {
+      }) && !exclude) {
         factionsWithUnits.push(name);
       }
     });

@@ -6,7 +6,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'areasMostUnits', args : [3] },
+                    { test : 'areasMostUnits', args : [2] },
                 ],
                 value : 1
             },
@@ -63,7 +63,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'areasMostUnits', args : [4] },
+                    { test : 'areasMostUnits', args : [3] },
                 ],
                 value : 2
             },
@@ -82,13 +82,13 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 1] },
+                    { test : 'killUnits', args : [4] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'killUnits', args : [4] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 1
             },
@@ -101,7 +101,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'areasMostUnits', args : [4] },
+                    { test : 'areasMostUnits', args : [3] },
                 ],
                 value : 2
             },
@@ -120,7 +120,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'areasMostUnits', args : [5] },
+                    { test : 'areasMostUnits', args : [4] },
                 ],
                 value : 3
             },
@@ -164,7 +164,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'areasMostUnits', args : [3] },
+                    { test : 'areasMostUnits', args : [1] },
                 ],
                 value : 1
             },

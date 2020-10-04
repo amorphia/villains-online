@@ -1,12 +1,21 @@
 let obj = {
 
     async selectEnemyPlayerWithUnitsInArea( area, message, args ){
-        let player = {}, data = {}, targetFaction, selfAttack;
+        let player = {}, data = {}, targetFaction, selfAttack, exclude = [];
 
         if( typeof area !== 'string' ) area = area.name;
 
+        if( args.exclude ){
+            if( ! Array.isArray( args.exclude ) ) exclude.push( args.exclude );
+            else exclude = _.concat( exclude, args.exclude  );
+        }
+
+        exclude.push( this.name );
+
         // find valid players
-        let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name, notHidden : args.notHidden, basic : args.basic });
+        let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : exclude, notHidden : args.notHidden, basic : args.basic });
+
+        console.log( 'targetFactions', targetFactions );
 
         // no enemies with units in the from location
         if( targetFactions.length === 0 ){
@@ -19,6 +28,7 @@ let obj = {
             faction: this.name,
             message: message,
             optional : args.optional,
+            targetFactions : targetFactions,
             unitAttack : !!args.unit,
             attackBonus : args.attackBonus
         }}).catch( error => console.error( error ) );
