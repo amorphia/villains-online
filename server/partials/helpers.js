@@ -707,6 +707,15 @@ let helpers = {
      *
      */
 
+     money( faction, darkEnergy = false ){
+        if( faction.data ) faction = faction.data;
+
+        let money = faction.resources + faction.energy;
+        if( darkEnergy ) money += faction.darkEnergy;
+
+        return money;
+     },
+
      rulesPlayed( faction, areas ){
         if( faction.data ) faction = faction.data;
 
@@ -727,8 +736,8 @@ let helpers = {
             let areaRules = area.cards.filter( card => card.owner === faction.name );
             if( areaRules.length ) {
                 rules.total += areaRules.length;
-                if( globalAreas[area.name] ) globalAreas[area.name]++;
-                else globalAreas[area.name] = 1;
+                if( globalAreas[area.name] ) globalAreas[area.name] += areaRules.length;
+                else globalAreas[area.name] = areaRules.length;
             }
         }
 

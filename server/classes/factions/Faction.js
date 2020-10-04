@@ -366,7 +366,7 @@ class Faction {
 
         await this.game().timedPrompt('units-shifted', {
             message : options.message,
-            units: units
+            units: units.reverse()
         });
 
         return true;

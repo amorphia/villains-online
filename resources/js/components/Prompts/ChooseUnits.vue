@@ -33,7 +33,7 @@
 
                 <div class="">
                     <button v-if="data.canDecline" class="button button-empty" @click="resolve( false )">DECLINE</button>
-                    <button class="button" @click="resolve( true )" :disabled="!canSubmit">SELECTED UNITS</button>
+                    <button class="button" @click="resolve( true )" :disabled="!canSubmit">FINALIZE CHOICE</button>
                 </div>
             </div>
         </div>
@@ -55,13 +55,20 @@
         computed : {
 
             cost(){
-                if( !this.data.policePayoff ) return 0;
-                return _.policePayoffs( this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected ) * this.selected.length;
+                if( ! (this.data.policePayoff || this.data.payCost) ) return 0;
+
+                if( this.data.policePayoff ) return _.policePayoffs( this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected ) * this.selected.length;
+
+                if( this.data.payCost ) return this.selected.reduce( ( cost, unit ) => cost += unit.cost, 0 );
+
             },
 
             canSubmit(){
-                if( this.needToSelect === 0
-                    || ( this.data.optionalMax && this.selected.length > 0 )
+                if( this.cost <= _.money( this.shared.faction )
+                    && (
+                        this.needToSelect === 0
+                        || ( this.data.optionalMax && this.selected.length > 0 )
+                    )
                 ) return true;
             },
 

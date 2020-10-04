@@ -92,7 +92,7 @@
             },
 
             canSave(){
-                return this.selected.name && (this.shared.faction.resources + this.shared.faction.energy) >= this.cost;
+                return this.selected.name && _.money( this.shared.faction, true ) >= this.cost;
             },
 
             cost(){

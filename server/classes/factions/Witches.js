@@ -33,7 +33,6 @@ class Witches extends Faction {
                 influence: 1,
                 type: 'brew',
                 cost: 0,
-                resource : 1
             }
         };
 
@@ -58,17 +57,19 @@ class Witches extends Faction {
     async revealMagick( area ){
         let player, data;
 
+        this.game().popup( this.playerId, { magick : true, area : area.name, faction : this.name });
+
         this.drawCards();
         let card = _.last( this.data.cards.hand );
 
         this.game().message({
             faction : this,
-            message: `reveals`,
+            message: `use magick in the <span class="highlight">${area.name}</span> revealing:`,
             type : 'cards',
             cards : [card]
         });
 
-        let declineMessage = this.data.upgrade >= 1 ? 'draw this card' : 'sacrifice a unit to draw this card';
+        let declineMessage = this.data.upgrade >= 1 ? 'discard this card' : 'sacrifice a unit and discard this card';
         let message = `Play this card ${ this.data.upgrade === 2 ? 'for free ' : '' }in The ${area.name}`
 
         let args = {
@@ -87,16 +88,18 @@ class Witches extends Faction {
             data : args
         }).catch( error => console.error( error ) );
 
-        return [args, data];
+        return [args, data, card];
     }
 
-    async declineMagick( area ){
+    async declineMagick( area, card ){
         let player, data;
 
         this.game().message({
             faction : this,
             message: `chooses not to play the card`
         });
+
+        this.discardCard( card );
 
         if( !this.data.upgrade ) {
             [player, data] = await this.game().promise({
@@ -122,14 +125,14 @@ class Witches extends Faction {
 
 
     async magickAction( area ){
-        let player, data, args;
+        let player, data, args, card;
 
         this.dienchantUnits( area );
 
-        [args, data] = await this.revealMagick( area );
+        [args, data, card] = await this.revealMagick( area );
 
         if( data.decline ){
-            await this.declineMagick( area );
+            await this.declineMagick( area, card );
             return;
         }
 

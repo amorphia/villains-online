@@ -55,6 +55,10 @@
                 if( this.popup.skill ){
                     return `/images/icons/skilled.png`
                 }
+
+                if( this.popup.magick ){
+                    return `/images/icons/enchanted.png`
+                }
             }
         }
     }

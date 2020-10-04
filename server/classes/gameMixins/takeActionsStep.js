@@ -100,7 +100,7 @@ let obj = {
             console.error( error );
         }
 
-        this.advancePlayer();
+        this.advancePlayer( {}, false );
     },
 
     async takeSkillAction( player, areaName ){

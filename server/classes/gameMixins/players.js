@@ -113,8 +113,8 @@ let mixin = {
         await this.updateAll();
     },
 
-    async advancePlayer( listener ){
-        this.advanceActivePlayer();
+    async advancePlayer( listener, advance = true ){
+        if( advance ) this.advanceActivePlayer();
         this.setActivePlayerListener( listener );
         this.action++;
         Server.saveToDB( this );

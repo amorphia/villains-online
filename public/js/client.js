@@ -5766,7 +5766,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.shared.faction.cards.hand;
     },
     canSave: function canSave() {
-      return this.selected.name && this.shared.faction.resources + this.shared.faction.energy >= this.cost;
+      return this.selected.name && _.money(this.shared.faction, true) >= this.cost;
     },
     cost: function cost() {
       return this.data.free ? 0 : this.selected.cost;
@@ -6564,11 +6564,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     cost: function cost() {
-      if (!this.data.policePayoff) return 0;
-      return _.policePayoffs(this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected) * this.selected.length;
+      if (!(this.data.policePayoff || this.data.payCost)) return 0;
+      if (this.data.policePayoff) return _.policePayoffs(this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected) * this.selected.length;
+      if (this.data.payCost) return this.selected.reduce(function (cost, unit) {
+        return cost += unit.cost;
+      }, 0);
     },
     canSubmit: function canSubmit() {
-      if (this.needToSelect === 0 || this.data.optionalMax && this.selected.length > 0) return true;
+      if (this.cost <= _.money(this.shared.faction) && (this.needToSelect === 0 || this.data.optionalMax && this.selected.length > 0)) return true;
     },
     enemyUnits: function enemyUnits() {
       if (!this.data.showEnemyUnits) return [];
@@ -10991,7 +10994,7 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     hasActions: function hasActions() {
       if (!this.shared.actions) return false;
-      if (this.shared.actions.skill && this.shared.actions.skill.includes(this.area.name) || this.shared.actions.token && this.shared.actions.token.includes(this.area.name) || this.shared.actions.xavier === this.area.name) return true;
+      if (this.shared.actions.skill && this.shared.actions.skill.includes(this.area.name) || this.shared.actions.magick && this.shared.actions.magick.includes(this.area.name) || this.shared.actions.token && this.shared.actions.token.includes(this.area.name) || this.shared.actions.xavier === this.area.name) return true;
     },
     showXavier: function showXavier() {
       return this.shared.showXavier && this.xavier;
@@ -11157,6 +11160,10 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.popup.skill) {
         return "/images/icons/skilled.png";
+      }
+
+      if (this.popup.magick) {
+        return "/images/icons/enchanted.png";
       }
     }
   }
@@ -59947,7 +59954,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("SELECTED UNITS")]
+              [_vm._v("FINALIZE CHOICE")]
             )
           ])
         ],
@@ -89598,6 +89605,13 @@ var helpers = {
    *  Others
    *
    */
+  money: function money(faction) {
+    var darkEnergy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    if (faction.data) faction = faction.data;
+    var money = faction.resources + faction.energy;
+    if (darkEnergy) money += faction.darkEnergy;
+    return money;
+  },
   rulesPlayed: function rulesPlayed(faction, areas) {
     if (faction.data) faction = faction.data;
     var rules = {
@@ -89629,7 +89643,7 @@ var helpers = {
 
       if (areaRules.length) {
         rules.total += areaRules.length;
-        if (globalAreas[area.name]) globalAreas[area.name]++;else globalAreas[area.name] = 1;
+        if (globalAreas[area.name]) globalAreas[area.name] += areaRules.length;else globalAreas[area.name] = areaRules.length;
       }
     }
 

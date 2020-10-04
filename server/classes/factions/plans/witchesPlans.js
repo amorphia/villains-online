@@ -7,13 +7,13 @@ let obj = [
             {
                 requirements : [
                     { test : 'playRules', args : [3, 'total'] },
-                    { test : 'influenceInAreas', args : [6,1] },
+                    { test : 'tokensInAreas', args : [6] },
                 ],
                 value : 2
             },
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [6] },
+                    { test : 'influenceInAreas', args : [6,1] },
                 ],
                 value : 1
             },
@@ -26,7 +26,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playRules', args : [2, 'areas'] },
+                    { test : 'playRules', args : [3, 'areas'] },
                     { test : 'unitsAtTarget', args : [2, 'talent'] },
                 ],
                 value : 2
@@ -66,7 +66,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playRules', args : [2, 'stack'] },
+                    { test : 'playRules', args : [3, 'stack'] },
                 ],
                 value : 1
             },
@@ -86,7 +86,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playRules', args : [3, 'total'] },
+                    { test : 'playRules', args : [4, 'total'] },
                 ],
                 value : 1
             },

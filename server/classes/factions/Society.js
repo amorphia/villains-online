@@ -22,6 +22,7 @@ class Society extends Faction {
                 influence: 1,
                 type: 'hypnosis',
                 cost: 0,
+                resource : 1
             }
         };
 
@@ -226,6 +227,7 @@ class Society extends Faction {
                             basicOnly: true,
                             unitTypes: this.potentialHypnosisTypes( args.area ),
                             enemyOnly : true,
+                            payCost: true,
                             message: "Choose a unit to hypnotize" }
                 }).catch( error => console.error( error ) );
 
@@ -235,6 +237,8 @@ class Society extends Faction {
         }
 
         let unit = this.game().objectMap[ data.units[0] ];
+        if( unit.cost > 0 ) this.payCost( unit.cost, true );
+
         let message = `Replaces <span class="faction-${unit.faction}">The ${unit.faction} ${unit.name}</span> in the ${unit.location}`;
         this.game().message({ faction : this, message: message });
         this.game().sound( 'hypnotize' );
