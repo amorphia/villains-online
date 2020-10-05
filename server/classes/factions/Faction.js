@@ -501,8 +501,14 @@ class Faction {
 
     // used in onKilledEvents
     returnUnitToReserves( event ){
-        event.unit.location = null;
-        event.unit.killed = null;
+        let unit = event.unit;
+
+        unit.location = null;
+        unit.killed = null;
+
+        if( this.game().combat ){
+            this.game().combat.removeUnitFromCombat( unit );
+        }
     }
 
     applyCapturedRewards(){
