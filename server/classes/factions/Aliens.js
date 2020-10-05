@@ -22,6 +22,8 @@ class Aliens extends Faction {
             { ap : 1, pp : 1 },
         ];
 
+        this.data.captured.max = this.capturedRewards.length;
+
         // tokens
         this.tokens['invade'] = {
             count : 1,
