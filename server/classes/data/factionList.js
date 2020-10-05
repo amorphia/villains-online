@@ -15,7 +15,7 @@ let obj = {
     ninjas : { name: 'ninjas', owner : null, killer : true, status : 1 },
     guerrillas : { name: 'guerrillas', owner : null, killer : true, status : 0 },
     parasites : { name: 'parasites', owner : null, status : 0 },
-    conquistadors : { name: 'conquistadors', owner : null, killer : true, status : 0 },
+    conquistadors : { name: 'conquistadors', owner : null, killer : true, status : 1 },
     witches : { name: 'witches', owner : null, status : 0 },
 };
 
