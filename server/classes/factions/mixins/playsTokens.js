@@ -42,6 +42,7 @@ let obj = {
 
     activateToken( player, token ){
         let area = this.game().areas[token.location];
+        if( token.cost > 0 ) this.payCost( token.cost, true );
 
         let message = `Activate their <span class="highlight">${token.name}</span> token`;
         this.game().message({ message: message, faction : this });
