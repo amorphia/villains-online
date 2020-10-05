@@ -5766,7 +5766,10 @@ __webpack_require__.r(__webpack_exports__);
       return this.shared.faction.cards.hand;
     },
     canSave: function canSave() {
-      return this.selected.name && _.money(this.shared.faction, true) >= this.cost;
+      return this.selected.name && this.money >= this.cost;
+    },
+    money: function money() {
+      return _.money(this.shared.faction, true);
     },
     cost: function cost() {
       return this.data.free ? 0 : this.selected.cost;
@@ -8010,6 +8013,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     updateToIndex: function updateToIndex(index) {
       this.toAreaIndex = index;
+      if (this.data.limit === 1 && this.selected.length) this.moveSelectedToArea();
+    },
+    moveSelectedToArea: function moveSelectedToArea() {
+      var unit = this.selected[0];
+      this.$set(unit, 'selected', this.area.name);
     },
     addUnitToArea: function addUnitToArea(unit) {
       if (this.currentAreaUnits.length || this.data.limit && this.selected.length >= this.data.limit) return;
@@ -89609,7 +89617,7 @@ var helpers = {
     var darkEnergy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     if (faction.data) faction = faction.data;
     var money = faction.resources + faction.energy;
-    if (darkEnergy) money += faction.darkEnergy;
+    if (darkEnergy && faction.hasOwnProperty('darkEnergy')) money += faction.darkEnergy;
     return money;
   },
   rulesPlayed: function rulesPlayed(faction, areas) {

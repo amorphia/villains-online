@@ -711,7 +711,7 @@ let helpers = {
         if( faction.data ) faction = faction.data;
 
         let money = faction.resources + faction.energy;
-        if( darkEnergy ) money += faction.darkEnergy;
+        if( darkEnergy && faction.hasOwnProperty( 'darkEnergy' ) ) money += faction.darkEnergy;
 
         return money;
      },

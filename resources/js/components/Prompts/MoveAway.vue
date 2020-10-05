@@ -68,6 +68,12 @@
 
             updateToIndex( index ){
                 this.toAreaIndex = index;
+                if( this.data.limit === 1 && this.selected.length ) this.moveSelectedToArea();
+            },
+
+            moveSelectedToArea(){
+                let unit = this.selected[0];
+                this.$set( unit, 'selected', this.area.name );
             },
 
             addUnitToArea( unit ){

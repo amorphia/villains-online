@@ -92,7 +92,11 @@
             },
 
             canSave(){
-                return this.selected.name && _.money( this.shared.faction, true ) >= this.cost;
+                return this.selected.name &&  this.money >= this.cost;
+            },
+
+            money(){
+                return _.money( this.shared.faction, true );
             },
 
             cost(){
