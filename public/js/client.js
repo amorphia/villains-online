@@ -10308,6 +10308,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-player',
   data: function data() {
@@ -10552,6 +10558,7 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.socket.on('updateResources', function (data) {
         data.forEach(function (item) {
           _this4.shared.data.factions[item.faction].resources = item.resources;
+          _this4.shared.data.factions[item.faction].energy = item.energy;
         });
       }); // listen for points update
 
@@ -63702,7 +63709,30 @@ var render = function() {
                         _vm._v(" "),
                         _c("span", { staticClass: "note" }, [
                           _vm._v("/ " + _vm._s(_vm.faction.maxEnergy))
-                        ])
+                        ]),
+                        _vm._v(" "),
+                        _vm.shared.admin
+                          ? _c("i", {
+                              staticClass: "icon-minimize pr-2",
+                              attrs: { disabled: _vm.faction.energy === 0 },
+                              on: {
+                                click: function($event) {
+                                  return _vm.setPoints("energy", -1)
+                                }
+                              }
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.shared.admin
+                          ? _c("i", {
+                              staticClass: "icon-maximize pr-2",
+                              on: {
+                                click: function($event) {
+                                  return _vm.setPoints("energy", 1)
+                                }
+                              }
+                            })
+                          : _vm._e()
                       ]
                     ),
                     _vm._v(" "),
@@ -63714,7 +63744,30 @@ var render = function() {
                       },
                       [
                         _vm._v("Resources: "),
-                        _c("span", [_vm._v(_vm._s(_vm.faction.resources))])
+                        _c("span", [_vm._v(_vm._s(_vm.faction.resources))]),
+                        _vm._v(" "),
+                        _vm.shared.admin
+                          ? _c("i", {
+                              staticClass: "icon-minimize pr-2",
+                              attrs: { disabled: _vm.faction.resources === 0 },
+                              on: {
+                                click: function($event) {
+                                  return _vm.setPoints("resources", -1)
+                                }
+                              }
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.shared.admin
+                          ? _c("i", {
+                              staticClass: "icon-maximize pr-2",
+                              on: {
+                                click: function($event) {
+                                  return _vm.setPoints("resources", 1)
+                                }
+                              }
+                            })
+                          : _vm._e()
                       ]
                     ),
                     _vm._v(" "),

@@ -1,18 +1,30 @@
 let mixin = {
 
     setPoints( player, data ){
-        let pointsTypeText;
+        let pointsTypeText = data.type;
 
-        if( data.type === 'ap' ){
-            pointsTypeText = 'Area Points';
-            this.factions[data.faction].gainAP( data.val );
-        }
-        else if( data.type === 'pp' ){
-            pointsTypeText = 'Area Points';
-            this.factions[data.faction].gainPP( data.val );
+        switch( data.type ){
+            case 'ap':
+                pointsTypeText = 'Area Points';
+                this.factions[data.faction].gainAP( data.val );
+                this.updatePoints();
+                break;
+            case 'pp':
+                pointsTypeText = 'Area Points';
+                this.factions[data.faction].gainPP( data.val );
+                this.updatePoints();
+                break;
+            case 'energy':
+                this.factions[data.faction].data.energy += data.val;
+                this.updateResources();
+                break;
+            case 'resources':
+                this.factions[data.faction].data.resources += data.val;
+                this.updateResources();
+                break;
         }
 
-        this.message({ message: `manually adjusted the ${data.faction} ${pointsTypeText}`, class: 'warning', player : player });
+        this.message({ message: `manually adjusted the ${data.faction} ${pointsTypeText} (${data.val})`, class: 'warning', player : player });
         this.updatePoints();
     },
 

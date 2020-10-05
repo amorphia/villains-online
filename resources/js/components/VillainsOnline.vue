@@ -163,6 +163,7 @@
 
                     data.forEach( item => {
                         this.shared.data.factions[ item.faction ].resources = item.resources;
+                        this.shared.data.factions[ item.faction ].energy = item.energy;
                     });
                 });
 

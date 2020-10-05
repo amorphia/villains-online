@@ -35,8 +35,14 @@
                             <i v-if="shared.admin" :disabled="faction.pp === 0" @click="setPoints( 'pp', -1)" class="icon-minimize pr-2"></i>
                             <i v-if="shared.admin" @click="setPoints( 'pp', 1)" class="icon-maximize pr-2"></i>
                         </div>
-                        <div class="view-player__energy view-player__title width-50">Energy: <span>{{ faction.energy }}</span> <span class="note">/ {{ faction.maxEnergy }}</span></div>
-                        <div class="view-player__resources view-player__title width-50">Resources: <span>{{ faction.resources }}</span></div>
+                        <div class="view-player__energy view-player__title width-50">Energy: <span>{{ faction.energy }}</span> <span class="note">/ {{ faction.maxEnergy }}</span>
+                            <i v-if="shared.admin" :disabled="faction.energy === 0" @click="setPoints( 'energy', -1)" class="icon-minimize pr-2"></i>
+                            <i v-if="shared.admin" @click="setPoints( 'energy', 1)" class="icon-maximize pr-2"></i>
+                        </div>
+                        <div class="view-player__resources view-player__title width-50">Resources: <span>{{ faction.resources }}</span>
+                            <i v-if="shared.admin" :disabled="faction.resources === 0" @click="setPoints( 'resources', -1)" class="icon-minimize pr-2"></i>
+                            <i v-if="shared.admin" @click="setPoints( 'resources', 1)" class="icon-maximize pr-2"></i>
+                        </div>
                         <div class="view-player__resources view-player__title width-50"> Upgrade: <span>{{ faction.upgrade ? faction.upgrade : 'none' }}</span></div>
                         <div class="view-player__hand view-player__title width-50">Cards in hand: <span>{{ faction.cards.hand.length }}</span> <span class="note">/ +{{ faction.cardDraw }}</span></div>
                         <div class="view-player__deploy view-player__title width-50">Deploy Limit: <span>{{ faction.deployLimit }}</span></div>

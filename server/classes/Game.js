@@ -301,7 +301,7 @@ class Game {
 
     updateResources(){
         let data = Object.values( this.data.factions ).map( faction => {
-            return { 'faction' : faction.name, 'resources' : faction.resources  };
+            return { 'faction' : faction.name, 'resources' : faction.resources, 'energy' : faction.energy  };
         });
         Server.io.to( this.id ).emit( 'updateResources', data );
     }
