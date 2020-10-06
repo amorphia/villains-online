@@ -57,7 +57,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'killsInEnemy', args : [3] },
-                    { test : 'tokensInAreas', args : [6] },
+                    { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 2
             },

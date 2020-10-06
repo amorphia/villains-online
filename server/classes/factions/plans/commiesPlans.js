@@ -102,7 +102,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'influenceInAreas', args : [5,2] },
-                    { test : 'tokensInAreas', args : [6] },
+                    { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 1
             },

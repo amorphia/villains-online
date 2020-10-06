@@ -70,7 +70,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'controlTarget', args : [] },
-                    { test : 'tokensInAreas', args : [6] },
+                    { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 2
             },

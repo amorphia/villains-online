@@ -160,7 +160,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'killMost', args : [] },
-                    { test : 'tokensInAreas', args : [6] },
+                    { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 2
             },
