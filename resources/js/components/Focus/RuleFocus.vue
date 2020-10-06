@@ -2,7 +2,7 @@
     <div  class="d-flex justify-center plan-focus mr-4 primary-light align-center">
         total :<span class="highlight ml-2 mr-3">{{ rules.total }}</span>
         areas :<span class="highlight ml-2 mr-3">{{ rules.areas }}</span>
-        stack :<span class="highlight ml-2 mr-3">{{ rules.stack }}</span>
+        same area :<span class="highlight ml-2 mr-3">{{ rules.stack }}</span>
     </div>
 </template>
 

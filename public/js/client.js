@@ -55583,7 +55583,7 @@ var render = function() {
       _c("span", { staticClass: "highlight ml-2 mr-3" }, [
         _vm._v(_vm._s(_vm.rules.areas))
       ]),
-      _vm._v("\n    stack :"),
+      _vm._v("\n    same area :"),
       _c("span", { staticClass: "highlight ml-2 mr-3" }, [
         _vm._v(_vm._s(_vm.rules.stack))
       ])
