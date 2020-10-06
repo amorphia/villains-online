@@ -10,6 +10,7 @@ class Swarm extends Faction {
         //data
         this.data.name = this.name;
         this.data.focus = 'unit-areas-focus';
+        this.data.focusDescription = "Have units in many areas";
         this.data.title = "The Swarm";
         this.data.factionDefenseBonus = 0;
 

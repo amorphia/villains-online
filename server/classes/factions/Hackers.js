@@ -10,6 +10,8 @@ class Hackers extends Faction {
         //data
         this.data.name = this.name;
         this.data.focus = 'skills-focus';
+        this.data.focusDescription = "Activate many area skill abilities";
+
         this.data.title = "The Kaos Klub";
         this.data.baseMaxEnergy = this.data.maxEnergy = 9;
 

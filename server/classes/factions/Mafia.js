@@ -11,6 +11,7 @@ class Mafia extends Faction {
         this.data.name = this.name;
         this.data.spy = null;
         this.data.title = "La Cosa Nostra";
+        this.data.focusDescription = "Infiltrate or control enemy targets";
 
         //tokens
         this.tokens['hit-man'] = {

@@ -9,6 +9,7 @@ class Scientists extends Faction {
 
         // data
         this.data.focus = 'fusion-focus';
+        this.data.focusDescription = "Play many cards";
         this.data.name = this.name;
         this.data.title = "The Union of Mad Science";
         this.data.cardDraw = 4;

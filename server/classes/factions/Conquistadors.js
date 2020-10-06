@@ -15,6 +15,7 @@ class Conquistadors extends Faction {
         this.data.bonusDeploy = {type: 'goon', count: 10};
         this.data.bonusDiceInUnconquered = 0;
         this.data.conqueredAreas = [];
+        this.data.focusDescription = "Conquer many areas";
 
         this.capturedRewards = [
             { ap : 1, cardDraw : 1 },

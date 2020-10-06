@@ -10,6 +10,7 @@ class Society extends Faction {
         //data
         this.data.name = this.name;
         this.data.focus = 'token-focus';
+        this.data.focusDescription = "Tokens in many areas";
         this.data.title = "The Blackstone Society";
         this.data.maxEnergy = 10;
         this.data.tokensNotDiscarded = 0;

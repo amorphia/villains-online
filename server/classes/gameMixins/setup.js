@@ -24,6 +24,7 @@ let setup = {
 
     mergeSavedData( saved ){
         saved.socketMap = this.socketMap;
+        this.action = saved.action;
 
         let linkFunc = ( objVal, srcVal ) => {
             if (_.isArray( objVal ) ) {

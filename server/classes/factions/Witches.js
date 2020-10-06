@@ -11,6 +11,7 @@ class Witches extends Faction {
         this.data.name = this.name;
         this.data.title = "The Witches of Havelocke";
         this.data.focus = 'rule-focus';
+        this.data.focusDescription = "Play many rule cards";
         this.data.darkEnergy = 0;
         this.data.darkEnergyMax = 3;
 

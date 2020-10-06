@@ -12,6 +12,7 @@ class Loyalists extends Faction {
         this.data.title = "Her Majesty's Loyalists";
         this.data.knightCount = 2;
         this.data.maxEnergy = 8;
+        this.data.focusDescription = "Control specific areas";
         //this.data.statusIcon = 'knight';
         //this.data.statusDescription = 'has knighted units';
 

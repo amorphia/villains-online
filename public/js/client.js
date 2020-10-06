@@ -10314,6 +10314,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-player',
   data: function data() {
@@ -10437,7 +10440,19 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     'shared.socket.disconnected': function sharedSocketDisconnected() {
-      if (this.shared.socket.disconnected) this.clearGame();
+      if (this.shared.socket.disconnected) {
+        console.log('disconnection detected');
+
+        var _this = this;
+
+        setTimeout(function () {
+          if (!_this.shared.socket || _this.shared.socket.disconnected) {
+            console.log('disconnection confirmed');
+
+            _this.clearGame();
+          }
+        }, 3000);
+      }
     },
     'shared.game': function sharedGame() {
       if (this.shared.playerIndex === null) {
@@ -10450,7 +10465,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    var _this = this;
+    var _this2 = this;
 
     console.log('Villians Online initializing in env:', "local");
     this.shared.id = App.user.uuid;
@@ -10460,11 +10475,11 @@ __webpack_require__.r(__webpack_exports__);
     this.initCoreSocketFunctions();
     this.shared.init('event', App.event);
     this.shared.init('orderedPlayers', function () {
-      if (!_this.shared.data || !_this.shared.data.playerOrder) return;
+      if (!_this2.shared.data || !_this2.shared.data.playerOrder) return;
       var players = [];
 
-      _this.shared.data.playerOrder.forEach(function (playerId) {
-        players.push(_this.shared.data.players[playerId]);
+      _this2.shared.data.playerOrder.forEach(function (playerId) {
+        players.push(_this2.shared.data.players[playerId]);
       });
 
       return players;
@@ -10472,25 +10487,25 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     setPlayerIndex: function setPlayerIndex() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.shared.data || !this.shared.data.playerOrder) return null;
       var playerIndex = null;
       this.shared.data.playerOrder.forEach(function (value, index) {
-        if (value === _this2.shared.id) {
+        if (value === _this3.shared.id) {
           playerIndex = index;
         }
       });
       this.shared.playerIndex = playerIndex;
     },
     setPlayerFactionName: function setPlayerFactionName() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.shared.playerIndex === null || !this.shared.data.factions) return null;
       var faction = null;
 
       _.forEach(this.shared.data.factions, function (value, prop) {
-        if (value.owner == _this3.shared.playerIndex) {
+        if (value.owner == _this4.shared.playerIndex) {
           faction = prop;
         }
       });
@@ -10514,11 +10529,11 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.viewDiscard = false;
     },
     initCoreSocketFunctions: function initCoreSocketFunctions() {
-      var _this4 = this;
+      var _this5 = this;
 
       // try to reconnect on disconnect
       this.shared.socket.on('disconnect', function () {
-        var socket = _this4.shared.socket;
+        var socket = _this5.shared.socket;
         setTimeout(function () {
           socket.connect();
           socket.emit('newPlayer', {
@@ -10529,43 +10544,43 @@ __webpack_require__.r(__webpack_exports__);
       }); // listen for open games
 
       this.shared.socket.on('openGame', function (game) {
-        _this4.$set(_this4.shared, 'game', game);
+        _this5.$set(_this5.shared, 'game', game);
       }); // listen for saved games
 
       this.shared.socket.on('savedGame', function (game) {
-        _this4.shared.saveGame = game;
+        _this5.shared.saveGame = game;
       }); // listen for concluded game
 
       this.shared.socket.on('clearGame', this.clearGame); // listen for lobby players update
 
       this.shared.socket.on('lobbyPlayers', function (data) {
-        _this4.shared.lobbyPlayers = data;
+        _this5.shared.lobbyPlayers = data;
       }); // listen for full game data update
 
       this.shared.socket.on('update', function (data) {
         App.event.emit('unselectAreas');
-        _this4.shared.data = data;
-        _this4.shared.player = _this4.shared.getPlayer();
-        _this4.shared.faction = _this4.shared.getFaction();
+        _this5.shared.data = data;
+        _this5.shared.player = _this5.shared.getPlayer();
+        _this5.shared.faction = _this5.shared.getFaction();
       }); // listen for player data update
 
       this.shared.socket.on('updatePlayerData', function (data) {
-        _this4.shared.data.players = data;
-        _this4.shared.player = _this4.shared.getPlayer();
-        _this4.shared.faction = _this4.shared.getFaction();
+        _this5.shared.data.players = data;
+        _this5.shared.player = _this5.shared.getPlayer();
+        _this5.shared.faction = _this5.shared.getFaction();
       }); // listen for resource update
 
       this.shared.socket.on('updateResources', function (data) {
         data.forEach(function (item) {
-          _this4.shared.data.factions[item.faction].resources = item.resources;
-          _this4.shared.data.factions[item.faction].energy = item.energy;
+          _this5.shared.data.factions[item.faction].resources = item.resources;
+          _this5.shared.data.factions[item.faction].energy = item.energy;
         });
       }); // listen for points update
 
       this.shared.socket.on('updatePoints', function (data) {
         data.forEach(function (item) {
-          _this4.shared.data.factions[item.faction].pp = item.pp;
-          _this4.shared.data.factions[item.faction].ap = item.ap;
+          _this5.shared.data.factions[item.faction].pp = item.pp;
+          _this5.shared.data.factions[item.faction].ap = item.ap;
         });
       });
     },
@@ -63878,6 +63893,14 @@ var render = function() {
                     )
                   ]
                 ),
+                _vm._v(" "),
+                _c("div", { staticClass: "view-player__title" }, [
+                  _vm._v("Plan Focus:")
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "prompt-question p-4" }, [
+                  _vm._v(_vm._s(_vm.faction.focusDescription))
+                ]),
                 _vm._v(" "),
                 _vm.target
                   ? _c("div", [

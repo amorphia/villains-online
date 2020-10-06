@@ -11,6 +11,7 @@ class Parasites extends Faction {
         this.data.name = this.name;
         this.data.title = "The Tau Ceti Parasites";
         this.data.focus = 'most-units-areas-focus';
+        this.data.focusDescription = "Have the most units in many areas";
         this.data.playersToInfect = 1;
         this.sacrificeAction = null;
 

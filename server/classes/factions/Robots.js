@@ -12,6 +12,7 @@ class Robots extends Faction {
         this.data.name = this.name;
         this.data.title = "Rise of the Machines";
         this.data.upgradeAttackBonus = 0;
+        this.data.focusDescription = "Exterminate areas";
 
         // tokens
         this.tokens['wild'] = {

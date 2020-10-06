@@ -13,6 +13,7 @@ class Cultists extends Faction {
         this.data.tokenCost = 0;
         this.data.name = this.name;
         this.data.title = "The Church of Doom";
+        this.data.focusDescription = "Kill many units";
 
         // tokens
         this.tokens['nothing'] = {

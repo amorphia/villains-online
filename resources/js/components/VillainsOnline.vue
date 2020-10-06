@@ -24,7 +24,18 @@
 
         watch : {
             'shared.socket.disconnected' : function(){
-                if( this.shared.socket.disconnected ) this.clearGame();
+                if( this.shared.socket.disconnected ) {
+
+                    console.log( 'disconnection detected' );
+                    let _this = this;
+
+                    setTimeout( function(){
+                        if( !_this.shared.socket || _this.shared.socket.disconnected ) {
+                            console.log( 'disconnection confirmed' );
+                            _this.clearGame();
+                        }
+                    }, 3000 );
+                }
             },
 
               'shared.game' : function(){
