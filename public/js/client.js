@@ -2460,6 +2460,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'areas-conquered-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2470,6 +2471,50 @@ __webpack_require__.r(__webpack_exports__);
       return Object.values(this.shared.data.areas).filter(function (area) {
         return area.conquered;
       }).length;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'captured-markers-focus',
+  props: ['classes', 'faction'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    focus: function focus() {
+      var _this = this;
+
+      var captured = this.faction.captured.current;
+
+      var winning = _.factionWinningAreas(this.faction, this.shared.data.factions, this.shared.data.areas, this.shared.areaLeaders);
+
+      winning.forEach(function (areName) {
+        var area = _this.shared.data.areas[areName];
+        if (area.owner && area.owner !== _this.faction.name) captured++;
+      });
+      return captured;
     }
   }
 });
@@ -2494,6 +2539,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'control-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2501,11 +2547,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     leading: function leading() {
-      var _this = this;
-
-      return Object.values(this.shared.areaLeaders).filter(function (leader) {
-        return leader === _this.shared.faction.name;
-      }).length;
+      return _.factionWinningAreas(this.faction, this.shared.data.factions, this.shared.data.areas, this.shared.areaLeaders).length;
     }
   }
 });
@@ -2530,6 +2572,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'enemy-kills-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2537,10 +2580,49 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     kills: function kills() {
-      return _.factionKillsInEnemy(this.shared.faction, this.shared.data.factions, this.shared.data.areas, this.shared.areaLeaders).length;
+      return _.factionKillsInEnemy(this.faction, this.shared.data.factions, this.shared.data.areas, this.shared.areaLeaders).length;
     },
     skips: function skips() {
-      return this.shared.faction.skips.max - this.shared.faction.skips.used;
+      return this.faction.skips.max - this.faction.skips.used;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/ExterminateFocus.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/ExterminateFocus.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'exterminate-focus',
+  props: ['classes', 'faction'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    focus: function focus() {
+      var _this = this;
+
+      var areasExterminated = 0;
+      Object.values(this.shared.data.areas).forEach(function (area) {
+        if (_.areaExterminated(area, _this.shared.data.factions) === _this.faction.name) areasExterminated++;
+      });
+      return areasExterminated;
     }
   }
 });
@@ -2563,12 +2645,69 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'fusion-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
     };
+  },
+  computed: {
+    focus: function focus() {
+      return this.faction.fusion;
+    },
+    areas: function areas() {
+      var areas = [];
+      this.faction.tokens.forEach(function (token) {
+        if (token.location && token.revealed && token.type === 'card' && !areas.includes(token.location)) areas.push(token.location);
+      });
+      return areas.length;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/InfluenceFocus.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/InfluenceFocus.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'influence-focus',
+  props: ['classes', 'faction'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    influences: function influences() {
+      var _this = this;
+
+      var influences = [];
+      Object.values(this.shared.data.areas).forEach(function (area) {
+        influences.push(_.influence(_this.faction, area, _this.shared.data.factions));
+      });
+      influences.sort(function (a, b) {
+        return b - a;
+      });
+      return influences;
+    }
   }
 });
 
@@ -2592,6 +2731,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'kill-areas-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2626,6 +2766,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'kill-areas-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2654,7 +2795,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.killTypesCount(['goon', 'champion']);
     },
     typesKilled: function typesKilled() {
-      return _.factionTypesKilled(this.shared.faction, this.shared.data.factions);
+      return _.factionTypesKilled(this.faction, this.shared.data.factions);
     }
   }
 });
@@ -2679,6 +2820,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'fusion-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2686,7 +2828,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     kills: function kills() {
-      return _.factionKills(this.shared.faction, this.shared.data.factions).length;
+      return _.factionKills(this.faction, this.shared.data.factions).length;
     }
   }
 });
@@ -2711,6 +2853,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'most-units-areas-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2718,7 +2861,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     focus: function focus() {
-      return _.areasMostUnits(this.shared.faction, this.shared.data.factions);
+      return _.areasMostUnits(this.faction, this.shared.data.factions);
     }
   }
 });
@@ -2745,6 +2888,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'rule-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2752,7 +2896,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     rules: function rules() {
-      return _.rulesPlayed(this.shared.faction, this.shared.data.areas);
+      return _.rulesPlayed(this.faction, this.shared.data.areas);
     }
   }
 });
@@ -2778,6 +2922,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'fusion-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2785,7 +2930,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     focus: function focus() {
-      return this.shared.faction.usedSkills.length;
+      return this.faction.usedSkills.length;
     }
   }
 });
@@ -2810,6 +2955,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'token-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2817,7 +2963,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     focus: function focus() {
-      return _.areasWithTokensCount(this.shared.faction, this.shared.data.areas);
+      return _.areasWithTokensCount(this.faction, this.shared.data.areas);
     }
   }
 });
@@ -2842,6 +2988,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-areas-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2849,7 +2996,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     focus: function focus() {
-      return _.areasWithUnits(this.shared.faction).length;
+      return _.areasWithUnits(this.faction).length;
     }
   }
 });
@@ -2874,6 +3021,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'fusion-focus',
+  props: ['classes', 'faction'],
   data: function data() {
     return {
       shared: App.state
@@ -2881,7 +3029,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     units: function units() {
-      return _.unitsInPlay(this.shared.faction).length;
+      return _.unitsInPlay(this.faction).length;
     }
   }
 });
@@ -10116,6 +10264,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -55278,11 +55429,49 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    conquered areas :"),
+      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=template&id=c6cc5902&":
+/*!*****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=template&id=c6cc5902& ***!
+  \*****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
+    },
+    [
+      _vm._v("\n    current : "),
+      _c("span", { staticClass: "highlight ml-2 mr-4" }, [
+        _vm._v(_vm._s(_vm.faction.captured.current))
+      ]),
+      _vm._v("\n    predicted :"),
       _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
     ]
   )
@@ -55312,8 +55501,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    areas winning :"),
@@ -55348,8 +55537,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _c("span", { staticClass: "mr-4" }, [
@@ -55360,6 +55549,40 @@ var render = function() {
       ]),
       _vm._v(" kills in enemy areas :"),
       _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.kills))])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/ExterminateFocus.vue?vue&type=template&id=e34ac2e8&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/ExterminateFocus.vue?vue&type=template&id=e34ac2e8& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
+    },
+    [
+      _vm._v("\n    areas exterminated :"),
+      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
     ]
   )
 }
@@ -55388,13 +55611,67 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
-      _vm._v("\n    fusion count :"),
+      _vm._v("\n    fusion :"),
+      _c("span", { staticClass: "highlight ml-2 mr-4" }, [
+        _vm._v(_vm._s(_vm.focus))
+      ]),
+      _vm._v("\n    card areas :"),
+      _c("span", { staticClass: "highlight ml-2 mr-4" }, [
+        _vm._v(_vm._s(_vm.areas))
+      ]),
+      _vm._v("\n    in hand :"),
       _c("span", { staticClass: "highlight ml-2" }, [
-        _vm._v(_vm._s(_vm.shared.faction.fusion))
+        _vm._v(_vm._s(_vm.faction.cards.hand.length))
+      ])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/InfluenceFocus.vue?vue&type=template&id=d8014df6&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/InfluenceFocus.vue?vue&type=template&id=d8014df6& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
+    },
+    [
+      _vm._v("\n    highest influence areas:"),
+      _c("span", { staticClass: "ml-2" }, [
+        _c("span", { staticClass: "highlight" }, [
+          _vm._v(_vm._s(_vm.influences[0]))
+        ]),
+        _vm._v(" / "),
+        _c("span", { staticClass: "highlight" }, [
+          _vm._v(_vm._s(_vm.influences[1]))
+        ]),
+        _vm._v(" / "),
+        _c("span", { staticClass: "highlight" }, [
+          _vm._v(_vm._s(_vm.influences[2]))
+        ])
       ])
     ]
   )
@@ -55424,8 +55701,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    areas with kills :"),
@@ -55458,8 +55735,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _c("div", { staticClass: "mr-3" }, [
@@ -55518,8 +55795,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    total kills :"),
@@ -55552,8 +55829,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    areas with most units :"),
@@ -55586,8 +55863,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    total :"),
@@ -55630,13 +55907,13 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    resources :"),
       _c("span", { staticClass: "highlight ml-2 mr-4" }, [
-        _vm._v(_vm._s(_vm.shared.faction.resources))
+        _vm._v(_vm._s(_vm.faction.resources))
       ]),
       _vm._v("\n    skills used :"),
       _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
@@ -55668,8 +55945,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    areas with tokens :"),
@@ -55702,8 +55979,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    areas with units :"),
@@ -55736,8 +56013,8 @@ var render = function() {
   return _c(
     "div",
     {
-      staticClass:
-        "d-flex justify-center plan-focus mr-4 primary-light align-center"
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
     },
     [
       _vm._v("\n    units in play :"),
@@ -57010,7 +57287,13 @@ var render = function() {
             },
             [
               _vm.shared.faction.focus
-                ? _c(_vm.shared.faction.focus, { tag: "component" })
+                ? _c(_vm.shared.faction.focus, {
+                    tag: "component",
+                    attrs: {
+                      classes: "justify-center",
+                      faction: _vm.shared.faction
+                    }
+                  })
                 : _vm._e(),
               _vm._v(" "),
               _c(
@@ -63898,9 +64181,23 @@ var render = function() {
                   _vm._v("Plan Focus:")
                 ]),
                 _vm._v(" "),
-                _c("div", { staticClass: "prompt-question p-4" }, [
-                  _vm._v(_vm._s(_vm.faction.focusDescription))
-                ]),
+                _c(
+                  "div",
+                  { staticClass: "prompt-question p-4" },
+                  [
+                    _vm._v(
+                      _vm._s(_vm.faction.focusDescription) +
+                        "\n                    "
+                    ),
+                    _vm.faction.focus
+                      ? _c(_vm.faction.focus, {
+                          tag: "component",
+                          attrs: { faction: _vm.faction }
+                        })
+                      : _vm._e()
+                  ],
+                  1
+                ),
                 _vm._v(" "),
                 _vm.target
                   ? _c("div", [
@@ -77963,9 +78260,12 @@ var map = {
 	"./FactionScore.vue": "./resources/js/components/FactionScore.vue",
 	"./FinalScores.vue": "./resources/js/components/FinalScores.vue",
 	"./Focus/AreasConqueredFocus.vue": "./resources/js/components/Focus/AreasConqueredFocus.vue",
+	"./Focus/CapturedMarkersFocus.vue": "./resources/js/components/Focus/CapturedMarkersFocus.vue",
 	"./Focus/ControlFocus.vue": "./resources/js/components/Focus/ControlFocus.vue",
 	"./Focus/EnemyKillsFocus.vue": "./resources/js/components/Focus/EnemyKillsFocus.vue",
+	"./Focus/ExterminateFocus.vue": "./resources/js/components/Focus/ExterminateFocus.vue",
 	"./Focus/FusionFocus.vue": "./resources/js/components/Focus/FusionFocus.vue",
+	"./Focus/InfluenceFocus.vue": "./resources/js/components/Focus/InfluenceFocus.vue",
 	"./Focus/KillAreasFocus.vue": "./resources/js/components/Focus/KillAreasFocus.vue",
 	"./Focus/KillTypesFocus.vue": "./resources/js/components/Focus/KillTypesFocus.vue",
 	"./Focus/KillsFocus.vue": "./resources/js/components/Focus/KillsFocus.vue",
@@ -79191,6 +79491,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Focus/CapturedMarkersFocus.vue":
+/*!****************************************************************!*\
+  !*** ./resources/js/components/Focus/CapturedMarkersFocus.vue ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CapturedMarkersFocus_vue_vue_type_template_id_c6cc5902___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CapturedMarkersFocus.vue?vue&type=template&id=c6cc5902& */ "./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=template&id=c6cc5902&");
+/* harmony import */ var _CapturedMarkersFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CapturedMarkersFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CapturedMarkersFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CapturedMarkersFocus_vue_vue_type_template_id_c6cc5902___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CapturedMarkersFocus_vue_vue_type_template_id_c6cc5902___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/CapturedMarkersFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CapturedMarkersFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./CapturedMarkersFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CapturedMarkersFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=template&id=c6cc5902&":
+/*!***********************************************************************************************!*\
+  !*** ./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=template&id=c6cc5902& ***!
+  \***********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CapturedMarkersFocus_vue_vue_type_template_id_c6cc5902___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./CapturedMarkersFocus.vue?vue&type=template&id=c6cc5902& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/CapturedMarkersFocus.vue?vue&type=template&id=c6cc5902&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CapturedMarkersFocus_vue_vue_type_template_id_c6cc5902___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CapturedMarkersFocus_vue_vue_type_template_id_c6cc5902___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/Focus/ControlFocus.vue":
 /*!********************************************************!*\
   !*** ./resources/js/components/Focus/ControlFocus.vue ***!
@@ -79329,6 +79698,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Focus/ExterminateFocus.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/Focus/ExterminateFocus.vue ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ExterminateFocus_vue_vue_type_template_id_e34ac2e8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ExterminateFocus.vue?vue&type=template&id=e34ac2e8& */ "./resources/js/components/Focus/ExterminateFocus.vue?vue&type=template&id=e34ac2e8&");
+/* harmony import */ var _ExterminateFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ExterminateFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/ExterminateFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ExterminateFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ExterminateFocus_vue_vue_type_template_id_e34ac2e8___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ExterminateFocus_vue_vue_type_template_id_e34ac2e8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/ExterminateFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/ExterminateFocus.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/Focus/ExterminateFocus.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExterminateFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ExterminateFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/ExterminateFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExterminateFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/ExterminateFocus.vue?vue&type=template&id=e34ac2e8&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/Focus/ExterminateFocus.vue?vue&type=template&id=e34ac2e8& ***!
+  \*******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExterminateFocus_vue_vue_type_template_id_e34ac2e8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ExterminateFocus.vue?vue&type=template&id=e34ac2e8& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/ExterminateFocus.vue?vue&type=template&id=e34ac2e8&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExterminateFocus_vue_vue_type_template_id_e34ac2e8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExterminateFocus_vue_vue_type_template_id_e34ac2e8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/Focus/FusionFocus.vue":
 /*!*******************************************************!*\
   !*** ./resources/js/components/Focus/FusionFocus.vue ***!
@@ -79393,6 +79831,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FusionFocus_vue_vue_type_template_id_54c8f1fc___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FusionFocus_vue_vue_type_template_id_54c8f1fc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/InfluenceFocus.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/Focus/InfluenceFocus.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _InfluenceFocus_vue_vue_type_template_id_d8014df6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./InfluenceFocus.vue?vue&type=template&id=d8014df6& */ "./resources/js/components/Focus/InfluenceFocus.vue?vue&type=template&id=d8014df6&");
+/* harmony import */ var _InfluenceFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./InfluenceFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/InfluenceFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _InfluenceFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _InfluenceFocus_vue_vue_type_template_id_d8014df6___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _InfluenceFocus_vue_vue_type_template_id_d8014df6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/InfluenceFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/InfluenceFocus.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/Focus/InfluenceFocus.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluenceFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./InfluenceFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/InfluenceFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluenceFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/InfluenceFocus.vue?vue&type=template&id=d8014df6&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/Focus/InfluenceFocus.vue?vue&type=template&id=d8014df6& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluenceFocus_vue_vue_type_template_id_d8014df6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./InfluenceFocus.vue?vue&type=template&id=d8014df6& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/InfluenceFocus.vue?vue&type=template&id=d8014df6&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluenceFocus_vue_vue_type_template_id_d8014df6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluenceFocus_vue_vue_type_template_id_d8014df6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -89507,13 +90014,33 @@ var helpers = {
 
     return kills;
   },
+  factionWinningAreas: function factionWinningAreas(faction, factions, areas, areaLeaders) {
+    var _this11 = this;
+
+    var winningAreas = [];
+    Object.keys(areas).forEach(function (areaName) {
+      if (areaLeaders[areaName] && areaLeaders[areaName] === faction.name) winningAreas.push(areaName);
+    });
+
+    if (factions['loyalists']) {
+      var queen = factions['loyalists'].units.find(function (unit) {
+        return _this11.unitInPlay(unit) && unit.type === 'champion';
+      });
+      if (queen) winningAreas = winningAreas.filter(function (area) {
+        return area !== queen.location;
+      });
+    }
+
+    return winningAreas;
+  },
   factionKillsInEnemy: function factionKillsInEnemy(faction, factions, areas) {
     var areaLeaders = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var enemyAreas = [];
 
     if (areaLeaders) {
+      var winningAreas = this.factionWinningAreas(faction, factions, areas, areaLeaders);
       Object.keys(areas).forEach(function (areaName) {
-        if (areaLeaders[areaName] && areaLeaders[areaName] !== faction.name) enemyAreas.push(areaName);
+        if (!winningAreas.includes(areaName)) enemyAreas.push(areaName);
       });
     } else {
       Object.values(areas).forEach(function (area) {
@@ -89541,7 +90068,7 @@ var helpers = {
     return Object.keys(types).length ? types : false;
   },
   killsInArea: function killsInArea(factionName, areaName, factions) {
-    var _this11 = this;
+    var _this12 = this;
 
     if (typeof factionName !== 'string') factionName = factionName.name;
     if (typeof areaName !== 'string') areaName = areaName.name;
@@ -89549,7 +90076,7 @@ var helpers = {
     this.forEach(factions, function (faction, name) {
       if (name === factionName) return;
       kills += faction.units.filter(function (unit) {
-        return _this11.factionKilledUnitHere(factionName, unit, areaName);
+        return _this12.factionKilledUnitHere(factionName, unit, areaName);
       }).length;
     });
     return kills;
@@ -89660,7 +90187,7 @@ var helpers = {
     }).length;
   },
   policePayoffs: function policePayoffs(faction, area, units) {
-    var _this12 = this;
+    var _this13 = this;
 
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
@@ -89669,8 +90196,8 @@ var helpers = {
     _.forEach(area.cards, function (card) {
       if (card["class"] === 'police-payoff' // if there is a police payoff here
       && card.owner !== faction.name // which we don't own
-      && !_this12.hasKauImmunity(faction, area) // and we don't already have kau immunity in this area
-      && !_this12.find(units, function (unit) {
+      && !_this13.hasKauImmunity(faction, area) // and we don't already have kau immunity in this area
+      && !_this13.find(units, function (unit) {
         return unit.type === 'champion' && unit.faction === 'aliens';
       })) // and we aren't deploying kau
         {

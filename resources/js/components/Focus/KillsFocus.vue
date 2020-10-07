@@ -1,5 +1,5 @@
 <template>
-    <div  class="d-flex justify-center plan-focus mr-4 primary-light align-center">
+    <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
         total kills :<span class="highlight ml-2">{{ kills }}</span>
     </div>
 </template>
@@ -9,6 +9,7 @@
     export default {
 
         name: 'fusion-focus',
+        props: ['classes', 'faction'],
 
         data() {
             return {
@@ -17,7 +18,7 @@
         },
         computed : {
             kills(){
-                return _.factionKills( this.shared.faction, this.shared.data.factions ).length;
+                return _.factionKills( this.faction, this.shared.data.factions ).length;
             }
         }
     }

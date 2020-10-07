@@ -1,5 +1,5 @@
 <template>
-    <div  class="d-flex justify-center plan-focus mr-4 primary-light align-center">
+    <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
         areas with kills :<span class="highlight ml-2">{{ focus }}</span>
     </div>
 </template>
@@ -9,6 +9,7 @@
     export default {
 
         name: 'kill-areas-focus',
+        props: ['classes', 'faction'],
 
         data() {
             return {

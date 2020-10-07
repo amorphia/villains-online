@@ -12,6 +12,7 @@ class Aliens extends Faction {
         this.data.title = "The Centari Invasion";
         this.data.kau = null;
         this.data.farMove = false;
+        this.data.focus = 'captured-markers-focus';
         this.data.focusDescription = "Capture many enemy markers";
 
         this.capturedRewards = [

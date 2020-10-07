@@ -42,7 +42,7 @@
 
             <div class="game-controls__faction d-flex justify-end align-center">
 
-                <component v-if="shared.faction.focus" :is="shared.faction.focus"></component>
+                <component v-if="shared.faction.focus" :is="shared.faction.focus" classes="justify-center" :faction="shared.faction"></component>
 
                 <div  class="d-flex justify-end align-center" @click="setPopout( 'score' )">
                     <div class="game-controls__button game-controls__item scoreboard-text"

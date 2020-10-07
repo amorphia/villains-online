@@ -1,5 +1,5 @@
 <template>
-    <div  class="d-flex justify-center plan-focus mr-4 primary-light align-center">
+    <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
         areas with tokens :<span class="highlight ml-2">{{ focus }}</span>
     </div>
 </template>
@@ -9,6 +9,7 @@
     export default {
 
         name: 'token-focus',
+        props: ['classes', 'faction'],
 
         data() {
             return {
@@ -17,7 +18,7 @@
         },
         computed : {
             focus(){
-                return _.areasWithTokensCount( this.shared.faction, this.shared.data.areas );
+                return _.areasWithTokensCount( this.faction, this.shared.data.areas );
             }
         }
     }

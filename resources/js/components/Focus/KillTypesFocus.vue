@@ -1,5 +1,5 @@
 <template>
-    <div  class="d-flex justify-center plan-focus mr-4 primary-light align-center">
+    <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
         <div class="mr-3">types killed :<span class="highlight ml-2">{{ totalTypesKilled }}</span></div>
         <div class="mr-3" title="Moles and Talents Killed">mt :<span class="highlight ml-2">{{ moleTalent }}</span></div>
         <div class="mr-2" title="Goons and Champions Killed">gc :<span class="highlight ml-2">{{ goonChampion }}</span></div>
@@ -11,6 +11,7 @@
     export default {
 
         name: 'kill-areas-focus',
+        props: ['classes', 'faction'],
 
         data() {
             return {
@@ -46,7 +47,7 @@
             },
 
             typesKilled(){
-                return _.factionTypesKilled( this.shared.faction, this.shared.data.factions );
+                return _.factionTypesKilled( this.faction, this.shared.data.factions );
             }
         }
     }

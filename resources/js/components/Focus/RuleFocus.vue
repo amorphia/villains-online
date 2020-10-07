@@ -1,5 +1,5 @@
 <template>
-    <div  class="d-flex justify-center plan-focus mr-4 primary-light align-center">
+    <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
         total :<span class="highlight ml-2 mr-3">{{ rules.total }}</span>
         areas :<span class="highlight ml-2 mr-3">{{ rules.areas }}</span>
         same area :<span class="highlight ml-2 mr-3">{{ rules.stack }}</span>
@@ -11,6 +11,7 @@
     export default {
 
         name: 'rule-focus',
+        props: ['classes', 'faction'],
 
         data() {
             return {
@@ -20,7 +21,7 @@
 
         computed : {
             rules(){
-                return _.rulesPlayed( this.shared.faction, this.shared.data.areas );
+                return _.rulesPlayed( this.faction, this.shared.data.areas );
             }
         }
     }

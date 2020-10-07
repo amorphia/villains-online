@@ -504,12 +504,27 @@ let helpers = {
     },
 
 
+    factionWinningAreas( faction, factions, areas, areaLeaders ){
+        let winningAreas = [];
+        Object.keys( areas ).forEach( areaName => {
+            if( areaLeaders[areaName] && areaLeaders[areaName] === faction.name ) winningAreas.push( areaName );
+        });
+
+        if( factions['loyalists']){
+            let queen = factions['loyalists'].units.find( unit => this.unitInPlay( unit ) && unit.type === 'champion' );
+            if( queen ) winningAreas = winningAreas.filter( area => area !== queen.location );
+        }
+
+        return winningAreas;
+    },
+
     factionKillsInEnemy( faction, factions, areas, areaLeaders = false ){
         let enemyAreas = [];
 
         if( areaLeaders ){
+            let winningAreas = this.factionWinningAreas( faction, factions, areas, areaLeaders );
             Object.keys( areas ).forEach( areaName => {
-                if( areaLeaders[areaName] && areaLeaders[areaName] !== faction.name ) enemyAreas.push( areaName );
+                if( !winningAreas.includes( areaName ) ) enemyAreas.push( areaName );
             });
         } else {
             Object.values( areas ).forEach( area => {

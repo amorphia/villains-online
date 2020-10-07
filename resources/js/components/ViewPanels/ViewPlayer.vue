@@ -54,7 +54,10 @@
 
 
                     <div class="view-player__title">Plan Focus:</div>
-                    <div class="prompt-question p-4">{{ faction.focusDescription }}</div>
+                    <div class="prompt-question p-4">{{ faction.focusDescription }}
+                        <component v-if="faction.focus" :is="faction.focus" :faction="faction"></component>
+                    </div>
+
 
                     <div v-if="target">
                         <div class="view-player__title">Current Target:</div>
