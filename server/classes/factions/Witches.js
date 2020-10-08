@@ -180,12 +180,11 @@ class Witches extends Faction {
     async cordellaHit( event ){
         let player = {}, data = {};
 
-        for( let i = 0; i < event.hits; i++ ){
-            this.message({ message: `<span class="faction-witches">The Mirror Mother</span> looks into possible futures` });
-            this.drawCards( 1, true );
-            [player, data] = await this.game().promise({ players: this.playerId, name: 'discard-card', data : {} });
-            this.discardCard( data.cardId );
-        }
+        this.message({ message: `<span class="faction-witches">The Mirror Mother</span> looks into possible futures` });
+        this.drawCards( event.hits, true );
+        [player, data] = await this.game().promise({ players: this.playerId, name: 'discard-card', data : { count: event.hits } });
+        this.discardCard( data.cards );
+
     }
 
     cordellaFirstDeploy( event ){

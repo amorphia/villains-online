@@ -37,10 +37,9 @@
                                 <img class="plan-block__image" :src="`/images/factions/${shared.faction.name}/plans/${object.num}.jpg`">
                             </div>
                         </div>
+                        <!-- plan mode -->
 
                         <!-- card mode -->
-
-                        <!-- plan mode -->
                         <div v-if="mode === 'cards'" class="d-flex pb-3 width-100"
                              v-for="object in shared.faction.cards.hand">
 

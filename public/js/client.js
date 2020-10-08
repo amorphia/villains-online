@@ -6481,7 +6481,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-target',
   data: function data() {
@@ -7507,20 +7506,72 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'discard-card',
   data: function data() {
     return {
-      shared: App.state,
-      index: 0
+      shared: App.state
     };
   },
   methods: {
-    saveChoices: function saveChoices() {
-      this.shared.respond('discard-card', {
-        faction: this.shared.faction.name,
-        cardId: this.shared.faction.cards.hand[this.index].id
+    cardClicked: function cardClicked(card) {
+      var _this = this;
+
+      if (card.selected) {
+        this.$set(card, 'selected', false);
+      } else {
+        if (this.needToSelect === 0) {
+          if (this.data.count > 1) {
+            return;
+          }
+
+          this.selected.forEach(function (item) {
+            return _this.$set(item, 'selected', false);
+          });
+        }
+
+        this.$set(card, 'selected', true);
+      }
+    },
+    resolve: function resolve(action) {
+      var data = {};
+      data.cards = _.map(this.selected, 'id');
+      data = Object.assign({}, this.data, data);
+      this.shared.respond('discard-card', data);
+    }
+  },
+  computed: {
+    data: function data() {
+      return this.shared.player.prompt.data;
+    },
+    message: function message() {
+      return this.data.count === 1 ? 'Discard a card' : "Discard ".concat(this.data.count, " cards");
+    },
+    selected: function selected() {
+      return this.shared.faction.cards.hand.filter(function (card) {
+        return card.selected;
       });
+    },
+    needToSelect: function needToSelect() {
+      return this.data.count - this.selected.length;
+    },
+    canSubmit: function canSubmit() {
+      return this.needToSelect === 0;
     }
   }
 });
@@ -60817,31 +60868,63 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("player-prompt", { attrs: { classes: "" } }, [
     _c("div", { staticClass: "d-flex justify-center px-5" }, [
-      _c(
-        "div",
-        { staticClass: "choose-target__plans p-3" },
-        [
-          _c("div", { staticClass: "title" }, [
-            _vm._v("Choose a card to discard")
-          ]),
-          _vm._v(" "),
-          _c("card-picker", {
-            attrs: { cards: _vm.shared.faction.cards.hand, type: "card" },
-            on: {
-              updated: function(selected) {
-                return (_vm.index = selected)
-              }
-            }
-          })
-        ],
-        1
-      )
+      _c("div", { staticClass: "width-100 center-text" }, [
+        _c("div", { staticClass: "title d-inline-block" }, [
+          _vm._v(_vm._s(_vm.message))
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          [
+            _c(
+              "horizontal-scroll",
+              {
+                attrs: {
+                  classes:
+                    "choose-target__wrap d-flex pb-3 width-100 plan-block",
+                  buttons: "true"
+                }
+              },
+              _vm._l(_vm.shared.faction.cards.hand, function(card) {
+                return _c("div", { staticClass: "d-flex pb-3 width-100" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "plan-block__image-wrap",
+                      class: { selected: card.selected },
+                      on: {
+                        click: function($event) {
+                          return _vm.cardClicked(card)
+                        }
+                      }
+                    },
+                    [
+                      _c("img", {
+                        staticClass: "plan-block__image",
+                        attrs: { src: "/images/cards/" + card.file + ".jpg" }
+                      })
+                    ]
+                  )
+                ])
+              }),
+              0
+            )
+          ],
+          1
+        )
+      ])
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "width-100 d-flex justify-center" }, [
-      _c("button", { staticClass: "button", on: { click: _vm.saveChoices } }, [
-        _vm._v("Discard selected card")
-      ])
+      _c(
+        "button",
+        {
+          staticClass: "button",
+          attrs: { disabled: !_vm.canSubmit },
+          on: { click: _vm.resolve }
+        },
+        [_vm._v("Discard selected cards")]
+      )
     ])
   ])
 }

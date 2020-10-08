@@ -362,9 +362,9 @@ class Shakedown extends Card {
             _.forEach( faction.game().factions, item => {
                if( item.data.cards.hand.length > 0 && item.name !== faction.name ){
                    console.log( 'shakedown sent to', item.name );
-                   promises.push( faction.game().promise({ players: item.playerId, name: 'discard-card', data : {} }).then( ([player, data]) => {
-                       let eventFaction = faction.game().factions[data.faction];
-                       eventFaction.discardCard( data.cardId );
+                   promises.push( faction.game().promise({ players: item.playerId, name: 'discard-card', data : { count : 1 } }).then( ([player, data]) => {
+                       let eventFaction = faction.game().factions[item.name];
+                       eventFaction.discardCard( data.cards );
                        player.setPrompt({ active : false, playerUpdate : true });
                    }));
                }

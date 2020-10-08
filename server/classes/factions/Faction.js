@@ -372,22 +372,33 @@ class Faction {
         return true;
     }
 
-    discardCard( card ){
-        if( typeof card === 'string' ) card = this.game().objectMap[card];
+    discardCard( cards ){
+        if( !Array.isArray( cards ) ) cards = [cards];
 
-        let message = `discard <span class="highlight">${card.name}</span>`;
+        cards = cards.map( card => {
+            return typeof card === 'string' ? this.game().objectMap[card] : card;
+        });
+
+        console.log( 'cards', cards );
+
+        for( let card of cards ) {
+            console.log( 'cardId', card.id, 'hand', this.data.cards.hand, 'discard', this.game().deck.discard );
+            _.moveItemById(
+                card.id,
+                this.data.cards.hand,
+                this.game().deck.discard
+            );
+        }
+
+        console.log( 'hand', this.data.cards.hand, 'discard', this.game().deck.discard );
+
+        let message = `discards cards`;
         this.game().message({
             faction : this,
             message: message,
             type: 'cards',
-            cards: [card]
+            cards: cards
         });
-
-        _.moveItemById(
-            card.id,
-            this.data.cards.hand,
-            this.game().deck.discard
-        );
     }
 
 
