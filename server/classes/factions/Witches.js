@@ -13,6 +13,7 @@ class Witches extends Faction {
         this.data.focus = 'rule-focus';
         this.data.focusDescription = "Play many rule cards";
         this.data.darkEnergy = 0;
+        this.data.cordellaDeployed = false;
         this.data.darkEnergyMax = 3;
 
         // icons
@@ -45,14 +46,17 @@ class Witches extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 3,
-                attack: [9,9,9],
+                attack: [8,8,8],
                 cost: 1,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
+                onHit: 'cordellaHit',
+                onDeploy : 'cordellaFirstDeploy'
             }
         };
     }
+
 
 
     async revealMagick( area ){
@@ -166,29 +170,46 @@ class Witches extends Faction {
         let areas = this.areas();
 
         this.data.units.forEach( unit => {
-            if(
-                unit.location
-                && areas.includes( unit.location )
-                && !unit.flipped
-                && !unit.killed
-            ) {
+            if( _.unitInPlay( unit ) && !unit.flipped ) {
                 unit.flipped = true;
                 unit.redeployFree = true;
             }
         });
     }
 
-    resetDarkEnergy() {
+    async cordellaHit( event ){
+        let player = {}, data = {};
+
+        for( let i = 0; i < event.hits; i++ ){
+            this.message({ message: `<span class="faction-witches">The Mirror Mother</span> looks into possible futures` });
+            this.drawCards( 1, true );
+            [player, data] = await this.game().promise({ players: this.playerId, name: 'discard-card', data : {} });
+            this.discardCard( data.cardId );
+        }
+    }
+
+    cordellaFirstDeploy( event ){
+        if( !this.data.cordellaDeployed ){
+            this.data.cordellaDeployed = true;
+            this.resetDarkEnergy();
+        }
+    }
+
+    checkCordellaCapture(){
         let cordella = this.data.units.find( unit => unit.type === 'champion' && !unit.killed );
         if( ! cordella || ! this.data.areasCapturedThisTurn.includes( cordella.location ) ) return;
 
+        this.resetDarkEnergy();
+    }
+
+    resetDarkEnergy() {
         this.game().message({ faction : this, message: `Cordella channels dark energy` });
         this.data.darkEnergy = this.data.darkEnergyMax;
     }
 
     factionCleanUp(){
         this.enchantUnits();
-        this.resetDarkEnergy();
+        this.checkCordellaCapture();
     }
 
     unitUnflipped( unit ) {

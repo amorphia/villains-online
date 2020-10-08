@@ -33,7 +33,7 @@
                         && !areas.includes( token.location )
                     ) areas.push( token.location );
                 });
-                
+
                 return areas.length;
             }
         }
