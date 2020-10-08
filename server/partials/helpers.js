@@ -410,6 +410,7 @@ let helpers = {
         let tokens = this.getTokenCounts( faction, area );
 
         if( cards['rousing-speech'] ) influence += (2 * cards['rousing-speech']);
+        if( cards['blown-cover'] ) influence += cards['blown-cover'];
         if( cards['march-the-streets'] && tokens['deploy'] ) influence += ( 2 * cards['march-the-streets'] * tokens['deploy'] );
         if( cards['display-of-brilliance'] && tokens['card'] ) influence += ( 2 * cards['display-of-brilliance'] * tokens['card'] );
         return influence;

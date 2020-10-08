@@ -133,16 +133,16 @@ class Area {
 
     canBattle(){
         if( _.find( this.data.cards, card => card.class === 'cease-fire' ) ) return false;
-        let factionsWithUnits = 0;
-        let factionsWithAttackingUnits = 0;
+        return this.factionsWithUnits().length >= 2 && this.factionsWithUnits( { withAttack : true  }).length >= 1;
+    }
 
+    factionsWithUnits( options = {} ){
+        let factions = [];
         _.forEach( this.game().factions, faction => {
-            let units = faction.data.units.filter( unit => _.unitInArea( unit, this ) );
-            if( units.length > 0 ) factionsWithUnits++;
-            if( _.find( units, unit => unit.attack.length > 0 ) ) factionsWithAttackingUnits++
+            if( faction.data.units.find( unit => _.unitInArea( unit, this ) && (!options.withAttack || unit.attack.length > 0) ) ) factions.push( faction.name );
         });
 
-        return factionsWithUnits >= 2 && factionsWithAttackingUnits >= 1;
+        return factions;
     }
 
 

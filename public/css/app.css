@@ -48,6 +48,12 @@
 .icon-toughness-solid:before {
     content: "\E95C";
 }
+.icon-blown-cover:before {
+    content: "\E904";
+}
+.icon-total-war:before {
+    content: "\E905";
+}
 .icon-henchman:before {
     content: "\E902";
 }

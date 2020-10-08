@@ -52,8 +52,9 @@ let obj = [
         name : "Blown Cover",
         cost : 0,
         target : 'university',
-        type : 'event',
+        type : 'rule',
         scope : 'local',
+        description : 'your gain +1 influence in this area'
     },
     {
         class : 'blown-cover',
@@ -61,8 +62,9 @@ let obj = [
         name : "Blown Cover",
         cost : 0,
         target : 'bank',
-        type : 'event',
+        type : 'rule',
         scope : 'local',
+        description : 'your gain +1 influence in this area'
     },
     {
         class : 'cease-fire',
@@ -594,13 +596,23 @@ let obj = [
         description : 'units may not be deployed or moved into this area, no player may control this area, you have exterminated this area'
     },
     {
+        class : 'to-the-death',
+        file : 'to-the-death-1',
+        name : "To The Death",
+        cost : 0,
+        target : 'subway',
+        type : 'event',
+        scope : 'local',
+    },
+    {
         class : 'total-war',
         file : 'total-war-1',
         name : "Total War",
         cost : 0,
         target : 'university',
-        type : 'event',
+        type : 'rule',
         scope : 'global',
+        description : 'your units gain +1 to their attack rolls'
     },
     {
         class : 'total-war',
@@ -608,8 +620,9 @@ let obj = [
         name : "Total War",
         cost : 0,
         target : 'bank',
-        type : 'event',
+        type : 'rule',
         scope : 'global',
+        description : 'your units gain +1 to their attack rolls'
     },
     {
         class : 'trapped-like-rats',
