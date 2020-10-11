@@ -177,7 +177,7 @@ class Faction {
 
     godMode(){
         console.log( 'god mode enabled' );
-        this.data.cardDraw = 36;
+        this.data.cardDraw = 17;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;
     }
@@ -382,15 +382,12 @@ class Faction {
         console.log( 'cards', cards );
 
         for( let card of cards ) {
-            console.log( 'cardId', card.id, 'hand', this.data.cards.hand, 'discard', this.game().deck.discard );
             _.moveItemById(
                 card.id,
                 this.data.cards.hand,
                 this.game().deck.discard
             );
         }
-
-        console.log( 'hand', this.data.cards.hand, 'discard', this.game().deck.discard );
 
         let message = `discards cards`;
         this.game().message({

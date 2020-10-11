@@ -6186,6 +6186,99 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseMagick.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseMagick.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'discard-card',
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  methods: {
+    cardClicked: function cardClicked(card) {
+      if (card.selected) {
+        this.$set(card, 'selected', false);
+      } else {
+        if (this.selected.length || card.type !== 'rule') return;
+        this.$set(card, 'selected', true);
+      }
+    },
+    resolve: function resolve(action) {
+      var data = {};
+
+      if (action) {
+        data.selected = this.selected[0].id;
+        data.unselected = this.data.cards.filter(function (card) {
+          return !card.selected;
+        }).map(function (card) {
+          return card.id;
+        });
+      } else {
+        data.unselected = this.data.cards.map(function (card) {
+          return card.id;
+        });
+      }
+
+      data = Object.assign({}, this.data, data);
+      this.shared.respond('choose-magick', data);
+    }
+  },
+  computed: {
+    data: function data() {
+      return this.shared.player.prompt.data;
+    },
+    selected: function selected() {
+      return this.data.cards.filter(function (card) {
+        return card.selected;
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js&":
 /*!****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js& ***!
@@ -6562,6 +6655,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-tokens',
   data: function data() {
@@ -6571,7 +6665,11 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    canSubmit: function canSubmit() {
+      return this.needToSelect === 0 || this.data.optional;
+    },
     message: function message() {
+      if (this.data.message) return this.data.message;
       var message = [];
       message.push("Choose ".concat(this.data.count)); //if( this.data.playerOnly ) message.push( 'of your' );
 
@@ -6611,7 +6709,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     resolve: function resolve() {
       var data = {};
-      data.tokens = _.map(this.selected, 'id');
+      if (this.selected.length) data.tokens = _.map(this.selected, 'id');
       data = Object.assign({}, this.data, data);
       this.shared.respond('choose-tokens', data);
     },
@@ -59732,6 +59830,114 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseMagick.vue?vue&type=template&id=05a06260&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseMagick.vue?vue&type=template&id=05a06260& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("player-prompt", { attrs: { classes: "" } }, [
+    _c("div", { staticClass: "d-flex justify-center px-5" }, [
+      _c("div", { staticClass: "width-100 center-text" }, [
+        _c("div", { staticClass: "title d-inline-block" }, [
+          _vm._v(
+            "Choose a rule card to play in the " +
+              _vm._s(_vm.data.area) +
+              " for free"
+          )
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          [
+            _c(
+              "horizontal-scroll",
+              {
+                attrs: {
+                  classes:
+                    "choose-target__wrap d-flex pb-3 width-100 plan-block",
+                  buttons: "true"
+                }
+              },
+              _vm._l(_vm.data.cards, function(card) {
+                return _c("div", { staticClass: "d-flex pb-3 width-100" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "plan-block__image-wrap",
+                      class: {
+                        selected: card.selected,
+                        "opacity-5": card.type !== "rule"
+                      },
+                      on: {
+                        click: function($event) {
+                          return _vm.cardClicked(card)
+                        }
+                      }
+                    },
+                    [
+                      _c("img", {
+                        staticClass: "plan-block__image",
+                        attrs: { src: "/images/cards/" + card.file + ".jpg" }
+                      })
+                    ]
+                  )
+                ])
+              }),
+              0
+            )
+          ],
+          1
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "width-100 d-flex justify-center" }, [
+      _c(
+        "button",
+        {
+          staticClass: "button button-empty",
+          on: {
+            click: function($event) {
+              return _vm.resolve(false)
+            }
+          }
+        },
+        [_vm._v("decline")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "button",
+          attrs: { disabled: !this.selected.length },
+          on: {
+            click: function($event) {
+              return _vm.resolve(true)
+            }
+          }
+        },
+        [_vm._v("Submit")]
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a&":
 /*!********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a& ***!
@@ -60254,11 +60460,22 @@ var render = function() {
             : _vm._e(),
           _vm._v(" "),
           _c("div", {}, [
+            _vm.data.optional
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "button button-empty",
+                    on: { click: _vm.resolve }
+                  },
+                  [_vm._v("DECLINE")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
             _c(
               "button",
               {
                 staticClass: "button",
-                attrs: { disabled: _vm.needToSelect > 0 },
+                attrs: { disabled: !_vm.canSubmit },
                 on: { click: _vm.resolve }
               },
               [_vm._v("SAVE")]
@@ -78567,6 +78784,7 @@ var map = {
 	"./Prompts/ChooseCard.vue": "./resources/js/components/Prompts/ChooseCard.vue",
 	"./Prompts/ChooseFactions.vue": "./resources/js/components/Prompts/ChooseFactions.vue",
 	"./Prompts/ChooseHitman.vue": "./resources/js/components/Prompts/ChooseHitman.vue",
+	"./Prompts/ChooseMagick.vue": "./resources/js/components/Prompts/ChooseMagick.vue",
 	"./Prompts/ChoosePod.vue": "./resources/js/components/Prompts/ChoosePod.vue",
 	"./Prompts/ChooseSkill.vue": "./resources/js/components/Prompts/ChooseSkill.vue",
 	"./Prompts/ChooseSpy.vue": "./resources/js/components/Prompts/ChooseSpy.vue",
@@ -84137,6 +84355,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseHitman_vue_vue_type_template_id_0dc5232e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseHitman_vue_vue_type_template_id_0dc5232e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChooseMagick.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/Prompts/ChooseMagick.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ChooseMagick_vue_vue_type_template_id_05a06260___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChooseMagick.vue?vue&type=template&id=05a06260& */ "./resources/js/components/Prompts/ChooseMagick.vue?vue&type=template&id=05a06260&");
+/* harmony import */ var _ChooseMagick_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChooseMagick.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/ChooseMagick.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ChooseMagick_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ChooseMagick_vue_vue_type_template_id_05a06260___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ChooseMagick_vue_vue_type_template_id_05a06260___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Prompts/ChooseMagick.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChooseMagick.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/Prompts/ChooseMagick.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseMagick_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseMagick.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseMagick.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseMagick_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChooseMagick.vue?vue&type=template&id=05a06260&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/ChooseMagick.vue?vue&type=template&id=05a06260& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseMagick_vue_vue_type_template_id_05a06260___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseMagick.vue?vue&type=template&id=05a06260& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseMagick.vue?vue&type=template&id=05a06260&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseMagick_vue_vue_type_template_id_05a06260___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseMagick_vue_vue_type_template_id_05a06260___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

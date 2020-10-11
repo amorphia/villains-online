@@ -9,7 +9,8 @@
                 </area-flipper>
 
                 <div class="">
-                    <button class="button" @click="resolve" :disabled="needToSelect > 0">SAVE</button>
+                    <button v-if="data.optional" class="button button-empty" @click="resolve">DECLINE</button>
+                    <button class="button" @click="resolve" :disabled="!canSubmit">SAVE</button>
                 </div>
             </div>
         </div>
@@ -30,7 +31,13 @@
 
         computed : {
 
+            canSubmit(){
+                return this.needToSelect === 0 || this.data.optional;
+            },
+
             message(){
+                if( this.data.message ) return this.data.message;
+
                 let message = [];
                 message.push( `Choose ${ this.data.count }` );
                 //if( this.data.playerOnly ) message.push( 'of your' );
@@ -72,7 +79,7 @@
         methods : {
             resolve(){
                 let data = {};
-                data.tokens = _.map( this.selected, 'id' );
+                if( this.selected.length ) data.tokens = _.map( this.selected, 'id' );
                 data = Object.assign( {}, this.data, data );
 
                 this.shared.respond( 'choose-tokens', data );
