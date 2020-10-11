@@ -215,6 +215,11 @@
 
                 // targets
                 _.forEach( this.shared.data.factions, faction => {
+
+                    if( faction.name === 'hackers' && faction.hax0red.includes( this.area.name )){
+                        stats.push({ name : 'hax0red', owner : faction.name, title : 'hax0red', description : `the ${faction.name} have hax0red this area` } )
+                    }
+
                     if( faction.cards.target.length && this.shared.canSeeTarget( faction ) && faction.cards.target[0].target === this.area.name ){
                         stats.push({ name : 'target', owner : faction.name, title : '+1AP', description : `the ${faction.name} are targeting this area` } )
                     }

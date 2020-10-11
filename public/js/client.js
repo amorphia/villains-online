@@ -11439,6 +11439,15 @@ __webpack_require__.r(__webpack_exports__);
       var stats = []; // targets
 
       _.forEach(this.shared.data.factions, function (faction) {
+        if (faction.name === 'hackers' && faction.hax0red.includes(_this4.area.name)) {
+          stats.push({
+            name: 'hax0red',
+            owner: faction.name,
+            title: 'hax0red',
+            description: "the ".concat(faction.name, " have hax0red this area")
+          });
+        }
+
         if (faction.cards.target.length && _this4.shared.canSeeTarget(faction) && faction.cards.target[0].target === _this4.area.name) {
           stats.push({
             name: 'target',

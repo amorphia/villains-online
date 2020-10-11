@@ -11,6 +11,7 @@ class Hackers extends Faction {
         this.data.name = this.name;
         this.data.focus = 'skills-focus';
         this.data.focusDescription = "Activate many area skill abilities";
+        this.data.hax0red = [];
 
         this.data.title = "The Kaos Klub";
         this.data.baseMaxEnergy = this.data.maxEnergy = 9;
@@ -63,7 +64,7 @@ class Hackers extends Faction {
 
     async onBeforeSkill( area ){
         let player = {}, data = {};
-        if( this.data.resources <= 0 ) return console.log( 'No resources to double skill' );
+        if( this.data.resources <= 0 || this.data.hax0red.includes( area.name ) ) return this.game().message({ message: `Hackers can't double the skill ability in the ${area.name}`, class : 'warning'});
 
         [player, data] = await this.game().promise({
             players: this.playerId,
@@ -80,6 +81,7 @@ class Hackers extends Faction {
         }
 
         this.data.resources--;
+        this.data.hax0red.push( area.name );
         this.message({ message: `The hackers pay xRx to resolve the ${area.name} skill twice`, faction : this });
         return { doubleResolve : true };
     }
