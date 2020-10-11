@@ -291,6 +291,7 @@ let helpers = {
         return unit.location === area
                 && !unit.killed
                 && ( !options.basic || unit.basic )
+                && ( !options.flipped || unit.flipped )
                 && ( !options.type || options.type === unit.type )
                 && ( !options.notHidden || !unit.hidden );
     },

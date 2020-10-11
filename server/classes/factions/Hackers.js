@@ -64,7 +64,7 @@ class Hackers extends Faction {
 
     async onBeforeSkill( area ){
         let player = {}, data = {};
-        if( this.data.resources <= 0 || this.data.hax0red.includes( area.name ) ) return this.game().message({ message: `Hackers can't double the skill ability in the ${area.name}`, class : 'warning'});
+        if( this.money() < 1 || this.data.hax0red.includes( area.name ) ) return this.game().message({ message: `Hackers can't double the skill ability in the ${area.name}`, class : 'warning'});
 
         [player, data] = await this.game().promise({
             players: this.playerId,
@@ -80,7 +80,7 @@ class Hackers extends Faction {
             return;
         }
 
-        this.data.resources--;
+        this.payCost( 1 );
         this.data.hax0red.push( area.name );
         this.message({ message: `The hackers pay xRx to resolve the ${area.name} skill twice`, faction : this });
         return { doubleResolve : true };
