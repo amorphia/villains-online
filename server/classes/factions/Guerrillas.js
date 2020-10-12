@@ -23,14 +23,12 @@ class Guerrillas extends Faction {
         // tokens
         this.tokens['battle'].count = 2;
 
-        this.tokens['traps'] = {
+        this.tokens['snipers'] = {
             count: 1,
             data: {
                 influence: 1,
-                type: 'traps',
+                type: 'snipers',
                 resource: 1,
-                areaStat : true,
-                description : 'enemy players must pay 1 to move or re-deploy units from here',
                 cost: 0,
             }
         };
@@ -47,7 +45,7 @@ class Guerrillas extends Faction {
         this.units['mole'].data.redeployFree = true;
 
         this.units['patsy'].count = 5;
-        this.units['patsy'].data.attack = [9, 9];
+        this.units['patsy'].data.attack = [8, 8];
 
         this.units['champion'] = {
             count: 1,
@@ -72,20 +70,22 @@ class Guerrillas extends Faction {
        this.data.skips.max = n;
     }
 
-    async onAfterSkill( area, units ) {
-        let player, data;
+    canActivateSnipers( token, area ) {
+        return !! this.areasWithEnemyUnits({adjacent: area.name }).length;
+    }
 
-        if (!units.length) return;
+    async snipersToken( args ) {
+        let player, data, area = args.area;
 
         // get areas with units
-        let areas = this.areasWithEnemyUnits({adjacent: area.name});
+        let areas = this.areasWithEnemyUnits({adjacent: area.name });
 
-        if (!areas.length) {
-            this.game().message({faction: this, message: "snipers couldn't find a target", class: 'warning'});
+        if ( ! areas.length ) {
+            this.game().message({ faction: this, message: "snipers couldn't find a target", class: 'warning' });
             return false;
         }
 
-        this.message({faction: this, message: `Snipers are searching for targets`});
+        this.message({ faction: this, message: `Snipers are searching for targets` });
 
         // prompt player to select an area
         [player, data] = await this.game().promise({
@@ -95,27 +95,20 @@ class Guerrillas extends Faction {
                 areas: areas,
                 show: 'units',
                 enemyOnly: true,
-                message: "Choose an area to target with your sniper attack of xA4x"
+                message: "Choose an area to target with your sniper attack of xA1x"
             }
         }).catch(error => console.error(error));
 
         let targetArea = this.game().areas[data.area];
 
         // resolve attack with that unit
-        let output = await this.attack({area: targetArea, attacks: [4]});
+        let output = await this.attack({ area: targetArea, attacks: [1] });
 
         if ( output ) {
             await this.game().timedPrompt('noncombat-attack', {output: [output]})
                 .catch(error => console.error(error));
         }
-    }
 
-
-    canActivateTraps(token, area) {
-        return true;
-    }
-
-    trapsToken(args) {
         this.game().advancePlayer();
     }
 

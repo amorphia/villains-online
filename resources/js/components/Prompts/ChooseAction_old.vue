@@ -59,23 +59,6 @@
                         </div>
 
                     </div>
-
-
-                    <!-- loop display -->
-                    <div v-if="action.name === 'loop'"
-                         class="choose-action__skilled-units center-text">
-
-                        <token-row
-                            :area="area"
-                            :highlight="loopToken">
-                        </token-row>
-
-                        <div class="width-100 choose-action__skill-ability">
-                            Replace Loop token with a face down token from your reserves?
-                        </div>
-
-                    </div>
-
                 </area-flipper>
 
                 <div class="d-flex justify-center">
@@ -124,10 +107,7 @@
                 let actionKeys = Object.keys( this.actions );
                 if( actionKeys.length === 1 ){
                     let actionSet = this.actions[actionKeys[0]];
-                    if( actionKeys[0] === 'pass'
-                        || actionKeys[0] === 'locked'
-                        || actionKeys[0] === 'skip'
-                        || actionSet.length === 1 ){
+                    if( actionKeys[0] === 'pass' || actionKeys[0] === 'locked' || actionKeys[0] === 'skip' || actionSet.length === 1 ){
                         this.setAction( actionKeys[0] );
                     }
                 }
@@ -155,10 +135,6 @@
                 }
 
                 if( name === 'magick' ){
-                    action.area = param ?? this.actions[name][0];
-                }
-
-                if( name === 'loop' ){
                     action.area = param ?? this.actions[name][0];
                 }
 
@@ -193,9 +169,6 @@
                 // can we magick?
                 if( this.useableMagick.length ) actions.magick = this.useableMagick;
 
-                // can we loop?
-                if( this.useableLoop.length ) actions.loop = this.useableLoop;
-
                 // can we declare ourselves locked?
                 if( !this.revealableTokens.length && this.activeTokens.length ) actions.locked = true;
 
@@ -217,9 +190,6 @@
                         args = [this.action.token.id];
                         break;
                     case 'magick':
-                        args = [this.action.area];
-                        break;
-                    case 'loop':
                         args = [this.action.area];
                         break;
                 }
@@ -293,9 +263,6 @@
                     case 'magick':
                         message = `Use magick in the ${this.area.name}`;
                         break;
-                    case 'loop':
-                        message = `Replace Loop token`;
-                        break;
                 }
                 return this.saveDisabled ? "Choose your action" : message;
             },
@@ -366,18 +333,8 @@
                 return areas;
             },
 
-            loopToken(){
-                return this.shared.faction.tokens.find( token => token.type === 'loop' && token.revealed && token.location );
-            },
-
-            useableLoop(){
-                let reserves = this.shared.faction.tokens.find( token => !token.location );
-                return this.loopToken && reserves ? [this.loopToken.location] : [];
-            },
-
             useableMagick(){
                 let areas = [];
-                if( this.shared.faction.name !== 'witches' ) return areas;
 
                 _.forEach( this.shared.data.areas, area => {
                     if( _.canUseMagick( this.shared.faction, area, this.shared.data.factions ) ){

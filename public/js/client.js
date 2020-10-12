@@ -5457,6 +5457,420 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'choose-action',
+  data: function data() {
+    return {
+      shared: App.state,
+      action: null,
+      actions: {}
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    App.event.on('actionClicked', function (args) {
+      return _this.setAction.apply(_this, _toConsumableArray(args));
+    });
+    this.generateActions();
+    this.setDefaultAction();
+  },
+  methods: {
+    setDefaultAction: function setDefaultAction() {
+      var actionKeys = Object.keys(this.actions);
+
+      if (actionKeys.length === 1) {
+        var actionSet = this.actions[actionKeys[0]];
+
+        if (actionKeys[0] === 'pass' || actionKeys[0] === 'locked' || actionKeys[0] === 'skip' || actionSet.length === 1) {
+          this.setAction(actionKeys[0]);
+        }
+      }
+    },
+    setAction: function setAction(name, param) {
+      console.log('set action', name, param);
+      var action = {
+        name: name
+      };
+
+      if (name === 'token') {
+        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
+        action.token = this.firstUnrevealed(action.area);
+      }
+
+      if (name === 'skill') {
+        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
+      }
+
+      if (name === 'xavier') {
+        action.area = this.xavier.location;
+        action.token = this.xavier.token;
+        this.$set(this.xavier, 'placedToken', this.xavier.token);
+      }
+
+      if (name === 'magick') {
+        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
+      }
+
+      if (name === 'loop') {
+        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
+      }
+
+      if (action.area) this.shared.event.emit('areaSelected', {
+        name: action.area
+      });
+      this.action = action;
+      this.shared.action = action;
+    },
+    clearAction: function clearAction() {
+      if (this.action.name === 'xavier') this.$set(this.xavier, 'placedToken', null);
+      this.action = null;
+      this.shared.action = null;
+      App.event.emit('unselectAreas');
+    },
+    generateActions: function generateActions() {
+      var actions = {}; // can we activate skills?
+
+      if (this.useableSkills.length) actions.skill = this.useableSkills; // can we reveal tokens?
+
+      if (this.revealableTokens.length) actions.token = this.revealableTokens; // can we pass?
+
+      if (!this.activeTokens.length) actions.pass = true; // can we skip?
+
+      if (this.shared.faction.hasOwnProperty('skips') && this.shared.faction.skips.used < this.shared.faction.skips.max) actions.skip = true; // can we magick?
+
+      if (this.useableMagick.length) actions.magick = this.useableMagick; // can we loop?
+
+      if (this.useableLoop.length) actions.loop = this.useableLoop; // can we declare ourselves locked?
+
+      if (!this.revealableTokens.length && this.activeTokens.length) actions.locked = true; // can we reveal an xavier token?
+
+      if (this.canXavier) actions.xavier = this.xavier.location;
+      this.actions = actions;
+      this.shared.actions = actions;
+    },
+    saveAction: function saveAction() {
+      var _this$shared;
+
+      var args = [];
+
+      switch (this.action.name) {
+        case 'skill':
+          args = [this.action.area];
+          break;
+
+        case 'token':
+          args = [this.action.token.id];
+          break;
+
+        case 'magick':
+          args = [this.action.area];
+          break;
+
+        case 'loop':
+          args = [this.action.area];
+          break;
+      }
+
+      (_this$shared = this.shared).respond.apply(_this$shared, ['choose-action', this.action.name].concat(_toConsumableArray(args)));
+
+      this.shared.actions = null;
+      this.clearAction();
+    },
+    setPassAction: function setPassAction() {
+      this.setAction('pass');
+    },
+    setLockedAction: function setLockedAction() {
+      this.setAction('locked');
+    },
+    setSkipAction: function setSkipAction() {
+      this.setAction('skip');
+    },
+    firstUnrevealed: function firstUnrevealed(area) {
+      if (typeof area === 'string') area = this.shared.data.areas[area];
+      return _.firstUnrevealedToken(area);
+    }
+  },
+  computed: {
+    hasTopAction: function hasTopAction() {
+      return this.actions.pass || this.actions.locked || this.actions.skip;
+    },
+    showPass: function showPass() {
+      return this.actions.pass;
+    },
+    showSkip: function showSkip() {
+      return this.actions.skip;
+    },
+    showLocked: function showLocked() {
+      return this.actions.locked;
+    },
+    currentToken: function currentToken() {
+      return this.action.name === 'token' ? this.firstUnrevealed(this.area) : null;
+    },
+    buttonMessage: function buttonMessage() {
+      var message;
+
+      switch (this.action.name) {
+        case 'skill':
+          message = "Activate the ".concat(this.area.name, " skill ability");
+          break;
+
+        case 'token':
+          message = "Reveal token in the ".concat(this.area.name);
+          break;
+
+        case 'pass':
+          message = "Pass for the turn";
+          break;
+
+        case 'skip':
+          message = "Skip this action";
+          break;
+
+        case 'locked':
+          message = "Declare yourself locked";
+          break;
+
+        case 'xavier':
+          message = "Reveal token on Xavier";
+          break;
+
+        case 'magick':
+          message = "Use magick in the ".concat(this.area.name);
+          break;
+
+        case 'loop':
+          message = "Replace Loop token";
+          break;
+      }
+
+      return this.saveDisabled ? "Choose your action" : message;
+    },
+    area: function area() {
+      if (!this.action.area) return;
+      return this.shared.data.areas[this.action.area];
+    },
+    firstToken: function firstToken() {
+      if (this.action.name === 'token') {
+        return this.firstUnrevealed(this.area);
+      }
+    },
+    activeTokens: function activeTokens() {
+      return this.shared.faction.tokens.filter(function (token) {
+        return token.location && token.revealed === false && token.location !== 'xavier';
+      });
+    },
+    xavier: function xavier() {
+      if (this.shared.faction.name !== 'society') return;
+      return this.shared.faction.units.find(function (unit) {
+        return unit.type === 'champion';
+      });
+    },
+    xavierArea: function xavierArea() {
+      if (this.shared.faction.name !== 'society') return;
+      return this.shared.data.areas[this.xavier.location];
+    },
+    canXavier: function canXavier() {
+      if (this.shared.faction.name !== 'society') return;
+      return this.xavier.token;
+    },
+    revealableTokens: function revealableTokens() {
+      var _this2 = this;
+
+      var areas = [];
+
+      _.forEach(this.shared.data.areas, function (area) {
+        var firstUnrevealed = _this2.firstUnrevealed(area);
+
+        if (firstUnrevealed && firstUnrevealed.faction === _this2.shared.faction.name) {
+          areas.push(area.name);
+        }
+      });
+
+      return areas;
+    },
+    skilledUnitsInArea: function skilledUnitsInArea() {
+      var _this3 = this;
+
+      return this.shared.faction.units.filter(function (unit) {
+        return _.unitReadyInArea(unit, _this3.area);
+      });
+    },
+    flippedUnitsInArea: function flippedUnitsInArea() {
+      var _this4 = this;
+
+      return this.shared.faction.units.filter(function (unit) {
+        return _.unitInArea(unit, _this4.area) && unit.flipped;
+      });
+    },
+    useableSkills: function useableSkills() {
+      var _this5 = this;
+
+      var areas = [];
+
+      _.forEach(this.shared.data.areas, function (area) {
+        if (_.canUseSkill(_this5.shared.faction, area, _this5.shared.data.factions)) {
+          areas.push(area.name);
+        }
+      });
+
+      return areas;
+    },
+    loopToken: function loopToken() {
+      return this.shared.faction.tokens.find(function (token) {
+        return token.type === 'loop' && token.revealed && token.location;
+      });
+    },
+    useableLoop: function useableLoop() {
+      var reserves = this.shared.faction.tokens.find(function (token) {
+        return !token.location;
+      });
+      return this.loopToken && reserves ? [this.loopToken.location] : [];
+    },
+    useableMagick: function useableMagick() {
+      var _this6 = this;
+
+      var areas = [];
+      if (this.shared.faction.name !== 'witches') return areas;
+
+      _.forEach(this.shared.data.areas, function (area) {
+        if (_.canUseMagick(_this6.shared.faction, area, _this6.shared.data.factions)) {
+          areas.push(area.name);
+        }
+      });
+
+      return areas;
+    },
+    saveDisabled: function saveDisabled() {
+      if (!this.action) return true;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-action',
   data: function data() {
@@ -11019,6 +11433,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.token) return "/images/factions/".concat(this.token.faction, "/tokens/").concat(this.token.name, ".png");
       if (this.action === 'skill') return "/images/icons/skilled.png";
       if (this.action === 'magick') return "/images/icons/enchanted.png";
+      if (this.action === 'loop') return "/images/icons/loop.png";
     },
     xavier: function xavier() {
       var _this = this;
@@ -11045,6 +11460,9 @@ __webpack_require__.r(__webpack_exports__);
 
         case 'magick':
           return 'use magick';
+
+        case 'loop':
+          return 'use loop';
       }
     }
   }
@@ -11113,6 +11531,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.shared.actions.token && this.shared.actions.token.includes(this.area.name)) actions.push('token');
       if (this.shared.actions.xavier === this.area.name) actions.push('xavier');
       if (this.shared.actions.magick && this.shared.actions.magick.includes(this.area.name)) actions.push('magick');
+      if (this.shared.actions.loop && this.shared.actions.loop.includes(this.area.name)) actions.push('loop');
       return actions;
     }
   }
@@ -12453,6 +12872,25 @@ exports.push([module.i, "\n.gnome-deflects {\n    font-size: 1.4em;\n}\n.gnome-c
 /*!**************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction.vue?vue&type=style&index=0&lang=css& ***!
   \**************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.choose-action__skill-ability {\n    padding: 1rem;\n    background-color: rgba(0,0,0,.8);\n    color: var(--highlight-color);\n    margin: .5rem auto;\n    font-size: 1.2em;\n    letter-spacing: 1px;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -53153,6 +53591,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseAction_old.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseArea.vue?vue&type=style&index=0&lang=css&":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseArea.vue?vue&type=style&index=0&lang=css& ***!
@@ -59234,6 +59702,238 @@ render._withStripped = true
 /*!***********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction.vue?vue&type=template&id=15cba838& ***!
   \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _vm.hasTopAction
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "choose-action-top p-2 d-flex justify-center align-center"
+            },
+            [
+              _vm.showSkip
+                ? _c(
+                    "button",
+                    { staticClass: "button", on: { click: _vm.setSkipAction } },
+                    [_vm._v("SKIP THIS ACTION")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.showPass
+                ? _c(
+                    "button",
+                    { staticClass: "button", on: { click: _vm.setPassAction } },
+                    [_vm._v("PASS")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.showLocked
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "button",
+                      on: { click: _vm.setLockedAction }
+                    },
+                    [_vm._v("DECLARE YOURSELF LOCKED")]
+                  )
+                : _vm._e()
+            ]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.action
+        ? _c("player-prompt", { attrs: { classes: "" } }, [
+            _c("div", { staticClass: "choose-action px-5" }, [
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "width-100 d-flex justify-center flex-column align-center"
+                },
+                [
+                  _c("div", { staticClass: "title" }, [
+                    _vm._v("Confirm Action")
+                  ]),
+                  _vm._v(" "),
+                  _vm.area
+                    ? _c(
+                        "area-flipper",
+                        { attrs: { areas: [_vm.area], index: "0" } },
+                        [
+                          _vm.action.name === "xavier"
+                            ? _c("unit-row", { attrs: { units: [_vm.xavier] } })
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.action.name === "token"
+                            ? _c("token-row", {
+                                attrs: {
+                                  area: _vm.area,
+                                  highlight: _vm.firstToken
+                                }
+                              })
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.action.name === "skill"
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "choose-action__skilled-units center-text"
+                                },
+                                [
+                                  _c("unit-row", {
+                                    attrs: {
+                                      units: _vm.skilledUnitsInArea,
+                                      allSelected: "true"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("div", {
+                                    staticClass:
+                                      "width-100 choose-action__skill-ability",
+                                    domProps: {
+                                      innerHTML: _vm._s(
+                                        this.shared.filterText(this.area.skill)
+                                      )
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.action.name === "magick"
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "choose-action__skilled-units center-text"
+                                },
+                                [
+                                  _c("unit-row", {
+                                    attrs: {
+                                      units: _vm.flippedUnitsInArea,
+                                      allSelected: "true"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "width-100 choose-action__skill-ability"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                            Use your magick ability in this area?\n                        "
+                                      )
+                                    ]
+                                  )
+                                ],
+                                1
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.action.name === "loop"
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "choose-action__skilled-units center-text"
+                                },
+                                [
+                                  _c("token-row", {
+                                    attrs: {
+                                      area: _vm.area,
+                                      highlight: _vm.loopToken
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "width-100 choose-action__skill-ability"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                            Replace Loop token with a face down token from your reserves?\n                        "
+                                      )
+                                    ]
+                                  )
+                                ],
+                                1
+                              )
+                            : _vm._e()
+                        ],
+                        1
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "d-flex justify-center" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "button button-empty",
+                        on: { click: _vm.clearAction }
+                      },
+                      [
+                        _vm._v(
+                          "\n                        back\n                    "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "button pull-center",
+                        attrs: { disabled: _vm.saveDisabled },
+                        on: { click: _vm.saveAction }
+                      },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.buttonMessage) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  ])
+                ],
+                1
+              )
+            ])
+          ])
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0&":
+/*!***************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0& ***!
+  \***************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -78854,6 +79554,7 @@ var map = {
 	"./Prompts/ActivateDecline.vue": "./resources/js/components/Prompts/ActivateDecline.vue",
 	"./Prompts/AssignHits.vue": "./resources/js/components/Prompts/AssignHits.vue",
 	"./Prompts/ChooseAction.vue": "./resources/js/components/Prompts/ChooseAction.vue",
+	"./Prompts/ChooseAction_old.vue": "./resources/js/components/Prompts/ChooseAction_old.vue",
 	"./Prompts/ChooseArea.vue": "./resources/js/components/Prompts/ChooseArea.vue",
 	"./Prompts/ChooseCard.vue": "./resources/js/components/Prompts/ChooseCard.vue",
 	"./Prompts/ChooseFactions.vue": "./resources/js/components/Prompts/ChooseFactions.vue",
@@ -84168,6 +84869,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_vue_vue_type_template_id_15cba838___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_vue_vue_type_template_id_15cba838___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChooseAction_old.vue":
+/*!**************************************************************!*\
+  !*** ./resources/js/components/Prompts/ChooseAction_old.vue ***!
+  \**************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChooseAction_old.vue?vue&type=template&id=49707cc0& */ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0&");
+/* harmony import */ var _ChooseAction_old_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChooseAction_old.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ChooseAction_old.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _ChooseAction_old_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Prompts/ChooseAction_old.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseAction_old.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&":
+/*!***********************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css& ***!
+  \***********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseAction_old.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0& ***!
+  \*********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseAction_old.vue?vue&type=template&id=49707cc0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

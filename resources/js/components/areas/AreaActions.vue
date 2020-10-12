@@ -57,6 +57,7 @@
                 if( this.shared.actions.token && this.shared.actions.token.includes( this.area.name ) ) actions.push( 'token' );
                 if( this.shared.actions.xavier === this.area.name ) actions.push( 'xavier' );
                 if( this.shared.actions.magick && this.shared.actions.magick.includes( this.area.name ) ) actions.push( 'magick' );
+                if( this.shared.actions.loop && this.shared.actions.loop.includes( this.area.name ) ) actions.push( 'loop' );
                 return actions;
             },
         }
