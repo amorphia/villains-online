@@ -137,7 +137,7 @@ class Despotism extends Card {
         for( let index in faction.areas() ){
             let area = faction.game().areas[areas[index]];
             faction.game().message({ faction: faction, message:  `the mad despot launches an attack in the ${area.name}` });
-            await faction.nonCombatAttack(5, 2, area ).catch( error => console.error( error ) );
+            await faction.nonCombatAttack(5, 3, area ).catch( error => console.error( error ) );
         }
     }
 }
@@ -156,6 +156,7 @@ class DisplayOfBrilliance extends Card {}
 class GoGoGo extends Card {
     handle( faction ){
         faction.data.deployLimit++;
+        faction.gainResources( 1 );
     }
 
     clear( faction ){
@@ -564,7 +565,11 @@ class TotalWar extends Card {
 }
 
 
-class TrappedLikeRats extends Card {}
+class TrappedLikeRats extends Card {
+    handle( faction ){
+        faction.drawCards( 1 );
+    }
+}
 
 
 class Windfall extends Card {

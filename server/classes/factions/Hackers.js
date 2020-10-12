@@ -88,7 +88,7 @@ class Hackers extends Faction {
         this.message({ message: `The hackers pay xRx to resolve the ${area.name} skill twice`, faction : this });
         return { doubleResolve : true };
     }
-    
+
 
     async exhaustEnemyUnitsInArea( event ){
         let units = [], area = this.game().areas[event.unit.location];
