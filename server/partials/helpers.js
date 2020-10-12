@@ -206,6 +206,7 @@ let helpers = {
 
         if( faction.units.find( unit => this.unitReadyInArea( unit, area ) ) ) return true;
 
+        /*
         // Zero Day special ability
         if( faction.name === 'hackers'
             && faction.units.find( unit => this.unitInArea( unit, area ) && unit.type === 'champion' )
@@ -215,6 +216,7 @@ let helpers = {
                 if( fac.units.find( unit => this.unitReadyInArea( unit, area ) && unit.basic ) ) return true;
             }
         }
+        */
     },
 
     unitReady( unit ){

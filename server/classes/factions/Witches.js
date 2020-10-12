@@ -18,13 +18,6 @@ class Witches extends Faction {
         this.data.statusIcon = 'enchanted';
         this.data.statusDescription = 'has enchanted units';
 
-        this.capturedRewards = [
-            { ap : 1, cardDraw : 1 },
-            { ap : 1, cardDraw : 1 },
-            { ap : 1 },
-            { ap : 2 },
-        ];
-
         // tokens
         this.tokens['brew'] = {
             count: 1,
@@ -32,6 +25,7 @@ class Witches extends Faction {
                 influence: 1,
                 type: 'brew',
                 cost: 0,
+                resource: 1
             }
         };
 
@@ -49,7 +43,7 @@ class Witches extends Faction {
                 selected: false,
                 hitsAssigned: 0,
                 onDeploy : 'cordellaDeploy',
-                onMove : 'cordellaDeploy'
+                //onMove : 'cordellaDeploy'
             }
         };
     }
@@ -202,7 +196,7 @@ class Witches extends Faction {
         // if deployed from reserves enter enchanted
         if( !event.from ) this.enchantUnit( event.unit );
 
-        if( event.unit.flipped ) await this.cordellaTokenMove( event.unit );
+        //if( event.unit.flipped ) await this.cordellaTokenMove( event.unit );
     }
 
     factionCleanUp(){

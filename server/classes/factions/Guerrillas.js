@@ -67,7 +67,7 @@ class Guerrillas extends Faction {
     }
 
     processUpgrade( n ){
-       this.data.skips.max = n;
+       this.data.skips.max = n === 1 ? 1 : 3;
     }
 
     canActivateSnipers( token, area ) {

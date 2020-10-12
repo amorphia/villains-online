@@ -31,13 +31,14 @@ class Hackers extends Faction {
                 influence: 1,
                 type: 'boot-up',
                 cost: 0,
+                resource: 1
             }
         };
 
 
         // units
-        this.units['goon'].count = [3];
-        this.units['mole'].count = [3];
+        this.units['goon'].count = [4];
+        this.units['mole'].count = [4];
         this.units['talent'].count = [8];
 
         this.units['champion'] = {
@@ -52,6 +53,8 @@ class Hackers extends Faction {
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
+                onDeploy: 'exhaustEnemyUnitsInArea',
+                onMove: 'exhaustEnemyUnitsInArea',
             }
         };
     }
@@ -85,39 +88,28 @@ class Hackers extends Faction {
         this.message({ message: `The hackers pay xRx to resolve the ${area.name} skill twice`, faction : this });
         return { doubleResolve : true };
     }
+    
 
-    async onAfterSkill( area, units ){
-        // exhaust enemy units
-        let zeroDay = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, area ) );
-        if( zeroDay ){
-            try {
-                await this.exhaustEnemyUnitsInArea( area );
-            } catch( error ){
-                console.error( error );
-            }
-        }
-    }
-
-    async exhaustEnemyUnitsInArea( area ){
-        let units = [];
+    async exhaustEnemyUnitsInArea( event ){
+        let units = [], area = this.game().areas[event.unit.location];
 
         Object.values( this.game().data.factions ).forEach( faction => {
-            faction.units.forEach( unit => {
-                if( unit.skilled
-                    && unit.ready
-                    && unit.basic
-                    && unit.location === area.name
-                ){
-                    unit.ready = false;
-                    units.push( unit );
-                }
-            })
+            if( faction.name !== this.name ) {
+                faction.units.forEach(unit => {
+                    if (unit.ready
+                        && unit.location === area.name
+                    ) {
+                        unit.ready = false;
+                        units.push(unit);
+                    }
+                });
+            }
         });
 
         if( units.length ){
             this.message({ message: `Zero day exhausts all enemy units in The ${area.name}`, faction : this } );
             await this.game().timedPrompt('units-shifted', {
-                message : `Zero day hijacks ready enemy units in The ${area.name}`,
+                message : `Zero day exhausts enemy units in The ${area.name}`,
                 units: units
             }).catch( error => console.error( error ) );
         }

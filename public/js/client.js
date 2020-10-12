@@ -91265,19 +91265,18 @@ var helpers = {
     if (this.hasUsedSkill(faction, area)) return;
     if (faction.units.find(function (unit) {
       return _this3.unitReadyInArea(unit, area);
-    })) return true; // Zero Day special ability
-
-    if (faction.name === 'hackers' && faction.units.find(function (unit) {
-      return _this3.unitInArea(unit, area) && unit.type === 'champion';
-    })) {
-      for (var _i = 0, _Object$values = Object.values(factions); _i < _Object$values.length; _i++) {
-        var fac = _Object$values[_i];
-        if (fac.name === faction.name) continue;
-        if (fac.units.find(function (unit) {
-          return _this3.unitReadyInArea(unit, area) && unit.basic;
-        })) return true;
-      }
+    })) return true;
+    /*
+    // Zero Day special ability
+    if( faction.name === 'hackers'
+        && faction.units.find( unit => this.unitInArea( unit, area ) && unit.type === 'champion' )
+    ){
+        for( let fac of Object.values( factions ) ){
+            if( fac.name === faction.name ) continue;
+            if( fac.units.find( unit => this.unitReadyInArea( unit, area ) && unit.basic ) ) return true;
+        }
     }
+    */
   },
   unitReady: function unitReady(unit) {
     return !unit.killed && unit.ready && unit.location;
@@ -91366,8 +91365,8 @@ var helpers = {
       }); // compare this list of units per area to our list of most by area, if this faction has more than
       // the existing entry (if any) it takes the top spot
 
-      for (var _i2 = 0, _Object$entries = Object.entries(unitsInArea); _i2 < _Object$entries.length; _i2++) {
-        var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
+      for (var _i = 0, _Object$entries = Object.entries(unitsInArea); _i < _Object$entries.length; _i++) {
+        var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
             key = _Object$entries$_i[0],
             value = _Object$entries$_i[1];
 
@@ -91803,8 +91802,8 @@ var helpers = {
       _iterator.f();
     }
 
-    for (var _i3 = 0, _Object$values2 = Object.values(areas); _i3 < _Object$values2.length; _i3++) {
-      var area = _Object$values2[_i3];
+    for (var _i2 = 0, _Object$values = Object.values(areas); _i2 < _Object$values.length; _i2++) {
+      var area = _Object$values[_i2];
       var areaRules = area.cards.filter(function (card) {
         return card.owner === faction.name;
       });

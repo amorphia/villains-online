@@ -28,7 +28,7 @@ class Parasites extends Faction {
 
         // units
         this.units['goon'].count = 8;
-        this.units['talent'].count = 7;
+        this.units['talent'].count = 6;
         this.units['mole'].count = 8;
         this.units['patsy'].count = 9;
 
@@ -41,13 +41,12 @@ class Parasites extends Faction {
                 basic: false,
                 influence: 2,
                 attack: [],
-                cost: 0,
+                skilled: true,
+                ready: false,
+                cost: 1,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                onKilled: 'returnUnitToReserves',
-                onMove: 'hostSacrifice',
-                onDeploy : 'hostSacrifice'
             }
         };
     }
@@ -69,23 +68,12 @@ class Parasites extends Faction {
     }
 
 
-    async hostSacrifice( event ){
-        let hostsInArea = this.data.units.filter( unit => unit.type === 'champion' && _.unitInArea( unit, event.unit.location) );
-        if( hostsInArea.length <= 1 ) return;
-
-        this.game().message({ faction : this, message: "Two hosts cannot survive in the same area, one whithers and dies", class : 'warning' });
-        await this.game().killUnit( event.unit, this );
-    }
-
-
     async infect( area ){
         let player, data, targetFaction;
 
         let factionsToExclude = [];
 
         for( let i = 0; i < this.data.playersToInfect; i++ ) {
-
-            console.log( 'factionsToExclude', factionsToExclude );
 
             try {
                 targetFaction = await this.selectEnemyPlayerWithUnitsInArea( area, 'Choose player to infect', { basic: true, exclude : factionsToExclude });
@@ -139,13 +127,13 @@ class Parasites extends Faction {
 
 
     async onAfterSkill( area, units ) {
-        if (!units.length) return;
+        if ( !units.length ) return;
         await this.infect( area );
     }
 
     async onAfterBattle( combat ) {
         let firstHost = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, combat.area ) );
-        if (!firstHost) return;
+        if ( !firstHost ) return;
 
         await this.infect( combat.area );
     }
@@ -160,7 +148,7 @@ class Parasites extends Faction {
         if( !pod
             || token.faction === this.name
             || !basicTokens.includes( token.type )
-        ) return console.log( `Can't pod token` );
+        ) return;
 
         let fakeToken = Object.assign({}, token, { faction : this.name } );
 
