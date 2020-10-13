@@ -80,20 +80,27 @@ let obj = {
 
 
     async collectUpgrades(){
-        let slideSpeed = 4;
-        if( this.fastMode ) slideSpeed = 1;
+        let promises = [];
+        let upgrades = Object.values( this.factions )
+                            .map( faction => faction.collectUpgrades() )
+                            .filter( item => item );
 
-        let upgrades = Object.values( this.factions ).map( faction => faction.collectUpgrades() )
-                                                     .filter( item => item );
+        if( !upgrades.length ) return;
 
-        if( upgrades.length ){
-            await this.timedPrompt(
-                'score-upgrades',
-                {
-                    wait : slideSpeed * upgrades.length,
-                    slideSpeed : slideSpeed,
-                    upgrades : upgrades
-                }).catch( error => console.error( error ) );
+        try {
+            _.forEach(this.factions, faction => {
+                promises.push(this.promise({
+                        players: faction.playerId,
+                        name: 'score-upgrades',
+                        data: { upgrades: upgrades }
+                    }).then(([player, data]) => {
+                        player.setPrompt({ active: false, playerUpdate: true });
+                    })
+                );
+            });
+            await Promise.all(promises);
+        } catch( error ){
+            console.error( error );
         }
     },
 

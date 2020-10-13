@@ -519,6 +519,21 @@ class PlanTester {
         return result;
     }
 
+
+    areasMostTokens( faction, areaCount ){
+        let factionAreasMostTokens = faction.areasMostTokens();
+        let result = factionAreasMostTokens >= areaCount;
+
+        if( this.debug ) console.log(
+            'areasMostTokens',
+            'areaCount req:', areaCount,
+            'factionAreasMostTokens:', factionAreasMostTokens,
+            'result:', result
+        );
+
+        return result;
+    }
+
     killsInEnemy( faction, killCount ){
         let factionKillsInEnemy = faction.killsInEnemy().length;
         let result = factionKillsInEnemy >= killCount;

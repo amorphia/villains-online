@@ -177,7 +177,7 @@ class Faction {
 
     godMode(){
         console.log( 'god mode enabled' );
-        this.data.cardDraw = 17;
+        this.data.cardDraw = 10;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;
     }
@@ -268,11 +268,7 @@ class Faction {
                 unit.killed = null;
                 unit.location = null;
                 if( unit.ready ) unit.ready = false;
-
-                if( unit.flipped ){
-                    unit.flipped = false;
-                    this.unitUnflipped( unit );
-                }
+                if( unit.flipped ) this.unitUnflipped( unit );
             }
         });
     }

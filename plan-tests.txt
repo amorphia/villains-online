@@ -8,7 +8,7 @@
 
 { test : 'killUnits', args : [5] },
 
-{ test : 'tokensInAreas', args : [6] },
+{ test : 'tokensInAreas', args : [5] },
 
 { test : 'useSkills', args : [2] },
 
@@ -34,7 +34,7 @@
 { test : 'killsInEnemy', args : [3] },
 { test : 'playRules', args : [2, 'areas'] },
 { test : 'areasMostUnits', args : [3] },
-
+{ test : 'areasMostTokens', args : [3] },
 
 
 

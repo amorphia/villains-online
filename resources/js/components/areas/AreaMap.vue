@@ -152,6 +152,8 @@
                 if( this.shared.actions.skill && this.shared.actions.skill.includes( this.area.name )
                  || this.shared.actions.magick && this.shared.actions.magick.includes( this.area.name )
                  || this.shared.actions.token && this.shared.actions.token.includes( this.area.name )
+                 || this.shared.actions.loop && this.shared.actions.loop.includes( this.area.name )
+                 || this.shared.actions.ambush && this.shared.actions.ambush.includes( this.area.name )
                  || this.shared.actions.xavier === this.area.name ) return true;
             },
 

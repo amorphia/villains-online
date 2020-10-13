@@ -60,8 +60,18 @@
 
                 if( this.token.faction === this.shared.faction.name
                     || this.shared.faction.tokenSpy === this.token.location
+                    || this.ministerSpy
                 ) return true;
 
+            },
+
+            ministerSpy(){
+                if( this.shared.faction.name !== 'bureau' ) return;
+
+                let ministerInArea = !! this.shared.faction.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, this.area ) );
+                let firstUnrevealedEnemy = _.firstUnrevealedToken( this.area, { enemy : this.shared.faction.name });
+
+                return ministerInArea && this.token.id === firstUnrevealedEnemy.id;
             },
 
             tokenImage(){

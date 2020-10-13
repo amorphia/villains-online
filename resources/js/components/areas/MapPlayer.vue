@@ -53,7 +53,9 @@
                     } else {
                         units[ unit.type ] = { count : 1, flipped : 0 };
                     }
-                    if( unit.flipped ){
+                    if( !this.faction.reverseFlippedPip && unit.flipped ){
+                        units[ unit.type ].flipped++;
+                    } else if ( this.faction.reverseFlippedPip && !unit.flipped ){
                         units[ unit.type ].flipped++;
                     }
                 });
@@ -80,6 +82,8 @@
                     if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
 
                     if (!unit.toughness && unit.flipped && this.faction.statusIcon) status[this.faction.statusIcon] = this.faction.statusDescription;
+
+                    if (unit.charged ) status['charged'] = 'has charged units';
 
                     if( unit.firstStrike ) status[`${unit.faction}-first-strike`] = 'has units with first strike';
 

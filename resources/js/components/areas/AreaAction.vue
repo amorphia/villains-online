@@ -33,6 +33,7 @@
                 if( this.action === 'skill' ) return `/images/icons/skilled.png`;
                 if( this.action === 'magick' ) return `/images/icons/enchanted.png`;
                 if( this.action === 'loop' ) return `/images/icons/loop.png`;
+                if( this.action === 'ambush' ) return `/images/icons/ambush.png`;
             },
 
             xavier(){
@@ -52,6 +53,7 @@
                     case 'xavier': return `xavier token`;
                     case 'magick': return 'use magick';
                     case 'loop': return 'use loop';
+                    case 'ambush': return 'ambush';
                 }
             }
         }

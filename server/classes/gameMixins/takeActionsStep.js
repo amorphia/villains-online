@@ -16,6 +16,7 @@ let obj = {
 
     chooseAction( player, action, ...args ) {
         let method = _.camelCase(`take-${action}-action`);
+        console.log( method );
         this[method](player, ...args);
     },
 
@@ -96,6 +97,32 @@ let obj = {
 
         try {
             await faction.magickAction( area );
+        } catch( error ){
+            console.error( error );
+        }
+
+        this.advancePlayer( {}, false );
+    },
+
+    async takeAmbushAction( player, areaName ){
+        let faction = player.faction();
+        let area = this.areas[areaName];
+
+        try {
+            await faction.ambushAction( area );
+        } catch( error ){
+            console.error( error );
+        }
+
+        this.advancePlayer( {}, false );
+    },
+
+    async takeLoopAction( player, areaName ){
+        let faction = player.faction();
+        let area = this.areas[areaName];
+
+        try {
+            await faction.loopAction( area );
         } catch( error ){
             console.error( error );
         }

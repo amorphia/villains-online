@@ -13,7 +13,7 @@ class Guerrillas extends Faction {
         this.data.focus = 'enemy-kills-focus';
         this.data.focusDescription = "Kill many units in enemy areas";
 
-        this.data.skips = {
+        this.data.ambushes = {
             max : 0,
             used : 0,
         };
@@ -67,7 +67,7 @@ class Guerrillas extends Faction {
     }
 
     processUpgrade( n ){
-       this.data.skips.max = n === 1 ? 1 : 3;
+       this.data.ambushes.max = n;
     }
 
     canActivateSnipers( token, area ) {
@@ -112,6 +112,18 @@ class Guerrillas extends Faction {
         this.game().advancePlayer();
     }
 
+    async ambushAction( area ){
+        let hasAmbushes = this.data.ambushes.used < this.data.ambushes.max;
+        this.data.ambushes.used++;
+
+        let token = _.firstRevealedToken( area, { player : this.name });
+        if( !token || !hasAmbushes ) return this.game().message({ faction: this, message: `Can't ambush in the ${ area.name }`, class: 'warning' });
+
+        _.discardToken( token, area );
+
+        this.game().message({ faction: this, message: `Launches an ambush in the ${ area.name }`, class: 'highlight' });
+        await this.game().battle( area ).catch( error => console.error( error ) );
+    }
 
     async bringUnits( event ) {
         let player, data;
@@ -156,7 +168,7 @@ class Guerrillas extends Faction {
     }
 
     factionCleanUp(){
-        this.data.skips.used = 0;
+        this.data.ambushes.used = 0;
     }
 }
 

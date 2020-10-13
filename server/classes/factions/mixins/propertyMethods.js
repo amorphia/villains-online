@@ -189,6 +189,9 @@ let mixin = {
         return _.areasMostUnits( this, this.game().data.factions );
     },
 
+    areasMostTokens(){
+        return _.areasMostTokens( this, this.game().data.areas );
+    },
 
     enemiesWithUnitsInArea( area, options = {} ){
         let enemies = [];

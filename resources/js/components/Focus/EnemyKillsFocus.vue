@@ -1,6 +1,6 @@
 <template>
     <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-        <span class="mr-4">skips :<span class="highlight ml-2">{{ skips }}</span> </span> kills in enemy areas :<span class="highlight ml-2">{{ kills }}</span>
+        <span class="mr-4">ambushes :<span class="highlight ml-2">{{ ambushes }}</span> </span> kills in enemy areas :<span class="highlight ml-2">{{ kills }}</span>
     </div>
 </template>
 
@@ -25,8 +25,8 @@
                     this.shared.areaLeaders
                 ).length;
             },
-            skips(){
-                return this.faction.skips.max - this.faction.skips.used;
+            ambushes(){
+                return this.faction.ambushes.max - this.faction.ambushes.used;
             }
         }
     }

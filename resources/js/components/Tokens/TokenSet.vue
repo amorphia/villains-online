@@ -3,8 +3,8 @@
     <div v-if="tokens.length" class="px-2 pos-relative" :class="thisClasses" :data-title="hasTitle">
         <div class="tokens-hud__token d-inline-block"
              v-for="token in tokens"
-             @click="shared.event.emit( 'tokenClicked', token)">
-                <img class="tokens-hud__token-image" :class="opacity( token )" :src="`/images/factions/${shared.faction.name}/tokens/${token.name}.png`">
+             @click="tokenClicked( token )">
+                <img class="tokens-hud__token-image" :class="tokenClass( token )" :src="`/images/factions/${shared.faction.name}/tokens/${token.name}.png`">
         </div>
     </div>
 
@@ -36,7 +36,11 @@
         },
 
         methods : {
-            opacity( token ){
+            tokenClicked( token ){
+                this.shared.event.emit( 'tokenClicked', token );
+                this.$emit( 'tokenClicked', token );
+            },
+            tokenClass( token ){
                 return this.selected && this.selected.id !== token.id ? 'opacity-5' : false;
             }
         }

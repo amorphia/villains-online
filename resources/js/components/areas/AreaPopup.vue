@@ -53,11 +53,19 @@
                 }
 
                 if( this.popup.skill ){
-                    return `/images/icons/skilled.png`
+                    return `/images/icons/skilled.png`;
                 }
 
                 if( this.popup.magick ){
-                    return `/images/icons/enchanted.png`
+                    return `/images/icons/enchanted.png`;
+                }
+
+                if( this.popup.loop ){
+                    return `/images/icons/loop.png`;
+                }
+
+                if( this.popup.ambush ){
+                    return `/images/icons/ambush.png`;
                 }
             }
         }

@@ -30,6 +30,17 @@
                                :highlight="firstToken">
                     </token-row>
 
+
+                    <!-- ambush display -->
+                    <div class="" v-if="action.name === 'ambush'">
+                        <token-row :area="area" :highlight="firstRevealed"></token-row>
+
+                        <div class="width-100 choose-action__skill-ability center-text">
+                            Discard this token to start a battle here?
+                        </div>
+                    </div>
+
+
                     <!-- skill display -->
                     <div v-if="action.name === 'skill'"
                          class="choose-action__skilled-units center-text">
@@ -144,6 +155,10 @@
                     action.token = this.firstUnrevealed( action.area );
                 }
 
+                if( name === 'ambush' ){
+                    action.area = param ?? this.actions[name][0];
+                }
+
                 if( name === 'skill' ){
                     action.area = param ?? this.actions[name][0];
                 }
@@ -184,6 +199,9 @@
                 // can we reveal tokens?
                 if( this.revealableTokens.length  ) actions.token = this.revealableTokens;
 
+                // can we ambush?
+                if( this.ambushAreas.length  ) actions.ambush = this.ambushAreas;
+
                 // can we pass?
                 if( !this.activeTokens.length ) actions.pass = true;
 
@@ -216,6 +234,9 @@
                     case 'token':
                         args = [this.action.token.id];
                         break;
+                    case 'ambush':
+                        args = [this.action.area];
+                        break;
                     case 'magick':
                         args = [this.action.area];
                         break;
@@ -244,6 +265,11 @@
             firstUnrevealed( area ){
                 if( typeof area === 'string' ) area = this.shared.data.areas[ area ];
                 return _.firstUnrevealedToken( area );
+            },
+
+            firstRevealedToken( area ){
+                if( typeof area === 'string' ) area = this.shared.data.areas[ area ];
+                return _.firstRevealedToken( area, { player : this.shared.faction.name });
             }
         },
 
@@ -296,6 +322,9 @@
                     case 'loop':
                         message = `Replace Loop token`;
                         break;
+                    case 'ambush':
+                        message = `Ambush the ${this.area.name}`;
+                        break;
                 }
                 return this.saveDisabled ? "Choose your action" : message;
             },
@@ -309,6 +338,12 @@
             firstToken(){
                 if( this.action.name === 'token' ){
                     return this.firstUnrevealed( this.area );
+                }
+            },
+
+            firstRevealed(){
+                if( this.action.name === 'ambush' ){
+                    return this.firstRevealedToken( this.area );
                 }
             },
 
@@ -343,6 +378,19 @@
                         areas.push( area.name );
                     }
                 });
+                return areas;
+            },
+
+            ambushAreas(){
+                let areas = [];
+                let faction = this.shared.faction;
+
+                if( !faction.ambushes || faction.ambushes.used >= faction.ambushes.max ) return areas;
+
+                _.forEach( this.shared.data.areas, area => {
+                    if( this.firstRevealedToken( area ) ) areas.push( area.name );
+                });
+
                 return areas;
             },
 

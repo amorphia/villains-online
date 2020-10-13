@@ -151,9 +151,20 @@ let helpers = {
         return tokens;
     },
 
-    firstUnrevealedToken( area ){
+    firstUnrevealedToken( area, options = {} ){
+        if( area.data ) area = area.data;
         return this.find( area.tokens, token => {
-            return token && token.revealed === false
+            return token && token.revealed === false && ( !options.enemy || token.faction !== options.enemy );
+        });
+    },
+
+    firstRevealedToken( area, options = {} ){
+        if( area.data ) area = area.data;
+
+        return this.find( area.tokens, token => {
+            return token && token.revealed
+                && ( !options.enemy || token.faction !== options.enemy )
+                && ( !options.player || token.faction === options.player );
         });
     },
 
@@ -324,8 +335,53 @@ let helpers = {
         // convert most units object to array and filter out areas where we don't have the most units
         mostUnits = Object.values( mostUnits ).filter( item => item.faction === faction.name );
 
-        return mostUnits.length;
+        return mostUnits;
     },
+
+
+    maxSingleObject( object, property ){
+        let max = 0;
+        Object.values( object ).forEach( val => {
+            if( val > max ) max = val;
+        });
+
+        console.log( max );
+
+        if( !max ) return false;
+
+        let hasMax = [];
+        for ( const [key, value] of Object.entries( object ) ) {
+           if( value === max ) hasMax.push( key );
+        }
+
+        return hasMax.length === 1 ? hasMax[0] : false;
+    },
+
+
+    areasMostTokens( faction, areas ){
+        if( faction.data ) faction = faction.data;
+        let mostTokens = 0;
+
+        // cycle through each faction
+        Object.values( areas ).forEach( area => {
+            let tokensInArea = {};
+
+            // make a list of how many units this faction in each area
+            area.tokens.forEach( token => {
+                if( token.faction ){
+                    if( tokensInArea[token.faction] ) tokensInArea[token.faction]++;
+                    else tokensInArea[token.faction] = 1;
+                }
+            });
+
+            // compare this list of units per area to our list of most by area, if this faction has more than
+            // the existing entry (if any) it takes the top spot
+            if( this.maxSingleObject( tokensInArea ) === faction.name ) mostTokens++;
+        });
+
+        return mostTokens;
+    },
+
 
     enemyUnitsInArea( faction, area, factions, options = {} ){
         if( faction.data ) faction = faction.data;

@@ -2,15 +2,22 @@
     <player-prompt classes="">
         <div class="place-token px-5">
 
-            <div class="title flex-center "><img class="determine-control__faction-icon" :src="factionIcon( currentFactionName )">
-                upgrade scored by The {{ currentFactionName | startCase }}
-            </div>
+            <div v-for="upgrade in data.upgrades" class="p-3">
+                <div class="title flex-center "><img class="determine-control__faction-icon" :src="factionIcon( upgrade.faction )">
+                    upgrade scored by The {{ upgrade.faction | startCase }}
+                </div>
 
-            <div class="width-100 d-flex justify-center mt-4">
-                <div class="flex-center">
-                    <img class="score-upgrade__image" :src="`/images/factions/${currentFactionName}/upgrade-${currentUpgrade}.jpg`">
+                <div class="width-100 d-flex justify-center mt-4">
+                    <div class="flex-center">
+                        <img class="score-upgrade__image" :src="`/images/factions/${upgrade.faction}/upgrade-${upgrade.upgrade}.jpg`">
+                    </div>
                 </div>
             </div>
+
+            <div class="center-text">
+                <button class="button" @click="resolve">Done</button>
+            </div>
+
         </div>
     </player-prompt>
 </template>
@@ -23,8 +30,6 @@
         data() {
             return {
                 shared : App.state,
-                index : 0,
-                interval : null,
             };
         },
 
@@ -34,35 +39,16 @@
         },
 
         methods : {
+            resolve(){
+                this.shared.respond( 'score-upgrades', {} );
+            },
 
             factionIcon( factionName ){
                 return _.factionIcon( factionName );
             },
-
-            incrementIndex(){
-                if( !this.data || !this.data.upgrades || this.index === this.data.upgrades.length - 1 ) {
-                    clearInterval( this.interval );
-                    return;
-                }
-
-                this.index++;
-                App.event.emit( 'sound', 'coin' );
-            }
         },
 
         computed : {
-
-            currentFactionName(){
-                return this.data.upgrades[this.index].faction;
-            },
-
-            currentFaction(){
-                return this.shared.data.factions[ this.currentFactionName ];
-            },
-
-            currentUpgrade(){
-                return this.data.upgrades[this.index].upgrade;
-            },
 
             data(){
                 return this.shared.player.prompt.data;
