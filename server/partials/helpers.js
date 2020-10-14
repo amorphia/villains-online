@@ -685,6 +685,7 @@ let helpers = {
                 && ( !options.flipped || unit.flipped )
                 && ( !options.deployable || !unit.noDeploy )
                 && ( !options.notHidden || !unit.hidden )
+                && ( !options.basic || unit.basic )
             ){
                 areas[ unit.location ] = true;
             }

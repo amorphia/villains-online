@@ -90,7 +90,7 @@ class Mafia extends Faction {
 
         [player, data] = await this.game().promise({
             players: this.playerId,
-            name: 'choose-hitman',
+            name: 'assassinate-unit',
             data : {
                 faction : this.name,
                 areas : [args.area.name]

@@ -71,43 +71,46 @@ class Guerrillas extends Faction {
     }
 
     canActivateSnipers( token, area ) {
-        return !! this.areasWithEnemyUnits({adjacent: area.name }).length;
+        let validTargets = !! this.areasWithEnemyUnits({ adjacent: area.name, basic : true }).length;
+        let hasUnitToShootWith = this.hasUnitsInArea( area );
+        return validTargets && hasUnitToShootWith;
     }
 
     async snipersToken( args ) {
-        let player, data, area = args.area;
+        let player, data, result, area = args.area;
 
         // get areas with units
-        let areas = this.areasWithEnemyUnits({adjacent: area.name });
+        let areas = this.areasWithEnemyUnits({ adjacent: area.name, basic : true });
 
         if ( ! areas.length ) {
             this.game().message({ faction: this, message: "snipers couldn't find a target", class: 'warning' });
             return false;
         }
 
-        this.message({ faction: this, message: `Snipers are searching for targets` });
-
-        // prompt player to select an area
         [player, data] = await this.game().promise({
             players: this.playerId,
-            name: 'choose-area',
-            data: {
-                areas: areas,
-                show: 'units',
-                enemyOnly: true,
-                message: "Choose an area to target with your sniper attack of xA1x"
+            name: 'assassinate-unit',
+            data : {
+                faction : this.name,
+                areas : areas
             }
-        }).catch(error => console.error(error));
+        }).catch( error => console.error( error ) );
 
-        let targetArea = this.game().areas[data.area];
-
-        // resolve attack with that unit
-        let output = await this.attack({ area: targetArea, attacks: [1] });
-
-        if ( output ) {
-            await this.game().timedPrompt('noncombat-attack', {output: [output]})
-                .catch(error => console.error(error));
+        if( data.decline ){
+            this.game().declineToken( this.playerId, args.token, true );
+            return;
         }
+
+        let unit = this.game().objectMap[data.unit];
+        this.game().sound( 'hit' );
+
+        try {
+            result = await this.game().assignHits( unit, this );
+        } catch( error ){
+            console.error( error );
+        }
+
+        this.game().message({ message : `the sniper ${result} <span class="faction-${unit.faction}">the ${unit.faction}'s ${unit.name}</span> in <span class="highlight">the ${data.area}</span>`, faction : this });
 
         this.game().advancePlayer();
     }

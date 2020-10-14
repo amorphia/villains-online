@@ -3,7 +3,7 @@
         <div class="place-token px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
                 <div class="title">{{ message }}</div>
-                <area-flipper :areas="areas" :index="0">
+                <area-flipper :areas="areas" :index="index" @update="updateArea">
 
                     <unit-row v-for="(set, name) in units"
                               :units="set"
@@ -26,7 +26,7 @@
 <script>
     export default {
 
-        name: 'choose-hitman',
+        name: 'assassinate-unit',
 
         data() {
             return {
@@ -69,9 +69,17 @@
 
         methods : {
 
+            updateArea( n ){
+                if( n === this.index ) return;
+                //this.areaUnits.forEach( unit => this.$set( unit, 'selected', false ) );
+                this.index = n;
+            },
 
             resolve( val ){
-                let data = {};
+                let data = {
+                    area : this.area.name
+                };
+
                 if( val ){
                     data.unit = this.unit.id;
                 } else {
@@ -79,8 +87,7 @@
                 }
 
                 data = Object.assign( {}, this.data, data );
-
-                this.shared.respond( 'choose-hitman', data );
+                this.shared.respond( 'assassinate-unit', data );
             },
         }
     }
