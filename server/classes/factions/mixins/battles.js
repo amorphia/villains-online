@@ -2,8 +2,8 @@ let obj = {
 
     async selectEnemyPlayerWithUnitsInArea( area, message, args ){
         let player = {}, data = {}, targetFaction, selfAttack, exclude = [];
-
         if( typeof area !== 'string' ) area = area.name;
+
 
         if( args.exclude ){
             if( ! Array.isArray( args.exclude ) ) exclude.push( args.exclude );
@@ -15,31 +15,31 @@ let obj = {
         // find valid players
         let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : exclude, notHidden : args.notHidden, basic : args.basic });
 
-        console.log( 'targetFactions', targetFactions );
-
         // no enemies with units in the from location
         if( targetFactions.length === 0 ){
             // if this attack forces a self attack return this faction as the victim, otherwise return false
             return args.selfAttack ? this : false;
         }
 
+        if( targetFactions.length === 1 && !args.optional ) {
+            return this.game().factions[ targetFactions[0] ];
+        }
+
         [player, data] = await this.game().promise({ players: this.playerId, name: 'choose-victim', data : {
-            areas : [area],
-            faction: this.name,
-            message: message,
-            optional : args.optional,
-            targetFactions : targetFactions,
-            unitAttack : !!args.unit,
-            attackBonus : args.attackBonus
-        }}).catch( error => console.error( error ) );
+                areas : [area],
+                faction: this.name,
+                message: message,
+                optional : args.optional,
+                targetFactions : targetFactions,
+                unitAttack : !!args.unit,
+                attackBonus : args.attackBonus
+            }}).catch( error => console.error( error ) );
 
         if( data.declined ){
             return 'declined';
         }
 
-        targetFaction = this.game().factions[ data.faction ];
-        return targetFaction;
-
+        return this.game().factions[ data.faction ];
     },
 
     getTargetFactions( area ){
