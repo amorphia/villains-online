@@ -173,6 +173,13 @@ let obj = {
         let toHit = this.getToHitNumber( args, victim );
         let hits = this.calculateHits( rolls, toHit );
 
+        if( args.ninjaAttack && hits ){
+            this.becomeHidden( args.unit );
+            args.nonPatsyDamage = true;
+            this.data.hasHitThisBattle = true;
+            this.game().message({ faction: this, message: `The ${ args.unit.name} successfully assassinates, and becomes hidden` });
+        }
+
         // report attack results
         let attackResult = {
             faction : this.name,
@@ -205,7 +212,7 @@ let obj = {
             await this.game().assignHits( args.targetUnit, this, hits );
             this.game().message({ faction: this, message: `hits <span class="faction-${args.targetUnit.faction}">${args.targetUnit.faction} ${args.targetUnit.name}</span> in the ${args.area.name}` });
         } else {
-            await victim.assignHits( hits, args.area, this );
+            await victim.assignHits( hits, args.area, this, args );
         }
     },
 
@@ -219,7 +226,7 @@ let obj = {
         this.game().sound( sound );
     },
 
-    async assignHits( hits, area, killer ){
+    async assignHits( hits, area, killer, args ){
         let player, data = {}, targets;
 
         let units = this.unitsInArea( area, { notHidden : true } );
@@ -232,7 +239,11 @@ let obj = {
         [player, data] = await this.game().promise({
             players: this.playerId,
             name: 'assign-hits',
-            data : { area : area.name, hits : hits }
+            data : {
+                area : area.name,
+                hits : hits,
+                nonPatsyDamage : args.nonPatsyDamage
+            }
         }).catch( error => console.error( error ) );
 
         targets = data.targets;

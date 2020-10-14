@@ -13,6 +13,7 @@ class Ninjas extends Faction {
         this.data.focusDescription = "Kill different unit types";
         this.data.title = "The Clan of the Pale Moon";
         this.data.bladesBonusDice = 0;
+        this.data.hasHitThisBattle = false;
 
         // icons
         this.data.statusIcon = 'hidden';
@@ -125,9 +126,6 @@ class Ninjas extends Faction {
             }).catch( error => console.error( error ) );
 
         let unit = this.game().objectMap[ data.units[0] ];
-
-        // unit becomes hidden
-        this.becomeHidden( unit );
 
         // resolve attack with that unit
         let attackArea = this.game().areas[ unit.location ];

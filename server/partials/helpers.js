@@ -93,10 +93,10 @@ let helpers = {
      *
      */
 
-    assignableHits( units ){
+    assignableHits( units, options = {} ){
         let assignableHits = 0;
         units.forEach( unit => {
-            if( !unit.hidden ){
+            if( !unit.hidden && ( !options.nonPatsy || unit.type !== 'patsy' ) ){
                 assignableHits += ( unit.toughness && !unit.flipped )
                 || (unit.flipped && unit.faction === 'vampires' && unit.type === 'champion') ? 2 : 1;
                 assignableHits -= unit.hits ? unit.hits : 0;

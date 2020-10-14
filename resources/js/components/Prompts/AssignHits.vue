@@ -5,7 +5,6 @@
 
 
                 <div class="title mb-4">Assign {{ data.hits }} {{ data.hits === 1 ? 'hit' : 'hits' }}</div>
-
                 <div class="prompt-question">Assign {{ hitsToAssign }} more {{ hitsToAssign === 1 ? 'hit' : 'hits' }}</div>
 
                 <div class="mt-3 pb-4">
@@ -28,6 +27,7 @@
                     </div>
                 </div>
 
+                <div v-if="data.nonPatsyDamage" class="prompt-question">Hits must be assigned to a non-patsy unit if possible</div>
 
                 <div class="flex-center">
                     <button class="button"
@@ -70,17 +70,22 @@
 
             assignHit( unit, hpLeft ){
 
-                if( this.hitsToAssign ){
-                    if( hpLeft ){
-                        if( !unit.hits ) this.$set( unit, 'hits', 1 );
-                        else this.$set( unit, 'hits', unit.hits + 1 );
-                    } else {
-                        this.$set( unit, 'hits', 0 );
-                    }
-                } else {
+                if( !this.hitsToAssign ){
                     if( unit.hits ) this.$set( unit, 'hits', unit.hits - 1 );
+                    return;
                 }
 
+                if( unit.type === 'patsy' && this.data.nonPatsyDamage && this.nonPatsyHits > 0 ){
+                    App.event.emit( 'sound', 'error' );
+                    return;
+                }
+
+                if( hpLeft ){
+                    if( !unit.hits ) this.$set( unit, 'hits', 1 );
+                    else this.$set( unit, 'hits', unit.hits + 1 );
+                } else {
+                    this.$set( unit, 'hits', 0 );
+                }
             },
 
         },
@@ -113,6 +118,10 @@
 
             assignableHits(){
                 return _.assignableHits( this.units );
+            },
+
+            nonPatsyHits(){
+                return _.assignableHits( this.units, { nonPatsy : true } );
             },
 
             hitsAssigned(){

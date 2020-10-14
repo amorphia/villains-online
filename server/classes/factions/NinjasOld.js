@@ -13,7 +13,6 @@ class Ninjas extends Faction {
         this.data.focusDescription = "Kill different unit types";
         this.data.title = "The Clan of the Pale Moon";
         this.data.bladesBonusDice = 0;
-        this.data.hasHitThisBattle = false;
 
         // icons
         this.data.statusIcon = 'hidden';
@@ -33,9 +32,7 @@ class Ninjas extends Faction {
         // units
         this.units['patsy'].data.attack = [7];
         this.units['patsy'].data.hidden = false;
-        this.units['talent'].data.attack = [5];
         this.units['talent'].data.hidden = false;
-        this.units['mole'].data.attack = [7];
         this.units['mole'].data.hidden = false;
         this.units['goon'].data.hidden = false;
 
@@ -59,7 +56,7 @@ class Ninjas extends Faction {
     factionCombatMods( mods, area ) {
         mods.push({
             type: 'ninjas',
-            text: `The Ninjas attack first in player order, their first successful attack can't be stopped by patsies and the attacker becomes hidden`
+            text: `The Ninjas attack first in player order, and may skip their normal attacks to make a special targeted attack`
         });
 
         mods.push({
@@ -123,11 +120,14 @@ class Ninjas extends Faction {
                     hasAttack: true,
                     playerOnly : true,
                     showEnemyUnits: true,
-                    message: "Choose a unit to make an attack"
+                    message: "Choose a unit to become hidden and make an attack"
                 }
             }).catch( error => console.error( error ) );
 
         let unit = this.game().objectMap[ data.units[0] ];
+
+        // unit becomes hidden
+        this.becomeHidden( unit );
 
         // resolve attack with that unit
         let attackArea = this.game().areas[ unit.location ];
@@ -136,7 +136,6 @@ class Ninjas extends Faction {
             attacks : unit.attack,
             unit : unit,
             noDecline : true,
-            nonPatsyDamage: true,
             bonusDice: this.data.bladesBonusDice
         });
 

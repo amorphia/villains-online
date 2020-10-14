@@ -5452,14 +5452,20 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.respond('assign-hits', data);
     },
     assignHit: function assignHit(unit, hpLeft) {
-      if (this.hitsToAssign) {
-        if (hpLeft) {
-          if (!unit.hits) this.$set(unit, 'hits', 1);else this.$set(unit, 'hits', unit.hits + 1);
-        } else {
-          this.$set(unit, 'hits', 0);
-        }
-      } else {
+      if (!this.hitsToAssign) {
         if (unit.hits) this.$set(unit, 'hits', unit.hits - 1);
+        return;
+      }
+
+      if (unit.type === 'patsy' && this.data.nonPatsyDamage && this.nonPatsyHits > 0) {
+        App.event.emit('sound', 'error');
+        return;
+      }
+
+      if (hpLeft) {
+        if (!unit.hits) this.$set(unit, 'hits', 1);else this.$set(unit, 'hits', unit.hits + 1);
+      } else {
+        this.$set(unit, 'hits', 0);
       }
     }
   },
@@ -5487,6 +5493,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     assignableHits: function assignableHits() {
       return _.assignableHits(this.units);
+    },
+    nonPatsyHits: function nonPatsyHits() {
+      return _.assignableHits(this.units, {
+        nonPatsy: true
+      });
     },
     hitsAssigned: function hitsAssigned() {
       var hits = 0;
@@ -60281,6 +60292,12 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
+          _vm.data.nonPatsyDamage
+            ? _c("div", { staticClass: "prompt-question" }, [
+                _vm._v("Hits must be assigned to a non-patsy unit if possible")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
             _c(
               "button",
@@ -92152,9 +92169,10 @@ var helpers = {
    *
    */
   assignableHits: function assignableHits(units) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     var assignableHits = 0;
     units.forEach(function (unit) {
-      if (!unit.hidden) {
+      if (!unit.hidden && (!options.nonPatsy || unit.type !== 'patsy')) {
         assignableHits += unit.toughness && !unit.flipped || unit.flipped && unit.faction === 'vampires' && unit.type === 'champion' ? 2 : 1;
         assignableHits -= unit.hits ? unit.hits : 0;
       }
