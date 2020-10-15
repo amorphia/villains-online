@@ -123,7 +123,8 @@ class Ninjas extends Faction {
                     hasAttack: true,
                     playerOnly : true,
                     showEnemyUnits: true,
-                    message: "Choose a unit to make an attack"
+                    message: "Choose a unit to make an attack",
+                    gainsSeeking : true
                 }
             }).catch( error => console.error( error ) );
 
