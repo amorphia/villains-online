@@ -13,7 +13,7 @@ class Ninjas extends Faction {
         this.data.focusDescription = "Kill different unit types";
         this.data.title = "The Clan of the Pale Moon";
         this.data.bladesBonusDice = 0;
-        this.data.hasHitThisBattle = false;
+        this.data.firstAttackThisBattle = false;
 
         // icons
         this.data.statusIcon = 'hidden';
@@ -33,7 +33,9 @@ class Ninjas extends Faction {
         // units
         this.units['patsy'].data.attack = [7];
         this.units['patsy'].data.hidden = false;
+        this.units['talent'].data.attack = [5];
         this.units['talent'].data.hidden = false;
+        this.units['mole'].data.attack = [7];
         this.units['mole'].data.hidden = false;
         this.units['goon'].data.hidden = false;
 

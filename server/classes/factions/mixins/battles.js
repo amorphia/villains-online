@@ -173,10 +173,8 @@ let obj = {
         let toHit = this.getToHitNumber( args, victim );
         let hits = this.calculateHits( rolls, toHit );
 
-        if( args.ninjaAttack && hits ){
+        if( this.name === 'ninjas' && this.data.firstAttackThisBattle && hits ){
             this.becomeHidden( args.unit );
-            args.seeking = true;
-            this.data.hasHitThisBattle = true;
             this.game().message({ faction: this, message: `The ${ args.unit.name} successfully assassinates, and becomes hidden` });
         }
 

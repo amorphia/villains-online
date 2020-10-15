@@ -2,6 +2,7 @@ window.App.state = {
 
 
     filterMap : {
+        'xSEEKx': '<img class="icon-image ml-3" src="/images/icons/seeking.png">',
         'xIx': '<img class="icon-image ml-3" src="/images/icons/influence.png">',
         'xCAP1x': '<img class="icon-image ml-3" src="/images/tokens/capitol-1-points.png">',
         'xCAP2x': '<img class="icon-image ml-3" src="/images/tokens/capitol-2-points.png">',

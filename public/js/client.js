@@ -7381,6 +7381,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-units',
   data: function data() {
@@ -61940,6 +61942,19 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
+          _vm.data.gainsSeeking
+            ? _c("div", {
+                staticClass: "prompt-question",
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.shared.filterText(
+                      "This attack gains <b>seeking</b> xSEEKx"
+                    )
+                  )
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
           _vm.cost > 0
             ? _c("div", {
                 staticClass: "prompt-question",
@@ -91828,6 +91843,7 @@ window.App.preloader = new ( /*#__PURE__*/function () {
 
 window.App.state = {
   filterMap: {
+    'xSEEKx': '<img class="icon-image ml-3" src="/images/icons/seeking.png">',
     'xIx': '<img class="icon-image ml-3" src="/images/icons/influence.png">',
     'xCAP1x': '<img class="icon-image ml-3" src="/images/tokens/capitol-1-points.png">',
     'xCAP2x': '<img class="icon-image ml-3" src="/images/tokens/capitol-2-points.png">',
