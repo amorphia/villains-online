@@ -60295,9 +60295,16 @@ var render = function() {
             : _vm._e(),
           _vm._v(" "),
           _vm.data.seeking
-            ? _c("div", { staticClass: "prompt-question" }, [
-                _vm._v("Hits must be assigned to a non-patsy unit if possible")
-              ])
+            ? _c("div", {
+                staticClass: "prompt-question",
+                domProps: {
+                  innerHTML: _vm._s(
+                    _vm.shared.filterText(
+                      "Seeking xSEEKx: Hits must be assigned to a non-patsy unit if possible"
+                    )
+                  )
+                }
+              })
             : _vm._e(),
           _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [

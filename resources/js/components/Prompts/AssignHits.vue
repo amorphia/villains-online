@@ -27,7 +27,7 @@
                     </div>
                 </div>
 
-                <div v-if="data.seeking" class="prompt-question">Hits must be assigned to a non-patsy unit if possible</div>
+                <div v-if="data.seeking" class="prompt-question" v-html="shared.filterText( `Seeking xSEEKx: Hits must be assigned to a non-patsy unit if possible` )"></div>
 
                 <div class="flex-center">
                     <button class="button"
