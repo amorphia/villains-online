@@ -27,7 +27,7 @@
                     </div>
                 </div>
 
-                <div v-if="data.nonPatsyDamage" class="prompt-question">Hits must be assigned to a non-patsy unit if possible</div>
+                <div v-if="data.seeking" class="prompt-question">Hits must be assigned to a non-patsy unit if possible</div>
 
                 <div class="flex-center">
                     <button class="button"
@@ -75,7 +75,7 @@
                     return;
                 }
 
-                if( unit.type === 'patsy' && this.data.nonPatsyDamage && this.nonPatsyHits > 0 ){
+                if( unit.type === 'patsy' && this.data.seeking && this.assignableNonPatsyHits > 0 ){
                     App.event.emit( 'sound', 'error' );
                     return;
                 }
@@ -120,7 +120,7 @@
                 return _.assignableHits( this.units );
             },
 
-            nonPatsyHits(){
+            assignableNonPatsyHits(){
                 return _.assignableHits( this.units, { nonPatsy : true } );
             },
 

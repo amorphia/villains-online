@@ -5457,7 +5457,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      if (unit.type === 'patsy' && this.data.nonPatsyDamage && this.nonPatsyHits > 0) {
+      if (unit.type === 'patsy' && this.data.seeking && this.assignableNonPatsyHits > 0) {
         App.event.emit('sound', 'error');
         return;
       }
@@ -5494,7 +5494,7 @@ __webpack_require__.r(__webpack_exports__);
     assignableHits: function assignableHits() {
       return _.assignableHits(this.units);
     },
-    nonPatsyHits: function nonPatsyHits() {
+    assignableNonPatsyHits: function assignableNonPatsyHits() {
       return _.assignableHits(this.units, {
         nonPatsy: true
       });
@@ -60292,7 +60292,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.data.nonPatsyDamage
+          _vm.data.seeking
             ? _c("div", { staticClass: "prompt-question" }, [
                 _vm._v("Hits must be assigned to a non-patsy unit if possible")
               ])

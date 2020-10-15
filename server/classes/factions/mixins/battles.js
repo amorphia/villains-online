@@ -175,7 +175,7 @@ let obj = {
 
         if( args.ninjaAttack && hits ){
             this.becomeHidden( args.unit );
-            args.nonPatsyDamage = true;
+            args.seeking = true;
             this.data.hasHitThisBattle = true;
             this.game().message({ faction: this, message: `The ${ args.unit.name} successfully assassinates, and becomes hidden` });
         }
@@ -242,7 +242,7 @@ let obj = {
             data : {
                 area : area.name,
                 hits : hits,
-                nonPatsyDamage : args.nonPatsyDamage
+                seeking : args.seeking || args.unit.seeking
             }
         }).catch( error => console.error( error ) );
 
