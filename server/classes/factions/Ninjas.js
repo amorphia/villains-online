@@ -33,9 +33,7 @@ class Ninjas extends Faction {
         // units
         this.units['patsy'].data.attack = [7];
         this.units['patsy'].data.hidden = false;
-        this.units['talent'].data.attack = [5];
         this.units['talent'].data.hidden = false;
-        this.units['mole'].data.attack = [7];
         this.units['mole'].data.hidden = false;
         this.units['goon'].data.hidden = false;
 
