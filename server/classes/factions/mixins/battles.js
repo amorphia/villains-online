@@ -173,10 +173,7 @@ let obj = {
         let toHit = this.getToHitNumber( args, victim );
         let hits = this.calculateHits( rolls, toHit );
 
-        if( this.name === 'ninjas' && this.data.firstAttackThisBattle && hits ){
-            this.becomeHidden( args.unit );
-            this.game().message({ faction: this, message: `The ${ args.unit.name} successfully assassinates, and becomes hidden` });
-        }
+
 
         // report attack results
         let attackResult = {
@@ -195,23 +192,35 @@ let obj = {
         if( this.game().data.combat ) this.game().data.combat.lastAttack = attackResult;
 
         // resolve hits
-        await this.resolveAttackHits( hits, victim, args );
+        let resolveHitsResult = await this.resolveAttackHits( hits, victim, args );
+
+        if( this.name === 'ninjas' && this.data.firstAttackThisBattle && resolveHitsResult === 'kills' ){
+            this.becomeHidden( args.unit );
+            this.game().message({ faction: this, message: `The ${ args.unit.name} successfully assassinates, and becomes hidden` });
+        }
 
         return attackResult;
     },
 
     async resolveAttackHits( hits, victim, args ){
-        if( !hits ) return this.game().sound( 'wiff' );
+        let result;
+
+        if( !hits ){
+            this.game().sound( 'wiff' );
+            return;
+        }
 
         this.hitSound( hits );
         if( args.unit ) await this.triggeredEvents('hit', [{ unit: args.unit, hits: hits }] );
 
         if( args.targetUnit ){
-            await this.game().assignHits( args.targetUnit, this, hits );
+            result = await this.game().assignHits( args.targetUnit, this, hits );
             this.game().message({ faction: this, message: `hits <span class="faction-${args.targetUnit.faction}">${args.targetUnit.faction} ${args.targetUnit.name}</span> in the ${args.area.name}` });
         } else {
-            await victim.assignHits( hits, args.area, this, args );
+            result = await victim.assignHits( hits, args.area, this, args );
         }
+
+        return result;
     },
 
 
@@ -225,7 +234,7 @@ let obj = {
     },
 
     async assignHits( hits, area, killer, args ){
-        let player, data = {}, targets;
+        let player, data = {}, targets, hasKill;
 
         let units = this.unitsInArea( area, { notHidden : true } );
 
@@ -255,6 +264,7 @@ let obj = {
         for( let target of targets ){
             let unit = this.game().objectMap[ target.id ];
             let result = await this.game().assignHits( unit, killer, target.hits );
+            if( result === 'kills' ) hasKill = 'kills';
             results.push(`${result} <span class="faction-${this.name}">${unit.name}</span>`);
         }
 
@@ -262,6 +272,7 @@ let obj = {
             this.game().message({ faction: killer, message: `${results.join(', ')} in the ${area.name}` });
         }
 
+        return hasKill;
     },
 
 
