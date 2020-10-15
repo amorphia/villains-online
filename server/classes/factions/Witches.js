@@ -43,7 +43,6 @@ class Witches extends Faction {
                 selected: false,
                 hitsAssigned: 0,
                 onDeploy : 'cordellaDeploy',
-                //onMove : 'cordellaDeploy'
             }
         };
     }

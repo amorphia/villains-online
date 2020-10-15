@@ -74,11 +74,13 @@
                         pips.push({ active : false });
                     }
                 }
+
                 return pips;
             },
 
             hpTotal(){
-                return this.unit.toughness && !this.unit.flipped ? 2 : 1;
+                return (this.unit.toughness && !this.unit.flipped)
+                || (this.unit.type === 'champion' && this.unit.flipped && this.unit.faction === 'vampires' ) ? 2 : 1;
             },
 
             hpLeft(){
