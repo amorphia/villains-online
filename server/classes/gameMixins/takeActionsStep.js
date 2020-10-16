@@ -114,7 +114,7 @@ let obj = {
             console.error( error );
         }
 
-        this.advancePlayer( {}, false );
+        this.advancePlayer();
     },
 
     async takeLoopAction( player, areaName ){
@@ -127,7 +127,7 @@ let obj = {
             console.error( error );
         }
 
-        this.advancePlayer( {}, false );
+        this.advancePlayer();
     },
 
     async takeSkillAction( player, areaName ){

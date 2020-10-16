@@ -41,23 +41,19 @@ class Bureau extends Faction {
         // units
         this.units['goon'].count = 4;
         this.units['goon'].data.charged = true;
-        this.units['goon'].data.firstStrike = true;
         this.units['goon'].data.influence = 2;
 
 
         this.units['mole'].count = 4;
         this.units['mole'].data.charged = true;
-        this.units['mole'].data.firstStrike = true;
         this.units['mole'].data.influence = 3;
 
 
         this.units['talent'].data.charged = true;
-        this.units['talent'].data.firstStrike = true;
         this.units['talent'].data.influence = 2;
 
 
         this.units['patsy'].count = 3;
-        this.units['patsy'].data.charged = true;
         this.units['patsy'].data.influence = 1;
 
 
@@ -84,7 +80,7 @@ class Bureau extends Faction {
         if ( this.data.units.find( unit => _.unitInArea( unit, area, { flipped : true } ) ) ) {
             mods.push({
                 type: 'chargedFirstStrike',
-                text: `Charged units have first strike and return during cleanup if killed`
+                text: `Charged units return during cleanup if killed`
             });
         }
 
@@ -173,20 +169,17 @@ class Bureau extends Faction {
     chargeUnit( unit ){
         unit.flipped = true;
         unit.charged = true;
-        unit.firstStrike = true;
         unit.influence++;
     }
 
     dechargeUnit( unit ){
         unit.flipped = true;
         unit.charged = false;
-        unit.firstStrike = false;
         unit.influence--;
     }
 
     unitUnflipped( unit ) {
         unit.flipped = false;
-        unit.firstStrike = true;
         unit.influence++;
         unit.charged = true;
     }

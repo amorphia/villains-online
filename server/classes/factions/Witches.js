@@ -9,10 +9,10 @@ class Witches extends Faction {
 
         //data
         this.data.name = this.name;
-        this.data.title = "The Witches of Havelocke";
+        this.data.title = "The Witches of Havlocke";
         this.data.focus = 'rule-focus';
         this.data.focusDescription = "Play many rule cards";
-        this.data.magickCardsRevealed = 2;
+        this.data.magickCardsRevealed = 1;
 
         // icons
         this.data.statusIcon = 'enchanted';
@@ -25,7 +25,6 @@ class Witches extends Faction {
                 influence: 1,
                 type: 'brew',
                 cost: 0,
-                resource: 1
             }
         };
 
@@ -49,7 +48,7 @@ class Witches extends Faction {
 
 
     processUpgrade( n ){
-        this.data.magickCardsRevealed = n + 2;
+        this.data.magickCardsRevealed = n + 1;
     }
 
     async revealMagick( area ){

@@ -3,7 +3,6 @@
 /public/hot
 /public/files
 /public/storage
-/public/images
 /public/sounds
 /storage/*.key
 /vendor
