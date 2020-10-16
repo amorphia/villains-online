@@ -249,7 +249,7 @@ let obj = {
             data : {
                 area : area.name,
                 hits : hits,
-                seeking : args.seeking || args.unit.seeking
+                seeking : args.seeking || (args.unit && args.unit.seeking )
             }
         }).catch( error => console.error( error ) );
 

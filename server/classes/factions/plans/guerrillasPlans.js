@@ -123,7 +123,7 @@ let obj = [
                 requirements : [
                     { test : 'killsInEnemy', args : [6] },
                 ],
-                value : 1
+                value : 3
             },
         ]
     },
