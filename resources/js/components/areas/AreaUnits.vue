@@ -19,13 +19,22 @@
 
         computed : {
             units(){
-                 return this.faction.units.filter( unit => {
+                let units = this.faction.units.filter( unit => {
                      if( this.skilled ){
                          return _.unitReadyInArea( unit, this.area );
                      }
 
                      return _.unitNotReadyInArea( unit, this.area );
                  });
+
+
+                if( !this.skilled && this.faction.name === 'plants' ){
+                    for( let i = 0; i < this.shared.data.areas[this.area].plants.length; i++ ){
+                        units.push({ type : 'plant', faction : 'plants' });
+                    }
+                }
+
+                return units;
             }
         }
 

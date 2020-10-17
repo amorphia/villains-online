@@ -64,7 +64,7 @@
                 </area-flipper>
 
                 <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to deploy these units?` )"></div>
-                <div v-if="trapsCost > 0" class="prompt-question red center-text" v-html="shared.filterText( `Traps cost xC${trapsCost}x` )"></div>
+                <div v-if="vinesCost > 0" class="prompt-question red center-text" v-html="shared.filterText( `Vines cost xC${vinesCost}x` )"></div>
                 <div v-if="policePayoffs > 0" class="prompt-question red center-text" v-html="shared.filterText( `Police Payoff cost xC${policePayoffs}x` )"></div>
 
 
@@ -280,8 +280,8 @@
                 return _.policePayoffs( this.shared.faction, this.area, this.selected ) * this.selected.length;
             },
 
-            trapsCost(){
-                return _.trapsCost( this.shared.faction, this.selected, this.shared.data.factions );
+            vinesCost(){
+                return _.vinesCost( this.shared.faction, this.selected, this.shared.data.factions );
             },
 
             unitCost(){
@@ -297,7 +297,7 @@
             },
 
             cost(){
-                return this.unitCost + this.policePayoffs + this.trapsCost;
+                return this.unitCost + this.policePayoffs + this.vinesCost;
             },
 
             data(){

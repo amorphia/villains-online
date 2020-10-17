@@ -459,6 +459,7 @@ let helpers = {
         influence += this.tokenInfluence( faction, area );
         influence += this.cardInfluence( faction, area );
         influence += this.churchInfluence( faction, area, factions );
+        influence += this.plantInfluence( faction, area );
         return influence;
     },
 
@@ -474,6 +475,14 @@ let helpers = {
         if( cards['display-of-brilliance'] && tokens['card'] ) influence += ( 2 * cards['display-of-brilliance'] * tokens['card'] );
         return influence;
     },
+
+
+    plantInfluence( faction, area ){
+        if( faction.data ) faction = faction.data;
+        if( area.data ) area = area.data;
+        return faction.name === 'plants' ? area.plants.length :  0;
+    },
+
 
     unitInfluence( faction, area ){
         if( faction.data ) faction = faction.data; if( area.data ) area = area.data;
@@ -577,6 +586,28 @@ let helpers = {
 
         return winningAreas;
     },
+
+
+    factionEnemyInAreas( faction, factions, areas, areaLeaders = false ){
+        let winningAreas = [];
+        let count = 0;
+
+        if( areaLeaders ){
+            winningAreas = this.factionWinningAreas( faction, factions, areas, areaLeaders );
+        } else {
+            Object.values( areas ).forEach( area => {
+                if( area.owner === faction.name ) winningAreas.push( area.name );
+            });
+        }
+
+        Object.values( factions ).forEach( fac => {
+            if( fac.name === faction.name ) return;
+            count += fac.units.filter( unit => winningAreas.includes( unit.location ) && !unit.killed ).length;
+        });
+
+        return count;
+    },
+
 
     factionKillsInEnemy( faction, factions, areas, areaLeaders = false ){
         let enemyAreas = [];
@@ -723,11 +754,11 @@ let helpers = {
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
 
-        // if this area is trapped by the guerrillas and we have no money return true
-        if( faction.name !== 'guerrillas' && area.tokens.find(
-            token => token.type === 'traps'
-                          && token.revealed
-                          && (faction.resources + faction.energy ) < 1  ) ) return true;
+        // if this area is trapped by the plants and we don't have enough money return true
+        let vines = area.tokens.filter( token => token.type === 'vines' && token.revealed );
+        if( faction.name !== 'plants' && vines.length ){
+            return _.money( faction ) < vines.length;
+        }
 
         // let make an array of all the players that have played a trapped like rats here
         let traps = [];
@@ -745,12 +776,27 @@ let helpers = {
         if( _.remove( traps, name => name !== faction.name ).length ) return true;
     },
 
-    trapsCost( faction, units, factions ){
-        if( faction.name === 'guerrillas' || ! factions['guerrillas'] ) return 0;
-        let traps = factions['guerrillas'].tokens.find( token => token.type === 'traps' && token.revealed && token.location );
-        if( !traps ) return 0;
 
-        return units.filter( unit => unit.location === traps.location ).length;
+    vinesCost( faction, units, factions ){
+        if( faction.name === 'plants' || ! factions['plants'] ) return 0;
+
+        // find out where each of our vines tokens is located
+        let vinesAreas = {};
+        let vines = factions['plants'].tokens.forEach( token => {
+            if( token.type === 'vines' && token.revealed && token.location ){
+                if( vinesAreas[token.location] ) vinesAreas[token.location] = vinesAreas[token.location] + 1;
+                else vinesAreas[token.location] = 1;
+            }
+        });
+        if( ! Object.keys( vinesAreas ).length ) return 0;
+
+        // apply appropriate cost per vines token
+        let cost = 0;
+        units.forEach( unit => {
+            if( vinesAreas[ unit.location ] ) cost += vinesAreas[ unit.location ];
+        });
+
+        return cost;
     },
 
     policePayoffs( faction, area, units ){

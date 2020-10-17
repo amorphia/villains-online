@@ -48,6 +48,12 @@
 .icon-toughness-solid:before {
     content: "\e95c";
 }
+.icon-plant:before {
+    content: "\e907";
+}
+.icon-vines:before {
+    content: "\e908";
+}
 .icon-blown-cover:before {
     content: "\e904";
 }

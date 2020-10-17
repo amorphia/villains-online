@@ -35,6 +35,6 @@
 { test : 'playRules', args : [2, 'areas'] },
 { test : 'areasMostUnits', args : [3] },
 { test : 'areasMostTokens', args : [3] },
-
+{ test : 'enemyUnitsInAreas', args : [3] },
 
 

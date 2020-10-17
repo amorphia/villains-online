@@ -104,6 +104,16 @@ let mixin = {
     },
 
 
+    areasWithDeadUnits(){
+        let areas = {};
+
+        this.data.units.forEach( unit => {
+            if( unit.killed && unit.location ) areas[ unit.location ] = true;
+        });
+
+        return Object.keys( areas );
+    },
+
     hasEnemyUnitsInArea( area, options = {} ){
         let enemyUnits = this.enemyUnitsInArea( area, options );
         return Object.keys( enemyUnits ).length > 0;
@@ -133,6 +143,9 @@ let mixin = {
         return _.areasWithUnits( this, options );
     },
 
+    enemyUnitsInAreas(){
+        return _.factionEnemyInAreas( this.data, this.game().data.factions, this.game().data.areas );
+    },
 
     hasUnitsInArea( area, options = {} ) {
         return _.hasUnitsInArea( this.data, area, options );

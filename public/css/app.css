@@ -48,6 +48,12 @@
 .icon-toughness-solid:before {
     content: "\E95C";
 }
+.icon-plant:before {
+    content: "\E907";
+}
+.icon-vines:before {
+    content: "\E908";
+}
 .icon-blown-cover:before {
     content: "\E904";
 }
@@ -457,21 +463,13 @@ a {
   --off-white: #ADADAD;
   --light-yellow: #ffe000;
   --faction-mafia: #ff6800;
-  --faction-mafia-secondary: #fffa06;
   --faction-mutants: #90c500;
-  --faction-mutants-secondary: #ffff00;
   --faction-scientists: #ffdd0b;
-  --faction-scientists-secondary: #ffffc3;
   --faction-robots: #108cf9;
-  --faction-robots-secondary: #afffff;
   --faction-bankers: #00b03d;
-  --faction-bankers-secondary: #c7ffc5;
   --faction-commies: #ff1b00;
-  --faction-commies-secondary: #ffe000;
   --faction-aliens: #00ab79;
-  --faction-aliens-secondary: #ffb800;
   --faction-cultists: #b2b2b2;
-  --faction-cultists-secondary: #fdfdfd;
   --faction-loyalists: #864eef;
   --faction-swarm: #889941;
   --faction-society: #f43de8;
@@ -479,10 +477,11 @@ a {
   --faction-ninjas: #e8e8e8;
   --faction-hackers: #6cf832;
   --faction-conquistadors: #e1a600;
-  --faction-guerrillas: #44b200;
+  --faction-guerrillas: #3a9300;
   --faction-parasites: #ff0043;
   --faction-witches: #d127f4;
   --faction-bureau: #94e5a4;
+  --faction-plants: #14ce00;
 }
 
 .faction-neutrals {
@@ -563,6 +562,10 @@ a {
 
 .faction-bureau {
   color: var(--faction-bureau);
+}
+
+.faction-plants {
+  color: var(--faction-plants);
 }
 
 .primary {

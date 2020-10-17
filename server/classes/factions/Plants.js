@@ -9,51 +9,49 @@ class Plants extends Faction {
 
         //data
         this.data.name = this.name;
-        this.data.title = "The Czarkovian Aristocrats";
-        this.data.focus = 'kill-areas-focus';
-        this.data.focusDescription = "Kill units in many different areas";
-        this.data.batMove = 1;
-
-        // icons
-        this.data.statusIcon = 'vampires';
-        this.data.statusDescription = 'has vampire units';
-
+        this.data.title = "The Reclamation of Gaia";
+        this.data.focus = 'enemy-in-areas-focus';
+        this.data.focusDescription = "Have many enemy units in your areas";
+        this.data.vines = [];
 
 
         // tokens
-        this.tokens['feast'] = {
-            count: 1,
+        this.tokens['vines'] = {
+            count: 3,
             data: {
-                influence: 1,
-                type: 'feast',
+                influence: 2,
+                type: 'vines',
                 cost: 0,
+                resource: 1,
+                areaStat : true,
+                description : 'enemy players must pay 1 for each unit they deploy or move away from here'
             }
         };
 
         // units
-        this.units['goon'].data.onHit = 'becomeVampire';
-        this.units['talent'].data.onHit = 'becomeVampire';
-        this.units['talent'].data.attack = [5];
-        this.units['mole'].data.onHit = 'becomeVampire';
-        this.units['mole'].data.attack = [7];
+        this.units['goon'].count = 2;
+        this.units['talent'].count = 5;
+        this.units['mole'].count = 7;
         this.units['patsy'].count = 6;
-        this.units['patsy'].data.onHit = 'becomeVampire';
-        this.units['patsy'].data.attack = [7];
+        this.units['patsy'].data.influence = 1;
 
         this.units['champion'] = {
             count: 1,
             data: {
-                name: "Lilith",
+                name: "Soul",
                 type: 'champion',
                 basic: false,
-                influence: 2,
-                attack: [5,5],
-                firstStrike: true,
-                cost: 2,
+                influence: 3,
+                attack: [],
+                toughness: true,
+                flipped: false,
+                skilled: true,
+                ready: false,
+                cost: 1,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                onHit : 'becomeVampire'
+                onSkill : 'soulLure',
             }
         };
     }
@@ -61,8 +59,8 @@ class Plants extends Faction {
     factionCombatMods( mods, area ) {
         if ( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ) {
             mods.push({
-                type: 'lilithHeal',
-                text: `If Lilith, Baroness of Czarkovia is assigned a hit while in vampire form, flip her face up rather than kill her`
+                type: 'soulHeal',
+                text: `If The Soul of the Green is wounded, heal her at the end of combat`
             });
         }
 
@@ -70,134 +68,151 @@ class Plants extends Faction {
     }
 
     processUpgrade( n ) {
-        this.data.batMove = n + 1;
+        let vinesToAdd = _.min( [ n, this.data.vines.length ] );
+        while( vinesToAdd ){
+            this.data.tokens.push( this.data.vines.pop() );
+            vinesToAdd--;
+        }
     }
 
+    // Heal wounded Soul of the Green after combat
+    async onAfterBattle( combat ) {
+        let soul = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, combat.area ) );
+        if ( soul && soul.flipped ){
+            this.game().message({ faction: this, message : `The Soul of the green regrows her limbs` });
+            soul.flipped = false;
+        }
+    }
 
-    async onAfterReveal( token ){
-        if( token.faction !== this.name ) return;
-        let player, data, destinationAreaName = token.location;
+    factionsWithAdjacentUnits( area ){
+        let factions = {};
 
-        // check for areas with vampires (that aren't this area)
-        let potentialAreas = this.areasWithUnits({ flipped : true, excludesArea : destinationAreaName });
-        if( !potentialAreas.length ) return;
+        area.data.adjacent.forEach( areaName => {
+            Object.values( this.game().factions ).forEach( faction => {
+                if( faction.data.units.find( unit => _.unitInArea( unit, areaName, { basic : true } ) ) ) factions[ faction.name ] = true;
+            });
+        });
 
-        let message = this.data.batMove > 1 ? `Fly up to ${this.data.batMove} vampires to the ${destinationAreaName}` : `Fly a vampire to the ${destinationAreaName}?`;
+        return Object.keys( factions );
+    }
+
+    async soulLure( event ){
+        let player, data, promises = [], units = [], area = this.game().areas[event.unit.location];
+
+        let factions = this.factionsWithAdjacentUnits( area );
 
         [player, data] = await this.game().promise({
             players: this.playerId,
-            name: 'choose-units',
+            name: 'choose-players',
             data: {
-                    count : this.data.batMove,
-                    areas : potentialAreas,
-                    playerOnly : true,
-                    flippedOnly : true,
-                    canDecline : true,
-                    optionalMax : true,
-                    message: message
-                }
-            }).catch( error => console.error( error ) );
-        if( data.decline ) return false;
-
-        let units = data.units.map( unitId => this.game().objectMap[ unitId ] );
-
-        units.forEach( unit => {
-            unit.location = destinationAreaName;
-            if( unit.ready ) unit.ready = false;
-        });
-
-
-        this.game().sound( 'bats' );
-        this.game().message({ faction : this, message: `Fly ${units.length} vampire${units.length > 1 ? 's':'' } to The ${destinationAreaName}` });
-
-        await this.game().timedPrompt('units-shifted', {
-            message : `${units.length === 1 ? 'A Vampire flies' : 'Vampires fly'} to The ${destinationAreaName}`,
-            units: units
-        });
-
-    }
-
-
-    canActivateFeast( token, area ) {
-        return this.feastAreas().length > 0;
-    }
-
-    feastAreas(){
-
-        let areas = {};
-        this.data.tokens.forEach( token => {
-            if( token.type === 'deploy' && token.location && token.revealed ){
-                let area = this.game().areas[token.location];
-                let hasUnit = !! this.data.units.find( unit => _.unitInArea( unit, area.name ) );
-                let hasEnemy = Object.keys( _.enemyUnitsInArea( this, area.name, this.game().data.factions ) ).length;
-                if( hasUnit && hasEnemy && !area.hasCard( 'cease-fire' ) ) areas[area.name] = true;
+                factions : factions,
+                canDecline : true,
+                message: `Choose players to move a unit to The ${area.name} from an adjacent area`
             }
-        });
+        }).catch( error => console.error( error ) );
 
-        return Object.keys( areas );
+        if( !factions.length ) return;
+
+        try {
+            for( let factionName of factions ) {
+                let faction = this.game().factions[factionName];
+
+                let factionAreas = faction.areasWithUnits({ adjacent : area, basicOnly : true });
+
+                promises.push( this.game().promise({ players: faction.playerId, name: 'choose-units', data : {
+                    count : 1,
+                    areas : factionAreas,
+                    basicOnly : true,
+                    playerOnly : true,
+                    message : `Choose a unit to move to The ${area.name}`
+                }}).then( async ([player, data]) => {
+
+                    let unit = this.game().objectMap[data.units[0]];
+
+                    unit.location = area.name;
+                    if( unit.ready ) unit.ready = false;
+                    units.push( unit );
+
+                    player.setPrompt({ active : false, playerUpdate : true });
+                }));
+            }
+
+
+            await Promise.all( promises );
+
+            await this.game().timedPrompt('units-shifted', {
+                message: `The following units were lured to The ${area.name}`,
+                units: units
+            });
+
+        } catch( error ){
+            console.error( error );
+        }
+
     }
 
-    async feastToken( args ) {
-        let data, player;
-        let areas = this.feastAreas();
-        let output = [];
+
+
+    // Turn killed units into plants
+    async factionCleanUp(){
+        let player, data;
+        let areas = this.areasWithDeadUnits();
+
+        if( !areas.length ) return this.game().message({ message: 'The Plants have no killed units to convert into plants', class : 'warning' });
+
+        this.game().message({ faction: this, message: `The Plants must choose which dead shall be reborn into Gaia's embrace` });
 
         for( let area of areas ){
-            let message = `Feasts in The ${ area }`;
-            this.message({ message: message, faction : this });
-
-            // prompt player to select a unit
             [player, data] = await this.game().promise({
                 players: this.playerId,
                 name: 'choose-units',
-                data: { count : 1,
-                        areas : [area],
-                        hasAttack: true,
-                        playerOnly : true,
-                        showEnemyUnits: true,
-                        message: "Choose a unit to attack" }
-                }).catch( error => console.error( error ) );
+                data: {
+                    count : 1,
+                    areas : [area],
+                    playerOnly : true,
+                    killedOnly : true,
+                    canDecline : true,
+                    basicOnly : true,
+                    message: `choose a killed unit in The ${area} to transform into a plant`
+                }
+            }).catch( error => console.error( error ) );
 
-            let unit = this.game().objectMap[ data.units[0] ];
+            if( data.decline ){
+                this.game().message({ faction: this, message: `The Plants decline to seed The ${area}` });
+                continue;
+            }
 
-            // resolve attack with that unit
-            let attackArea = this.game().areas[ unit.location ];
-            output.push( await this.attack({
-                area : attackArea,
-                attacks : unit.attack,
-                unit : unit,
-                noDecline : true
-            }) );
+            let unit = this.game().objectMap[data.units[0]];
+            _.moveItemById( unit.id, this.data.units, this.game().areas[area].data.plants );
+            this.game().message({ faction: this, message: `The Plants' ${unit.type} in The ${area} is reborn from Gaia's touch` });
         }
 
-        let message = `Has finished feasting`;
-        this.message({ message: message, faction : this });
+    }
 
-        output = output.filter( item => item );
 
-        if( output.length ){
-            await this.game().timedPrompt('noncombat-attack', { output : output } )
-                .catch( error => console.error( error ) );
-        }
+    canActivateVines() {
+        return true;
+    }
 
+    vinesToken() {
         this.game().advancePlayer();
     }
 
-    becomeVampire( event ) {
-        let unit = event.unit;
 
-        if( !unit.flipped && !unit.killed ){
-            unit.flipped = true;
-            unit.attack = unit.attack.map( attack => attack - 2 );
-            let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;
-            this.message({ message: message, faction : this });
+
+    onSetup(){
+        let numToSetAside = 2 - this.data.upgrade;
+
+        if( numToSetAside > this.data.vines.length ){
+            while( numToSetAside > this.data.vines.length ){
+                let vine = this.data.tokens.find( token => token.type === 'vines' && !token.location && !token.revealed );
+                if( vine ) _.moveItemById( vine.id, this.data.tokens, this.data.vines );
+            }
+        } else if( numToSetAside < this.data.vines.length ){
+            while( numToSetAside < this.data.vines.length ) {
+                this.data.tokens.push(this.data.vines.pop());
+            }
         }
-    }
-
-    unitUnflipped( unit ) {
-        console.log( 'unflip unit', unit );
-        unit.flipped = false;
-        unit.attack = unit.attack.map( attack => attack + 2 );
     }
 
 }

@@ -59,6 +59,17 @@
                         units[ unit.type ].flipped++;
                     }
                 });
+
+                if( this.faction.name === 'plants' ){
+                    for( let i = 0; i < this.area.plants.length; i++ ){
+                        if( units['plant'] ){
+                            units['plant'].count++;
+                        } else {
+                            units['plant'] = { count : 1, flipped : 0 };
+                        }
+                    }
+                }
+
                 return units;
             },
 

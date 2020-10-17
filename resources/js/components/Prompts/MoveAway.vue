@@ -165,7 +165,7 @@
                    }
                 });
 
-                cost += _.trapsCost( this.shared.faction, this.selected, this.shared.data.factions );
+                cost += _.vinesCost( this.shared.faction, this.selected, this.shared.data.factions );
 
                 return cost;
             },

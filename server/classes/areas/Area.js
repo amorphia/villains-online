@@ -7,6 +7,7 @@ class Area {
 
     data = {
         tokens : [],
+        plants : [],
         cards : [],
         name : null,
         maxTokens : 5,

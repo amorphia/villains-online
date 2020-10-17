@@ -131,8 +131,10 @@
                     if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return;
 
                     units = _.concat( units, faction.units.filter( unit => {
-                        if( this.data.needsToAttack ){
-                            if( unit.location !== this.area.name || !unit.needsToAttack ) return;
+                        if( this.data.needsToAttack ) {
+                            if ( unit.location !== this.area.name || !unit.needsToAttack ) return;
+                        } else if( this.data.killedOnly ) {
+                            if( unit.location !== this.area.name || !unit.killed ) return;
                         } else {
                             if( !_.unitInArea( unit, this.area ) ) return;
                         }
