@@ -13,11 +13,12 @@ let obj = {
     society : { name: 'society', owner : null, status : 1 },
     hackers : { name: 'hackers', owner : null, status : 0 },
     ninjas : { name: 'ninjas', owner : null, killer : true, status : 0 },
-    guerrillas : { name: 'guerrillas', owner : null, killer : true, status : 0 },
+    guerrillas : { name: 'guerrillas', owner : null, killer : true, status : 1 },
     parasites : { name: 'parasites', owner : null, status : 1 },
     conquistadors : { name: 'conquistadors', owner : null, killer : true, status : 1 },
     witches : { name: 'witches', owner : null, status : 0 },
     bureau : { name: 'bureau', owner : null, status : 0 },
+    plants : { name: 'plants', owner : null, status : 0 },
 };
 
 module.exports = Object.assign({}, obj );
