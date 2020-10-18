@@ -61546,62 +61546,60 @@ var render = function() {
           "div",
           { staticClass: "choose-factions__player-container" },
           _vm._l(_vm.data.factions, function(faction) {
-            return faction !== _vm.shared.faction.name
-              ? _c(
+            return _c(
+              "div",
+              {
+                staticClass:
+                  "choose-factions__player pull-center d-flex align-stretch",
+                class: { active: _vm.selected.includes(faction) },
+                on: {
+                  click: function($event) {
+                    return _vm.playerClicked(faction)
+                  }
+                }
+              },
+              [
+                _c(
                   "div",
                   {
                     staticClass:
-                      "choose-factions__player pull-center d-flex align-stretch",
-                    class: { active: _vm.selected.includes(faction) },
-                    on: {
-                      click: function($event) {
-                        return _vm.playerClicked(faction)
-                      }
-                    }
+                      "choose-factions__player-faction width-15 d-flex pr-2"
                   },
                   [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "choose-factions__player-faction width-15 d-flex pr-2"
-                      },
-                      [
-                        _c("img", {
-                          staticClass: "choose-spy__champion",
-                          attrs: {
-                            src: "/images/factions/" + faction + "/portrait.png"
-                          }
-                        })
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "choose-factions__player-name ellipses width-60 p-4"
-                      },
-                      [_vm._v(_vm._s(_vm._f("startCase")(faction)))]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "choose-spy__checkbox width-25 choose-factions__player-faction d-flex align-center justify-center"
-                      },
-                      [
-                        _c("i", {
-                          class: _vm.selected.includes(faction)
-                            ? "icon-checkbox-checked"
-                            : "icon-checkbox-unchecked"
-                        })
-                      ]
-                    )
+                    _c("img", {
+                      staticClass: "choose-spy__champion",
+                      attrs: {
+                        src: "/images/factions/" + faction + "/portrait.png"
+                      }
+                    })
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "choose-factions__player-name ellipses width-60 p-4"
+                  },
+                  [_vm._v(_vm._s(_vm._f("startCase")(faction)))]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "choose-spy__checkbox width-25 choose-factions__player-faction d-flex align-center justify-center"
+                  },
+                  [
+                    _c("i", {
+                      class: _vm.selected.includes(faction)
+                        ? "icon-checkbox-checked"
+                        : "icon-checkbox-unchecked"
+                    })
                   ]
                 )
-              : _vm._e()
+              ]
+            )
           }),
           0
         )
@@ -93296,7 +93294,7 @@ var helpers = {
     if (typeof options.types === 'string') options.types = [options.types];
     var areas = {};
     faction.units.forEach(function (unit) {
-      if (_.unitInPlay(unit) && (!options.types || options.types.includes(unit.type)) && (!options.flipped || unit.flipped) && (!options.deployable || !unit.noDeploy) && (!options.notHidden || !unit.hidden) && (!options.basic || unit.basic)) {
+      if (_.unitInPlay(unit) && (!options.types || options.types.includes(unit.type)) && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.flipped || unit.flipped) && (!options.deployable || !unit.noDeploy) && (!options.notHidden || !unit.hidden) && (!options.basic || unit.basic)) {
         areas[unit.location] = true;
       }
     });

@@ -31,8 +31,8 @@ class Plants extends Faction {
         // units
         this.units['goon'].count = 2;
         this.units['talent'].count = 5;
-        this.units['mole'].count = 7;
-        this.units['patsy'].count = 6;
+        this.units['mole'].count = 6;
+        this.units['patsy'].count = 8;
         this.units['patsy'].data.influence = 1;
 
         this.units['champion'] = {
@@ -111,13 +111,13 @@ class Plants extends Faction {
             }
         }).catch( error => console.error( error ) );
 
-        if( !factions.length ) return;
+        if( !data.factions.length ) return;
 
         try {
-            for( let factionName of factions ) {
+            for( let factionName of data.factions ) {
                 let faction = this.game().factions[factionName];
 
-                let factionAreas = faction.areasWithUnits({ adjacent : area, basicOnly : true });
+                let factionAreas = faction.areasWithUnits({ adjacent : area.data.adjacent, basicOnly : true });
 
                 promises.push( this.game().promise({ players: faction.playerId, name: 'choose-units', data : {
                     count : 1,
@@ -152,9 +152,13 @@ class Plants extends Faction {
     }
 
 
+    async factionCleanUp() {
+        // plant units are removed from your reserves
+        this.data.units = this.data.units.filter( unit => !unit.plant );
+    }
 
     // Turn killed units into plants
-    async factionCleanUp(){
+    async onAfterCombatStep(){
         let player, data;
         let areas = this.areasWithDeadUnits();
 
@@ -183,7 +187,8 @@ class Plants extends Faction {
             }
 
             let unit = this.game().objectMap[data.units[0]];
-            _.moveItemById( unit.id, this.data.units, this.game().areas[area].data.plants );
+            unit.plant = true;
+            this.game().areas[area].data.plants.push( unit );
             this.game().message({ faction: this, message: `The Plants' ${unit.type} in The ${area} is reborn from Gaia's touch` });
         }
 

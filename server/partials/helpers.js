@@ -713,6 +713,7 @@ let helpers = {
         faction.units.forEach( unit => {
             if( _.unitInPlay( unit )
                 && ( !options.types || options.types.includes( unit.type ) )
+                && ( !options.adjacent || options.adjacent.includes( unit.location ) )
                 && ( !options.flipped || unit.flipped )
                 && ( !options.deployable || !unit.noDeploy )
                 && ( !options.notHidden || !unit.hidden )

@@ -4,7 +4,7 @@
             <div class="title view-player__title">{{ message }}</div>
             <div class="d-flex justify-center">
                 <div class="choose-factions__player-container">
-                    <div v-for="faction in data.factions" v-if="faction !== shared.faction.name"
+                    <div v-for="faction in data.factions"
                          class="choose-factions__player pull-center d-flex align-stretch"
                          @click="playerClicked( faction )"
                          :class="{ active : selected.includes( faction ) }">

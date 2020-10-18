@@ -41,20 +41,20 @@ class Bureau extends Faction {
         // units
         this.units['goon'].count = 4;
         this.units['goon'].data.charged = true;
-        this.units['goon'].data.influence = 2;
+        //this.units['goon'].data.influence = 2;
 
 
         this.units['mole'].count = 4;
         this.units['mole'].data.charged = true;
-        this.units['mole'].data.influence = 3;
+        //this.units['mole'].data.influence = 3;
 
 
         this.units['talent'].data.charged = true;
-        this.units['talent'].data.influence = 2;
+        //this.units['talent'].data.influence = 2;
 
 
         this.units['patsy'].count = 3;
-        this.units['patsy'].data.influence = 1;
+        //this.units['patsy'].data.influence = 1;
 
 
         this.units['champion'] = {
@@ -169,18 +169,18 @@ class Bureau extends Faction {
     chargeUnit( unit ){
         unit.flipped = true;
         unit.charged = true;
-        unit.influence++;
+        //unit.influence++;
     }
 
     dechargeUnit( unit ){
         unit.flipped = true;
         unit.charged = false;
-        unit.influence--;
+        //unit.influence--;
     }
 
     unitUnflipped( unit ) {
         unit.flipped = false;
-        unit.influence++;
+        //unit.influence++;
         unit.charged = true;
     }
 
