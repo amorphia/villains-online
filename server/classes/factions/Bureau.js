@@ -39,6 +39,8 @@ class Bureau extends Faction {
 
 
         // units
+        // unit count: 15
+
         this.units['goon'].count = 4;
         this.units['goon'].data.charged = true;
         //this.units['goon'].data.influence = 2;

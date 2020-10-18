@@ -27,10 +27,10 @@ class Parasites extends Faction {
         };
 
         // units
-        this.units['goon'].count = 8;
-        this.units['talent'].count = 6;
-        this.units['mole'].count = 8;
-        this.units['patsy'].count = 9;
+        this.units['goon'].count = 5;
+        this.units['talent'].count = 5;
+        this.units['mole'].count = 7;
+        this.units['patsy'].count = 8;
 
 
         this.units['champion'] = {

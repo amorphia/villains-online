@@ -39,6 +39,8 @@ class Conquistadors extends Faction {
         };
 
         // units
+        // unit count: 21
+
         this.units['goon'].count = 10;
         this.units['patsy'].count = 6;
         this.units['talent'].count = 4;
