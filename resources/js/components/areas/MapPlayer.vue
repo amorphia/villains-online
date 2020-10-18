@@ -60,8 +60,8 @@
                     }
                 });
 
-                if( this.faction.name === 'plants' ){
-                    for( let i = 0; i < this.area.plants.length; i++ ){
+                if( this.faction.name === 'plants' && this.faction.plants[this.area.name] ){
+                    for( let i = 0; i < this.faction.plants[this.area.name]; i++ ){
                         if( units['plant'] ){
                             units['plant'].count++;
                         } else {

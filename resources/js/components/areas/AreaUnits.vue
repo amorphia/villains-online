@@ -28,8 +28,8 @@
                  });
 
 
-                if( !this.skilled && this.faction.name === 'plants' ){
-                    for( let i = 0; i < this.shared.data.areas[this.area].plants.length; i++ ){
+                if( !this.skilled && this.faction.name === 'plants' && this.faction.plants[this.area] ){
+                    for( let i = 0; i < this.faction.plants[this.area]; i++ ){
                         units.push({ type : 'plant', faction : 'plants' });
                     }
                 }

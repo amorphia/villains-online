@@ -480,7 +480,9 @@ let helpers = {
     plantInfluence( faction, area ){
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
-        return faction.name === 'plants' ? area.plants.length :  0;
+
+        if( faction.name !== 'plants' ) return 0;
+        return faction.plants[area.name] ? faction.plants[area.name] : 0;
     },
 
 

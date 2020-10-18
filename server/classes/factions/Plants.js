@@ -13,6 +13,7 @@ class Plants extends Faction {
         this.data.focus = 'enemy-in-areas-focus';
         this.data.focusDescription = "Have many enemy units in your areas";
         this.data.vines = [];
+        this.data.plants = {};
 
 
         // tokens
@@ -187,13 +188,17 @@ class Plants extends Faction {
             }
 
             let unit = this.game().objectMap[data.units[0]];
-            unit.plant = true;
-            this.game().areas[area].data.plants.push( unit );
-            this.game().message({ faction: this, message: `The Plants' ${unit.type} in The ${area} is reborn from Gaia's touch` });
+            this.becomePlant( unit );
         }
-
     }
 
+    becomePlant( unit ){
+        let area = unit.location;
+        unit.plant = true;
+        if( this.data.plants[area] ) this.data.plants[area]++;
+        else this.data.plants[area] = 1;
+        this.game().message({ faction: this, message: `The Plants' ${unit.type} in The ${area} is reborn from Gaia's touch` });
+    }
 
     canActivateVines() {
         return true;

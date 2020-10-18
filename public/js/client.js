@@ -12483,8 +12483,8 @@ __webpack_require__.r(__webpack_exports__);
         return _.unitNotReadyInArea(unit, _this.area);
       });
 
-      if (!this.skilled && this.faction.name === 'plants') {
-        for (var i = 0; i < this.shared.data.areas[this.area].plants.length; i++) {
+      if (!this.skilled && this.faction.name === 'plants' && this.faction.plants[this.area]) {
+        for (var i = 0; i < this.faction.plants[this.area]; i++) {
           units.push({
             type: 'plant',
             faction: 'plants'
@@ -12580,8 +12580,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
       });
 
-      if (this.faction.name === 'plants') {
-        for (var i = 0; i < this.area.plants.length; i++) {
+      if (this.faction.name === 'plants' && this.faction.plants[this.area.name]) {
+        for (var i = 0; i < this.faction.plants[this.area.name]; i++) {
           if (units['plant']) {
             units['plant'].count++;
           } else {
@@ -93075,7 +93075,8 @@ var helpers = {
   plantInfluence: function plantInfluence(faction, area) {
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
-    return faction.name === 'plants' ? area.plants.length : 0;
+    if (faction.name !== 'plants') return 0;
+    return faction.plants[area.name] ? faction.plants[area.name] : 0;
   },
   unitInfluence: function unitInfluence(faction, area) {
     var _this10 = this;
