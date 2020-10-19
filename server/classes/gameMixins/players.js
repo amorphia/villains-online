@@ -128,7 +128,7 @@ let mixin = {
     async advancePlayer( listener, advance = true ){
         if( advance ) this.advanceActivePlayer();
         this.setActivePlayerListener( listener );
-        this.action++;
+        this.data.gameAction++;
         Server.saveToDB( this );
         this.setTimeout();
         await this.updateAll();

@@ -38,7 +38,7 @@ class DB {
         let data = {
             type: options.type || 'automatic',
             active : game.currentPlayerFactionName(),
-            action : game.action,
+            action : game.data.gameAction,
             turn : game.data.turn,
             data: JSON.stringify( game )
         };

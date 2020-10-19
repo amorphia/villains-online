@@ -331,11 +331,17 @@ let mixin = {
     },
 
 
-    areasExterminated(){
-        let areas = [];
+    areasExterminated( targetOnly = false ){
+        let areas = [], targets = [];
+
+        if( targetOnly ){
+            targets = Object.values( this.game().factions )
+                .map( item => item.targetName() ).filter( item => item ); // get rid of false values
+        }
+
         _.forEach( this.game().areas, area => {
             let areaExterminatedBy = _.areaExterminated( area, this.game().data.factions );
-            if( areaExterminatedBy === this.name ) areas.push( area.name );
+            if( areaExterminatedBy === this.name && (!targetOnly || targets.includes( area.name )) ) areas.push( area.name );
         });
         return areas;
     },

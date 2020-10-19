@@ -5,6 +5,7 @@
                 <div class="title">{{ message }}</div>
                 <area-flipper v-if="areas.length" :areas="areas" :index="index" @update="updateArea">
                     <div v-if="!data.hideMax" class="toggle area-map__toggle top-0 left-0">Selected: {{ selected.length }} / {{ data.count }}</div>
+
                     <unit-row :units="areaUnits" @unit="unitClicked"></unit-row>
 
                     <div v-if="data.showEnemyUnits">
@@ -118,6 +119,8 @@
             },
 
             needToSelect(){
+                if( !this.data.count ) return this.selected.length > 0 ? 0 : 1;
+
                 return this.data.count - this.selected.length;
             },
 
@@ -130,13 +133,16 @@
                     if( this.data.playerOnly && faction.name !== this.shared.faction.name ) return;
                     if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return;
 
-                    units = _.concat( units, faction.units.filter( unit => {
+                    let unitsCollection = faction.units;
+                    if( this.data.ghostOnly )  unitsCollection = faction.ghosts;
+
+                    units = _.concat( units, unitsCollection.filter( unit => {
                         if( this.data.needsToAttack ) {
                             if ( unit.location !== this.area.name || !unit.needsToAttack ) return;
                         } else if( this.data.killedOnly ) {
                             if( unit.location !== this.area.name || !unit.killed ) return;
                         } else {
-                            if( !_.unitInArea( unit, this.area ) ) return;
+                            if( unit.location !== this.area.name || unit.killed  ) return;
                         }
 
                         if( this.data.notHidden && unit.hidden ) return;
@@ -153,6 +159,8 @@
             },
 
             unitsPool(){
+                if( this.data.ghostOnly ) return this.shared.faction.ghosts;
+
                 // belongs to current player
                 if( this.data.playerOnly ) return this.shared.faction.units;
 

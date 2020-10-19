@@ -7,9 +7,8 @@
                         <horizontal-scroll classes="choose-target__wrap d-flex pb-3 width-100 plan-block" buttons="true">
 
                             <!-- plan mode -->
-                            <div class="d-flex pb-3 width-100"
+                            <div class="d-flex pb-3 width-100 justify-center"
                                  v-for="card in shared.faction.cards.hand">
-
                                 <div class='plan-block__image-wrap'
                                      @click="cardClicked( card )"
                                      :class="{ selected : card.selected }">

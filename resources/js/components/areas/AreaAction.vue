@@ -34,6 +34,7 @@
                 if( this.action === 'magick' ) return `/images/icons/enchanted.png`;
                 if( this.action === 'loop' ) return `/images/icons/loop.png`;
                 if( this.action === 'ambush' ) return `/images/icons/ambush.png`;
+                if( this.action === 'materialize' ) return `/images/icons/ghost.png`;
             },
 
             xavier(){
@@ -54,6 +55,7 @@
                     case 'magick': return 'use magick';
                     case 'loop': return 'use loop';
                     case 'ambush': return 'ambush';
+                    case 'materialize': return 'materialize';
                 }
             }
         }

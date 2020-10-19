@@ -28,9 +28,20 @@
                  });
 
 
+                // plants
                 if( !this.skilled && this.faction.name === 'plants' && this.faction.plants[this.area] ){
                     for( let i = 0; i < this.faction.plants[this.area]; i++ ){
                         units.push({ type : 'plant', faction : 'plants' });
+                    }
+                }
+
+                // ghosts
+                if( !this.skilled && this.faction.name === 'ghosts' ){
+                    let areaGhosts = this.faction.ghosts.filter( ghost => ghost.location === this.area );
+                    for( let i = 0; i < areaGhosts.length; i++ ){
+                        let ghost = areaGhosts[i];
+                        ghost.hideFromEnemies = 'ghost';
+                        units.push( ghost );
                     }
                 }
 

@@ -24,7 +24,7 @@ let setup = {
 
     mergeSavedData( saved ){
         saved.socketMap = this.socketMap;
-        this.action = saved.action;
+        this.data.gameAction = saved.data.gameAction;
 
         let linkFunc = ( objVal, srcVal ) => {
             if (_.isArray( objVal ) ) {

@@ -5229,6 +5229,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     areas: function areas() {
       if (!this.data.units) return [];
+      if (this.data.area) return [{
+        area: this.data.area,
+        units: this.data.units
+      }];
       if (!Array.isArray(this.data.units)) this.data.units = [this.data.units];
       var areasObj = {},
           areas = [];
@@ -5692,13 +5696,26 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-action',
   data: function data() {
     return {
       shared: App.state,
       action: null,
-      actions: {}
+      actions: {},
+      areaActions: ['ambush', 'loop', 'skill', 'materialize', 'magick', 'token']
     };
   },
   mounted: function mounted() {
@@ -5707,6 +5724,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     App.event.on('actionClicked', function (args) {
       return _this.setAction.apply(_this, _toConsumableArray(args));
     });
+    this.$set(this.shared, 'areaActions', this.areaActions);
     this.generateActions();
     this.setDefaultAction();
   },
@@ -5723,36 +5741,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
     },
     setAction: function setAction(name, param) {
-      console.log('set action', name, param);
       var action = {
         name: name
       };
 
+      if (this.areaActions.includes(name)) {
+        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
+      }
+
       if (name === 'token') {
-        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
         action.token = this.firstUnrevealed(action.area);
-      }
-
-      if (name === 'ambush') {
-        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
-      }
-
-      if (name === 'skill') {
-        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
       }
 
       if (name === 'xavier') {
         action.area = this.xavier.location;
         action.token = this.xavier.token;
         this.$set(this.xavier, 'placedToken', this.xavier.token);
-      }
-
-      if (name === 'magick') {
-        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
-      }
-
-      if (name === 'loop') {
-        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
       }
 
       if (action.area) this.shared.event.emit('areaSelected', {
@@ -5780,7 +5784,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       if (this.shared.faction.hasOwnProperty('skips') && this.shared.faction.skips.used < this.shared.faction.skips.max) actions.skip = true; // can we magick?
 
-      if (this.useableMagick.length) actions.magick = this.useableMagick; // can we loop?
+      if (this.useableMagick.length) actions.magick = this.useableMagick; // can we magick?
+
+      if (this.useableMaterialize.length) actions.materialize = this.useableMaterialize; // can we loop?
 
       if (this.useableLoop.length) actions.loop = this.useableLoop; // can we declare ourselves locked?
 
@@ -5796,22 +5802,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var args = [];
 
       switch (this.action.name) {
-        case 'skill':
-          args = [this.action.area];
-          break;
-
         case 'token':
           args = [this.action.token.id];
           break;
 
         case 'ambush':
-          args = [this.action.area];
-          break;
-
+        case 'skill':
         case 'magick':
-          args = [this.action.area];
-          break;
-
+        case 'materialize':
         case 'loop':
           args = [this.action.area];
           break;
@@ -5888,6 +5886,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         case 'magick':
           message = "Use magick in the ".concat(this.area.name);
+          break;
+
+        case 'materialize':
+          message = "Reveal ghosts in the ".concat(this.area.name);
           break;
 
         case 'loop':
@@ -5976,13 +5978,21 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         return _.unitInArea(unit, _this5.area) && unit.flipped;
       });
     },
-    useableSkills: function useableSkills() {
+    ghostsInArea: function ghostsInArea() {
       var _this6 = this;
+
+      if (!this.shared.faction.ghosts) return [];
+      return this.shared.faction.ghosts.filter(function (ghost) {
+        return ghost.location === _this6.area.name;
+      });
+    },
+    useableSkills: function useableSkills() {
+      var _this7 = this;
 
       var areas = [];
 
       _.forEach(this.shared.data.areas, function (area) {
-        if (_.canUseSkill(_this6.shared.faction, area, _this6.shared.data.factions)) {
+        if (_.canUseSkill(_this7.shared.faction, area, _this7.shared.data.factions)) {
           areas.push(area.name);
         }
       });
@@ -6000,14 +6010,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
       return this.loopToken && reserves ? [this.loopToken.location] : [];
     },
+    useableMaterialize: function useableMaterialize() {
+      if (this.shared.faction.name !== 'ghosts' || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction) return [];
+      var areas = {};
+      this.shared.faction.ghosts.forEach(function (ghost) {
+        areas[ghost.location] = true;
+      });
+      return Object.keys(areas);
+    },
     useableMagick: function useableMagick() {
-      var _this7 = this;
+      var _this8 = this;
 
       var areas = [];
-      if (this.shared.faction.name !== 'witches') return areas;
+      if (this.shared.faction.name !== 'witches' || this.shared.faction.lastMagickGameAction === this.shared.data.gameAction) return areas;
 
       _.forEach(this.shared.data.areas, function (area) {
-        if (_.canUseMagick(_this7.shared.faction, area, _this7.shared.data.factions)) {
+        if (_.canUseMagick(_this8.shared.faction, area, _this8.shared.data.factions)) {
           areas.push(area.name);
         }
       });
@@ -6842,7 +6860,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'discard-card',
+  name: 'choose-magick',
   data: function data() {
     return {
       shared: App.state
@@ -7283,6 +7301,15 @@ __webpack_require__.r(__webpack_exports__);
       mode: 'plans'
     };
   },
+  mounted: function mounted() {
+    var randomCard = this.shared.faction.cards.hand.find(function (card) {
+      return card.randomTarget;
+    });
+
+    if (randomCard) {
+      this.target = randomCard;
+    }
+  },
   methods: {
     saveChoices: function saveChoices() {
       if (this.mode !== 'confirm') return this.mode = 'confirm';
@@ -7290,7 +7317,8 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.socketEmit('chooseTargetPlan', this.plan, this.target);
     },
     itemClicked: function itemClicked(type, object) {
-      // clicking the selected object unselects it
+      if (this.shared.faction.randomTarget && type === 'target') return App.event.emit('sound', 'error'); // clicking the selected object unselects it
+
       if (this[type] && this[type].id === object.id) return this[type] = null; // if this card doesn't have a target, do nothing
 
       if (type === 'target' && !object.target) {
@@ -7503,6 +7531,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-units',
   data: function data() {
@@ -7557,6 +7586,7 @@ __webpack_require__.r(__webpack_exports__);
       return areas;
     },
     needToSelect: function needToSelect() {
+      if (!this.data.count) return this.selected.length > 0 ? 0 : 1;
       return this.data.count - this.selected.length;
     },
     areaUnits: function areaUnits() {
@@ -7568,13 +7598,15 @@ __webpack_require__.r(__webpack_exports__);
         if (_this2.data.enemyOnly && faction.name === _this2.shared.faction.name) return;
         if (_this2.data.playerOnly && faction.name !== _this2.shared.faction.name) return;
         if (_this2.data.belongsTo && faction.name !== _this2.data.belongsTo) return;
-        units = _.concat(units, faction.units.filter(function (unit) {
+        var unitsCollection = faction.units;
+        if (_this2.data.ghostOnly) unitsCollection = faction.ghosts;
+        units = _.concat(units, unitsCollection.filter(function (unit) {
           if (_this2.data.needsToAttack) {
             if (unit.location !== _this2.area.name || !unit.needsToAttack) return;
           } else if (_this2.data.killedOnly) {
             if (unit.location !== _this2.area.name || !unit.killed) return;
           } else {
-            if (!_.unitInArea(unit, _this2.area)) return;
+            if (unit.location !== _this2.area.name || unit.killed) return;
           }
 
           if (_this2.data.notHidden && unit.hidden) return;
@@ -7591,7 +7623,8 @@ __webpack_require__.r(__webpack_exports__);
     unitsPool: function unitsPool() {
       var _this3 = this;
 
-      // belongs to current player
+      if (this.data.ghostOnly) return this.shared.faction.ghosts; // belongs to current player
+
       if (this.data.playerOnly) return this.shared.faction.units; // belongs to specific player
 
       if (this.data.belongsTo) return this.shared.data.factions[this.data.belongsTo].units; // multiple players
@@ -7990,11 +8023,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'deploy-action',
   data: function data() {
@@ -8018,6 +8046,10 @@ __webpack_require__.r(__webpack_exports__);
     if (this.reserves.length === 0 && this.fromAreas.length === 0) this.fromAreaIndex = -2;
   },
   methods: {
+    toggleGhost: function toggleGhost(unit) {
+      if (unit.type === 'champion' && !unit.ghost && unit.location) return App.event.emit('sound', 'error');
+      if (unit.asGhost) this.$set(unit, 'asGhost', false);else this.$set(unit, 'asGhost', true);
+    },
     resolve: function resolve(option) {
       var data = {};
 
@@ -8025,7 +8057,16 @@ __webpack_require__.r(__webpack_exports__);
         data.decline = true;
       } else {
         data.toArea = this.area.name;
-        data.units = _.map(this.selected, 'id');
+        data.units = this.selected.filter(function (unit) {
+          return !unit.asGhost;
+        }).map(function (unit) {
+          return unit.id;
+        });
+        data.ghosts = this.selected.filter(function (unit) {
+          return unit.asGhost;
+        }).map(function (unit) {
+          return unit.id;
+        });
         data.cost = this.cost;
       }
 
@@ -8065,6 +8106,7 @@ __webpack_require__.r(__webpack_exports__);
     addUnitFromPlay: function addUnitFromPlay(unit) {
       if (unit.selected) {
         this.$set(unit, 'selected', false);
+        if (unit.asGhost) this.$set(unit, 'asGhost', false);
         return;
       }
 
@@ -8073,6 +8115,7 @@ __webpack_require__.r(__webpack_exports__);
         return unit.id === old.id;
       });
       this.$set(unit, 'selected', true);
+      if (unit.ghost) this.$set(unit, 'asGhost', true);
     },
     addUnitFromReserves: function addUnitFromReserves(type) {
       if (!this.canAddUnit(type)) return;
@@ -8089,9 +8132,18 @@ __webpack_require__.r(__webpack_exports__);
     fromAreaUnits: function fromAreaUnits(area) {
       var _this = this;
 
-      return this.shared.faction.units.filter(function (unit) {
+      var units = this.shared.faction.units.filter(function (unit) {
         return !unit.noDeploy && _.unitInArea(unit, area) && (!_this.data.unitTypes || _this.data.unitTypes.includes(unit.type));
       });
+
+      if (this.shared.faction.ghostDeploy) {
+        var ghosts = this.shared.faction.ghosts.filter(function (unit) {
+          return unit.location === area && (!_this.data.unitTypes || _this.data.unitTypes.includes(unit.type));
+        });
+        units = _.concat(units, ghosts);
+      }
+
+      return units;
     }
   },
   computed: {
@@ -8170,9 +8222,17 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     selected: function selected() {
-      return this.shared.faction.units.filter(function (unit) {
+      var units = this.shared.faction.units.filter(function (unit) {
         return unit.selected;
       });
+
+      if (this.shared.faction.ghostDeploy) {
+        units = _.concat(units, this.shared.faction.ghosts.filter(function (unit) {
+          return unit.selected;
+        }));
+      }
+
+      return units;
     },
     policePayoffs: function policePayoffs() {
       return _.policePayoffs(this.shared.faction, this.area, this.selected) * this.selected.length;
@@ -8185,7 +8245,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (!this.data.free) {
         this.selected.forEach(function (unit) {
-          if (!(unit.redeployFree && unit.location)) cost += unit.cost;
+          if (!(unit.redeployFree && unit.location) && !unit.asGhost) cost += unit.cost;
         });
       }
 
@@ -8289,7 +8349,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
 //
 //
 //
@@ -10597,6 +10656,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-icon',
   props: ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect'],
@@ -10615,14 +10676,19 @@ __webpack_require__.r(__webpack_exports__);
     hasToken: function hasToken() {
       return this.hasForcedToken || this.hasRegularToken;
     },
+    viewableGhost: function viewableGhost() {
+      return this.unit.ghost && this.shared.faction.ghostDeploy;
+    },
     setClasses: function setClasses() {
       var classes = [];
       if (!this.noSelect && (this.selected || this.unit.isSelected && !this.unit.placeToken)) classes.push('selected');
       if (this.unit.ready) classes.push('ready');
+      if (this.viewableGhost) classes.push('is-ghost');
       if (this.classes) classes.push(this.classes);
       return classes.join(' ');
     },
     img: function img() {
+      if (this.unit.ghost && !this.shared.faction.ghostDeploy) return "/images/factions/ghosts/units/ghost.png";
       return "/images/factions/".concat(this.unit.faction, "/units/").concat(this.unit.type).concat(this.unit.flipped ? '-flipped' : '', ".png");
     },
     selected: function selected() {
@@ -11855,6 +11921,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.action === 'magick') return "/images/icons/enchanted.png";
       if (this.action === 'loop') return "/images/icons/loop.png";
       if (this.action === 'ambush') return "/images/icons/ambush.png";
+      if (this.action === 'materialize') return "/images/icons/ghost.png";
     },
     xavier: function xavier() {
       var _this = this;
@@ -11887,6 +11954,9 @@ __webpack_require__.r(__webpack_exports__);
 
         case 'ambush':
           return 'ambush';
+
+        case 'materialize':
+          return 'materialize';
       }
     }
   }
@@ -11949,14 +12019,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     actions: function actions() {
+      var _this = this;
+
       var actions = [];
       if (!this.shared.actions) return actions;
-      if (this.shared.actions.skill && this.shared.actions.skill.includes(this.area.name)) actions.push('skill');
-      if (this.shared.actions.token && this.shared.actions.token.includes(this.area.name)) actions.push('token');
+      this.shared.areaActions.forEach(function (action) {
+        if (_this.shared.actions[action] && _this.shared.actions[action].includes(_this.area.name)) actions.push(action);
+      });
       if (this.shared.actions.xavier === this.area.name) actions.push('xavier');
-      if (this.shared.actions.magick && this.shared.actions.magick.includes(this.area.name)) actions.push('magick');
-      if (this.shared.actions.loop && this.shared.actions.loop.includes(this.area.name)) actions.push('loop');
-      if (this.shared.actions.ambush && this.shared.actions.ambush.includes(this.area.name)) actions.push('ambush');
       return actions;
     }
   }
@@ -12252,18 +12322,25 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     hasActions: function hasActions() {
+      var _this2 = this;
+
       if (!this.shared.actions) return false;
-      if (this.shared.actions.skill && this.shared.actions.skill.includes(this.area.name) || this.shared.actions.magick && this.shared.actions.magick.includes(this.area.name) || this.shared.actions.token && this.shared.actions.token.includes(this.area.name) || this.shared.actions.loop && this.shared.actions.loop.includes(this.area.name) || this.shared.actions.ambush && this.shared.actions.ambush.includes(this.area.name) || this.shared.actions.xavier === this.area.name) return true;
+      var hasAction = false;
+      this.shared.areaActions.forEach(function (action) {
+        if (_this2.shared.actions[action] && _this2.shared.actions[action].includes(_this2.area.name)) hasAction = true;
+      });
+      if (this.shared.actions.xavier === this.area.name) hasAction = true;
+      return hasAction;
     },
     showXavier: function showXavier() {
       return this.shared.showXavier && this.xavier;
     },
     xavier: function xavier() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.shared.faction.name !== 'society') return;
       return this.shared.faction.units.find(function (unit) {
-        return unit.type === 'champion' && unit.location === _this2.area.name;
+        return unit.type === 'champion' && unit.location === _this3.area.name;
       });
     },
     token: function token() {
@@ -12285,12 +12362,12 @@ __webpack_require__.r(__webpack_exports__);
       return influences;
     },
     graveyard: function graveyard() {
-      var _this3 = this;
+      var _this4 = this;
 
       var dead = {};
 
       _.forEach(this.shared.data.factions, function (faction) {
-        var kills = _.killsInArea(faction, _this3.area, _this3.shared.data.factions);
+        var kills = _.killsInArea(faction, _this4.area, _this4.shared.data.factions);
 
         if (kills) dead[faction.name] = kills;
       });
@@ -12310,12 +12387,12 @@ __webpack_require__.r(__webpack_exports__);
       return classes;
     },
     stats: function stats() {
-      var _this4 = this;
+      var _this5 = this;
 
       var stats = []; // targets
 
       _.forEach(this.shared.data.factions, function (faction) {
-        if (faction.name === 'hackers' && faction.hax0red.includes(_this4.area.name)) {
+        if (faction.name === 'hackers' && faction.hax0red.includes(_this5.area.name)) {
           stats.push({
             name: 'hax0red',
             owner: faction.name,
@@ -12324,7 +12401,7 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
 
-        if (faction.cards.target.length && _this4.shared.canSeeTarget(faction) && faction.cards.target[0].target === _this4.area.name) {
+        if (faction.cards.target.length && _this5.shared.canSeeTarget(faction) && faction.cards.target[0].target === _this5.area.name) {
           stats.push({
             name: 'target',
             owner: faction.name,
@@ -12336,7 +12413,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
       _.forEach(this.shared.data.factions, function (faction) {
-        if (faction.usedSkills.includes(_this4.area.name)) {
+        if (faction.usedSkills.includes(_this5.area.name)) {
           stats.push({
             name: 'skill',
             owner: faction.name,
@@ -12441,6 +12518,10 @@ __webpack_require__.r(__webpack_exports__);
       if (this.popup.ambush) {
         return "/images/icons/ambush.png";
       }
+
+      if (this.popup.materialize) {
+        return "/images/icons/ghost.png";
+      }
     }
   }
 });
@@ -12481,7 +12562,7 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         return _.unitNotReadyInArea(unit, _this.area);
-      });
+      }); // plants
 
       if (!this.skilled && this.faction.name === 'plants' && this.faction.plants[this.area]) {
         for (var i = 0; i < this.faction.plants[this.area]; i++) {
@@ -12489,6 +12570,19 @@ __webpack_require__.r(__webpack_exports__);
             type: 'plant',
             faction: 'plants'
           });
+        }
+      } // ghosts
+
+
+      if (!this.skilled && this.faction.name === 'ghosts') {
+        var areaGhosts = this.faction.ghosts.filter(function (ghost) {
+          return ghost.location === _this.area;
+        });
+
+        for (var _i = 0; _i < areaGhosts.length; _i++) {
+          var ghost = areaGhosts[_i];
+          ghost.hideFromEnemies = 'ghost';
+          units.push(ghost);
         }
       }
 
@@ -12578,7 +12672,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         } else if (_this.faction.reverseFlippedPip && !unit.flipped) {
           units[unit.type].flipped++;
         }
-      });
+      }); // show plants
 
       if (this.faction.name === 'plants' && this.faction.plants[this.area.name]) {
         for (var i = 0; i < this.faction.plants[this.area.name]; i++) {
@@ -12586,6 +12680,24 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
             units['plant'].count++;
           } else {
             units['plant'] = {
+              count: 1,
+              flipped: 0
+            };
+          }
+        }
+      } // show ghosts
+
+
+      if (this.faction.name === 'ghosts') {
+        var areaGhosts = this.faction.ghosts.filter(function (unit) {
+          return unit.location === _this.area.name;
+        });
+
+        for (var _i = 0; _i < areaGhosts.length; _i++) {
+          if (units['ghost']) {
+            units['ghost'].count++;
+          } else {
+            units['ghost'] = {
               count: 1,
               flipped: 0
             };
@@ -13626,7 +13738,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n\n", ""]);
+exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n.units-hud__unit.deploy__ghost:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    background-image: url(/images/icons/ghost.png);\n    z-index: 3;\n    left: 50%;\n    top: 25%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.has-ghosts .units-hud__unit {\n    height: 8vw;\n}\n.deploy__ghost .unit-hud__unit-image {\n    opacity: .8;\n}\n.deploy__toggle-ghost {\n    background-color: #192236;\n}\n.deploy__ghost .deploy__toggle-ghost {\n    background-color: var(--faction-ghosts);\n}\n\n", ""]);
 
 // exports
 
@@ -13949,7 +14061,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.unit-row .units-hud__unit {\n    padding: 3px;\n    width: 6vw;\n    height: 6vw;\n    margin: 0 5px;\n    position: relative;\n}\n.unit-row .units-hud__unit img {\n    z-index: 2;\n    position: relative;\n    outline: 3px solid rgba(0,0,0,.3);\n}\n.unit-row  .units-hud__unit.ready:after {\n    left: 50%;\n    content: \"\";\n    background-image: url(/images/icons/skilled.png);\n    background-size: cover;\n    position: absolute;\n    width: 3vw;\n    height: 3vw;\n    z-index: 5;\n    transform: translate(-50%,-50%);\n    top: 50%;\n}\n.assign-hit__pips {\n}\n.assign-hit__pip {\n    font-size: .8em;\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.assign-hit__pip.active {\n    color: var(--highlight-color);\n}\n", ""]);
+exports.push([module.i, "\n.unit-row .units-hud__unit {\n    padding: 3px;\n    width: 6vw;\n    height: 6vw;\n    margin: 0 5px;\n    position: relative;\n}\n.unit-row .units-hud__unit img {\n    z-index: 2;\n    position: relative;\n    outline: 3px solid rgba(0,0,0,.3);\n}\n.unit-row  .units-hud__unit.ready:after {\n    left: 50%;\n    content: \"\";\n    background-image: url(/images/icons/skilled.png);\n    background-size: cover;\n    position: absolute;\n    width: 3vw;\n    height: 3vw;\n    z-index: 5;\n    transform: translate(-50%,-50%);\n    top: 50%;\n}\n.assign-hit__pips {\n}\n.assign-hit__pip {\n    font-size: .8em;\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.assign-hit__pip.active {\n    color: var(--highlight-color);\n}\n.units-hud__unit.is-ghost .unit-hud__unit-image {\n    opacity: .6;\n}\n.ghost-icon__container:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    background-image: url(/images/icons/ghost.png);\n    z-index: 3;\n    left: 50%;\n    top: 15%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n\n", ""]);
 
 // exports
 
@@ -60740,6 +60852,35 @@ var render = function() {
                               )
                             : _vm._e(),
                           _vm._v(" "),
+                          _vm.action.name === "materialize"
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "choose-action__skilled-units center-text"
+                                },
+                                [
+                                  _c("unit-row", {
+                                    attrs: { units: _vm.ghostsInArea }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "width-100 choose-action__skill-ability"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                            Reveal ghosts in this area?\n                        "
+                                      )
+                                    ]
+                                  )
+                                ],
+                                1
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
                           _vm.action.name === "loop"
                             ? _c(
                                 "div",
@@ -61451,29 +61592,33 @@ var render = function() {
                 }
               },
               _vm._l(_vm.data.cards, function(card) {
-                return _c("div", { staticClass: "d-flex pb-3 width-100" }, [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "plan-block__image-wrap",
-                      class: {
-                        selected: card.selected,
-                        "opacity-5": card.type !== "rule"
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.cardClicked(card)
+                return _c(
+                  "div",
+                  { staticClass: "d-flex pb-3 width-100 justify-center" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "plan-block__image-wrap",
+                        class: {
+                          selected: card.selected,
+                          "opacity-5": card.type !== "rule"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.cardClicked(card)
+                          }
                         }
-                      }
-                    },
-                    [
-                      _c("img", {
-                        staticClass: "plan-block__image",
-                        attrs: { src: "/images/cards/" + card.file + ".jpg" }
-                      })
-                    ]
-                  )
-                ])
+                      },
+                      [
+                        _c("img", {
+                          staticClass: "plan-block__image",
+                          attrs: { src: "/images/cards/" + card.file + ".jpg" }
+                        })
+                      ]
+                    )
+                  ]
+                )
               }),
               0
             )
@@ -62713,6 +62858,7 @@ var render = function() {
                   "div",
                   {
                     staticClass: "popout-hud__block p-3 pos-relative",
+                    class: { "has-ghosts": _vm.shared.faction.ghostDeploy },
                     attrs: {
                       "data-count": location !== "null" ? location : "reserves"
                     }
@@ -62722,7 +62868,8 @@ var render = function() {
                       "div",
                       {
                         staticClass:
-                          "units-hud__unit d-inline-block pos-relative"
+                          "units-hud__unit d-inline-block pos-relative",
+                        class: { deploy__ghost: unit.asGhost }
                       },
                       [
                         _c("img", {
@@ -62741,7 +62888,26 @@ var render = function() {
                               unit.selected = false
                             }
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.shared.faction.ghostDeploy
+                          ? _c(
+                              "div",
+                              {
+                                staticClass: "pointer deploy__toggle-ghost",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.toggleGhost(unit)
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  _vm._s(!unit.asGhost ? "non-" : "") + "ghost"
+                                )
+                              ]
+                            )
+                          : _vm._e()
                       ]
                     )
                   }),
@@ -62809,7 +62975,7 @@ var render = function() {
               "button",
               {
                 staticClass: "button",
-                attrs: { disabled: _vm.canSave !== true },
+                attrs: { disabled: !_vm.canSave },
                 on: {
                   click: function($event) {
                     return _vm.resolve(true)
@@ -62926,26 +63092,30 @@ var render = function() {
                 }
               },
               _vm._l(_vm.shared.faction.cards.hand, function(card) {
-                return _c("div", { staticClass: "d-flex pb-3 width-100" }, [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "plan-block__image-wrap",
-                      class: { selected: card.selected },
-                      on: {
-                        click: function($event) {
-                          return _vm.cardClicked(card)
+                return _c(
+                  "div",
+                  { staticClass: "d-flex pb-3 width-100 justify-center" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "plan-block__image-wrap",
+                        class: { selected: card.selected },
+                        on: {
+                          click: function($event) {
+                            return _vm.cardClicked(card)
+                          }
                         }
-                      }
-                    },
-                    [
-                      _c("img", {
-                        staticClass: "plan-block__image",
-                        attrs: { src: "/images/cards/" + card.file + ".jpg" }
-                      })
-                    ]
-                  )
-                ])
+                      },
+                      [
+                        _c("img", {
+                          staticClass: "plan-block__image",
+                          attrs: { src: "/images/cards/" + card.file + ".jpg" }
+                        })
+                      ]
+                    )
+                  ]
+                )
               }),
               0
             )
@@ -63106,7 +63276,7 @@ var render = function() {
             domProps: {
               innerHTML: _vm._s(
                 _vm.shared.filterText(
-                  "Pay xRx to resolve this skill a second time?"
+                  "Pay xC1x to resolve this skill a second time?"
                 )
               )
             }
@@ -65157,6 +65327,10 @@ var render = function() {
         }
       },
       [
+        _vm.viewableGhost
+          ? _c("div", { staticClass: "ghost-icon__container" })
+          : _vm._e(),
+        _vm._v(" "),
         _vm.hasToken
           ? _c("token-slot", {
               attrs: {
@@ -93066,10 +93240,11 @@ var helpers = {
     var influence = 0;
     var cards = this.getCardCounts(faction, area);
     var tokens = this.getTokenCounts(faction, area);
+    var areaScared = this.areaIsScared(faction, area);
     if (cards['rousing-speech']) influence += 2 * cards['rousing-speech'];
     if (cards['blown-cover']) influence += cards['blown-cover'];
-    if (cards['march-the-streets'] && tokens['deploy']) influence += 2 * cards['march-the-streets'] * tokens['deploy'];
-    if (cards['display-of-brilliance'] && tokens['card']) influence += 2 * cards['display-of-brilliance'] * tokens['card'];
+    if (!areaScared && cards['march-the-streets'] && tokens['deploy']) influence += 2 * cards['march-the-streets'] * tokens['deploy'];
+    if (!areaScared && cards['display-of-brilliance'] && tokens['card']) influence += 2 * cards['display-of-brilliance'] * tokens['card'];
     return influence;
   },
   plantInfluence: function plantInfluence(faction, area) {
@@ -93261,7 +93436,13 @@ var helpers = {
     if (faction.name !== 'cultists') return 0;
     return this.killsInArea(faction.name, area.name, factions);
   },
+  areaIsScared: function areaIsScared(faction, area) {
+    return area.tokens.some(function (token) {
+      return token.type === 'scare' && token.revealed;
+    }) && faction.name !== 'ghosts';
+  },
   tokenInfluence: function tokenInfluence(faction, area) {
+    if (this.areaIsScared(faction, area)) return 0;
     var influence = 0;
     area.tokens.forEach(function (token) {
       if (token.faction === faction.name && token.revealed) {

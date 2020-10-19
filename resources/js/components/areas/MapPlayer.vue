@@ -60,6 +60,7 @@
                     }
                 });
 
+                // show plants
                 if( this.faction.name === 'plants' && this.faction.plants[this.area.name] ){
                     for( let i = 0; i < this.faction.plants[this.area.name]; i++ ){
                         if( units['plant'] ){
@@ -69,6 +70,20 @@
                         }
                     }
                 }
+
+                // show ghosts
+                if( this.faction.name === 'ghosts' ){
+                    let areaGhosts = this.faction.ghosts.filter( unit => unit.location === this.area.name );
+
+                    for( let i = 0; i < areaGhosts.length; i++ ){
+                        if( units['ghost'] ){
+                            units['ghost'].count++;
+                        } else {
+                            units['ghost'] = { count : 1, flipped : 0 };
+                        }
+                    }
+                }
+
 
                 return units;
             },

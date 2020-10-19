@@ -48,6 +48,12 @@
 .icon-toughness-solid:before {
     content: "\e95c";
 }
+.icon-ghost:before {
+    content: "\e909";
+}
+.icon-scare:before {
+    content: "\e90a";
+}
 .icon-plant:before {
     content: "\e907";
 }

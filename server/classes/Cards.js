@@ -198,8 +198,8 @@ class HighNoon extends Card {
 
         let enemies = [];
         // get enemies with at least one matching unit type
-        _.forEach(faction.game().factions, enemy => {
-            if (enemy.name === faction.name) return;
+        _.forEach( faction.game().factions, enemy => {
+            if ( enemy.name === faction.name || enemy.data.hiddenReserves ) return;
 
             let matchingUnit = _.find(enemy.data.units, unit => {
                 return !unit.location && unitTypes.includes(unit.type);

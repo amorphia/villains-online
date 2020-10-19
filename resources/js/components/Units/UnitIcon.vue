@@ -4,6 +4,8 @@
              :class="setClasses"
              @click="$emit( 'unit', unit, hpLeft )">
 
+            <div v-if="viewableGhost" class="ghost-icon__container"></div>
+
             <token-slot v-if="hasToken" :forcedtoken="hasForcedToken" :token="hasRegularToken"></token-slot>
 
             <img class="unit-hud__unit-image" :src="img">
@@ -44,15 +46,22 @@
                 return this.hasForcedToken || this.hasRegularToken;
             },
 
+            viewableGhost(){
+                return this.unit.ghost && this.shared.faction.ghostDeploy;
+            },
+
             setClasses(){
                 let classes = [];
                 if( !this.noSelect && ( this.selected || (this.unit.isSelected && !this.unit.placeToken) ) ) classes.push( 'selected' );
                 if( this.unit.ready ) classes.push( 'ready' );
+                if( this.viewableGhost ) classes.push( 'is-ghost' );
                 if( this.classes ) classes.push( this.classes );
                 return classes.join(' ');
             },
 
             img(){
+                if( this.unit.ghost && !this.shared.faction.ghostDeploy ) return `/images/factions/ghosts/units/ghost.png`;
+
                 return `/images/factions/${this.unit.faction}/units/${this.unit.type}${this.unit.flipped ? '-flipped' : ''}.png`;
             },
 
@@ -140,5 +149,24 @@
     .assign-hit__pip.active {
         color: var(--highlight-color);
     }
+
+    .units-hud__unit.is-ghost .unit-hud__unit-image {
+        opacity: .6;
+    }
+
+    .ghost-icon__container:before {
+        content: "";
+        position: absolute;
+        width: 40%;
+        height: 40%;
+        background-image: url(/images/icons/ghost.png);
+        z-index: 3;
+        left: 50%;
+        top: 15%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        transform: translate(-50%, -70%);
+    }
+
 </style>
 

@@ -39,26 +39,21 @@
                            class="deploy-limit__pip"
                            :class="index < usedDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
 
-                        <!-- commie bonus patsies
-                        <i v-if="shared.faction.bonusPatsies && data.fromToken" v-for="(n, index) in shared.faction.bonusPatsies"
-                           class="deploy-limit__pip commie-pip"
-                           :class="index < patsiesInDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
-                        -->
-
                         <i v-if="showBonusPips" v-for="(n, index) in bonusDeployCount"
                            class="deploy-limit__pip commie-pip"
                            :class="index < bonusUnitsInDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
-
                     </div>
 
                     <div class="popout-hud__block p-3 pos-relative"
+                         :class="{ 'has-ghosts' : shared.faction.ghostDeploy }"
                          v-for="(units, location) in groupBy( selected, 'location' )"
                          :data-count="location !== 'null' ? location : 'reserves'">
-                        <div v-for="unit in units" class="units-hud__unit d-inline-block pos-relative">
+                        <div v-for="unit in units" class="units-hud__unit d-inline-block pos-relative" :class="{'deploy__ghost' : unit.asGhost }">
                             <img
                                  class="unit-hud__unit-image"
                                  @click="unit.selected = false"
                                  :src="`/images/factions/${unit.faction}/units/${unit.type}${unit.flipped ? '-flipped' : ''}.png`">
+                            <div v-if="shared.faction.ghostDeploy" class="pointer deploy__toggle-ghost" @click="toggleGhost( unit )">{{ !unit.asGhost ? 'non-' : '' }}ghost</div>
                         </div>
                     </div>
                 </area-flipper>
@@ -73,7 +68,7 @@
                             v-if="canDecline">decline</button>
                     <button class="button"
                             @click="resolve( true )"
-                            :disabled="canSave !== true">deploy selected units</button>
+                            :disabled="!canSave">deploy selected units</button>
                 </div>
 
             </div>
@@ -112,6 +107,13 @@
 
         methods : {
 
+            toggleGhost( unit ){
+                if( unit.type === 'champion' && !unit.ghost && unit.location ) return App.event.emit( 'sound', 'error' );
+
+                if( unit.asGhost ) this.$set( unit, 'asGhost', false );
+                else this.$set( unit, 'asGhost', true );
+            },
+
             resolve( option ){
                 let data = {};
 
@@ -119,7 +121,8 @@
                     data.decline = true;
                 } else {
                     data.toArea = this.area.name;
-                    data.units = _.map( this.selected, 'id' );
+                    data.units = this.selected.filter( unit => !unit.asGhost ).map( unit => unit.id );
+                    data.ghosts = this.selected.filter( unit => unit.asGhost ).map( unit => unit.id );
                     data.cost = this.cost;
                 }
 
@@ -167,11 +170,13 @@
             addUnitFromPlay( unit ){
                 if( unit.selected ){
                     this.$set( unit, 'selected', false);
+                    if( unit.asGhost ) this.$set( unit, 'asGhost', false );
                     return;
                 }
                 if( ! this.canAddUnit( unit.type ) ) return;
                 unit = _.find( this.currentFromAreaUnits, old => unit.id === old.id );
                 this.$set( unit, 'selected', true );
+                if( unit.ghost ) this.$set( unit, 'asGhost', true );
             },
 
 
@@ -187,11 +192,21 @@
             },
 
             fromAreaUnits( area ){
-                return this.shared.faction.units
+                let units = this.shared.faction.units
                     .filter( unit => ! unit.noDeploy
-                                      && _.unitInArea( unit, area )
-                                      && (! this.data.unitTypes || this.data.unitTypes.includes( unit.type ) ) );
+                            && _.unitInArea( unit, area )
+                            && (! this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
+                    );
 
+                if( this.shared.faction.ghostDeploy ){
+                    let ghosts = this.shared.faction.ghosts.filter( unit => unit.location === area
+                            && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
+                        );
+
+                    units = _.concat( units, ghosts );
+                }
+
+                return units;
             },
         },
 
@@ -203,7 +218,7 @@
             },
 
             showBonusPips() {
-             return this.shared.faction.hasOwnProperty( 'bonusDeploy' ) && this.data.fromToken;
+                return this.shared.faction.hasOwnProperty( 'bonusDeploy' ) && this.data.fromToken;
             },
 
             netBonusUnits() {
@@ -273,7 +288,13 @@
             },
 
             selected(){
-                return this.shared.faction.units.filter( unit => unit.selected );
+                let units = this.shared.faction.units.filter( unit => unit.selected );
+
+                if( this.shared.faction.ghostDeploy ){
+                    units = _.concat( units, this.shared.faction.ghosts.filter( unit => unit.selected ) );
+                }
+
+                return units;
             },
 
             policePayoffs(){
@@ -289,7 +310,7 @@
 
                 if( !this.data.free ) {
                     this.selected.forEach( unit => {
-                        if( ! (unit.redeployFree && unit.location) ) cost += unit.cost;
+                        if( !(unit.redeployFree && unit.location) && !unit.asGhost ) cost += unit.cost;
                     });
                 }
 
@@ -362,6 +383,36 @@
 
     .choose-action{
         max-height: 100%;
+    }
+
+    .units-hud__unit.deploy__ghost:before {
+        content: "";
+        position: absolute;
+        width: 40%;
+        height: 40%;
+        background-image: url(/images/icons/ghost.png);
+        z-index: 3;
+        left: 50%;
+        top: 25%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        transform: translate(-50%, -70%);
+    }
+
+    .has-ghosts .units-hud__unit {
+        height: 8vw;
+    }
+
+    .deploy__ghost .unit-hud__unit-image {
+        opacity: .8;
+    }
+
+    .deploy__toggle-ghost {
+        background-color: #192236;
+    }
+
+    .deploy__ghost .deploy__toggle-ghost {
+        background-color: var(--faction-ghosts);
     }
 
 </style>

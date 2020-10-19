@@ -72,6 +72,18 @@
                     </div>
 
 
+                    <!-- magick display -->
+                    <div v-if="action.name === 'materialize'"
+                         class="choose-action__skilled-units center-text">
+
+                        <unit-row :units="ghostsInArea"></unit-row>
+
+                        <div class="width-100 choose-action__skill-ability">
+                            Reveal ghosts in this area?
+                        </div>
+
+                    </div>
+
                     <!-- loop display -->
                     <div v-if="action.name === 'loop'"
                          class="choose-action__skilled-units center-text">
@@ -119,12 +131,21 @@
             return {
                 shared : App.state,
                 action : null,
-                actions : {}
+                actions : {},
+                areaActions:  [
+                    'ambush',
+                    'loop',
+                    'skill',
+                    'materialize',
+                    'magick',
+                    'token',
+                ]
             };
         },
 
         mounted(){
             App.event.on( 'actionClicked', args => this.setAction( ...args ) );
+            this.$set( this.shared, 'areaActions', this.areaActions );
             this.generateActions();
             this.setDefaultAction();
         },
@@ -145,36 +166,20 @@
             },
 
             setAction( name, param ){
-
-                console.log( 'set action', name, param );
-
                 let action = { name : name };
 
+                if( this.areaActions.includes( name ) ){
+                    action.area = param ?? this.actions[name][0];
+                }
+
                 if( name === 'token' ){
-                    action.area = param ?? this.actions[name][0];
                     action.token = this.firstUnrevealed( action.area );
-                }
-
-                if( name === 'ambush' ){
-                    action.area = param ?? this.actions[name][0];
-                }
-
-                if( name === 'skill' ){
-                    action.area = param ?? this.actions[name][0];
                 }
 
                 if( name === 'xavier' ){
                     action.area = this.xavier.location;
                     action.token = this.xavier.token;
                     this.$set( this.xavier, 'placedToken', this.xavier.token );
-                }
-
-                if( name === 'magick' ){
-                    action.area = param ?? this.actions[name][0];
-                }
-
-                if( name === 'loop' ){
-                    action.area = param ?? this.actions[name][0];
                 }
 
                 if( action.area ) this.shared.event.emit('areaSelected', { name : action.area } );
@@ -211,6 +216,9 @@
                 // can we magick?
                 if( this.useableMagick.length ) actions.magick = this.useableMagick;
 
+                // can we magick?
+                if( this.useableMaterialize.length ) actions.materialize = this.useableMaterialize;
+
                 // can we loop?
                 if( this.useableLoop.length ) actions.loop = this.useableLoop;
 
@@ -228,18 +236,13 @@
                 let args = [];
 
                 switch( this.action.name ){
-                    case 'skill':
-                        args = [this.action.area];
-                        break;
                     case 'token':
                         args = [this.action.token.id];
                         break;
                     case 'ambush':
-                        args = [this.action.area];
-                        break;
+                    case 'skill':
                     case 'magick':
-                        args = [this.action.area];
-                        break;
+                    case 'materialize':
                     case 'loop':
                         args = [this.action.area];
                         break;
@@ -318,6 +321,9 @@
                         break;
                     case 'magick':
                         message = `Use magick in the ${this.area.name}`;
+                        break;
+                    case 'materialize':
+                        message = `Reveal ghosts in the ${this.area.name}`;
                         break;
                     case 'loop':
                         message = `Replace Loop token`;
@@ -402,6 +408,11 @@
                 return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area ) && unit.flipped );
             },
 
+            ghostsInArea(){
+                if( !this.shared.faction.ghosts ) return [];
+                return this.shared.faction.ghosts.filter( ghost => ghost.location === this.area.name );
+            },
+
             useableSkills(){
                 let areas = [];
 
@@ -423,9 +434,26 @@
                 return this.loopToken && reserves ? [this.loopToken.location] : [];
             },
 
+            useableMaterialize(){
+                if( this.shared.faction.name !== 'ghosts'
+                    || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction
+                ) return [];
+
+
+                let areas = {};
+
+                this.shared.faction.ghosts.forEach( ghost => {
+                   areas[ghost.location] = true;
+                });
+
+                return Object.keys( areas );
+            },
+
             useableMagick(){
                 let areas = [];
-                if( this.shared.faction.name !== 'witches' ) return areas;
+                if( this.shared.faction.name !== 'witches'
+                    || this.shared.faction.lastMagickGameAction === this.shared.data.gameAction
+                ) return areas;
 
                 _.forEach( this.shared.data.areas, area => {
                     if( _.canUseMagick( this.shared.faction, area, this.shared.data.factions ) ){

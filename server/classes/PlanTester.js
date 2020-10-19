@@ -255,8 +255,8 @@ class PlanTester {
         return result;
     }
 
-    exterminateAreas( faction, exterminateCount = 1 ){
-        let factionExterminatedAreas = faction.areasExterminated().length;
+    exterminateAreas( faction, exterminateCount = 1, targetOnly = false ){
+        let factionExterminatedAreas = faction.areasExterminated( targetOnly ).length;
         let result = factionExterminatedAreas >= exterminateCount;
 
         if( this.debug ) console.log (
@@ -583,6 +583,26 @@ class PlanTester {
             'playRules',
             'count req:', count,
             'rulesPlayed:', rulesPlayed,
+            'result:', result
+        );
+
+        return result;
+    }
+
+    controlAnyTarget( faction, targetCount ){
+        let areasControlled = faction.areas();
+
+        let targetsControlled = Object.values( faction.game().factions )
+            .map( item => {
+                return areasControlled.includes( item.targetName() ); // areas we control includes their target
+            }).filter( item => item ).length; // get rid of false values
+
+        let result = targetsControlled >= targetCount;
+
+        if( this.debug ) console.log(
+            'controlAnyTargets',
+            'targetCount req:', targetCount,
+            'factionTargetsControlled:', targetsControlled,
             'result:', result
         );
 

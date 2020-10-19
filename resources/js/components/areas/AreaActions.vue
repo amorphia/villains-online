@@ -53,12 +53,12 @@
                 let actions = [];
                 if( !this.shared.actions ) return actions;
 
-                if( this.shared.actions.skill && this.shared.actions.skill.includes( this.area.name ) ) actions.push( 'skill' );
-                if( this.shared.actions.token && this.shared.actions.token.includes( this.area.name ) ) actions.push( 'token' );
+                this.shared.areaActions.forEach( action => {
+                    if( this.shared.actions[action] && this.shared.actions[action].includes( this.area.name ) ) actions.push( action );
+                });
+
                 if( this.shared.actions.xavier === this.area.name ) actions.push( 'xavier' );
-                if( this.shared.actions.magick && this.shared.actions.magick.includes( this.area.name ) ) actions.push( 'magick' );
-                if( this.shared.actions.loop && this.shared.actions.loop.includes( this.area.name ) ) actions.push( 'loop' );
-                if( this.shared.actions.ambush && this.shared.actions.ambush.includes( this.area.name ) ) actions.push( 'ambush' );
+
                 return actions;
             },
         }

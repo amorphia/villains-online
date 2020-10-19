@@ -32,7 +32,6 @@ class Game {
 
     defaultListener;
     listening = {};
-    action = 0;
     id;
     socketMap = {};
     objectMap = {};
@@ -54,6 +53,7 @@ class Game {
     ];
 
     data = {
+        gameAction : 0,
         combat : null,
         playerAction : 0,
         id : null,

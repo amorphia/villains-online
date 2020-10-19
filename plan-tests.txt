@@ -12,7 +12,7 @@
 
 { test : 'useSkills', args : [2] },
 
-{ test : 'exterminateAreas', args : [1] },
+{ test : 'exterminateAreas', args : [1, target?] },
 
 { test : 'enemyMarkers', args : [3] },
 
@@ -37,4 +37,8 @@
 { test : 'areasMostTokens', args : [3] },
 { test : 'enemyUnitsInAreas', args : [3] },
 
+{ test : 'controlAnyTarget', args : [1] },
 
+// exterminate areas target
+
+ 

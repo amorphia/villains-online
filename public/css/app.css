@@ -48,6 +48,12 @@
 .icon-toughness-solid:before {
     content: "\E95C";
 }
+.icon-ghost:before {
+    content: "\E909";
+}
+.icon-scare:before {
+    content: "\E90A";
+}
 .icon-plant:before {
     content: "\E907";
 }
@@ -482,6 +488,7 @@ a {
   --faction-witches: #d127f4;
   --faction-bureau: #94e5a4;
   --faction-plants: #14ce00;
+  --faction-ghosts: #4a9ed8;
 }
 
 .faction-neutrals {
@@ -566,6 +573,10 @@ a {
 
 .faction-plants {
   color: var(--faction-plants);
+}
+
+.faction-ghosts {
+  color: var(--faction-ghosts);
 }
 
 .primary {
@@ -2604,8 +2615,7 @@ a {
   font-size: 1.3rem;
   letter-spacing: 2px;
   text-align: right;
-  padding: 0.1rem 0.2rem;
-  text-align: right;
+  padding: 0 0.2rem;
 }
 
 .choose-factions__faction.active {

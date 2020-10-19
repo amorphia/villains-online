@@ -95,13 +95,33 @@ let obj = {
         let faction = player.faction();
         let area = this.areas[areaName];
 
-        try {
-            await faction.magickAction( area );
-        } catch( error ){
-            console.error( error );
+        if( this.data.gameAction !== faction.data.lastMagickGameAction ){
+            try {
+                await faction.magickAction( area );
+            } catch( error ){
+                console.error( error );
+            }
+        } else {
+            this.message({ message: 'Too soon to magick again', class: 'warning' });
+        }
+        this.advancePlayer( {}, false );
+    },
+
+    async takeMaterializeAction( player, areaName ){
+        let faction = player.faction();
+        let area = this.areas[areaName];
+
+        if( this.data.gameAction !== faction.data.lastMaterializeGameAction ){
+            try {
+                await faction.materializeAction( area );
+            } catch( error ){
+                console.error( error );
+            }
+        } else {
+            this.message({ message: 'Too soon to materialize again', class: 'warning' });
         }
 
-        this.advancePlayer( {}, false );
+        this.advancePlayer( {}, false  );
     },
 
     async takeAmbushAction( player, areaName ){

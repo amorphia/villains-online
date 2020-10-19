@@ -45,7 +45,7 @@ let helpers = {
     },
 
 
-    moveItemById: function( id, source, target, mode = 'push' ){
+    moveItemById( id, source, target, mode = 'push' ){
         if( typeof id !== 'string' ) id = id.id;
         let index = _.findIndex( source, item => item.id === id );
         let item = _.pullAt( source, index );
@@ -54,7 +54,7 @@ let helpers = {
     },
 
 
-    moveItem: function( index, source, target, mode = 'push' ){
+    moveItem( index, source, target, mode = 'push' ){
         if(    !Array.isArray( source )
             || !Array.isArray( target )
             || !source[index]
@@ -468,11 +468,12 @@ let helpers = {
         let influence = 0;
         let cards = this.getCardCounts( faction, area );
         let tokens = this.getTokenCounts( faction, area );
+        let areaScared = this.areaIsScared( faction, area );
 
         if( cards['rousing-speech'] ) influence += (2 * cards['rousing-speech']);
         if( cards['blown-cover'] ) influence += cards['blown-cover'];
-        if( cards['march-the-streets'] && tokens['deploy'] ) influence += ( 2 * cards['march-the-streets'] * tokens['deploy'] );
-        if( cards['display-of-brilliance'] && tokens['card'] ) influence += ( 2 * cards['display-of-brilliance'] * tokens['card'] );
+        if( !areaScared && cards['march-the-streets'] && tokens['deploy'] ) influence += ( 2 * cards['march-the-streets'] * tokens['deploy'] );
+        if( !areaScared && cards['display-of-brilliance'] && tokens['card'] ) influence += ( 2 * cards['display-of-brilliance'] * tokens['card'] );
         return influence;
     },
 
@@ -672,7 +673,13 @@ let helpers = {
     },
 
 
+    areaIsScared( faction, area ){
+        return area.tokens.some( token => token.type === 'scare' && token.revealed ) && faction.name !== 'ghosts';
+    },
+
     tokenInfluence( faction, area ){
+        if( this.areaIsScared( faction, area ) ) return 0;
+
         let influence = 0;
         area.tokens.forEach( token => {
             if( token.faction === faction.name && token.revealed ){

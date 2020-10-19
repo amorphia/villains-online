@@ -67,6 +67,11 @@
                 if( this.popup.ambush ){
                     return `/images/icons/ambush.png`;
                 }
+
+                if( this.popup.materialize ){
+                    return `/images/icons/ghost.png`;
+                }
+
             }
         }
     }

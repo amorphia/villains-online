@@ -39,6 +39,8 @@
 
             areas(){
                 if( !this.data.units ) return [];
+                if( this.data.area ) return [{ area : this.data.area, units : this.data.units } ];
+
                 if( !Array.isArray( this.data.units ) ) this.data.units = [ this.data.units ];
 
                 let areasObj = {}, areas = [];

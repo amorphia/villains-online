@@ -149,12 +149,15 @@
             hasActions(){
                 if( !this.shared.actions ) return false;
 
-                if( this.shared.actions.skill && this.shared.actions.skill.includes( this.area.name )
-                 || this.shared.actions.magick && this.shared.actions.magick.includes( this.area.name )
-                 || this.shared.actions.token && this.shared.actions.token.includes( this.area.name )
-                 || this.shared.actions.loop && this.shared.actions.loop.includes( this.area.name )
-                 || this.shared.actions.ambush && this.shared.actions.ambush.includes( this.area.name )
-                 || this.shared.actions.xavier === this.area.name ) return true;
+                let hasAction = false;
+
+                this.shared.areaActions.forEach( action => {
+                    if( this.shared.actions[action] && this.shared.actions[action].includes( this.area.name ) ) hasAction = true;
+                });
+
+                if( this.shared.actions.xavier === this.area.name ) hasAction = true;
+
+                return hasAction;
             },
 
             showXavier(){

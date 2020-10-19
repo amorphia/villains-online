@@ -85,6 +85,15 @@ let obj = {
             }
         });
 
+        if( this.data.ghosts ){
+            _.forEach( this.data.ghosts, (unit, index) => {
+                // if our deploy is limited to a certain unit type only include areas with those
+                if( !args.unitTypes || args.unitTypes.includes( unit.type ) ){
+                    areas[ unit.location ] = { val : true };
+                }
+            });
+        }
+
         _.forEach( areas, (data, name) => {
             let area = this.game().areas[name];
             let cards = area.data.cards;
@@ -136,19 +145,30 @@ let obj = {
                 if( unit.ready && ( unit.faction !== 'hackers' || !unit.location ) ) unit.ready = false;
             }
 
+            // unghost ghosts
+            if( unit.ghost ){
+                let ghosts = this.game().factions['ghosts'];
+                ghosts.unGhost( unit );
+            }
+
             // update area
             unit.location = data.toArea;
-
-
         });
 
-        // prepare prompt and chat message
         let unitNames = [];
         units.forEach( unit => {
             unitNames.push( unit.name )
         });
 
-        let message = `Pay xC${output.cost}x to deploy <span class="faction-${this.name}">${ unitNames.join(', ') }</span> to the ${output.units[0].unit.location}`;
+        // ghost deploy
+        if( data.ghosts && data.ghosts.length ){
+            let ghostOutput = this.game().factions['ghosts'].deployGhosts( data.ghosts, data.toArea );
+            ghostOutput.forEach( ghost => unitNames.push( 'ghost' ) );
+            units = _.concat( units, ghostOutput );
+        }
+
+        // prepare prompt and chat message
+        let message = `Pay xC${output.cost}x to deploy <span class="faction-${this.name}">${ unitNames.join(', ') }</span> to the ${data.toArea}`;
         this.message({ message: message, faction : this });
 
         if( !data.hidePrompt ) {

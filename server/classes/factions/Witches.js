@@ -13,6 +13,7 @@ class Witches extends Faction {
         this.data.focus = 'rule-focus';
         this.data.focusDescription = "Play many rule cards";
         this.data.magickCardsRevealed = 1;
+        this.data.lastMagickGameAction = 0;
 
         // icons
         this.data.statusIcon = 'enchanted';
@@ -94,6 +95,8 @@ class Witches extends Faction {
     async magickAction( area ){
         let player, data, args, card;
 
+        this.data.lastMagickGameAction = this.game().data.gameAction + 1;
+
         this.dienchantUnits( area );
         [args, data, card] = await this.revealMagick( area );
 
@@ -101,6 +104,7 @@ class Witches extends Faction {
 
         args.area = this.game().areas[args.area];
         data.cardId = card;
+
         await this.processCard( args, data );
     }
 

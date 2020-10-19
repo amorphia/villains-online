@@ -37,6 +37,7 @@
     --faction-witches: #d127f4;
     --faction-bureau: #94e5a4;
     --faction-plants: #14ce00;
+    --faction-ghosts: #4a9ed8;
 }
 
 .faction-neutrals{color: white}
@@ -60,6 +61,7 @@
 .faction-witches {color: var(--faction-witches)}
 .faction-bureau {color: var(--faction-bureau)}
 .faction-plants {color: var(--faction-plants)}
+.faction-ghosts {color: var(--faction-ghosts)}
 
 .primary { color: var(--primary-color) }
 .primary-light { color: var(--primary-light-color) }

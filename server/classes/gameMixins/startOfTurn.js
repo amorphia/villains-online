@@ -44,6 +44,10 @@ let obj = {
         _.moveItemById( plan.id, faction.data.plans.current, faction.data.plans.deck );
         _.moveItemById( target.id, faction.data.cards.hand, faction.data.cards.target );
 
+        // de-select target card if selected randomly
+        let targetCard = this.objectMap[ target.id ];
+        if( targetCard.randomTarget ) delete targetCard.randomTarget;
+
         player.setPrompt({
             name : null,
             active : false

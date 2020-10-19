@@ -89,6 +89,13 @@
             };
         },
 
+        mounted(){
+            let randomCard = this.shared.faction.cards.hand.find( card => card.randomTarget );
+            if( randomCard ){
+                this.target = randomCard;
+            }
+        },
+
         methods : {
             saveChoices(){
                 if( this.mode !== 'confirm' ) return this.mode = 'confirm';
@@ -98,6 +105,8 @@
             },
 
             itemClicked( type, object ){
+                if( this.shared.faction.randomTarget && type === 'target' ) return App.event.emit( 'sound', 'error' );
+
                 // clicking the selected object unselects it
                 if( this[type] && this[type].id === object.id ) return this[type] = null;
 
