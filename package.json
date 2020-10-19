@@ -31,6 +31,7 @@
         "socket.io": "^2.3.0",
         "sqlite3": "^4.2.0",
         "uuid": "^8.3.0",
-        "vue-scrollto": "^2.18.2"
+        "vue-scrollto": "^2.18.2",
+        "object-path": ">=0.11.5"
     }
 }
