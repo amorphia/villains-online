@@ -36,9 +36,7 @@
 { test : 'areasMostUnits', args : [3] },
 { test : 'areasMostTokens', args : [3] },
 { test : 'enemyUnitsInAreas', args : [3] },
-
 { test : 'controlAnyTarget', args : [1] },
 
-// exterminate areas target
 
  
