@@ -67,13 +67,15 @@ let mixin = {
     areasWithEnemyUnits( args = {} ){
         let areas = [];
 
+        let firstArgs = _.clone( args );
+        delete firstArgs.adjacent;
         _.forEach( this.game().factions, faction => {
             if( faction.name !== this.name ){
-                areas = _.union( areas, faction.areasWithUnits( args ) );
+                areas = _.union( areas, faction.areasWithUnits( firstArgs ) );
             }
         });
 
-        console.log('areas pre adjacent', areas  );
+        console.log( 'areas pre adjacent', areas  );
 
         if( args.adjacent ){
             let adjacentArea = args.adjacent;
