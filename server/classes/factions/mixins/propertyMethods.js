@@ -209,7 +209,7 @@ let mixin = {
 
 
     areasMostUnits(){
-        return _.areasMostUnits( this, this.game().data.factions );
+        return _.areasMostUnits( this, this.game().data.factions ).length;
     },
 
     areasMostTokens(){
