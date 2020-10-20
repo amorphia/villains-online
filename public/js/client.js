@@ -2931,7 +2931,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     focus: function focus() {
-      return _.areasMostUnits(this.faction, this.shared.data.factions);
+      return _.areasMostUnits(this.faction, this.shared.data.factions).length;
     }
   }
 });

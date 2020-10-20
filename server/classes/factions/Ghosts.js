@@ -152,7 +152,7 @@ class Ghosts extends Faction {
             units: units
         });
 
-        let king = units.find( unit => unit.type === 'champion' );
+        let king = units.find( unit => unit.type === 'champion' && unit.area === area.name );
         await this.kingMaterialized( king, area );
     }
 

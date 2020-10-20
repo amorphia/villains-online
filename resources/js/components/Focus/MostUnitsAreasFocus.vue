@@ -18,7 +18,7 @@
         },
         computed : {
             focus(){
-                return _.areasMostUnits( this.faction, this.shared.data.factions );
+                return _.areasMostUnits( this.faction, this.shared.data.factions ).length;
             }
         }
     }
