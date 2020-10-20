@@ -6982,9 +6982,10 @@ __webpack_require__.r(__webpack_exports__);
     resolve: function resolve(action) {
       var data = {};
 
-      if (action) {
+      if (action === true) {
         data.factions = this.selected;
       } else {
+        data.factions = [];
         data.decline = true;
       }
 

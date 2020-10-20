@@ -70,9 +70,10 @@
             resolve( action ){
                 let data = {};
 
-                if( action ){
+                if( action === true ){
                     data.factions = this.selected;
                 } else {
+                    data.factions = [];
                     data.decline = true;
                 }
 

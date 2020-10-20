@@ -112,7 +112,7 @@ class Plants extends Faction {
             }
         }).catch( error => console.error( error ) );
 
-        if( !data.factions.length ) return;
+        if( !data.factions.length || data.decline ) return;
 
         try {
             for( let factionName of data.factions ) {
