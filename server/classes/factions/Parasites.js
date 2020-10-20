@@ -141,7 +141,10 @@ class Parasites extends Faction {
 
     async onAfterActivateToken( token ){
         let player, data, area = this.game().areas[token.location];
+        if(! token || !area ) return;
+        
         let basicTokens = ['move','deploy','card','battle'];
+
         let pod = this.data.tokens.find( token => token.type === 'pod' && token.revealed && token.location === area.name );
 
         // check if pod duplication is valid
