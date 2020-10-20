@@ -73,7 +73,10 @@ class Guerrillas extends Faction {
 
     canActivateSnipers( token, area ) {
         let validTargets = !! this.areasWithEnemyUnits({ adjacent: area.name, basic : true }).length;
+        if( !validTargets ) console.log( 'failed valid targets', validTargets );
         let hasUnitToShootWith = this.hasUnitsInArea( area );
+        if( !hasUnitToShootWith ) console.log( 'hasUnitToShootWith', hasUnitToShootWith );
+
         return validTargets && hasUnitToShootWith;
     }
 
