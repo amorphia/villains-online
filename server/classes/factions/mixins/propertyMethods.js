@@ -76,7 +76,11 @@ let mixin = {
         console.log('areas pre adjacent', areas  );
 
         if( args.adjacent ){
-            if( typeof args.adjacent === 'string' ) args.adjacent = this.game().areas[args.adjacent];
+            let adjacentArea = args.adjacent;
+            if( typeof args.adjacent === 'string' ) adjacentArea = this.game().areas[args.adjacent];
+            console.log( 'adjacentArea', adjacentArea  );
+            let adjacentArray = adjacentArea.data.adjacent;
+            console.log( 'adjacentArray', adjacentArray  );
             areas = _.intersection( areas, args.adjacent.data.adjacent );
         }
 
