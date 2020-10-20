@@ -73,10 +73,14 @@ let mixin = {
             }
         });
 
+        console.log('areas pre adjacent', areas  );
+
         if( args.adjacent ){
             if( typeof args.adjacent === 'string' ) args.adjacent = this.game().areas[args.adjacent];
             areas = _.intersection( areas, args.adjacent.data.adjacent );
         }
+
+        console.log('areas post adjacent', areas  );
 
         return areas;
     },
