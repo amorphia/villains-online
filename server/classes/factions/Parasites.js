@@ -27,9 +27,9 @@ class Parasites extends Faction {
         };
 
         // units
-        this.units['goon'].count = 5;
-        this.units['talent'].count = 5;
-        this.units['mole'].count = 7;
+        this.units['goon'].count = 6;
+        this.units['talent'].count = 4;
+        this.units['mole'].count = 6;
         this.units['patsy'].count = 8;
 
 
@@ -142,7 +142,7 @@ class Parasites extends Faction {
     async onAfterActivateToken( token ){
         let player, data, area = this.game().areas[token.location];
         if(! token || !area ) return;
-        
+
         let basicTokens = ['move','deploy','card','battle'];
 
         let pod = this.data.tokens.find( token => token.type === 'pod' && token.revealed && token.location === area.name );

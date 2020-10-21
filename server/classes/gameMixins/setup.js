@@ -3,6 +3,7 @@ let setup = {
 
     async loadSavedGame( saved ){
         this.data.state = 'loading';
+
         this.updatePlayerSockets( saved );
         this.generateGame( saved );
         this.mergeSavedData( saved );
@@ -23,11 +24,14 @@ let setup = {
     },
 
     mergeSavedData( saved ){
+
+        console.log( this.objectMap );
+
         saved.socketMap = this.socketMap;
         this.data.gameAction = saved.data.gameAction;
 
         let linkFunc = ( objVal, srcVal ) => {
-            if (_.isArray( objVal ) ) {
+            if ( _.isArray( objVal ) ) {
                 let linked = [];
                 srcVal.forEach( (item, index) => {
                     if( item && item.id ){
@@ -41,10 +45,9 @@ let setup = {
         };
 
         // merge data
-        _.merge( this.data, saved.data );
+        _.mergeWith( this.data, saved.data, linkFunc );
 
-        // merge objectMap
-        _.mergeWith( this.objectMap, saved.objectMap, linkFunc );
+        console.log( this.objectMap );
 
         // merge factions
         _.forEach( this.factions, (faction, name) => {
@@ -140,8 +143,8 @@ let setup = {
     },
 
     generateGame( saved ){
-        this.buildActionDeck();
-        this.buildAreas();
+        this.buildActionDeck( saved );
+        this.buildAreas( saved );
         this.buildFactions( saved );
     },
 
@@ -161,9 +164,9 @@ let setup = {
 
             if( value.owner !== null ){
                 let faction = new factionClasses[name]( value.owner, this );
-                faction.setupUnits();
-                faction.setupTokens();
-                faction.setupPlans();
+                faction.setupUnits( saved );
+                faction.setupTokens( saved );
+                faction.setupPlans( saved );
                 this.factions[name] = faction;
                 this.data.factions[name] = faction.data;
             }
@@ -194,7 +197,7 @@ let setup = {
         this.message({ message: `The ${startingArea.name} is controlled by neutrals`, class: 'none' });
     },
 
-    buildActionDeck(){
+    buildActionDeck( saved ){
         let cardClasses = require('../Cards');
         _.forEach( cardClasses, (Func, name) => {
             this.cards[name] = new Func( this );
@@ -206,7 +209,7 @@ let setup = {
             card.area = null;
             card.status = null;
 
-            this.newObject( card );
+            this.newObject( card, saved );
             this.deck.deck.push( card );
         });
 

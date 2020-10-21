@@ -223,8 +223,13 @@ class Game {
     }
 
 
-    newObject( object ){
+    newObject( object, saved = {} ){
         object.id =  'o' + Object.keys( this.objectMap ).length;
+
+        if( saved.objectMap && saved.objectMap[object.id] ){
+            Object.assign( object, saved.objectMap[object.id] );
+        }
+
         this.objectMap[object.id] = object;
         return object;
     }

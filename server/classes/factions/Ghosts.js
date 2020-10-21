@@ -33,11 +33,11 @@ class Ghosts extends Faction {
         };
 
         // units
-        this.units['goon'].count = 6;
+        this.units['goon'].count = 7;
         this.units['goon'].data.ghost = false;
-        this.units['mole'].count = 6;
+        this.units['mole'].count = 7;
         this.units['mole'].data.ghost = false;
-        this.units['talent'].count = 4;
+        this.units['talent'].count = 5;
         this.units['talent'].data.ghost = false;
         this.units['patsy'].data.ghost = false;
 
