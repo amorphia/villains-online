@@ -106,6 +106,10 @@ class Cultists extends Faction {
         message = `sacrifices <span class="faction-${unit.faction}">${unit.name}</span> in the ${event.from}`;
         this.game().message({ faction: targetFaction, message: message });
 
+        await this.game().timedPrompt('units-shifted', {
+            message : `Basta claims a soul in the ${event.from}`,
+            units: [unit]
+        });
     }
 
     processUpgrade( n ){
