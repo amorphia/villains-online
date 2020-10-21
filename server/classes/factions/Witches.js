@@ -38,7 +38,7 @@ class Witches extends Faction {
                 basic: false,
                 influence: 2,
                 attack: [9,9,9],
-                cost: 0,
+                cost: 1,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
@@ -139,7 +139,6 @@ class Witches extends Faction {
 
     enchantUnit( unit ){
         unit.flipped = true;
-        unit.redeployFree = true;
     }
 
     getTokenMoveAreas( toArea ){
@@ -195,10 +194,7 @@ class Witches extends Faction {
     }
 
     async cordellaDeploy( event ){
-        // if deployed from reserves enter enchanted
-        if( !event.from ) this.enchantUnit( event.unit );
-
-        //if( event.unit.flipped ) await this.cordellaTokenMove( event.unit );
+        this.enchantUnit( event.unit );
     }
 
     factionCleanUp(){
@@ -207,7 +203,6 @@ class Witches extends Faction {
 
     unitUnflipped( unit ) {
         unit.flipped = false;
-        unit.redeployFree = false;
     }
 
 }

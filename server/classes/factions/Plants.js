@@ -76,20 +76,13 @@ class Plants extends Faction {
         }
     }
 
-    // Heal wounded Soul of the Green after combat
-    async onAfterBattle( combat ) {
-        let soul = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, combat.area ) );
-        if ( soul && soul.flipped ){
-            this.game().message({ faction: this, message : `The Soul of the green regrows her limbs` });
-            soul.flipped = false;
-        }
-    }
 
     factionsWithAdjacentUnits( area ){
         let factions = {};
 
         area.data.adjacent.forEach( areaName => {
             Object.values( this.game().factions ).forEach( faction => {
+                if( faction.name === this.name ) return;
                 if( faction.data.units.find( unit => _.unitInArea( unit, areaName, { basic : true } ) ) ) factions[ faction.name ] = true;
             });
         });
@@ -101,6 +94,8 @@ class Plants extends Faction {
         let player, data, promises = [], units = [], area = this.game().areas[event.unit.location];
 
         let factions = this.factionsWithAdjacentUnits( area );
+
+        if( !factions.length ) return this.game().message({ message : 'No adjacent units to lure', class : 'warning' });
 
         [player, data] = await this.game().promise({
             players: this.playerId,
