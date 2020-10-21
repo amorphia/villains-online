@@ -116,6 +116,11 @@ class Guerrillas extends Faction {
 
         this.game().message({ message : `the sniper ${result} <span class="faction-${unit.faction}">the ${unit.faction}'s ${unit.name}</span> in <span class="highlight">the ${data.area}</span>`, faction : this });
 
+        await this.game().timedPrompt('units-shifted', {
+            message : `A sniper get a kill in the ${area.name}`,
+            units: [unit]
+        });
+
         this.game().advancePlayer();
     }
 

@@ -92890,30 +92890,32 @@ var helpers = {
     });
     return assignableHits;
   },
-  calculateDefenseBonus: function calculateDefenseBonus(attackingFaction, targetFaction, area, debug) {
+  calculateDefenseBonus: function calculateDefenseBonus(attackingFaction, targetFaction, area) {
+    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
     if (attackingFaction.data) attackingFaction = attackingFaction.data;
     if (targetFaction.data) targetFaction = targetFaction.data;
     if (area.data) area = area.data;
     var defenseBonus = 0;
+    if (!options.unit) return defenseBonus;
 
     if (targetFaction.defenseBonus && !this.hasKauImmunity(attackingFaction, area)) {
       defenseBonus += targetFaction.defenseBonus;
-      if (debug) console.log('Apply targetFaction.defenseBonus defense bonus:', defenseBonus);
+      if (options.debug) console.log('Apply targetFaction.defenseBonus defense bonus:', defenseBonus);
     }
 
     if (targetFaction.name === 'mutants' && _.find(area.tokens, function (token) {
       return token.revealed && token.name === 'biohazard';
     })) {
       defenseBonus += 2;
-      if (debug) console.log('Apply bioHazard defense bonus:', defenseBonus);
+      if (options.debug) console.log('Apply bioHazard defense bonus:', defenseBonus);
     }
 
     if (targetFaction.factionDefenseBonus) {
       defenseBonus += targetFaction.factionDefenseBonus;
-      if (debug) console.log('Apply targetFaction.factionDefenseBonus defense bonus:', defenseBonus);
+      if (options.debug) console.log('Apply targetFaction.factionDefenseBonus defense bonus:', defenseBonus);
     }
 
-    if (debug) console.log('Final defense bonus:', defenseBonus);
+    if (options.debug) console.log('Final defense bonus:', defenseBonus);
     return defenseBonus;
   },
 

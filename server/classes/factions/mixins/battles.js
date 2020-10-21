@@ -300,7 +300,7 @@ let obj = {
             console.log( 'apply faction attack bonus: -', this.data.attackBonus, 'toHit:', toHit );
         }
 
-        let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, true );
+        let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, { debug : true, unit : args.unit } );
         if( defenseBonus ) {
             toHit += defenseBonus;
             console.log( 'apply defense penalty:', defenseBonus, 'toHit:', toHit );
