@@ -25,8 +25,6 @@ let setup = {
 
     mergeSavedData( saved ){
 
-        console.log( this.objectMap );
-
         saved.socketMap = this.socketMap;
         this.data.gameAction = saved.data.gameAction;
 
@@ -46,8 +44,6 @@ let setup = {
 
         // merge data
         _.mergeWith( this.data, saved.data, linkFunc );
-
-        console.log( this.objectMap );
 
         // merge factions
         _.forEach( this.factions, (faction, name) => {
