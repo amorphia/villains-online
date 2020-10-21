@@ -176,7 +176,7 @@
                 if( ! this.canAddUnit( unit.type ) ) return;
                 unit = _.find( this.currentFromAreaUnits, old => unit.id === old.id );
                 this.$set( unit, 'selected', true );
-                if( unit.ghost ) this.$set( unit, 'asGhost', true );
+                if( this.shared.faction.ghostDeploy ) this.$set( unit, 'asGhost', true );
             },
 
 
@@ -184,6 +184,7 @@
                 if( ! this.canAddUnit( type ) ) return;
                 let unit = _.find( this.reserves, unit => unit.type === type );
                 this.$set( unit, 'selected', true );
+                if( this.shared.faction.ghostDeploy && !this.data.free ) this.$set( unit, 'asGhost', true );
             },
 
 

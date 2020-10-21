@@ -8116,7 +8116,7 @@ __webpack_require__.r(__webpack_exports__);
         return unit.id === old.id;
       });
       this.$set(unit, 'selected', true);
-      if (unit.ghost) this.$set(unit, 'asGhost', true);
+      if (this.shared.faction.ghostDeploy) this.$set(unit, 'asGhost', true);
     },
     addUnitFromReserves: function addUnitFromReserves(type) {
       if (!this.canAddUnit(type)) return;
@@ -8126,6 +8126,7 @@ __webpack_require__.r(__webpack_exports__);
       });
 
       this.$set(unit, 'selected', true);
+      if (this.shared.faction.ghostDeploy && !this.data.free) this.$set(unit, 'asGhost', true);
     },
     groupBy: function groupBy(array, prop) {
       return _.groupBy(array, prop);
@@ -61715,7 +61716,7 @@ var render = function() {
                     _c("img", {
                       staticClass: "choose-spy__champion",
                       attrs: {
-                        src: "/images/factions/" + faction + "/portrait.png"
+                        src: "/images/factions/" + faction + "/icon.jpg"
                       }
                     })
                   ]
@@ -61987,9 +61988,7 @@ var render = function() {
                           staticClass: "choose-spy__champion",
                           attrs: {
                             src:
-                              "/images/factions/" +
-                              player.faction +
-                              "/portrait.png"
+                              "/images/factions/" + player.faction + "/icon.jpg"
                           }
                         })
                       ]

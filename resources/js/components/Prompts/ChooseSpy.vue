@@ -10,7 +10,7 @@
                          :class="{ active : player.faction == spy }">
 
                         <div class="choose-factions__player-faction width-15 d-flex pr-2">
-                            <img class="choose-spy__champion" :src="`/images/factions/${player.faction}/portrait.png`" >
+                            <img class="choose-spy__champion" :src="`/images/factions/${player.faction}/icon.jpg`" >
                         </div>
 
                         <div class="choose-factions__player-name ellipses width-60 p-4">{{ player.name | startCase }}</div>
