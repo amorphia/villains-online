@@ -58,12 +58,15 @@
         computed : {
 
             cost(){
-                if( ! (this.data.policePayoff || this.data.payCost) ) return 0;
+                let cost = 0;
 
-                if( this.data.policePayoff ) return _.policePayoffs( this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected ) * this.selected.length;
+                if( this.data.policePayoff ) cost += _.policePayoffs( this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected ) * this.selected.length;
 
-                if( this.data.payCost ) return this.selected.reduce( ( cost, unit ) => cost += unit.cost, 0 );
+                if( this.data.vines ) cost += this.selected.length * this.data.vines;
 
+                if( this.data.payCost ) cost += this.selected.reduce( ( cost, unit ) => cost += unit.cost, 0 );
+
+                return cost;
             },
 
             canSubmit(){

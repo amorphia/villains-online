@@ -7543,11 +7543,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     cost: function cost() {
-      if (!(this.data.policePayoff || this.data.payCost)) return 0;
-      if (this.data.policePayoff) return _.policePayoffs(this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected) * this.selected.length;
-      if (this.data.payCost) return this.selected.reduce(function (cost, unit) {
+      var cost = 0;
+      if (this.data.policePayoff) cost += _.policePayoffs(this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected) * this.selected.length;
+      if (this.data.vines) cost += this.selected.length * this.data.vines;
+      if (this.data.payCost) cost += this.selected.reduce(function (cost, unit) {
         return cost += unit.cost;
       }, 0);
+      return cost;
     },
     canSubmit: function canSubmit() {
       if (this.cost <= _.money(this.shared.faction) && (this.needToSelect === 0 || this.data.optionalMax && this.selected.length > 0)) return true;

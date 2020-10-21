@@ -138,13 +138,20 @@ class Guerrillas extends Faction {
     }
 
     async bringUnits( event ) {
-        let player, data;
+        let player, data, vines = 0;
 
         // if we didn't deploy from another area then return
         if (!event.from || event.from === event.unit.location) return;
 
         // if we don't have any more units in the from area then return
         if( ! this.data.units.find( unit => _.unitInArea( unit, event.from ) ) ) return;
+
+        let area = this.game().areas[ event.from  ];
+        if( this.game().factions['plants'] ){
+            console.log( 'checking for vines' );
+            console.log( 'area.tokens', area.data.tokens );
+            vines = area.data.tokens.filter( token => token.type === 'vines' ).length;
+        }
 
         [player, data] = await this.game().promise({
             players: this.playerId,
@@ -156,6 +163,7 @@ class Guerrillas extends Faction {
                 canDecline : true,
                 optionalMax : true,
                 policePayoff : event.unit.location,
+                vines: vines,
                 message: `Choose units to move with Red Viper to The ${event.from}`
             }
         }).catch( error => console.error( error ) );
