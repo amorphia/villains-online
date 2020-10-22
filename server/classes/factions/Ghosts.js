@@ -15,7 +15,7 @@ class Ghosts extends Faction {
         this.data.ghosts = [];
         this.data.upgradeDeploy = 0;
         this.data.lastMaterializeGameAction = 0;
-        this.data.randomTarget = true;
+        //this.data.randomTarget = true;
         this.data.ghostDeploy = true;
         this.data.hiddenReserves = true;
 
