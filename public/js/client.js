@@ -5168,6 +5168,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'title-card',
   data: function data() {
@@ -5181,6 +5191,13 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     data: function data() {
       return this.shared.player.prompt.data;
+    },
+    neutral: function neutral() {
+      if (this.data.type !== 'turn') return false;
+      var neutralArea = Object.values(this.shared.data.areas).find(function (area) {
+        return area.owner === 'neutral';
+      });
+      return neutralArea ? neutralArea.name : false;
     }
   }
 });
@@ -60272,7 +60289,41 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "title-card__message" }, [
       _vm._v(_vm._s(_vm.data.message))
-    ])
+    ]),
+    _vm._v(" "),
+    _vm.neutral
+      ? _c(
+          "div",
+          {
+            staticClass:
+              "choose-factions__player pull-center d-flex align-stretch"
+          },
+          [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "choose-factions__player-faction width-15 d-flex pr-2"
+              },
+              [
+                _c("img", {
+                  staticClass: "choose-spy__champion",
+                  attrs: { src: "/images/factions/neutral/icon.jpg" }
+                })
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "choose-factions__player-name ellipses width-60 p-4"
+              },
+              [_vm._v("Neutrals control the " + _vm._s(_vm.neutral))]
+            )
+          ]
+        )
+      : _vm._e()
   ])
 }
 var staticRenderFns = []

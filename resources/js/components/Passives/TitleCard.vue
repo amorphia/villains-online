@@ -6,6 +6,16 @@
         </div>
 
         <div class="title-card__message">{{ data.message }}</div>
+
+        <div v-if="neutral" class="choose-factions__player pull-center d-flex align-stretch">
+
+                <div class="choose-factions__player-faction width-15 d-flex pr-2">
+                    <img class="choose-spy__champion" :src="`/images/factions/neutral/icon.jpg`" >
+                </div>
+
+                <div class="choose-factions__player-name ellipses width-60 p-4">Neutrals control the {{ neutral }}</div>
+        </div>
+
     </div>
 </template>
 
@@ -28,6 +38,13 @@
             data(){
                 return this.shared.player.prompt.data;
             },
+
+            neutral(){
+                if( this.data.type !== 'turn' ) return false;
+                let neutralArea = Object.values( this.shared.data.areas ).find( area => area.owner === 'neutral' );
+                return neutralArea ? neutralArea.name : false;
+            }
+
         },
 
 

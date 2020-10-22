@@ -7,7 +7,8 @@ let obj = {
 
             let data = {
                 wait : this.titleCardTimer,
-                message : 'Start of Turn'
+                message : 'Start of Turn',
+                type : 'turn'
             };
 
             if( this.data.turn === 4 && this.doubleTargetsFourthTurn ) data.showDoubleAP = true;
