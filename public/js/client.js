@@ -60315,11 +60315,11 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
-              {
-                staticClass:
-                  "choose-factions__player-name ellipses width-60 p-4"
-              },
-              [_vm._v("Neutrals control the " + _vm._s(_vm.neutral))]
+              { staticClass: "choose-factions__player-name ellipses p-4" },
+              [
+                _vm._v("Neutrals control "),
+                _c("b", [_vm._v("The " + _vm._s(_vm.neutral || _vm.startCase))])
+              ]
             )
           ]
         )

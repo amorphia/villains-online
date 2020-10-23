@@ -489,6 +489,7 @@ a {
   --faction-bureau: #94e5a4;
   --faction-plants: #14ce00;
   --faction-ghosts: #4a9ed8;
+  --faction-spiders: #ae7688;
 }
 
 .faction-neutrals {
@@ -577,6 +578,10 @@ a {
 
 .faction-ghosts {
   color: var(--faction-ghosts);
+}
+
+.faction-spiders {
+  color: var(--faction-spiders);
 }
 
 .primary {

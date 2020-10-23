@@ -13,7 +13,7 @@
                     <img class="choose-spy__champion" :src="`/images/factions/neutral/icon.jpg`" >
                 </div>
 
-                <div class="choose-factions__player-name ellipses width-60 p-4">Neutrals control the {{ neutral }}</div>
+            <div class="choose-factions__player-name ellipses p-4">Neutrals control <b>The {{ neutral || startCase }}</b></div>
         </div>
 
     </div>
