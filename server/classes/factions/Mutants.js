@@ -74,7 +74,7 @@ class Mutants extends Faction {
 
         let areasWithHealedOozes = {};
         this.data.units.forEach( unit => {
-            if( unit.type === 'champion' && unit.flipped ){
+            if( unit.type === 'champion' && unit.flipped && _.unitInPlay( unit ) ){
                 areasWithHealedOozes[ unit.location ] = true;
                 unit.flipped = false;
             }

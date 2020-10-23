@@ -177,7 +177,7 @@ class Faction {
 
     godMode(){
         console.log( 'god mode enabled' );
-        this.data.cardDraw = 36;
+        this.data.cardDraw = 10;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;
     }
