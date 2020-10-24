@@ -195,6 +195,7 @@ class Faction {
     onAfterCombatStep(){}
     onAfterSkill(){}
     onBeforeSkill(){}
+    battleOrderSort(){}
 
     startOfTurnPrompt() {
         return 'choose-target';

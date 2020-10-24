@@ -263,11 +263,11 @@ class Battle {
             }
         });
 
-        this.data.factions.sort( (a,b) => {
-            if( a.name === 'ninjas' ) return -1;
-            if( b.name === 'ninjas' ) return 1;
-            return a.order - b.order
+        Object.values( this.game().factions ).forEach( fac => {
+            fac.battleOrderSort( this.data.factions );
         });
+
+
     }
 
     removeUnitFromCombat( unit ){

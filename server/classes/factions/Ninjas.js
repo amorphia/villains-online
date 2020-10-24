@@ -56,6 +56,14 @@ class Ninjas extends Faction {
         };
     }
 
+    battleOrderSort( combatFactions ) {
+        combatFactions.sort( (a,b) => {
+            if( a.name === this.name ) return -1;
+            if( b.name === this.name ) return 1;
+            return a.order - b.order
+        });
+    }
+
     factionCombatMods( mods, area ) {
         mods.push({
             type: 'ninjas',
