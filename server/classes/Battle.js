@@ -125,63 +125,9 @@ class Battle {
         }
     }
 
-    /*
-    async ninjaAttack( faction ){
-        let player = {}, data = {};
-
-        [player, data] = await this.game().promise({
-            players: faction.playerId,
-            name: 'ninja-attack',
-            data : { area : this.area.name }
-        }).catch( error => console.error( error ) );
-
-        if( !data.ninjaAttack ) return;
-
-        let result = await faction.attack({
-                area : this.area,
-                attacks : [5],
-                chooseUnitTarget : true
-        }).catch( error => console.error( error ) );
-
-        if(
-            result
-            && result.hits
-            && this.stillHasEnemiesThatCanAttack( faction )
-            && faction.hasNonHiddenUnitsInArea( this.area )
-        ){
-            [player, data] = await this.game().promise({
-                players: faction.playerId,
-                name: 'choose-units',
-                data : {
-                    count : 1,
-                    areas : [this.area.name],
-                    playerOnly : true,
-                    message: "Choose a unit to become hidden"
-                }
-            }).catch( error => console.error( error ) );
-            if( !data.units ) return;
-
-            let unit = this.game().objectMap[ data.units[0] ];
-            faction.becomeHidden( unit );
-        }
-
-        this.lastAttack = result;
-        faction.data.units.forEach( unit => unit.needsToAttack = false );
-    }
-     */
 
     async makeAttacks( factionData ){
         let player, data, gameFaction = this.game().factions[factionData.name];
-
-        /*
-        if( gameFaction.name === 'ninjas' && this.stillHasUnitsToAttack( factionData, true ) ){
-            try {
-                await this.ninjaAttack( gameFaction );
-            } catch( error ){
-                console.error( error );
-            }
-        }
-    */
 
         while( this.stillHasUnitsToAttack( factionData ) ){
             let ninjaAttack = gameFaction.name === 'ninjas' && gameFaction.data.firstAttackThisBattle;
@@ -256,11 +202,18 @@ class Battle {
 
                 this.data.factions.push({
                     name: faction.name,
+                    playerId : faction.playerId,
                     units: unitsInArea,
                     mods: faction.combatModifiersList( this.area ),
                     order : faction.playerOrder()
                 })
             }
+        });
+
+        let playerOrder = this.game().data.playerOrder;
+
+        this.data.factions.sort( (a,b) => {
+            return playerOrder.indexOf( a.playerId ) - playerOrder.indexOf( b.playerId );
         });
 
         Object.values( this.game().factions ).forEach( fac => {

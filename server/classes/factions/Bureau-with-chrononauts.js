@@ -12,18 +12,21 @@ class Bureau extends Faction {
         this.data.title = "The Bureau of Eternity";
         this.data.focus = 'most-tokens-focus';
         this.data.focusDescription = "Have the most tokens in many areas";
+        this.data.reverseFlippedPip = true;
 
+        this.data.deployLimit = 1;
         this.data.skips = {
             max : 0,
             used : 0,
         };
 
 
+
         // tokens
         this.tokens['deploy'].count = 4;
         this.tokens['card'].count = 4;
-        this.tokens['move'].count = 2;
-        this.tokens['battle'].count = 2;
+        this.tokens['move'].count = 1;
+        this.tokens['battle'].count = 1;
 
         this.tokens['loop'] = {
             count: 1,
@@ -35,21 +38,55 @@ class Bureau extends Faction {
         };
 
 
+        // units
+        // unit count: 15
+
+        this.units['goon'].count = 4;
+        this.units['goon'].data.charged = true;
+        //this.units['goon'].data.influence = 2;
+
+
+        this.units['mole'].count = 4;
+        this.units['mole'].data.charged = true;
+        //this.units['mole'].data.influence = 3;
+
+
+        this.units['talent'].data.charged = true;
+        //this.units['talent'].data.influence = 2;
+
+
+        this.units['patsy'].count = 3;
+        //this.units['patsy'].data.influence = 1;
+
+
         this.units['champion'] = {
             count: 1,
             data: {
-                name: "Observer",
+                name: "Minister",
                 type: 'champion',
                 basic: false,
-                influence: 1,
-                attack: [7],
+                influence: 3,
+                attack: [3],
+                firstStrike: true,
+                charged : true,
                 cost: 0,
-                hidden : true,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
             }
         };
+    }
+
+    factionCombatMods( mods, area ) {
+
+        if ( this.data.units.find( unit => _.unitInArea( unit, area, { flipped : true } ) ) ) {
+            mods.push({
+                type: 'chargedFirstStrike',
+                text: `Charged units return during cleanup if killed`
+            });
+        }
+
+        return mods;
     }
 
 
@@ -118,7 +155,37 @@ class Bureau extends Faction {
 
     factionCleanUp(){
         this.data.skips.used = 0;
+        this.reviveChargedUnits();
     }
+
+    reviveChargedUnits() {
+        this.game().message({ faction: this, message: 'Units return from the past' });
+        this.data.units.forEach( unit => {
+            if( unit.killed && unit.charged ){
+                unit.killed = null;
+                if( !unit.flipped && unit.type !== 'champion' ) this.dechargeUnit( unit );
+            }
+        });
+    }
+
+    chargeUnit( unit ){
+        unit.flipped = true;
+        unit.charged = true;
+        //unit.influence++;
+    }
+
+    dechargeUnit( unit ){
+        unit.flipped = true;
+        unit.charged = false;
+        //unit.influence--;
+    }
+
+    unitUnflipped( unit ) {
+        unit.flipped = false;
+        //unit.influence++;
+        unit.charged = true;
+    }
+
 }
 
 

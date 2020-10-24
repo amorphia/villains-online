@@ -93360,15 +93360,31 @@ var helpers = {
 
     if (suitcaseNuke) return suitcaseNuke.owner;
     var factionsWithUnitsHere = [];
+    var factionsWithNonHiddenUnitsHere = [];
 
     _.forEach(factions, function (faction, name) {
       if (faction.data) faction = faction.data;
-      if (_.find(faction.units, function (unit) {
+      if (faction.units.some(function (unit) {
         return _this11.unitInArea(unit, area);
       })) factionsWithUnitsHere.push(name);
-    });
+      if (faction.units.some(function (unit) {
+        return _this11.unitInArea(unit, area, {
+          notHidden: true
+        });
+      })) factionsWithNonHiddenUnitsHere.push(name);
+    }); // if only one player has units here (including hidden units), and that player has a kill they have scored an exterminate
 
-    return factionsWithUnitsHere.length === 1 && this.killsInArea(factionsWithUnitsHere[0], area.name, factions) > 0 ? factionsWithUnitsHere[0] : false;
+
+    if (factionsWithUnitsHere.length === 1 && this.killsInArea(factionsWithUnitsHere[0], area.name, factions) > 0) {
+      return factionsWithUnitsHere[0];
+    } // if multiple players have units here, but only one has non-hidden units and they have a kill, that player has scored an exterminate
+
+
+    if (factionsWithNonHiddenUnitsHere.length === 1 && this.killsInArea(factionsWithNonHiddenUnitsHere[0], area.name, factions) > 0) {
+      return factionsWithNonHiddenUnitsHere[0];
+    }
+
+    return;
   },
   allKilledUnitsInAreaByFaction: function allKilledUnitsInAreaByFaction(areaName, factions) {
     if (typeof areaName !== 'string') areaName = areaName.name;

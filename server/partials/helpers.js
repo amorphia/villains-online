@@ -536,12 +536,24 @@ let helpers = {
         if( suitcaseNuke ) return suitcaseNuke.owner;
 
         let factionsWithUnitsHere = [];
+        let factionsWithNonHiddenUnitsHere = [];
         _.forEach( factions, (faction, name) => {
             if( faction.data ) faction = faction.data;
-            if( _.find( faction.units, unit => this.unitInArea( unit, area ) ) ) factionsWithUnitsHere.push( name );
+            if( faction.units.some( unit => this.unitInArea( unit, area ) ) ) factionsWithUnitsHere.push( name );
+            if( faction.units.some( unit => this.unitInArea( unit, area, { notHidden: true } ) ) ) factionsWithNonHiddenUnitsHere.push( name );
         });
 
-        return factionsWithUnitsHere.length === 1 && this.killsInArea( factionsWithUnitsHere[0], area.name, factions ) > 0 ? factionsWithUnitsHere[0] : false;
+        // if only one player has units here (including hidden units), and that player has a kill they have scored an exterminate
+        if( factionsWithUnitsHere.length === 1 && this.killsInArea( factionsWithUnitsHere[0], area.name, factions ) > 0 ){
+            return factionsWithUnitsHere[0];
+        }
+
+        // if multiple players have units here, but only one has non-hidden units and they have a kill, that player has scored an exterminate
+        if( factionsWithNonHiddenUnitsHere.length === 1 && this.killsInArea( factionsWithNonHiddenUnitsHere[0], area.name, factions ) > 0 ){
+            return factionsWithNonHiddenUnitsHere[0];
+        }
+
+        return;
     },
 
 
