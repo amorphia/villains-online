@@ -23,15 +23,17 @@ class Parasites extends Faction {
                 influence: 1,
                 type: 'pod',
                 cost: 0,
-                resource : 1
+                //resource : 1
             }
         };
 
         // units
         this.units['goon'].count = 6;
         this.units['talent'].count = 4;
-        this.units['mole'].count = 6;
-        this.units['patsy'].count = 5;
+        this.units['mole'].count = 7;
+        // this.units['mole'].count = 6;
+        this.units['patsy'].count = 8;
+        // this.units['patsy'].count = 5;
 
 
         this.units['champion'] = {
