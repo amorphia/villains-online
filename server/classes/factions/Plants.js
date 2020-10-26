@@ -82,7 +82,7 @@ class Plants extends Faction {
         area.data.adjacent.forEach( areaName => {
             Object.values( this.game().factions ).forEach( faction => {
                 if( faction.name === this.name ) return;
-                if( faction.data.units.find( unit => _.unitInArea( unit, areaName, { types : ['patsy'] } ) ) ) factions[ faction.name ] = true;
+                if( faction.data.units.find( unit => _.unitInArea( unit, areaName, { type : 'patsy' } ) ) ) factions[ faction.name ] = true;
             });
         });
 

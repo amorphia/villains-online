@@ -319,7 +319,10 @@
             },
 
             cost(){
-                return this.unitCost + this.policePayoffs + this.vinesCost;
+                let baseCost = this.unitCost + this.policePayoffs + this.vinesCost;
+                if( baseCost && this.data.reduceCost ) baseCost -= this.data.reduceCost;
+                if( baseCost < 0 ) baseCost = 0;
+                return baseCost;
             },
 
             data(){

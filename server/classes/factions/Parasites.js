@@ -12,8 +12,7 @@ class Parasites extends Faction {
         this.data.title = "The Tau Ceti Parasites";
         this.data.focus = 'most-units-areas-focus';
         this.data.focusDescription = "Have the most units in many areas";
-        this.data.playersToInfect = 1;
-        this.sacrificeAction = null;
+        this.data.podDeployCostReduction = 0;
 
 
         // tokens
@@ -23,17 +22,15 @@ class Parasites extends Faction {
                 influence: 1,
                 type: 'pod',
                 cost: 0,
-                //resource : 1
+                resource : 1
             }
         };
 
         // units
         this.units['goon'].count = 6;
+        this.units['mole'].count = 6;
         this.units['talent'].count = 4;
-        this.units['mole'].count = 7;
-        // this.units['mole'].count = 6;
-        this.units['patsy'].count = 8;
-        // this.units['patsy'].count = 5;
+        this.units['patsy'].count = 5;
 
 
         this.units['champion'] = {
@@ -59,7 +56,7 @@ class Parasites extends Faction {
 
             mods.push({
                 type: 'hostInfect',
-                text: `If the First Host survives this combat the Parasites infect this area`
+                text: `If the First Host survives this combat the Parasites clone in this area`
             });
         }
 
@@ -67,66 +64,55 @@ class Parasites extends Faction {
     }
 
     processUpgrade( n ) {
-        this.data.playersToInfect = n + 1;
+        this.data.podDeployCostReduction = n;
     }
 
 
-    async infect( area ){
-        let player, data, targetFaction;
+    async infect( area ) {
+        let player, data, unit, targetFaction;
 
         let factionsToExclude = [];
+        let types = this.unitTypesInReserves();
 
-        for( let i = 0; i < this.data.playersToInfect; i++ ) {
+        targetFaction = await this.selectEnemyPlayerWithUnitsInArea( area, 'Choose player to clone', {types: types} );
 
-            try {
-                targetFaction = await this.selectEnemyPlayerWithUnitsInArea( area, 'Choose player to infect', { basic: true, exclude : factionsToExclude });
-            } catch (error) {
-                console.error(error);
-            }
-
-            if ( !targetFaction ) {
-                this.game().message({
-                    faction: this,
-                    message: "No victims for The Parasites to Infect",
-                    class: 'warning'
-                });
-                return;
-            }
-
-            factionsToExclude.push( targetFaction.name );
-
-            let message = `<span class="faction-${targetFaction.name}">the ${targetFaction.name}</span> must choose a unit to become infected`;
-            this.game().message({ faction: targetFaction, message: message });
-
-            let enemyUnits = _.factionUnitsInArea(targetFaction, area, {basic: true});
-            let unit;
-
-            // player chooses unit to be replaced
-            if ( enemyUnits.length !== 1 ){
-                [player, data] = await this.game().promise({
-                    players: targetFaction.playerId,
-                    name: 'choose-units',
-                    data: {
-                        count: 1,
-                        basicOnly: true,
-                        playerOnly: true,
-                        showReserves: this.name,
-                        message: 'Choose a unit to become infected',
-                        areas: [area.name]
-                    }
-                }).catch(error => console.error(error));
-                unit = this.game().objectMap[data.units[0]];
-            } else {
-                unit = enemyUnits[0];
-            }
-
-            let result = await this.replaceUnit(unit, {message: `A ${unit.type} becomes infected`});
-            if (result === false) {
-                this.game().message({faction: this, message: "The infected unit dies"});
-                await this.game().killUnit(unit, this);
-            }
+        if (!targetFaction) {
+            this.game().message({
+                faction: this,
+                message: "No victims for The Parasites to clone",
+                class: 'warning'
+            });
+            return;
         }
+
+        let message = `must choose a unit to become a duplicant`;
+        this.game().message({faction: targetFaction, message: message});
+
+        // player chooses unit to be replaced
+        [player, data] = await this.game().promise({
+            players: targetFaction.playerId,
+            name: 'choose-units',
+            data: {
+                count: 1,
+                playerOnly: true,
+                unitTypes: types,
+                message: 'Choose a unit to become cloned',
+                areas: [area.name]
+            }
+        }).catch(error => console.error(error));
+        unit = this.game().objectMap[data.units[0]];
+
+        let clone = this.data.units.find( item => item.type === unit.type && _.unitInReserves( item ) );
+        clone.location = area.name;
+        clone.ready = false;
+
+        await this.game().timedPrompt('units-shifted', {
+            message : `A duplicant ${clone.name} was cloned in the ${area.name}`,
+            units: [clone]
+        });
     }
+
+
 
 
     async onAfterSkill( area, units ) {
@@ -173,7 +159,15 @@ class Parasites extends Faction {
         if( data.decline ) return this.game().message({ faction : this, message: "decline to duplicate this action" });
 
         let action = _.camelCase( fakeToken.name ) + 'Token';
-        await this[action]({ player : player, token : fakeToken, area : area, pod : true });
+        let options = {
+            player : player,
+            token : fakeToken,
+            area : area,
+            pod : true,
+            reduceCost : this.data.podDeployCostReduction
+        };
+
+        await this[action]( options );
     }
 
 

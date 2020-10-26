@@ -13,7 +13,7 @@ let obj = {
         exclude.push( this.name );
 
         // find valid players
-        let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : exclude, notHidden : args.notHidden, basic : args.basic });
+        let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, { exclude : exclude, notHidden : args.notHidden, basic : args.basic, types : args.types });
 
         // no enemies with units in the from location
         if( targetFactions.length === 0 ){

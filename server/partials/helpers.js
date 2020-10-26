@@ -285,7 +285,7 @@ let helpers = {
                 console.log( 'factionsWithUnitsInArea exclude', exclude );
             }
 
-            if( this.hasUnitsInArea( faction, area, { basic : args.basic, notHidden : args.notHidden } ) && ! exclude ){
+            if( this.hasUnitsInArea( faction, area, { basic : args.basic, notHidden : args.notHidden, types : args.types } ) && ! exclude ){
                 factionsWithUnits.push( name );
             }
         });
@@ -307,6 +307,7 @@ let helpers = {
                 && ( !options.basic || unit.basic )
                 && ( !options.flipped || unit.flipped )
                 && ( !options.type || options.type === unit.type )
+                && ( !options.types || options.types.includes( unit.type ) )
                 && ( !options.notHidden || !unit.hidden );
     },
 

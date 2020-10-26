@@ -36,7 +36,8 @@ let obj = {
             toArea : args.area.name,
             fromAreas : fromAreas,
             fromToken : args.fromToken,
-            moveLimit : args.moveLimit
+            moveLimit : args.moveLimit,
+            reduceCost : args.reduceCost
         };
 
         let result = await this.game().promise({

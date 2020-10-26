@@ -100,7 +100,10 @@
             },
 
             cost(){
-                return this.data.free ? 0 : this.selected.cost;
+                let baseCost = this.data.free ? 0 : this.selected.cost;
+                if( baseCost && this.data.reduceCost ) baseCost -= this.data.reduceCost;
+                if( baseCost < 0 ) baseCost = 0;
+                return baseCost;
             },
 
             data(){

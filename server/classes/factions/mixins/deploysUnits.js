@@ -56,7 +56,8 @@ let obj = {
             unitTypes : args.unitTypes,
             free : args.free,
             fromToken : args.fromToken,
-            readyUnits : args.readyUnits
+            readyUnits : args.readyUnits,
+            reduceCost : args.reduceCost
         };
 
         let result = await this.game().promise({

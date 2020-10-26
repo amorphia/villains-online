@@ -6662,7 +6662,10 @@ __webpack_require__.r(__webpack_exports__);
       return _.money(this.shared.faction, true);
     },
     cost: function cost() {
-      return this.data.free ? 0 : this.selected.cost;
+      var baseCost = this.data.free ? 0 : this.selected.cost;
+      if (baseCost && this.data.reduceCost) baseCost -= this.data.reduceCost;
+      if (baseCost < 0) baseCost = 0;
+      return baseCost;
     },
     data: function data() {
       return this.shared.player.prompt.data;
@@ -8289,7 +8292,10 @@ __webpack_require__.r(__webpack_exports__);
       return cost;
     },
     cost: function cost() {
-      return this.unitCost + this.policePayoffs + this.vinesCost;
+      var baseCost = this.unitCost + this.policePayoffs + this.vinesCost;
+      if (baseCost && this.data.reduceCost) baseCost -= this.data.reduceCost;
+      if (baseCost < 0) baseCost = 0;
+      return baseCost;
     },
     data: function data() {
       return this.shared.player.prompt.data;
@@ -9097,7 +9103,10 @@ __webpack_require__.r(__webpack_exports__);
       return _.vinesCost(this.shared.faction, this.selected, this.shared.data.factions);
     },
     cost: function cost() {
-      return this.policePayoffs + this.vinesCost;
+      var baseCost = this.policePayoffs + this.vinesCost;
+      if (baseCost && this.data.reduceCost) baseCost -= this.data.reduceCost;
+      if (baseCost < 0) baseCost = 0;
+      return baseCost;
     },
     data: function data() {
       return this.shared.player.prompt.data;
@@ -93133,7 +93142,8 @@ var helpers = {
 
       if (_this5.hasUnitsInArea(faction, area, {
         basic: args.basic,
-        notHidden: args.notHidden
+        notHidden: args.notHidden,
+        types: args.types
       }) && !exclude) {
         factionsWithUnits.push(name);
       }
@@ -93148,7 +93158,7 @@ var helpers = {
   unitInArea: function unitInArea(unit, area) {
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (typeof area !== 'string') area = area.name;
-    return unit.location === area && !unit.killed && (!options.basic || unit.basic) && (!options.flipped || unit.flipped) && (!options.type || options.type === unit.type) && (!options.notHidden || !unit.hidden);
+    return unit.location === area && !unit.killed && (!options.basic || unit.basic) && (!options.flipped || unit.flipped) && (!options.type || options.type === unit.type) && (!options.types || options.types.includes(unit.type)) && (!options.notHidden || !unit.hidden);
   },
   areasMostUnits: function areasMostUnits(faction, factions) {
     var _this6 = this;

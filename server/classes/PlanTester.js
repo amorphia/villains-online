@@ -362,11 +362,12 @@ class PlanTester {
     }
 
     unitsAtEnemyTargets( faction, unitCount, unitType ){
-        let factionUnitsAtEnemyTargets = 0;
+        let options = {}, factionUnitsAtEnemyTargets = 0;
+        if( unitType ) options.type = unitType;
 
         for( let item of Object.values( faction.game().factions ) ) {
             if (item.name === faction.name) continue;
-            factionUnitsAtEnemyTargets += faction.unitsInArea( item.targetArea(), unitType ).length;
+            factionUnitsAtEnemyTargets += faction.unitsInArea( item.targetArea(), options ).length;
         }
 
         let result = factionUnitsAtEnemyTargets >= unitCount;
