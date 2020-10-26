@@ -72,6 +72,10 @@ class Area {
         return !! this.data.cards.find( card => card.class === cardClass );
     }
 
+    hasToken( tokenType, option = {} ){
+        return !! this.data.tokens.find( token => token.type === tokenType && token.revealed );
+    }
+
     getDeployableAdjacentAreas(){
         return this.data.adjacent.map( areaName => {
             let area = this.game().areas[areaName];

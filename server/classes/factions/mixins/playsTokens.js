@@ -27,9 +27,15 @@ let obj = {
     },
 
 
-    tokenCost( token, area ){
+    tokenCost( token, area = null ){
+        if( !area ) area = this.game().areas[ token.location ];
+
         let cost = token.cost;
-        if( _.find( area.data.tokens, token => token.activateTax && token.revealed && token.faction !== this.name ) ) cost++; // credit freeze
+        // credit freeze
+        if( area.hasToken( 'credit-freeze' ) && this.name !== 'bankers' ){
+            cost++;
+            console.log( 'credit freeze applied' );
+        }
         return cost;
     },
 
@@ -42,7 +48,8 @@ let obj = {
 
     activateToken( player, token ){
         let area = this.game().areas[token.location];
-        if( token.cost > 0 ) this.payCost( token.cost, true );
+        let cost = this.tokenCost( token );
+        if( cost > 0 ) this.payCost( cost, true );
 
         let message = `Activate their <span class="highlight">${token.name}</span> token`;
         this.game().message({ message: message, faction : this });

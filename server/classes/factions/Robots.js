@@ -121,9 +121,11 @@ class Robots extends Faction {
             name: 'choose-wild',
             data : { area : args.area.name }
         }).catch( error => console.error( error ) );
+
         this.game().message({ message : `have chosen to treat their <span class="faction-robots">wild</span> token as a ${data.type} token`, faction : this });
         let tokenMethod = 'canActivate' + _.classCase( data.type );
         let canActivate = this[tokenMethod]( args.token, args.area );
+        args.fromToken = true;
 
         switch( data.type ){
             case 'battle':
