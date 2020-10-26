@@ -2,7 +2,7 @@
     <player-prompt classes="">
         <div class="place-token px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
-                <div class="title">{{ message }}</div>
+                <div class="title" v-html="shared.filterText( message )"></div>
                 <area-flipper v-if="areas.length" :areas="areas" :index="index" @update="updateArea">
                     <div v-if="!data.hideMax" class="toggle area-map__toggle top-0 left-0">Selected: {{ selected.length }} / {{ data.count }}</div>
 
@@ -64,9 +64,24 @@
 
                 if( this.data.vines ) cost += this.selected.length * this.data.vines;
 
+                if( this.data.materialize ) cost += this.areaCost;
+
                 if( this.data.payCost ) cost += this.selected.reduce( ( cost, unit ) => cost += unit.cost, 0 );
 
                 return cost;
+            },
+
+            areaCost(){
+                if( !this.data.materialize ) return 0;
+
+                let areas = {};
+                this.selected.forEach( unit => {
+                   areas[ unit.location ] = true;
+                });
+
+                areas = Object.keys( areas ).length;
+
+                return areas > 2 ? 1 : 0;
             },
 
             canSubmit(){
@@ -197,6 +212,7 @@
                 if( action ){
                     data.units = _.map( this.selected, 'id' );
                     data.cost = this.cost;
+                    data.areaCost = this.areaCost
                 } else {
                     data.decline = true;
                 }

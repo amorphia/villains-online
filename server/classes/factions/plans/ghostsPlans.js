@@ -50,7 +50,9 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 3] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
+                    { test : 'unitInEnemy', args : ['goon', 1] },
+                    { test : 'unitInEnemy', args : ['talent', 1] },
                 ],
                 value : 3
             },
@@ -69,7 +71,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['talent', 2] },
+                    { test : 'unitInEnemy', args : ['talent', 1] },
                 ],
                 value : 1
             },
@@ -108,16 +110,16 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 2] },
-                ],
-                value : 2
-            },
-            {
-                requirements : [
                     { test : 'useSkills', args : [2] },
                 ],
                 value : 1
             },
+            {
+                requirements : [
+                    { test : 'unitInEnemy', args : ['mole', 2] },
+                ],
+                value : 2
+            }
         ]
     },
     {
@@ -152,7 +154,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['talent', 2] },
+                    { test : 'unitInEnemy', args : ['talent', 1] },
                 ],
                 value : 1
             },

@@ -457,19 +457,19 @@ let helpers = {
 
         if( area.owner === faction.name ) influence++;
         influence += this.unitInfluence( faction, area );
-        influence += this.tokenInfluence( faction, area );
-        influence += this.cardInfluence( faction, area );
+        influence += this.tokenInfluence( faction, factions, area );
+        influence += this.cardInfluence( faction, factions, area );
         influence += this.churchInfluence( faction, area, factions );
         influence += this.plantInfluence( faction, area );
         return influence;
     },
 
 
-    cardInfluence( faction, area ){
+    cardInfluence( faction, factions, area ){
         let influence = 0;
         let cards = this.getCardCounts( faction, area );
         let tokens = this.getTokenCounts( faction, area );
-        let areaScared = this.areaIsScared( faction, area );
+        let areaScared = this.areaIsScared( faction, factions, area );
 
         if( cards['rousing-speech'] ) influence += (2 * cards['rousing-speech']);
         if( cards['blown-cover'] ) influence += cards['blown-cover'];
@@ -686,12 +686,13 @@ let helpers = {
     },
 
 
-    areaIsScared( faction, area ){
-        return area.tokens.some( token => token.type === 'scare' && token.revealed ) && faction.name !== 'ghosts';
+    areaIsScared( faction, factions, area ){
+        if( faction.name === 'ghosts' || !factions['ghosts'] ) return false;
+        return factions['ghosts'].units.some( unit => unit.type === 'champion' && this.unitInArea( unit, area.name ) );
     },
 
-    tokenInfluence( faction, area ){
-        if( this.areaIsScared( faction, area ) ) return 0;
+    tokenInfluence( faction, factions, area ){
+        if( this.areaIsScared( faction, factions, area ) ) return 0;
 
         let influence = 0;
         area.tokens.forEach( token => {

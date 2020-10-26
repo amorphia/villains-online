@@ -14,30 +14,31 @@ class Ghosts extends Faction {
         this.data.focusDescription = "Control any player's Targets";
         this.data.ghosts = [];
         this.data.upgradeDeploy = 0;
-        //this.data.lastMaterializeGameAction = 0;
+        this.data.lastMaterializeGameAction = 0;
         //this.data.randomTarget = true;
         this.data.ghostDeploy = true;
         this.data.hiddenReserves = true;
 
         // tokens
         this.tokens['scare'] = {
-            count: 2,
+            count: 1,
             data: {
                 influence: 1,
                 type: 'scare',
                 cost: 0,
                 resource : 1,
+                areaStat : true,
+                description : 'enemy tokens produce no influence here'
             }
         };
 
         // units
-        this.units['goon'].count = 6;
+        this.units['goon'].count = 7;
         this.units['goon'].data.ghost = false;
-        this.units['mole'].count = 6;
+        this.units['mole'].count = 7;
         this.units['mole'].data.ghost = false;
-        this.units['talent'].count = 4;
+        this.units['talent'].count = 5;
         this.units['talent'].data.ghost = false;
-        this.units['patsy'].count = 5;
         this.units['patsy'].data.ghost = false;
 
         this.units['champion'] = {
@@ -47,18 +48,27 @@ class Ghosts extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 1,
-                attack: [4],
-                cost: 1,
+                attack: [5],
+                cost: 0,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                ghost : false,
-                areaStat : true,
-                description : 'enemy tokens produce no influence here'
+                ghost : false
             }
         };
     }
 
+    startOfTurnPrompt() {
+        let target, card;
+
+        while( !target ){
+            card = _.sample( this.data.cards.hand );
+            target = card.target;
+        }
+
+        card.randomTarget = true;
+        return 'choose-target';
+    }
 
     processUpgrade( n ){
         this.data.deployLimit += ( n - this.data.upgradeDeploy );
@@ -99,42 +109,34 @@ class Ghosts extends Faction {
     }
 
 
-    ghostAreas(){
-        let areas = {};
+    async materializeAction( area ){
+        let player, data;
 
-        this.data.ghosts.forEach( ghost => {
-            areas[ghost.location] = true;
-        });
-
-        return Object.keys( areas );
-    }
-
-    async scareToken( area ){
-        let player, data, ghostAreas = this.ghostAreas();
+        this.data.lastMaterializeGameAction = this.game().data.gameAction + 1;
 
         [player, data] = await this.game().promise({
             players: this.playerId,
             name: 'choose-units',
             data: {
-                    areas : ghostAreas,
+                    areas : [area.name],
                     playerOnly : true,
                     ghostOnly : true,
                     canDecline : true,
                     payCost: true,
-                    materialize : true,
                     count: 21,
                     optionalMax : true,
                     hideMax : true,
-                    message: `Reveal ghosts (if you reveal ghosts in 3 or more areas pay xC1x)`
+                    message: `Reveal ghosts in The ${area.name}`
                 }
             }).catch( error => console.error( error ) );
 
         if( data.decline ){
-            return this.game().advancePlayer();
+            this.data.lastMaterializeGameAction--;
+            return;
         }
 
         let units = data.units.map( unitId => this.game().objectMap[ unitId ] );
-        let cost = data.areaCost;
+        let cost = 0;
 
         units.forEach( unit => {
             cost += unit.cost;
@@ -143,18 +145,60 @@ class Ghosts extends Faction {
 
         if( cost > 0 ) this.payCost( cost, true );
 
-        this.game().message({ faction : this, message: `Ghosts materialize` });
+        this.game().message({ faction : this, message: `Reveals ghosts in the ${area.name}` });
 
         await this.game().timedPrompt('units-shifted', {
-            message : `${units.length === 1 ? 'A Ghost materializes' : 'Ghosts materialize'}`,
+            message : `${units.length === 1 ? 'A Ghost' : 'Ghosts'} revealed in The ${area.name}`,
             units: units
         });
 
-        this.game().advancePlayer();
+        let king = units.find( unit => unit.type === 'champion' );
+        if( king ) await this.kingMaterialized( king, area );
+    }
+
+
+    async kingMaterialized( king, area ){
+        let enemyPatsiesInArea = [];
+
+        Object.values( this.game().data.factions ).forEach( faction => {
+            if( faction.name === this.name ) return;
+            let patsiesBounced = 0;
+
+            faction.units.forEach( unit => {
+                if( unit.type === 'patsy' && _.unitInArea( unit, area.name ) && patsiesBounced < 4 ){
+                    unit.location = null;
+                    enemyPatsiesInArea.push( unit );
+                    patsiesBounced++;
+                }
+            });
+        });
+
+        if( !enemyPatsiesInArea.length ) return this.game().message({ message: `Mad King Elliot couldn't find anyone to scare in The ${area.name}`, class : 'warning' });
+
+        this.game().clearAllPlayerPrompts();
+        await this.game().updateAll();
+
+        await this.game().timedPrompt('units-shifted', {
+            message : `Mad King Elliot scares patsies out of The ${area.name}`,
+            units: enemyPatsiesInArea,
+            area : area.name,
+        });
     }
 
     canActivateScare() {
         return true;
+    }
+
+    scareToken( args ) {
+        this.game().advancePlayer();
+    }
+
+    factionCleanUp(){
+        let faceUpKing = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
+        if( !faceUpKing ) return;
+
+        faceUpKing.location = null;
+        this.game().message({ message: 'Mad King Elliot dematerializes into the ether', faction : this });
     }
 
 }

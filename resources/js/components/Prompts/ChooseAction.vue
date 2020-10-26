@@ -435,6 +435,8 @@
             },
 
             useableMaterialize(){
+                return [];
+                /*
                 if( this.shared.faction.name !== 'ghosts'
                     || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction
                 ) return [];
@@ -447,6 +449,7 @@
                 });
 
                 return Object.keys( areas );
+                 */
             },
 
             useableMagick(){

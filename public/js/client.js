@@ -6028,12 +6028,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return this.loopToken && reserves ? [this.loopToken.location] : [];
     },
     useableMaterialize: function useableMaterialize() {
-      if (this.shared.faction.name !== 'ghosts' || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction) return [];
-      var areas = {};
-      this.shared.faction.ghosts.forEach(function (ghost) {
-        areas[ghost.location] = true;
+      return [];
+      /*
+      if( this.shared.faction.name !== 'ghosts'
+          || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction
+      ) return [];
+        let areas = {};
+       this.shared.faction.ghosts.forEach( ghost => {
+         areas[ghost.location] = true;
       });
-      return Object.keys(areas);
+       return Object.keys( areas );
+       */
     },
     useableMagick: function useableMagick() {
       var _this8 = this;
@@ -7563,10 +7568,20 @@ __webpack_require__.r(__webpack_exports__);
       var cost = 0;
       if (this.data.policePayoff) cost += _.policePayoffs(this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected) * this.selected.length;
       if (this.data.vines) cost += this.selected.length * this.data.vines;
+      if (this.data.materialize) cost += this.areaCost;
       if (this.data.payCost) cost += this.selected.reduce(function (cost, unit) {
         return cost += unit.cost;
       }, 0);
       return cost;
+    },
+    areaCost: function areaCost() {
+      if (!this.data.materialize) return 0;
+      var areas = {};
+      this.selected.forEach(function (unit) {
+        areas[unit.location] = true;
+      });
+      areas = Object.keys(areas).length;
+      return areas > 2 ? 1 : 0;
     },
     canSubmit: function canSubmit() {
       if (this.cost <= _.money(this.shared.faction) && (this.needToSelect === 0 || this.data.optionalMax && this.selected.length > 0)) return true;
@@ -7675,6 +7690,7 @@ __webpack_require__.r(__webpack_exports__);
       if (action) {
         data.units = _.map(this.selected, 'id');
         data.cost = this.cost;
+        data.areaCost = this.areaCost;
       } else {
         data.decline = true;
       }
@@ -62424,7 +62440,10 @@ var render = function() {
             "width-100 d-flex justify-center flex-column align-center"
         },
         [
-          _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
+          _c("div", {
+            staticClass: "title",
+            domProps: { innerHTML: _vm._s(_vm.shared.filterText(_vm.message)) }
+          }),
           _vm._v(" "),
           _vm.areas.length
             ? _c(
@@ -93285,17 +93304,17 @@ var helpers = {
     var influence = 0;
     if (area.owner === faction.name) influence++;
     influence += this.unitInfluence(faction, area);
-    influence += this.tokenInfluence(faction, area);
-    influence += this.cardInfluence(faction, area);
+    influence += this.tokenInfluence(faction, factions, area);
+    influence += this.cardInfluence(faction, factions, area);
     influence += this.churchInfluence(faction, area, factions);
     influence += this.plantInfluence(faction, area);
     return influence;
   },
-  cardInfluence: function cardInfluence(faction, area) {
+  cardInfluence: function cardInfluence(faction, factions, area) {
     var influence = 0;
     var cards = this.getCardCounts(faction, area);
     var tokens = this.getTokenCounts(faction, area);
-    var areaScared = this.areaIsScared(faction, area);
+    var areaScared = this.areaIsScared(faction, factions, area);
     if (cards['rousing-speech']) influence += 2 * cards['rousing-speech'];
     if (cards['blown-cover']) influence += cards['blown-cover'];
     if (!areaScared && cards['march-the-streets'] && tokens['deploy']) influence += 2 * cards['march-the-streets'] * tokens['deploy'];
@@ -93507,13 +93526,16 @@ var helpers = {
     if (faction.name !== 'cultists') return 0;
     return this.killsInArea(faction.name, area.name, factions);
   },
-  areaIsScared: function areaIsScared(faction, area) {
-    return area.tokens.some(function (token) {
-      return token.type === 'scare' && token.revealed;
-    }) && faction.name !== 'ghosts';
+  areaIsScared: function areaIsScared(faction, factions, area) {
+    var _this14 = this;
+
+    if (faction.name === 'ghosts' || !factions['ghosts']) return false;
+    return factions['ghosts'].units.some(function (unit) {
+      return unit.type === 'champion' && _this14.unitInArea(unit, area.name);
+    });
   },
-  tokenInfluence: function tokenInfluence(faction, area) {
-    if (this.areaIsScared(faction, area)) return 0;
+  tokenInfluence: function tokenInfluence(faction, factions, area) {
+    if (this.areaIsScared(faction, factions, area)) return 0;
     var influence = 0;
     area.tokens.forEach(function (token) {
       if (token.faction === faction.name && token.revealed) {
@@ -93627,7 +93649,7 @@ var helpers = {
     return cost;
   },
   policePayoffs: function policePayoffs(faction, area, units) {
-    var _this14 = this;
+    var _this15 = this;
 
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
@@ -93636,8 +93658,8 @@ var helpers = {
     _.forEach(area.cards, function (card) {
       if (card["class"] === 'police-payoff' // if there is a police payoff here
       && card.owner !== faction.name // which we don't own
-      && !_this14.hasKauImmunity(faction, area) // and we don't already have kau immunity in this area
-      && !_this14.find(units, function (unit) {
+      && !_this15.hasKauImmunity(faction, area) // and we don't already have kau immunity in this area
+      && !_this15.find(units, function (unit) {
         return unit.type === 'champion' && unit.faction === 'aliens';
       })) // and we aren't deploying kau
         {

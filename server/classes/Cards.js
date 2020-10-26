@@ -565,11 +565,7 @@ class TotalWar extends Card {
 }
 
 
-class TrappedLikeRats extends Card {
-    handle( faction ){
-        faction.drawCards( 1 );
-    }
-}
+class TrappedLikeRats extends Card {}
 
 
 class Windfall extends Card {

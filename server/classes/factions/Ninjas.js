@@ -84,22 +84,36 @@ class Ninjas extends Faction {
 
 
     async onAfterReveal( token ){
+        let player, data;
+
         let lotusDancer = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
         if( token.type !== 'battle' || !lotusDancer ) return;
 
         let lotusDancerArea = this.game().areas[ lotusDancer.location ];
         let area = this.game().areas[ token.location ];
 
-        if( !lotusDancerArea.isTrapped( this ) && area.data.adjacent.includes( lotusDancer.location ) ){
-            lotusDancer.location = token.location;
-            this.game().sound( 'wiff' );
-            this.game().message({ faction : this, message: `Lotus Dancer slips into the ${token.location}` });
+        if( lotusDancerArea.isTrapped( this ) || !area.data.adjacent.includes( lotusDancer.location ) ) return;
 
-            await this.game().timedPrompt('units-shifted', {
-                message : `Lotus Dancer slips into the ${token.location}`,
-                units: lotusDancer
-            }).catch( error => console.error( error ) );
-        }
+        this.game().message({ faction: this, message: 'Lotus dancer deciding whether to enter the frey' });
+
+        // prompt player to select a unit
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'question',
+            data: { message: `Move lotus dancer from the ${lotusDancer.location} to the ${area.name}?` }
+        }).catch( error => console.error( error ) );
+
+        if( !data.answer ) return this.game().message({ faction: this, message: 'Lotus dancer declines to get involved' });
+
+        lotusDancer.location = token.location;
+        this.game().sound( 'wiff' );
+        this.game().message({ faction : this, message: `Lotus Dancer slips into the ${token.location}` });
+
+        await this.game().timedPrompt('units-shifted', {
+            message : `Lotus Dancer slips into the ${token.location}`,
+            units: lotusDancer
+        }).catch( error => console.error( error ) );
+
     }
 
     hasNonHiddenUnitsInArea( area ){

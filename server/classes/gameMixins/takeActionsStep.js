@@ -107,6 +107,7 @@ let obj = {
         this.advancePlayer( {}, false );
     },
 
+    /*
     async takeMaterializeAction( player, areaName ){
         let faction = player.faction();
         let area = this.areas[areaName];
@@ -123,6 +124,7 @@ let obj = {
 
         this.advancePlayer( {}, false  );
     },
+    */
 
     async takeAmbushAction( player, areaName ){
         let faction = player.faction();

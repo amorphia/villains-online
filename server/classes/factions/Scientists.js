@@ -69,12 +69,8 @@ class Scientists extends Faction {
     }
 
     async drTyrannosaurusHit( event ){
-        let player = {}, data = {};
-
+        this.drawCards( event.hits, true );
         this.message({ message: `<span class="faction-scientists">Dr Tyrannosaurus</span> learned a lot while killing` });
-        this.drawCards( event.hits * 2 , true );
-        [player, data] = await this.game().promise({ players: this.playerId, name: 'discard-card', data : { count : event.hits } });
-        this.discardCard( data.cards );
     }
 
 
