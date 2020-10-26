@@ -23,7 +23,6 @@ class Plants extends Faction {
                 influence: 2,
                 type: 'vines',
                 cost: 0,
-                resource: 1,
                 areaStat : true,
                 description : 'enemy players must pay 1 for each unit they deploy or move away from here'
             }
@@ -77,13 +76,13 @@ class Plants extends Faction {
     }
 
 
-    factionsWithAdjacentUnits( area ){
+    factionsWithAdjacentPatsies( area ){
         let factions = {};
 
         area.data.adjacent.forEach( areaName => {
             Object.values( this.game().factions ).forEach( faction => {
                 if( faction.name === this.name ) return;
-                if( faction.data.units.find( unit => _.unitInArea( unit, areaName, { basic : true } ) ) ) factions[ faction.name ] = true;
+                if( faction.data.units.find( unit => _.unitInArea( unit, areaName, { types : ['patsy'] } ) ) ) factions[ faction.name ] = true;
             });
         });
 
@@ -93,34 +92,24 @@ class Plants extends Faction {
     async soulLure( event ){
         let player, data, promises = [], units = [], area = this.game().areas[event.unit.location];
 
-        let factions = this.factionsWithAdjacentUnits( area );
+        this.game().message({ faction : this, message : `The Soul of the Green begins to sing...` });
 
-        if( !factions.length ) return this.game().message({ message : 'No adjacent units to lure', class : 'warning' });
+        let factions = this.factionsWithAdjacentPatsies( area );
 
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-players',
-            data: {
-                factions : factions,
-                canDecline : true,
-                message: `Choose players to move a unit to The ${area.name} from an adjacent area`
-            }
-        }).catch( error => console.error( error ) );
-
-        if( !data.factions.length || data.decline ) return;
+        if( !factions.length ) return this.game().message({ message : 'No adjacent patsies to lure', class : 'warning' });
 
         try {
-            for( let factionName of data.factions ) {
+            for( let factionName of factions ) {
                 let faction = this.game().factions[factionName];
 
-                let factionAreas = faction.areasWithUnits({ adjacent : area.data.adjacent, basicOnly : true });
+                let factionAreas = faction.areasWithUnits({ adjacent : area.data.adjacent, types : ['patsy'] });
 
                 promises.push( this.game().promise({ players: faction.playerId, name: 'choose-units', data : {
                     count : 1,
                     areas : factionAreas,
-                    basicOnly : true,
+                    unitTypes : ['patsy'],
                     playerOnly : true,
-                    message : `Choose a unit to move to The ${area.name}`
+                    message : `Choose a patsy to move to The ${area.name}`
                 }}).then( async ([player, data]) => {
 
                     let unit = this.game().objectMap[data.units[0]];
@@ -137,7 +126,7 @@ class Plants extends Faction {
             await Promise.all( promises );
 
             await this.game().timedPrompt('units-shifted', {
-                message: `The following units were lured to The ${area.name}`,
+                message: `Patsies were lured to The ${area.name}`,
                 units: units
             });
 
