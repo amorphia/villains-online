@@ -298,6 +298,24 @@ let helpers = {
         return unit.location === area && unit.killed;
     },
 
+    webbedUnits( spiders, options = {} ){
+        if( spiders.data ) spiders = spiders.data;
+        let webbed = spiders.webs;
+
+        if( options.area ){
+            let area = options.area;
+            if( typeof area !== 'string') area = area.name;
+            webbed = webbed.filter( unit => unit.location === area );
+        }
+
+        if( options.faction ){
+            let faction = options.faction;
+            if( typeof faction !== 'string') faction = faction.name;
+            webbed = webbed.filter( unit => unit.faction === faction );
+        }
+
+        return webbed;
+    },
 
     unitInArea( unit, area, options = {} ){
         if( typeof area !== 'string' ) area = area.name;

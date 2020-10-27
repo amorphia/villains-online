@@ -51,6 +51,11 @@
                      class="area-map__graveyard-count"
                      :class="`faction-${name}`"
                      :title="`the ${name} have ${dead} kills in the ${area.name}`">{{ dead }}</div>
+
+                <div v-if="webbed" class="icon-web mb-2"></div>
+                <div class="area-map__graveyard-count"
+                     :class="`faction-spiders`"
+                     :title="`the spiders have ${webbed} units trapped in webs in the ${area.name}`">{{ webbed }}</div>
             </div>
 
             <!-- influence -->
@@ -189,6 +194,11 @@
                 this.shared.areaLeaders[this.area.name] = leader;
 
                 return influences;
+            },
+
+            webbed(){
+                if( !this.shared.data.factions['spiders'] ) return 0;
+                return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;
             },
 
             graveyard(){
@@ -345,6 +355,10 @@
         position: absolute;
         right: 3px;
         top: 50%;
+    }
+
+    .area-map__graveyard .icon-web {
+        color: var(--faction-spiders);
     }
 
     .area-map__graveyard-count {

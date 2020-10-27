@@ -57,16 +57,16 @@ let obj = {
     },
 
     async killUnit( unit, faction ){
-        console.log( 'killUnit init' );
-        if( typeof faction !== 'string' ) faction = faction.name;
-        unit.killed = faction;
+        if( typeof faction === 'string' ) faction = this.factions[faction];
+        unit.killed = faction.name;
 
         try {
-            await this.factions[faction].triggeredEvents( 'killed', [{ unit : unit }] );
+            await faction.triggeredEvents( 'killed', [{ unit : unit }] );
         } catch( error ){
             console.error( error );
         }
 
+        faction.onKillUnit( unit );
     },
 };
 

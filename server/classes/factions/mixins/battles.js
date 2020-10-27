@@ -120,6 +120,8 @@ let obj = {
     async setAttackTargets( args ){
         let player = {}, data = {};
 
+        if( args.deadly ) return { deadly : true, name : 'deadly' };
+
         if( ! this.canChooseAttackTarget( args ) ) {
            return await this.chooseAttackVictim( args );
         }
@@ -152,6 +154,8 @@ let obj = {
     async attack( args ){
         let player, data;
 
+        if( args.unit.deadly ) args.deadly = true;
+
         // do we even have a valid attack set?
         if( !args.attacks.length ) return this.game().message({ class : 'warning', message : 'Invalid attack value' });
 
@@ -165,15 +169,14 @@ let obj = {
         let victim = await this.setAttackTargets( args );
         if( !victim ) return console.log( 'no victim' );
 
+
         // apply swarm multi dice defense mod
-        this.applyDroneDiceReduction( victim, args );
+        if( !args.deadly ) this.applyDroneDiceReduction( victim, args );
 
         // resolve attack
         let rolls = [].concat( _.roll( args.attacks.length ) );
         let toHit = this.getToHitNumber( args, victim );
         let hits = this.calculateHits( rolls, toHit );
-
-
 
         // report attack results
         let attackResult = {
@@ -216,6 +219,8 @@ let obj = {
         if( args.targetUnit ){
             result = await this.game().assignHits( args.targetUnit, this, hits );
             this.game().message({ faction: this, message: `hits <span class="faction-${args.targetUnit.faction}">${args.targetUnit.faction} ${args.targetUnit.name}</span> in the ${args.area.name}` });
+        } else if ( args.deadly ){
+            result = await this.assignDeadlyHits( hits, args );
         } else {
             result = await victim.assignHits( hits, args.area, this, args );
         }
@@ -223,6 +228,22 @@ let obj = {
         return result;
     },
 
+    async assignDeadlyHits( hits, args ){
+        let promises = [], result = [];
+
+        let factions = this.getTargetFactions( args.area );
+
+        for( let factionName of factions ) {
+            let faction = this.game().factions[factionName];
+
+            promises.push( faction.assignHits( hits, args.area, this, args ).then( async results => {
+                console.log( results );
+            }) );
+        }
+
+        await Promise.all( promises );
+        return result;
+    },
 
     hitSound( hits ){
         let sound;
@@ -300,13 +321,15 @@ let obj = {
             console.log( 'apply faction attack bonus: -', this.data.attackBonus, 'toHit:', toHit );
         }
 
+        // deadly attacks ignore defense mods
+        if( args.deadly ) return toHit;
+
         let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, { debug : true, unit : args.unit } );
         if( defenseBonus ) {
             toHit += defenseBonus;
             console.log( 'apply defense penalty:', defenseBonus, 'toHit:', toHit );
         }
 
-        console.log( 'final toHit number:', toHit );
         return toHit;
     },
 

@@ -3105,6 +3105,39 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/WebFocus.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/WebFocus.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'web-focus',
+  props: ['classes', 'faction'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    focus: function focus() {
+      return _.webbedUnits(this.faction).length;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Forms/CreateMovie.vue?vue&type=script&lang=js&":
 /*!****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Forms/CreateMovie.vue?vue&type=script&lang=js& ***!
@@ -11078,6 +11111,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     victimImage: function victimImage() {
+      if (this.attack.unit.deadly) {
+        return "/images/icons/deadly-square.png";
+      }
+
       if (this.attack.targetUnit) {
         var unit = this.attack.targetUnit;
         var src = "/images/factions/".concat(unit.faction, "/units/").concat(unit.type);
@@ -11235,6 +11272,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-area',
   data: function data() {
@@ -11262,6 +11317,29 @@ __webpack_require__.r(__webpack_exports__);
 
       return dead !== null && dead !== void 0 ? dead : false;
     },
+    webbedCount: function webbedCount() {
+      if (!this.shared.data.factions['spiders']) return false;
+      return _.webbedUnits(this.shared.data.factions['spiders'], {
+        area: this.area.name
+      }).length;
+    },
+    webbed: function webbed() {
+      var _this2 = this;
+
+      if (!this.shared.data.factions['spiders']) return false;
+      var webbed = {};
+
+      _.forEach(this.shared.data.factions, function (faction) {
+        var units = _.webbedUnits(_this2.shared.data.factions['spiders'], {
+          faction: faction.name,
+          area: _this2.area.name
+        });
+
+        if (units.length) webbed[faction.name] = units;
+      });
+
+      return Object.keys(webbed).length ? webbed : false;
+    },
     token: function token() {
       if (this.shared.token && this.shared.token.place === this.area.name) {
         return this.shared.token;
@@ -11274,11 +11352,11 @@ __webpack_require__.r(__webpack_exports__);
       return _.eachInfluenceInArea(this.area, this.shared.data.factions, true);
     },
     usedSkill: function usedSkill() {
-      var _this2 = this;
+      var _this3 = this;
 
       return [];
       return Object.values(this.shared.data.factions).map(function (faction) {
-        if (faction.usedSkills.includes(_this2.area.name)) return faction.name;
+        if (faction.usedSkills.includes(_this3.area.name)) return faction.name;
       }).filter(function (item) {
         return item;
       });
@@ -11424,6 +11502,27 @@ __webpack_require__.r(__webpack_exports__);
     },
     combat: function combat() {
       return this.shared.data.combat;
+    },
+    factions: function factions() {
+      var _this = this;
+
+      if (!this.combat.preCombatEffects) return this.combat.factions;
+      var factions = [];
+      Object.values(this.shared.data.factions).forEach(function (faction) {
+        var units = faction.units.filter(function (unit) {
+          return _.unitInArea(unit, _this.combat.areaName);
+        });
+        console.log('units', units);
+
+        if (units.length) {
+          factions.push({
+            name: faction.name,
+            units: units,
+            mods: []
+          });
+        }
+      });
+      return factions;
     }
   },
   methods: {
@@ -12327,6 +12426,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'area-map',
   props: ['area', 'classes'],
@@ -12406,6 +12510,12 @@ __webpack_require__.r(__webpack_exports__);
 
       this.shared.areaLeaders[this.area.name] = leader;
       return influences;
+    },
+    webbed: function webbed() {
+      if (!this.shared.data.factions['spiders']) return 0;
+      return _.webbedUnits(this.shared.data.factions['spiders'], {
+        area: this.area.name
+      }).length;
     },
     graveyard: function graveyard() {
       var _this4 = this;
@@ -12750,6 +12860,20 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           }
         }
       }
+      /*
+      // show webbed
+      if( this.faction.name === 'spiders' ){
+          let areaWebbed = _.webbedUnits( this.faction, { area : this.area.name } );
+           for( let i = 0; i < areaWebbed.length; i++ ){
+              if( units['web'] ){
+                  units['web'].count++;
+              } else {
+                  units['web'] = { count : 1, flipped : 0 };
+              }
+          }
+      }
+      */
+
 
       return units;
     },
@@ -14221,7 +14345,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.view-area {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n    font-size: 1.4rem;\n    color: var(--primary-light-color);\n}\n.view-area .title, .view-area .view-player__title {\n    color: #fde4ff;\n    font-size: 1em;\n}\n.view-area .view-area__controller {\n    margin-bottom: 2rem;\n}\n.view-area .view-player__empty {\n    font-size: .9em;\n}\n.view-area__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__influence {\n    align-items: center;\n    font-size: 1.5rem;\n    padding-bottom: .3rem;\n    padding-left: 1rem;\n}\n.view-area__influence .influence-marker {\n    position: relative;\n    bottom: .25rem;\n}\n.view-area__influence-count {\n    font-size: 1.5em;\n    width: 2rem;\n    text-align: center;\n    margin-right: .2rem;\n}\n.view-area__influence .determine-control__faction-icon{\n    width: 1.5em;\n    margin-right: .7rem;\n}\n.view-area__token-wrap, .view-area__unit-wrap {\n    width: 6vw;\n}\n.view-area__token, .view-area__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__upgrade-card-image{\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__token {\n    border-radius: 50%;\n}\n.card-faction-icon {\n    left: 50%;\n    transform: translate(-50%, -20%);\n    width: 20%;\n    top: 0;\n    border: 1.5px solid white;\n    box-shadow: 0 0 2px 4px rgba(0,0,0,.6);\n}\n.empty-result {\n    text-align: center;\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--primary-light-color);\n}\n.view-area__area {\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: cover;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    width: 100%;\n    padding: 3px;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between;\n}\n.view-area__header {\n    width: 100%;\n    background-size: cover;\n    background-position: center bottom;\n    background-repeat: no-repeat;\n    min-height: 9rem;\n}\n.view-area__body {\n    min-height: 20rem;\n}\n.view-area__footer {\n    width: 100%;\n    background-size: cover;\n    background-position: center top;\n    background-repeat: no-repeat;\n    min-height: 6rem;\n    padding-top: 1.5rem;\n}\n.view-area__tokens {\n    left: 50%;\n    transform: translate(-50%,-50%);\n    top: 0;\n}\n.area-capitol { background-image: url(\"/images/areas/capitol-bg.jpg\")\n}\n.area-capitol .area-zoom__header { background-image: url(\"/images/areas/capitol-top.png\")\n}\n.area-capitol .area-zoom__footer { background-image: url(\"/images/areas/capitol-bottom.png\")\n}\n.area-sewers { background-image: url(\"/images/areas/sewers-bg.jpg\")\n}\n.area-sewers .area-zoom__header { background-image: url(\"/images/areas/sewers-top.png\")\n}\n.area-sewers .area-zoom__footer { background-image: url(\"/images/areas/sewers-bottom.png\")\n}\n.area-police { background-image: url(\"/images/areas/police-bg.jpg\")\n}\n.area-police .area-zoom__header { background-image: url(\"/images/areas/police-top.png\")\n}\n.area-police .area-zoom__footer { background-image: url(\"/images/areas/police-bottom.png\")\n}\n.area-laboratory { background-image: url(\"/images/areas/laboratory-bg.jpg\")\n}\n.area-laboratory .area-zoom__header { background-image: url(\"/images/areas/laboratory-top.png\")\n}\n.area-laboratory .area-zoom__footer { background-image: url(\"/images/areas/laboratory-bottom.png\")\n}\n.area-factory { background-image: url(\"/images/areas/factory-bg.jpg\")\n}\n.area-factory .area-zoom__header { background-image: url(\"/images/areas/factory-top.png\")\n}\n.area-factory .area-zoom__footer { background-image: url(\"/images/areas/factory-bottom.png\")\n}\n.area-bank { background-image: url(\"/images/areas/bank-bg.jpg\")\n}\n.area-bank .area-zoom__header { background-image: url(\"/images/areas/bank-top.png\")\n}\n.area-bank .area-zoom__footer { background-image: url(\"/images/areas/bank-bottom.png\")\n}\n.area-university { background-image: url(\"/images/areas/university-bg.jpg\")\n}\n.area-university .area-zoom__header { background-image: url(\"/images/areas/university-top.png\")\n}\n.area-university .area-zoom__footer { background-image: url(\"/images/areas/university-bottom.png\")\n}\n.area-subway { background-image: url(\"/images/areas/subway-bg.jpg\")\n}\n.area-subway .area-zoom__header { background-image: url(\"/images/areas/subway-top.png\")\n}\n.area-subway .area-zoom__footer { background-image: url(\"/images/areas/subway-bottom.png\")\n}\n.area-church { background-image: url(\"/images/areas/church-bg.jpg\")\n}\n.area-church .area-zoom__header { background-image: url(\"/images/areas/church-top.png\")\n}\n.area-church .area-zoom__footer { background-image: url(\"/images/areas/church-bottom.png\")\n}\n", ""]);
+exports.push([module.i, "\n.view-area {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n    font-size: 1.4rem;\n    color: var(--primary-light-color);\n}\n.view-area .title, .view-area .view-player__title {\n    color: #fde4ff;\n    font-size: 1em;\n}\n.view-area .view-area__controller {\n    margin-bottom: 2rem;\n}\n.view-area .view-player__empty {\n    font-size: .9em;\n}\n.view-area__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__influence {\n    align-items: center;\n    font-size: 1.5rem;\n    padding-bottom: .3rem;\n    padding-left: 1rem;\n}\n.view-area__influence .influence-marker {\n    position: relative;\n    bottom: .25rem;\n}\n.view-area__influence-count {\n    font-size: 1.5em;\n    width: 2rem;\n    text-align: center;\n    margin-right: .2rem;\n}\n.view-area__influence .determine-control__faction-icon{\n    width: 1.5em;\n    margin-right: .7rem;\n}\n.view-area__token-wrap, .view-area__unit-wrap {\n    width: 6vw;\n}\n.view-area__token, .view-area__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__upgrade-card-image{\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-area__token {\n    border-radius: 50%;\n}\n.card-faction-icon {\n    left: 50%;\n    transform: translate(-50%, -20%);\n    width: 20%;\n    top: 0;\n    border: 1.5px solid white;\n    box-shadow: 0 0 2px 4px rgba(0,0,0,.6);\n}\n.empty-result {\n    text-align: center;\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--primary-light-color);\n}\n.view-area__area {\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: cover;\n    box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n    border: 2px solid rgba(255,255,255,.3);\n    width: 100%;\n    padding: 3px;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between;\n}\n.view-area__header {\n    width: 100%;\n    background-size: cover;\n    background-position: center bottom;\n    background-repeat: no-repeat;\n    min-height: 9rem;\n}\n.view-area__body {\n    min-height: 20rem;\n}\n.view-area__footer {\n    width: 100%;\n    background-size: cover;\n    background-position: center top;\n    background-repeat: no-repeat;\n    min-height: 6rem;\n    padding-top: 1.5rem;\n}\n.view-area__tokens {\n    left: 50%;\n    transform: translate(-50%,-50%);\n    top: 0;\n}\n.web-row {\n    margin: -2em auto 1em;\n}\n.view-area__web-count {\n    position: absolute;\n    z-index: 4;\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, -15%);\n    background-color: rgba(0,0,0,.65);\n    padding: .1em .5em;\n    border: 2px solid;\n    color: var(--highlight-color);\n}\n.area-capitol { background-image: url(\"/images/areas/capitol-bg.jpg\")\n}\n.area-capitol .area-zoom__header { background-image: url(\"/images/areas/capitol-top.png\")\n}\n.area-capitol .area-zoom__footer { background-image: url(\"/images/areas/capitol-bottom.png\")\n}\n.area-sewers { background-image: url(\"/images/areas/sewers-bg.jpg\")\n}\n.area-sewers .area-zoom__header { background-image: url(\"/images/areas/sewers-top.png\")\n}\n.area-sewers .area-zoom__footer { background-image: url(\"/images/areas/sewers-bottom.png\")\n}\n.area-police { background-image: url(\"/images/areas/police-bg.jpg\")\n}\n.area-police .area-zoom__header { background-image: url(\"/images/areas/police-top.png\")\n}\n.area-police .area-zoom__footer { background-image: url(\"/images/areas/police-bottom.png\")\n}\n.area-laboratory { background-image: url(\"/images/areas/laboratory-bg.jpg\")\n}\n.area-laboratory .area-zoom__header { background-image: url(\"/images/areas/laboratory-top.png\")\n}\n.area-laboratory .area-zoom__footer { background-image: url(\"/images/areas/laboratory-bottom.png\")\n}\n.area-factory { background-image: url(\"/images/areas/factory-bg.jpg\")\n}\n.area-factory .area-zoom__header { background-image: url(\"/images/areas/factory-top.png\")\n}\n.area-factory .area-zoom__footer { background-image: url(\"/images/areas/factory-bottom.png\")\n}\n.area-bank { background-image: url(\"/images/areas/bank-bg.jpg\")\n}\n.area-bank .area-zoom__header { background-image: url(\"/images/areas/bank-top.png\")\n}\n.area-bank .area-zoom__footer { background-image: url(\"/images/areas/bank-bottom.png\")\n}\n.area-university { background-image: url(\"/images/areas/university-bg.jpg\")\n}\n.area-university .area-zoom__header { background-image: url(\"/images/areas/university-top.png\")\n}\n.area-university .area-zoom__footer { background-image: url(\"/images/areas/university-bottom.png\")\n}\n.area-subway { background-image: url(\"/images/areas/subway-bg.jpg\")\n}\n.area-subway .area-zoom__header { background-image: url(\"/images/areas/subway-top.png\")\n}\n.area-subway .area-zoom__footer { background-image: url(\"/images/areas/subway-bottom.png\")\n}\n.area-church { background-image: url(\"/images/areas/church-bg.jpg\")\n}\n.area-church .area-zoom__header { background-image: url(\"/images/areas/church-top.png\")\n}\n.area-church .area-zoom__footer { background-image: url(\"/images/areas/church-bottom.png\")\n}\n", ""]);
 
 // exports
 
@@ -14354,7 +14478,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.influence-marker {\n      width: 1em;\n      height: 1em;\n}\n.area-map-container {\n      width: 33%;\n      height: 33%;\n      padding: .40rem;\n}\n.area-map__core-content-container {\n      padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n      top: 60%;\n}\n.stat-icon {\n      width: 1.5em;\n      height: 1.5em;\n      display: inline-flex;\n      justify-content: center;\n      align-items: center;\n      background-color: rgba(0,0,0,.8);\n      border-radius: .25em;\n      margin: 0 .1em;\n      font-size: 1.2rem;\n}\n.area-map__toggle {\n      display: flex;\n      padding: .45vw;\n      z-index: 3;\n}\n.area-map__owner-wrap {\n      position: absolute;\n      top:0;\n      left:0;\n      transform: translate(-15%,-15%);\n      display: flex;\n}\n.area-map__owner-portrait {\n      width: 2.5rem;\n      height: 2.5rem;\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__conquered-icon {\n      display: flex;\n      align-items: center;\n      background-color: rgb(72 62 0);\n      padding: .25rem;\n      box-shadow: inset 0px 0px 1px rgba(0,0,0,1), inset 0px 0px 2px rgba(0,0,0,1), 0px 0px 4px rgba(0,0,0,1);\n      border: 2px solid;\n}\n.area-map__battle-marker, .area-map__exterminated {\n      width: 2.5rem;\n      height: 2.5rem;\n      position: absolute;\n\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n      bottom:0;\n      left:0;\n      transform: translate(-15%,15%);\n}\n.area-map__graveyard {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      right: 3px;\n      top: 50%;\n}\n.area-map__graveyard-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__influence {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      left: 3px;\n      top: 50%;\n}\n.area-map__influence-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__exterminated {\n      bottom: 0;\n      right:0;\n      transform: translate(15%,15%);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.8em;\n      background-color: black;\n}\n.area-map {\n      background-position: center top, center;\n      background-repeat: no-repeat, no-repeat;\n      background-size: 100% 2vw, cover;\n      box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n      border: 2px solid rgba(255,255,255,.3);\n      transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n      background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n      background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n      background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n      background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n      background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n      background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n      background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n      background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n      background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n\n\n", ""]);
+exports.push([module.i, "\n.influence-marker {\n      width: 1em;\n      height: 1em;\n}\n.area-map-container {\n      width: 33%;\n      height: 33%;\n      padding: .40rem;\n}\n.area-map__core-content-container {\n      padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n      top: 60%;\n}\n.stat-icon {\n      width: 1.5em;\n      height: 1.5em;\n      display: inline-flex;\n      justify-content: center;\n      align-items: center;\n      background-color: rgba(0,0,0,.8);\n      border-radius: .25em;\n      margin: 0 .1em;\n      font-size: 1.2rem;\n}\n.area-map__toggle {\n      display: flex;\n      padding: .45vw;\n      z-index: 3;\n}\n.area-map__owner-wrap {\n      position: absolute;\n      top:0;\n      left:0;\n      transform: translate(-15%,-15%);\n      display: flex;\n}\n.area-map__owner-portrait {\n      width: 2.5rem;\n      height: 2.5rem;\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__conquered-icon {\n      display: flex;\n      align-items: center;\n      background-color: rgb(72 62 0);\n      padding: .25rem;\n      box-shadow: inset 0px 0px 1px rgba(0,0,0,1), inset 0px 0px 2px rgba(0,0,0,1), 0px 0px 4px rgba(0,0,0,1);\n      border: 2px solid;\n}\n.area-map__battle-marker, .area-map__exterminated {\n      width: 2.5rem;\n      height: 2.5rem;\n      position: absolute;\n\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n      bottom:0;\n      left:0;\n      transform: translate(-15%,15%);\n}\n.area-map__graveyard {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      right: 3px;\n      top: 50%;\n}\n.area-map__graveyard .icon-web {\n      color: var(--faction-spiders);\n}\n.area-map__graveyard-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__influence {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      left: 3px;\n      top: 50%;\n}\n.area-map__influence-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__exterminated {\n      bottom: 0;\n      right:0;\n      transform: translate(15%,15%);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.8em;\n      background-color: black;\n}\n.area-map {\n      background-position: center top, center;\n      background-repeat: no-repeat, no-repeat;\n      background-size: 100% 2vw, cover;\n      box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n      border: 2px solid rgba(255,255,255,.3);\n      transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n      background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n      background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n      background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n      background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n      background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n      background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n      background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n      background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n      background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n\n\n", ""]);
 
 // exports
 
@@ -57674,6 +57798,40 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/WebFocus.vue?vue&type=template&id=8ff791f4&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/WebFocus.vue?vue&type=template&id=8ff791f4& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
+    },
+    [
+      _vm._v("\n    units in webs :"),
+      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Forms/CreateMovie.vue?vue&type=template&id=0c84de8e&":
 /*!********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Forms/CreateMovie.vue?vue&type=template&id=0c84de8e& ***!
@@ -66111,13 +66269,48 @@ var render = function() {
                           staticClass:
                             "view-area__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap"
                         },
-                        _vm._l(_vm.shared.data.factions, function(faction) {
-                          return _c("area-units", {
-                            key: faction.name,
-                            attrs: { faction: faction, area: _vm.area.name }
+                        [
+                          _vm.webbed
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass: "d-inline-block unit-row web-row"
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "units-hud__unit d-inline-block pos-relative"
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        { staticClass: "view-area__web-count" },
+                                        [_vm._v(_vm._s(_vm.webbedCount))]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("img", {
+                                        staticClass: "unit-hud__unit-image",
+                                        attrs: {
+                                          src:
+                                            "/images/factions/spiders/units/web.png"
+                                        }
+                                      })
+                                    ]
+                                  )
+                                ]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm._l(_vm.shared.data.factions, function(faction) {
+                            return _c("area-units", {
+                              key: faction.name,
+                              attrs: { faction: faction, area: _vm.area.name }
+                            })
                           })
-                        }),
-                        1
+                        ],
+                        2
                       ),
                       _vm._v(" "),
                       _c(
@@ -66141,6 +66334,44 @@ var render = function() {
                       )
                     ]
                   ),
+                  _vm._v(" "),
+                  _vm.webbed
+                    ? _c(
+                        "div",
+                        { staticClass: "view-area__dead" },
+                        [
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "title d-flex align-center view-area__controller"
+                            },
+                            [
+                              _c("img", {
+                                staticClass: "determine-control__faction-icon",
+                                attrs: {
+                                  src: "/images/factions/spiders/units/web.png"
+                                }
+                              }),
+                              _vm._v("Units Trapped in Webs")
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _vm._l(_vm.webbed, function(units, faction) {
+                            return _c(
+                              "div",
+                              {
+                                key: faction,
+                                staticClass: "view-area__dead-block"
+                              },
+                              [_c("unit-row", { attrs: { units: units } })],
+                              1
+                            )
+                          })
+                        ],
+                        2
+                      )
+                    : _vm._e(),
                   _vm._v(" "),
                   _vm.dead
                     ? _c(
@@ -66316,7 +66547,7 @@ var render = function() {
                       _c(
                         "div",
                         { staticClass: "faction-list" },
-                        _vm._l(_vm.combat.factions, function(faction) {
+                        _vm._l(_vm.factions, function(faction) {
                           return _c("combat-faction", {
                             key: faction.name,
                             attrs: { faction: faction, combat: _vm.combat }
@@ -66380,7 +66611,7 @@ var render = function() {
                               staticClass:
                                 "view-combat__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap"
                             },
-                            _vm._l(_vm.combat.factions, function(faction) {
+                            _vm._l(_vm.factions, function(faction) {
                               return _c(
                                 "div",
                                 {
@@ -67724,7 +67955,27 @@ var render = function() {
                       },
                       [_vm._v(_vm._s(dead))]
                     )
-                  })
+                  }),
+                  _vm._v(" "),
+                  _vm.webbed
+                    ? _c("div", { staticClass: "icon-web mb-2" })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "area-map__graveyard-count",
+                      class: "faction-spiders",
+                      attrs: {
+                        title:
+                          "the spiders have " +
+                          _vm.webbed +
+                          " units trapped in webs in the " +
+                          _vm.area.name
+                      }
+                    },
+                    [_vm._v(_vm._s(_vm.webbed))]
+                  )
                 ],
                 2
               )
@@ -80892,6 +81143,7 @@ var map = {
 	"./Focus/TokenFocus.vue": "./resources/js/components/Focus/TokenFocus.vue",
 	"./Focus/UnitAreasFocus.vue": "./resources/js/components/Focus/UnitAreasFocus.vue",
 	"./Focus/UnitsFocus.vue": "./resources/js/components/Focus/UnitsFocus.vue",
+	"./Focus/WebFocus.vue": "./resources/js/components/Focus/WebFocus.vue",
 	"./Forms/CreateMovie.vue": "./resources/js/components/Forms/CreateMovie.vue",
 	"./Forms/InputMixin.vue": "./resources/js/components/Forms/InputMixin.vue",
 	"./Forms/VueCheckbox.vue": "./resources/js/components/Forms/VueCheckbox.vue",
@@ -83283,6 +83535,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UnitsFocus_vue_vue_type_template_id_1e3e1ecb___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UnitsFocus_vue_vue_type_template_id_1e3e1ecb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/WebFocus.vue":
+/*!****************************************************!*\
+  !*** ./resources/js/components/Focus/WebFocus.vue ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _WebFocus_vue_vue_type_template_id_8ff791f4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./WebFocus.vue?vue&type=template&id=8ff791f4& */ "./resources/js/components/Focus/WebFocus.vue?vue&type=template&id=8ff791f4&");
+/* harmony import */ var _WebFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WebFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/WebFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _WebFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _WebFocus_vue_vue_type_template_id_8ff791f4___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _WebFocus_vue_vue_type_template_id_8ff791f4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/WebFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/WebFocus.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/Focus/WebFocus.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_WebFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./WebFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/WebFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_WebFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/WebFocus.vue?vue&type=template&id=8ff791f4&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/Focus/WebFocus.vue?vue&type=template&id=8ff791f4& ***!
+  \***********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_WebFocus_vue_vue_type_template_id_8ff791f4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./WebFocus.vue?vue&type=template&id=8ff791f4& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/WebFocus.vue?vue&type=template&id=8ff791f4&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_WebFocus_vue_vue_type_template_id_8ff791f4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_WebFocus_vue_vue_type_template_id_8ff791f4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -93154,6 +93475,29 @@ var helpers = {
   deadInArea: function deadInArea(unit, area) {
     if (typeof area !== 'string') area = area.name;
     return unit.location === area && unit.killed;
+  },
+  webbedUnits: function webbedUnits(spiders) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    if (spiders.data) spiders = spiders.data;
+    var webbed = spiders.webs;
+
+    if (options.area) {
+      var area = options.area;
+      if (typeof area !== 'string') area = area.name;
+      webbed = webbed.filter(function (unit) {
+        return unit.location === area;
+      });
+    }
+
+    if (options.faction) {
+      var faction = options.faction;
+      if (typeof faction !== 'string') faction = faction.name;
+      webbed = webbed.filter(function (unit) {
+        return unit.faction === faction;
+      });
+    }
+
+    return webbed;
   },
   unitInArea: function unitInArea(unit, area) {
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};

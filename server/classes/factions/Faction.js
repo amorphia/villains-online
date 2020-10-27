@@ -190,12 +190,14 @@ class Faction {
     startOfTurn(){}
     onAfterReveal(){}
     onControlArea(){}
+    onBeforeBattle(){}
     onAfterBattle(){}
     onAfterActivateToken(){}
     onAfterCombatStep(){}
     onAfterSkill(){}
     onBeforeSkill(){}
     battleOrderSort(){}
+    onKillUnit(){}
 
     startOfTurnPrompt() {
         return 'choose-target';

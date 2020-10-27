@@ -67,7 +67,17 @@
 
                     <div class="view-area__header area-zoom__header p-4 pos-relative grow-0 shrink-0"></div>
 
+
                     <div class="view-area__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap">
+
+                        <div v-if="webbed" class="d-inline-block unit-row web-row">
+                            <div class="units-hud__unit d-inline-block pos-relative">
+                                <div class="view-area__web-count">{{ webbedCount }}</div>
+                                <img class="unit-hud__unit-image" src="/images/factions/spiders/units/web.png">
+                            </div>
+
+                        </div>
+
                         <area-units v-for="faction in shared.data.factions"
                                     :faction="faction"
                                     :key="faction.name"
@@ -83,6 +93,14 @@
                                     skilled="true"
                                     classes="d-inline">
                         </area-units>
+                    </div>
+                </div>
+
+                <div v-if="webbed" class="view-area__dead">
+                    <div class="title d-flex align-center view-area__controller"><img class="determine-control__faction-icon" src="/images/factions/spiders/units/web.png">Units Trapped in Webs</div>
+
+                    <div v-for="(units,faction) in webbed" :key="faction" class="view-area__dead-block">
+                    <unit-row :units="units"></unit-row>
                     </div>
                 </div>
 
@@ -129,6 +147,24 @@
                 let dead = _.allKilledUnitsInAreaByFaction( this.area.name, this.shared.data.factions );
                 return dead ?? false;
             },
+
+            webbedCount(){
+                if( ! this.shared.data.factions['spiders'] ) return false;
+                return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;
+            },
+
+            webbed(){
+                if( ! this.shared.data.factions['spiders'] ) return false;
+
+                let webbed = {};
+                _.forEach( this.shared.data.factions, faction => {
+                    let units = _.webbedUnits( this.shared.data.factions['spiders'], { faction : faction.name, area : this.area.name } );
+                    if( units.length ) webbed[faction.name] = units;
+                });
+
+                return Object.keys( webbed ).length ? webbed : false;
+            },
+
             token(){
                 if( this.shared.token && this.shared.token.place === this.area.name ){
                     return this.shared.token;
@@ -310,6 +346,21 @@
         top: 0;
     }
 
+    .web-row {
+        margin: -2em auto 1em;
+    }
+
+    .view-area__web-count {
+        position: absolute;
+        z-index: 4;
+        left: 50%;
+        top: 0;
+        transform: translate(-50%, -15%);
+        background-color: rgba(0,0,0,.65);
+        padding: .1em .5em;
+        border: 2px solid;
+        color: var(--highlight-color);
+    }
 
     .area-capitol { background-image: url("/images/areas/capitol-bg.jpg") }
     .area-capitol .area-zoom__header { background-image: url("/images/areas/capitol-top.png") }

@@ -34,6 +34,11 @@
         },
         computed : {
             victimImage(){
+
+                if( this.attack.unit.deadly ){
+                    return`/images/icons/deadly-square.png`;
+                }
+
                 if( this.attack.targetUnit ){
                     let unit = this.attack.targetUnit;
                     let src = `/images/factions/${unit.faction}/units/${unit.type}`;

@@ -4,7 +4,7 @@ class Battle {
     options;
 
     data = {
-        title : '',
+        title : 'Resolving pre-combat effects',
         factionIndex : 0,
         attackBonus : null,
         areaName : null,
@@ -12,7 +12,8 @@ class Battle {
         factions : [],
         attacks : {},
         lastAttack : null,
-        completed : false
+        completed : false,
+        preCombatEffects : true
     };
 
     constructor( area, game, options = {} ) {
@@ -50,35 +51,29 @@ class Battle {
 
     async resolveBattle(){
 
-        if( this.game().factions['ninjas'] ) this.game().factions['ninjas'].data.firstAttackThisBattle = true;
 
+        // before battle triggers
+        for( let faction of Object.values( this.game().factions ) ){
+            await faction.onBeforeBattle( this );
+        }
+        this.data.preCombatEffects = false;
+
+
+        // first strike phase
         if( this.hasFirstStrikeUnits() ){
             console.log( 'resolving first strike phase' );
-
-            try{
-                await this.resolveStrikePhase( true );
-            } catch( error ){
-                console.error( error );
-            }
-
+            await this.resolveStrikePhase( true );
         }
 
+        // regular strike phase
         if( this.area.canBattle() ){
             console.log( 'resolving regular strike phase' );
-
-            try{
-                await this.resolveStrikePhase();
-            } catch( error ){
-                console.error( error );
-            }
+            await this.resolveStrikePhase();
         }
 
-        try {
-            for( let faction of Object.values( this.game().factions ) ){
-                await faction.onAfterBattle( this );
-            }
-        } catch( error ){
-            console.error( error );
+        // after battle triggers
+        for( let faction of Object.values( this.game().factions ) ){
+            await faction.onAfterBattle( this );
         }
 
         this.data.title = 'Battle completed';

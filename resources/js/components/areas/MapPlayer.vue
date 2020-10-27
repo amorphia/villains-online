@@ -84,6 +84,20 @@
                     }
                 }
 
+                /*
+                // show webbed
+                if( this.faction.name === 'spiders' ){
+                    let areaWebbed = _.webbedUnits( this.faction, { area : this.area.name } );
+
+                    for( let i = 0; i < areaWebbed.length; i++ ){
+                        if( units['web'] ){
+                            units['web'].count++;
+                        } else {
+                            units['web'] = { count : 1, flipped : 0 };
+                        }
+                    }
+                }
+                */
 
                 return units;
             },

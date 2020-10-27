@@ -14,7 +14,7 @@
                         <div v-if="combat.attackBonus" class="highlight px-4 pt-0 pb-4">All units gain +{{ combat.attackBonus }} to their attacks</div>
 
                         <div class="faction-list">
-                            <combat-faction v-for="faction in combat.factions"
+                            <combat-faction v-for="faction in factions"
                                             :faction="faction"
                                             :key="faction.name"
                                             :combat="combat">
@@ -41,7 +41,7 @@
 
 
                             <div class="view-combat__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap">
-                                <div v-for="faction in combat.factions" class="unit-row flex-center flex-wrap">
+                                <div v-for="faction in factions" class="unit-row flex-center flex-wrap">
                                     <unit-combat v-for="unit in faction.units"
                                                :key="unit.id"
                                                :unit="unit">
@@ -82,7 +82,28 @@
          combat(){
              return this.shared.data.combat;
          },
+        factions(){
+             if( !this.combat.preCombatEffects ) return this.combat.factions;
 
+             let factions = [];
+
+             Object.values( this.shared.data.factions ).forEach( faction => {
+
+
+                 let units = faction.units.filter( unit => _.unitInArea( unit, this.combat.areaName ) );
+                 console.log( 'units', units );
+
+                 if( units.length ){
+                     factions.push({
+                         name : faction.name,
+                         units : units,
+                         mods : []
+                     });
+                 }
+             });
+
+             return factions;
+        }
      },
 
      methods : {

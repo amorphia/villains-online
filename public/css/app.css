@@ -48,6 +48,9 @@
 .icon-toughness-solid:before {
     content: "\E95C";
 }
+.icon-web:before {
+    content: "\E90C";
+}
 .icon-ghost:before {
     content: "\E909";
 }

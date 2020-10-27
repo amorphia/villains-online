@@ -82,6 +82,9 @@ class Ninjas extends Faction {
         this.data.bladesBonusDice = n;
     }
 
+    onBeforeBattle( battle ){
+        this.data.firstAttackThisBattle = true;
+    }
 
     async onAfterReveal( token ){
         let player, data;
