@@ -50,7 +50,8 @@
                     <button class="button button-empty"
                             @click="chooseRandomFaction">Random</button>
 
-                    <button :disabled="shared.data.factions[ selectedFaction ] && shared.data.factions[ selectedFaction ].owner !== null"
+                    <button :disabled="shared.data.factions[ selectedFaction ]
+                                        && (shared.data.factions[ selectedFaction ].owner !== null || shared.data.factions[ selectedFaction ].unselectable)"
                             class="button"
                             @click="chooseFaction">Choose</button>
                 </div>
@@ -121,7 +122,7 @@
                 _.forEach( this.shared.data.factions, (faction, name) => {
                    if( faction.killer && faction.owner ) picked.killer = true;
                    if( faction.status === 0 && faction.owner ) picked.experimental = true;
-                   else if ( !faction.owner ) unselectedFactions.push( { name : name, killer : faction.killer } );
+                   else if ( !faction.owner && !faction.unselectable ) unselectedFactions.push( { name : name, killer : faction.killer } );
                 });
 
                 // if no killer has been selected and we are the last player to pick, make sure we pick a killer

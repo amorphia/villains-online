@@ -1,7 +1,7 @@
 <template>
     <div :class="{
             active : selected === faction.name,
-            taken : faction.owner !== null,
+            taken : faction.owner !== null || faction.unselectable,
             killer : faction.killer,
             basic : faction.basic
             }"

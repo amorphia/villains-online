@@ -24,6 +24,8 @@
         },
         methods : {
 
+        },
+        computed : {
         }
     }
 </script>

@@ -45,7 +45,7 @@
             </div>
 
             <!-- graveyard -->
-            <div v-if="graveyard" class="area-map__graveyard">
+            <div v-if="graveyard || webbed" class="area-map__graveyard">
                 <div class="icon-graveyard mb-2"></div>
                 <div v-for="(dead, name) in graveyard"
                      class="area-map__graveyard-count"

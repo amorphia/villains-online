@@ -163,7 +163,7 @@ let obj = {
         if( args.unit && args.area.hasCard( 'cease-fire' ) ) return this.game().message({ class : 'warning', message : 'Cease fire prevents unit from attacking' });
 
         // if this is a unit attacking, set bonus dice
-        if( args.unit ) args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice, args.area );
+        if( args.unit && !args.deadly ) args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice, args.area );
 
         // set targets
         let victim = await this.setAttackTargets( args );
@@ -307,7 +307,10 @@ let obj = {
 
     getToHitNumber( args, victim ){
         let toHit = args.attacks[0];
-        console.log( 'calculate to hit number' );
+
+        // deadly attacks can't be modified
+        if( args.deadly ) return toHit;
+
         console.log( 'base attack:', toHit );
 
         if( args.attackBonus ){
@@ -321,8 +324,6 @@ let obj = {
             console.log( 'apply faction attack bonus: -', this.data.attackBonus, 'toHit:', toHit );
         }
 
-        // deadly attacks ignore defense mods
-        if( args.deadly ) return toHit;
 
         let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, { debug : true, unit : args.unit } );
         if( defenseBonus ) {

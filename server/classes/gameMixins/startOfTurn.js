@@ -24,6 +24,12 @@ let obj = {
             faction.drawPlans();
         });
 
+        // Start of turn triggers
+        console.log( 'START OF TURN TRIGGER' );
+        for( let faction of Object.values( this.factions ) ){
+            await faction.onStartOfTurn();
+        }
+
         this.setAllPlayersActive();
         this.setStartOfTurnPrompts();
         Server.saveToDB( this, { type:'turn' } );

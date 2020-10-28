@@ -127,6 +127,8 @@
 
                     if( unit.firstStrike ) status[`${unit.faction}-first-strike`] = 'has units with first strike';
 
+                    if( unit.deadly ) status[`deadly`] = 'has a deadly unit';
+
                     if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him';
                 }
 

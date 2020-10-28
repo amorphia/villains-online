@@ -187,7 +187,7 @@ class Faction {
     factionCleanUp(){}
     factionCombatMods( mods ){ return mods }
     unitUnflipped( unit ){}
-    startOfTurn(){}
+    onStartOfTurn(){}
     onAfterReveal(){}
     onControlArea(){}
     onBeforeBattle(){}
@@ -266,14 +266,15 @@ class Faction {
 
     cleanUpKilled(){
         this.data.units.forEach( unit => {
-            if( unit.killed ){
-
-                unit.killed = null;
-                unit.location = null;
-                if( unit.ready ) unit.ready = false;
-                if( unit.flipped ) this.unitUnflipped( unit );
-            }
+            if( unit.killed ) this.resetKilledUnit( unit );
         });
+    }
+
+    resetKilledUnit( unit ){
+        unit.killed = null;
+        unit.location = null;
+        if( unit.ready ) unit.ready = false;
+        if( unit.flipped ) this.unitUnflipped( unit );
     }
 
     resetEnergy(){

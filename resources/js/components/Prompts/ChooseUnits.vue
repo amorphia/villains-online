@@ -152,7 +152,14 @@
                     if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return;
 
                     let unitsCollection = faction.units;
+
+                    // add ghosts to unit collection if needed
                     if( this.data.ghostOnly )  unitsCollection = faction.ghosts;
+
+                    // add webbed units to unit collection if needed
+                    if( this.data.needsToAttack && this.shared.data.factions['spiders'] ){
+                        unitsCollection = _.concat( unitsCollection, this.webbed );
+                    }
 
                     units = _.concat( units, unitsCollection.filter( unit => {
                         if( this.data.needsToAttack ) {
@@ -179,6 +186,8 @@
             unitsPool(){
                 if( this.data.ghostOnly ) return this.shared.faction.ghosts;
 
+                if( this.data.needsToAttack || !this.shared.data.factions['spiders'] ) return _.concat( this.shared.faction.units, this.webbed );
+
                 // belongs to current player
                 if( this.data.playerOnly ) return this.shared.faction.units;
 
@@ -192,6 +201,19 @@
                     if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
                     units = _.concat( units, faction.units );
                 });
+                return units;
+            },
+
+            webbed(){
+                let units = [];
+                if( !this.data.needsToAttack || !this.shared.data.factions['spiders'] ) return units;
+
+                units = this.shared.data.factions['spiders'].webs.filter( unit =>
+                        unit.faction === this.shared.faction.name
+                        && unit.location === this.area.name
+                        && unit.needsToAttack
+                    );
+
                 return units;
             },
 

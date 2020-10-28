@@ -610,6 +610,35 @@ class PlanTester {
         return result;
     }
 
+
+    webbedTotal( faction, webbedCount ){
+        let webbedTotals = _.webbedTotals( faction, faction.game().data.factions );
+        let result = webbedTotals.total >= webbedCount;
+
+        if( this.debug ) console.log(
+            'webbedTotal',
+            'webbedCount req:', webbedCount,
+            'webbedTotals.total:', webbedTotals.total,
+            'result:', result
+        );
+
+        return result;
+    }
+
+    webbedFaction( faction, webbedCount ){
+        let webbedTotals = _.webbedTotals( faction, faction.game().data.factions );
+        let result = ! Object.values( webbedTotals.factions ).some( total => total < webbedCount );
+
+        if( this.debug ) console.log(
+            'webbedTotal',
+            'webbedCount req:', webbedCount,
+            'webbedTotals.factions:', webbedTotals.factions,
+            'result:', result
+        );
+
+        return result;
+    }
+
 }
 
 module.exports = PlanTester;

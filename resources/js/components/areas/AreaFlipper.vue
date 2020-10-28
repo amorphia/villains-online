@@ -11,7 +11,7 @@
 
         <div class="width-100 d-flex justify-center">
             <button v-if="manyAreas" class="flipper" @click="prev"><i class="icon-left"></i></button>
-            <div class="area-header p-4 pb-1 pos-relative" :class="`area-header-${areaName} ${classes}`">
+            <div class="area-header p-4 pb-1 pos-relative" :class="`area-header-${areaName} ${classes}`" @click="$emit( 'areaClicked', areaName )">
                 <slot></slot>
                 <div v-if="!noZoom && areaName !== 'reserves'" class="toggle area-map__toggle top-0 right-0" @click.stop="shared.event.emit('viewArea', area )"><i class="icon-zoom_in"></i></div>
             </div>

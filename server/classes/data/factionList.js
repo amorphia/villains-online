@@ -20,7 +20,7 @@ let obj = {
     bureau : { name: 'bureau', owner : null, status : 0 },
     plants : { name: 'plants', owner : null, status : 0 },
     ghosts : { name: 'ghosts', owner : null, status : 1 },
-    spiders : { name: 'spiders', owner : null, status : 0, killer : true },
+    spiders : { name: 'spiders', owner : null, status : 0, killer : true, unselectable : true },
 };
 
 module.exports = Object.assign({}, obj );
