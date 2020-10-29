@@ -154,7 +154,7 @@ let obj = {
     async attack( args ){
         let player, data;
 
-        if( args.unit.deadly ) args.deadly = true;
+        if( args.unit && args.unit.deadly ) args.deadly = true;
 
         // do we even have a valid attack set?
         if( !args.attacks.length ) return this.game().message({ class : 'warning', message : 'Invalid attack value' });
