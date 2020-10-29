@@ -18,6 +18,7 @@ class Ghosts extends Faction {
         //this.data.randomTarget = true;
         this.data.ghostDeploy = true;
         this.data.hiddenReserves = true;
+        this.data.additionalUnitIcon = ['ghost'];
 
         // tokens
         this.tokens['scare'] = {

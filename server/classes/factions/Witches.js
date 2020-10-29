@@ -15,6 +15,8 @@ class Witches extends Faction {
         this.data.magickCardsRevealed = 1;
         this.data.lastMagickGameAction = 0;
 
+        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
+
         // icons
         this.data.statusIcon = 'enchanted';
         this.data.statusDescription = 'has enchanted units';

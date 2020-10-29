@@ -14,7 +14,8 @@ class Plants extends Faction {
         this.data.focusDescription = "Have many enemy units in your areas";
         this.data.vines = [];
         this.data.plants = {};
-
+        this.data.flippedUnits = ['champion'];
+        this.data.additionalUnitIcon = ['plant'];
 
         // tokens
         this.tokens['vines'] = {

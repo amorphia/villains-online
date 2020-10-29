@@ -9156,6 +9156,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'move-action',
   data: function data() {
@@ -11659,6 +11666,23 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -64310,15 +64334,20 @@ var render = function() {
               _vm.data.moveLimit
                 ? _c(
                     "div",
-                    { staticClass: "toggle area-map__toggle top-0 left-0" },
-                    [
-                      _vm._v(
-                        "Move Limit: " +
-                          _vm._s(_vm.selected.length) +
-                          " / " +
-                          _vm._s(_vm.data.moveLimit)
-                      )
-                    ]
+                    {
+                      staticClass:
+                        "deploy-limit__pips d-flex justify-center flex-wrap mt-3"
+                    },
+                    _vm._l(_vm.data.moveLimit, function(n, index) {
+                      return _c("i", {
+                        staticClass: "deploy-limit__pip",
+                        class:
+                          index < _vm.selected.length
+                            ? "icon-circle active"
+                            : "icon-circle-open"
+                      })
+                    }),
+                    0
                   )
                 : _vm._e(),
               _vm._v(" "),
@@ -67683,7 +67712,8 @@ var render = function() {
                 _c(
                   "div",
                   {
-                    staticClass: "view-player__units d-flex mb-4 justify-center"
+                    staticClass:
+                      "view-player__units d-flex mb-4 justify-center align-start"
                   },
                   _vm._l(
                     _vm.shared.groupByCount(_vm.faction.units, "type"),
@@ -67692,13 +67722,13 @@ var render = function() {
                         "div",
                         {
                           staticClass:
-                            "view-player__token-wrap p-2 ratio-square pos-relative"
+                            "view-player__token-wrap p-2 pos-relative d-flex flex-column"
                         },
                         [
                           _c(
                             "div",
                             {
-                              staticClass: "width-100 pos-relative height-100"
+                              staticClass: "width-100 pos-relative ratio-square"
                             },
                             [
                               _c(
@@ -67722,7 +67752,37 @@ var render = function() {
                                 ]
                               )
                             ]
-                          )
+                          ),
+                          _vm._v(" "),
+                          _vm.faction.flippedUnits &&
+                          _vm.faction.flippedUnits.includes(type)
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "width-100 pos-relative ratio-square"
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    { staticClass: "view-player__unit" },
+                                    [
+                                      _c("img", {
+                                        staticClass: "view-player__unit-image",
+                                        attrs: {
+                                          src:
+                                            "/images/factions/" +
+                                            _vm.faction.name +
+                                            "/units/" +
+                                            type +
+                                            "-flipped.png"
+                                        }
+                                      })
+                                    ]
+                                  )
+                                ]
+                              )
+                            : _vm._e()
                         ]
                       )
                     }
@@ -67827,6 +67887,31 @@ var render = function() {
                       ]
                     )
                   ]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "view-player__title mt-5" }, [
+                  _vm._v("Plans:")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "view-player__upgrades d-flex flex-wrap" },
+                  _vm._l(8, function(index) {
+                    return _c("div", { staticClass: "width-50 p-3" }, [
+                      _c("img", {
+                        staticClass: "width-100 radius-1",
+                        attrs: {
+                          src:
+                            "/images/factions/" +
+                            _vm.faction.name +
+                            "/plans/" +
+                            index +
+                            ".jpg"
+                        }
+                      })
+                    ])
+                  }),
+                  0
                 )
               ]
             )

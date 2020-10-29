@@ -2247,6 +2247,10 @@ a {
   right: 100%;
 }
 
+.radius-1 {
+  border-radius: 1em;
+}
+
 /**
 
     Forms

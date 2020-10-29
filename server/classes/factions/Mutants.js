@@ -14,6 +14,7 @@ class Mutants extends Faction {
         this.data.focusDescription = "Have many units in play";
         this.data.title = "The Undercity Awakens";
         this.data.upgradeDeploy = 0;
+        this.data.flippedUnits = ['champion'];
 
         // tokens
         this.tokens['biohazard'] = {

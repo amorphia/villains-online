@@ -20,7 +20,14 @@
 
                 <area-flipper :areas="[area]" locked="true" :index="0" classes="area-header__units">
                     <div class="toggle area-map__toggle top-0 right-0" @click.stop="shared.event.emit('viewArea', area )"><i class="icon-zoom_in"></i></div>
-                    <div v-if="data.moveLimit" class="toggle area-map__toggle top-0 left-0">Move Limit: {{ selected.length }} / {{ data.moveLimit }}</div>
+
+                    <!-- deploy limit pips -->
+                    <div  v-if="data.moveLimit" class="deploy-limit__pips d-flex justify-center flex-wrap mt-3">
+                        <!-- default deploy limit -->
+                        <i v-for="(n, index) in data.moveLimit"
+                           class="deploy-limit__pip"
+                           :class="index < selected.length ? 'icon-circle active' : 'icon-circle-open'"></i>
+                    </div>
 
                     <div class="popout-hud__block p-3 pos-relative"
                          v-for="(units, location) in groupBy( selected, 'location' )"

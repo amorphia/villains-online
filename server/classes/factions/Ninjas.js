@@ -14,6 +14,7 @@ class Ninjas extends Faction {
         this.data.title = "The Clan of the Pale Moon";
         this.data.bladesBonusDice = 0;
         this.data.firstAttackThisBattle = false;
+        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // icons
         this.data.statusIcon = 'hidden';

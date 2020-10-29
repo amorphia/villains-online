@@ -16,6 +16,8 @@ class Loyalists extends Faction {
         //this.data.statusIcon = 'knight';
         //this.data.statusDescription = 'has knighted units';
 
+        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent'];
+
         // tokens
         this.tokens['knight'] = {
             count: 1,

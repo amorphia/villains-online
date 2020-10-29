@@ -17,6 +17,8 @@ class Scientists extends Faction {
         this.data.fusion = 0;
         this.data.upgradeCardDraw = 0;
 
+        this.data.flippedUnits = ['champion'];
+
         // tokens
         this.tokens['card'].count = 4;
 

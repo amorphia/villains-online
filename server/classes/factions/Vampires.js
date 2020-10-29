@@ -18,7 +18,7 @@ class Vampires extends Faction {
         this.data.statusIcon = 'vampires';
         this.data.statusDescription = 'has vampire units';
 
-
+        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // tokens
         this.tokens['feast'] = {
