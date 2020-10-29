@@ -26,6 +26,14 @@ class Battle {
     }
 
 
+    /**
+     *
+     *
+     *  CORE METHODS
+     *
+     *
+     */
+
     async init(){
         // if we can't battle in this area, abort
         if( !this.area.canBattle() ) return this.game().message({
@@ -35,26 +43,6 @@ class Battle {
 
         this.game().sound( 'combat' );
         await this.resolveBattle();
-    }
-
-
-    hasFirstStrikeUnits(){
-        return this.area.units().filter( unit => unit.firstStrike ).length > 0;
-    }
-
-
-    async resolveBeforeBattleTriggers(){
-        for( let faction of Object.values( this.game().factions ) ){
-            await faction.onBeforeBattle( this );
-        }
-        this.data.preCombatEffects = false;
-    }
-
-
-    async resolveAfterBattleTriggers(){
-        for( let faction of Object.values( this.game().factions ) ){
-            await faction.onAfterBattle( this );
-        }
     }
 
 
@@ -74,6 +62,21 @@ class Battle {
         // finish up
         this.data.title = 'Battle completed';
         this.data.completed = true;
+    }
+
+
+    async resolveBeforeBattleTriggers(){
+        for( let faction of Object.values( this.game().factions ) ){
+            await faction.onBeforeBattle( this );
+        }
+        this.data.preCombatEffects = false;
+    }
+
+
+    async resolveAfterBattleTriggers(){
+        for( let faction of Object.values( this.game().factions ) ){
+            await faction.onAfterBattle( this );
+        }
     }
 
 
@@ -98,6 +101,46 @@ class Battle {
         this.data.factionIndex++;
     }
 
+
+    makeFactionsList( firstStrikePhase ){
+        // make a list of all the units that will be attacking this battle, by faction
+        _.forEach( this.game().factions, faction => this.setFactionAttackingUnits( faction, firstStrikePhase ) );
+
+        // sort the attacking factions by the game's current player order
+        let playerOrder = this.game().data.playerOrder;
+        this.data.factions.sort( (a,b) => {
+            return playerOrder.indexOf( a.playerId ) - playerOrder.indexOf( b.playerId );
+        });
+
+        // then check with each faction to see if they have an ability that places
+        // them somewhere else in the battle's player order (like say, the ninjas going first)
+        Object.values( this.game().factions ).forEach( fac => {
+            fac.battleOrderSort( this.data.factions );
+        });
+    }
+
+
+    setFactionAttackingUnits( faction, firstStrikePhase ){
+        // get our units in this area
+        let unitsInArea = _.factionUnitsInArea( faction, this.area.name );
+        if( !unitsInArea.length ) return;
+
+        // for each unit, mark if it must attack during this phase
+        unitsInArea.forEach( unit => {
+            if( this.unitCanAttackThisPhase( unit, firstStrikePhase ) ) unit.needsToAttack = true;
+        });
+
+        // add this faction to our list of factions participating in this battle
+        this.data.factions.push({
+            name: faction.name,
+            playerId : faction.playerId,
+            units: unitsInArea,
+            mods: faction.combatModifiersList( this.area ),
+            order : faction.playerOrder()
+        });
+    }
+
+
     async resolveFactionStrikePhase( faction, firstStrikePhase ){
         this.game().message({
             faction : faction.name,
@@ -117,63 +160,18 @@ class Battle {
     }
 
 
-    stillHasEnemiesThatCanAttack( faction ){
-        // cycle through this battle's factions
-        for( let fac of this.data.factions ){
-            // enemies only
-            if( fac.name === faction.name ) continue;
-            // do they have units that need to attack?
-            if( fac.units.find( unit => unit.needsToAttack ) ) return true;
-        }
-    }
-
-
     async makeAttacks( factionData ){
         // while we still have units to attack with, resolve the next attack
         while( this.stillHasUnitsToAttack( factionData ) ){
             await this.resolveNextAttack( factionData );
         }
 
-        // mark all remaining units as no longer needing to attack needed for cases where the
-        // opponents are wiped out before all of your units have had a change to attack
+        // mark all remaining units as no longer needing to attack. Needed for cases where the
+        // opponents are wiped out before all of your units have had a chance to attack
         factionData.units.forEach( unit => {
             if( unit.needsToAttack ) unit.needsToAttack = false
         });
     }
-
-
-    async chooseNextAttacker( gameFaction, ninjaAttack ){
-        let player, data, unit;
-
-        // let player choose their next unit
-        [player, data] = await this.game().promise({
-            players: gameFaction.playerId,
-            name: 'choose-units',
-            data : {
-                count : 1,
-                areas : [this.area.name],
-                needsToAttack: true,
-                playerOnly : true,
-                message: "Choose a unit to make an attack",
-                gainsSeeking : ninjaAttack,
-            }
-        }).catch( error => console.error( error ) );
-
-        // no unit selected? Welp, guess we are done here
-        if( !data.units ) return;
-
-        // set our unit data and return
-        unit = this.game().objectMap[ data.units[0] ];
-        this.data.currentUnit = unit.id;
-        return unit;
-    }
-
-
-    isNinjaAttack( gameFaction ){
-        // are we the ninjas and this is our first attack this battle?
-        return gameFaction.name === 'ninjas' && gameFaction.data.firstAttackThisBattle;
-    }
-
 
     async resolveNextAttack( factionData ){
         let player, data;
@@ -209,65 +207,30 @@ class Battle {
     }
 
 
-    stillHasUnitsToAttack( faction, basic ){
-        // do we have a unit with an attack that hasn't attacked yet?
-        let hasAttackingUnit = _.find( faction.units, unit => unit.needsToAttack );
+    async chooseNextAttacker( gameFaction, ninjaAttack ){
+        let player, data, unit;
 
-        // is there anyone to shoot at?
-        let hasTarget = this.game().factions[faction.name].hasEnemyUnitsInArea( this.area, { basic : basic, notHidden : true } );
+        // let player choose their next unit
+        [player, data] = await this.game().promise({
+            players: gameFaction.playerId,
+            name: 'choose-units',
+            data : {
+                count : 1,
+                areas : [this.area.name],
+                needsToAttack: true,
+                playerOnly : true,
+                message: "Choose a unit to make an attack",
+                gainsSeeking : ninjaAttack,
+            }
+        }).catch( error => console.error( error ) );
 
-        return hasAttackingUnit && hasTarget;
-    }
+        // no unit selected? Welp, guess we are done here
+        if( !data.units ) return;
 
-
-    game(){
-        return Server.games[this.gameId];
-    }
-
-
-    setFactionAttackingUnits( faction, firstStrikePhase ){
-        // get our units in this area
-        let unitsInArea = _.factionUnitsInArea( faction, this.area.name );
-        if( !unitsInArea.length ) return;
-
-        // for each unit, mark if it must attack during this phase
-        unitsInArea.forEach( unit => {
-            if( this.unitCanAttackThisPhase( unit, firstStrikePhase ) ) unit.needsToAttack = true;
-        });
-
-        // add this faction to our list of factions participating in this battle
-        this.data.factions.push({
-            name: faction.name,
-            playerId : faction.playerId,
-            units: unitsInArea,
-            mods: faction.combatModifiersList( this.area ),
-            order : faction.playerOrder()
-        });
-    }
-
-
-    unitCanAttackThisPhase( unit, firstStrikePhase ){
-        // does this unit have an attack value, and does this unit's attack speed match the current strike phase
-        // ie. if its currently the first strike phase and the unit has first strike, or the reverse
-        return unit.attack.length &&  !! firstStrikePhase === !! unit.firstStrike;
-    }
-
-
-    makeFactionsList( firstStrikePhase ){
-        // make a list of all the units that will be attacking this battle, by faction
-        _.forEach( this.game().factions, faction => this.setFactionAttackingUnits( faction, firstStrikePhase ) );
-
-        // sort the attacking factions by the game's current player order
-        let playerOrder = this.game().data.playerOrder;
-        this.data.factions.sort( (a,b) => {
-            return playerOrder.indexOf( a.playerId ) - playerOrder.indexOf( b.playerId );
-        });
-
-        // then check with each faction to see if they have an ability that places
-        // them somewhere else in the battle's player order (like say, the ninjas going first)
-        Object.values( this.game().factions ).forEach( fac => {
-            fac.battleOrderSort( this.data.factions );
-        });
+        // set our unit data and return
+        unit = this.game().objectMap[ data.units[0] ];
+        this.data.currentUnit = unit.id;
+        return unit;
     }
 
 
@@ -280,6 +243,61 @@ class Battle {
             faction.units = faction.units.filter( item => item.id !== unit.id );
         }
     }
+
+
+    /**
+     *
+     *
+     *   VALUE METHODS
+     *
+     *
+     */
+
+    game(){
+        return Server.games[this.gameId];
+    }
+
+
+    stillHasUnitsToAttack( faction, basic ){
+        // do we have a unit with an attack that hasn't attacked yet?
+        let hasAttackingUnit = _.find( faction.units, unit => unit.needsToAttack );
+
+        // is there anyone to shoot at?
+        let hasTarget = this.game().factions[faction.name].hasEnemyUnitsInArea( this.area, { basic : basic, notHidden : true } );
+
+        return hasAttackingUnit && hasTarget;
+    }
+
+
+    isNinjaAttack( gameFaction ){
+        // are we the ninjas and this is our first attack this battle?
+        return gameFaction.name === 'ninjas' && gameFaction.data.firstAttackThisBattle;
+    }
+
+
+    stillHasEnemiesThatCanAttack( faction ){
+        // cycle through this battle's factions
+        for( let fac of this.data.factions ){
+            // enemies only
+            if( fac.name === faction.name ) continue;
+            // do they have units that need to attack?
+            if( fac.units.find( unit => unit.needsToAttack ) ) return true;
+        }
+    }
+
+
+    hasFirstStrikeUnits(){
+        return this.area.units().filter( unit => unit.firstStrike ).length > 0;
+    }
+
+
+    unitCanAttackThisPhase( unit, firstStrikePhase ){
+        // does this unit have an attack value, and does this unit's attack speed match the current strike phase
+        // ie. if its currently the first strike phase and the unit has first strike, or the reverse
+        return unit.attack.length &&  !! firstStrikePhase === !! unit.firstStrike;
+    }
+    
+
 
 }
 
