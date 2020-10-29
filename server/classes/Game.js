@@ -342,7 +342,7 @@ class Game {
  *  Mixins
  *
  */
-Object.assign( Game.prototype, require( "./gameMixins/propertyMethods" ) );
+Object.assign( Game.prototype, require( "./gameMixins/valueMethods" ) );
 Object.assign( Game.prototype, require( "./gameMixins/combat" ) );
 Object.assign( Game.prototype, require( "./gameMixins/setup" ) );
 Object.assign( Game.prototype, require( "./gameMixins/players" ) );

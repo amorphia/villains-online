@@ -5553,7 +5553,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      if (unit.type === 'patsy' && this.data.seeking && this.assignableNonPatsyHits > 0) {
+      if (unit.type === 'patsy' && this.mustAssignToNonPatsy) {
         App.event.emit('sound', 'error');
         return;
       }
@@ -5566,6 +5566,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    mustAssignToNonPatsy: function mustAssignToNonPatsy() {
+      return this.data.seeking && this.assignableNonPatsyHits > 0;
+    },
     buttonMessage: function buttonMessage() {
       return this.hitsToAssign === 0 ? "confirm hit assignment" : "assign ".concat(this.hitsToAssign, " more hits");
     },
@@ -10849,7 +10852,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-icon',
-  props: ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect'],
+  props: ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect', 'hidePatsies'],
   data: function data() {
     return {
       shared: App.state
@@ -10874,6 +10877,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.unit.ready) classes.push('ready');
       if (this.viewableGhost) classes.push('is-ghost');
       if (this.classes) classes.push(this.classes);
+      if (this.unit.type === 'patsy' && this.hidePatsies) classes.push('opacity-6');
       return classes.join(' ');
     },
     img: function img() {
@@ -10942,9 +10946,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-row',
-  props: ['units', 'classes', 'selectedUnit', 'assigningHits', 'allSelected'],
+  props: ['units', 'classes', 'selectedUnit', 'assigningHits', 'allSelected', 'hidePatsies'],
   data: function data() {
     return {
       shared: App.state
@@ -60999,7 +61004,11 @@ var render = function() {
                 },
                 [
                   _c("unit-row", {
-                    attrs: { units: _vm.units, assigningHits: "true" },
+                    attrs: {
+                      units: _vm.units,
+                      assigningHits: "true",
+                      hidePatsies: _vm.mustAssignToNonPatsy
+                    },
                     on: { unit: _vm.assignHit }
                   })
                 ],
@@ -65902,7 +65911,8 @@ var render = function() {
           unit: unit,
           selectedUnit: _vm.selectedUnit,
           assigningHits: _vm.assigningHits,
-          allSelected: _vm.allSelected
+          allSelected: _vm.allSelected,
+          hidePatsies: _vm.hidePatsies
         },
         on: {
           unit: function(u, hp) {

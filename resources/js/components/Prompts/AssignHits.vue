@@ -13,7 +13,7 @@
                         index="0"
                         classes="area-header__units pt-0"
                         >
-                        <unit-row :units="units" assigningHits="true" @unit="assignHit"></unit-row>
+                        <unit-row :units="units" assigningHits="true" :hidePatsies="mustAssignToNonPatsy" @unit="assignHit"></unit-row>
                     </area-flipper>
 
                 </div>
@@ -75,7 +75,7 @@
                     return;
                 }
 
-                if( unit.type === 'patsy' && this.data.seeking && this.assignableNonPatsyHits > 0 ){
+                if( unit.type === 'patsy' && this.mustAssignToNonPatsy ){
                     App.event.emit( 'sound', 'error' );
                     return;
                 }
@@ -91,6 +91,10 @@
         },
 
         computed : {
+
+            mustAssignToNonPatsy(){
+                return this.data.seeking && this.assignableNonPatsyHits > 0;
+            },
 
             buttonMessage(){
                 return this.hitsToAssign === 0 ?  "confirm hit assignment" : `assign ${this.hitsToAssign} more hits`;

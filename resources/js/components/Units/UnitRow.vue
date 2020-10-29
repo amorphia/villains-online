@@ -6,6 +6,7 @@
                    :selectedUnit="selectedUnit"
                    :assigningHits="assigningHits"
                    :allSelected="allSelected"
+                   :hidePatsies="hidePatsies"
                    @unit="(u, hp) => $emit( 'unit', u, hp )">
         </unit-icon>
     </div>
@@ -16,7 +17,7 @@
     export default {
 
         name: 'unit-row',
-        props: ['units', 'classes', 'selectedUnit', 'assigningHits', 'allSelected'],
+        props: ['units', 'classes', 'selectedUnit', 'assigningHits', 'allSelected', 'hidePatsies'],
         data() {
             return {
                 shared : App.state

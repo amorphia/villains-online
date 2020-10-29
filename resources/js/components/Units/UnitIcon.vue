@@ -26,7 +26,7 @@
 
         name: 'unit-icon',
 
-        props : ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect' ],
+        props : ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect', 'hidePatsies' ],
         data() {
             return {
                 shared : App.state
@@ -56,6 +56,7 @@
                 if( this.unit.ready ) classes.push( 'ready' );
                 if( this.viewableGhost ) classes.push( 'is-ghost' );
                 if( this.classes ) classes.push( this.classes );
+                if( this.unit.type === 'patsy' && this.hidePatsies ) classes.push( 'opacity-6' );
                 return classes.join(' ');
             },
 

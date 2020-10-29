@@ -13,7 +13,8 @@ class Battle {
         attacks : {},
         lastAttack : null,
         completed : false,
-        preCombatEffects : true
+        preCombatEffects : true,
+        isFirstStrikePhase : false,
     };
 
 
@@ -51,7 +52,11 @@ class Battle {
         await this.resolveBeforeBattleTriggers();
 
         // first strike phase
-        if( this.hasFirstStrikeUnits() ) await this.resolveStrikePhase( true );
+        if( this.hasFirstStrikeUnits() ){
+            this.data.isFirstStrikePhase = true;
+            await this.resolveStrikePhase();
+            this.data.isFirstStrikePhase = false;
+        }
 
         // regular strike phase
         if( this.area.canBattle() ) await this.resolveStrikePhase();
@@ -80,20 +85,20 @@ class Battle {
     }
 
 
-    async resolveStrikePhase( firstStrikePhase ){
+    async resolveStrikePhase(){
         this.data.factionIndex = 0;
         this.data.currentUnit = null;
         this.data.factions = [];
-        this.data.title = firstStrikePhase ? 'Resolving First Strike Attacks' : 'Resolving Attacks';
+        this.data.title = this.data.isFirstStrikePhase ? 'Resolving First Strike Attacks' : 'Resolving Attacks';
 
         // build the list of factions with units in this area and whether they can attack this phase
-        this.makeFactionsList( firstStrikePhase );
+        this.makeFactionsList();
 
         // for each of these factions resolve this strike phase
         for( let i = 0; i < this.data.factions.length; i++ ){
             let faction = this.data.factions[i];
             this.data.factionIndex = i;
-            await this.resolveFactionStrikePhase( faction, firstStrikePhase );
+            await this.resolveFactionStrikePhase( faction );
         }
 
         // shift the faction index ahead by one to make sure no-one
@@ -102,9 +107,9 @@ class Battle {
     }
 
 
-    makeFactionsList( firstStrikePhase ){
+    makeFactionsList(){
         // make a list of all the units that will be attacking this battle, by faction
-        _.forEach( this.game().factions, faction => this.setFactionAttackingUnits( faction, firstStrikePhase ) );
+        _.forEach( this.game().factions, faction => this.setFactionAttackingUnits( faction ) );
 
         // sort the attacking factions by the game's current player order
         let playerOrder = this.game().data.playerOrder;
@@ -112,22 +117,22 @@ class Battle {
             return playerOrder.indexOf( a.playerId ) - playerOrder.indexOf( b.playerId );
         });
 
-        // then check with each faction to see if they have an ability that places
-        // them somewhere else in the battle's player order (like say, the ninjas going first)
-        Object.values( this.game().factions ).forEach( fac => {
-            fac.battleOrderSort( this.data.factions );
+        // then check with each faction to see if they have an ability that places them
+        // somewhere else in the battle's player order (like say, the ninjas going first)
+        Object.values( this.game().factions ).forEach( faction => {
+            faction.battleOrderSort( this.data.factions );
         });
     }
 
 
-    setFactionAttackingUnits( faction, firstStrikePhase ){
+    setFactionAttackingUnits( faction ){
         // get our units in this area
         let unitsInArea = _.factionUnitsInArea( faction, this.area.name );
         if( !unitsInArea.length ) return;
 
         // for each unit, mark if it must attack during this phase
         unitsInArea.forEach( unit => {
-            if( this.canAttackThisPhase( unit, firstStrikePhase ) ) unit.needsToAttack = true;
+            if( this.canAttackThisPhase( unit ) ) unit.needsToAttack = true;
         });
 
         // add this faction to our list of factions participating in this battle
@@ -141,10 +146,10 @@ class Battle {
     }
 
 
-    async resolveFactionStrikePhase( faction, firstStrikePhase ){
+    async resolveFactionStrikePhase( faction ){
         this.game().message({
             faction : faction.name,
-            message : `start their ${ firstStrikePhase ? 'first strike ' : '' }attacks`
+            message : `start their ${ this.data.isFirstStrikePhase ? 'first strike ' : '' }attacks`
         });
 
         try {
@@ -155,7 +160,7 @@ class Battle {
 
         this.game().message({
             faction : faction.name,
-            message : `have completed their ${ firstStrikePhase ? 'first strike ' : '' }attacks`
+            message : `have completed their ${ this.data.isFirstStrikePhase ? 'first strike ' : '' }attacks`
         });
     }
 
@@ -280,12 +285,12 @@ class Battle {
     }
 
 
-    canAttackThisPhase( unit, firstStrikePhase ){
+    canAttackThisPhase( unit ){
         // does this unit have an attack value, and does this unit's attack speed match the current strike phase
         // ie. if its currently the first strike phase and the unit has first strike, or the reverse
-        return unit.attack.length &&  !! firstStrikePhase === !! unit.firstStrike;
+        return unit.attack.length &&  !! this.data.isFirstStrikePhase === !! unit.firstStrike;
     }
-    
+
 }
 
 module.exports = Battle;
