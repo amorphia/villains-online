@@ -127,7 +127,7 @@ class Battle {
 
         // for each unit, mark if it must attack during this phase
         unitsInArea.forEach( unit => {
-            if( this.unitCanAttackThisPhase( unit, firstStrikePhase ) ) unit.needsToAttack = true;
+            if( this.canAttackThisPhase( unit, firstStrikePhase ) ) unit.needsToAttack = true;
         });
 
         // add this faction to our list of factions participating in this battle
@@ -162,7 +162,7 @@ class Battle {
 
     async makeAttacks( factionData ){
         // while we still have units to attack with, resolve the next attack
-        while( this.stillHasUnitsToAttack( factionData ) ){
+        while( this.hasUnitsToAttack( factionData ) ){
             await this.resolveNextAttack( factionData );
         }
 
@@ -258,7 +258,7 @@ class Battle {
     }
 
 
-    stillHasUnitsToAttack( faction, basic ){
+    hasUnitsToAttack( faction, basic ){
         // do we have a unit with an attack that hasn't attacked yet?
         let hasAttackingUnit = _.find( faction.units, unit => unit.needsToAttack );
 
@@ -275,30 +275,17 @@ class Battle {
     }
 
 
-    stillHasEnemiesThatCanAttack( faction ){
-        // cycle through this battle's factions
-        for( let fac of this.data.factions ){
-            // enemies only
-            if( fac.name === faction.name ) continue;
-            // do they have units that need to attack?
-            if( fac.units.find( unit => unit.needsToAttack ) ) return true;
-        }
-    }
-
-
     hasFirstStrikeUnits(){
         return this.area.units().filter( unit => unit.firstStrike ).length > 0;
     }
 
 
-    unitCanAttackThisPhase( unit, firstStrikePhase ){
+    canAttackThisPhase( unit, firstStrikePhase ){
         // does this unit have an attack value, and does this unit's attack speed match the current strike phase
         // ie. if its currently the first strike phase and the unit has first strike, or the reverse
         return unit.attack.length &&  !! firstStrikePhase === !! unit.firstStrike;
     }
     
-
-
 }
 
 module.exports = Battle;
