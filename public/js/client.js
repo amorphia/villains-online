@@ -68326,21 +68326,23 @@ var render = function() {
                     ? _c("div", { staticClass: "icon-web mb-2" })
                     : _vm._e(),
                   _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass: "area-map__graveyard-count",
-                      class: "faction-spiders",
-                      attrs: {
-                        title:
-                          "the spiders have " +
-                          _vm.webbed +
-                          " units trapped in webs in the " +
-                          _vm.area.name
-                      }
-                    },
-                    [_vm._v(_vm._s(_vm.webbed))]
-                  )
+                  _vm.webbed
+                    ? _c(
+                        "div",
+                        {
+                          staticClass: "area-map__graveyard-count",
+                          class: "faction-spiders",
+                          attrs: {
+                            title:
+                              "the spiders have " +
+                              _vm.webbed +
+                              " units trapped in webs in the " +
+                              _vm.area.name
+                          }
+                        },
+                        [_vm._v(_vm._s(_vm.webbed))]
+                      )
+                    : _vm._e()
                 ],
                 2
               )

@@ -53,7 +53,7 @@
                      :title="`the ${name} have ${dead} kills in the ${area.name}`">{{ dead }}</div>
 
                 <div v-if="webbed" class="icon-web mb-2"></div>
-                <div class="area-map__graveyard-count"
+                <div v-if="webbed" class="area-map__graveyard-count"
                      :class="`faction-spiders`"
                      :title="`the spiders have ${webbed} units trapped in webs in the ${area.name}`">{{ webbed }}</div>
             </div>
