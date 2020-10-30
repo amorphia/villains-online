@@ -15,14 +15,12 @@ class Guerrillas extends Faction {
         this.data.flippedUnits = ['champion'];
 
         this.data.ambushes = {
-            max : 0,
+            max : 1,
             used : 0,
         };
 
-        this.data.bonusDeploy = { type: 'champion', count : 1 };
-
         // tokens
-        this.tokens['battle'].count = 2;
+        delete this.tokens['battle'];
 
         this.tokens['snipers'] = {
             count: 1,
@@ -36,14 +34,14 @@ class Guerrillas extends Faction {
 
         // units
         this.units['goon'].count = 4;
-        this.units['goon'].data.redeployFree = true;
+        //this.units['goon'].data.redeployFree = true;
 
         this.units['talent'].count = 4;
-        this.units['talent'].data.redeployFree = true;
+        //this.units['talent'].data.redeployFree = true;
         this.units['talent'].data.attack = [7, 7];
 
         this.units['mole'].count = 4;
-        this.units['mole'].data.redeployFree = true;
+        //this.units['mole'].data.redeployFree = true;
 
         this.units['patsy'].count = 6;
         this.units['patsy'].data.attack = [8, 8];
@@ -58,18 +56,18 @@ class Guerrillas extends Faction {
                 attack: [6, 6],
                 cost: 1,
                 killed: false,
-                redeployFree: true,
+                //redeployFree: true,
                 selected: false,
                 hitsAssigned: 0,
                 toughness: true,
                 flipped: false,
-                onDeploy: 'bringUnits'
+                onDeploy: 'viperDeploy'
             }
         };
     }
 
-    processUpgrade( n ){
-       this.data.ambushes.max = n;
+    processUpgrade( upgradeNumber ){
+       this.data.ambushes.max = upgradeNumber + 1;
     }
 
     canActivateSnipers( token, area ) {
@@ -117,10 +115,28 @@ class Guerrillas extends Faction {
     }
 
     async ambushAction( area ){
+        let player, data;
         let hasAmbushes = this.data.ambushes.used < this.data.ambushes.max;
         this.data.ambushes.used++;
 
-        let token = _.firstRevealedToken( area, { player : this.name });
+        if( ! _.find( area.data.tokens, token => token.faction === this.name && token.revealed ) ){
+            faction.game().message({ faction : faction, message: "No tokens to discard", class : 'warning'  });
+            return false;
+        }
+
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'choose-tokens',
+            data : {
+                count : 1,
+                areas : [area.name],
+                playerOnly : true,
+                revealedOnly : true
+            }
+        }).catch( error => console.error( error ) );
+
+        let token = this.game().objectMap[data.tokens[0]];
+
         if( !token || !hasAmbushes ) return this.game().message({ faction: this, message: `Can't ambush in the ${ area.name }`, class: 'warning' });
 
         _.discardToken( token, area );
@@ -128,6 +144,25 @@ class Guerrillas extends Faction {
         this.game().message({ faction: this, message: `Launches an ambush in the ${ area.name }`, class: 'highlight' });
         await this.game().battle( area ).catch( error => console.error( error ) );
     }
+
+
+    async viperDeploy( event ){
+        this.toggleViperDeployLimit( false );
+        await this.bringUnits( event );
+    }
+
+
+    onStartOfTurn(){
+        let viperInReserves = this.data.units.find( unit => unit.type === 'champion' && !unit.location );
+        if( viperInReserves ) this.toggleViperDeployLimit( true );
+    }
+
+
+    toggleViperDeployLimit( set = true ){
+        if( set ) this.data.bonusDeploy = { type: 'champion', count : 1 };
+        else delete this.data.bonusDeploy;
+    }
+
 
     async bringUnits( event ) {
         let player, data, vines = 0;

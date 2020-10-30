@@ -33,10 +33,10 @@
 
                     <!-- ambush display -->
                     <div class="" v-if="action.name === 'ambush'">
-                        <token-row :area="area" :highlight="firstRevealed"></token-row>
+                        <token-row :area="area"></token-row>
 
                         <div class="width-100 choose-action__skill-ability center-text">
-                            Discard this token to start a battle here?
+                            Discard a token here to start a battle?
                         </div>
                     </div>
 

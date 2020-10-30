@@ -22,14 +22,16 @@ class Bankers extends Faction {
                 influence: 1,
                 cost : 0,
                 activateTax : true,
+                resource: true,
                 areaStat : true,
                 description : 'enemy players must pay 1 to activate a token here'
             }
         };
 
         // units
-        this.units['goon'].count = 8;
-        this.units['patsy'].count = 3;
+        this.units['mole'].count = 7;
+        this.units['goon'].count = 7;
+        this.units['patsy'].count = 4;
         this.units['champion'] = {
             count: 1,
             data: {
@@ -37,7 +39,7 @@ class Bankers extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 4,
-                attack: [8, 8],
+                attack: [5, 5],
                 cost: 2,
                 killed : false,
                 onHit : 'gainGnomeCash',

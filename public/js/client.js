@@ -61222,10 +61222,7 @@ var render = function() {
                                 {},
                                 [
                                   _c("token-row", {
-                                    attrs: {
-                                      area: _vm.area,
-                                      highlight: _vm.firstRevealed
-                                    }
+                                    attrs: { area: _vm.area }
                                   }),
                                   _vm._v(" "),
                                   _c(
@@ -61236,7 +61233,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\n                            Discard this token to start a battle here?\n                        "
+                                        "\n                            Discard a token here to start a battle?\n                        "
                                       )
                                     ]
                                   )

@@ -7,7 +7,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'controlAreas', args : [4] },
-                    { test : 'useSkills', args : [2] }
+                    { test : 'enemyMarkers', args : [2] }
                 ],
                 value : 3
             }
@@ -61,13 +61,18 @@ let obj = [
             {
                 requirements : [
                     { test : 'controlAreas', args : [3] },
-                    { test : 'unitInEnemy', args : ['mole', 1] }
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
                     { test : 'influenceInAreas', args : [6,1] }
+                ],
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'unitInEnemy', args : ['mole', 1] }
                 ],
                 value : 1
             }
@@ -100,16 +105,21 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlAreas', args : [3] },
+                    { test : 'unitsAtTarget', args : [2, 'talent'] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'unitsAtTarget', args : [2, 'talent'] },
                     { test : 'tokensInAreas', args : [5] }
                 ],
-                value : 2
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'controlAreas', args : [3] },
+                ],
+                value : 1
             }
         ]
     },
@@ -120,10 +130,15 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlAreas', args : [3] },
                     { test : 'killUnits', args : [5] },
                 ],
-                value : 2
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'controlAreas', args : [3] },
+                ],
+                value : 1
             },
             {
                 requirements : [
