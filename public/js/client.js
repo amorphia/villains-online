@@ -6830,6 +6830,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     sortFactions: function sortFactions(a, b) {
+      if (a.unselectable) return 1;
+      if (b.unselectable) return -1;
       if (a.status > b.status) return -1;
       if (a.status < b.status) return 1;
       if (a.name > b.name) return 1;
@@ -6930,6 +6932,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-magick',
   data: function data() {
@@ -6969,6 +6975,10 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     data: function data() {
       return this.shared.player.prompt.data;
+    },
+    cost: function cost() {
+      if (this.data.free) return 0;
+      return this.selected.length ? this.selected[0].cost : 0;
     },
     selected: function selected() {
       return this.data.cards.filter(function (card) {
@@ -62028,7 +62038,8 @@ var render = function() {
           _vm._v(
             "Choose a rule card to play in the " +
               _vm._s(_vm.data.area) +
-              " for free"
+              " " +
+              _vm._s(_vm.data.free ? "for free" : "")
           )
         ]),
         _vm._v(" "),
@@ -62080,6 +62091,19 @@ var render = function() {
         )
       ])
     ]),
+    _vm._v(" "),
+    this.cost
+      ? _c("div", {
+          staticClass: "prompt-question center-text",
+          domProps: {
+            innerHTML: _vm._s(
+              _vm.shared.filterText(
+                "Pay xC" + _vm.cost + "x to play this card?"
+              )
+            )
+          }
+        })
+      : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "width-100 d-flex justify-center" }, [
       _c(

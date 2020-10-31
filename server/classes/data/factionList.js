@@ -18,8 +18,8 @@ let obj = {
     conquistadors : { name: 'conquistadors', owner : null, status : 2 },
     witches : { name: 'witches', owner : null, status : 0 },
     bureau : { name: 'bureau', owner : null, status : 0 },
-    plants : { name: 'plants', owner : null, status : 0 },
-    ghosts : { name: 'ghosts', owner : null, status : 1 },
+    plants : { name: 'plants', owner : null, status : 1 },
+    ghosts : { name: 'ghosts', owner : null, status : 0 },
     spiders : { name: 'spiders', owner : null, status : 0, killer : true, unselectable : true },
 };
 

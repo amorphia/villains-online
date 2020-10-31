@@ -14,6 +14,7 @@ class Witches extends Faction {
         this.data.focusDescription = "Play many rule cards";
         this.data.magickCardsRevealed = 1;
         this.data.lastMagickGameAction = 0;
+        this.data.magickCardsFree = false;
 
         this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
@@ -28,6 +29,7 @@ class Witches extends Faction {
                 influence: 1,
                 type: 'brew',
                 cost: 0,
+                resource : 1
             }
         };
 
@@ -51,7 +53,12 @@ class Witches extends Faction {
 
 
     processUpgrade( n ){
-        this.data.magickCardsRevealed = n + 1;
+        if( n === 1 ){
+            this.data.magickCardsRevealed = 2;
+        } else {
+            this.data.magickCardsRevealed = 2;
+            this.data.magickCardsFree = true;
+        }
     }
 
     async revealMagick( area ){
@@ -66,14 +73,16 @@ class Witches extends Faction {
             faction : this,
             message: `use magick in the <span class="highlight">${area.name}</span> revealing:`,
             type : 'cards',
-            cards : cards
+            cards : cards,
         });
 
         let args = {
             area : area.name,
             cards : cards,
-            cost : 0,
+            free : this.data.magickCardsFree
         };
+
+        if( this.data.magickCardsFree ) args.cost = 0;
 
         [player, data] = await this.game().promise({
             players: this.playerId,
@@ -106,6 +115,7 @@ class Witches extends Faction {
 
         args.area = this.game().areas[args.area];
         data.cardId = card;
+        data.cost = this.data.magickCardsFree ? 0 : this.game().objectMap[ card ].cost;
 
         await this.processCard( args, data );
     }

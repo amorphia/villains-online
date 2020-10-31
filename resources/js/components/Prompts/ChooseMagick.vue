@@ -2,7 +2,7 @@
     <player-prompt classes="">
         <div class="d-flex justify-center px-5">
                 <div class="width-100 center-text">
-                    <div class="title d-inline-block">Choose a rule card to play in the {{ data.area }} for free</div>
+                    <div class="title d-inline-block">Choose a rule card to play in the {{ data.area }} {{ data.free ? 'for free' : ''}}</div>
                     <div>
                         <horizontal-scroll classes="choose-target__wrap d-flex pb-3 width-100 plan-block" buttons="true">
 
@@ -24,6 +24,10 @@
                 </div>
 
             </div>
+
+        <div v-if="this.cost" class="prompt-question center-text" v-html="shared.filterText( `Pay xC${cost}x to play this card?` )"></div>
+
+
         <div class="width-100 d-flex justify-center">
             <button class="button button-empty" @click="resolve( false )">decline</button>
             <button class="button" :disabled="!this.selected.length" @click="resolve( true )">Submit</button>
@@ -73,6 +77,12 @@
         computed : {
             data(){
                 return this.shared.player.prompt.data;
+            },
+
+            cost(){
+                if( this.data.free ) return 0;
+
+                return this.selected.length ? this.selected[0].cost : 0;
             },
 
             selected(){

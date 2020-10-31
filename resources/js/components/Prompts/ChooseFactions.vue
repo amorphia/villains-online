@@ -99,6 +99,8 @@
 
         methods : {
             sortFactions( a ,b ){
+                if( a.unselectable ) return 1;
+                if( b.unselectable ) return -1;
                 if( a.status > b.status ) return -1;
                 if( a.status < b.status ) return 1;
                 if( a.name > b.name ) return 1;
