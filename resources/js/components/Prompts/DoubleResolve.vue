@@ -10,7 +10,7 @@
                          v-html="this.shared.filterText( this.area.skill )"></div>
                 </area-flipper>
 
-                <div class="prompt-question" v-html="shared.filterText( `Pay xC1x to resolve this skill a second time?` )"></div>
+                <!-- <div class="prompt-question" v-html="shared.filterText( `Pay xC1x to resolve this skill a second time?` )"></div> -->
 
                 <div class="flex-center">
                     <button class="button button-empty" @click="resolve( false )">Decline</button>

@@ -63749,17 +63749,6 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _c("div", {
-            staticClass: "prompt-question",
-            domProps: {
-              innerHTML: _vm._s(
-                _vm.shared.filterText(
-                  "Pay xC1x to resolve this skill a second time?"
-                )
-              )
-            }
-          }),
-          _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
             _c(
               "button",
