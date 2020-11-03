@@ -53,6 +53,8 @@ class Game {
     ];
 
     data = {
+        gameType : 'optimized',
+        creator : null,
         gameAction : 0,
         combat : null,
         playerAction : 0,

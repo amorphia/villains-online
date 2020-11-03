@@ -38,6 +38,9 @@ class Server {
             // delete a game
             socket.on( 'deleteGame', gameId => this.deleteGame( socket, gameId ) );
 
+            // set game type
+            socket.on( 'setGameType', (gameId, type) => this.setGameType( socket, gameId, type ) );
+
             // load last game
             socket.on( 'loadGame', game => { this.loadGame( game ) } );
 
@@ -109,6 +112,7 @@ class Server {
         let game = new Game();
         this.games[game.id] = game;
         let player = this.getPlayer( socket );
+        game.data.creator = player.id;
         this.message( 'lobby', { message: 'created game', player : player });
         this.io.to('lobby').emit( 'openGame', game.data );
     }
@@ -134,6 +138,16 @@ class Server {
 
         this.db.conclude( gameId );
         delete this.games[gameId];
+    }
+
+    setGameType( socket, gameId, type ){
+
+        let game = this.games[gameId];
+
+        if( game.isOpen() ) {
+            game.data.gameType = type;
+            this.io.to( 'lobby' ).emit( 'openGame', game.data );
+        }
     }
 
     sound( sound, options = {} ){

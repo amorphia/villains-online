@@ -32,6 +32,10 @@
                             :faction="faction"
                             :selected="selectedFaction"
                             :key="faction.name"
+                            @isSelectable="e => faction.selectable = e"
+                            :remainingPlayers="remainingPlayers"
+                            :killersSelected="killersSelected"
+                            :expansionsSelected="expansionsSelected"
                         ></faction-choice>
                     </div>
 
@@ -42,6 +46,10 @@
                             :faction="faction"
                             :selected="selectedFaction"
                             :key="faction.name"
+                            @isSelectable="e => faction.selectable = e"
+                            :remainingPlayers="remainingPlayers"
+                            :killersSelected="killersSelected"
+                            :expansionsSelected="expansionsSelected"
                         ></faction-choice>
                     </div>
 
@@ -50,8 +58,7 @@
                     <button class="button button-empty"
                             @click="chooseRandomFaction">Random</button>
 
-                    <button :disabled="shared.data.factions[ selectedFaction ]
-                                        && (shared.data.factions[ selectedFaction ].owner !== null || shared.data.factions[ selectedFaction ].unselectable)"
+                    <button :disabled="!selectedFaction || !shared.data.factions[ selectedFaction ].selectable"
                             class="button"
                             @click="chooseFaction">Choose</button>
                 </div>
@@ -94,6 +101,18 @@
 
             remainingPlayers(){
                 return Object.values( this.shared.data.players ).filter( player => !player.faction ).length;
+            },
+
+            killersSelected(){
+                return Object.values( this.shared.data.factions ).filter( faction => faction.killer && faction.owner ).length;
+            },
+
+            expansionsSelected(){
+                return Object.values( this.shared.data.factions ).filter( faction => !faction.basic && faction.owner ).length;
+            },
+
+            experimentalsSelected(){
+                return Object.values( this.shared.data.factions ).filter( faction => faction.status === 0 && faction.owner ).length;
             }
         },
 
@@ -108,19 +127,15 @@
             },
 
             factionText( player ){
-                if( player.active ) return "Choosing..."
+                if( player.active ) return "Choosing...";
                 else if( player.faction ) return player.faction;
             },
 
             chooseRandomFaction(){
-                let unselectedFactions = [];
-                let picked = {
-                    killer : false,
-                    experimental : false
-                };
-
+                let unselectedFactions = Object.values( this.shared.data.factions ).filter( faction => faction.selectable === true );
                 this.random = true;
 
+                /*
                 _.forEach( this.shared.data.factions, (faction, name) => {
                    if( faction.killer && faction.owner ) picked.killer = true;
                    if( faction.status === 0 && faction.owner ) picked.experimental = true;
@@ -128,19 +143,21 @@
                 });
 
                 // if no killer has been selected and we are the last player to pick, make sure we pick a killer
-                if( !picked.killer && this.remainingPlayers === 1 ){
+                if( !this.killersSelected && this.remainingPlayers === 1 ){
                     unselectedFactions = unselectedFactions.filter( faction => faction.killer );
                 }
 
                 // if a killer has already been selected make sure we don't also pick a killer
-                if( picked.killer ){
+                if( this.killersSelected ){
                     unselectedFactions = unselectedFactions.filter( faction => !faction.killer );
                 }
 
                 // if an experimental faction has already been selected make sure we don't also pick one
-                if( picked.experimental ){
+                if( this.experimentalsSelected ){
                     unselectedFactions = unselectedFactions.filter( faction => faction.status !== 0 );
                 }
+                */
+
 
                 this.selectedFaction = _.sample( unselectedFactions ).name;
 

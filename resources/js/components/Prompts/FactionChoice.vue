@@ -1,7 +1,7 @@
 <template>
     <div :class="{
             active : selected === faction.name,
-            taken : faction.owner !== null || faction.unselectable,
+            taken : !isSelectable,
             killer : faction.killer,
             basic : faction.basic
             }"
@@ -17,12 +17,70 @@
     export default {
 
         name: 'faction-choice',
-        props: ['faction', 'selected'],
+        props: [
+            'faction',
+            'selected',
+            'selectable',
+            "remainingPlayers",
+            "killersSelected",
+            "expansionsSelected",
+        ],
 
         data() {
             return {
                 shared : App.state
             };
+        },
+
+        methods : {
+            checkIsSelectable(){
+                // if the faction is already taken, or flagged unselectable, then it can't be taken
+                if( this.faction.owner !== null || this.faction.unselectable ) return false;
+
+                // otherwise if we are in free for all mode then anything goes
+                if( this.shared.data.gameType === 'anarchy' ) return true;
+
+                // but if we are in basic mode everything goes as long as they are basic factions
+                if( this.shared.data.gameType === 'basic' ) return this.faction.basic;
+
+                // if we are in optimized mode and already have max killer factions allow only non-killers
+                if( this.shared.data.gameType === 'optimized'
+                    && !this.moreKillersAllowed
+                    && this.faction.killer) return false;
+
+                // if we are in optimized mode and already have max expansion factions allow only non-basics
+                if( this.shared.data.gameType === 'optimized'
+                    && !this.moreExpansionsAllowed
+                    && !this.faction.basic) return false;
+
+                if( this.shared.data.gameType === 'optimized'
+                    && this.remainingPlayers === 1
+                    && !this.killersSelected
+                    && !this.faction.killer) return false;
+
+                return true;
+            }
+        },
+
+        computed : {
+            moreKillersAllowed(){
+                let allowed = this.playerCount === 5 ? 2 : 1;
+                return this.killersSelected < allowed;
+            },
+
+            moreExpansionsAllowed(){
+                let allowed = this.playerCount === 5 ? 3 : 2;
+                return this.expansionsSelected < allowed;
+            },
+
+            playerCount(){
+               return Object.keys( this.shared.data.players ).length;
+            },
+            isSelectable(){
+                let selectable = this.checkIsSelectable();
+                this.$emit( 'isSelectable', selectable );
+                return selectable;
+            }
         }
     }
 </script>

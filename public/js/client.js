@@ -3737,11 +3737,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-lobby',
   data: function data() {
     return {
-      shared: App.state
+      shared: App.state,
+      gameTypes: ['basic', 'optimized', 'anarchy']
     };
   },
   mounted: function mounted() {
@@ -3766,6 +3776,14 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    setGameType: function setGameType(type) {
+      if (this.shared.game.creator === this.shared.id) {
+        App.event.emit('sound', 'ui');
+        this.shared.socket.emit('setGameType', this.shared.game.id, type);
+      } else {
+        App.event.emit('sound', 'error');
+      }
+    },
     newGame: function newGame() {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('newGame');
@@ -6798,6 +6816,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-factions',
   data: function data() {
@@ -6826,6 +6851,21 @@ __webpack_require__.r(__webpack_exports__);
       return Object.values(this.shared.data.players).filter(function (player) {
         return !player.faction;
       }).length;
+    },
+    killersSelected: function killersSelected() {
+      return Object.values(this.shared.data.factions).filter(function (faction) {
+        return faction.killer && faction.owner;
+      }).length;
+    },
+    expansionsSelected: function expansionsSelected() {
+      return Object.values(this.shared.data.factions).filter(function (faction) {
+        return !faction.basic && faction.owner;
+      }).length;
+    },
+    experimentalsSelected: function experimentalsSelected() {
+      return Object.values(this.shared.data.factions).filter(function (faction) {
+        return faction.status === 0 && faction.owner;
+      }).length;
     }
   },
   methods: {
@@ -6841,41 +6881,29 @@ __webpack_require__.r(__webpack_exports__);
       if (player.active) return "Choosing...";else if (player.faction) return player.faction;
     },
     chooseRandomFaction: function chooseRandomFaction() {
-      var unselectedFactions = [];
-      var picked = {
-        killer: false,
-        experimental: false
-      };
+      var unselectedFactions = Object.values(this.shared.data.factions).filter(function (faction) {
+        return faction.selectable === true;
+      });
       this.random = true;
-
-      _.forEach(this.shared.data.factions, function (faction, name) {
-        if (faction.killer && faction.owner) picked.killer = true;
-        if (faction.status === 0 && faction.owner) picked.experimental = true;else if (!faction.owner && !faction.unselectable) unselectedFactions.push({
-          name: name,
-          killer: faction.killer
-        });
-      }); // if no killer has been selected and we are the last player to pick, make sure we pick a killer
-
-
-      if (!picked.killer && this.remainingPlayers === 1) {
-        unselectedFactions = unselectedFactions.filter(function (faction) {
-          return faction.killer;
-        });
-      } // if a killer has already been selected make sure we don't also pick a killer
-
-
-      if (picked.killer) {
-        unselectedFactions = unselectedFactions.filter(function (faction) {
-          return !faction.killer;
-        });
-      } // if an experimental faction has already been selected make sure we don't also pick one
-
-
-      if (picked.experimental) {
-        unselectedFactions = unselectedFactions.filter(function (faction) {
-          return faction.status !== 0;
-        });
+      /*
+      _.forEach( this.shared.data.factions, (faction, name) => {
+         if( faction.killer && faction.owner ) picked.killer = true;
+         if( faction.status === 0 && faction.owner ) picked.experimental = true;
+         else if ( !faction.owner && !faction.unselectable ) unselectedFactions.push( { name : name, killer : faction.killer } );
+      });
+       // if no killer has been selected and we are the last player to pick, make sure we pick a killer
+      if( !this.killersSelected && this.remainingPlayers === 1 ){
+          unselectedFactions = unselectedFactions.filter( faction => faction.killer );
       }
+       // if a killer has already been selected make sure we don't also pick a killer
+      if( this.killersSelected ){
+          unselectedFactions = unselectedFactions.filter( faction => !faction.killer );
+      }
+       // if an experimental faction has already been selected make sure we don't also pick one
+      if( this.experimentalsSelected ){
+          unselectedFactions = unselectedFactions.filter( faction => faction.status !== 0 );
+      }
+      */
 
       this.selectedFaction = _.sample(unselectedFactions).name;
       this.chooseFaction();
@@ -8712,11 +8740,45 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'faction-choice',
-  props: ['faction', 'selected'],
+  props: ['faction', 'selected', 'selectable', "remainingPlayers", "killersSelected", "expansionsSelected"],
   data: function data() {
     return {
       shared: App.state
     };
+  },
+  methods: {
+    checkIsSelectable: function checkIsSelectable() {
+      // if the faction is already taken, or flagged unselectable, then it can't be taken
+      if (this.faction.owner !== null || this.faction.unselectable) return false; // otherwise if we are in free for all mode then anything goes
+
+      if (this.shared.data.gameType === 'anarchy') return true; // but if we are in basic mode everything goes as long as they are basic factions
+
+      if (this.shared.data.gameType === 'basic') return this.faction.basic; // if we are in optimized mode and already have max killer factions allow only non-killers
+
+      if (this.shared.data.gameType === 'optimized' && !this.moreKillersAllowed && this.faction.killer) return false; // if we are in optimized mode and already have max expansion factions allow only non-basics
+
+      if (this.shared.data.gameType === 'optimized' && !this.moreExpansionsAllowed && !this.faction.basic) return false;
+      if (this.shared.data.gameType === 'optimized' && this.remainingPlayers === 1 && !this.killersSelected && !this.faction.killer) return false;
+      return true;
+    }
+  },
+  computed: {
+    moreKillersAllowed: function moreKillersAllowed() {
+      var allowed = this.playerCount === 5 ? 2 : 1;
+      return this.killersSelected < allowed;
+    },
+    moreExpansionsAllowed: function moreExpansionsAllowed() {
+      var allowed = this.playerCount === 5 ? 3 : 2;
+      return this.expansionsSelected < allowed;
+    },
+    playerCount: function playerCount() {
+      return Object.keys(this.shared.data.players).length;
+    },
+    isSelectable: function isSelectable() {
+      var selectable = this.checkIsSelectable();
+      this.$emit('isSelectable', selectable);
+      return selectable;
+    }
   }
 });
 
@@ -13394,7 +13456,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.logout-link {\n    font-size: 1.5rem;\n    color: var(--highlight-color);\n}\n.server-offline {\n    padding: 2rem;\n    display: flex;\n    align-items: baseline;\n    font-size: 1.75em;\n    background-color: rgba(17, 7, 19, 0.9);\n    border-radius: .2em;\n    border-top: 1px solid rgba(91, 33, 128, 0.56);\n    letter-spacing: 2px;\n    color: var(--highlight-color);\n    box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);\n}\n.server-offline i {\n    color: red;\n    font-size: .9em;\n    position: relative;\n    top: 3px;\n    margin-right: .5rem;\n}\n\n", ""]);
+exports.push([module.i, "\n.logout-link {\n    font-size: 1.5rem;\n    color: var(--highlight-color);\n}\n.server-offline {\n    padding: 2rem;\n    display: flex;\n    align-items: baseline;\n    font-size: 1.75em;\n    background-color: rgba(17, 7, 19, 0.9);\n    border-radius: .2em;\n    border-top: 1px solid rgba(91, 33, 128, 0.56);\n    letter-spacing: 2px;\n    color: var(--highlight-color);\n    box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);\n}\n.server-offline i {\n    color: red;\n    font-size: .9em;\n    position: relative;\n    top: 3px;\n    margin-right: .5rem;\n}\n.game-type__option {\n    cursor: pointer;\n    margin: .3em;\n}\n.game-type__option.active {\n    color: var(--highlight-color);\n}\n\n", ""]);
 
 // exports
 
@@ -58853,6 +58915,27 @@ var render = function() {
                   2
                 ),
                 _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "game-type d-flex justify-center" },
+                  _vm._l(_vm.gameTypes, function(type) {
+                    return _c(
+                      "div",
+                      {
+                        staticClass: "game-type__option",
+                        class: { active: _vm.shared.game.gameType === type },
+                        on: {
+                          click: function($event) {
+                            return _vm.setGameType(type)
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(type))]
+                    )
+                  }),
+                  0
+                ),
+                _vm._v(" "),
                 _c("div", { staticClass: "open-game__buttons center-text" }, [
                   !_vm.joinedGame
                     ? _c(
@@ -61921,10 +62004,19 @@ var render = function() {
                 _vm._l(_vm.basicFactions, function(faction) {
                   return _c("faction-choice", {
                     key: faction.name,
-                    attrs: { faction: faction, selected: _vm.selectedFaction },
+                    attrs: {
+                      faction: faction,
+                      selected: _vm.selectedFaction,
+                      remainingPlayers: _vm.remainingPlayers,
+                      killersSelected: _vm.killersSelected,
+                      expansionsSelected: _vm.expansionsSelected
+                    },
                     on: {
                       clicked: function(e) {
                         return (_vm.selectedFaction = e)
+                      },
+                      isSelectable: function(e) {
+                        return (faction.selectable = e)
                       }
                     }
                   })
@@ -61938,10 +62030,19 @@ var render = function() {
                 _vm._l(_vm.expansionFactions, function(faction) {
                   return _c("faction-choice", {
                     key: faction.name,
-                    attrs: { faction: faction, selected: _vm.selectedFaction },
+                    attrs: {
+                      faction: faction,
+                      selected: _vm.selectedFaction,
+                      remainingPlayers: _vm.remainingPlayers,
+                      killersSelected: _vm.killersSelected,
+                      expansionsSelected: _vm.expansionsSelected
+                    },
                     on: {
                       clicked: function(e) {
                         return (_vm.selectedFaction = e)
+                      },
+                      isSelectable: function(e) {
+                        return (faction.selectable = e)
                       }
                     }
                   })
@@ -61972,11 +62073,9 @@ var render = function() {
                     staticClass: "button",
                     attrs: {
                       disabled:
-                        _vm.shared.data.factions[_vm.selectedFaction] &&
-                        (_vm.shared.data.factions[_vm.selectedFaction].owner !==
-                          null ||
-                          _vm.shared.data.factions[_vm.selectedFaction]
-                            .unselectable)
+                        !_vm.selectedFaction ||
+                        !_vm.shared.data.factions[_vm.selectedFaction]
+                          .selectable
                     },
                     on: { click: _vm.chooseFaction }
                   },
@@ -63812,7 +63911,7 @@ var render = function() {
         "choose-factions__faction pointer d-flex justify-end align-center",
       class: {
         active: _vm.selected === _vm.faction.name,
-        taken: _vm.faction.owner !== null || _vm.faction.unselectable,
+        taken: !_vm.isSelectable,
         killer: _vm.faction.killer,
         basic: _vm.faction.basic
       },

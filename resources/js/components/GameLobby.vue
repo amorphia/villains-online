@@ -21,6 +21,15 @@
                     <div v-for="player in shared.game.players">{{ player.name | startCase }}</div>
                     <div v-if="Object.keys(shared.game.players).length === 0" class="open-game__empty">No Players</div>
                 </div>
+
+                <div class="game-type d-flex justify-center">
+                    <div v-for="type in gameTypes"
+                         class="game-type__option"
+                         :class="{ active : shared.game.gameType === type }"
+                         @click="setGameType( type )"
+                    >{{ type }}</div>
+                </div>
+
                 <div class="open-game__buttons center-text">
                     <button v-if="!joinedGame" :disabled="!canJoin" class="button wide px-6" @click="joinGame">JOIN</button>
                     <button v-if="joinedGame" class="button wide px-6 button-empty" @click="leaveGame">LEAVE</button>
@@ -44,7 +53,12 @@
         name: 'game-lobby',
         data() {
             return {
-                shared : App.state
+                shared : App.state,
+                gameTypes : [
+                    'basic',
+                    'optimized',
+                    'anarchy'
+                ]
             };
         },
 
@@ -72,6 +86,15 @@
         },
 
         methods : {
+            setGameType( type ){
+                if( this.shared.game.creator === this.shared.id ){
+                    App.event.emit( 'sound', 'ui' );
+                    this.shared.socket.emit( 'setGameType', this.shared.game.id, type );
+                } else {
+                    App.event.emit( 'sound', 'error' );
+                }
+            },
+
             newGame() {
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit('newGame');
@@ -97,7 +120,6 @@
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'startGame', this.shared.game.id );
             },
-
 
         }
     }
@@ -129,6 +151,15 @@
         position: relative;
         top: 3px;
         margin-right: .5rem;
+    }
+
+    .game-type__option {
+        cursor: pointer;
+        margin: .3em;
+    }
+
+    .game-type__option.active {
+        color: var(--highlight-color);
     }
 
 </style>
