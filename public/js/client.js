@@ -13475,7 +13475,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.game-map {\n        display: flex;\n        flex-wrap: wrap;\n        width: 100%;\n        position: relative;\n}\n.game-map:after {\n        content: \"\";\n        background-image: url(/images/tracks.png);\n        background-position: center;\n        background-size: cover;\n        position: absolute;\n        z-index: -1;\n        width: 100%;\n        height: 100%;\n        opacity: .6;\n}\n\n", ""]);
+exports.push([module.i, "\n.game-map {\n        display: flex;\n        flex-wrap: wrap;\n        width: 100%;\n        position: relative;\n}\n\n    /*\n    .game-map:after {\n        content: \"\";\n        background-image: url(/images/tracks.png);\n        background-position: center;\n        background-size: cover;\n        position: absolute;\n        z-index: -1;\n        width: 100%;\n        height: 100%;\n        opacity: .6;\n    }\n*/\n\n", ""]);
 
 // exports
 

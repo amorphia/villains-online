@@ -28,6 +28,7 @@
         position: relative;
 }
 
+    /*
     .game-map:after {
         content: "";
         background-image: url(/images/tracks.png);
@@ -39,6 +40,7 @@
         height: 100%;
         opacity: .6;
     }
+*/
 
 </style>
 
