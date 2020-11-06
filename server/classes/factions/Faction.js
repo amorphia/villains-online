@@ -245,7 +245,7 @@ class Faction {
         this.data.usedSkills = [];
 
         // reset token spy
-        this.data.tokenSpy = false;
+        this.data.tokenSpy = [];
 
         // clear objective tests
         this.data.objective.tests = {};

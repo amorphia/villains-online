@@ -14,9 +14,7 @@
 
                 <div class="flex-center">
                     <button class="button button-empty" @click="resolve( false )">Decline</button>
-                    <button class="button"
-                            @click="resolve( true )"
-                            :disabled="!canActivate">Resolve Twice</button>
+                    <button class="button" @click="resolve( true )">Resolve Twice</button>
                 </div>
 
             </div>
@@ -44,11 +42,6 @@
         },
 
         computed : {
-
-            canActivate(){
-                return (this.shared.faction.resources) >= 1;
-            },
-
 
             data(){
                 return this.shared.player.prompt.data;

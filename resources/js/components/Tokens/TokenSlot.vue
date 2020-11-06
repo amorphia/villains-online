@@ -59,7 +59,7 @@
                 if( ! this.token || this.token.revealed ) return false;
 
                 if( this.token.faction === this.shared.faction.name
-                    || this.shared.faction.tokenSpy === this.token.location
+                    || this.shared.faction.tokenSpy.includes( this.token.location )
                     || this.ministerSpy
                 ) return true;
 

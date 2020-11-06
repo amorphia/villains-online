@@ -8682,8 +8682,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'double-resolve',
   data: function data() {
@@ -8700,9 +8698,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
-    canActivate: function canActivate() {
-      return this.shared.faction.resources >= 1;
-    },
     data: function data() {
       return this.shared.player.prompt.data;
     },
@@ -10539,7 +10534,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     canSeeToken: function canSeeToken() {
       if (!this.token || this.token.revealed) return false;
-      if (this.token.faction === this.shared.faction.name || this.shared.faction.tokenSpy === this.token.location || this.ministerSpy) return true;
+      if (this.token.faction === this.shared.faction.name || this.shared.faction.tokenSpy.includes(this.token.location) || this.ministerSpy) return true;
     },
     ministerSpy: function ministerSpy() {
       var _this = this;
@@ -63866,7 +63861,6 @@ var render = function() {
               "button",
               {
                 staticClass: "button",
-                attrs: { disabled: !_vm.canActivate },
                 on: {
                   click: function($event) {
                     return _vm.resolve(true)

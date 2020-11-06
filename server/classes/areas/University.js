@@ -34,7 +34,7 @@ class University extends Area {
             }
         }).catch( error => console.error( error ) );
 
-        faction.data.tokenSpy = data.area;
+        faction.data.tokenSpy.push( data.area );
         faction.game().message({
             faction : faction,
             message: `looks at the tokens in the ${data.area}`
