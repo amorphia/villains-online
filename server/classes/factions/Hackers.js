@@ -85,7 +85,7 @@ class Hackers extends Faction {
 
         //this.payCost( 1 );
         this.data.hax0red.push( area.name );
-        this.message({ message: `The hackers pay xRx to resolve the ${area.name} skill twice`, faction : this });
+        this.message({ message: `The hackers resolve the ${area.name} skill twice`, faction : this });
         return { doubleResolve : true };
     }
 
