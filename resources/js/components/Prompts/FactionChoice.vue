@@ -35,7 +35,7 @@
         methods : {
             checkIsSelectable(){
                 // if the faction is already taken, or flagged unselectable, then it can't be taken
-                if( this.faction.owner !== null || this.faction.unselectable ) return false;
+                if( this.faction.owner !== null || this.faction.selectable === false ) return false;
 
                 // otherwise if we are in free for all mode then anything goes
                 if( this.shared.data.gameType === 'anarchy' ) return true;

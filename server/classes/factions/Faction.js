@@ -40,7 +40,7 @@ class Faction {
         capitolTokens : [],
         spyAll : false,
         usedSkills : [],
-        tokenSpy : null,
+        tokenSpy : [],
         areasCapturedThisTurn : [],
 
         // objects

@@ -14,13 +14,13 @@ let obj = {
     hackers : { name: 'hackers', owner : null, status : 1, selectable : true },
     ninjas : { name: 'ninjas', owner : null, killer : true, status : 1, selectable : true },
     guerrillas : { name: 'guerrillas', owner : null, killer : true, status : 1, selectable : true },
-    //parasites : { name: 'parasites', owner : null, status : 0, unselectable : true, selectable : true },
+    //parasites : { name: 'parasites', owner : null, status : 0, selectable : false },
     conquistadors : { name: 'conquistadors', owner : null, status : 2, selectable : true },
     witches : { name: 'witches', owner : null, status : 0, selectable : true },
     bureau : { name: 'bureau', owner : null, status : 0, selectable : true },
     plants : { name: 'plants', owner : null, status : 1, selectable : true },
     ghosts : { name: 'ghosts', owner : null, status : 0, selectable : true },
-    spiders : { name: 'spiders', owner : null, status : 0, killer : true, unselectable : true, selectable : true },
+    spiders : { name: 'spiders', owner : null, status : 0, killer : true, selectable : false },
 };
 
 module.exports = Object.assign({}, obj );

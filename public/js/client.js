@@ -8744,7 +8744,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     checkIsSelectable: function checkIsSelectable() {
       // if the faction is already taken, or flagged unselectable, then it can't be taken
-      if (this.faction.owner !== null || this.faction.unselectable) return false; // otherwise if we are in free for all mode then anything goes
+      if (this.faction.owner !== null || this.faction.selectable === false) return false; // otherwise if we are in free for all mode then anything goes
 
       if (this.shared.data.gameType === 'anarchy') return true; // but if we are in basic mode everything goes as long as they are basic factions
 
