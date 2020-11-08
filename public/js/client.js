@@ -12034,6 +12034,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-player',
   data: function data() {
@@ -12052,6 +12073,13 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    killedUnits: function killedUnits() {
+      var killedUnits = this.faction.units.filter(function (unit) {
+        return unit.killed;
+      });
+      if (!killedUnits.length) return;
+      return _.groupBy(killedUnits, 'location');
+    },
     completedPlans: function completedPlans() {
       return _.groupBy(this.faction.plans.completed, 'turnScored');
     },
@@ -66213,7 +66241,7 @@ var render = function() {
                 attrs: {
                   src:
                     "/images/factions/" +
-                    _vm.shared.faction.name +
+                    _vm.units[0].faction +
                     "/units/" +
                     type +
                     ".png"
@@ -67897,6 +67925,29 @@ var render = function() {
                     )
                   : _c("div", { staticClass: "view-player__empty" }, [
                       _vm._v("No Capitol Tokens")
+                    ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "view-player__title" }, [
+                  _vm._v("Killed Units:")
+                ]),
+                _vm._v(" "),
+                _vm.killedUnits
+                  ? _c(
+                      "div",
+                      { staticClass: "d-flex justify-center p-4" },
+                      _vm._l(_vm.killedUnits, function(units, area) {
+                        return _c("unit-set", {
+                          attrs: {
+                            units: units,
+                            title: area,
+                            classes: "border"
+                          }
+                        })
+                      }),
+                      1
+                    )
+                  : _c("div", { staticClass: "view-player__empty" }, [
+                      _vm._v("No Killed Units")
                     ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "view-player__title" }, [

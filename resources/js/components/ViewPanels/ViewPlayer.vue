@@ -128,6 +128,27 @@
                     <div v-else class="view-player__empty">No Capitol Tokens</div>
 
 
+                    <div class="view-player__title">Killed Units:</div>
+                    <div v-if="killedUnits" class="d-flex justify-center p-4">
+
+                        <unit-set v-for="(units, area) in killedUnits" :units="units" :title="area" classes="border"></unit-set>
+
+                        <!--
+                        <div v-for="(units, area) in killedUnits"
+                             class="p-3 pos-relative unit-set-block border" :data-title="area">
+
+                            <div class="width-100 pos-relative ratio-square" v-for="unit in units">
+                                <div class="view-player__unit" >
+                                    <img class="view-player__unit-image"
+                                         :src="`/images/factions/${unit.faction}/units/${unit.type}.png`">
+                                </div>
+                            </div>
+                        </div>
+                        -->
+                    </div>
+                    <div v-else class="view-player__empty">No Killed Units</div>
+
+
                     <div class="view-player__title">Completed Plans:</div>
                     <div v-if="completedPlans" class="view-player__completed-plans py-4">
 
@@ -239,6 +260,12 @@
 
 
         computed : {
+
+            killedUnits(){
+                let killedUnits = this.faction.units.filter( unit => unit.killed );
+                if( !killedUnits.length ) return;
+                return _.groupBy( killedUnits, 'location' );
+            },
 
             completedPlans(){
                 return _.groupBy( this.faction.plans.completed, 'turnScored' );

@@ -4,7 +4,7 @@
              v-for="(count, type) in shared.groupByCount( units, 'type' )"
              @click="$emit( 'unitClicked', type )"
              :data-count="count">
-                <img class="unit-hud__unit-image" :src="`/images/factions/${shared.faction.name}/units/${type}.png`">
+                <img class="unit-hud__unit-image" :src="`/images/factions/${units[0].faction}/units/${type}.png`">
         </div>
     </div>
 </template>
