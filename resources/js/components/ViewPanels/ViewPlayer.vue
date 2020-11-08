@@ -131,7 +131,7 @@
                     <div class="view-player__title">Killed Units:</div>
                     <div v-if="killedUnits" class="d-flex justify-center p-4">
 
-                        <unit-set v-for="(units, area) in killedUnits" 
+                        <unit-set v-for="(units, area) in killedUnits"
                                   :units="units"
                                   :key="area"
                                   :title="area" classes="border"></unit-set>

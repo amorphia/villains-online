@@ -67,6 +67,8 @@
 
         methods : {
             sortFactions( a ,b ){
+                if( a.basic && !b.basic ) return -1;
+                if( b.basic && !a.basic ) return 1;
                 if( !a.selectable ) return 1;
                 if( !b.selectable ) return -1;
                 if( a.status > b.status ) return -1;
