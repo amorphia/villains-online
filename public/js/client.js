@@ -12055,6 +12055,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-player',
   data: function data() {
@@ -67937,6 +67940,7 @@ var render = function() {
                       { staticClass: "d-flex justify-center p-4" },
                       _vm._l(_vm.killedUnits, function(units, area) {
                         return _c("unit-set", {
+                          key: area,
                           attrs: {
                             units: units,
                             title: area,

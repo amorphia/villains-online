@@ -178,6 +178,8 @@ let obj = {
         let toHit = this.getToHitNumber( args, victim );
         let hits = this.calculateHits( rolls, toHit );
 
+        if( args.unit ) await this.triggeredEvents('attack', [{ unit: args.unit }] );
+
         // report attack results
         let attackResult = {
             faction : this.name,

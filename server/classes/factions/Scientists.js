@@ -33,7 +33,7 @@ class Scientists extends Faction {
         };
 
         // units
-        this.units['goon'].count = 4;
+        this.units['goon'].count = 3;
         this.units['mole'].count = 4;
         this.units['talent'].count = 6;
 
@@ -46,11 +46,11 @@ class Scientists extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 1,
-                attack: [3],
+                attack: [5,5],
                 cost: 2,
                 killed : false,
                 onDeploy: 'drTyrannosaurusDeploy',
-                onHit: 'drTyrannosaurusHit',
+                onAttack: 'drTyrannosaurusHit',
                 selected : false,
                 hitsAssigned : 0
             }
@@ -71,8 +71,8 @@ class Scientists extends Faction {
     }
 
     async drTyrannosaurusHit( event ){
-        this.drawCards( event.hits, true );
-        this.message({ message: `<span class="faction-scientists">Dr Tyrannosaurus</span> learned a lot while killing` });
+        this.drawCards( 1, true );
+        this.message({ message: `<span class="faction-scientists">Dr Tyrannosaurus</span> learned a lot while playing with their food` });
     }
 
 
