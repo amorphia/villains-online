@@ -3746,6 +3746,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-lobby',
   data: function data() {
@@ -3776,6 +3789,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    openFactions: function openFactions() {
+      console.log('view factions');
+      this.shared.event.emit('viewFactions');
+    },
     setGameType: function setGameType(type) {
       if (this.shared.game.creator === this.shared.id) {
         App.event.emit('sound', 'ui');
@@ -6885,26 +6902,6 @@ __webpack_require__.r(__webpack_exports__);
         return faction.selectable === true;
       });
       this.random = true;
-      /*
-      _.forEach( this.shared.data.factions, (faction, name) => {
-         if( faction.killer && faction.owner ) picked.killer = true;
-         if( faction.status === 0 && faction.owner ) picked.experimental = true;
-         else if ( !faction.owner && !faction.unselectable ) unselectedFactions.push( { name : name, killer : faction.killer } );
-      });
-       // if no killer has been selected and we are the last player to pick, make sure we pick a killer
-      if( !this.killersSelected && this.remainingPlayers === 1 ){
-          unselectedFactions = unselectedFactions.filter( faction => faction.killer );
-      }
-       // if a killer has already been selected make sure we don't also pick a killer
-      if( this.killersSelected ){
-          unselectedFactions = unselectedFactions.filter( faction => !faction.killer );
-      }
-       // if an experimental faction has already been selected make sure we don't also pick one
-      if( this.experimentalsSelected ){
-          unselectedFactions = unselectedFactions.filter( faction => faction.status !== 0 );
-      }
-      */
-
       this.selectedFaction = _.sample(unselectedFactions).name;
       this.chooseFaction();
     },
@@ -8746,14 +8743,14 @@ __webpack_require__.r(__webpack_exports__);
       // if the faction is already taken, or flagged unselectable, then it can't be taken
       if (this.faction.owner !== null || this.faction.selectable === false) return false; // otherwise if we are in free for all mode then anything goes
 
-      if (this.shared.data.gameType === 'anarchy') return true; // but if we are in basic mode everything goes as long as they are basic factions
+      if (this.shared.data && this.shared.data.gameType === 'anarchy') return true; // but if we are in basic mode everything goes as long as they are basic factions
 
-      if (this.shared.data.gameType === 'basic') return this.faction.basic; // if we are in optimized mode and already have max killer factions allow only non-killers
+      if (this.shared.data && this.shared.data.gameType === 'basic') return this.faction.basic; // if we are in optimized mode and already have max killer factions allow only non-killers
 
-      if (this.shared.data.gameType === 'optimized' && !this.moreKillersAllowed && this.faction.killer) return false; // if we are in optimized mode and already have max expansion factions allow only non-basics
+      if (this.shared.data && this.shared.data.gameType === 'optimized' && !this.moreKillersAllowed && this.faction.killer) return false; // if we are in optimized mode and already have max expansion factions allow only non-basics
 
-      if (this.shared.data.gameType === 'optimized' && !this.moreExpansionsAllowed && !this.faction.basic) return false;
-      if (this.shared.data.gameType === 'optimized' && this.remainingPlayers === 1 && !this.killersSelected && !this.faction.killer) return false;
+      if (this.shared.data && this.shared.data.gameType === 'optimized' && !this.moreExpansionsAllowed && !this.faction.basic) return false;
+      if (this.shared.data && this.shared.data.gameType === 'optimized' && this.remainingPlayers === 1 && !this.killersSelected && !this.faction.killer) return false;
       return true;
     }
   },
@@ -8767,6 +8764,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.expansionsSelected < allowed;
     },
     playerCount: function playerCount() {
+      if (!this.shared.data) return 0;
       return Object.keys(this.shared.data.players).length;
     },
     isSelectable: function isSelectable() {
@@ -11724,6 +11722,88 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'view-factions',
+  data: function data() {
+    return {
+      shared: App.state,
+      open: false,
+      selectedFaction: null
+    };
+  },
+  mounted: function mounted() {},
+  created: function created() {
+    var _this = this;
+
+    this.shared.event.on('viewFactions', function (e) {
+      _this.open = true;
+      _this.selectedFaction = _this.factions[0].name;
+    });
+  },
+  computed: {
+    factions: function factions() {
+      return Object.values(this.shared.factionList).sort(this.sortFactions);
+    }
+  },
+  watch: {
+    open: function open() {
+      App.event.emit('sound', 'ui');
+    }
+  },
+  methods: {
+    sortFactions: function sortFactions(a, b) {
+      if (!a.selectable) return 1;
+      if (!b.selectable) return -1;
+      if (a.status > b.status) return -1;
+      if (a.status < b.status) return 1;
+      if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=script&lang=js&":
 /*!********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=script&lang=js& ***!
@@ -12180,8 +12260,10 @@ __webpack_require__.r(__webpack_exports__);
         }, 1000);
       }); // listen for open games
 
-      this.shared.socket.on('openGame', function (game) {
+      this.shared.socket.on('openGame', function (game, factionList) {
         _this5.$set(_this5.shared, 'game', game);
+
+        _this5.$set(_this5.shared, 'factionList', factionList);
       }); // listen for saved games
 
       this.shared.socket.on('savedGame', function (game) {
@@ -13451,7 +13533,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.logout-link {\n    font-size: 1.5rem;\n    color: var(--highlight-color);\n}\n.server-offline {\n    padding: 2rem;\n    display: flex;\n    align-items: baseline;\n    font-size: 1.75em;\n    background-color: rgba(17, 7, 19, 0.9);\n    border-radius: .2em;\n    border-top: 1px solid rgba(91, 33, 128, 0.56);\n    letter-spacing: 2px;\n    color: var(--highlight-color);\n    box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);\n}\n.server-offline i {\n    color: red;\n    font-size: .9em;\n    position: relative;\n    top: 3px;\n    margin-right: .5rem;\n}\n.game-type__option {\n    cursor: pointer;\n    margin: .3em;\n}\n.game-type__option.active {\n    color: var(--highlight-color);\n}\n\n", ""]);
+exports.push([module.i, "\n.lobby__action-link {\n    color: var(--highlight-color);\n    width: 20em;\n}\n.lobby__players {\n}\n.server-offline {\n    padding: 2rem;\n    display: flex;\n    align-items: baseline;\n    font-size: 1.75em;\n    background-color: rgba(17, 7, 19, 0.9);\n    border-radius: .2em;\n    border-top: 1px solid rgba(91, 33, 128, 0.56);\n    letter-spacing: 2px;\n    color: var(--highlight-color);\n    box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);\n}\n.server-offline i {\n    color: red;\n    font-size: .9em;\n    position: relative;\n    top: 3px;\n    margin-right: .5rem;\n}\n.game-type__option {\n    cursor: pointer;\n    margin: .3em;\n}\n.game-type__option.active {\n    color: var(--highlight-color);\n}\n\n", ""]);
 
 // exports
 
@@ -13546,7 +13628,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link {\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    z-index: 1;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n.game-hud__title {\n}\n", ""]);
+exports.push([module.i, "\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link {\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n.game-hud__title {\n}\n", ""]);
 
 // exports
 
@@ -58842,26 +58924,49 @@ var render = function() {
         "div",
         { staticClass: "d-flex flex-center width-100 height-100 pos-relative" },
         [
-          _c(
-            "a",
-            {
-              staticClass: "pos-absolute top-0 right-0 m-4 logout-link",
-              attrs: { href: "/logout" }
-            },
-            [_vm._v("logout")]
-          ),
+          _c("view-factions"),
           _vm._v(" "),
           _c(
             "div",
             {
-              staticClass: "pos-absolute top-0 width-100 d-flex justify-center"
+              staticClass:
+                "d-flex justify-between width-100 pos-absolute top-0 left-0 right-0 px-4 pt-2"
             },
-            _vm._l(_vm.shared.lobbyPlayers, function(player) {
-              return _c("div", { staticClass: "highlight m-3" }, [
-                _vm._v(_vm._s(player))
-              ])
-            }),
-            0
+            [
+              _c(
+                "a",
+                {
+                  staticClass:
+                    "lobby__action-link pointer grow-0 shrink-0 pr-4",
+                  on: { click: _vm.openFactions }
+                },
+                [_vm._v("view factions")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "d-flex justify-center grow-1 shrink-1 lobby__players"
+                },
+                _vm._l(_vm.shared.lobbyPlayers, function(player) {
+                  return _c("div", { staticClass: "m-3" }, [
+                    _vm._v(_vm._s(player))
+                  ])
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  staticClass:
+                    "lobby__action-link grow-0 shrink-0 pl-4 right-text",
+                  attrs: { href: "/logout" }
+                },
+                [_vm._v("logout")]
+              )
+            ]
           ),
           _vm._v(" "),
           _vm.shared.game
@@ -58983,7 +59088,8 @@ var render = function() {
                       [_vm._v("Create New Game")]
                     )
               ])
-        ]
+        ],
+        1
       )
     ],
     1
@@ -65574,7 +65680,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "saved-games game-hud drawer__aside height-100 pt-4" },
+    { staticClass: "saved-games game-hud drawer__aside height-100 pt-4 z-4" },
     [
       _c("div", { staticClass: "highlight secondary-font center-text pb-4" }, [
         _vm._v("\n        saved games\n    ")
@@ -67043,6 +67149,103 @@ var render = function() {
                     ]
                   )
                 ])
+              ]
+            )
+          ]
+        )
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=template&id=45e533dc&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=template&id=45e533dc& ***!
+  \**************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("transition", { attrs: { name: "right" } }, [
+    _vm.open
+      ? _c(
+          "div",
+          {
+            staticClass:
+              "view-player pos-absolute width-100 height-100 top-0 p-5 d-flex align-stretch overflow-auto z-5"
+          },
+          [
+            _c("button", {
+              staticClass: "toggle fixed top right icon-x",
+              on: {
+                click: function($event) {
+                  _vm.open = false
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "factions width-100 height-100 p-5 d-flex align-center"
+              },
+              [
+                _c(
+                  "div",
+                  { staticClass: "choose-factions__faction-container" },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "choose-factions__faction-list pb-3" },
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "choose-factions__basic-factions pr-3"
+                          },
+                          _vm._l(_vm.factions, function(faction) {
+                            return _c("faction-choice", {
+                              key: faction.name,
+                              attrs: {
+                                faction: faction,
+                                selected: _vm.selectedFaction
+                              },
+                              on: {
+                                clicked: function(e) {
+                                  return (_vm.selectedFaction = e)
+                                }
+                              }
+                            })
+                          }),
+                          1
+                        )
+                      ]
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _vm.selectedFaction
+                  ? _c("div", {
+                      staticClass: "choose-factions__faction-sheet",
+                      style:
+                        "background-image : url('/images/factions/" +
+                        _vm.selectedFaction +
+                        "/sheet.jpg')"
+                    })
+                  : _vm._e()
               ]
             )
           ]
@@ -81712,6 +81915,7 @@ var map = {
 	"./ViewPanels/ViewArea.vue": "./resources/js/components/ViewPanels/ViewArea.vue",
 	"./ViewPanels/ViewCard.vue": "./resources/js/components/ViewPanels/ViewCard.vue",
 	"./ViewPanels/ViewCombat.vue": "./resources/js/components/ViewPanels/ViewCombat.vue",
+	"./ViewPanels/ViewFactions.vue": "./resources/js/components/ViewPanels/ViewFactions.vue",
 	"./ViewPanels/ViewPlayer.vue": "./resources/js/components/ViewPanels/ViewPlayer.vue",
 	"./VillainsOnline.vue": "./resources/js/components/VillainsOnline.vue",
 	"./areas/AreaAction.vue": "./resources/js/components/areas/AreaAction.vue",
@@ -91784,6 +91988,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewCombat_vue_vue_type_template_id_f173ec8e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewCombat_vue_vue_type_template_id_f173ec8e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/ViewFactions.vue":
+/*!*************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/ViewFactions.vue ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ViewFactions_vue_vue_type_template_id_45e533dc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ViewFactions.vue?vue&type=template&id=45e533dc& */ "./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=template&id=45e533dc&");
+/* harmony import */ var _ViewFactions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ViewFactions.vue?vue&type=script&lang=js& */ "./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ViewFactions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ViewFactions_vue_vue_type_template_id_45e533dc___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ViewFactions_vue_vue_type_template_id_45e533dc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ViewPanels/ViewFactions.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewFactions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewFactions.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewFactions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=template&id=45e533dc&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=template&id=45e533dc& ***!
+  \********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewFactions_vue_vue_type_template_id_45e533dc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewFactions.vue?vue&type=template&id=45e533dc& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewFactions.vue?vue&type=template&id=45e533dc&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewFactions_vue_vue_type_template_id_45e533dc___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewFactions_vue_vue_type_template_id_45e533dc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

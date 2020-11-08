@@ -3,13 +3,26 @@
 
         <saved-games></saved-games>
 
+        <!-- MAIN CONTENT -->
         <div class="d-flex flex-center width-100 height-100 pos-relative">
 
-            <a href="/logout" class="pos-absolute top-0 right-0 m-4 logout-link">logout</a>
+            <view-factions></view-factions>
 
-            <div class="pos-absolute top-0 width-100 d-flex justify-center">
-                <div v-for="player in shared.lobbyPlayers" class="highlight m-3">{{ player }}</div>
+            <!-- TOP BAR -->
+            <div class="d-flex justify-between width-100 pos-absolute top-0 left-0 right-0 px-4 pt-2">
+
+                <!-- view factions button -->
+                <a class="lobby__action-link pointer grow-0 shrink-0 pr-4" @click="openFactions">view factions</a>
+
+                <!-- lobby players -->
+                <div class="d-flex justify-center grow-1 shrink-1 lobby__players">
+                    <div v-for="player in shared.lobbyPlayers" class="m-3">{{ player }}</div>
+                </div>
+
+                <!-- logout button -->
+                <a href="/logout" class="lobby__action-link grow-0 shrink-0 pl-4 right-text">logout</a>
             </div>
+
 
             <div v-if="shared.game" class="open-game glass width-40">
                 <div class="d-flex align-center open-game__id text-uppercase justify-between">
@@ -86,6 +99,11 @@
         },
 
         methods : {
+            openFactions(){
+                console.log( 'view factions' );
+                this.shared.event.emit( 'viewFactions' );
+            },
+
             setGameType( type ){
                 if( this.shared.game.creator === this.shared.id ){
                     App.event.emit( 'sound', 'ui' );
@@ -127,9 +145,13 @@
 
 
 <style>
-    .logout-link {
-        font-size: 1.5rem;
+    .lobby__action-link {
         color: var(--highlight-color);
+        width: 20em;
+    }
+
+    .lobby__players {
+
     }
 
     .server-offline {

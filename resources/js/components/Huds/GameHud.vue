@@ -130,7 +130,6 @@
         font-family: var(--accent-font);
         font-size: 1rem;
         user-select: none;
-        z-index: 1;
     }
 
     .drawer__toggle {

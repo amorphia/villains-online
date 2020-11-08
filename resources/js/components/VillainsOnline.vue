@@ -136,8 +136,9 @@
                 });
 
                 // listen for open games
-                this.shared.socket.on( 'openGame', game => {
+                this.shared.socket.on( 'openGame', (game, factionList ) => {
                     this.$set( this.shared, 'game', game );
+                    this.$set( this.shared, 'factionList', factionList );
                 });
 
                 // listen for saved games

@@ -1,6 +1,6 @@
 <template>
 
-    <div class="saved-games game-hud drawer__aside height-100 pt-4">
+    <div class="saved-games game-hud drawer__aside height-100 pt-4 z-4">
         <div class="highlight secondary-font center-text pb-4">
             saved games
         </div>

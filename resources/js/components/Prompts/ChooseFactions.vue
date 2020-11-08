@@ -134,31 +134,6 @@
             chooseRandomFaction(){
                 let unselectedFactions = Object.values( this.shared.data.factions ).filter( faction => faction.selectable === true );
                 this.random = true;
-
-                /*
-                _.forEach( this.shared.data.factions, (faction, name) => {
-                   if( faction.killer && faction.owner ) picked.killer = true;
-                   if( faction.status === 0 && faction.owner ) picked.experimental = true;
-                   else if ( !faction.owner && !faction.unselectable ) unselectedFactions.push( { name : name, killer : faction.killer } );
-                });
-
-                // if no killer has been selected and we are the last player to pick, make sure we pick a killer
-                if( !this.killersSelected && this.remainingPlayers === 1 ){
-                    unselectedFactions = unselectedFactions.filter( faction => faction.killer );
-                }
-
-                // if a killer has already been selected make sure we don't also pick a killer
-                if( this.killersSelected ){
-                    unselectedFactions = unselectedFactions.filter( faction => !faction.killer );
-                }
-
-                // if an experimental faction has already been selected make sure we don't also pick one
-                if( this.experimentalsSelected ){
-                    unselectedFactions = unselectedFactions.filter( faction => faction.status !== 0 );
-                }
-                */
-
-
                 this.selectedFaction = _.sample( unselectedFactions ).name;
 
                 this.chooseFaction();
