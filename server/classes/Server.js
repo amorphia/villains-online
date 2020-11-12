@@ -50,9 +50,6 @@ class Server {
             // manually save game
             socket.on( 'saveGame', gameId => { this.saveGame( socket, gameId ) } );
 
-            // load last game
-            socket.on( 'getFactionList', () => this.getFactionList( socket ) );
-
             Game.initEvents( socket );
         });
     }
@@ -222,8 +219,7 @@ class Server {
 
 
     sendSocketOpenGame( socket ) {
-        let factionList = _.cloneDeep( require('./data/factionList') );
-        if ( socket ) socket.emit( 'openGame', this.getOpenGame(), factionList );
+        if ( socket ) socket.emit( 'openGame', this.getOpenGame() );
     }
 
     addPlayer( socket, data ) {

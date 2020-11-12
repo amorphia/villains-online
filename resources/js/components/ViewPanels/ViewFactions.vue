@@ -30,6 +30,8 @@
 
 
 <script>
+    import factionList from "../../../../server/classes/data/factionList.js";
+
     export default {
 
         name: 'view-factions',
@@ -38,6 +40,7 @@
             return {
                 shared : App.state,
                 open : false,
+                factionList : factionList,
                 selectedFaction : null,
             };
         },
@@ -55,7 +58,7 @@
 
         computed : {
             factions(){
-                return Object.values( this.shared.factionList ).sort( this.sortFactions );
+                return Object.values( this.factionList ).sort( this.sortFactions );
             },
         },
 

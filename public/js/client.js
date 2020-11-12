@@ -11731,6 +11731,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _server_classes_data_factionList_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../server/classes/data/factionList.js */ "./server/classes/data/factionList.js");
+/* harmony import */ var _server_classes_data_factionList_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_server_classes_data_factionList_js__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -11762,12 +11764,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-factions',
   data: function data() {
     return {
       shared: App.state,
       open: false,
+      factionList: _server_classes_data_factionList_js__WEBPACK_IMPORTED_MODULE_0___default.a,
       selectedFaction: null
     };
   },
@@ -11782,7 +11786,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     factions: function factions() {
-      return Object.values(this.shared.factionList).sort(this.sortFactions);
+      return Object.values(this.factionList).sort(this.sortFactions);
     }
   },
   watch: {
@@ -12293,10 +12297,8 @@ __webpack_require__.r(__webpack_exports__);
         }, 1000);
       }); // listen for open games
 
-      this.shared.socket.on('openGame', function (game, factionList) {
+      this.shared.socket.on('openGame', function (game) {
         _this5.$set(_this5.shared, 'game', game);
-
-        _this5.$set(_this5.shared, 'factionList', factionList);
       }); // listen for saved games
 
       this.shared.socket.on('savedGame', function (game) {
@@ -94061,6 +94063,160 @@ window.App.state = {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ "./server/classes/data/factionList.js":
+/*!********************************************!*\
+  !*** ./server/classes/data/factionList.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var obj = {
+  mutants: {
+    name: 'mutants',
+    owner: null,
+    status: 3,
+    basic: true,
+    selectable: true
+  },
+  mafia: {
+    name: 'mafia',
+    owner: null,
+    status: 3,
+    basic: true,
+    selectable: true
+  },
+  scientists: {
+    name: 'scientists',
+    owner: null,
+    status: 2,
+    basic: true,
+    selectable: true
+  },
+  robots: {
+    name: 'robots',
+    owner: null,
+    killer: true,
+    status: 3,
+    basic: true,
+    selectable: true
+  },
+  bankers: {
+    name: 'bankers',
+    owner: null,
+    status: 3,
+    basic: true,
+    selectable: true
+  },
+  commies: {
+    name: 'commies',
+    owner: null,
+    status: 2,
+    basic: true,
+    selectable: true
+  },
+  aliens: {
+    name: 'aliens',
+    owner: null,
+    status: 3,
+    basic: true,
+    selectable: true
+  },
+  cultists: {
+    name: 'cultists',
+    owner: null,
+    killer: true,
+    status: 3,
+    basic: true,
+    selectable: true
+  },
+  loyalists: {
+    name: 'loyalists',
+    owner: null,
+    status: 3,
+    selectable: true
+  },
+  swarm: {
+    name: 'swarm',
+    owner: null,
+    status: 3,
+    selectable: true
+  },
+  vampires: {
+    name: 'vampires',
+    owner: null,
+    killer: true,
+    status: 2,
+    selectable: true
+  },
+  society: {
+    name: 'society',
+    owner: null,
+    status: 1,
+    selectable: true
+  },
+  hackers: {
+    name: 'hackers',
+    owner: null,
+    status: 1,
+    selectable: true
+  },
+  ninjas: {
+    name: 'ninjas',
+    owner: null,
+    killer: true,
+    status: 1,
+    selectable: true
+  },
+  guerrillas: {
+    name: 'guerrillas',
+    owner: null,
+    killer: true,
+    status: 1,
+    selectable: true
+  },
+  //parasites : { name: 'parasites', owner : null, status : 0, selectable : false },
+  conquistadors: {
+    name: 'conquistadors',
+    owner: null,
+    status: 2,
+    selectable: true
+  },
+  witches: {
+    name: 'witches',
+    owner: null,
+    status: 0,
+    selectable: true
+  },
+  bureau: {
+    name: 'bureau',
+    owner: null,
+    status: 0,
+    selectable: true
+  },
+  plants: {
+    name: 'plants',
+    owner: null,
+    status: 1,
+    selectable: true
+  },
+  ghosts: {
+    name: 'ghosts',
+    owner: null,
+    status: 0,
+    selectable: true
+  },
+  spiders: {
+    name: 'spiders',
+    owner: null,
+    status: 0,
+    killer: true,
+    selectable: false
+  }
+};
+module.exports = Object.assign({}, obj);
 
 /***/ }),
 

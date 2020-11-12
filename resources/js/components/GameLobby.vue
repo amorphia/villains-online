@@ -61,6 +61,7 @@
 
 
 <script>
+
     export default {
 
         name: 'game-lobby',
