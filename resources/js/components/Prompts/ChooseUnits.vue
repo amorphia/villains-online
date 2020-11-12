@@ -184,6 +184,7 @@
             },
 
             unitsPool(){
+                /*
                 if( this.data.ghostOnly ) return this.shared.faction.ghosts;
 
                 if( this.data.needsToAttack || !this.shared.data.factions['spiders'] ) return _.concat( this.shared.faction.units, this.webbed );
@@ -201,6 +202,47 @@
                     if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
                     units = _.concat( units, faction.units );
                 });
+                return units;
+
+                 */
+
+                let units = [];
+
+                _.forEach( this.shared.data.factions, faction => {
+
+                    if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
+                    if( this.data.playerOnly && faction.name !== this.shared.faction.name ) return;
+                    if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return;
+
+                    let unitsCollection = faction.units;
+
+                    // add ghosts to unit collection if needed
+                    if( this.data.ghostOnly )  unitsCollection = faction.ghosts;
+
+                    // add webbed units to unit collection if needed
+                    if( this.data.needsToAttack && this.shared.data.factions['spiders'] ){
+                        unitsCollection = _.concat( unitsCollection, this.webbed );
+                    }
+
+                    units = _.concat( units, unitsCollection.filter( unit => {
+                        if( this.data.needsToAttack ) {
+                            if ( !unit.needsToAttack ) return;
+                        } else if( this.data.killedOnly ) {
+                            if( !unit.killed ) return;
+                        } else {
+                            if(  unit.killed  ) return;
+                        }
+
+                        if( this.data.notHidden && unit.hidden ) return;
+                        if( this.data.basicOnly && !unit.basic ) return;
+                        if( this.data.flippedOnly && !unit.flipped ) return;
+                        if( this.data.hasAttack && !unit.attack.length ) return;
+                        if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ) return;
+
+                        return true;
+                    }));
+                });
+
                 return units;
             },
 

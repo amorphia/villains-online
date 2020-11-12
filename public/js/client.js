@@ -7748,19 +7748,52 @@ __webpack_require__.r(__webpack_exports__);
     unitsPool: function unitsPool() {
       var _this3 = this;
 
-      if (this.data.ghostOnly) return this.shared.faction.ghosts;
-      if (this.data.needsToAttack || !this.shared.data.factions['spiders']) return _.concat(this.shared.faction.units, this.webbed); // belongs to current player
-
-      if (this.data.playerOnly) return this.shared.faction.units; // belongs to specific player
-
-      if (this.data.belongsTo) return this.shared.data.factions[this.data.belongsTo].units; // multiple players
-
+      /*
+      if( this.data.ghostOnly ) return this.shared.faction.ghosts;
+       if( this.data.needsToAttack || !this.shared.data.factions['spiders'] ) return _.concat( this.shared.faction.units, this.webbed );
+       // belongs to current player
+      if( this.data.playerOnly ) return this.shared.faction.units;
+       // belongs to specific player
+      if( this.data.belongsTo ) return this.shared.data.factions[ this.data.belongsTo ].units;
+       // multiple players
+      let units = [];
+      _.forEach( this.shared.data.factions, faction => {
+          // enemy only
+          if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
+          units = _.concat( units, faction.units );
+      });
+      return units;
+        */
       var units = [];
 
       _.forEach(this.shared.data.factions, function (faction) {
-        // enemy only
         if (_this3.data.enemyOnly && faction.name === _this3.shared.faction.name) return;
-        units = _.concat(units, faction.units);
+        if (_this3.data.playerOnly && faction.name !== _this3.shared.faction.name) return;
+        if (_this3.data.belongsTo && faction.name !== _this3.data.belongsTo) return;
+        var unitsCollection = faction.units; // add ghosts to unit collection if needed
+
+        if (_this3.data.ghostOnly) unitsCollection = faction.ghosts; // add webbed units to unit collection if needed
+
+        if (_this3.data.needsToAttack && _this3.shared.data.factions['spiders']) {
+          unitsCollection = _.concat(unitsCollection, _this3.webbed);
+        }
+
+        units = _.concat(units, unitsCollection.filter(function (unit) {
+          if (_this3.data.needsToAttack) {
+            if (!unit.needsToAttack) return;
+          } else if (_this3.data.killedOnly) {
+            if (!unit.killed) return;
+          } else {
+            if (unit.killed) return;
+          }
+
+          if (_this3.data.notHidden && unit.hidden) return;
+          if (_this3.data.basicOnly && !unit.basic) return;
+          if (_this3.data.flippedOnly && !unit.flipped) return;
+          if (_this3.data.hasAttack && !unit.attack.length) return;
+          if (_this3.data.unitTypes && !_this3.data.unitTypes.includes(unit.type)) return;
+          return true;
+        }));
       });
 
       return units;
