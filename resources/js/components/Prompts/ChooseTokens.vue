@@ -1,6 +1,6 @@
 <template>
-    <player-prompt classes="">
-        <div class="place-token px-5">
+    <player-prompt>
+        <div class="min-prompt-width px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
                 <div class="title">{{ message }}</div>
                 <area-flipper v-if="areas.length" :areas="areas" :index="index" @update="updateArea">
@@ -120,13 +120,4 @@
     }
 </script>
 
-
-<style>
-
-    .place-token{
-        min-width: 40rem;
-    }
-
-
-</style>
 
