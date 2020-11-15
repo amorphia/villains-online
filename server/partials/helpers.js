@@ -277,12 +277,9 @@ let helpers = {
         _.forEach( factions, (faction, name) => {
             let exclude = false;
 
-            console.log( 'factionsWithUnitsInArea args', args );
-
             if( args.exclude ){
                 if( Array.isArray( args.exclude ) && args.exclude.includes( name ) ) exclude = true;
                 else if( args.exclude === name ) exclude = true;
-                console.log( 'factionsWithUnitsInArea exclude', exclude );
             }
 
             if( this.hasUnitsInArea( faction, area, { basic : args.basic, notHidden : args.notHidden, types : args.types } ) && ! exclude ){

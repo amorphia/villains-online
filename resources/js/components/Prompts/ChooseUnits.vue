@@ -143,6 +143,10 @@
             },
 
             areaUnits(){
+
+                return this.unitsPool.filter( unit => unit.location === this.area.name );
+
+                /*
                 let units = [];
 
                 _.forEach( this.shared.data.factions, faction => {
@@ -181,6 +185,9 @@
                 });
 
                 return units;
+                */
+
+
             },
 
             unitsPool(){
@@ -208,39 +215,54 @@
 
                 let units = [];
 
+                // let us start by cycling through each faction
                 _.forEach( this.shared.data.factions, faction => {
 
+                    // If "enemy only" then ignore our faction
                     if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
+
+                    // if "player only" then ignore enemy factions
                     if( this.data.playerOnly && faction.name !== this.shared.faction.name ) return;
+
+                    // if "belongs to" ignore any faction that's not the named faction
                     if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return;
 
+                    // lets assume we are starting with the faction's unit array
                     let unitsCollection = faction.units;
 
-                    // add ghosts to unit collection if needed
-                    if( this.data.ghostOnly )  unitsCollection = faction.ghosts;
+                    // but if we are looking for "ghosts only" then lets swap out to the ghosts array
+                    if( this.data.ghostOnly )  unitsCollection = faction.ghosts ? faction.ghosts : [];
 
-                    // add webbed units to unit collection if needed
+                    // add webbed units to the collection if we are looking for units that need to attack
+                    // since units can get moved to the webbed array from their owners unit array mid-combat
+                    // but those webbed units may still need to be able to retaliate during combat
                     if( this.data.needsToAttack && this.shared.data.factions['spiders'] ){
                         unitsCollection = _.concat( unitsCollection, this.webbed );
                     }
 
-                    units = _.concat( units, unitsCollection.filter( unit => {
-                        if( this.data.needsToAttack ) {
-                            if ( !unit.needsToAttack ) return;
-                        } else if( this.data.killedOnly ) {
-                            if( !unit.killed ) return;
-                        } else {
-                            if(  unit.killed  ) return;
-                        }
-
+                    unitsCollection = unitsCollection.filter( unit => {
+                        // filter for units that need to attack
+                        if( this.data.needsToAttack && !unit.needsToAttack ) return;
+                        // filter for killed units only
+                        if( this.data.killedOnly && !unit.killed ) return;
+                        // remove killed units except during combat or if we are specifically looking for killed units
+                        if( !this.data.needsToAttack && !this.data.killedOnly && unit.killed ) return;
+                        // filter not hidden
                         if( this.data.notHidden && unit.hidden ) return;
+                        // filter basic units
                         if( this.data.basicOnly && !unit.basic ) return;
+                        // filter flipped units
                         if( this.data.flippedOnly && !unit.flipped ) return;
+                        // filter has attack value
                         if( this.data.hasAttack && !unit.attack.length ) return;
+                        // filter for unit types
                         if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ) return;
-
+                        // if none of these filters already put the kibosh on things, then return true
                         return true;
-                    }));
+                    });
+
+                    // merge this faction's units (if any) to the main units array
+                    units = _.concat( units, unitsCollection );
                 });
 
                 return units;
