@@ -143,126 +143,26 @@
             },
 
             areaUnits(){
-
                 return this.unitsPool.filter( unit => unit.location === this.area.name );
-
-                /*
-                let units = [];
-
-                _.forEach( this.shared.data.factions, faction => {
-
-                    if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
-                    if( this.data.playerOnly && faction.name !== this.shared.faction.name ) return;
-                    if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return;
-
-                    let unitsCollection = faction.units;
-
-                    // add ghosts to unit collection if needed
-                    if( this.data.ghostOnly )  unitsCollection = faction.ghosts;
-
-                    // add webbed units to unit collection if needed
-                    if( this.data.needsToAttack && this.shared.data.factions['spiders'] ){
-                        unitsCollection = _.concat( unitsCollection, this.webbed );
-                    }
-
-                    units = _.concat( units, unitsCollection.filter( unit => {
-                        if( this.data.needsToAttack ) {
-                            if ( unit.location !== this.area.name || !unit.needsToAttack ) return;
-                        } else if( this.data.killedOnly ) {
-                            if( unit.location !== this.area.name || !unit.killed ) return;
-                        } else {
-                            if( unit.location !== this.area.name || unit.killed  ) return;
-                        }
-
-                        if( this.data.notHidden && unit.hidden ) return;
-                        if( this.data.basicOnly && !unit.basic ) return;
-                        if( this.data.flippedOnly && !unit.flipped ) return;
-                        if( this.data.hasAttack && !unit.attack.length ) return;
-                        if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ) return;
-
-                        return true;
-                    }));
-                });
-
-                return units;
-                */
-
-
             },
 
             unitsPool(){
-                /*
-                if( this.data.ghostOnly ) return this.shared.faction.ghosts;
-
-                if( this.data.needsToAttack || !this.shared.data.factions['spiders'] ) return _.concat( this.shared.faction.units, this.webbed );
-
-                // belongs to current player
-                if( this.data.playerOnly ) return this.shared.faction.units;
-
-                // belongs to specific player
-                if( this.data.belongsTo ) return this.shared.data.factions[ this.data.belongsTo ].units;
-
-                // multiple players
-                let units = [];
-                _.forEach( this.shared.data.factions, faction => {
-                    // enemy only
-                    if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
-                    units = _.concat( units, faction.units );
-                });
-                return units;
-
-                 */
-
                 let units = [];
 
                 // let us start by cycling through each faction
                 _.forEach( this.shared.data.factions, faction => {
 
-                    // If "enemy only" then ignore our faction
-                    if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return;
+                    // if this is an invalid faction per the options, then ignore it
+                    if( this.isInvalidFaction( faction ) ) return;
 
-                    // if "player only" then ignore enemy factions
-                    if( this.data.playerOnly && faction.name !== this.shared.faction.name ) return;
+                    // get our stating units for this faction
+                    let factionUnits = this.getStartingFactionUnits( faction );
 
-                    // if "belongs to" ignore any faction that's not the named faction
-                    if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return;
+                    // filter out units per our options
+                    factionUnits = this.filterFactionUnitsByOptions( factionUnits );
 
-                    // lets assume we are starting with the faction's unit array
-                    let unitsCollection = faction.units;
-
-                    // but if we are looking for "ghosts only" then lets swap out to the ghosts array
-                    if( this.data.ghostOnly )  unitsCollection = faction.ghosts ? faction.ghosts : [];
-
-                    // add webbed units to the collection if we are looking for units that need to attack
-                    // since units can get moved to the webbed array from their owners unit array mid-combat
-                    // but those webbed units may still need to be able to retaliate during combat
-                    if( this.data.needsToAttack && this.shared.data.factions['spiders'] ){
-                        unitsCollection = _.concat( unitsCollection, this.webbed );
-                    }
-
-                    unitsCollection = unitsCollection.filter( unit => {
-                        // filter for units that need to attack
-                        if( this.data.needsToAttack && !unit.needsToAttack ) return;
-                        // filter for killed units only
-                        if( this.data.killedOnly && !unit.killed ) return;
-                        // remove killed units except during combat or if we are specifically looking for killed units
-                        if( !this.data.needsToAttack && !this.data.killedOnly && unit.killed ) return;
-                        // filter not hidden
-                        if( this.data.notHidden && unit.hidden ) return;
-                        // filter basic units
-                        if( this.data.basicOnly && !unit.basic ) return;
-                        // filter flipped units
-                        if( this.data.flippedOnly && !unit.flipped ) return;
-                        // filter has attack value
-                        if( this.data.hasAttack && !unit.attack.length ) return;
-                        // filter for unit types
-                        if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ) return;
-                        // if none of these filters already put the kibosh on things, then return true
-                        return true;
-                    });
-
-                    // merge this faction's units (if any) to the main units array
-                    units = _.concat( units, unitsCollection );
+                    // merge this faction's units (if any) to the aggregate units array
+                    units = _.concat( units, factionUnits );
                 });
 
                 return units;
@@ -292,6 +192,7 @@
         },
 
         methods : {
+
             resolve( action ){
                 let data = {};
 
@@ -304,14 +205,68 @@
                 }
 
                 data = Object.assign( {}, this.data, data );
-
                 this.shared.respond( 'choose-units', data );
             },
+
 
             updateArea( n ){
                 if( n === this.index ) return;
                 //this.areaUnits.forEach( unit => this.$set( unit, 'selected', false ) );
                 this.index = n;
+            },
+
+
+            getStartingFactionUnits( faction ){
+                // let's assume we are starting with the faction's unit array
+                let factionUnits = faction.units;
+
+                // but if we are looking for "ghosts only" then let's swap out to the ghosts array
+                if( this.data.ghostOnly )  factionUnits = faction.ghosts ? faction.ghosts : [];
+
+                // We need to add webbed units to the collection if we are looking for units that need to attack
+                // since units can get moved into the webbed array from their owner's unit array mid-combat
+                // but those webbed units may still need to be able to retaliate during combat
+                if( this.data.needsToAttack && this.shared.data.factions['spiders'] ){
+                    factionUnits = _.concat( factionUnits, this.webbed );
+                }
+
+                return factionUnits;
+            },
+
+
+            filterFactionUnitsByOptions( factionUnits ){
+                return factionUnits.filter( unit => {
+                    // filter for units that need to attack
+                    if( this.data.needsToAttack && !unit.needsToAttack ) return;
+                    // filter for killed units only
+                    if( this.data.killedOnly && !unit.killed ) return;
+                    // remove killed units except during combat or if we are specifically looking for killed units
+                    if( !this.data.needsToAttack && !this.data.killedOnly && unit.killed ) return;
+                    // filter not hidden
+                    if( this.data.notHidden && unit.hidden ) return;
+                    // filter basic units
+                    if( this.data.basicOnly && !unit.basic ) return;
+                    // filter flipped units
+                    if( this.data.flippedOnly && !unit.flipped ) return;
+                    // filter has attack value
+                    if( this.data.hasAttack && !unit.attack.length ) return;
+                    // filter for unit types
+                    if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ) return;
+                    // if none of these filters already put the kibosh on things, then return true
+                    return true;
+                });
+            },
+
+
+            isInvalidFaction( faction ){
+                // If "enemy units only" then ignore our faction
+                if( this.data.enemyOnly && faction.name === this.shared.faction.name ) return true;
+
+                // if "this player's unit only" then ignore enemy factions
+                if( this.data.playerOnly && faction.name !== this.shared.faction.name ) return true;
+
+                // if "belongs to a specific player" ignore any faction that's not the named faction
+                if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return true;
             },
 
 
