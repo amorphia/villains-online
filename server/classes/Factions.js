@@ -1,9 +1,10 @@
 let factions = require( './data/factionList' );
-let exp = {};
 
+// Build our export object collecting each faction class using the list of faction names
+let exportFactions = {};
 for( let faction of Object.keys( factions ) ){
-    exp[faction] = require( `./factions/${_.capitalize(faction)}` );
+    exportFactions[faction] = require( `./factions/${_.capitalize(faction)}` );
 }
 
-module.exports = exp;
+module.exports = exportFactions;
 
