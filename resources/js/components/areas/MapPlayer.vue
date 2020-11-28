@@ -35,6 +35,11 @@
         data() {
             return {
                 shared : App.state,
+                abilityIcons : [
+                    'deadly',
+                    'hidden',
+                    'charged'
+                ]
             };
         },
 
@@ -113,23 +118,29 @@
                 if( this.neutral ) return {};
 
                 let status = {};
+                let factionUnits = this.faction.units.filter( unit => _.unitInArea( unit, this.area.name ) );
 
-                for( let unit of this.faction.units ) {
-                    if (unit.location !== this.area.name || unit.killed) continue;
-
+                for( let unit of factionUnits ) {
+                    // is this unit skilled and ready?
                     if ( _.canUseSkill( this.faction, this.area, this.shared.data.factions ) ) status['skilled'] = 'can activate area skill';
 
+                    // is this unit wounded
                     if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
 
+                    // does this unit have a faction specific flipped status
                     if (!unit.toughness && unit.flipped && this.faction.statusIcon) status[this.faction.statusIcon] = this.faction.statusDescription;
 
-                    if (unit.charged ) status['charged'] = 'has charged units';
-
+                    // does this unit have first strike (each faction has its own color first strike icon)
                     if( unit.firstStrike ) status[`${unit.faction}-first-strike`] = 'has units with first strike';
 
-                    if( unit.deadly ) status[`deadly`] = 'has a deadly unit';
-
+                    // does xavier have a token on him?
                     if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him';
+
+                    // cycle through the basic unit abilities
+                    this.abilityIcons.forEach( ability => {
+                        if( unit[ability] ) status[ability] = `has a ${ability} unit`;
+                    });
+
                 }
 
                 return status;

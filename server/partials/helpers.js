@@ -614,6 +614,8 @@ let helpers = {
         let kills = [];
 
         _.forEach( factions, fac => {
+            if( fac.name === faction.name ) return;
+
             fac.units.forEach( unit => {
                 if( unit.killed === faction.name ){
                     kills.push( unit );

@@ -101,11 +101,13 @@ class Bureau extends Faction {
 
         let newToken = this.game().objectMap[data.token.id];
         newToken.revealed = false;
+        delete newToken.selected;
         newToken.location = area.name;
 
         let loopIndex = _.findIndex( area.data.tokens, item => item.id === loop.id );
         loop.location = null;
         loop.revealed = false;
+        delete loop.selected;
 
         area.data.tokens[loopIndex] = newToken;
         this.game().message({ faction : this, message: `Exploits a time loops in The ${area.name}` });

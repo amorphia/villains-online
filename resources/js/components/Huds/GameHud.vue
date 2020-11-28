@@ -72,7 +72,7 @@
 
             turnNumClasses( n ){
                 let output = 'icon-num-' + n;
-                if( this.shared.data.turn >= n ){
+                if( this.shared.data.turn === n ){
                     output += " active";
                 }
                 return output;

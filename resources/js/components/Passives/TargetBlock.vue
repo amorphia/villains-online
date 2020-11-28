@@ -7,7 +7,7 @@
             <div class="target-block-reveal mt-4" :class="{revealed : target.flipped}">
                 <div v-if="target.owner" class="center-text">
                     <div class="one-line" :class="`faction-${target.owner}`">Taken by The {{ target.owner | startCase }}</div>
-                    <img class="target-block__ap-icon" :src="`/images/icons/ap-${shared.data.turn=== 4 ? '2' : '1'}.png`">
+                    <img class="target-block__ap-icon" :src="`/images/icons/ap-1.png`">
                 </div>
                 <div v-else class="center-text primary-light">Uncontrolled</div>
             </div>

@@ -71,7 +71,7 @@
                 let ministerInArea = !! this.shared.faction.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, this.area ) );
                 let firstUnrevealedEnemy = _.firstUnrevealedToken( this.area, { enemy : this.shared.faction.name });
 
-                return ministerInArea && this.token.id === firstUnrevealedEnemy.id;
+                return ministerInArea && ( firstUnrevealedEnemy && this.token.id === firstUnrevealedEnemy.id );
             },
 
             tokenImage(){

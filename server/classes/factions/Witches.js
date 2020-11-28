@@ -90,7 +90,8 @@ class Witches extends Faction {
             data : args
         }).catch( error => console.error( error ) );
 
-        this.discardCard( data.unselected );
+        // discard unselected cards (if any)
+        if( data.unselected.length ) this.discardCard( data.unselected );
 
         return [args, data, data.selected];
     }

@@ -4240,7 +4240,7 @@ __webpack_require__.r(__webpack_exports__);
     turnNumClasses: function turnNumClasses(n) {
       var output = 'icon-num-' + n;
 
-      if (this.shared.data.turn >= n) {
+      if (this.shared.data.turn === n) {
         output += " active";
       }
 
@@ -10753,7 +10753,7 @@ __webpack_require__.r(__webpack_exports__);
         enemy: this.shared.faction.name
       });
 
-      return ministerInArea && this.token.id === firstUnrevealedEnemy.id;
+      return ministerInArea && firstUnrevealedEnemy && this.token.id === firstUnrevealedEnemy.id;
     },
     tokenImage: function tokenImage() {
       var image = false;
@@ -13329,7 +13329,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   props: ['neutral', 'area', 'faction'],
   data: function data() {
     return {
-      shared: App.state
+      shared: App.state,
+      abilityIcons: ['deadly', 'hidden', 'charged']
     };
   },
   computed: {
@@ -13413,23 +13414,38 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return _.killsInArea(this.faction, this.area, this.shared.data.factions);
     },
     statusIcons: function statusIcons() {
+      var _this2 = this;
+
       if (this.neutral) return {};
       var status = {};
+      var factionUnits = this.faction.units.filter(function (unit) {
+        return _.unitInArea(unit, _this2.area.name);
+      });
 
-      var _iterator = _createForOfIteratorHelper(this.faction.units),
+      var _iterator = _createForOfIteratorHelper(factionUnits),
           _step;
 
       try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _loop = function _loop() {
           var unit = _step.value;
-          if (unit.location !== this.area.name || unit.killed) continue;
-          if (_.canUseSkill(this.faction, this.area, this.shared.data.factions)) status['skilled'] = 'can activate area skill';
-          if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
-          if (!unit.toughness && unit.flipped && this.faction.statusIcon) status[this.faction.statusIcon] = this.faction.statusDescription;
-          if (unit.charged) status['charged'] = 'has charged units';
-          if (unit.firstStrike) status["".concat(unit.faction, "-first-strike")] = 'has units with first strike';
-          if (unit.deadly) status["deadly"] = 'has a deadly unit';
-          if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him';
+          // is this unit skilled and ready?
+          if (_.canUseSkill(_this2.faction, _this2.area, _this2.shared.data.factions)) status['skilled'] = 'can activate area skill'; // is this unit wounded
+
+          if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units'; // does this unit have a faction specific flipped status
+
+          if (!unit.toughness && unit.flipped && _this2.faction.statusIcon) status[_this2.faction.statusIcon] = _this2.faction.statusDescription; // does this unit have first strike (each faction has its own color first strike icon)
+
+          if (unit.firstStrike) status["".concat(unit.faction, "-first-strike")] = 'has units with first strike'; // does xavier have a token on him?
+
+          if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him'; // cycle through the basic unit abilities
+
+          _this2.abilityIcons.forEach(function (ability) {
+            if (unit[ability]) status[ability] = "has a ".concat(ability, " unit");
+          });
+        };
+
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          _loop();
         }
       } catch (err) {
         _iterator.e(err);
@@ -60678,12 +60694,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("img", {
                   staticClass: "target-block__ap-icon",
-                  attrs: {
-                    src:
-                      "/images/icons/ap-" +
-                      (_vm.shared.data.turn === 4 ? "2" : "1") +
-                      ".png"
-                  }
+                  attrs: { src: "/images/icons/ap-1.png" }
                 })
               ])
             : _c("div", { staticClass: "center-text primary-light" }, [
@@ -94513,6 +94524,7 @@ var helpers = {
     var kills = [];
 
     _.forEach(factions, function (fac) {
+      if (fac.name === faction.name) return;
       fac.units.forEach(function (unit) {
         if (unit.killed === faction.name) {
           kills.push(unit);
