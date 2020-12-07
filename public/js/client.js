@@ -93991,7 +93991,7 @@ var obj = {
     name: 'ghosts',
     owner: null,
     status: 0,
-    selectable: true
+    selectable: false
   },
   spiders: {
     name: 'spiders',

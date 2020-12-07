@@ -19,7 +19,7 @@ let obj = {
     witches : { name: 'witches', owner : null, status : 0, selectable : true },
     bureau : { name: 'bureau', owner : null, status : 1, selectable : true },
     plants : { name: 'plants', owner : null, status : 1, selectable : true },
-    ghosts : { name: 'ghosts', owner : null, status : 0, selectable : true },
+    ghosts : { name: 'ghosts', owner : null, status : 0, selectable : false },
     spiders : { name: 'spiders', owner : null, status : 0, killer : true, selectable : false },
 };
 
