@@ -5380,6 +5380,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'activate-decline',
   data: function data() {
@@ -5389,7 +5397,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     resolve: function resolve(choice) {
-      this.shared.respond('activate-decline', choice, this.data.token.id);
+      this.shared.respond('activate-decline', choice, this.data.token.id, this.data.wildType);
     }
   },
   computed: {
@@ -5805,12 +5813,36 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-action',
   data: function data() {
     return {
       shared: App.state,
       action: null,
+      wildType: null,
+      wildTokens: [{
+        name: 'deploy',
+        id: 1
+      }, {
+        name: 'card',
+        id: 2
+      }, {
+        name: 'battle',
+        id: 3
+      }, {
+        name: 'move',
+        id: 4
+      }],
       actions: {},
       areaActions: ['ambush', 'loop', 'skill', 'materialize', 'magick', 'token']
     };
@@ -5901,6 +5933,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       switch (this.action.name) {
         case 'token':
           args = [this.action.token.id];
+          if (this.wildType) args.push(this.wildType.name);
           break;
 
         case 'ambush':
@@ -6135,7 +6168,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return areas;
     },
     saveDisabled: function saveDisabled() {
-      if (!this.action) return true;
+      if (!this.action || this.wildTokenNeedsType) return true;
+    },
+    wildTokenNeedsType: function wildTokenNeedsType() {
+      return this.firstToken && this.firstToken.name === 'wild' && !this.wildType;
     }
   }
 });
@@ -8197,6 +8233,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -60890,6 +60927,27 @@ var render = function() {
             1
           ),
           _vm._v(" "),
+          _vm.data.wildType
+            ? _c(
+                "div",
+                { staticClass: "py-4" },
+                [
+                  _c("div", { staticClass: "prompt-question center-text" }, [
+                    _vm._v("This token will be activated as the following:")
+                  ]),
+                  _vm._v(" "),
+                  _c("token-set", {
+                    attrs: {
+                      tokens: [{ name: _vm.data.wildType, id: 1 }],
+                      classes: "center-text",
+                      noBorder: "true"
+                    }
+                  })
+                ],
+                1
+              )
+            : _vm._e(),
+          _vm._v(" "),
           _vm.data.cost > 0
             ? _c("div", {
                 staticClass: "prompt-question",
@@ -61423,6 +61481,39 @@ var render = function() {
                                 1
                               )
                             : _vm._e()
+                        ],
+                        1
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.action.name === "token" && _vm.firstToken.name === "wild"
+                    ? _c(
+                        "div",
+                        { staticClass: "py-3" },
+                        [
+                          _c(
+                            "div",
+                            { staticClass: "prompt-question center-text" },
+                            [
+                              _vm._v(
+                                "Choose type for your wild token to be revealed as"
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("token-set", {
+                            attrs: {
+                              tokens: _vm.wildTokens,
+                              classes: "center-text",
+                              noBorder: "true",
+                              selected: _vm.wildType
+                            },
+                            on: {
+                              tokenClicked: function(t) {
+                                return (_vm.wildType = t)
+                              }
+                            }
+                          })
                         ],
                         1
                       )
@@ -63199,7 +63290,7 @@ var render = function() {
                   tokens: _vm.tokens,
                   classes: "center-text",
                   noBorder: "true",
-                  selected: this.type
+                  selected: this.wildType
                 }
               })
             ],

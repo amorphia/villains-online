@@ -20,13 +20,13 @@ let obj = {
         this[method](player, ...args);
     },
 
-    activateDecline( player, action, tokenId ){
+    activateDecline( player, action, tokenId, wildType = null ){
         let token = this.objectMap[tokenId];
 
         if( action === 'decline' ){
             this.declineToken( player, token );
         } else {
-            player.faction().activateToken( player, token );
+            player.faction().activateToken( player, token, wildType );
         }
     },
 
@@ -169,13 +169,13 @@ let obj = {
         player.faction().revealXavierToken( player );
     },
 
-    async takeTokenAction( player, tokenId ){
+    async takeTokenAction( player, tokenId, wildType = null ){
         let token = this.objectMap[tokenId];
         let area = this.areas[token.location];
 
         let faction = player.faction();
         try {
-            await faction.revealToken( player, token, area, this );
+            await faction.revealToken( player, token, area, wildType );
         } catch( error ){
             console.error( error );
         }

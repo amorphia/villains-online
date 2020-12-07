@@ -117,6 +117,7 @@ class Robots extends Faction {
     async wildToken( args ){
         let player, data, output;
 
+        /*
         [player, data] = await this.game().promise({
             players: this.playerId,
             name: 'choose-wild',
@@ -124,13 +125,14 @@ class Robots extends Faction {
         }).catch( error => console.error( error ) );
 
         this.game().message({ message : `have chosen to treat their <span class="faction-robots">wild</span> token as a ${data.type} token`, faction : this });
-        let tokenMethod = 'canActivate' + _.classCase( data.type );
+         */
+
+        let tokenMethod = 'canActivate' + _.classCase( args.wildType );
         let canActivate = this[tokenMethod]( args.token, args.area );
         args.fromToken = true;
 
-        switch( data.type ){
+        switch( args.wildType ){
             case 'battle':
-                this.gainResources( 1 );
                 if( canActivate ){
                     await this.game().battle( args.area );
                     output = {};

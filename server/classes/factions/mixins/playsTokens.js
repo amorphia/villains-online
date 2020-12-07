@@ -1,12 +1,17 @@
 let obj = {
 
-    async revealToken( player, token, area ) {
+    async revealToken( player, token, area, wildType ) {
 
         if( token.resource ) this.gainResources( 1 );
         token.revealed = true;
 
         this.game().message({ message: 'reveal', type : 'reveal-token', faction : this, token : token });
         this.game().popup( player, { token : token, area : area.name, faction: this.name });
+
+        if( wildType ){
+            this.game().message({ message : `have chosen to treat their <span class="faction-robots">wild</span> token as a <span class="capitalize highlight">${wildType}</span> token`, faction : this });
+            if( wildType === 'battle' ) this.gainResources( 1 );
+        }
 
         try {
             for( let faction of Object.values( this.game().factions ) ){
@@ -20,17 +25,19 @@ let obj = {
             this.sound( 'error' );
             this.game().declineToken( player, token );
         } else {
-            let cost = this.tokenCost( token, area );
-            this.game().listen({ name : 'activate-decline', players : player, data : { token : token, cost : cost } });
+            let cost = this.tokenCost( token, area, wildType );
+            this.game().listen({ name : 'activate-decline', players : player, data : { token : token, cost : cost, wildType : wildType } });
             await this.game().updateAll();
         }
     },
 
 
-    tokenCost( token, area = null ){
+    tokenCost( token, area = null, wildType = null ){
         if( !area ) area = this.game().areas[ token.location ];
 
         let cost = token.cost;
+        if( wildType === 'move' ) cost = 2;
+
         // credit freeze
         if( area.hasToken( 'credit-freeze' ) && this.name !== 'bankers' ){
             cost++;
@@ -46,7 +53,7 @@ let obj = {
     },
 
 
-    activateToken( player, token ){
+    activateToken( player, token, wildType ){
         let area = this.game().areas[token.location];
         let cost = this.tokenCost( token );
         if( cost > 0 ) this.payCost( cost, true );
@@ -55,7 +62,7 @@ let obj = {
         this.game().message({ message: message, faction : this });
 
         let action = _.camelCase( token.name ) + 'Token';
-        this[action]({ player : player, token : token, area : area });
+        this[action]({ player : player, token : token, area : area, wildType : wildType });
     }
 
 };

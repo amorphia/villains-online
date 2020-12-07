@@ -101,6 +101,16 @@
 
                 </area-flipper>
 
+                <!-- Wild token type prompt -->
+                <div v-if="action.name === 'token' && firstToken.name === 'wild'" class="py-3">
+                    <div class="prompt-question center-text">Choose type for your wild token to be revealed as</div>
+                    <token-set :tokens="wildTokens"
+                               classes="center-text"
+                               noBorder="true"
+                               @tokenClicked="t => wildType = t"
+                               :selected="wildType"></token-set>
+                </div>
+
                 <div class="d-flex justify-center">
 
                     <button class="button button-empty"
@@ -131,6 +141,13 @@
             return {
                 shared : App.state,
                 action : null,
+                wildType : null,
+                wildTokens : [
+                    { name : 'deploy', id : 1 },
+                    { name : 'card', id : 2 },
+                    { name : 'battle', id : 3 },
+                    { name : 'move', id : 4 },
+                ],
                 actions : {},
                 areaActions:  [
                     'ambush',
@@ -238,6 +255,7 @@
                 switch( this.action.name ){
                     case 'token':
                         args = [this.action.token.id];
+                        if( this.wildType ) args.push( this.wildType.name );
                         break;
                     case 'ambush':
                     case 'skill':
@@ -468,8 +486,13 @@
             },
 
             saveDisabled(){
-                if( !this.action ) return true;
+                if( !this.action || this.wildTokenNeedsType ) return true;
+            },
+
+            wildTokenNeedsType(){
+                return this.firstToken && this.firstToken.name === 'wild' && !this.wildType;
             }
+
         }
     }
 </script>

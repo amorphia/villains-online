@@ -7,7 +7,8 @@
                     <token-set :tokens="tokens"
                                classes="center-text"
                                noBorder="true"
-                               :selected="this.type"></token-set>
+
+                               :selected="this.wildType"></token-set>
                 </area-flipper>
 
                 <div v-if="cost" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to activate as a move?` )"></div>

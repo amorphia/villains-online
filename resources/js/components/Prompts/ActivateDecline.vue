@@ -7,6 +7,14 @@
                     <token-row :area="area" :highlight="data.token"></token-row>
                 </area-flipper>
 
+                <div v-if="data.wildType" class="py-4">
+                    <div class="prompt-question center-text">This token will be activated as the following:</div>
+                    <token-set :tokens="[{ name: data.wildType, id : 1 }]"
+                               classes="center-text"
+                               noBorder="true"
+                    ></token-set>
+                </div>
+
                 <div v-if="data.cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${data.cost}x to activate this token?` )"></div>
                 <div class="flex-center">
                     <button class="button button-empty" @click="resolve('decline' )">Decline Token</button>
@@ -34,7 +42,7 @@
 
         methods : {
             resolve( choice ){
-                this.shared.respond('activate-decline', choice, this.data.token.id );
+                this.shared.respond('activate-decline', choice, this.data.token.id, this.data.wildType );
             }
         },
 
