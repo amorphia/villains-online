@@ -219,7 +219,7 @@ class Faction {
 
         // reset tokens
         this.data.tokens.forEach( token => {
-            token.location = null;
+            if( token.location !== 'xavier' ) token.location = null;
             token.revealed = false;
         });
 
