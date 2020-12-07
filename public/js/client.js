@@ -93972,7 +93972,7 @@ var obj = {
   bureau: {
     name: 'bureau',
     owner: null,
-    status: 0,
+    status: 1,
     selectable: true
   },
   plants: {
