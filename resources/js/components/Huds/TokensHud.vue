@@ -2,9 +2,9 @@
     <hud-popout :open="open" nohandle="true" classes="tokens-hud" @close="$emit( 'close' )">
 
         <div class="tokens-hud__tokens-container p-4 center-text">
-            <token-set :tokens="reserves" title="Reserves"></token-set>
-            <token-set :tokens="unrevealed" title="Unrevealed"></token-set>
-            <token-set :tokens="activated" title="Activated"></token-set>
+            <token-set :tokens="reserves" title="Reserves" noEmit="true"></token-set>
+            <token-set :tokens="unrevealed" title="Unrevealed" noEmit="true"></token-set>
+            <token-set :tokens="activated" title="Activated" noEmit="true"></token-set>
         </div>
 
     </hud-popout>
@@ -15,7 +15,7 @@
 
     export default {
 
-        name: 'cards-hud',
+        name: 'tokens-hud',
         props: ['open'],
         data() {
             return {

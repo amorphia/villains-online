@@ -4551,7 +4551,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'cards-hud',
+  name: 'tokens-hud',
   props: ['open'],
   data: function data() {
     return {
@@ -10649,7 +10649,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'token-set',
-  props: ['tokens', 'title', 'classes', 'selected', 'noBorder'],
+  props: ['noEmit', 'tokens', 'title', 'classes', 'selected', 'noBorder'],
   data: function data() {
     return {
       shared: App.state
@@ -10671,6 +10671,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     tokenClicked: function tokenClicked(token) {
+      if (this.noEmit) return;
       this.shared.event.emit('tokenClicked', token);
       this.$emit('tokenClicked', token);
     },
@@ -60003,15 +60004,19 @@ var render = function() {
         { staticClass: "tokens-hud__tokens-container p-4 center-text" },
         [
           _c("token-set", {
-            attrs: { tokens: _vm.reserves, title: "Reserves" }
+            attrs: { tokens: _vm.reserves, title: "Reserves", noEmit: "true" }
           }),
           _vm._v(" "),
           _c("token-set", {
-            attrs: { tokens: _vm.unrevealed, title: "Unrevealed" }
+            attrs: {
+              tokens: _vm.unrevealed,
+              title: "Unrevealed",
+              noEmit: "true"
+            }
           }),
           _vm._v(" "),
           _c("token-set", {
-            attrs: { tokens: _vm.activated, title: "Activated" }
+            attrs: { tokens: _vm.activated, title: "Activated", noEmit: "true" }
           })
         ],
         1

@@ -15,7 +15,7 @@
     export default {
 
         name: 'token-set',
-        props: [ 'tokens', 'title', 'classes', 'selected', 'noBorder' ],
+        props: [ 'noEmit', 'tokens', 'title', 'classes', 'selected', 'noBorder' ],
         data() {
             return {
                 shared : App.state
@@ -37,6 +37,7 @@
 
         methods : {
             tokenClicked( token ){
+                if( this.noEmit ) return;
                 this.shared.event.emit( 'tokenClicked', token );
                 this.$emit( 'tokenClicked', token );
             },
