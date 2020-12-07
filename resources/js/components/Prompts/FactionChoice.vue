@@ -32,6 +32,13 @@
             };
         },
 
+        mounted(){
+            if( this.shared.data && this.shared.data.gameType === 'anarchy' ){
+                this.faction.selectable = true;
+                this.$emit( 'isSelectable', true );
+            }
+        },
+
         methods : {
             checkIsSelectable(){
                 // if the faction is already taken, or flagged unselectable, then it can't be taken

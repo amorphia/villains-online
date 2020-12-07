@@ -8982,6 +8982,12 @@ __webpack_require__.r(__webpack_exports__);
       shared: App.state
     };
   },
+  mounted: function mounted() {
+    if (this.shared.data && this.shared.data.gameType === 'anarchy') {
+      this.faction.selectable = true;
+      this.$emit('isSelectable', true);
+    }
+  },
   methods: {
     checkIsSelectable: function checkIsSelectable() {
       // if the faction is already taken, or flagged unselectable, then it can't be taken
