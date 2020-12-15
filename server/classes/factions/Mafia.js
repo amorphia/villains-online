@@ -46,6 +46,11 @@ class Mafia extends Faction {
         };
     }
 
+    processUpgrade( n ){
+        this.data.bonusDeploy = { type: 'champion', count: 1 };
+    }
+
+
     startOfTurnPrompt() {
         return this.areas().includes( 'police' ) ? 'choose-target' : 'choose-spy';
     }
@@ -72,10 +77,9 @@ class Mafia extends Faction {
             fixer.ready = true;
         }
 
-        if( this.data.upgrade ){
-            let attack = this.data.upgrade === 1 ? 8 : 5;
+        if( this.data.upgrade === 2){
             let area = this.game().areas[ fixer.location ];
-            let output = await this.attack( { area : area, attacks : [attack], optional : true } ).catch( error => console.error( error ) );
+            let output = await this.attack( { area : area, attacks : fixer.attack , unit : event.unit, optional : true } ).catch( error => console.error( error ) );
 
             if( output ){
                 await this.game().timedPrompt('noncombat-attack', { output : [output] } )

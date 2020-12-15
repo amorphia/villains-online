@@ -93939,7 +93939,7 @@ var obj = {
   society: {
     name: 'society',
     owner: null,
-    status: 1,
+    status: 2,
     selectable: true
   },
   hackers: {
@@ -93972,7 +93972,7 @@ var obj = {
   witches: {
     name: 'witches',
     owner: null,
-    status: 0,
+    status: 1,
     selectable: true
   },
   bureau: {
