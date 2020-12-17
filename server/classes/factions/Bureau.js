@@ -60,7 +60,7 @@ class Bureau extends Faction {
 
     async onAfterActivateToken( token ){
         let player, data, area = this.game().areas[token.location];
-        if( token.faction !== this.name ) return;
+        if( token.faction !== this.name || !area ) return;
 
         let enemyToken = area.data.tokens.find( obj => obj.faction !== this.name && obj.revealed && obj.name === token.name );
         if( !enemyToken ) return;
