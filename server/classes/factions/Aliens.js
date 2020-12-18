@@ -71,10 +71,14 @@ class Aliens extends Faction {
     processUpgrade( n ){
         switch( n ){
             case 2 :
-                this.data.tokens.forEach( token => token.cost = 0 );
+                this.data.tokens.forEach( token => {
+                    if( token.type === 'move' ) token.cost = 0
+                });
                 break;
             case 1 :
-                this.data.tokens.forEach( token => token.cost = 1 );
+                this.data.tokens.forEach( token => {
+                    if( token.type === 'move' ) token.cost = 1
+                });
                 break;
         }
     }
