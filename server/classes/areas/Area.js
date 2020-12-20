@@ -83,6 +83,11 @@ class Area {
         }).filter( area => area );
     }
 
+    hasKau(){
+        let aliens = this.game().factions['aliens'];
+        if( this.name === aliens.data.kau.location ) return true;
+    }
+
     determineControl(){
         let newControllerName;
         let influences = this.eachInfluenceHere();

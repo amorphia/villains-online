@@ -170,6 +170,8 @@
                 return cost;
             },
 
+
+
             data(){
                 return this.shared.player.prompt.data;
             },

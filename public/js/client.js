@@ -8404,6 +8404,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'deploy-action',
   data: function data() {
@@ -8418,6 +8419,14 @@ __webpack_require__.r(__webpack_exports__);
       if (this.fromAreaIndex === -1) {
         App.event.emit('unselectAreas');
       }
+    },
+    destinationBlockedByKau: function destinationBlockedByKau() {
+      var _this = this;
+
+      if (!this.destinationBlockedByKau) return;
+      this.selected.forEach(function (unit) {
+        if (unit.type === 'champion') _this.$set(unit, 'selected', false);
+      });
     }
   },
   mounted: function mounted() {
@@ -8512,15 +8521,15 @@ __webpack_require__.r(__webpack_exports__);
       return _.groupBy(array, prop);
     },
     fromAreaUnits: function fromAreaUnits(area) {
-      var _this = this;
+      var _this2 = this;
 
       var units = this.shared.faction.units.filter(function (unit) {
-        return !unit.noDeploy && _.unitInArea(unit, area) && (!_this.data.unitTypes || _this.data.unitTypes.includes(unit.type));
+        return !unit.noDeploy && _.unitInArea(unit, area) && (unit.type !== 'champion' || !_this2.destinationBlockedByKau) && (!_this2.data.unitTypes || _this2.data.unitTypes.includes(unit.type));
       });
 
       if (this.shared.faction.ghostDeploy) {
         var ghosts = this.shared.faction.ghosts.filter(function (unit) {
-          return unit.location === area && (!_this.data.unitTypes || _this.data.unitTypes.includes(unit.type));
+          return unit.location === area && (!_this2.data.unitTypes || _this2.data.unitTypes.includes(unit.type));
         });
         units = _.concat(units, ghosts);
       }
@@ -8541,19 +8550,19 @@ __webpack_require__.r(__webpack_exports__);
       return this.bonusUnitsInDeploy - this.shared.faction.bonusDeploy.count;
     },
     bonusUnitsInDeploy: function bonusUnitsInDeploy() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.shared.faction.bonusDeploy) return 0;
       return this.selected.filter(function (unit) {
-        return unit.type === _this2.shared.faction.bonusDeploy.type;
+        return unit.type === _this3.shared.faction.bonusDeploy.type;
       }).length;
     },
     nonBonusUsedDeploy: function nonBonusUsedDeploy() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (!this.shared.faction.bonusDeploy) return this.selected.length;
       return this.selected.filter(function (unit) {
-        return unit.type !== _this3.shared.faction.bonusDeploy.type;
+        return unit.type !== _this4.shared.faction.bonusDeploy.type;
       }).length;
     },
     usedDeploy: function usedDeploy() {
@@ -8575,19 +8584,19 @@ __webpack_require__.r(__webpack_exports__);
       return unitsSelectedTest && costTest;
     },
     fromAreas: function fromAreas() {
-      var _this4 = this;
+      var _this5 = this;
 
       var areas = [];
       this.data.fromAreas.forEach(function (areaName) {
-        areas.push(_this4.shared.data.areas[areaName]);
+        areas.push(_this5.shared.data.areas[areaName]);
       });
       return areas;
     },
     hasFromAreaUnits: function hasFromAreaUnits() {
-      var _this5 = this;
+      var _this6 = this;
 
       this.data.fromAreas.forEach(function (area) {
-        if (_this5.fromAreaUnits(area).length > 0) return true;
+        if (_this6.fromAreaUnits(area).length > 0) return true;
       });
     },
     currentArea: function currentArea() {
@@ -8597,11 +8606,16 @@ __webpack_require__.r(__webpack_exports__);
       return this.fromAreaUnits(this.currentArea);
     },
     reserves: function reserves() {
-      var _this6 = this;
+      var _this7 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return !unit.selected && (!_this6.data.unitTypes || _this6.data.unitTypes.includes(unit.type)) && !unit.noDeploy && !unit.location;
+        return !unit.selected && (!_this7.data.unitTypes || _this7.data.unitTypes.includes(unit.type)) && !unit.noDeploy && (unit.type !== 'champion' || !_this7.destinationBlockedByKau) && !unit.location;
       });
+    },
+    destinationBlockedByKau: function destinationBlockedByKau() {
+      var aliens = this.shared.data.factions['aliens'];
+      if (!aliens || this.shared.faction.name === 'aliens') return false;
+      if (this.area.name === aliens.kau.location) return true;
     },
     selected: function selected() {
       var units = this.shared.faction.units.filter(function (unit) {
@@ -8643,11 +8657,11 @@ __webpack_require__.r(__webpack_exports__);
       return this.shared.player.prompt.data;
     },
     toAreas: function toAreas() {
-      var _this7 = this;
+      var _this8 = this;
 
       var areas = [];
       this.data.toAreas.forEach(function (areaName) {
-        areas.push(_this7.shared.data.areas[areaName]);
+        areas.push(_this8.shared.data.areas[areaName]);
       });
       return areas;
     },
@@ -9478,6 +9492,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'move-action',
   data: function data() {
@@ -9519,8 +9536,10 @@ __webpack_require__.r(__webpack_exports__);
       return _.groupBy(array, prop);
     },
     fromAreaUnits: function fromAreaUnits(area) {
+      var _this = this;
+
       return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, area);
+        return _.unitInArea(unit, area) && (unit.type !== 'champion' || !_this.destinationBlockedByKau);
       });
     }
   },
@@ -9537,20 +9556,25 @@ __webpack_require__.r(__webpack_exports__);
       var costTest = this.shared.faction.resources + this.shared.faction.energy >= this.cost;
       return unitsSelectedTest && costTest;
     },
+    destinationBlockedByKau: function destinationBlockedByKau() {
+      var aliens = this.shared.data.factions['aliens'];
+      if (!aliens || this.shared.faction.name === 'aliens') return false;
+      if (this.area.name === aliens.kau.location) return true;
+    },
     fromAreas: function fromAreas() {
-      var _this = this;
+      var _this2 = this;
 
       var areas = [];
       this.data.fromAreas.forEach(function (areaName) {
-        areas.push(_this.shared.data.areas[areaName]);
+        areas.push(_this2.shared.data.areas[areaName]);
       });
       return areas;
     },
     hasFromAreaUnits: function hasFromAreaUnits() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.data.fromAreas.forEach(function (area) {
-        if (_this2.fromAreaUnits(area).length > 0) return true;
+        if (_this3.fromAreaUnits(area).length > 0) return true;
       });
     },
     currentArea: function currentArea() {
@@ -63560,6 +63584,14 @@ var render = function() {
             2
           ),
           _vm._v(" "),
+          _vm.destinationBlockedByKau
+            ? _c("div", { staticClass: "prompt-question red" }, [
+                _vm._v(
+                  "Kau is blocking champions from being moved to this area"
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
           _vm.cost > 0
             ? _c("div", {
                 staticClass: "prompt-question",
@@ -64568,6 +64600,14 @@ var render = function() {
             ],
             2
           ),
+          _vm._v(" "),
+          _vm.destinationBlockedByKau
+            ? _c("div", { staticClass: "prompt-question red" }, [
+                _vm._v(
+                  "Kau is blocking champions from being moved to this area"
+                )
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _vm.cost > 0
             ? _c("div", {
@@ -94132,7 +94172,7 @@ var helpers = {
     var defenseBonus = 0;
     if (!options.unit) return defenseBonus;
 
-    if (targetFaction.defenseBonus && !this.hasKauImmunity(attackingFaction, area)) {
+    if (targetFaction.defenseBonus) {
       defenseBonus += targetFaction.defenseBonus;
       if (options.debug) console.log('Apply targetFaction.defenseBonus defense bonus:', defenseBonus);
     }
@@ -94795,46 +94835,30 @@ var helpers = {
     return cards;
   },
   shouldStandDown: function shouldStandDown(faction, area) {
-    var standDowns = area.cards.map(function (card) {
-      return card["class"] === 'stand-down' ? card.owner : false;
+    return area.cards.some(function (card) {
+      return card["class"] === 'stand-down';
     });
-    standDowns = standDowns.filter(function (name) {
-      return name;
-    }); // filter out false values
-
-    if (!this.hasKauImmunity(faction, area)) return standDowns.length > 0;
-    return standDowns.filter(function (owner) {
-      return owner === 'aliens';
-    }).length > 0;
   },
   areaIsTrapped: function areaIsTrapped(faction, area) {
     if (faction.data) faction = faction.data;
-    if (area.data) area = area.data; // if this area is trapped by the plants and we don't have enough money return true
+    if (area.data) area = area.data; // the aliens can't be trapped
+
+    if (faction.teleports) return false; // if this area is trapped by the plants and we don't have enough money return true
 
     var vines = area.tokens.filter(function (token) {
       return token.type === 'vines' && token.revealed;
     });
 
-    if (faction.name !== 'plants' && vines.length) {
+    if (faction.name !== 'plants' && !faction.teleports && vines.length) {
       return _.money(faction) < vines.length;
-    } // let make an array of all the players that have played a trapped like rats here
+    }
 
-
-    var traps = [];
-    area.cards.forEach(function (card) {
-      if (card["class"] === 'trapped-like-rats') traps.push(card.owner);
-    }); // if there are no trapped like rats played here, then the area ain't trapped
-
-    if (!traps.length) return false; // if there is at least one TLR here and we don't have Kau immunity then we are trapped
-
-    if (!this.hasKauImmunity(faction, area)) return true; // but even if we do have Kau immunity we still get trapped by our own TLR
-
-    if (_.remove(traps, function (name) {
-      return name !== faction.name;
-    }).length) return true;
+    return area.cards.some(function (card) {
+      return card["class"] === 'trapped-like-rats';
+    });
   },
   vinesCost: function vinesCost(faction, units, factions) {
-    if (faction.name === 'plants' || !factions['plants']) return 0; // find out where each of our vines tokens is located
+    if (faction.name === 'plants' || faction.teleports || !factions['plants']) return 0; // find out where each of our vines tokens is located
 
     var vinesAreas = {};
     var vines = factions['plants'].tokens.forEach(function (token) {
@@ -94851,27 +94875,23 @@ var helpers = {
     return cost;
   },
   policePayoffs: function policePayoffs(faction, area, units) {
-    var _this15 = this;
-
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
-    var policePayoff = 0;
+    var policePayoff = 0; // if our faction teleports, police payoff never applies
+
+    if (faction.teleports) return policePayoff;
 
     _.forEach(area.cards, function (card) {
       if (card["class"] === 'police-payoff' // if there is a police payoff here
       && card.owner !== faction.name // which we don't own
-      && !_this15.hasKauImmunity(faction, area) // and we don't already have kau immunity in this area
-      && !_this15.find(units, function (unit) {
-        return unit.type === 'champion' && unit.faction === 'aliens';
-      })) // and we aren't deploying kau
-        {
+      ) {
           policePayoff++; // increase our police payoff cost by one
         }
     });
 
     return policePayoff;
   },
-  hasKauImmunity: function hasKauImmunity(faction, area) {
+  hasKau: function hasKau(faction, area) {
     return faction.kau && faction.kau.location === area.name && !faction.kau.killed;
   },
 

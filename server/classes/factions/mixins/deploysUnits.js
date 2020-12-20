@@ -43,7 +43,7 @@ let obj = {
         } else {
             areas = Object.values( this.game().areas )
                 .map( area => {
-                    if( area.data.cards.find( card => card.class === 'suitcase-nuke' ) ) return false;
+                    if( area.data.cards.some( card => card.class === 'suitcase-nuke' ) && !this.data.teleports ) return false;
                     return area.name;
                 })
                 .filter( area => area );
@@ -72,17 +72,23 @@ let obj = {
     deployFromAreas( args = {} ){
         let areas = {};
         let money = this.money();
+        let area = typeof args.area === 'string' ? this.game().areas[args.area] : args.area;
+        let kauInArea = area && area.hasKau() && this.name !== 'aliens';
+
 
         _.forEach( this.data.units, (unit, index) => {
             // if our deploy is limited to a certain unit type only include areas with those
             let unitMatches = !args.unitTypes || args.unitTypes.includes( unit.type );
             let canPayFor = args.free || unit.redeployFree || money >= unit.cost;
+            let blockedByKau = unit.type === 'champion' && kauInArea;
 
-            if( !unit.noDeploy && canPayFor && unitMatches && _.unitInPlay( unit ) ){
+            if( !unit.noDeploy
+                && canPayFor
+                && unitMatches
+                && !blockedByKau
+                && _.unitInPlay( unit )
+            ){
                 areas[ unit.location ] = { val : true };
-                if( this.data.name === 'aliens' && unit.type === "champion"){
-                    areas[ unit.location ].kau = true;
-                }
             }
         });
 
@@ -99,7 +105,6 @@ let obj = {
             let area = this.game().areas[name];
             let cards = area.data.cards;
 
-            //let trapped = _.find( cards, card => card.class === 'trapped-like-rats' ) && ! data.kau;
             let trapped = _.areaIsTrapped( this, area );
 
             let nuked = _.find( cards, card => card.class === 'suitcase-nuke' );

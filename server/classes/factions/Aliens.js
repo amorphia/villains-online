@@ -14,6 +14,7 @@ class Aliens extends Faction {
         this.data.farMove = false;
         this.data.focus = 'captured-markers-focus';
         this.data.focusDescription = "Capture many enemy markers";
+        this.data.teleports = true;
 
         this.capturedRewards = [
             { ap : 1, maxEnergy : 1 },
@@ -59,14 +60,7 @@ class Aliens extends Faction {
             }
         };
     }
-
-    factionCombatMods( mods, area ) {
-        if( this.data.units.find( unit => _.unitInArea( unit, area, { type: 'champion' } ) ) ){
-            mods.push( { type : 'kauImmunity', text : `Negates enemy defense bonuses that come from cards` });
-        }
-
-        return mods;
-    }
+    F
 
     processUpgrade( n ){
         switch( n ){

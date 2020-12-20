@@ -114,7 +114,7 @@ let helpers = {
         let defenseBonus = 0;
         if( ! options.unit ) return defenseBonus;
 
-        if( targetFaction.defenseBonus && !this.hasKauImmunity( attackingFaction, area ) ){
+        if( targetFaction.defenseBonus ){
             defenseBonus += targetFaction.defenseBonus;
             if( options.debug ) console.log( 'Apply targetFaction.defenseBonus defense bonus:', defenseBonus  );
         }
@@ -805,42 +805,28 @@ let helpers = {
     },
 
     shouldStandDown( faction, area ) {
-        let standDowns = area.cards.map(card => card.class === 'stand-down' ? card.owner : false);
-        standDowns = standDowns.filter(name => name); // filter out false values
-
-        if ( !this.hasKauImmunity( faction, area ) ) return standDowns.length > 0;
-        return standDowns.filter( owner => owner === 'aliens' ).length > 0;
+        return area.cards.some( card => card.class === 'stand-down' );
     },
 
     areaIsTrapped( faction, area ){
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
 
+        // the aliens can't be trapped
+        if( faction.teleports ) return false;
+
         // if this area is trapped by the plants and we don't have enough money return true
         let vines = area.tokens.filter( token => token.type === 'vines' && token.revealed );
-        if( faction.name !== 'plants' && vines.length ){
+        if( faction.name !== 'plants' && !faction.teleports && vines.length ){
             return _.money( faction ) < vines.length;
         }
 
-        // let make an array of all the players that have played a trapped like rats here
-        let traps = [];
-        area.cards.forEach( card => {
-            if( card.class === 'trapped-like-rats' ) traps.push( card.owner );
-        });
-
-        // if there are no trapped like rats played here, then the area ain't trapped
-        if( !traps.length ) return false;
-
-        // if there is at least one TLR here and we don't have Kau immunity then we are trapped
-        if( !this.hasKauImmunity( faction, area ) ) return true;
-
-        // but even if we do have Kau immunity we still get trapped by our own TLR
-        if( _.remove( traps, name => name !== faction.name ).length ) return true;
+        return area.cards.some( card => card.class === 'trapped-like-rats' );
     },
 
 
     vinesCost( faction, units, factions ){
-        if( faction.name === 'plants' || ! factions['plants'] ) return 0;
+        if( faction.name === 'plants' || faction.teleports || ! factions['plants'] ) return 0;
 
         // find out where each of our vines tokens is located
         let vinesAreas = {};
@@ -866,21 +852,22 @@ let helpers = {
         if( area.data ) area = area.data;
         let policePayoff = 0;
 
+        // if our faction teleports, police payoff never applies
+        if( faction.teleports ) return policePayoff;
+
         _.forEach( area.cards, card => {
             if( card.class === 'police-payoff' // if there is a police payoff here
                 && card.owner !== faction.name // which we don't own
-                && !this.hasKauImmunity( faction, area ) // and we don't already have kau immunity in this area
-                && !this.find( units, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
-            {
+            ){
                 policePayoff++; // increase our police payoff cost by one
             }
         });
 
         return policePayoff;
-
     },
 
-    hasKauImmunity( faction, area ){
+
+    hasKau( faction, area ){
         return faction.kau && faction.kau.location === area.name && !faction.kau.killed;
     },
 

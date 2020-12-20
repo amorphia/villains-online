@@ -58,6 +58,7 @@
                     </div>
                 </area-flipper>
 
+                <div v-if="destinationBlockedByKau" class="prompt-question red">Kau is blocking champions from being moved to this area</div>
                 <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to deploy these units?` )"></div>
                 <div v-if="vinesCost > 0" class="prompt-question red center-text" v-html="shared.filterText( `Vines cost xC${vinesCost}x` )"></div>
                 <div v-if="policePayoffs > 0" class="prompt-question red center-text" v-html="shared.filterText( `Police Payoff cost xC${policePayoffs}x` )"></div>
@@ -94,6 +95,14 @@
                 if( this.fromAreaIndex === -1 ){
                     App.event.emit('unselectAreas' );
                 }
+            },
+
+            destinationBlockedByKau(){
+                if( !this.destinationBlockedByKau ) return;
+
+                this.selected.forEach( unit => {
+                    if( unit.type === 'champion' ) this.$set( unit, 'selected', false );
+                })
             }
         },
 
@@ -196,6 +205,7 @@
                 let units = this.shared.faction.units
                     .filter( unit => ! unit.noDeploy
                             && _.unitInArea( unit, area )
+                            && (unit.type !== 'champion' || !this.destinationBlockedByKau )
                             && (! this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
                     );
 
@@ -284,8 +294,15 @@
                     unit => !unit.selected
                             && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
                             && !unit.noDeploy
+                            && (unit.type !== 'champion' || !this.destinationBlockedByKau)
                             && !unit.location
                 );
+            },
+
+            destinationBlockedByKau(){
+                let aliens = this.shared.data.factions['aliens'];
+                if( !aliens || this.shared.faction.name === 'aliens' ) return false;
+                if( this.area.name === aliens.kau.location ) return true;
             },
 
             selected(){

@@ -51,6 +51,8 @@ let obj = {
 
     moveFromAreas( args = {} ){
         let areas;
+        let area = typeof args.area === 'string' ? this.game().areas[args.area] : args.area;
+        let kauInArea = area.hasKau() && this.name !== 'aliens';
 
         // if our move isn't limited to adjacency return every area but this one
         if( args.farMove || this.data.farMove || this.areas().includes( 'subway' ) ){
@@ -61,11 +63,10 @@ let obj = {
         }
 
         areas = areas.filter( area => {
-            let hasUnits = !! _.find( this.data.units, unit => _.unitInArea( unit, area ) );
-
-            //let isTrapped = this.game().areas[area].data.cards.filter( card => card.class === 'trapped-like-rats' ).length && ! _.hasKauImmunity( this.data, area );
+            let hasUnits = !! _.find( this.data.units, unit => {
+                return _.unitInArea( unit, area ) && ( unit.type !== 'champion' || !kauInArea );
+            });
             let isTrapped = _.areaIsTrapped( this, this.game().areas[area] );
-
             return hasUnits && ! isTrapped;
         });
 

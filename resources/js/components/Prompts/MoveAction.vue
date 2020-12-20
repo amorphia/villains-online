@@ -41,6 +41,9 @@
                     </div>
                 </area-flipper>
 
+                <div v-if="destinationBlockedByKau" class="prompt-question red">Kau is blocking champions from being moved to this area</div>
+
+
                 <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to move these units?` )"></div>
 
                 <div v-if="cost > 0 && confirm">
@@ -119,7 +122,7 @@
             },
 
             fromAreaUnits( area ){
-                return this.shared.faction.units.filter( unit => _.unitInArea( unit, area ) );
+                return this.shared.faction.units.filter( unit => _.unitInArea( unit, area ) && (unit.type !== 'champion' || !this.destinationBlockedByKau ) );
             },
         },
 
@@ -138,6 +141,12 @@
                 let unitsSelectedTest = this.selected.length >= 1;
                 let costTest = (this.shared.faction.resources + this.shared.faction.energy) >= this.cost;
                 return unitsSelectedTest && costTest;
+            },
+
+            destinationBlockedByKau(){
+                let aliens = this.shared.data.factions['aliens'];
+                if( !aliens || this.shared.faction.name === 'aliens' ) return false;
+                if( this.area.name === aliens.kau.location ) return true;
             },
 
             fromAreas(){
