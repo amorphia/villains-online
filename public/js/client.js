@@ -93916,7 +93916,7 @@ var obj = {
   scientists: {
     name: 'scientists',
     owner: null,
-    status: 2,
+    status: 3,
     basic: true,
     selectable: true
   },
@@ -93938,14 +93938,14 @@ var obj = {
   commies: {
     name: 'commies',
     owner: null,
-    status: 2,
+    status: 3,
     basic: true,
     selectable: true
   },
   aliens: {
     name: 'aliens',
     owner: null,
-    status: 3,
+    status: 2,
     basic: true,
     selectable: true
   },
