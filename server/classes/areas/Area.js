@@ -85,7 +85,7 @@ class Area {
 
     hasKau(){
         let aliens = this.game().factions['aliens'];
-        if( this.name === aliens.data.kau.location ) return true;
+        if( aliens && this.name === aliens.data.kau.location ) return true;
     }
 
     determineControl(){
