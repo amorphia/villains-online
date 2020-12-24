@@ -197,6 +197,7 @@ class Battle {
             attacks : unit.attack,
             unit : unit,
             attackBonus : this.options.attackBonus,
+            inCombat : true,
         };
 
         // if ninjas haven't attacked yet then this attack gains seeking

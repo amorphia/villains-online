@@ -199,7 +199,7 @@ let obj = {
         // resolve hits
         let resolveHitsResult = await this.resolveAttackHits( hits, victim, args );
 
-        if( this.name === 'ninjas' && this.data.firstAttackThisBattle && resolveHitsResult === 'kills' ){
+        if( this.name === 'ninjas' && args.inCombat && this.data.firstAttackThisBattle && resolveHitsResult === 'kills' ){
             this.becomeHidden( args.unit );
             this.game().message({ faction: this, message: `The ${ args.unit.name} successfully assassinates, and becomes hidden` });
         }
