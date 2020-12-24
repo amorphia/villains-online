@@ -7460,7 +7460,7 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.socketEmit('chooseTargetPlan', this.plan, this.target);
     },
     itemClicked: function itemClicked(type, object) {
-      if (this.shared.faction.randomTarget && type === 'target') return App.event.emit('sound', 'error'); // clicking the selected object unselects it
+      if (this.shared.faction.randomTarget && type === 'target' || !this.mustChoosePlan && type === 'plan') return App.event.emit('sound', 'error'); // clicking the selected object unselects it
 
       if (this[type] && this[type].id === object.id) return this[type] = null; // if this card doesn't have a target, do nothing
 
@@ -7477,10 +7477,13 @@ __webpack_require__.r(__webpack_exports__);
       if (this.mode === 'confirm') return "FINALIZE CHOICES";
       return "CONFIRM CHOICES";
     },
+    mustChoosePlan: function mustChoosePlan() {
+      return this.shared.faction.plans.current.length >= 3;
+    },
     message: function message() {
       switch (this.mode) {
         case 'plans':
-          return "Choose a plan to discard";
+          return this.mustChoosePlan ? "Choose a plan to discard" : "You don't need to discard a plan";
 
         case 'cards':
           return "Choose your target";
@@ -7490,7 +7493,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     canConfirm: function canConfirm() {
-      return this.plan && this.target;
+      return (this.plan || !this.mustChoosePlan) && this.target;
     }
   }
 });
@@ -62729,25 +62732,27 @@ var render = function() {
     _c("div", { staticClass: "d-flex justify-center px-5" }, [
       _vm.mode === "confirm"
         ? _c("div", { staticClass: "d-flex align-center justify-center" }, [
-            _c("div", { staticClass: "p-4" }, [
-              _c("div", { staticClass: "title" }, [
-                _vm._v("Discard this plan")
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "plan-block__image-wrap" }, [
-                _c("img", {
-                  staticClass: "plan-block__image",
-                  attrs: {
-                    src:
-                      "/images/factions/" +
-                      _vm.shared.faction.name +
-                      "/plans/" +
-                      _vm.plan.num +
-                      ".jpg"
-                  }
-                })
-              ])
-            ]),
+            _vm.mustChoosePlan
+              ? _c("div", { staticClass: "p-4" }, [
+                  _c("div", { staticClass: "title" }, [
+                    _vm._v("Discard this plan")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "plan-block__image-wrap" }, [
+                    _c("img", {
+                      staticClass: "plan-block__image",
+                      attrs: {
+                        src:
+                          "/images/factions/" +
+                          _vm.shared.faction.name +
+                          "/plans/" +
+                          _vm.plan.num +
+                          ".jpg"
+                      }
+                    })
+                  ])
+                ])
+              : _vm._e(),
             _vm._v(" "),
             _c("div", { staticClass: "p-4" }, [
               _c("div", { staticClass: "title" }, [

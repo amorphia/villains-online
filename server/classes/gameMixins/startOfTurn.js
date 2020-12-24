@@ -48,7 +48,7 @@ let obj = {
         if( ! player.data.active ) return;
 
         let faction = player.faction();
-        _.moveItemById( plan.id, faction.data.plans.current, faction.data.plans.deck );
+        if( plan ) _.moveItemById( plan.id, faction.data.plans.current, faction.data.plans.deck );
         _.moveItemById( target.id, faction.data.cards.hand, faction.data.cards.target );
 
         // de-select target card if selected randomly

@@ -5,7 +5,7 @@
                 <!-- confirm -->
                 <div v-if="mode === 'confirm'" class="d-flex align-center justify-center">
 
-                    <div class="p-4">
+                    <div class="p-4" v-if="mustChoosePlan">
                         <div class="title">Discard this plan</div>
                         <div class='plan-block__image-wrap'>
                             <img class="plan-block__image" :src="`/images/factions/${shared.faction.name}/plans/${plan.num}.jpg`">
@@ -105,7 +105,9 @@
             },
 
             itemClicked( type, object ){
-                if( this.shared.faction.randomTarget && type === 'target' ) return App.event.emit( 'sound', 'error' );
+                if( (this.shared.faction.randomTarget && type === 'target')
+                    || (!this.mustChoosePlan && type === 'plan')
+                ) return App.event.emit( 'sound', 'error' );
 
                 // clicking the selected object unselects it
                 if( this[type] && this[type].id === object.id ) return this[type] = null;
@@ -129,16 +131,20 @@
                 return "CONFIRM CHOICES";
             },
 
+            mustChoosePlan(){
+                return this.shared.faction.plans.current.length >= 3;
+            },
+
             message(){
                 switch( this.mode ) {
-                    case 'plans' : return "Choose a plan to discard";
+                    case 'plans' : return this.mustChoosePlan ? "Choose a plan to discard" : "You don't need to discard a plan";
                     case 'cards' : return "Choose your target";
                     case 'confirm' : return "Confirm Choices";
                 }
             },
 
             canConfirm(){
-                return this.plan && this.target;
+                return ( this.plan || !this.mustChoosePlan ) && this.target;
             }
         }
     }
