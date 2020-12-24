@@ -11144,7 +11144,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-combat',
   props: ['unit'],
@@ -11177,6 +11176,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -66042,15 +66042,7 @@ var render = function() {
     ? _c(
         "div",
         { staticClass: "p-2 pos-relative" },
-        [
-          _c("unit-icon", { attrs: { unit: _vm.unit, classes: _vm.classes } }),
-          _vm._v(" "),
-          _vm.unit.killed
-            ? _c("div", { staticClass: "unit-killed pos-absolute top-0" }, [
-                _c("i", { staticClass: "icon-kill" })
-              ])
-            : _vm._e()
-        ],
+        [_c("unit-icon", { attrs: { unit: _vm.unit, classes: _vm.classes } })],
         1
       )
     : _vm._e()
@@ -66077,7 +66069,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "d-inline-block" }, [
+  return _c("div", { staticClass: "d-inline-block pos-relative" }, [
     _c(
       "div",
       {
@@ -66123,6 +66115,12 @@ var render = function() {
           }),
           0
         )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.unit.killed
+      ? _c("div", { staticClass: "unit-killed pos-absolute top-0" }, [
+          _c("i", { staticClass: "icon-kill" })
+        ])
       : _vm._e()
   ])
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="d-inline-block">
+    <div class="d-inline-block pos-relative">
         <div class="units-hud__unit d-inline-block pos-relative"
              :class="setClasses"
              @click="$emit( 'unit', unit, hpLeft )">
@@ -17,6 +17,7 @@
                :class="pip.active ? 'icon-circle active' : 'icon-circle-open'"></i>
         </div>
 
+        <div v-if="unit.killed" class="unit-killed pos-absolute top-0"><i class="icon-kill"></i></div>
     </div>
 </template>
 

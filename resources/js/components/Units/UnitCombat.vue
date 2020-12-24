@@ -1,7 +1,6 @@
 <template>
     <div v-if="!hide" class="p-2 pos-relative">
         <unit-icon :unit="unit" :classes="classes"></unit-icon>
-        <div v-if="unit.killed" class="unit-killed pos-absolute top-0"><i class="icon-kill"></i></div>
     </div>
 </template>
 
