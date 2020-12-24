@@ -8013,7 +8013,9 @@ __webpack_require__.r(__webpack_exports__);
 
         if (_this5.data.basicOnly && !unit.basic) return; // filter flipped units
 
-        if (_this5.data.flippedOnly && !unit.flipped) return; // filter has attack value
+        if (_this5.data.flippedOnly && !unit.flipped) return; // filter flipped units
+
+        if (_this5.data.hasProp && !unit[_this5.data.hasProp]) return; // filter has attack value
 
         if (_this5.data.hasAttack && !unit.attack.length) return; // filter for unit types
 
@@ -13395,14 +13397,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'map-player',
   props: ['neutral', 'area', 'faction'],
   data: function data() {
     return {
       shared: App.state,
-      abilityIcons: ['deadly', 'hidden', 'charged']
+      abilityIcons: ['deadly', 'hidden', 'charged'],
+      alwaysShowPips: ['vampire']
     };
+  },
+  methods: {
+    unitHasAlwaysShowPip: function unitHasAlwaysShowPip(unit) {
+      var pipped;
+      this.alwaysShowPips.forEach(function (property) {
+        if (unit[property]) pipped = property;
+      });
+      return pipped;
+    }
   },
   computed: {
     name: function name() {
@@ -13422,15 +13435,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         } else {
           units[unit.type] = {
             count: 1,
-            flipped: 0
+            pipped: 0
           };
         }
 
-        if (!_this.faction.reverseFlippedPip && unit.flipped) {
-          units[unit.type].flipped++;
-        } else if (_this.faction.reverseFlippedPip && !unit.flipped) {
-          units[unit.type].flipped++;
-        }
+        if (unit.flipped || _this.unitHasAlwaysShowPip(unit)) units[unit.type].pipped++;
       }); // show plants
 
       if (this.faction.name === 'plants' && this.faction.plants[this.area.name]) {
@@ -13440,7 +13449,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           } else {
             units['plant'] = {
               count: 1,
-              flipped: 0
+              pipped: 0
             };
           }
         }
@@ -13458,25 +13467,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           } else {
             units['ghost'] = {
               count: 1,
-              flipped: 0
+              pipped: 0
             };
           }
         }
       }
-      /*
-      // show webbed
-      if( this.faction.name === 'spiders' ){
-          let areaWebbed = _.webbedUnits( this.faction, { area : this.area.name } );
-           for( let i = 0; i < areaWebbed.length; i++ ){
-              if( units['web'] ){
-                  units['web'].count++;
-              } else {
-                  units['web'] = { count : 1, flipped : 0 };
-              }
-          }
-      }
-      */
-
 
       return units;
     },
@@ -13504,7 +13499,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
           if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units'; // does this unit have a faction specific flipped status
 
-          if (!unit.toughness && unit.flipped && _this2.faction.statusIcon) status[_this2.faction.statusIcon] = _this2.faction.statusDescription; // does this unit have first strike (each faction has its own color first strike icon)
+          if (!unit.toughness && unit.flipped && _this2.faction.statusIcon) {
+            status[_this2.faction.statusIcon] = _this2.faction.statusDescription;
+          } // does this unit have another specific status effect
+
+
+          var unitHasAlwaysShowPip = _this2.unitHasAlwaysShowPip(unit);
+
+          if (unitHasAlwaysShowPip && _this2.faction.statusIcon) {
+            status[_this2.faction.statusIcon] = _this2.faction.statusDescription;
+          } // does this unit have first strike (each faction has its own color first strike icon)
+
 
           if (unit.firstStrike) status["".concat(unit.faction, "-first-strike")] = 'has units with first strike'; // does xavier have a token on him?
 
@@ -13533,11 +13538,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }];
       var stats = [];
 
-      _.forEach(this.units, function (data, type) {
+      _.forEach(this.units, function (unit, type) {
         stats.push({
           name: type,
-          val: data.count,
-          flipped: data.flipped,
+          val: unit.count,
+          pipped: unit.pipped,
           description: "".concat(type, "s")
         });
       });
@@ -68926,14 +68931,14 @@ var render = function() {
                       }
                     }),
                     _vm._v(" "),
-                    stat.flipped > 0
+                    stat.pipped > 0
                       ? _c(
                           "div",
                           {
                             staticClass:
                               "pos-absolute map-player__pips d-flex justify-center width-100"
                           },
-                          _vm._l(stat.flipped, function(n) {
+                          _vm._l(stat.pipped, function(n) {
                             return _c("i", {
                               staticClass: "icon-circle",
                               class: "faction-" + _vm.faction.name
@@ -68951,14 +68956,14 @@ var render = function() {
                       attrs: { title: stat.description }
                     },
                     [
-                      stat.flipped > 0
+                      stat.pipped > 0
                         ? _c(
                             "div",
                             {
                               staticClass:
                                 "pos-absolute map-player__pips d-flex justify-center width-100"
                             },
-                            _vm._l(stat.flipped, function(n) {
+                            _vm._l(stat.pipped, function(n) {
                               return _c("i", {
                                 staticClass: "icon-circle",
                                 class: "faction-" + _vm.faction.name
@@ -94814,7 +94819,7 @@ var helpers = {
     if (typeof options.types === 'string') options.types = [options.types];
     var areas = {};
     faction.units.forEach(function (unit) {
-      if (_.unitInPlay(unit) && (!options.types || options.types.includes(unit.type)) && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.flipped || unit.flipped) && (!options.deployable || !unit.noDeploy) && (!options.notHidden || !unit.hidden) && (!options.basic || unit.basic)) {
+      if (_.unitInPlay(unit) && (!options.types || options.types.includes(unit.type)) && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.flipped || unit.flipped) && (!options.deployable || !unit.noDeploy) && (!options.notHidden || !unit.hidden) && (!options.basic || unit.basic) && (!options.hasProp || unit[options.hasProp])) {
         areas[unit.location] = true;
       }
     });

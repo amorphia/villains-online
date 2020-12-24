@@ -18,7 +18,7 @@ class Vampires extends Faction {
         this.data.statusIcon = 'vampires';
         this.data.statusDescription = 'has vampire units';
 
-        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
+        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent'];
 
         // tokens
         this.tokens['feast'] = {
@@ -32,12 +32,19 @@ class Vampires extends Faction {
 
         // units
         this.units['goon'].data.onHit = 'becomeVampire';
+        this.units['goon'].data.vampire = false;
+
         this.units['talent'].data.onHit = 'becomeVampire';
+        this.units['talent'].data.vampire = false;
         this.units['talent'].data.attack = [5];
+
         this.units['mole'].data.onHit = 'becomeVampire';
+        this.units['mole'].data.vampire = false;
         this.units['mole'].data.attack = [7];
+
         this.units['patsy'].count = 6;
         this.units['patsy'].data.onHit = 'becomeVampire';
+        this.units['patsy'].data.vampire = false;
         this.units['patsy'].data.attack = [7];
 
         this.units['champion'] = {
@@ -47,13 +54,12 @@ class Vampires extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 2,
-                attack: [5,5],
-                firstStrike: true,
+                attack: [3,3],
                 cost: 2,
+                vampire: true,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                onHit : 'becomeVampire'
             }
         };
     }
@@ -79,7 +85,7 @@ class Vampires extends Faction {
         let player, data, destinationAreaName = token.location;
 
         // check for areas with vampires (that aren't this area)
-        let potentialAreas = this.areasWithUnits({ flipped : true, excludesArea : destinationAreaName });
+        let potentialAreas = this.areasWithUnits({ hasProp : "vampire", excludesArea : destinationAreaName });
         if( !potentialAreas.length ) return;
 
         let message = this.data.batMove > 1 ? `Fly up to ${this.data.batMove} vampires to the ${destinationAreaName}` : `Fly a vampire to the ${destinationAreaName}?`;
@@ -91,7 +97,7 @@ class Vampires extends Faction {
                     count : this.data.batMove,
                     areas : potentialAreas,
                     playerOnly : true,
-                    flippedOnly : true,
+                    hasProp : 'vampire',
                     canDecline : true,
                     optionalMax : true,
                     message: message
@@ -188,6 +194,7 @@ class Vampires extends Faction {
 
         if( !unit.flipped && !unit.killed ){
             unit.flipped = true;
+            unit.vampire = true;
             unit.attack = unit.attack.map( attack => attack - 2 );
             let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;
             this.message({ message: message, faction : this });
@@ -197,6 +204,7 @@ class Vampires extends Faction {
     unitUnflipped( unit ) {
         console.log( 'unflip unit', unit );
         unit.flipped = false;
+        unit.vampire = false;
         unit.attack = unit.attack.map( attack => attack + 2 );
     }
 

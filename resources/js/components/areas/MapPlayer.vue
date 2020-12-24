@@ -3,17 +3,18 @@
         <div v-if="stats.length > 0" class="map-player__content flex-center m-1" :class="`faction-${name}`">
             <div class="map-player__icon"><img :src="`/images/factions/${name}/icon.jpg`"></div>
             <div v-for="stat in stats" class="map-player__stat">
+
                 <span v-if="stat.name !== 'champion'  && stat.val > 0 || stat.val > 1">{{ stat.val }}</span>
 
                     <i v-if="stat.name === 'champion'" class="map-player_champion-wrap">
                         <img class="map-player__champion" :src="`/images/factions/${name}/portrait.png`">
-                        <div v-if="stat.flipped > 0" class="pos-absolute map-player__pips d-flex justify-center width-100" >
-                            <i v-for="n in stat.flipped" class="icon-circle" :class="`faction-${faction.name}`"></i>
+                        <div v-if="stat.pipped > 0" class="pos-absolute map-player__pips d-flex justify-center width-100" >
+                            <i v-for="n in stat.pipped" class="icon-circle" :class="`faction-${faction.name}`"></i>
                         </div>
                     </i>
                     <i v-else :class="`icon-${stat.name}`" class="pos-relative" :title="stat.description">
-                        <div v-if="stat.flipped > 0" class="pos-absolute map-player__pips d-flex justify-center width-100" >
-                            <i v-for="n in stat.flipped" class="icon-circle" :class="`faction-${faction.name}`"></i>
+                        <div v-if="stat.pipped > 0" class="pos-absolute map-player__pips d-flex justify-center width-100" >
+                            <i v-for="n in stat.pipped" class="icon-circle" :class="`faction-${faction.name}`"></i>
                         </div>
                     </i>
 
@@ -39,8 +40,23 @@
                     'deadly',
                     'hidden',
                     'charged'
+                ],
+                alwaysShowPips : [
+                    'vampire'
                 ]
             };
+        },
+
+        methods : {
+            unitHasAlwaysShowPip( unit ){
+                let pipped;
+
+                this.alwaysShowPips.forEach( property => {
+                    if( unit[property] ) pipped = property;
+                });
+
+                return pipped;
+            }
         },
 
         computed: {
@@ -52,17 +68,16 @@
             units(){
                 if( !this.faction ) return [];
                 let units = {};
+
                 this.faction.units.filter( unit => _.unitInArea( unit, this.area ) ).forEach( unit => {
+
                     if( units[ unit.type ] ){
                         units[ unit.type ].count++;
                     } else {
-                        units[ unit.type ] = { count : 1, flipped : 0 };
+                        units[ unit.type ] = { count : 1, pipped : 0 };
                     }
-                    if( !this.faction.reverseFlippedPip && unit.flipped ){
-                        units[ unit.type ].flipped++;
-                    } else if ( this.faction.reverseFlippedPip && !unit.flipped ){
-                        units[ unit.type ].flipped++;
-                    }
+
+                    if( unit.flipped || this.unitHasAlwaysShowPip( unit ) ) units[ unit.type ].pipped++;
                 });
 
                 // show plants
@@ -71,7 +86,7 @@
                         if( units['plant'] ){
                             units['plant'].count++;
                         } else {
-                            units['plant'] = { count : 1, flipped : 0 };
+                            units['plant'] = { count : 1, pipped : 0 };
                         }
                     }
                 }
@@ -84,25 +99,10 @@
                         if( units['ghost'] ){
                             units['ghost'].count++;
                         } else {
-                            units['ghost'] = { count : 1, flipped : 0 };
+                            units['ghost'] = { count : 1, pipped : 0 };
                         }
                     }
                 }
-
-                /*
-                // show webbed
-                if( this.faction.name === 'spiders' ){
-                    let areaWebbed = _.webbedUnits( this.faction, { area : this.area.name } );
-
-                    for( let i = 0; i < areaWebbed.length; i++ ){
-                        if( units['web'] ){
-                            units['web'].count++;
-                        } else {
-                            units['web'] = { count : 1, flipped : 0 };
-                        }
-                    }
-                }
-                */
 
                 return units;
             },
@@ -128,7 +128,15 @@
                     if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units';
 
                     // does this unit have a faction specific flipped status
-                    if (!unit.toughness && unit.flipped && this.faction.statusIcon) status[this.faction.statusIcon] = this.faction.statusDescription;
+                    if (!unit.toughness && unit.flipped && this.faction.statusIcon){
+                        status[this.faction.statusIcon] = this.faction.statusDescription;
+                    }
+
+                    // does this unit have another specific status effect
+                    let unitHasAlwaysShowPip = this.unitHasAlwaysShowPip( unit );
+                    if ( unitHasAlwaysShowPip && this.faction.statusIcon ){
+                        status[this.faction.statusIcon] = this.faction.statusDescription;
+                    }
 
                     // does this unit have first strike (each faction has its own color first strike icon)
                     if( unit.firstStrike ) status[`${unit.faction}-first-strike`] = 'has units with first strike';
@@ -149,11 +157,11 @@
             stats(){
                 if( this.neutral ) return [ { name: 'influence', val : 1 }];
 
-
                 let stats = [];
 
-                _.forEach( this.units, (data, type) => {
-                    stats.push({ name : type, val : data.count, flipped : data.flipped, description : `${type}s` });
+
+                _.forEach( this.units, (unit, type) => {
+                    stats.push({ name : type, val : unit.count, pipped : unit.pipped, description : `${type}s` });
                 });
 
 

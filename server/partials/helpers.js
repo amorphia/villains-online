@@ -779,6 +779,7 @@ let helpers = {
                 && ( !options.deployable || !unit.noDeploy )
                 && ( !options.notHidden || !unit.hidden )
                 && ( !options.basic || unit.basic )
+                && ( !options.hasProp || unit[options.hasProp] )
             ){
                 areas[ unit.location ] = true;
             }

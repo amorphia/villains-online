@@ -410,6 +410,8 @@
                     if( this.data.basicOnly && !unit.basic ) return;
                     // filter flipped units
                     if( this.data.flippedOnly && !unit.flipped ) return;
+                    // filter flipped units
+                    if( this.data.hasProp && !unit[this.data.hasProp] ) return;
                     // filter has attack value
                     if( this.data.hasAttack && !unit.attack.length ) return;
                     // filter for unit types
