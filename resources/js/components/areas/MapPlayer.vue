@@ -132,7 +132,7 @@
                         status[this.faction.statusIcon] = this.faction.statusDescription;
                     }
 
-                    // does this unit have another specific status effect
+                    // does this unit have a status effect that we have in our "Always show pip" array?
                     let unitHasAlwaysShowPip = this.unitHasAlwaysShowPip( unit );
                     if ( unitHasAlwaysShowPip && this.faction.statusIcon ){
                         status[this.faction.statusIcon] = this.faction.statusDescription;

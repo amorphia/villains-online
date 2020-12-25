@@ -10,7 +10,7 @@ class Commies extends Faction {
         // data
         this.data.name = this.name;
         this.data.title = "The New Collective";
-        //this.data.bonusPatsies = 1;
+        this.data.risePatsies = 0;
         this.data.bonusDeploy = { type: 'patsy', count : 1 };
         this.data.focus = 'influence-focus';
         this.data.focusDescription = "Have high influence in areas";
@@ -62,7 +62,20 @@ class Commies extends Faction {
         }).catch( error => console.error( error ) );
     }
 
-    riseUpToken( args ){
+    async riseUpToken( args ){
+
+        if( this.data.risePatsies ){
+            await this.deploy( {
+                area: args.area,
+                faction: this,
+                player: this.playerId,
+                fromToken : true,
+                noBonusUnits : true,
+                deployLimit: this.data.risePatsies,
+                unitTypes: ['patsy'],
+            } );
+        }
+
         this.game().advancePlayer();
     }
 
@@ -70,8 +83,8 @@ class Commies extends Faction {
         return true;
     }
 
-    processUpgrade( n ){
-        this.data.bonusDeploy.count = n + 1;
+    processUpgrade( upgrade ){
+        this.data.risePatsies = upgrade;
     }
 
 }

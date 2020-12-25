@@ -8548,16 +8548,16 @@ __webpack_require__.r(__webpack_exports__);
       return this.shared.faction.bonusDeploy.count;
     },
     showBonusPips: function showBonusPips() {
-      return this.shared.faction.hasOwnProperty('bonusDeploy') && this.data.fromToken;
+      return this.shared.faction.hasOwnProperty('bonusDeploy') && this.data.fromToken && !this.data.noBonusUnits;
     },
     netBonusUnits: function netBonusUnits() {
-      if (!this.shared.faction.bonusDeploy) return 0;
+      if (!this.shared.faction.bonusDeploy || this.data.noBonusUnits) return 0;
       return this.bonusUnitsInDeploy - this.shared.faction.bonusDeploy.count;
     },
     bonusUnitsInDeploy: function bonusUnitsInDeploy() {
       var _this3 = this;
 
-      if (!this.shared.faction.bonusDeploy) return 0;
+      if (!this.shared.faction.bonusDeploy || this.data.noBonusUnits) return 0;
       return this.selected.filter(function (unit) {
         return unit.type === _this3.shared.faction.bonusDeploy.type;
       }).length;
@@ -8565,13 +8565,13 @@ __webpack_require__.r(__webpack_exports__);
     nonBonusUsedDeploy: function nonBonusUsedDeploy() {
       var _this4 = this;
 
-      if (!this.shared.faction.bonusDeploy) return this.selected.length;
+      if (!this.shared.faction.bonusDeploy || this.data.noBonusUnits) return this.selected.length;
       return this.selected.filter(function (unit) {
         return unit.type !== _this4.shared.faction.bonusDeploy.type;
       }).length;
     },
     usedDeploy: function usedDeploy() {
-      if (this.shared.faction.bonusDeploy && this.data.fromToken) {
+      if (this.shared.faction.bonusDeploy && this.data.fromToken && !this.data.noBonusUnits) {
         var usedDeploy = this.nonBonusUsedDeploy;
         usedDeploy += this.netBonusUnits > 0 ? this.netBonusUnits : 0;
         return usedDeploy;
@@ -13501,7 +13501,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
           if (!unit.toughness && unit.flipped && _this2.faction.statusIcon) {
             status[_this2.faction.statusIcon] = _this2.faction.statusDescription;
-          } // does this unit have another specific status effect
+          } // does this unit have a status effect that we have in our "Always show pip" array?
 
 
           var unitHasAlwaysShowPip = _this2.unitHasAlwaysShowPip(unit);

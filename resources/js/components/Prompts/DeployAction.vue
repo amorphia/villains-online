@@ -229,26 +229,26 @@
             },
 
             showBonusPips() {
-                return this.shared.faction.hasOwnProperty( 'bonusDeploy' ) && this.data.fromToken;
+                return this.shared.faction.hasOwnProperty( 'bonusDeploy' ) && this.data.fromToken  && !this.data.noBonusUnits;
             },
 
             netBonusUnits() {
-                if( ! this.shared.faction.bonusDeploy ) return 0;
+                if( ! this.shared.faction.bonusDeploy || this.data.noBonusUnits ) return 0;
                 return this.bonusUnitsInDeploy - this.shared.faction.bonusDeploy.count;
             },
 
             bonusUnitsInDeploy() {
-                if( !this.shared.faction.bonusDeploy ) return 0;
+                if( !this.shared.faction.bonusDeploy || this.data.noBonusUnits  ) return 0;
                 return this.selected.filter(unit => unit.type === this.shared.faction.bonusDeploy.type ).length;
             },
 
             nonBonusUsedDeploy(){
-                if( !this.shared.faction.bonusDeploy ) return this.selected.length;
+                if( !this.shared.faction.bonusDeploy || this.data.noBonusUnits ) return this.selected.length;
                 return this.selected.filter( unit => unit.type !== this.shared.faction.bonusDeploy.type ).length;
             },
 
             usedDeploy(){
-                if( this.shared.faction.bonusDeploy && this.data.fromToken ){
+                if( this.shared.faction.bonusDeploy && this.data.fromToken && !this.data.noBonusUnits  ){
                     let usedDeploy = this.nonBonusUsedDeploy;
                     usedDeploy += this.netBonusUnits > 0 ? this.netBonusUnits : 0;
                     return usedDeploy;

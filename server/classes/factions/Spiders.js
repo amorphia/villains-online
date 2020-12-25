@@ -179,8 +179,6 @@ class Spiders extends Faction {
     }
 
     async dropToken( args ) {
-        let data, player;
-
         let options = {
             area: args.area,
             faction: this,

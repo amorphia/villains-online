@@ -56,6 +56,7 @@ let obj = {
             unitTypes : args.unitTypes,
             free : args.free,
             fromToken : args.fromToken,
+            noBonusUnits : args.noBonusUnits,
             readyUnits : args.readyUnits,
             reduceCost : args.reduceCost
         };
