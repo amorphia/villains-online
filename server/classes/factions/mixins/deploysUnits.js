@@ -41,12 +41,7 @@ let obj = {
             if( typeof args.area === 'string' ) areas.push( args.area );
             else areas.push( args.area.name );
         } else {
-            areas = Object.values( this.game().areas )
-                .map( area => {
-                    if( area.data.cards.some( card => card.class === 'suitcase-nuke' ) && !this.data.teleports ) return false;
-                    return area.name;
-                })
-                .filter( area => area );
+            areas = Object.values( this.game().areas ).map( area => area.name );
         }
 
         let data = {
@@ -106,11 +101,7 @@ let obj = {
             let area = this.game().areas[name];
             let cards = area.data.cards;
 
-            let trapped = _.areaIsTrapped( this, area );
-
-            let nuked = _.find( cards, card => card.class === 'suitcase-nuke' );
-
-            if( nuked || trapped ){
+            if( _.areaIsTrapped( this, area )){
                 delete areas[name];
             }
         });
