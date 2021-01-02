@@ -11,14 +11,18 @@ let obj = {
 
     async cardToken( args ) {
         let output;
+        let cardsPlayed = 0;
+        let declined = false;
 
-        try {
-            output = await this.playACard( args );
-        } catch( error ){
-            console.error( error );
+        while( cardsPlayed < this.data.cardLimit && !declined ) {
+            let output = await this.playACard( args );
+            if( output && output.declined ) declined = true;
+            else {
+                cardsPlayed++;
+            }
         }
 
-        if( output && output.declined ){
+        if( declined && cardsPlayed === 0 ){
             if( !args.pod ) this.game().declineToken( this.playerId, args.token, true );
             return;
         }

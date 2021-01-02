@@ -24,23 +24,53 @@ class Card {
 
 class AllHollowsEve extends Card {
     async handle( faction, area ){
-
+        let player, data;
         let units = [];
+        let areas = {};
 
-        _.forEach( faction.game().factions, (item, name) =>{
-            item.data.units.forEach( unit => {
-                if( unit.killed && unit.location ){
+        // get areas where we have killed units
+        faction.data.units.forEach( unit => {
+            if( unit.killed && unit.location ){
+                areas[unit.location] = true;
+            }
+        });
+        areas = Object.keys( areas );
 
-                    units.push( unit );
+        if( !areas.length ){
+            faction.game().message({ message : 'No killed units to revive', class : 'warning' });
+            return;
+        }
 
-                    unit.killed = false;
-                    if( unit.ready ) unit.ready = false;
-                    if( unit.flipped ){
-                        unit.flipped = false;
-                        item.unitUnflipped( unit );
-                    }
-                }
-            });
+
+        // let player choose their next unit
+        [player, data] = await faction.game().promise({
+            players: faction.playerId,
+            name: 'choose-units',
+            data : {
+                count : 3,
+                optionalMax: true,
+                areas : areas,
+                playerOnly : true,
+                killedOnly : true,
+                message: "Choose up to 3 units killed to revive",
+            }
+        }).catch( error => console.error( error ) );
+
+        // no unit selected? Welp, guess we are done here
+        if( !data.units ){
+            faction.game().message({ message : 'Declines to revive any units', class : 'warning' });
+            return;
+        }
+
+        units = data.units.map( unitId => faction.game().objectMap[unitId] );
+
+        units.forEach( unit => {
+            unit.killed = false;
+            if( unit.ready ) unit.ready = false;
+            if( unit.flipped ){
+                unit.flipped = false;
+                faction.unitUnflipped( unit );
+            }
         });
 
 
@@ -62,6 +92,16 @@ class AmpleCover extends Card {
     }
 }
 
+class BenevolentAI extends Card {
+    handle( faction ){
+        faction.drawCards(1);
+        faction.data.cardLimit++;
+    }
+
+    clear( faction ){
+        faction.data.cardLimit--;
+    }
+}
 
 class BlownCover extends Card {
     async handle( faction, area ){
@@ -565,7 +605,11 @@ class TotalWar extends Card {
 }
 
 
-class TrappedLikeRats extends Card {}
+class TrappedLikeRats extends Card {
+    async handle( faction, area ){
+        await faction.nonCombatAttack(5, 1, area ).catch( error => console.error( error ) );
+    }
+}
 
 
 class Windfall extends Card {
@@ -577,6 +621,7 @@ class Windfall extends Card {
 module.exports = {
     'all-hollows-eve' : AllHollowsEve,
     'ample-cover': AmpleCover,
+    'benevolent-ai': BenevolentAI,
     'blown-cover': BlownCover,
     'blackstone-encryption': BlackstoneEncryption,
     'cease-fire': CeaseFire,

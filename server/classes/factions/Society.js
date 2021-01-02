@@ -50,7 +50,7 @@ class Society extends Faction {
             }
         };
 
-        
+
         // units
         this.units['patsy'].count = 5;
         this.units['goon'].count = 6;

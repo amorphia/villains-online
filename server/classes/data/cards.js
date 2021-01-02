@@ -8,7 +8,7 @@ let obj = [
         type : 'event',
         scope : 'global',
     },
-    {
+    /*{
         class : 'ample-cover',
         file : 'ample-cover-1',
         name : "Ample Cover",
@@ -27,6 +27,25 @@ let obj = [
         type : 'rule',
         scope : 'global',
         description : 'units attacking you suffer -1 to their attack rolls'
+    },
+    */
+    {
+        class : 'benevolent-ai',
+        file : 'benevolent-ai-1',
+        name : "Benevolent A.I.",
+        cost : 0,
+        target : 'subway',
+        type : 'rule',
+        scope : 'global',
+    },
+    {
+        class : 'benevolent-ai',
+        file : 'benevolent-ai-2',
+        name : "Benevolent A.I.",
+        cost : 0,
+        target : 'church',
+        type : 'rule',
+        scope : 'global',
     },
     {
         class : 'blackstone-encryption',
