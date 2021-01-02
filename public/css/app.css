@@ -48,6 +48,9 @@
 .icon-toughness-solid:before {
     content: "\E95C";
 }
+.icon-benevolent-ai:before {
+    content: "\E90D";
+}
 .icon-web:before {
     content: "\E90C";
 }
@@ -273,6 +276,7 @@
 .icon-bolt:before {
     content: "\E92D";
 }
+
 @charset "UTF-8";
 
 /* Box sizing rules */
