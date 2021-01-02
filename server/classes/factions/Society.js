@@ -12,8 +12,9 @@ class Society extends Faction {
         this.data.focus = 'token-focus';
         this.data.focusDescription = "Tokens in many areas";
         this.data.title = "The Blackstone Society";
-        this.data.tokensNotDiscarded = 0;
-        this.data.tokensNotDiscardedMax = 0;
+        //this.data.tokensNotDiscarded = 0;
+        //this.data.tokensNotDiscardedMax = 0;
+        this.data.words = [];
 
         // tokens
         this.tokens['hypnosis'] = {
@@ -26,15 +27,6 @@ class Society extends Faction {
             }
         };
 
-        // tokens
-        this.tokens['word-of-command'] = {
-            count: 2,
-            data: {
-                influence: 1,
-                type: 'word-of-command',
-                cost: 0,
-            }
-        };
 
         // tokens
         this.tokens['push'] = {
@@ -47,6 +39,18 @@ class Society extends Faction {
             }
         };
 
+
+        // tokens
+        this.tokens['word-of-command'] = {
+            count: 3,
+            data: {
+                influence: 1,
+                type: 'word-of-command',
+                cost: 0,
+            }
+        };
+
+        
         // units
         this.units['patsy'].count = 5;
         this.units['goon'].count = 6;
@@ -91,12 +95,10 @@ class Society extends Faction {
     }
 
 
-    processUpgrade( n ) {
-        switch( n ) {
-            case 1 : this.data.tokensNotDiscardedMax = 1; break;
-            case 2 : this.data.tokensNotDiscardedMax = 12; break;
-        }
+    processUpgrade( upgrade ) {
+        this.upgradeVariableTokens( upgrade, this.data.words );
     }
+
 
     placeHenchman( event ){
         let henchman = this.data.units.find( unit => unit.type === 'henchman' && !unit.killed );
@@ -130,7 +132,7 @@ class Society extends Faction {
     }
 
     factionCleanUp(){
-        this.data.tokensNotDiscarded = 0;
+        //this.data.tokensNotDiscarded = 0;
         let xavier = this.getXavier();
         if( xavier && xavier.token ){
             xavier.token.location = 'xavier';
@@ -247,6 +249,9 @@ class Society extends Faction {
         this.game().advancePlayer();
     }
 
+    onSetup(){
+        this.setupVariableTokens( 'word-of-command', this.data.words );
+    }
 }
 
 

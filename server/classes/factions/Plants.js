@@ -69,12 +69,9 @@ class Plants extends Faction {
         return mods;
     }
 
-    processUpgrade( n ) {
-        let vinesToAdd = _.min( [ n, this.data.vines.length ] );
-        while( vinesToAdd ){
-            this.data.tokens.push( this.data.vines.pop() );
-            vinesToAdd--;
-        }
+
+    processUpgrade( upgrade ) {
+        this.upgradeVariableTokens( upgrade, this.data.vines );
     }
 
 
@@ -197,18 +194,7 @@ class Plants extends Faction {
 
 
     onSetup(){
-        let numToSetAside = 2 - this.data.upgrade;
-
-        if( numToSetAside > this.data.vines.length ){
-            while( numToSetAside > this.data.vines.length ){
-                let vine = this.data.tokens.find( token => token.type === 'vines' && !token.location && !token.revealed );
-                if( vine ) _.moveItemById( vine.id, this.data.tokens, this.data.vines );
-            }
-        } else if( numToSetAside < this.data.vines.length ){
-            while( numToSetAside < this.data.vines.length ) {
-                this.data.tokens.push(this.data.vines.pop());
-            }
-        }
+        this.setupVariableTokens( 'vines', this.data.vines );
     }
 
 }

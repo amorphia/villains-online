@@ -39,6 +39,7 @@ let obj = {
         let area = this.areas[ token.location ];
         let faction = player.faction();
 
+        /*
         if( faction.data.tokensNotDiscardedMax && faction.data.tokensNotDiscarded < faction.data.tokensNotDiscardedMax ){
             message = `Doesn't activate their <span class="uppercase highlight">${token.name}</span> token, but it stays in place`;
             faction.data.tokensNotDiscarded++;
@@ -46,6 +47,10 @@ let obj = {
             message = `Pull their <span class="uppercase highlight">${token.name}</span> token`;
             _.discardToken( token, area );
         }
+        */
+
+        message = `Pull their <span class="uppercase highlight">${token.name}</span> token`;
+        _.discardToken( token, area );
 
         if( refund ){
             this.checkForTokenRefund( token, area );
