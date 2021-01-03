@@ -116,6 +116,7 @@ let obj = [
         type : 'event',
         scope : 'local',
     },
+    /*
     {
         class : 'despotism',
         file : 'despotism-1',
@@ -125,6 +126,7 @@ let obj = [
         type : 'event',
         scope : 'global',
     },
+     */
     {
         class : 'display-of-brilliance',
         file : 'display-of-brilliance-1',
@@ -211,6 +213,16 @@ let obj = [
         name : "Go with God",
         cost : 1,
         target : 'church',
+        type : 'rule',
+        scope : 'global',
+        description : 'units attacking you suffer -2 to their attack rolls'
+    },
+    {
+        class : 'go-with-god',
+        file : 'go-with-god-2',
+        name : "Go with God",
+        cost : 1,
+        target : 'police',
         type : 'rule',
         scope : 'global',
         description : 'units attacking you suffer -2 to their attack rolls'
