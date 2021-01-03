@@ -3,7 +3,7 @@ let obj = [
         class : 'all-hollows-eve',
         file : 'all-hollows-eve-1',
         name : "All Hollow's Eve",
-        cost : 0,
+        cost : 1,
         target : 'bank',
         type : 'event',
         scope : 'global',

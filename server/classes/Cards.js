@@ -25,6 +25,7 @@ class Card {
 class AllHollowsEve extends Card {
     async handle( faction, area ){
         let player, data;
+        let reviveCount = 4;
         let units = [];
         let areas = {};
 
@@ -47,12 +48,12 @@ class AllHollowsEve extends Card {
             players: faction.playerId,
             name: 'choose-units',
             data : {
-                count : 3,
+                count : reviveCount,
                 optionalMax: true,
                 areas : areas,
                 playerOnly : true,
                 killedOnly : true,
-                message: "Choose up to 3 units killed to revive",
+                message: `Choose up to ${reviveCount} units killed to revive`,
             }
         }).catch( error => console.error( error ) );
 
