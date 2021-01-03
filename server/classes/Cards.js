@@ -106,7 +106,7 @@ class BenevolentAI extends Card {
 
 class BlownCover extends Card {
     async handle( faction, area ){
-        await faction.game().battle( area, { attackBonus : 3 } ).catch( error => console.error( error ) );
+        await faction.game().battle( area, { attackBonus : 4 } ).catch( error => console.error( error ) );
     }
 }
 
