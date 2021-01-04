@@ -481,18 +481,14 @@ class Faction {
     }
 
     readySkilledUnits() {
-        let controlsUniversity = this.controlsArea( 'university' );
-        if( controlsUniversity ) this.game().message({
+        if( this.controlsArea( 'university' ) ) this.game().message({
             message: `patsies have become readied`,
             faction : this
         });
 
         this.data.units.forEach( unit => {
             if( _.unitInPlay( unit ) && unit.skilled ) unit.ready = true;
-
-            if( controlsUniversity && unit.type === 'patsy' && _.unitInPlay( unit ) ){
-                unit.ready = true;
-            }
+            if( !unit.skilled && unit.ready ) unit.ready = false;
         });
     }
 

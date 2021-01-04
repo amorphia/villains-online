@@ -117,17 +117,14 @@ class Hackers extends Faction {
 
     canActivateBootUp( token, area ) {
         return !! this.data.units.find( unit => _.unitInArea( unit, area )
-            && ( unit.skilled || ( unit.type === 'patsy' && this.controlsArea( 'university' ) ) )
+            && ( unit.skilled )
             && !unit.ready );
     }
 
     async bootUpToken( args ) {
 
-        let skilledPatsies = this.controlsArea( 'university' );
-
         this.data.units
-            .filter( unit => _.unitInArea( unit, args.area.name )
-                && ( unit.skilled || ( skilledPatsies && unit.type === 'patsy' ) ) )
+            .filter( unit => _.unitInArea( unit, args.area.name ) && unit.skilled )
             .forEach( unit => unit.ready = true );
 
         this.message({ message: `Skilled units became ready in The ${args.area.name}`, faction : this } );

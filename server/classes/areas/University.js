@@ -39,8 +39,23 @@ class University extends Area {
             faction : faction,
             message: `looks at the tokens in the ${data.area}`
         });
-
     }
+
+    takeControl( faction ){
+        faction.data.units.forEach( unit => {
+            if( unit.type === 'patsy' ) unit.skilled = true;
+        });
+    }
+
+    loseControl( faction ){
+        faction.data.units.forEach( unit => {
+            if( unit.type === 'patsy' && unit.skilled ){
+                unit.skilled = false;
+            }
+        });
+    }
+
+
 }
 
 module.exports = University;
