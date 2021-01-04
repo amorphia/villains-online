@@ -50,7 +50,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'tokensInAreas', args : [ 4, 'card' ] },
-                    { test : 'unitsAtTarget', args : [2, 'talent'] },
+                    { test : 'skilledAtTarget', args : [2] },
 
                 ],
                 value : 2

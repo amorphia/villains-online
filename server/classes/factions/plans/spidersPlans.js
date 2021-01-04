@@ -89,7 +89,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'webbedFaction', args : [1] },
-                    { test : 'unitsAtTarget', args : [2, 'talent'] },
+                    { test : 'skilledAtTarget', args : [2] },
                 ],
                 value : 1
             },

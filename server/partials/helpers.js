@@ -341,6 +341,7 @@ let helpers = {
                 && !unit.killed
                 && ( !options.basic || unit.basic )
                 && ( !options.flipped || unit.flipped )
+                && ( !options.skilled || unit.skilled )
                 && ( !options.type || options.type === unit.type )
                 && ( !options.types || options.types.includes( unit.type ) )
                 && ( !options.notHidden || !unit.hidden );

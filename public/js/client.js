@@ -94397,7 +94397,7 @@ var helpers = {
   unitInArea: function unitInArea(unit, area) {
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (typeof area !== 'string') area = area.name;
-    return unit.location === area && !unit.killed && (!options.basic || unit.basic) && (!options.flipped || unit.flipped) && (!options.type || options.type === unit.type) && (!options.types || options.types.includes(unit.type)) && (!options.notHidden || !unit.hidden);
+    return unit.location === area && !unit.killed && (!options.basic || unit.basic) && (!options.flipped || unit.flipped) && (!options.skilled || unit.skilled) && (!options.type || options.type === unit.type) && (!options.types || options.types.includes(unit.type)) && (!options.notHidden || !unit.hidden);
   },
   areasMostUnits: function areasMostUnits(faction, factions) {
     var _this6 = this;

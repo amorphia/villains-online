@@ -2,6 +2,8 @@
 
 { test : 'loseUnits', args : [3] },
 
+{ test : 'skilledAtTarget', args : [2] }
+
 { test : 'unitsAtTarget', args : [2, 'talent'] },
 
 { test : 'unitInEnemy', args : ['mole', 1] },

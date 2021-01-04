@@ -27,7 +27,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'playRules', args : [3, 'areas'] },
-                    { test : 'unitsAtTarget', args : [2, 'talent'] },
+                    { test : 'skilledAtTarget', args : [2] },
                 ],
                 value : 2
             },
