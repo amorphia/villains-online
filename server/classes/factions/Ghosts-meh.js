@@ -1,7 +1,7 @@
 let Faction = require( './Faction' );
 
 
-class Ghosts extends Faction {
+class GhostsMeh extends Faction {
     name = 'ghosts';
 
     constructor(owner, game) {
@@ -14,31 +14,31 @@ class Ghosts extends Faction {
         this.data.focusDescription = "Control any player's Targets";
         this.data.ghosts = [];
         this.data.upgradeDeploy = 0;
-        this.data.lastMaterializeGameAction = 0;
+        //this.data.lastMaterializeGameAction = 0;
         //this.data.randomTarget = true;
         this.data.ghostDeploy = true;
         this.data.hiddenReserves = true;
+        this.data.additionalUnitIcon = ['ghost'];
 
         // tokens
         this.tokens['scare'] = {
-            count: 1,
+            count: 2,
             data: {
                 influence: 1,
                 type: 'scare',
                 cost: 0,
                 resource : 1,
-                areaStat : true,
-                description : 'enemy tokens produce no influence here'
             }
         };
 
         // units
-        this.units['goon'].count = 7;
+        this.units['goon'].count = 6;
         this.units['goon'].data.ghost = false;
-        this.units['mole'].count = 7;
+        this.units['mole'].count = 6;
         this.units['mole'].data.ghost = false;
-        this.units['talent'].count = 5;
+        this.units['talent'].count = 4;
         this.units['talent'].data.ghost = false;
+        this.units['patsy'].count = 5;
         this.units['patsy'].data.ghost = false;
 
         this.units['champion'] = {
@@ -48,27 +48,18 @@ class Ghosts extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 1,
-                attack: [5],
-                cost: 0,
+                attack: [4],
+                cost: 1,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                ghost : false
+                ghost : false,
+                areaStat : true,
+                description : 'enemy tokens produce no influence here'
             }
         };
     }
 
-    startOfTurnPrompt() {
-        let target, card;
-
-        while( !target ){
-            card = _.sample( this.data.cards.hand );
-            target = card.target;
-        }
-
-        card.randomTarget = true;
-        return 'choose-target';
-    }
 
     processUpgrade( n ){
         this.data.deployLimit += ( n - this.data.upgradeDeploy );
@@ -109,34 +100,42 @@ class Ghosts extends Faction {
     }
 
 
-    async materializeAction( area ){
-        let player, data;
+    ghostAreas(){
+        let areas = {};
 
-        this.data.lastMaterializeGameAction = this.game().data.gameAction + 1;
+        this.data.ghosts.forEach( ghost => {
+            areas[ghost.location] = true;
+        });
+
+        return Object.keys( areas );
+    }
+
+    async scareToken( area ){
+        let player, data, ghostAreas = this.ghostAreas();
 
         [player, data] = await this.game().promise({
             players: this.playerId,
             name: 'choose-units',
             data: {
-                    areas : [area.name],
+                    areas : ghostAreas,
                     playerOnly : true,
                     ghostOnly : true,
                     canDecline : true,
                     payCost: true,
+                    materialize : true,
                     count: 21,
                     optionalMax : true,
                     hideMax : true,
-                    message: `Reveal ghosts in The ${area.name}`
+                    message: `Reveal ghosts (if you reveal ghosts in 3 or more areas pay xC1x)`
                 }
             }).catch( error => console.error( error ) );
 
         if( data.decline ){
-            this.data.lastMaterializeGameAction--;
-            return;
+            return this.game().advancePlayer();
         }
 
         let units = data.units.map( unitId => this.game().objectMap[ unitId ] );
-        let cost = 0;
+        let cost = data.areaCost;
 
         units.forEach( unit => {
             cost += unit.cost;
@@ -145,63 +144,21 @@ class Ghosts extends Faction {
 
         if( cost > 0 ) this.payCost( cost, true );
 
-        this.game().message({ faction : this, message: `Reveals ghosts in the ${area.name}` });
+        this.game().message({ faction : this, message: `Ghosts materialize` });
 
         await this.game().timedPrompt('units-shifted', {
-            message : `${units.length === 1 ? 'A Ghost' : 'Ghosts'} revealed in The ${area.name}`,
+            message : `${units.length === 1 ? 'A Ghost materializes' : 'Ghosts materialize'}`,
             units: units
         });
 
-        let king = units.find( unit => unit.type === 'champion' );
-        if( king ) await this.kingMaterialized( king, area );
-    }
-
-
-    async kingMaterialized( king, area ){
-        let enemyPatsiesInArea = [];
-
-        Object.values( this.game().data.factions ).forEach( faction => {
-            if( faction.name === this.name ) return;
-            let patsiesBounced = 0;
-
-            faction.units.forEach( unit => {
-                if( unit.type === 'patsy' && _.unitInArea( unit, area.name ) && patsiesBounced < 4 ){
-                    unit.location = null;
-                    enemyPatsiesInArea.push( unit );
-                    patsiesBounced++;
-                }
-            });
-        });
-
-        if( !enemyPatsiesInArea.length ) return this.game().message({ message: `Mad King Elliot couldn't find anyone to scare in The ${area.name}`, class : 'warning' });
-
-        this.game().clearAllPlayerPrompts();
-        await this.game().updateAll();
-
-        await this.game().timedPrompt('units-shifted', {
-            message : `Mad King Elliot scares patsies out of The ${area.name}`,
-            units: enemyPatsiesInArea,
-            area : area.name,
-        });
+        this.game().advancePlayer();
     }
 
     canActivateScare() {
         return true;
     }
 
-    scareToken( args ) {
-        this.game().advancePlayer();
-    }
-
-    factionCleanUp(){
-        let faceUpKing = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
-        if( !faceUpKing ) return;
-
-        faceUpKing.location = null;
-        this.game().message({ message: 'Mad King Elliot dematerializes into the ether', faction : this });
-    }
-
 }
 
 
-module.exports = Ghosts;
+module.exports = GhostsMeh;

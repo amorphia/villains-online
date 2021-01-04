@@ -153,7 +153,7 @@
     }
 
     .units-hud__unit.is-ghost .unit-hud__unit-image {
-        opacity: .6;
+        /* opacity: .8; */
     }
 
     .ghost-icon__container:before {
@@ -161,7 +161,7 @@
         position: absolute;
         width: 40%;
         height: 40%;
-        background-image: url(/images/icons/ghost.png);
+        /* background-image: url(/images/icons/ghost.png); */
         z-index: 3;
         left: 50%;
         top: 15%;

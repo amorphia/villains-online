@@ -427,7 +427,7 @@ let helpers = {
 
         _.forEach( factions, fac => {
             if( fac.name === faction.name ) return;
-            let factionUnits = _.factionUnitsInArea( fac, area );
+            let factionUnits = _.factionUnitsInArea( fac, area, options );
 
             if( options.basic ) factionUnits = factionUnits.filter( unit => unit.basic );
             if( options.notHidden ) factionUnits = factionUnits.filter( unit => ! unit.hidden );
@@ -727,7 +727,7 @@ let helpers = {
 
     areaIsScared( faction, factions, area ){
         if( faction.name === 'ghosts' || !factions['ghosts'] ) return false;
-        return factions['ghosts'].units.some( unit => unit.type === 'champion' && this.unitInArea( unit, area.name ) );
+        return factions['ghosts'].units.some( unit => unit.blockEnemyTokenInfluence && this.unitInArea( unit, area.name ) );
     },
 
     tokenInfluence( faction, factions, area ){

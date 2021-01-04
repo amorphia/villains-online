@@ -72,7 +72,7 @@
                     </div>
 
 
-                    <!-- magick display -->
+                    <!-- materialize display -->
                     <div v-if="action.name === 'materialize'"
                          class="choose-action__skilled-units center-text">
 
@@ -233,7 +233,7 @@
                 // can we magick?
                 if( this.useableMagick.length ) actions.magick = this.useableMagick;
 
-                // can we magick?
+                // can we materialize?
                 if( this.useableMaterialize.length ) actions.materialize = this.useableMaterialize;
 
                 // can we loop?
@@ -453,12 +453,9 @@
             },
 
             useableMaterialize(){
-                return [];
-                /*
                 if( this.shared.faction.name !== 'ghosts'
                     || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction
                 ) return [];
-
 
                 let areas = {};
 
@@ -467,7 +464,7 @@
                 });
 
                 return Object.keys( areas );
-                 */
+
             },
 
             useableMagick(){

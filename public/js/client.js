@@ -5913,7 +5913,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       if (this.shared.faction.hasOwnProperty('skips') && this.shared.faction.skips.used < this.shared.faction.skips.max) actions.skip = true; // can we magick?
 
-      if (this.useableMagick.length) actions.magick = this.useableMagick; // can we magick?
+      if (this.useableMagick.length) actions.magick = this.useableMagick; // can we materialize?
 
       if (this.useableMaterialize.length) actions.materialize = this.useableMaterialize; // can we loop?
 
@@ -6141,17 +6141,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return this.loopToken && reserves ? [this.loopToken.location] : [];
     },
     useableMaterialize: function useableMaterialize() {
-      return [];
-      /*
-      if( this.shared.faction.name !== 'ghosts'
-          || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction
-      ) return [];
-        let areas = {};
-       this.shared.faction.ghosts.forEach( ghost => {
-         areas[ghost.location] = true;
+      if (this.shared.faction.name !== 'ghosts' || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction) return [];
+      var areas = {};
+      this.shared.faction.ghosts.forEach(function (ghost) {
+        areas[ghost.location] = true;
       });
-       return Object.keys( areas );
-       */
+      return Object.keys(areas);
     },
     useableMagick: function useableMagick() {
       var _this8 = this;
@@ -14399,7 +14394,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n.units-hud__unit.deploy__ghost:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    background-image: url(/images/icons/ghost.png);\n    z-index: 3;\n    left: 50%;\n    top: 25%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.has-ghosts .units-hud__unit {\n    height: 8vw;\n}\n.deploy__ghost .unit-hud__unit-image {\n    opacity: .8;\n}\n.deploy__toggle-ghost {\n    background-color: #192236;\n}\n.deploy__ghost .deploy__toggle-ghost {\n    background-color: var(--faction-ghosts);\n}\n\n", ""]);
+exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n.units-hud__unit.deploy__ghost:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 25%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.has-ghosts .units-hud__unit {\n    height: 8vw;\n}\n.deploy__ghost .unit-hud__unit-image {\n    /*  opacity: .8; */\n}\n.deploy__toggle-ghost {\n    background-color: #192236;\n}\n.deploy__ghost .deploy__toggle-ghost {\n    background-color: var(--faction-ghosts);\n}\n\n", ""]);
 
 // exports
 
@@ -14722,7 +14717,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.unit-row .units-hud__unit {\n    padding: 3px;\n    width: 6vw;\n    height: 6vw;\n    margin: 0 5px;\n    position: relative;\n}\n.unit-row .units-hud__unit img {\n    z-index: 2;\n    position: relative;\n    outline: 3px solid rgba(0,0,0,.3);\n}\n.unit-row  .units-hud__unit.ready:after {\n    left: 50%;\n    content: \"\";\n    background-image: url(/images/icons/skilled.png);\n    background-size: cover;\n    position: absolute;\n    width: 3vw;\n    height: 3vw;\n    z-index: 5;\n    transform: translate(-50%,-50%);\n    top: 50%;\n}\n.assign-hit__pips {\n}\n.assign-hit__pip {\n    font-size: .8em;\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.assign-hit__pip.active {\n    color: var(--highlight-color);\n}\n.units-hud__unit.is-ghost .unit-hud__unit-image {\n    opacity: .6;\n}\n.ghost-icon__container:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    background-image: url(/images/icons/ghost.png);\n    z-index: 3;\n    left: 50%;\n    top: 15%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n\n", ""]);
+exports.push([module.i, "\n.unit-row .units-hud__unit {\n    padding: 3px;\n    width: 6vw;\n    height: 6vw;\n    margin: 0 5px;\n    position: relative;\n}\n.unit-row .units-hud__unit img {\n    z-index: 2;\n    position: relative;\n    outline: 3px solid rgba(0,0,0,.3);\n}\n.unit-row  .units-hud__unit.ready:after {\n    left: 50%;\n    content: \"\";\n    background-image: url(/images/icons/skilled.png);\n    background-size: cover;\n    position: absolute;\n    width: 3vw;\n    height: 3vw;\n    z-index: 5;\n    transform: translate(-50%,-50%);\n    top: 50%;\n}\n.assign-hit__pips {\n}\n.assign-hit__pip {\n    font-size: .8em;\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.assign-hit__pip.active {\n    color: var(--highlight-color);\n}\n.units-hud__unit.is-ghost .unit-hud__unit-image {\n    /* opacity: .8; */\n}\n.ghost-icon__container:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 15%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n\n", ""]);
 
 // exports
 
@@ -63556,7 +63551,7 @@ var render = function() {
                               unit.faction +
                               "/units/" +
                               unit.type +
-                              (unit.flipped ? "-flipped" : "") +
+                              (unit.flipped || unit.asGhost ? "-flipped" : "") +
                               ".png"
                           },
                           on: {
@@ -94479,7 +94474,7 @@ var helpers = {
     _.forEach(factions, function (fac) {
       if (fac.name === faction.name) return;
 
-      var factionUnits = _.factionUnitsInArea(fac, area);
+      var factionUnits = _.factionUnitsInArea(fac, area, options);
 
       if (options.basic) factionUnits = factionUnits.filter(function (unit) {
         return unit.basic;
@@ -94781,7 +94776,7 @@ var helpers = {
 
     if (faction.name === 'ghosts' || !factions['ghosts']) return false;
     return factions['ghosts'].units.some(function (unit) {
-      return unit.type === 'champion' && _this14.unitInArea(unit, area.name);
+      return unit.blockEnemyTokenInfluence && _this14.unitInArea(unit, area.name);
     });
   },
   tokenInfluence: function tokenInfluence(faction, factions, area) {

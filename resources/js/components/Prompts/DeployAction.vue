@@ -52,7 +52,7 @@
                             <img
                                  class="unit-hud__unit-image"
                                  @click="unit.selected = false"
-                                 :src="`/images/factions/${unit.faction}/units/${unit.type}${unit.flipped ? '-flipped' : ''}.png`">
+                                 :src="`/images/factions/${unit.faction}/units/${unit.type}${(unit.flipped || unit.asGhost) ? '-flipped' : ''}.png`">
                             <div v-if="shared.faction.ghostDeploy" class="pointer deploy__toggle-ghost" @click="toggleGhost( unit )">{{ !unit.asGhost ? 'non-' : '' }}ghost</div>
                         </div>
                     </div>
@@ -411,7 +411,7 @@
         position: absolute;
         width: 40%;
         height: 40%;
-        background-image: url(/images/icons/ghost.png);
+        /* background-image: url(/images/icons/ghost.png); */
         z-index: 3;
         left: 50%;
         top: 25%;
@@ -425,7 +425,7 @@
     }
 
     .deploy__ghost .unit-hud__unit-image {
-        opacity: .8;
+        /*  opacity: .8; */
     }
 
     .deploy__toggle-ghost {
