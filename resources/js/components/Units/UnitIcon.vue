@@ -55,7 +55,7 @@
                 let classes = [];
                 if( !this.noSelect && ( this.selected || (this.unit.isSelected && !this.unit.placeToken) ) ) classes.push( 'selected' );
                 if( this.unit.ready ) classes.push( 'ready' );
-                if( this.viewableGhost ) classes.push( 'is-ghost' );
+                //if( this.viewableGhost ) classes.push( 'is-ghost' );
                 if( this.classes ) classes.push( this.classes );
                 if( this.unit.type === 'patsy' && this.hidePatsies ) classes.push( 'opacity-6' );
                 return classes.join(' ');
