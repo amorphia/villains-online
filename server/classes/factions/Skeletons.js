@@ -2,195 +2,126 @@ let Faction = require( './Faction' );
 
 
 class Vampires extends Faction {
-    name = 'vampires';
+    name = 'skeletons';
 
     constructor(owner, game) {
         super(owner, game);
 
         //data
         this.data.name = this.name;
-        this.data.title = "The Czarkovian Aristocrats";
-        this.data.focus = 'kill-areas-focus';
-        this.data.focusDescription = "Kill units in many different areas";
-        this.data.batMove = 1;
+        this.data.title = "The Restless Dead";
+        // todo this.data.focus = 'units-in-enemy-areas-focus';
+        this.data.focusDescription = "Have units of specific types in enemy areas";
+        this.data.optionalAttack = true;
+        this.data.endOfTurnRevive = 0;
 
         // icons
-        this.data.statusIcon = 'vampires';
-        this.data.statusDescription = 'has vampire units';
-
-        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent'];
+        this.data.statusIcon = 'skeleton';
+        this.data.statusDescription = 'has skeleton units';
+        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // tokens
-        this.tokens['feast'] = {
-            count: 1,
+        this.tokens['card'].count = 4;
+        delete this.tokens['deploy'];
+
+        this.tokens['lich'] = {
+            count: 2,
             data: {
                 influence: 1,
-                type: 'feast',
+                type: 'deploy',
                 cost: 0,
             }
         };
 
         // units
-        this.units['goon'].data.onHit = 'becomeVampire';
-        this.units['goon'].data.vampire = false;
+        this.units['goon'].count = 4;
+        this.units['goon'].data.onDamaged = 'becomeSkeleton';
+        this.units['goon'].data.baseAttack = [5,5];
+        this.units['goon'].data.flipped = false;
+        this.units['goon'].data.baseInfluence = 1;
 
-        this.units['talent'].data.onHit = 'becomeVampire';
-        this.units['talent'].data.vampire = false;
-        this.units['talent'].data.attack = [5];
+        this.units['mole'].count = 4;
+        this.units['mole'].data.onDamaged = 'becomeSkeleton';
+        this.units['mole'].data.baseAttack = [9];
+        this.units['mole'].data.flipped = false;
+        this.units['mole'].data.baseInfluence = 2;
 
-        this.units['mole'].data.onHit = 'becomeVampire';
-        this.units['mole'].data.vampire = false;
-        this.units['mole'].data.attack = [7];
+        this.units['talent'].data.onDamaged = 'becomeSkeleton';
+        this.units['talent'].data.baseAttack = [7];
+        this.units['talent'].data.flipped = false;
+        this.units['talent'].data.baseInfluence = 1;
+        this.units['talent'].data.baseSkilled = true;
 
-        this.units['patsy'].count = 6;
-        this.units['patsy'].data.onHit = 'becomeVampire';
-        this.units['patsy'].data.vampire = false;
-        this.units['patsy'].data.attack = [7];
+        this.units['patsy'].count = 2;
+        this.units['patsy'].data.onDamaged = 'becomeSkeleton';
+        this.units['patsy'].data.baseAttack = [];
+        this.units['patsy'].data.flipped = false;
+        this.units['patsy'].data.baseInfluence = 0;
+
 
         this.units['champion'] = {
             count: 1,
             data: {
-                name: "Lilith",
+                name: "Xer'Zhul",
                 type: 'champion',
                 basic: false,
-                influence: 2,
-                attack: [3,3],
+                baseInfluence: 1,
+                influence: 1,
+                baseAttack: [6,6,6],
+                attack: [6,6,6],
                 cost: 2,
-                vampire: true,
+                flipped: false,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                onDeploy : 'cordellaDeploy',
+                onDeploy : 'xerZhulEnters',
+                onMove : 'xerZhulEnters'
             }
         };
     }
 
     factionCombatMods( mods, area ) {
-        if ( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ) {
-            mods.push({
-                type: 'lilithHeal',
-                text: `If Lilith, Baroness of Czarkovia is assigned a hit while in vampire form, flip her face up rather than kill her`
-            });
-        }
-
+        mods.push({
+            type: 'becomeSkeleton',
+            text: `Face up units assigned a hit become skeletons, rather than being killed`
+        });
         return mods;
     }
 
-    processUpgrade( n ) {
-        this.data.batMove = n + 1;
+
+    processUpgrade( upgrade ) {
+        this.data.endOfTurnRevive = upgrade;
     }
 
 
-    async onAfterReveal( token ){
-        if( token.faction !== this.name ) return;
-        let player, data, destinationAreaName = token.location;
-
-        // check for areas with vampires (that aren't this area)
-        let potentialAreas = this.areasWithUnits({ hasProp : "vampire", excludesArea : destinationAreaName });
-        if( !potentialAreas.length ) return;
-
-        let message = this.data.batMove > 1 ? `Fly up to ${this.data.batMove} vampires to the ${destinationAreaName}` : `Fly a vampire to the ${destinationAreaName}?`;
-
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-units',
-            data: {
-                    count : this.data.batMove,
-                    areas : potentialAreas,
-                    playerOnly : true,
-                    hasProp : 'vampire',
-                    canDecline : true,
-                    optionalMax : true,
-                    message: message
-                }
-            }).catch( error => console.error( error ) );
-        if( data.decline ) return false;
-
-        let units = data.units.map( unitId => this.game().objectMap[ unitId ] );
-
-        units.forEach( unit => {
-            unit.location = destinationAreaName;
-            if( unit.ready ) unit.ready = false;
-        });
-
-
-        this.game().sound( 'bats' );
-        this.game().message({ faction : this, message: `Fly ${units.length} vampire${units.length > 1 ? 's':'' } to The ${destinationAreaName}` });
-
-        await this.game().timedPrompt('units-shifted', {
-            message : `${units.length === 1 ? 'A Vampire flies' : 'Vampires fly'} to The ${destinationAreaName}`,
-            units: units
-        });
-
+    canActivateLich( token, area ) {
+        return this.canActivateDeploy( token, area ) || this.hasUnitsInArea( area );
     }
 
 
-    canActivateFeast( token, area ) {
-        return this.feastAreas().length > 0;
-    }
+    async lichToken( args ) {
 
-    feastAreas(){
+        // resolve deploy
+        let output = await this.deploy( args );
 
-        let areas = {};
-        this.data.tokens.forEach( token => {
-            if( token.type === 'deploy' && token.location && token.revealed ){
-                let area = this.game().areas[token.location];
-                let hasUnit = !! this.data.units.find( unit => _.unitInArea( unit, area.name ) );
-                let hasEnemy = Object.keys( _.enemyUnitsInArea( this, area.name, this.game().data.factions ) ).length;
-                if( hasUnit && hasEnemy && !area.hasCard( 'cease-fire' ) ) areas[area.name] = true;
-            }
-        });
+        // resolve flip
+        let unitsFlipped = await this.flipUnits( { area :  args.area } );
 
-        return Object.keys( areas );
-    }
-
-    async feastToken( args ) {
-        let data, player;
-        let areas = this.feastAreas();
-        let output = [];
-
-        for( let area of areas ){
-            let message = `Feasts in The ${ area }`;
-            this.message({ message: message, faction : this });
-
-            // prompt player to select a unit
-            [player, data] = await this.game().promise({
-                players: this.playerId,
-                name: 'choose-units',
-                data: { count : 1,
-                        areas : [area],
-                        hasAttack: true,
-                        playerOnly : true,
-                        showEnemyUnits: true,
-                        message: "Choose a unit to attack" }
-                }).catch( error => console.error( error ) );
-
-            let unit = this.game().objectMap[ data.units[0] ];
-
-            // resolve attack with that unit
-            let attackArea = this.game().areas[ unit.location ];
-            output.push( await this.attack({
-                area : attackArea,
-                attacks : unit.attack,
-                unit : unit,
-                noDecline : true
-            }) );
-        }
-
-        let message = `Has finished feasting`;
-        this.message({ message: message, faction : this });
-
-        output = output.filter( item => item );
-
-        if( output.length ){
-            await this.game().timedPrompt('noncombat-attack', { output : output } )
-                .catch( error => console.error( error ) );
+        // check if we did either of these things
+        if( output && output.declined && !unitsFlipped ){
+            this.game().declineToken( this.playerId, args.token, true );
+            return;
         }
 
         this.game().advancePlayer();
+
     }
 
-    becomeVampire( event ) {
+    async flipUnits( options = {} ){
+
+    }
+
+    becomeSkeleton( event ) {
         let unit = event.unit;
 
         if( !unit.flipped && !unit.killed ){
@@ -200,6 +131,12 @@ class Vampires extends Faction {
             let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;
             this.message({ message: message, faction : this });
         }
+    }
+
+    unitUnflipped( unit ) {
+        unit.flipped = false;
+        unit.vampire = false;
+        unit.attack = unit.attack.map( attack => attack + 2 );
     }
 
 
@@ -214,7 +151,8 @@ class Vampires extends Faction {
         return areas;
     }
 
-    async cordellaTokenMove( cordella ){
+
+    async xerZhulEnters( event ){
         let player, data, area = this.game().areas[cordella.location];
 
         // get adjacent areas with valid tokens to move
@@ -255,19 +193,8 @@ class Vampires extends Faction {
         this.game().message({ faction: this, message : `Cordella spends her magick to move a token from The ${fromArea.name} to the ${area.name}` });
     }
 
-    async cordellaDeploy( event ){
-        // if deployed from reserves enter enchanted
-        if( !event.from ) this.enchantUnit( event.unit );
 
-        if( event.unit.flipped ) await this.cordellaTokenMove( event.unit );
-    }
 
-    unitUnflipped( unit ) {
-        console.log( 'unflip unit', unit );
-        unit.flipped = false;
-        unit.vampire = false;
-        unit.attack = unit.attack.map( attack => attack + 2 );
-    }
 
 }
 

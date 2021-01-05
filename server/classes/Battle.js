@@ -171,8 +171,14 @@ class Battle {
             await this.resolveNextAttack( factionData );
         }
 
-        // mark all remaining units as no longer needing to attack. Needed for cases where the
-        // opponents are wiped out before all of your units have had a chance to attack
+        // clear any units that still need to attack
+        this.clearFactionNeedsToAttack( factionData );
+    }
+
+
+    // mark all remaining units as no longer needing to attack. Needed for cases where the
+    // opponents are wiped out before all of your units have had a chance to attack
+    clearFactionNeedsToAttack( factionData ){
         factionData.units.forEach( unit => {
             if( unit.needsToAttack ) unit.needsToAttack = false
         });
@@ -225,6 +231,7 @@ class Battle {
                 areas : [this.area.name],
                 needsToAttack: true,
                 playerOnly : true,
+                canDecline : gameFaction.data.optionalAttack,
                 message: "Choose a unit to make an attack",
                 gainsSeeking : ninjaAttack,
             }

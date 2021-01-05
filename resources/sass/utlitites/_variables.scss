@@ -39,6 +39,7 @@
     --faction-plants: #14ce00;
     --faction-ghosts: #4a9ed8;
     --faction-spiders: #ae7688;
+    --faction-skeletons: #b2a366;
 }
 
 .faction-neutrals{color: white}
@@ -64,6 +65,7 @@
 .faction-plants {color: var(--faction-plants)}
 .faction-ghosts {color: var(--faction-ghosts)}
 .faction-spiders {color: var(--faction-spiders)}
+.faction-skeletons {color: var(--faction-skeletons)}
 
 .primary { color: var(--primary-color) }
 .primary-light { color: var(--primary-light-color) }

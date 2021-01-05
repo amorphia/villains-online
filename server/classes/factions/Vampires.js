@@ -65,12 +65,10 @@ class Vampires extends Faction {
     }
 
     factionCombatMods( mods, area ) {
-        if ( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ) {
-            mods.push({
-                type: 'lilithHeal',
-                text: `If Lilith, Baroness of Czarkovia is assigned a hit while in vampire form, flip her face up rather than kill her`
-            });
-        }
+        mods.push({
+            type: 'becomeVampire',
+            text: `Face up units that roll a hit become vampires, improving their attacks`
+        });
 
         return mods;
     }

@@ -14,8 +14,10 @@ _.mixin( require( './partials/helpers') );
  */
 const port = 6001;
 const express = require( 'express' )();
-const cors = require('cors');
+const cors = require( 'cors' );
+
 express.use( cors() );
+
 
 const server = require( 'http' ).Server( express );
 const io = require( 'socket.io' )( server );
