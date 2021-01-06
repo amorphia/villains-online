@@ -237,6 +237,12 @@ class Battle {
             }
         }).catch( error => console.error( error ) );
 
+        // if we can decline attacking then clear out our unit's "need to attack" flags and exit
+        if( data.decline ){
+            this.clearFactionNeedsToAttack( gameFaction.data );
+            return;
+        }
+
         // no unit selected? Welp, guess we are done here
         if( !data.units ) return;
 

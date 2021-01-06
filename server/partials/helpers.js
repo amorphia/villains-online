@@ -664,7 +664,21 @@ let helpers = {
     },
 
 
-    factionKillsInEnemy( faction, factions, areas, areaLeaders = false ){
+    unitTypesInEnemy( faction, factions, areas, areaLeaders = false ){
+        let enemyAreas = this.determineEnemyAreas( faction, factions, areas, areaLeaders );
+        let typesInEnemy = {};
+
+        faction.units.forEach( unit => {
+            if( !enemyAreas.includes( unit.location ) ) return;
+
+            if( !typesInEnemy[unit.type] ) typesInEnemy[unit.type] = 1;
+            else typesInEnemy[unit.type]++;
+        });
+
+        return typesInEnemy;
+    },
+
+    determineEnemyAreas( faction, factions, areas, areaLeaders = false ){
         let enemyAreas = [];
 
         if( areaLeaders ){
@@ -677,6 +691,12 @@ let helpers = {
                 if( area.owner && area.owner !== faction.name ) enemyAreas.push( area.name );
             });
         }
+
+        return enemyAreas;
+    },
+
+    factionKillsInEnemy( faction, factions, areas, areaLeaders = false ){
+        let enemyAreas = this.determineEnemyAreas( faction, factions, areas, areaLeaders );
 
         return this.factionKills( faction, factions ).filter( unit => enemyAreas.includes( unit.location ) );
     },

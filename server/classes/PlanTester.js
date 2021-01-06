@@ -239,6 +239,7 @@ class PlanTester {
         return result;
     }
 
+
     skilledAtTarget( faction, unitCount ){
         let targetName = faction.targetArea().name;
         let factionUnitsAtTarget = faction.data.units.filter( unit => _.unitInArea( unit, targetName, { skilled : true } ) ).length;
@@ -253,6 +254,7 @@ class PlanTester {
 
         return result;
     }
+
 
     unitsAtTarget( faction, unitCount, type = 'talent' ){
         let targetName = faction.targetArea().name;
@@ -270,6 +272,7 @@ class PlanTester {
         return result;
     }
 
+
     exterminateAreas( faction, exterminateCount = 1, targetOnly = false ){
         let factionExterminatedAreas = faction.areasExterminated( targetOnly ).length;
         let result = factionExterminatedAreas >= exterminateCount;
@@ -283,6 +286,7 @@ class PlanTester {
 
         return result;
     }
+
 
     /**
      *
@@ -306,6 +310,7 @@ class PlanTester {
         return result;
     }
 
+
     controlEnemyTargets( faction, targetCount ){
         let areasControlled = faction.areas();
 
@@ -326,6 +331,7 @@ class PlanTester {
 
         return result;
     }
+
 
     killMost( faction ){
         let killCounts = Object.values( faction.game().factions )
@@ -348,6 +354,7 @@ class PlanTester {
         return result;
     }
 
+
     exterminateTarget( faction ){
         let targetArea = faction.targetArea();
         let result = faction.hasExterminatedArea( targetArea );
@@ -360,6 +367,7 @@ class PlanTester {
 
         return result;
     }
+
 
     exterminateEnemyTarget( faction ){
         let result;
@@ -375,6 +383,7 @@ class PlanTester {
 
         return result;
     }
+
 
     unitsAtEnemyTargets( faction, unitCount, unitType ){
         let options = {}, factionUnitsAtEnemyTargets = 0;
@@ -397,6 +406,7 @@ class PlanTester {
 
         return result;
     }
+
 
     mrFusion( faction, fusionCount ){
         let factionFusionCount = faction.data.fusion;
@@ -457,6 +467,7 @@ class PlanTester {
         return result;
     }
 
+
     killsInAreas( faction, areaCount ){
         let factionAreasWithKills = faction.areasWithKills().length;
         let result = factionAreasWithKills >= areaCount;
@@ -470,6 +481,7 @@ class PlanTester {
 
         return result;
     }
+
 
     killTypeCount( faction, typeCount ){
         let typesKilled = faction.unitTypesKilled();
@@ -507,6 +519,7 @@ class PlanTester {
         return result;
     }
 
+
     conquerAreas( faction, areaCount ){
         let factionAreasConquered = faction.data.conqueredAreas.length;
         let result = factionAreasConquered >= areaCount;
@@ -520,6 +533,7 @@ class PlanTester {
 
         return result;
     }
+
 
     areasMostUnits( faction, areaCount ){
         let factionAreasMostUnits = faction.areasMostUnits();
@@ -550,6 +564,7 @@ class PlanTester {
         return result;
     }
 
+
     killsInEnemy( faction, killCount ){
         let factionKillsInEnemy = faction.killsInEnemy().length;
         let result = factionKillsInEnemy >= killCount;
@@ -563,6 +578,7 @@ class PlanTester {
 
         return result;
     }
+
 
     enemyUnitsInAreas( faction, unitCount ){
         let factionEnemyUnitsInAreas = faction.enemyUnitsInAreas();
@@ -605,6 +621,7 @@ class PlanTester {
         return result;
     }
 
+
     controlAnyTarget( faction, targetCount ){
         let areasControlled = faction.areas();
 
@@ -640,6 +657,7 @@ class PlanTester {
         return result;
     }
 
+
     webbedFaction( faction, webbedCount ){
         let webbedTotals = _.webbedTotals( faction, faction.game().data.factions );
         let result = ! Object.values( webbedTotals.factions ).some( total => total < webbedCount );
@@ -648,6 +666,21 @@ class PlanTester {
             'webbedTotal',
             'webbedCount req:', webbedCount,
             'webbedTotals.factions:', webbedTotals.factions,
+            'result:', result
+        );
+
+        return result;
+    }
+
+
+    unitTypesInEnemy( faction, typeCount ){
+        let unitTypesInEnemyCount = Object.keys( _.unitTypesInEnemy( faction.data, faction.game().data.factions, faction.game().data.areas ) ).length;
+        let result = unitTypesInEnemyCount >= typeCount;
+
+        if( this.debug ) console.log (
+            'unitTypesInEnemy',
+            'typeCount req:', typeCount,
+            'unitTypesInEnemyCount:', unitTypesInEnemyCount,
             'result:', result
         );
 

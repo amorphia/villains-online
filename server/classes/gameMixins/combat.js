@@ -32,14 +32,16 @@ let obj = {
             return 'hidden unit ignores hit'
         }
 
-        // Lilith heal ability
-        if( count === 1
-            && unit.faction === 'vampires'
-            && unit.flipped === true
-            && unit.type === 'champion'
-        ){
-            this.factions['vampires'].unitUnflipped( unit );
-            return 'return to human form'
+        if( unit.onDamaged ){
+
+            let owner = this.factions[unit.faction];
+            let onDamagedResults = await owner[unit.onDamaged]({
+                unit : unit,
+                hits : count,
+                attacker : faction
+            });
+
+            if( onDamagedResults ) return onDamagedResults;
         }
 
         if( count === 1 && unit.toughness && !unit.flipped ){
