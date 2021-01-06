@@ -66,7 +66,10 @@
                 <div v-for="obj in influence"
                      class="area-map__influence-count"
                      :class="`faction-${obj.faction}`"
-                     :title="`the ${obj.faction} have ${obj.influence} influence in the ${area.name}`">{{ obj.influence }}</div>
+                     :title="`the ${obj.faction} have ${obj.influence} influence in the ${area.name}`">
+                    {{ obj.influence }}
+                    {{ obj.faction === 'plants' && killedPlant ? '*' : '' }}
+                </div>
             </div>
 
             <!-- Xavier -->
@@ -163,6 +166,12 @@
                 if( this.shared.actions.xavier === this.area.name ) hasAction = true;
 
                 return hasAction;
+            },
+
+            killedPlant(){
+                if( !this.shared.data.factions['plants'] ) return;
+
+                return _.factionAreasWithDeadUnits( this.shared.data.factions['plants'] ).includes( this.area.name );
             },
 
             showXavier(){

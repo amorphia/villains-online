@@ -115,13 +115,7 @@ let mixin = {
 
 
     areasWithDeadUnits(){
-        let areas = {};
-
-        this.data.units.forEach( unit => {
-            if( unit.killed && unit.location ) areas[ unit.location ] = true;
-        });
-
-        return Object.keys( areas );
+        return _.factionAreasWithDeadUnits( this );
     },
 
     hasEnemyUnitsInArea( area, options = {} ){

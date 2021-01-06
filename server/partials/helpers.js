@@ -334,6 +334,17 @@ let helpers = {
         return webbed;
     },
 
+    factionAreasWithDeadUnits( faction ){
+        if( faction.data ) faction = faction.data;
+        let areas = {};
+
+        faction.units.forEach( unit => {
+            if( unit.killed && unit.location ) areas[ unit.location ] = true;
+        });
+
+        return Object.keys( areas );
+    },
+
     unitInArea( unit, area, options = {} ){
         if( typeof area !== 'string' ) area = area.name;
 

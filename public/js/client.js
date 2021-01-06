@@ -11864,6 +11864,10 @@ __webpack_require__.r(__webpack_exports__);
 
       return dead !== null && dead !== void 0 ? dead : false;
     },
+    killedPlant: function killedPlant() {
+      if (!this.shared.data.factions['plants']) return;
+      return _.factionAreasWithDeadUnits(this.shared.data.factions['plants']).includes(this.area.name);
+    },
     webbedCount: function webbedCount() {
       if (!this.shared.data.factions['spiders']) return false;
       return _.webbedUnits(this.shared.data.factions['spiders'], {
@@ -13114,6 +13118,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'area-map',
   props: ['area', 'classes'],
@@ -13164,6 +13171,10 @@ __webpack_require__.r(__webpack_exports__);
       });
       if (this.shared.actions.xavier === this.area.name) hasAction = true;
       return hasAction;
+    },
+    killedPlant: function killedPlant() {
+      if (!this.shared.data.factions['plants']) return;
+      return _.factionAreasWithDeadUnits(this.shared.data.factions['plants']).includes(this.area.name);
     },
     showXavier: function showXavier() {
       return this.shared.showXavier && this.xavier;
@@ -67229,7 +67240,17 @@ var render = function() {
                           _c(
                             "div",
                             { staticClass: "view-area__influence-count" },
-                            [_vm._v(_vm._s(influence.influence))]
+                            [
+                              _vm._v(
+                                _vm._s(influence.influence) +
+                                  _vm._s(
+                                    influence.faction === "plants" &&
+                                      _vm.killedPlant
+                                      ? "*"
+                                      : ""
+                                  )
+                              )
+                            ]
                           ),
                           _vm._v(" "),
                           _c("img", {
@@ -69271,7 +69292,19 @@ var render = function() {
                             _vm.area.name
                         }
                       },
-                      [_vm._v(_vm._s(obj.influence))]
+                      [
+                        _vm._v(
+                          "\n                " +
+                            _vm._s(obj.influence) +
+                            "\n                " +
+                            _vm._s(
+                              obj.faction === "plants" && _vm.killedPlant
+                                ? "*"
+                                : ""
+                            ) +
+                            "\n            "
+                        )
+                      ]
                     )
                   })
                 ],
@@ -94720,13 +94753,13 @@ var obj = {
     owner: null,
     status: 0,
     killer: true,
-    selectable: false
+    selectable: true
   },
   skeletons: {
     name: 'skeletons',
     owner: null,
     status: 0,
-    selectable: false
+    selectable: true
   }
 };
 module.exports = Object.assign({}, obj);
@@ -95073,6 +95106,14 @@ var helpers = {
     }
 
     return webbed;
+  },
+  factionAreasWithDeadUnits: function factionAreasWithDeadUnits(faction) {
+    if (faction.data) faction = faction.data;
+    var areas = {};
+    faction.units.forEach(function (unit) {
+      if (unit.killed && unit.location) areas[unit.location] = true;
+    });
+    return Object.keys(areas);
   },
   unitInArea: function unitInArea(unit, area) {
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};

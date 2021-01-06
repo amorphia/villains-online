@@ -28,7 +28,7 @@
                 <div class="view-area__influence-container">
                     <div v-for="influence in influences" class="d-flex view-area__influence player-hud">
                         <div class="influence-marker mb-2"><img src="/images/icons/influence.png"></div>
-                        <div class="view-area__influence-count">{{ influence.influence }}</div>
+                        <div class="view-area__influence-count">{{ influence.influence }}{{ influence.faction === 'plants' && killedPlant ? '*' : '' }}</div>
                         <img class="determine-control__faction-icon" :src="factionIcon( influence.faction )">
                         <span>The {{ influence.faction | startCase }}</span>
                     </div>
@@ -148,6 +148,12 @@
                 return dead ?? false;
             },
 
+            killedPlant(){
+                if( !this.shared.data.factions['plants'] ) return;
+
+                return _.factionAreasWithDeadUnits( this.shared.data.factions['plants'] ).includes( this.area.name );
+            },
+            
             webbedCount(){
                 if( ! this.shared.data.factions['spiders'] ) return false;
                 return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;
