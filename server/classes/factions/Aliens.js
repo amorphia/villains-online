@@ -34,7 +34,8 @@ class Aliens extends Faction {
                 influence: 1,
                 type : 'deploy',
                 noLimit : true,
-                cost : 0
+                cost : 0,
+                req : "This token must be discarded if you don't deploy at least one unit"
             }
         };
         this.tokens['deploy'].count = 1;

@@ -20,6 +20,7 @@ class Mafia extends Faction {
                 influence: 1,
                 resource: 1,
                 cost : 0,
+                req : "This token must be discarded if you have no targets to assign a hit to"
             }
         };
 

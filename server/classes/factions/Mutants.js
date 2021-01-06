@@ -24,7 +24,8 @@ class Mutants extends Faction {
                 resource: 1,
                 cost : 0,
                 areaStat : true,
-                description : 'units suffer -2 to their attack rolls against you in this area'
+                description : 'units suffer -2 to their attack rolls against you in this area',
+                req : "Passive token: this token may always be activated"
             }
         };
 

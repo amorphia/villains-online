@@ -14,14 +14,17 @@
 
             <button class="button button-empty place-token__button right-text" @click="confirmingPass = true">PASS</button>
 
-            <div class="place-token__tokens center-text">
+            <div class="place-token__tokens center-text pos-relative">
                 <token-set
                     :tokens="reserves"
                     classes="one-line"
                     :selected="token"
                     noBorder="true"
                 ></token-set>
+                <div v-if="token && token.req" class="place-token-req prompt-question">{{ token.req }}</div>
             </div>
+
+
 
             <button class="button place-token__button" @click="placeToken" :disabled="saveDisabled">place token</button>
         </div>
@@ -218,5 +221,16 @@
         width: 5.5vw;
         height: 5.5vw;
     }
+
+    .place-token__tokens .place-token-req {
+        position: absolute;
+        bottom: -1.1em;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.2em;
+        letter-spacing: 1px;
+        width: 100%;
+    }
+
 </style>
 

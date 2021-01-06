@@ -29,7 +29,8 @@ class Witches extends Faction {
                 influence: 1,
                 type: 'brew',
                 cost: 0,
-                resource : 1
+                resource : 1,
+                req : "This token must be discarded if you don't flip down any other tokens"
             }
         };
 

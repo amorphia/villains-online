@@ -22,7 +22,8 @@ class Parasites extends Faction {
                 influence: 1,
                 type: 'pod',
                 cost: 0,
-                resource : 1
+                resource : 1,
+                req : "Passive token: this token may always be activated"
             }
         };
 

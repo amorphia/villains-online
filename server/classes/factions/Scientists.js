@@ -28,7 +28,8 @@ class Scientists extends Faction {
                 influence: 1,
                 type : 'card',
                 noLimit : true,
-                cost : 0
+                cost : 0,
+                req : "This token must be discarded if you don't play at least one card"
             }
         };
 

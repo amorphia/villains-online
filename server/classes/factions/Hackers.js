@@ -31,7 +31,8 @@ class Hackers extends Faction {
                 influence: 1,
                 type: 'boot-up',
                 cost: 0,
-                resource: 1
+                resource: 1,
+                req : "This token must be discarded if you can't ready any exhausted units with it"
             }
         };
 

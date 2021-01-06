@@ -29,6 +29,7 @@ class Guerrillas extends Faction {
                 type: 'snipers',
                 resource: 1,
                 cost: 0,
+                req : "This token must be discarded if you cannot make an attack with it"
             }
         };
 

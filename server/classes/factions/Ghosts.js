@@ -28,6 +28,7 @@ class Ghosts extends Faction {
                 type: 'scare',
                 cost: 0,
                 resource : 1,
+                req : "The token must be discarded if you don't return any patsies to their reserves"
             }
         };
 

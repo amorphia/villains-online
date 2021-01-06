@@ -30,7 +30,6 @@
                                :highlight="firstToken">
                     </token-row>
 
-
                     <!-- ambush display -->
                     <div class="" v-if="action.name === 'ambush'">
                         <token-row :area="area"></token-row>
@@ -100,6 +99,10 @@
                     </div>
 
                 </area-flipper>
+
+                <!--  Reveal token requirement -->
+                <div v-if="action.name === 'token' && firstToken.req" class="reveal-token-req prompt-question">{{ firstToken.req }}</div>
+
 
                 <!-- Wild token type prompt -->
                 <div v-if="action.name === 'token' && firstToken.name === 'wild'" class="py-3">

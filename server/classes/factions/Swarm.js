@@ -22,6 +22,7 @@ class Swarm extends Faction {
                 type: 'scatter',
                 cost: 0,
                 resource: 1,
+                req : "This token must be discarded if you don't move any units"
             }
         };
 

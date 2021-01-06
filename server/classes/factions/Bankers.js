@@ -24,7 +24,8 @@ class Bankers extends Faction {
                 activateTax : true,
                 resource: true,
                 areaStat : true,
-                description : 'enemy players must pay 1 to activate a token here'
+                description : 'enemy players must pay 1 to activate a token here',
+                req : "Passive token: this token may always be activated"
             }
         };
 

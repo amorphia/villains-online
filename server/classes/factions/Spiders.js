@@ -24,7 +24,8 @@ class Spiders extends Faction {
                 influence: 1,
                 type: 'drop',
                 cost: 0,
-                resource : 1
+                resource : 1,
+                req : "To avoid discarding this token you must deploy at least one patsy, or start a battle"
             }
         };
 

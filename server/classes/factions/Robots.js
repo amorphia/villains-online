@@ -22,7 +22,8 @@ class Robots extends Faction {
             data: {
                 influence: 1,
                 type: 'wild',
-                cost : 0
+                cost : 0,
+                req : "This token must be discarded if you can't activate the basic token type you select"
             }
         };
         this.tokens['deploy'].count = 2;

@@ -5907,6 +5907,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-action',
   data: function data() {
@@ -9982,6 +9985,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -14580,7 +14586,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.place-token-top {\n    overflow: hidden;\n    transition: all .5s;\n}\n.place-token {\n    min-width: 40rem;\n}\n.place-token__button {\n    width: 12%\n}\n.place-token-top .tokens-hud__token {\n    width: 5.5vw;\n    height: 5.5vw;\n}\n", ""]);
+exports.push([module.i, "\n.place-token-top {\n    overflow: hidden;\n    transition: all .5s;\n}\n.place-token {\n    min-width: 40rem;\n}\n.place-token__button {\n    width: 12%\n}\n.place-token-top .tokens-hud__token {\n    width: 5.5vw;\n    height: 5.5vw;\n}\n.place-token__tokens .place-token-req {\n    position: absolute;\n    bottom: -1.1em;\n    left: 50%;\n    transform: translateX(-50%);\n    font-size: 1.2em;\n    letter-spacing: 1px;\n    width: 100%;\n}\n\n", ""]);
 
 // exports
 
@@ -62117,6 +62123,14 @@ var render = function() {
                       )
                     : _vm._e(),
                   _vm._v(" "),
+                  _vm.action.name === "token" && _vm.firstToken.req
+                    ? _c(
+                        "div",
+                        { staticClass: "reveal-token-req prompt-question" },
+                        [_vm._v(_vm._s(_vm.firstToken.req))]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
                   _vm.action.name === "token" && _vm.firstToken.name === "wild"
                     ? _c(
                         "div",
@@ -65607,7 +65621,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "place-token__tokens center-text" },
+        { staticClass: "place-token__tokens center-text pos-relative" },
         [
           _c("token-set", {
             attrs: {
@@ -65616,7 +65630,13 @@ var render = function() {
               selected: _vm.token,
               noBorder: "true"
             }
-          })
+          }),
+          _vm._v(" "),
+          _vm.token && _vm.token.req
+            ? _c("div", { staticClass: "place-token-req prompt-question" }, [
+                _vm._v(_vm._s(_vm.token.req))
+              ])
+            : _vm._e()
         ],
         1
       ),

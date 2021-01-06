@@ -26,6 +26,7 @@ class Loyalists extends Faction {
                 type: 'knight',
                 cost: 0,
                 resource : 1,
+                req : "This token must be discarded if you can't knight any un-knighted units here"
             }
         };
 

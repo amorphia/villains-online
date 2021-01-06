@@ -28,6 +28,7 @@ class Ninjas extends Faction {
                 type: 'blades',
                 resource: 1,
                 cost: 0,
+                req : "This token must be discarded if you can't make an attack with a unit"
             }
         };
 

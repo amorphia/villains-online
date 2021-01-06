@@ -30,6 +30,7 @@ class Vampires extends Faction {
                 influence: 1,
                 type: 'deploy',
                 cost: 0,
+                req :  "This token must be discarded if you don't deploy, or flip any units"
             }
         };
 

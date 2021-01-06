@@ -18,7 +18,9 @@ class Cultists extends Faction {
         // tokens
         this.tokens['nothing'] = {
             count: 4,
-            data: {}
+            data: {
+                req : "This token must always be discarded"
+            }
         };
         delete this.tokens['battle'];
 
