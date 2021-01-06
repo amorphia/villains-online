@@ -7083,12 +7083,17 @@ __webpack_require__.r(__webpack_exports__);
       shared: App.state
     };
   },
+  mounted: function mounted() {
+    if (this.selectableCards.length === 1) {
+      this.$set(this.selectableCards[0], 'selected', true);
+    }
+  },
   methods: {
     cardClicked: function cardClicked(card) {
       if (card.selected) {
         this.$set(card, 'selected', false);
       } else {
-        if (this.selected.length || card.type !== 'rule') return;
+        if (this.selected.length || !this.canSelectCard(card)) return;
         this.$set(card, 'selected', true);
       }
     },
@@ -7110,11 +7115,21 @@ __webpack_require__.r(__webpack_exports__);
 
       data = Object.assign({}, this.data, data);
       this.shared.respond('choose-magick', data);
+    },
+    canSelectCard: function canSelectCard(card) {
+      return card.type === 'rule' && (this.data.free || _.money(this.shared.faction) >= card.cost);
     }
   },
   computed: {
     data: function data() {
       return this.shared.player.prompt.data;
+    },
+    selectableCards: function selectableCards() {
+      var _this = this;
+
+      return this.data.cards.filter(function (card) {
+        return _this.canSelectCard(card);
+      });
     },
     cost: function cost() {
       if (this.data.free) return 0;

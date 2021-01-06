@@ -47,13 +47,19 @@
             };
         },
 
+        mounted(){
+            if( this.selectableCards.length === 1 ){
+                this.$set( this.selectableCards[0], 'selected', true );
+            }
+        },
+
         methods : {
 
             cardClicked( card ){
                 if( card.selected ){
                     this.$set( card, 'selected', false );
                 } else {
-                    if( this.selected.length || card.type !== 'rule' ) return;
+                    if( this.selected.length || !this.canSelectCard( card ) ) return;
                     this.$set( card, 'selected', true );
                 }
             },
@@ -72,11 +78,19 @@
                 this.shared.respond( 'choose-magick', data );
             },
 
+            canSelectCard( card ){
+                return card.type === 'rule'
+                        && ( this.data.free || _.money( this.shared.faction ) >= card.cost );
+            }
         },
 
         computed : {
             data(){
                 return this.shared.player.prompt.data;
+            },
+
+            selectableCards(){
+                return this.data.cards.filter( card => this.canSelectCard( card ) );
             },
 
             cost(){
