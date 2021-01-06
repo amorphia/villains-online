@@ -60708,15 +60708,27 @@ var render = function() {
         },
         [
           _c("unit-set", {
-            attrs: { units: _vm.reserves, title: "Reserves", classes: "border" }
+            attrs: {
+              units: _vm.reserves,
+              title: "Reserves [" + _vm.reserves.length + "]",
+              classes: "border"
+            }
           }),
           _vm._v(" "),
           _c("unit-set", {
-            attrs: { units: _vm.deployed, title: "Deployed", classes: "border" }
+            attrs: {
+              units: _vm.deployed,
+              title: "Deployed [" + _vm.deployed.length + "]",
+              classes: "border"
+            }
           }),
           _vm._v(" "),
           _c("unit-set", {
-            attrs: { units: _vm.killed, title: "Killed", classes: "border" }
+            attrs: {
+              units: _vm.killed,
+              title: "Killed [" + _vm.killed.length + "]",
+              classes: "border"
+            }
           })
         ],
         1
