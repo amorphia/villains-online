@@ -94733,7 +94733,7 @@ var obj = {
   bureau: {
     name: 'bureau',
     owner: null,
-    status: 1,
+    status: 2,
     selectable: true
   },
   plants: {
@@ -94753,13 +94753,13 @@ var obj = {
     owner: null,
     status: 0,
     killer: true,
-    selectable: true
+    selectable: false
   },
   skeletons: {
     name: 'skeletons',
     owner: null,
     status: 0,
-    selectable: true
+    selectable: false
   }
 };
 module.exports = Object.assign({}, obj);

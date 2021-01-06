@@ -39,9 +39,10 @@
 { test : 'areasMostTokens', args : [3] },
 { test : 'enemyUnitsInAreas', args : [3] },
 { test : 'controlAnyTarget', args : [1] },
-
 { test : 'webbedTotal', args : [6] },
 { test : 'webbedFaction', args : [1] },
+
+{ test : 'unitTypesInEnemy', args : [3] },
 
 
  
