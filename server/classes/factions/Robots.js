@@ -117,6 +117,7 @@ class Robots extends Faction {
 
     async wildToken( args ){
         let player, data, output;
+        let cardsPlayed = 0;
 
         /*
         [player, data] = await this.game().promise({
@@ -144,7 +145,6 @@ class Robots extends Faction {
                 break;
             case 'card':
                 if( canActivate ){
-                    let cardsPlayed = 0;
                     let declined = false;
 
                     while( cardsPlayed < this.data.cardLimit && !declined ) {
@@ -164,7 +164,7 @@ class Robots extends Faction {
                 break;
         }
 
-        if( !canActivate || ( output && output.declined ) ){
+        if( !canActivate || ( output && output.declined && !cardsPlayed ) ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
         }
