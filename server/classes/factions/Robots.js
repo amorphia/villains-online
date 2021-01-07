@@ -143,7 +143,18 @@ class Robots extends Faction {
                 if( canActivate ) output = await this.deploy( args );
                 break;
             case 'card':
-                if( canActivate ) output = await this.playACard( args );
+                if( canActivate ){
+                    let cardsPlayed = 0;
+                    let declined = false;
+
+                    while( cardsPlayed < this.data.cardLimit && !declined ) {
+                        let output = await this.playACard( args );
+                        if( output && output.declined ) declined = true;
+                        else {
+                            cardsPlayed++;
+                        }
+                    }
+                }
                 break;
             case 'move':
                 if( canActivate ) {
