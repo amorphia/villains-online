@@ -148,7 +148,7 @@ class Robots extends Faction {
                     let declined = false;
 
                     while( cardsPlayed < this.data.cardLimit && !declined ) {
-                        let output = await this.playACard( args );
+                        output = await this.playACard( args );
                         if( output && output.declined ) declined = true;
                         else {
                             cardsPlayed++;
