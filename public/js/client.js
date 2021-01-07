@@ -11333,7 +11333,7 @@ __webpack_require__.r(__webpack_exports__);
       return classes.join(' ');
     },
     img: function img() {
-      if (this.unit.ghost && !this.shared.faction.ghostDeploy) return "/images/factions/ghosts/units/ghost.png";
+      ///if( this.unit.ghost && !this.shared.faction.ghostDeploy ) return `/images/factions/ghosts/units/ghost.png`;
       return "/images/factions/".concat(this.unit.faction, "/units/").concat(this.unit.type).concat(this.unit.flipped ? '-flipped' : '', ".png");
     },
     selected: function selected() {
