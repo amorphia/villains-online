@@ -117,8 +117,6 @@
         methods : {
 
             toggleGhost( unit ){
-                if( unit.type === 'champion' && !unit.ghost && unit.location ) return App.event.emit( 'sound', 'error' );
-
                 if( unit.asGhost ) this.$set( unit, 'asGhost', false );
                 else this.$set( unit, 'asGhost', true );
             },

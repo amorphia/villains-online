@@ -8539,7 +8539,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     toggleGhost: function toggleGhost(unit) {
-      if (unit.type === 'champion' && !unit.ghost && unit.location) return App.event.emit('sound', 'error');
       if (unit.asGhost) this.$set(unit, 'asGhost', false);else this.$set(unit, 'asGhost', true);
     },
     resolve: function resolve(option) {
