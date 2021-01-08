@@ -14585,7 +14585,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.place-token-top {\n    overflow: hidden;\n    transition: all .5s;\n}\n.place-token {\n    min-width: 40rem;\n}\n.place-token__button {\n    width: 12%\n}\n.place-token-top .tokens-hud__token {\n    width: 5.5vw;\n    height: 5.5vw;\n}\n.place-token__tokens .place-token-req {\n    position: absolute;\n    bottom: -1.1em;\n    left: 50%;\n    transform: translateX(-50%);\n    font-size: 1.2em;\n    letter-spacing: 1px;\n    width: 100%;\n}\n\n", ""]);
+exports.push([module.i, "\n.place-token-top {\n    overflow: hidden;\n    transition: all .5s;\n}\n.place-token {\n    min-width: 40rem;\n}\n.place-token__button {\n    width: 12%\n}\n.place-token-top .tokens-hud__token {\n    width: 5.5vw;\n    height: 5.5vw;\n}\n.place-token__tokens .place-token-req {\n    position: absolute;\n    bottom: -1.1em;\n    left: 50%;\n    transform: translateX(-50%);\n    font-size: 1.2em;\n    letter-spacing: 1px;\n    width: 70vw;\n}\n\n", ""]);
 
 // exports
 

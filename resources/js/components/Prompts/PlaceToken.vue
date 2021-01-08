@@ -229,7 +229,7 @@
         transform: translateX(-50%);
         font-size: 1.2em;
         letter-spacing: 1px;
-        width: 100%;
+        width: 70vw;
     }
 
 </style>
