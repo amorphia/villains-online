@@ -193,7 +193,7 @@ class Faction {
     processUpgrade(){}
     factionCleanUp(){}
     factionCombatMods( mods ){ return mods }
-    unitUnflipped( unit ){}
+    unflipUnit( unit ){}
     onStartOfTurn(){}
     onAfterReveal(){}
     onControlArea(){}
@@ -273,16 +273,10 @@ class Faction {
 
     cleanUpKilled(){
         this.data.units.forEach( unit => {
-            if( unit.killed ) this.resetKilledUnit( unit );
+            if( unit.killed ) this.returnUnitToReserves( unit );
         });
     }
 
-    resetKilledUnit( unit ){
-        unit.killed = null;
-        unit.location = null;
-        if( unit.ready ) unit.ready = false;
-        if( unit.flipped ) this.unitUnflipped( unit );
-    }
 
     resetEnergy(){
         this.data.energy = this.data.maxEnergy;
@@ -342,7 +336,7 @@ class Faction {
 
         if( typeof unit === 'string' ) unit = this.game().objectMap[ unit ];
         let replacement = this.data.units.find(
-            item => !item.location
+                item => !item.location
                 && item.type === unit.type
                 && !item.killed
         );
@@ -355,21 +349,16 @@ class Faction {
 
         // replace unit
         replacement.location = unit.location;
-        if( unit.ready ) {
-            unit.ready = false;
-            replacement.ready = true;
-        }
+        // if original was ready, replacement is too
+        if( unit.ready ) replacement.ready = true;
 
+        // prepare data for popup prompt
         units.push( replacement );
         units.push( _.clone( unit ) );
 
-        // remove replaced unit
-        unit.location = null;
-        if( unit.flipped ) unit.flipped = false;
-
-        if( this.game().combat ){
-            this.game().combat.removeUnitFromCombat( unit );
-        }
+        // return original to owner
+        let owner = this.game().factions[unit.faction];
+        owner.returnUnitToReserves( unit );
 
         await this.game().timedPrompt('units-shifted', {
             message : options.message,
@@ -510,17 +499,20 @@ class Faction {
         this.game().message({ message: message, faction : this });
     }
 
-    // used in onKilledEvents
-    returnUnitToReserves( event ){
-        let unit = event.unit;
+    returnUnitToReserves( unit ){
+        // when calling this directly from an event we need to get the unit from the event data
+        if( unit.unit ) unit = unit.unit;
 
-        unit.location = null;
+        // remove from combat if needed
+        if( this.game().combat ) this.game().combat.removeUnitFromCombat( unit );
+
         unit.killed = null;
-
-        if( this.game().combat ){
-            this.game().combat.removeUnitFromCombat( unit );
-        }
+        unit.location = null;
+        if( unit.ready ) unit.ready = false;
+        if( unit.flipped ) this.unflipUnit( unit );
     }
+
+
 
     applyCapturedRewards(){
         let rewards = this.capturedRewards[ this.data.captured.current - 1 ];

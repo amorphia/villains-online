@@ -132,8 +132,7 @@ let obj = {
 
             // heal wounded units, an unflip units coming in from the reserves
             if( unit.flipped && ( unit.toughness || !unit.location || unit.skeleton ) ){
-                unit.flipped = false;
-                this.unitUnflipped( unit );
+                this.unflipUnit( unit );
             }
 
             // ready units

@@ -131,7 +131,7 @@ class Ninjas extends Faction {
 
     onAfterBattle( combat ) {
         let hiddenUnits = this.data.units.filter( unit => unit.hidden && _.unitInArea( unit, combat.area ) );
-        hiddenUnits.forEach( unit => this.unitUnflipped( unit ) );
+        hiddenUnits.forEach( unit => this.unflipUnit( unit ) );
 
         if( hiddenUnits.length ) this.game().message({ faction : this, message: `hidden units in The ${combat.area.name} are revealed` });
     }
@@ -189,7 +189,7 @@ class Ninjas extends Faction {
         }
     }
 
-    unitUnflipped( unit ) {
+    unflipUnit( unit ) {
         unit.flipped = false;
         unit.hidden = false;
     }

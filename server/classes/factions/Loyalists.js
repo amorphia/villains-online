@@ -198,7 +198,7 @@ class Loyalists extends Faction {
         unit.influence = unit.baseInfluence + 1;
     }
 
-    unitUnflipped( unit ) {
+    unflipUnit( unit ) {
         unit.flipped = false;
         unit.firstStrike = false;
         unit.influence = unit.baseInfluence;

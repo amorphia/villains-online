@@ -164,7 +164,7 @@ class Vampires extends Faction {
 
         // then flip the selected units appropriately
         units.forEach( unit => {
-            if( unit.flipped ) this.unitUnflipped( unit );
+            if( unit.flipped ) this.unflipUnit( unit );
             else this.becomeSkeleton( unit );
         });
 
@@ -196,9 +196,9 @@ class Vampires extends Faction {
     }
 
 
-    unitUnflipped( unit ) {
+    unflipUnit( unit ) {
         unit.flipped = false;
-        unit.attack = unit.baseAttack;
+        unit.attack = [...unit.baseAttack];
         unit.skeleton = false;
         unit.influence = unit.baseInfluence;
         if ( unit.baseSkilled ) unit.skilled = true;

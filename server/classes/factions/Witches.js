@@ -100,7 +100,7 @@ class Witches extends Faction {
 
     dienchantUnits( area ){
         this.data.units.forEach( unit => {
-            if( unit.location === area.name && unit.flipped ) this.unitUnflipped( unit );
+            if( unit.location === area.name && unit.flipped ) this.unflipUnit( unit );
         })
     }
 
@@ -155,58 +155,6 @@ class Witches extends Faction {
         unit.flipped = true;
     }
 
-    getTokenMoveAreas( toArea ){
-       let areas = [];
-
-       Object.values( this.game().data.areas ).forEach( area => {
-           if( toArea.data.adjacent.includes( area.name )
-               && area.tokens.find( token => token.faction === this.name && !token.revealed ) ) areas.push( area.name );
-       });
-
-       return areas;
-    }
-
-    async cordellaTokenMove( cordella ){
-        let player, data, area = this.game().areas[cordella.location];
-
-        // get adjacent areas with valid tokens to move
-        let areasWithValidTokens = this.getTokenMoveAreas( area );
-        // if we don't have any valid tokens to move abort
-        if( ! areasWithValidTokens.length ) return this.game().message({ faction: this, message : 'No valid tokens for Cordella to move' });
-
-        // player optionally chooses a token to move
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-tokens',
-            data : {
-                count : 1,
-                areas : areasWithValidTokens,
-                optional : true,
-                playerOnly : true,
-                unrevealedOnly: true,
-                message : `Flip Cordella to move a token to the ${area.name}?`
-            }
-        }).catch( error => console.error( error ) );
-
-        // if we didn't choose a token, abort
-        if( !data.tokens ) return this.game().message({ faction: this, message : `Declines to move a token to the ${area.name}` });
-
-        // unflip cordella
-        this.unitUnflipped( cordella );
-
-        // move token
-        let token = this.game().objectMap[ data.tokens[0] ] ;
-
-        // remove from old area
-        let fromArea = this.game().areas[token.location];
-        _.discardToken( token, fromArea );
-
-        //move to new area
-        token.location = area.name;
-        area.data.tokens.push( token );
-        this.game().message({ faction: this, message : `Cordella spends her magick to move a token from The ${fromArea.name} to the ${area.name}` });
-    }
-
     async cordellaDeploy( event ){
         this.enchantUnit( event.unit );
     }
@@ -215,7 +163,7 @@ class Witches extends Faction {
         this.enchantUnits();
     }
 
-    unitUnflipped( unit ) {
+    unflipUnit( unit ) {
         unit.flipped = false;
     }
 

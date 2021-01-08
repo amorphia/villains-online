@@ -68,10 +68,7 @@ class AllHollowsEve extends Card {
         units.forEach( unit => {
             unit.killed = false;
             if( unit.ready ) unit.ready = false;
-            if( unit.flipped ){
-                unit.flipped = false;
-                faction.unitUnflipped( unit );
-            }
+            if( unit.flipped ) faction.unflipUnit( unit );
         });
 
 
