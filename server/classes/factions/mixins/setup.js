@@ -9,8 +9,24 @@ let obj = {
             for( let i = 0; i < value.count; i++ ) {
                 let unit = new Unit( this, name, value.data );
                 unit = this.game().newObject( unit, saved );
+
+                // if we need to set our units base stats in the case of flipped units
+                // that transform stats, do it here
+                if( this.shouldSetUnitBaseStats ) this.setUnitBaseStats( unit );
+
                 this.data.units.push( unit );
             }
+        });
+    },
+
+    // saves the specified properties to a "baseXxxxx" property for use
+    // with transforming units that change stats back and forth
+    setUnitBaseStats( unit ){
+        if( this.shouldSetUnitBaseStats.basic && !unit.basic ) return;
+
+        this.shouldSetUnitBaseStats.props.forEach( prop => {
+            let baseProp = _.camelCase( `base ${prop}` );
+            unit[baseProp] = unit[prop];
         });
     },
 

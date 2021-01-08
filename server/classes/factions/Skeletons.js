@@ -35,33 +35,29 @@ class Vampires extends Faction {
         };
 
         // units
+        this.shouldSetUnitBaseStats = {
+            props : ['influence', 'attack', 'skilled']
+        };
+
         this.units['goon'].count = 3;
         this.units['goon'].data.onDamaged = 'checkBecomeSkeleton';
-        this.units['goon'].data.baseAttack = [5,5];
         this.units['goon'].data.flipped = false;
         this.units['goon'].data.skeleton = false;
-        this.units['goon'].data.baseInfluence = 1;
 
         this.units['mole'].count = 3;
         this.units['mole'].data.onDamaged = 'checkBecomeSkeleton';
-        this.units['mole'].data.baseAttack = [9];
         this.units['mole'].data.flipped = false;
         this.units['mole'].data.skeleton = false;
-        this.units['mole'].data.baseInfluence = 2;
 
         this.units['talent'].data.onDamaged = 'checkBecomeSkeleton';
-        this.units['talent'].data.baseAttack = [7];
         this.units['talent'].data.flipped = false;
         this.units['talent'].data.skeleton = false;
-        this.units['talent'].data.baseInfluence = 1;
-        this.units['talent'].data.baseSkilled = true;
+
 
         this.units['patsy'].count = 2;
         this.units['patsy'].data.onDamaged = 'checkBecomeSkeleton';
-        this.units['patsy'].data.baseAttack = [];
         this.units['patsy'].data.flipped = false;
         this.units['patsy'].data.skeleton = false;
-        this.units['patsy'].data.baseInfluence = 0;
 
 
         this.units['champion'] = {
@@ -70,9 +66,7 @@ class Vampires extends Faction {
                 name: "Xer'Zhul",
                 type: 'champion',
                 basic: false,
-                baseInfluence: 1,
                 influence: 1,
-                baseAttack: [6,6,6],
                 attack: [6,6,6],
                 cost: 2,
                 flipped: false,

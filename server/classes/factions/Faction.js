@@ -170,6 +170,8 @@ class Faction {
         champion : {}
     };
 
+    shouldSetUnitBaseStats = null;
+
     constructor( playerId, game ) {
         this.playerId = playerId;
         this.gameId = game.id;

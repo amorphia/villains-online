@@ -32,6 +32,11 @@ class Vampires extends Faction {
         };
 
         // units
+        this.shouldSetUnitBaseStats = {
+            basic : true,
+            props : ['attack']
+        };
+
         this.units['goon'].data.onHit = 'becomeVampire';
         this.units['goon'].data.vampire = false;
 
@@ -194,17 +199,16 @@ class Vampires extends Faction {
         if( !unit.flipped && !unit.killed ){
             unit.flipped = true;
             unit.vampire = true;
-            unit.attack = unit.attack.map( attack => attack - 2 );
+            unit.attack = unit.baseAttack.map( attack => attack - 2 );
             let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;
             this.message({ message: message, faction : this });
         }
     }
 
     unitUnflipped( unit ) {
-        console.log( 'unflip unit', unit );
         unit.flipped = false;
         unit.vampire = false;
-        unit.attack = unit.attack.map( attack => attack + 2 );
+        unit.attack = unit.baseAttack;
     }
 
 }

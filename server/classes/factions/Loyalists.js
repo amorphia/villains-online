@@ -31,6 +31,12 @@ class Loyalists extends Faction {
         };
 
         // units
+        this.shouldSetUnitBaseStats = {
+            basic : true,
+            props : ['influence']
+        };
+
+
         this.units['patsy'].count = 3;
 
         this.units['servant'] = {
@@ -186,15 +192,16 @@ class Loyalists extends Faction {
         this.game().advancePlayer();
     }
 
-    knightUnit(unit) {
+    knightUnit( unit ) {
         unit.flipped = true;
         unit.firstStrike = true;
-        unit.influence++;
+        unit.influence = unit.baseInfluence + 1;
     }
 
-    unitUnflipped(unit) {
+    unitUnflipped( unit ) {
+        unit.flipped = false;
         unit.firstStrike = false;
-        unit.influence--;
+        unit.influence = unit.baseInfluence;
     }
 
 }
