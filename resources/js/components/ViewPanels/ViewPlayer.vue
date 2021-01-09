@@ -10,7 +10,7 @@
                     <div class="d-flex">
                         <div class="view-player__title width-100 pos-relative">
                             <i v-if="shared.isFirstPlayer( player )" class="first-player icon-key"></i>{{ player.name | startCase }}
-                            <div v-if="shared.player.id !== player.id && shared.faction.resources" class="bribe-box pos-absolute top-0 right-0 d-flex align-baseline">
+                            <div v-if="canBribe" class="bribe-box pos-absolute top-0 right-0 d-flex align-baseline">
                                 <i :disabled="bribe === 0" @click="bribe--" class="icon-minimize pr-2"></i>
                                 <img class="icon-image ml-3" src="/images/icons/resource.png">
                                 <div class="ml-2 current-bribe mr-3">{{ bribe }}</div>
@@ -263,6 +263,10 @@
 
 
         computed : {
+
+            canBribe(){
+                return this.shared.data.allowBribes && this.shared.player.id !== this.player.id && this.shared.faction.resources;
+            },
 
             killedUnits(){
                 let killedUnits = this.faction.units.filter( unit => unit.killed );

@@ -35,13 +35,23 @@
                     <div v-if="Object.keys(shared.game.players).length === 0" class="open-game__empty">No Players</div>
                 </div>
 
-                <div class="game-type d-flex justify-center">
-                    <div v-for="type in gameTypes"
-                         class="game-type__option"
+                <div class="game-setup__type d-flex justify-center">
+                    <div v-if="shared.game.gameType === type || shared.game.creator === shared.id" v-for="type in gameTypes"
+                         class="game-setup__type-option"
                          :class="{ active : shared.game.gameType === type }"
                          @click="setGameType( type )"
                     >{{ type }}</div>
                 </div>
+
+                <div v-if="shared.game.creator === shared.id" class="game-setup__options d-flex justify-center my-2">
+                    <div v-for="(val, option) in options"
+                         class="game-setup__option py-2 px-3"
+                         :class="{ active : val }"
+                         @click="options[option] = !options[option]"
+                    >{{ startCase( option ) }}</div>
+                </div>
+
+
 
                 <div class="open-game__buttons center-text">
                     <button v-if="!joinedGame" :disabled="!canJoin" class="button wide px-6" @click="joinGame">JOIN</button>
@@ -72,7 +82,10 @@
                     'basic',
                     'optimized',
                     'anarchy'
-                ]
+                ],
+                options : {
+                    allowBribes : false
+                }
             };
         },
 
@@ -100,6 +113,10 @@
         },
 
         methods : {
+            startCase( str ){
+               return _.startCase( str ).toUpperCase();
+            },
+
             openFactions(){
                 console.log( 'view factions' );
                 this.shared.event.emit( 'viewFactions' );
@@ -137,7 +154,7 @@
 
             startGame(){
                 App.event.emit( 'sound', 'ui' );
-                this.shared.socket.emit( 'startGame', this.shared.game.id );
+                this.shared.socket.emit( 'startGame', this.shared.game.id, this.options );
             },
 
         }
@@ -176,12 +193,17 @@
         margin-right: .5rem;
     }
 
-    .game-type__option {
+    .game-setup__option {
+        border: 1px solid;
+        font-size: .8em;
+    }
+
+    .game-setup__type-option {
         cursor: pointer;
         margin: .3em;
     }
 
-    .game-type__option.active {
+    .game-setup__type-option.active, .game-setup__option.active {
         color: var(--highlight-color);
     }
 

@@ -99,8 +99,12 @@ let setup = {
         });
     },
 
-    async startGame(){
+    async startGame( player, options = {} ){
         if( this.data.state !==  'open' ) return;
+
+        // set game options
+        console.log( 'options', options );
+        Object.assign( this.data, options );
 
         Server.saveNewGame( this );
 

@@ -3843,12 +3843,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-lobby',
   data: function data() {
     return {
       shared: App.state,
-      gameTypes: ['basic', 'optimized', 'anarchy']
+      gameTypes: ['basic', 'optimized', 'anarchy'],
+      options: {
+        allowBribes: false
+      }
     };
   },
   mounted: function mounted() {
@@ -3873,6 +3886,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    startCase: function startCase(str) {
+      return _.startCase(str).toUpperCase();
+    },
     openFactions: function openFactions() {
       console.log('view factions');
       this.shared.event.emit('viewFactions');
@@ -3904,7 +3920,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     startGame: function startGame() {
       App.event.emit('sound', 'ui');
-      this.shared.socket.emit('startGame', this.shared.game.id);
+      this.shared.socket.emit('startGame', this.shared.game.id, this.options);
     }
   }
 });
@@ -12465,6 +12481,9 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    canBribe: function canBribe() {
+      return this.shared.data.allowBribes && this.shared.player.id !== this.player.id && this.shared.faction.resources;
+    },
     killedUnits: function killedUnits() {
       var killedUnits = this.faction.units.filter(function (unit) {
         return unit.killed;
@@ -13996,7 +14015,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.lobby__action-link {\n    color: var(--highlight-color);\n    width: 20em;\n}\n.lobby__players {\n}\n.server-offline {\n    padding: 2rem;\n    display: flex;\n    align-items: baseline;\n    font-size: 1.75em;\n    background-color: rgba(17, 7, 19, 0.9);\n    border-radius: .2em;\n    border-top: 1px solid rgba(91, 33, 128, 0.56);\n    letter-spacing: 2px;\n    color: var(--highlight-color);\n    box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);\n}\n.server-offline i {\n    color: red;\n    font-size: .9em;\n    position: relative;\n    top: 3px;\n    margin-right: .5rem;\n}\n.game-type__option {\n    cursor: pointer;\n    margin: .3em;\n}\n.game-type__option.active {\n    color: var(--highlight-color);\n}\n\n", ""]);
+exports.push([module.i, "\n.lobby__action-link {\n    color: var(--highlight-color);\n    width: 20em;\n}\n.lobby__players {\n}\n.server-offline {\n    padding: 2rem;\n    display: flex;\n    align-items: baseline;\n    font-size: 1.75em;\n    background-color: rgba(17, 7, 19, 0.9);\n    border-radius: .2em;\n    border-top: 1px solid rgba(91, 33, 128, 0.56);\n    letter-spacing: 2px;\n    color: var(--highlight-color);\n    box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);\n}\n.server-offline i {\n    color: red;\n    font-size: .9em;\n    position: relative;\n    top: 3px;\n    margin-right: .5rem;\n}\n.game-setup__option {\n    border: 1px solid;\n    font-size: .8em;\n}\n.game-setup__type-option {\n    cursor: pointer;\n    margin: .3em;\n}\n.game-setup__type-option.active, .game-setup__option.active {\n    color: var(--highlight-color);\n}\n\n", ""]);
 
 // exports
 
@@ -59545,24 +59564,55 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "div",
-                  { staticClass: "game-type d-flex justify-center" },
+                  { staticClass: "game-setup__type d-flex justify-center" },
                   _vm._l(_vm.gameTypes, function(type) {
-                    return _c(
-                      "div",
-                      {
-                        staticClass: "game-type__option",
-                        class: { active: _vm.shared.game.gameType === type },
-                        on: {
-                          click: function($event) {
-                            return _vm.setGameType(type)
-                          }
-                        }
-                      },
-                      [_vm._v(_vm._s(type))]
-                    )
+                    return _vm.shared.game.gameType === type ||
+                      _vm.shared.game.creator === _vm.shared.id
+                      ? _c(
+                          "div",
+                          {
+                            staticClass: "game-setup__type-option",
+                            class: {
+                              active: _vm.shared.game.gameType === type
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.setGameType(type)
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(type))]
+                        )
+                      : _vm._e()
                   }),
                   0
                 ),
+                _vm._v(" "),
+                _vm.shared.game.creator === _vm.shared.id
+                  ? _c(
+                      "div",
+                      {
+                        staticClass:
+                          "game-setup__options d-flex justify-center my-2"
+                      },
+                      _vm._l(_vm.options, function(val, option) {
+                        return _c(
+                          "div",
+                          {
+                            staticClass: "game-setup__option py-2 px-3",
+                            class: { active: val },
+                            on: {
+                              click: function($event) {
+                                _vm.options[option] = !_vm.options[option]
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(_vm.startCase(option)))]
+                        )
+                      }),
+                      0
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
                 _c("div", { staticClass: "open-game__buttons center-text" }, [
                   !_vm.joinedGame
@@ -67943,8 +67993,7 @@ var render = function() {
                         _vm._s(_vm._f("startCase")(_vm.player.name)) +
                           "\n                        "
                       ),
-                      _vm.shared.player.id !== _vm.player.id &&
-                      _vm.shared.faction.resources
+                      _vm.canBribe
                         ? _c(
                             "div",
                             {
