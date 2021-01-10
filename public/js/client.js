@@ -3853,6 +3853,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-lobby',
   data: function data() {
@@ -9121,16 +9122,19 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     checkIsSelectable: function checkIsSelectable() {
-      // if the faction is already taken, or flagged unselectable, then it can't be taken
-      if (this.faction.owner !== null || this.faction.selectable === false && this.shared.data.gameType !== 'anarchy') return false; // otherwise if we are in free for all mode then anything goes
+      // if the faction is already taken, then it can't be taken
+      if (this.faction.owner !== null) return false; // otherwise if we are in free for all mode then anything goes
 
-      if (this.shared.data && this.shared.data.gameType === 'anarchy') return true; // but if we are in basic mode everything goes as long as they are basic factions
+      if (this.shared.data && this.shared.data.gameType === 'anarchy') return true; // if the faction is defined as unselectable (and its not anarchy mode) return false
+
+      if (!this.faction.selectable) return false; // but if we are in basic mode everything goes as long as they are basic factions
 
       if (this.shared.data && this.shared.data.gameType === 'basic') return this.faction.basic; // if we are in optimized mode and already have max killer factions allow only non-killers
 
       if (this.shared.data && this.shared.data.gameType === 'optimized' && !this.moreKillersAllowed && this.faction.killer) return false; // if we are in optimized mode and already have max expansion factions allow only non-basics
 
-      if (this.shared.data && this.shared.data.gameType === 'optimized' && !this.moreExpansionsAllowed && !this.faction.basic) return false;
+      if (this.shared.data && this.shared.data.gameType === 'optimized' && !this.moreExpansionsAllowed && !this.faction.basic) return false; // force the last player to pick a killer faction if one hasn't been picked yet (in optimized)
+
       if (this.shared.data && this.shared.data.gameType === 'optimized' && this.remainingPlayers === 1 && !this.killersSelected && !this.faction.killer) return false;
       return true;
     }
@@ -14015,7 +14019,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.lobby__action-link {\n    color: var(--highlight-color);\n    width: 20em;\n}\n.lobby__players {\n}\n.server-offline {\n    padding: 2rem;\n    display: flex;\n    align-items: baseline;\n    font-size: 1.75em;\n    background-color: rgba(17, 7, 19, 0.9);\n    border-radius: .2em;\n    border-top: 1px solid rgba(91, 33, 128, 0.56);\n    letter-spacing: 2px;\n    color: var(--highlight-color);\n    box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);\n}\n.server-offline i {\n    color: red;\n    font-size: .9em;\n    position: relative;\n    top: 3px;\n    margin-right: .5rem;\n}\n.game-setup__option {\n    border: 1px solid;\n    font-size: .8em;\n}\n.game-setup__type-option {\n    cursor: pointer;\n    margin: .3em;\n}\n.game-setup__type-option.active, .game-setup__option.active {\n    color: var(--highlight-color);\n}\n\n", ""]);
+exports.push([module.i, "\n.lobby__action-link {\n    color: var(--highlight-color);\n    width: 20em;\n}\n.lobby__players {\n}\n.server-offline {\n    padding: 2rem;\n    display: flex;\n    align-items: baseline;\n    font-size: 1.75em;\n    background-color: rgba(17, 7, 19, 0.9);\n    border-radius: .2em;\n    border-top: 1px solid rgba(91, 33, 128, 0.56);\n    letter-spacing: 2px;\n    color: var(--highlight-color);\n    box-shadow: 0 0 2px rgba(91,33,120,.5), 0 4px 5px rgba(0,0,0,.2);\n}\n.server-offline i {\n    color: red;\n    font-size: .9em;\n    position: relative;\n    top: 3px;\n    margin-right: .5rem;\n}\n.game-setup__option {\n    font-size: .8em;\n}\n.game-setup__type-option {\n    cursor: pointer;\n    margin: .3em;\n}\n.game-setup__type-option.active, .game-setup__option.active {\n    color: var(--highlight-color);\n}\n.game-setup__option-checkbox{\n    font-size: .8em;\n}\n\n", ""]);
 
 // exports
 
@@ -59607,7 +59611,15 @@ var render = function() {
                               }
                             }
                           },
-                          [_vm._v(_vm._s(_vm.startCase(option)))]
+                          [
+                            _c("i", {
+                              staticClass: "mr-2 game-setup__option-checkbox",
+                              class: val
+                                ? "icon-checkbox-checked"
+                                : "icon-checkbox-unchecked"
+                            }),
+                            _vm._v(_vm._s(_vm.startCase(option)))
+                          ]
                         )
                       }),
                       0

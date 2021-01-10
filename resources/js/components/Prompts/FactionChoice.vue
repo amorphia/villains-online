@@ -41,11 +41,14 @@
 
         methods : {
             checkIsSelectable(){
-                // if the faction is already taken, or flagged unselectable, then it can't be taken
-                if( this.faction.owner !== null || ( this.faction.selectable === false && this.shared.data.gameType !== 'anarchy' ) ) return false;
+                // if the faction is already taken, then it can't be taken
+                if( this.faction.owner !== null ) return false;
 
                 // otherwise if we are in free for all mode then anything goes
                 if( this.shared.data && this.shared.data.gameType === 'anarchy' ) return true;
+
+                // if the faction is defined as unselectable (and its not anarchy mode) return false
+                if( !this.faction.selectable ) return false;
 
                 // but if we are in basic mode everything goes as long as they are basic factions
                 if( this.shared.data && this.shared.data.gameType === 'basic' ) return this.faction.basic;
@@ -60,6 +63,7 @@
                     && !this.moreExpansionsAllowed
                     && !this.faction.basic) return false;
 
+                // force the last player to pick a killer faction if one hasn't been picked yet (in optimized)
                 if( this.shared.data && this.shared.data.gameType === 'optimized'
                     && this.remainingPlayers === 1
                     && !this.killersSelected

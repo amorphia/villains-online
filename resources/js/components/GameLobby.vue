@@ -48,7 +48,8 @@
                          class="game-setup__option py-2 px-3"
                          :class="{ active : val }"
                          @click="options[option] = !options[option]"
-                    >{{ startCase( option ) }}</div>
+                    ><i class="mr-2 game-setup__option-checkbox"
+                        :class="val ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>{{ startCase( option ) }}</div>
                 </div>
 
 
@@ -194,7 +195,6 @@
     }
 
     .game-setup__option {
-        border: 1px solid;
         font-size: .8em;
     }
 
@@ -205,6 +205,10 @@
 
     .game-setup__type-option.active, .game-setup__option.active {
         color: var(--highlight-color);
+    }
+
+    .game-setup__option-checkbox{
+        font-size: .8em;
     }
 
 </style>
