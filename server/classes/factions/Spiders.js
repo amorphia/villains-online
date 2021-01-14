@@ -107,7 +107,7 @@ class Spiders extends Faction {
 
     freeUnit( unit, faction ){
         _.moveItemById( unit.id, this.data.webs, faction.data.units );
-        faction.resetKilledUnit( unit );
+        faction.returnUnitToReserves( unit );
         console.log( 'Free unit', unit );
     }
 
