@@ -12,8 +12,8 @@ class Society extends Faction {
         this.data.focus = 'token-focus';
         this.data.focusDescription = "Tokens in many areas";
         this.data.title = "The Blackstone Society";
-        //this.data.tokensNotDiscarded = 0;
-        //this.data.tokensNotDiscardedMax = 0;
+
+        // used to store additional word tokens before the appropriate upgrade is scored
         this.data.words = [];
 
         // tokens
@@ -107,6 +107,7 @@ class Society extends Faction {
         if( henchman ) henchman.location = event.unit.location;
     }
 
+
     clearXavierToken( event ){
         let xavier = this.getXavier();
         if( !xavier.token ) return;
@@ -114,6 +115,7 @@ class Society extends Faction {
         xavier.token.location = null;
         xavier.token = null;
     }
+
 
     revealXavierToken( player ){
         let xavier = this.getXavier();
@@ -129,9 +131,11 @@ class Society extends Faction {
         this.game().takeTokenAction( player, token.id );
     }
 
+
     getXavier(){
         return this.data.units.find( unit => unit.type === 'champion' );
     }
+
 
     factionCleanUp(){
         //this.data.tokensNotDiscarded = 0;
@@ -146,10 +150,8 @@ class Society extends Faction {
         return 'deploy-xavier';
     }
 
+
     async resolveStartOfTurn( player, area ){
-
-        console.log( 'Society start of turn resolve' );
-
         let xavier = this.data.units.find( unit => unit.type === 'champion' );
 
         let data = {
@@ -176,19 +178,23 @@ class Society extends Faction {
         return this.hasEnemyUnitsInArea( area, { basic : true } );
     }
 
+
     potentialHypnosisTypes( area ){
         let reservesTypes = this.unitTypesInReserves( true );
         let enemyTypes = this.enemyUnitTypesInArea( area, { basic : true } );
         return _.intersection( reservesTypes, enemyTypes );
     }
 
+
     canActivateHypnosis( token, area ) {
         return this.potentialHypnosisTypes( area ).length;
     }
 
+
     canActivateWordOfCommand( token, area ) {
         return !this.hasUsedSkill( area );
     }
+
 
     async pushToken( args ) {
 
@@ -250,6 +256,7 @@ class Society extends Faction {
 
         this.game().advancePlayer();
     }
+
 
     onSetup(){
         this.setupVariableTokens( 'word-of-command', this.data.words );

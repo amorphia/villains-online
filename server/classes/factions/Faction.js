@@ -193,7 +193,6 @@ class Faction {
     processUpgrade(){}
     factionCleanUp(){}
     factionCombatMods( mods ){ return mods }
-    unflipUnit( unit ){}
     onStartOfTurn(){}
     onAfterReveal(){}
     onControlArea(){}
@@ -329,7 +328,9 @@ class Faction {
         }
     }
 
-
+    unflipUnit( unit ){
+        unit.flipped = false;
+    }
 
     async replaceUnit( unit, options = {} ){
         let units = [];

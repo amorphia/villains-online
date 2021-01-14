@@ -33,6 +33,7 @@
         },
 
         mounted(){
+            // if this is an anarchy game, eeeeerrrrrrything starts selectable even experimental factions
             if( this.shared.data && this.shared.data.gameType === 'anarchy' ){
                 this.faction.selectable = true;
                 this.$emit( 'isSelectable', true );
