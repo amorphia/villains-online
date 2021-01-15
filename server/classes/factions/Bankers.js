@@ -60,12 +60,6 @@ class Bankers extends Faction {
     }
 
 
-    resourcesToCollect(){
-        let resources = super.resourcesToCollect();
-        return resources += this.data.bonusResources;
-    }
-
-
     gainGnomeCash( event ){
         this.gainResources( event.hits );
         this.message({ message: `<span class="faction-bankers">The Gnome of Zurich</span> enriches the bankers` });
@@ -83,6 +77,7 @@ class Bankers extends Faction {
 
 
     processUpgrade( n ){
+        // our bonus resources are 2/4/6 for 0/1/2 plans completed
         this.data.bonusResources =  ( n * 2 ) + 2;
     }
 
