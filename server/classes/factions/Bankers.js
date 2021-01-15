@@ -9,7 +9,6 @@ class Bankers extends Faction {
 
         // data
         this.data.name = this.name;
-        this.data.resources = 2;
         this.data.title = "Omni Financial Group";
         this.data.bonusResources = 2;
         this.data.focus = 'control-focus';
@@ -50,6 +49,7 @@ class Bankers extends Faction {
         };
     }
 
+
     factionCombatMods( mods, area ) {
         if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
             mods.push( { type : 'gnomeCash', text : `Gains xRx for each hit scored by the Gnome of Zurich` });
@@ -59,31 +59,37 @@ class Bankers extends Faction {
         return mods;
     }
 
+
     resourcesToCollect(){
         let resources = super.resourcesToCollect();
         return resources += this.data.bonusResources;
     }
+
 
     gainGnomeCash( event ){
         this.gainResources( event.hits );
         this.message({ message: `<span class="faction-bankers">The Gnome of Zurich</span> enriches the bankers` });
     }
 
+
     creditFreezeToken( args ){
         this.game().advancePlayer();
     }
+
 
     canActivateCreditFreeze(){
         return true;
     }
 
+
     processUpgrade( n ){
-        this.data.bonusResources =  n * 2;
+        this.data.bonusResources =  ( n * 2 ) + 2;
     }
 
-    onSetup(){
-    }
 
+    onStartOfTurn(){
+        this.gainResources( this.data.bonusResources );
+    }
 }
 
 
