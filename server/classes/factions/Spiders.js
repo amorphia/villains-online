@@ -59,15 +59,6 @@ class Spiders extends Faction {
             text: `Patsies and champions are deadly, deadly units attack all enemies can't be modified`
         });
 
-        /*
-        if( this.data.patsyWebBonus ){
-            mods.push({
-                type: 'webBonus',
-                text: `Patsies gain +${this.data.patsyWebBonus} to their attack in areas with a web marker`
-            });
-        }
-        */
-
         return mods;
     }
 
