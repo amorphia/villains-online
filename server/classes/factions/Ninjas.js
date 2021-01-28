@@ -137,7 +137,7 @@ class Ninjas extends Faction {
     }
 
     canActivateBlades( token, area ) {
-        return this.hasUnitsInArea( area );
+        return this.hasUnitsInArea( area ) && area.canBattle();
     }
 
 

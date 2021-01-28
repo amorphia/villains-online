@@ -13,7 +13,7 @@ class Vampires extends Faction {
         this.data.focus = 'units-in-enemy-areas-focus';
         this.data.focusDescription = "Have units of specific types in enemy areas";
         this.data.optionalAttack = true;
-        this.data.endOfTurnRevive = 2;
+        this.data.endOfTurnRevive = 0;
 
         // icons
         this.data.statusIcon = 'skeleton';
