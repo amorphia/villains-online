@@ -37,6 +37,7 @@ let obj = [
         target : 'subway',
         type : 'rule',
         scope : 'global',
+        description : 'you may play an additional action card with each CARD token'
     },
     {
         class : 'benevolent-ai',
@@ -46,6 +47,7 @@ let obj = [
         target : 'church',
         type : 'rule',
         scope : 'global',
+        description : 'you may play an additional action card with each CARD token'
     },
     {
         class : 'blackstone-encryption',
