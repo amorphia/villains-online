@@ -94862,13 +94862,8 @@ var obj = {
     status: 0,
     killer: true,
     selectable: false
-  },
-  skeletons: {
-    name: 'skeletons',
-    owner: null,
-    status: 0,
-    selectable: false
-  }
+  } //skeletons : { name: 'skeletons', owner : null, status : 0, selectable : false },
+
 };
 module.exports = Object.assign({}, obj);
 

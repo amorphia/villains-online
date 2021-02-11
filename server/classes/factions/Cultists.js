@@ -12,6 +12,7 @@ class Cultists extends Faction {
         this.data.maxEnergy = 4;
         this.data.tokenCost = 0;
         this.data.name = this.name;
+        this.data.bonusDeploy = { type: 'champion', count : 1 };
         this.data.title = "The Church of Doom";
         this.data.focusDescription = "Kill many units";
 
