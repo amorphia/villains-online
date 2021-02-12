@@ -165,7 +165,7 @@ let obj = [
                 requirements : [
                     { test : 'unitInEnemy', args : ['mole', 2] },
                 ],
-                value : 1
+                value : 2
             },
         ]
     },
