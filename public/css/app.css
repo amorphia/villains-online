@@ -48,6 +48,9 @@
 .icon-toughness-solid:before {
     content: "\E95C";
 }
+.icon-smoke:before {
+    content: "\E90E";
+}
 .icon-benevolent-ai:before {
     content: "\E90D";
 }
@@ -276,7 +279,6 @@
 .icon-bolt:before {
     content: "\E92D";
 }
-
 @charset "UTF-8";
 
 /* Box sizing rules */

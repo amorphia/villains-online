@@ -48,6 +48,9 @@
 .icon-toughness-solid:before {
     content: "\e95c";
 }
+.icon-smoke:before {
+    content: "\e90e";
+}
 .icon-benevolent-ai:before {
     content: "\e90d";
 }
@@ -276,4 +279,3 @@
 .icon-bolt:before {
     content: "\e92d";
 }
-

@@ -5668,6 +5668,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'assign-hits',
   data: function data() {
@@ -5676,10 +5680,23 @@ __webpack_require__.r(__webpack_exports__);
       gnomeDeflects: 0
     };
   },
+  mounted: function mounted() {
+    if (this.hasSmoke) {
+      this.shared.faction.units.push({
+        id: 'smoke',
+        name: 'smoke',
+        type: 'smoke',
+        faction: 'ninjas',
+        hits: 0,
+        location: this.area.name
+      });
+    }
+  },
   methods: {
     resolve: function resolve(option) {
       var data = {
         cost: this.cost,
+        area: this.area.name,
         targets: []
       };
       this.units.forEach(function (unit) {
@@ -5691,7 +5708,24 @@ __webpack_require__.r(__webpack_exports__);
       data = Object.assign({}, this.data, data);
       this.shared.respond('assign-hits', data);
     },
+    clearAllHits: function clearAllHits() {
+      var _this = this;
+
+      this.units.forEach(function (unit) {
+        return _this.$set(unit, 'hits', 0);
+      });
+    },
     assignHit: function assignHit(unit, hpLeft) {
+      if (unit.type === 'smoke') {
+        if (hpLeft) {
+          this.clearAllHits();
+          this.$set(unit, 'hits', this.data.hits);
+          return;
+        } else {
+          this.$set(unit, 'hits', 0);
+        }
+      }
+
       if (!this.hitsToAssign) {
         if (unit.hits) this.$set(unit, 'hits', unit.hits - 1);
         return;
@@ -5710,6 +5744,11 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    hasSmoke: function hasSmoke() {
+      var _this$shared$faction$;
+
+      return this.data.unit && ((_this$shared$faction$ = this.shared.faction.smokeAreas) === null || _this$shared$faction$ === void 0 ? void 0 : _this$shared$faction$.includes(this.area.name));
+    },
     mustAssignToNonPatsy: function mustAssignToNonPatsy() {
       return this.data.seeking && this.assignableNonPatsyHits > 0;
     },
@@ -5725,10 +5764,10 @@ __webpack_require__.r(__webpack_exports__);
       return 2 * this.gnomeDeflects;
     },
     hasGnome: function hasGnome() {
-      var _this = this;
+      var _this2 = this;
 
       return this.shared.faction.name === 'bankers' && _.find(this.shared.faction.units, function (unit) {
-        return unit.location === _this.area.name && unit.type === 'champion';
+        return unit.location === _this2.area.name && unit.type === 'champion';
       });
     },
     hitsToAssign: function hitsToAssign() {
@@ -5750,10 +5789,10 @@ __webpack_require__.r(__webpack_exports__);
       return hits;
     },
     units: function units() {
-      var _this2 = this;
+      var _this3 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this2.area, {
+        return _.unitInArea(unit, _this3.area, {
           notHidden: true
         });
       });
@@ -8267,6 +8306,14 @@ __webpack_require__.r(__webpack_exports__);
 
         if (factionUnits.length) {
           units[faction.name] = factionUnits;
+
+          if (faction.smokeAreas && faction.smokeAreas.includes(_this.area.name)) {
+            units[faction.name].push({
+              name: 'smoke',
+              type: 'smoke',
+              faction: 'ninjas'
+            });
+          }
         }
       });
 
@@ -11324,7 +11371,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-icon',
-  props: ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect', 'hidePatsies'],
+  props: ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect', 'hidePatsies', 'hitsToAssign'],
   data: function data() {
     return {
       shared: App.state
@@ -11381,6 +11428,7 @@ __webpack_require__.r(__webpack_exports__);
       return pips;
     },
     hpTotal: function hpTotal() {
+      if (this.unit.type === 'smoke') return this.hitsToAssign;
       return this.unit.toughness && !this.unit.flipped || this.unit.type === 'champion' && this.unit.flipped && this.unit.faction === 'vampires' ? 2 : 1;
     },
     hpLeft: function hpLeft() {
@@ -11419,9 +11467,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-row',
-  props: ['units', 'classes', 'selectedUnit', 'assigningHits', 'allSelected', 'hidePatsies'],
+  props: ['units', 'classes', 'selectedUnit', 'assigningHits', 'allSelected', 'hidePatsies', 'hitsToAssign'],
   data: function data() {
     return {
       shared: App.state
@@ -12075,6 +12124,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-combat',
   data: function data() {
@@ -12120,6 +12174,10 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     factionIcon: function factionIcon(factionName) {
       return _.factionIcon(factionName);
+    },
+    hasSmoke: function hasSmoke(fac) {
+      var faction = this.shared.data.factions[fac.name];
+      return faction.smokeAreas && faction.smokeAreas.includes(this.combat.areaName);
     }
   }
 });
@@ -13295,6 +13353,15 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
 
+        if (faction.name === 'ninjas' && faction.smokeAreas.includes(_this5.area.name)) {
+          stats.push({
+            name: 'smoke',
+            owner: faction.name,
+            title: 'smoke',
+            description: "the ninjas have set off a smoke bomb in this area"
+          });
+        }
+
         if (faction.cards.target.length && _this5.shared.canSeeTarget(faction) && faction.cards.target[0].target === _this5.area.name) {
           stats.push({
             name: 'target',
@@ -13465,6 +13532,14 @@ __webpack_require__.r(__webpack_exports__);
             faction: 'plants'
           });
         }
+      } // ninjas
+
+
+      if (!this.skilled && this.faction.name === 'ninjas' && this.faction.smokeAreas.includes(this.area)) {
+        units.push({
+          type: 'smoke',
+          faction: 'ninjas'
+        });
       } // ghosts
 
 
@@ -61848,7 +61923,8 @@ var render = function() {
                     attrs: {
                       units: _vm.units,
                       assigningHits: "true",
-                      hidePatsies: _vm.mustAssignToNonPatsy
+                      hidePatsies: _vm.mustAssignToNonPatsy,
+                      hitsToAssign: _vm.data.hits
                     },
                     on: { unit: _vm.assignHit }
                   })
@@ -63909,7 +63985,7 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _vm.attackMod !== false
+          _vm.attackMod
             ? _c("div", { staticClass: "prompt-question" }, [
                 _vm._v(
                   "Your units get " +
@@ -66836,6 +66912,7 @@ var render = function() {
           unit: unit,
           selectedUnit: _vm.selectedUnit,
           assigningHits: _vm.assigningHits,
+          hitsToAssign: _vm.hitsToAssign,
           allSelected: _vm.allSelected,
           hidePatsies: _vm.hidePatsies
         },
@@ -67830,13 +67907,27 @@ var render = function() {
                                 {
                                   staticClass: "unit-row flex-center flex-wrap"
                                 },
-                                _vm._l(faction.units, function(unit) {
-                                  return _c("unit-combat", {
-                                    key: unit.id,
-                                    attrs: { unit: unit }
-                                  })
-                                }),
-                                1
+                                [
+                                  _vm._l(faction.units, function(unit) {
+                                    return _c("unit-combat", {
+                                      key: unit.id,
+                                      attrs: { unit: unit }
+                                    })
+                                  }),
+                                  _vm._v(" "),
+                                  _vm.hasSmoke(faction)
+                                    ? _c("unit-combat", {
+                                        attrs: {
+                                          unit: {
+                                            type: "smoke",
+                                            faction: "ninjas",
+                                            name: "smoke"
+                                          }
+                                        }
+                                      })
+                                    : _vm._e()
+                                ],
+                                2
                               )
                             }),
                             0

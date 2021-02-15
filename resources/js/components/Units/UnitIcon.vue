@@ -27,7 +27,7 @@
 
         name: 'unit-icon',
 
-        props : ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect', 'hidePatsies' ],
+        props : ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect', 'hidePatsies', 'hitsToAssign' ],
         data() {
             return {
                 shared : App.state
@@ -90,6 +90,9 @@
             },
 
             hpTotal(){
+
+                if( this.unit.type === 'smoke' ) return this.hitsToAssign;
+
                 return (this.unit.toughness && !this.unit.flipped)
                 || (this.unit.type === 'champion' && this.unit.flipped && this.unit.faction === 'vampires' ) ? 2 : 1;
             },

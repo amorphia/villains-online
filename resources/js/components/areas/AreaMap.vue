@@ -244,6 +244,10 @@
                         stats.push({ name : 'hax0red', owner : faction.name, title : 'hax0red', description : `the ${faction.name} have hax0red this area` } )
                     }
 
+                    if( faction.name === 'ninjas' && faction.smokeAreas.includes( this.area.name )){
+                        stats.push({ name : 'smoke', owner : faction.name, title : 'smoke', description : `the ninjas have set off a smoke bomb in this area` } )
+                    }
+
                     if( faction.cards.target.length && this.shared.canSeeTarget( faction ) && faction.cards.target[0].target === this.area.name ){
                         stats.push({ name : 'target', owner : faction.name, title : '+1AP', description : `the ${faction.name} are targeting this area` } )
                     }

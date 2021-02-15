@@ -13,7 +13,7 @@
 
                 </area-flipper>
 
-                <div v-if="attackMod !== false" class="prompt-question">Your units get {{ attackMod >= 0 ? '+' : '' }}{{ attackMod }} to their rolls against the {{ faction }}</div>
+                <div v-if="attackMod" class="prompt-question">Your units get {{ attackMod >= 0 ? '+' : '' }}{{ attackMod }} to their rolls against the {{ faction }}</div>
 
                 <div class="">
                     <button v-if="data.optional" class="button button-empty" @click="resolve( false )">DECLINE</button>
@@ -59,6 +59,13 @@
                     let factionUnits = _.factionUnitsInArea( faction, this.area.name, { notHidden : true } );
                     if( factionUnits.length ){
                         units[faction.name] = factionUnits;
+                        if( faction.smokeAreas && faction.smokeAreas.includes( this.area.name ) ){
+                            units[faction.name].push({
+                                name: 'smoke',
+                                type: 'smoke',
+                                faction: 'ninjas',
+                            });
+                        }
                     }
                 });
                 return units;

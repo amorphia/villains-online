@@ -35,6 +35,11 @@
                     }
                 }
 
+                // ninjas
+                if( !this.skilled && this.faction.name === 'ninjas' && this.faction.smokeAreas.includes( this.area )){
+                    units.push({ type : 'smoke', faction : 'ninjas' });
+                }
+
                 // ghosts
                 if( !this.skilled && this.faction.name === 'ghosts' ){
                     let areaGhosts = this.faction.ghosts.filter( ghost => ghost.location === this.area );

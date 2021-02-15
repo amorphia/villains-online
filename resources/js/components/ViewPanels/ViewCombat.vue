@@ -46,6 +46,11 @@
                                                :key="unit.id"
                                                :unit="unit">
                                     </unit-combat>
+
+                                    <unit-combat v-if="hasSmoke( faction )"
+                                                 :unit="{ type : 'smoke', faction: 'ninjas', name: 'smoke' }">
+                                    </unit-combat>
+
                                 </div>
                            </div>
 
@@ -76,12 +81,15 @@
      },
 
      computed : {
+
          area(){
              return this.shared.data.areas[this.combat.areaName];
          },
+
          combat(){
              return this.shared.data.combat;
          },
+
         factions(){
              if( !this.combat.preCombatEffects ) return this.combat.factions;
 
@@ -111,6 +119,11 @@
          factionIcon( factionName ){
              return _.factionIcon( factionName );
          },
+
+         hasSmoke( fac ){
+             let faction = this.shared.data.factions[ fac.name ];
+             return faction.smokeAreas && faction.smokeAreas.includes( this.combat.areaName );
+         }
 
      }
  }

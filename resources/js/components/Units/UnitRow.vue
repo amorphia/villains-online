@@ -5,6 +5,7 @@
                    :unit="unit"
                    :selectedUnit="selectedUnit"
                    :assigningHits="assigningHits"
+                   :hitsToAssign="hitsToAssign"
                    :allSelected="allSelected"
                    :hidePatsies="hidePatsies"
                    @unit="(u, hp) => $emit( 'unit', u, hp )">
@@ -17,7 +18,15 @@
     export default {
 
         name: 'unit-row',
-        props: ['units', 'classes', 'selectedUnit', 'assigningHits', 'allSelected', 'hidePatsies'],
+        props: [
+            'units',
+            'classes',
+            'selectedUnit',
+            'assigningHits',
+            'allSelected',
+            'hidePatsies',
+            'hitsToAssign'
+        ],
         data() {
             return {
                 shared : App.state

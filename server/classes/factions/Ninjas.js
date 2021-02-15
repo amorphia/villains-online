@@ -13,33 +13,34 @@ class Ninjas extends Faction {
         this.data.focusDescription = "Kill different unit types";
         this.data.title = "The Clan of the Pale Moon";
         this.data.bladesBonusDice = 0;
-        this.data.firstAttackThisBattle = false;
-        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
+        this.data.smokeAreas = [];
+        //this.data.firstAttackThisBattle = false;
+        //this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // icons
-        this.data.statusIcon = 'hidden';
+        this.data.statusIcon = 'smoke';
         this.data.statusDescription = 'has hidden unit';
 
         // tokens
         this.tokens['blades'] = {
-            count: 1,
+            count: 2,
             data: {
                 influence: 1,
                 type: 'blades',
                 resource: 1,
                 cost: 0,
-                req : "This token must be discarded if you can't make an attack with a unit"
+                req: "This token must be discarded if you can't make an attack with a unit"
             }
         };
 
         // units
         this.units['patsy'].data.attack = [7];
-        this.units['patsy'].data.hidden = false;
+        this.units['patsy'].data.onHit = 'placeSmoke';
         this.units['talent'].data.attack = [5];
-        this.units['talent'].data.hidden = false;
+        this.units['talent'].data.onHit = 'placeSmoke';
         this.units['mole'].data.attack = [7];
-        this.units['mole'].data.hidden = false;
-        this.units['goon'].data.hidden = false;
+        this.units['mole'].data.onHit = 'placeSmoke';
+        this.units['goon'].data.onHit = 'placeSmoke';
 
         this.units['champion'] = {
             count: 1,
@@ -48,152 +49,137 @@ class Ninjas extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 2,
+                seeking: true,
                 attack: [4],
                 cost: 0,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                hidden : false
+                onHit: 'placeSmoke',
             }
         };
     }
 
-    battleOrderSort( combatFactions ) {
-        combatFactions.sort( (a,b) => {
-            if( a.name === this.name ) return -1;
-            if( b.name === this.name ) return 1;
+    battleOrderSort(combatFactions) {
+        combatFactions.sort((a, b) => {
+            if (a.name === this.name) return -1;
+            if (b.name === this.name) return 1;
             return a.order - b.order
         });
     }
 
-    factionCombatMods( mods, area ) {
+    factionCombatMods(mods, area) {
         mods.push({
             type: 'ninjas',
-            text: `The Ninjas attack first in player order, their first successful attack can't be stopped by patsies and the attacker becomes hidden`
+            text: `The Ninjas attack first in player order, if one of their units rolls a hit place a smoke token in that area if it doesn't have one already.`
         });
 
         mods.push({
-            type: 'hidden',
-            text: `Hidden units may not be assigned hits, at the end of combat units lose hidden`
+            type: 'smoke',
+            text: `If the ninjas have a smoke token in this area, they may discard it to ignore one enemy unit's attack`
         });
 
         return mods;
     }
 
-    processUpgrade( n ) {
+    processUpgrade(n) {
         this.data.bladesBonusDice = n;
     }
 
-    onBeforeBattle( battle ){
-        this.data.firstAttackThisBattle = true;
-    }
-
-    async onAfterReveal( token ){
+    async onAfterReveal(token) {
         let player, data;
 
-        let lotusDancer = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
-        if( token.type !== 'battle' || !lotusDancer ) return;
+        let lotusDancer = this.data.units.find(unit => unit.type === 'champion' && _.unitInPlay(unit));
+        if (token.type !== 'battle' || !lotusDancer) return;
 
-        let lotusDancerArea = this.game().areas[ lotusDancer.location ];
-        let area = this.game().areas[ token.location ];
+        let lotusDancerArea = this.game().areas[lotusDancer.location];
+        let area = this.game().areas[token.location];
 
         // check if lotus dancer can't legally move
-        if( lotusDancerArea.isTrapped( this ) // if she's trapped
-            || !area.data.adjacent.includes( lotusDancer.location ) // if she's not adjacent
+        if (lotusDancerArea.isTrapped(this) // if she's trapped
+            || !area.data.adjacent.includes(lotusDancer.location) // if she's not adjacent
             || area.hasKau() // if kau is in the destination
         ) return;
 
-        this.game().message({ faction: this, message: 'Lotus dancer deciding whether to enter the frey' });
+        this.game().message({faction: this, message: 'Lotus dancer deciding whether to enter the frey'});
 
         // prompt player to select a unit
         [player, data] = await this.game().promise({
             players: this.playerId,
             name: 'question',
-            data: { message: `Move lotus dancer from the ${lotusDancer.location} to the ${area.name}?` }
-        }).catch( error => console.error( error ) );
+            data: {message: `Move lotus dancer from the ${lotusDancer.location} to the ${area.name}?`}
+        }).catch(error => console.error(error));
 
-        if( !data.answer ) return this.game().message({ faction: this, message: 'Lotus dancer declines to get involved' });
+        if (!data.answer) return this.game().message({faction: this, message: 'Lotus dancer declines to get involved'});
 
         lotusDancer.location = token.location;
-        this.game().sound( 'wiff' );
-        this.game().message({ faction : this, message: `Lotus Dancer slips into the ${token.location}` });
+        this.game().sound('wiff');
+        this.game().message({faction: this, message: `Lotus Dancer slips into the ${token.location}`});
 
         await this.game().timedPrompt('units-shifted', {
-            message : `Lotus Dancer slips into the ${token.location}`,
+            message: `Lotus Dancer slips into the ${token.location}`,
             units: lotusDancer
-        }).catch( error => console.error( error ) );
+        }).catch(error => console.error(error));
 
     }
 
-    hasNonHiddenUnitsInArea( area ){
-        return !! this.data.units.find( unit => _.unitInArea( unit, area, { notHidden : true } ) );
-    }
 
-    onAfterBattle( combat ) {
-        let hiddenUnits = this.data.units.filter( unit => unit.hidden && _.unitInArea( unit, combat.area ) );
-        hiddenUnits.forEach( unit => this.unflipUnit( unit ) );
-
-        if( hiddenUnits.length ) this.game().message({ faction : this, message: `hidden units in The ${combat.area.name} are revealed` });
-    }
-
-    canActivateBlades( token, area ) {
-        return this.hasUnitsInArea( area ) && area.canBattle();
+    canActivateBlades(token, area) {
+        return this.hasUnitsInArea(area) && area.canBattle();
     }
 
 
-    async bladesToken( args ) {
+    async bladesToken(args) {
         let data, player;
 
         // prompt player to select a unit
         [player, data] = await this.game().promise({
-                players: this.playerId,
-                name: 'choose-units',
-                data: {
-                    count : 1,
-                    areas : [args.area.name],
-                    hasAttack: true,
-                    playerOnly : true,
-                    showEnemyUnits: true,
-                    message: "Choose a unit to make an attack",
-                    gainsSeeking : true
-                }
-            }).catch( error => console.error( error ) );
+            players: this.playerId,
+            name: 'choose-units',
+            data: {
+                count: 1,
+                areas: [args.area.name],
+                hasAttack: true,
+                playerOnly: true,
+                showEnemyUnits: true,
+                message: "Choose a unit to make an attack",
+            }
+        }).catch(error => console.error(error));
 
-        let unit = this.game().objectMap[ data.units[0] ];
+        let unit = this.game().objectMap[data.units[0]];
 
         // resolve attack with that unit
-        let attackArea = this.game().areas[ unit.location ];
+        let attackArea = this.game().areas[unit.location];
         let output = await this.attack({
-            area : attackArea,
-            attacks : unit.attack,
-            unit : unit,
-            noDecline : true,
+            area: attackArea,
+            attacks: unit.attack,
+            unit: unit,
+            noDecline: true,
             seeking: true,
             bonusDice: this.data.bladesBonusDice
         });
 
-        if( output ){
-            await this.game().timedPrompt('noncombat-attack', { output : [output] } )
-                .catch( error => console.error( error ) );
+        if (output) {
+            await this.game().timedPrompt('noncombat-attack', {output: [output]})
+                .catch(error => console.error(error));
         }
 
         this.game().advancePlayer();
     }
 
-    becomeHidden( unit ) {
-        if( !unit.flipped && !unit.killed ){
-            unit.flipped = true;
-            unit.hidden = true;
-            let message = `<span class="faction-ninjas">${unit.name}</span> becomes hidden in The ${unit.location}`;
-            this.message({ message: message, faction : this });
-        }
+    placeSmoke(event) {
+        if (this.data.smokeAreas.includes(event.unit.location)) return;
+
+        this.data.smokeAreas.push(event.unit.location);
+        this.game().message({faction: this, message: `Release a smoke bomb in the  ${event.unit.location}`});
     }
 
-    unflipUnit( unit ) {
-        unit.flipped = false;
-        unit.hidden = false;
-    }
+    async factionCleanUp() {
+        if( !this.data.smokeAreas.length ) return;
 
+        this.data.smokeAreas = [];
+        this.game().message({faction: this, message: `smoke clears from the city`});
+    }
 }
 
 

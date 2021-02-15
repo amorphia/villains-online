@@ -42,6 +42,7 @@ let obj = {
         return this.game().factions[ data.faction ];
     },
 
+
     getTargetFactions( area ){
         // find valid players
         let targetFactions = _.factionsWithUnitsInArea(
@@ -58,6 +59,7 @@ let obj = {
 
         return targetFactions;
     },
+
 
     async nonCombatAttack( attack, count, area ){
         let output = [];
@@ -106,11 +108,13 @@ let obj = {
         return victim;
     },
 
+
     applyDroneDiceReduction( victim, args ){
         if( args.unit && victim.name === 'swarm' && args.attacks.length > 1 ){
             args.attacks = args.attacks.slice(1);
         }
     },
+
 
     canChooseAttackTarget( args ){
         return args.chooseUnitTarget && this.enemyUnitTypesInArea( args.area, { basic : true } ).length;
@@ -142,6 +146,7 @@ let obj = {
         args.targetUnit = this.game().objectMap[ data.units[0] ];
         return this.game().factions[ args.targetUnit.faction ];
     },
+
 
     /**
      *
@@ -199,13 +204,9 @@ let obj = {
         // resolve hits
         let resolveHitsResult = await this.resolveAttackHits( hits, victim, args );
 
-        if( this.name === 'ninjas' && args.inCombat && this.data.firstAttackThisBattle && resolveHitsResult === 'kills' ){
-            this.becomeHidden( args.unit );
-            this.game().message({ faction: this, message: `The ${ args.unit.name} successfully assassinates, and becomes hidden` });
-        }
-
         return attackResult;
     },
+
 
     async resolveAttackHits( hits, victim, args ){
         let result;
@@ -230,6 +231,7 @@ let obj = {
         return result;
     },
 
+
     async assignDeadlyHits( hits, args ){
         let promises = [], result = [];
 
@@ -247,6 +249,7 @@ let obj = {
         return result;
     },
 
+
     hitSound( hits ){
         let sound;
         if( hits === 1 ) sound = 'hit';
@@ -255,6 +258,7 @@ let obj = {
 
         this.game().sound( sound );
     },
+
 
     async assignHits( hits, area, killer, args ){
         let player, data = {}, targets, hasKill;
@@ -272,11 +276,10 @@ let obj = {
             data : {
                 area : area.name,
                 hits : hits,
+                unit : args.unit,
                 seeking : args.seeking || (args.unit && args.unit.seeking )
             }
         }).catch( error => console.error( error ) );
-
-        targets = data.targets;
 
         if( data.cost > 0 ){
             this.payCost( data.cost, true );
@@ -284,7 +287,15 @@ let obj = {
 
         let results = [];
 
-        for( let target of targets ){
+        // assign hits to smoke instead?
+        if( this.smokeScreenAttack( data, killer ) ){
+            console.log( 'assign hits to smoke' );
+            return;
+        }
+
+        console.log( 'not smoke' );
+
+        for( let target of  data.targets ){
             let unit = this.game().objectMap[ target.id ];
             let result = await this.game().assignHits( unit, killer, target.hits );
             if( result === 'kills' ) hasKill = 'kills';
@@ -299,6 +310,17 @@ let obj = {
     },
 
 
+    smokeScreenAttack( data, killer ){
+        // if the target of this attack isn't a smoke token, return
+        if( !data.targets[0] || data.targets[0].id !== 'smoke' ) return;
+
+        let ninjas = this.game().factions['ninjas'];
+        ninjas.data.smokeAreas = ninjas.data.smokeAreas.filter( area => area !== data.area );
+        this.game().message({ faction: killer, message: `Gets lost in the ninjas smoke` });
+        return true;
+    },
+
+
     calculateHits( rolls, toHitNumber ){
         let hits = 0;
         rolls.forEach( roll => {
@@ -306,6 +328,7 @@ let obj = {
         });
         return hits;
     },
+
 
     getToHitNumber( args, victim ){
         let toHit = args.attacks[0];
@@ -325,7 +348,6 @@ let obj = {
             toHit -= this.data.attackBonus;
             console.log( 'apply faction attack bonus: -', this.data.attackBonus, 'toHit:', toHit );
         }
-
 
         let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, { debug : true, unit : args.unit } );
         if( defenseBonus ) {
@@ -350,8 +372,6 @@ let obj = {
                 attacks.push( attackVal );
             }
         }
-
-        console.log( 'attacks', attacks );
 
         return attacks;
     },

@@ -13,7 +13,11 @@
                         index="0"
                         classes="area-header__units pt-0"
                         >
-                        <unit-row :units="units" assigningHits="true" :hidePatsies="mustAssignToNonPatsy" @unit="assignHit"></unit-row>
+                        <unit-row :units="units"
+                                  assigningHits="true"
+                                  :hidePatsies="mustAssignToNonPatsy"
+                                  :hitsToAssign="data.hits"
+                                  @unit="assignHit"></unit-row>
                     </area-flipper>
 
                 </div>
@@ -52,11 +56,25 @@
             };
         },
 
+        mounted(){
+            if( this.hasSmoke ){
+                this.shared.faction.units.push({
+                    id : 'smoke',
+                    name : 'smoke',
+                    type: 'smoke',
+                    faction: 'ninjas',
+                    hits : 0,
+                    location : this.area.name
+                })
+            }
+        },
+
         methods : {
             resolve( option ){
 
                 let data = {
                     cost : this.cost,
+                    area : this.area.name,
                     targets : []
                 };
 
@@ -68,7 +86,21 @@
                 this.shared.respond( 'assign-hits', data );
             },
 
+            clearAllHits(){
+                this.units.forEach( unit => this.$set( unit, 'hits', 0 ) );
+            },
+
             assignHit( unit, hpLeft ){
+
+                if( unit.type === 'smoke' ){
+                    if( hpLeft ){
+                        this.clearAllHits();
+                        this.$set( unit, 'hits', this.data.hits );
+                        return;
+                    } else {
+                        this.$set( unit, 'hits', 0 );
+                    }
+                }
 
                 if( !this.hitsToAssign ){
                     if( unit.hits ) this.$set( unit, 'hits', unit.hits - 1 );
@@ -83,6 +115,7 @@
                 if( hpLeft ){
                     if( !unit.hits ) this.$set( unit, 'hits', 1 );
                     else this.$set( unit, 'hits', unit.hits + 1 );
+
                 } else {
                     this.$set( unit, 'hits', 0 );
                 }
@@ -91,6 +124,10 @@
         },
 
         computed : {
+
+            hasSmoke(){
+                return this.data.unit && this.shared.faction.smokeAreas?.includes( this.area.name );
+            },
 
             mustAssignToNonPatsy(){
                 return this.data.seeking && this.assignableNonPatsyHits > 0;

@@ -184,15 +184,13 @@ class Battle {
         });
     }
 
+
     async resolveNextAttack( factionData ){
         let player, data;
         let gameFaction = this.game().factions[factionData.name];
 
-        // does this faction qualify for the ninja seeking/hidden ability?
-        let ninjaAttack = this.isNinjaAttack( gameFaction );
-
         // lets get our next attacker
-        let unit = await this.chooseNextAttacker( gameFaction, ninjaAttack );
+        let unit = await this.chooseNextAttacker( gameFaction );
         if( !unit ) return;
 
         // resolve attack with that unit
@@ -206,20 +204,16 @@ class Battle {
             inCombat : true,
         };
 
-        // if ninjas haven't attacked yet then this attack gains seeking
-        if( ninjaAttack ) attackArgs.seeking = true;
 
         // attack with the unit
         await gameFaction.attack( attackArgs ).catch( error => console.error( error ) );
         unit.needsToAttack = false;
         this.data.currentUnit = null;
 
-        // mark that ninjas have attacked and used up their seeking/hidden attack
-        if( ninjaAttack ) gameFaction.data.firstAttackThisBattle = false;
     }
 
 
-    async chooseNextAttacker( gameFaction, ninjaAttack ){
+    async chooseNextAttacker( gameFaction ){
         let player, data, unit;
 
         // let player choose their next unit
@@ -233,7 +227,6 @@ class Battle {
                 playerOnly : true,
                 canDecline : gameFaction.data.optionalAttack,
                 message: "Choose a unit to make an attack",
-                gainsSeeking : ninjaAttack,
             }
         }).catch( error => console.error( error ) );
 
@@ -287,11 +280,6 @@ class Battle {
         return hasAttackingUnit && hasTarget;
     }
 
-
-    isNinjaAttack( gameFaction ){
-        // are we the ninjas and this is our first attack this battle?
-        return gameFaction.name === 'ninjas' && gameFaction.data.firstAttackThisBattle;
-    }
 
 
     hasFirstStrikeUnits(){
