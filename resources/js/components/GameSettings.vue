@@ -11,7 +11,18 @@
                        view game rules <i class="icon-launch"></i>
                     </a></div>
 
-                    <div class="pt-3"><end-game><button class="conclude button width-100 d-block">conclude game</button></end-game></div>
+                    <div class="pt-3">
+                        <end-game :track="true">
+                            <button  class="conclude button width-100 d-block">go to final scoring</button>
+                        </end-game>
+                    </div>
+
+
+                    <div class="pt-3">
+                        <end-game>
+                            <button class="conclude button width-100 d-block">terminate game</button>
+                        </end-game>
+                    </div>
 
 
                 </div>

@@ -45,7 +45,7 @@ class Server {
             socket.on( 'loadGame', game => { this.loadGame( game ) } );
 
             // conclude a finished (or not) game
-            socket.on( 'concludeGame', () => { this.concludeGame( socket ) } );
+            socket.on( 'concludeGame', track => { this.concludeGame( socket, track ) } );
 
             // manually save game
             socket.on( 'saveGame', gameId => { this.saveGame( socket, gameId ) } );
@@ -58,6 +58,9 @@ class Server {
         this.db.save( game, options );
     }
 
+    saveToTracker( game, scores, incomplete ) {
+        this.db.track( game, scores, incomplete );
+    }
 
     closeOpenGame(){
         this.io.to( 'lobby' ).emit( 'openGame', null );
@@ -71,8 +74,15 @@ class Server {
     }
 
 
-    concludeGame( socket ){
-        this.getPlayer( socket ).game().conclude( socket );
+    concludeGame( socket, track ){
+        let game = this.getPlayer( socket ).game();
+        if( track ) {
+            console.log( 'score game' );
+            game.scoreGame( true );
+        } else {
+            console.log( 'terminate game' );
+            game.conclude( socket );
+        }
     }
 
 

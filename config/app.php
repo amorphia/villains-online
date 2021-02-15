@@ -14,6 +14,7 @@ return [
 
     'game_server' => env('GAME_SERVER', 'http://localhost:6001' ),
 
+    'villains_tracker_url' => env('VILLAINS_TRACKER_URL' ),
     /*
     |--------------------------------------------------------------------------
     | Application Name

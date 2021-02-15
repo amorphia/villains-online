@@ -209,6 +209,11 @@ class Faction {
         return 'choose-target';
     }
 
+    playerName(){
+        let player = this.game().getPlayerByFaction( this.name );
+        return player.data.name;
+    }
+
     sound( sound, options ){
         this.game().sound( sound, options );
     }

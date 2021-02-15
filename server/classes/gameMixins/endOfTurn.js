@@ -26,7 +26,7 @@ let obj = {
         }
 
         if( this.checkForVictory() ){
-            this.concludeGame();
+            this.scoreGame();
             return;
         }
 
@@ -104,7 +104,8 @@ let obj = {
         }
     },
 
-    concludeGame(){
+
+    scoreGame( incomplete ){
         let scores = this.calculateFinalScores();
         _.forEach( this.players, player => player.setPrompt({
                 name : 'final-scores',
@@ -113,13 +114,16 @@ let obj = {
                 passive : true
             }));
         this.updateAll();
-        Server.saveToDB( this );
+        Server.saveToTracker( this, scores, incomplete );
     },
+
 
     calculateFinalScores(){
         let scores = Object.values( this.factions ).map( faction => {
+
             return {
                 faction : faction.name,
+                player : faction.playerName(),
                 ap : faction.data.ap,
                 pp : faction.data.pp,
                 total : faction.data.ap + faction.data.pp,

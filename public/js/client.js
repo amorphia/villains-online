@@ -2358,6 +2358,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'end-game',
+  props: ['track'],
   data: function data() {
     return {
       shared: App.state
@@ -2365,12 +2366,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     confirmEndGame: function confirmEndGame() {
-      var confirmMessage = "are you sure you want to conclude this game? There's No going back.";
+      var confirmMessage = this.track ? "Conclude this game early and go to final scoring?" : "are you sure you want to terminate this game? There's No going back.";
       if (confirm(confirmMessage)) this.concludeGame();
     },
     concludeGame: function concludeGame() {
       App.event.emit('sound', 'ui');
-      this.shared.socket.emit('concludeGame');
+      this.shared.socket.emit('concludeGame', this.track);
       this.shared.openSettings = false;
     }
   }
@@ -3964,6 +3965,17 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -59861,11 +59873,26 @@ var render = function() {
                   "div",
                   { staticClass: "pt-3" },
                   [
+                    _c("end-game", { attrs: { track: true } }, [
+                      _c(
+                        "button",
+                        { staticClass: "conclude button width-100 d-block" },
+                        [_vm._v("go to final scoring")]
+                      )
+                    ])
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "pt-3" },
+                  [
                     _c("end-game", [
                       _c(
                         "button",
                         { staticClass: "conclude button width-100 d-block" },
-                        [_vm._v("conclude game")]
+                        [_vm._v("terminate game")]
                       )
                     ])
                   ],
