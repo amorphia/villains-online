@@ -143,13 +143,13 @@ let obj = [
                     { test : 'areasMostTokens', args : [2] },
                     { test : 'influenceInAreas', args : [6,1] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
                     { test : 'killUnits', args : [5] },
                 ],
-                value : 1
+                value : 2
             },
         ]
     },
