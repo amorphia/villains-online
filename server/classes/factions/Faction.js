@@ -9,6 +9,7 @@ class Faction {
     data = {
         owner : null,
         message : '',
+        rolls : [],
 
         // progress
         ap : 0,
@@ -177,6 +178,11 @@ class Faction {
         this.gameId = game.id;
         this.data.owner = playerId;
         this.data.captured.max = this.capturedRewards.length;
+
+        // set dice rolls tracker values
+        for( let i=1; i <= 10; i++ ){
+            this.data.rolls[i] = 0;
+        }
 
         if( this.game().godMode && this.game().localServer ) this.godMode();
 

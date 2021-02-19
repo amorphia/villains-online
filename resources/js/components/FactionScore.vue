@@ -9,6 +9,7 @@
         <td class="faction-score__ap">{{ score.ap }}</td>
         <td class="faction-score__pp">{{ score.pp }}</td>
         <td class="faction-score__token" v-html="capitol"></td>
+        <td class="faction-score__rolls" v-text="rollAvg"></td>
     </tr>
 </template>
 
@@ -33,6 +34,20 @@
             factionIcon(){
                 return _.factionIcon( this.score.faction );
             },
+            rollAvg(){
+                let total_val = 0;
+                let total_rolls = 0;
+
+                this.score.rolls.forEach( (val, index) => {
+                    if( !index ) return;
+                    total_rolls += val;
+                    total_val += val * index;
+                });
+
+                console.log( 'total_rolls', total_rolls, 'total_val', total_val );
+
+                return (total_val / total_rolls).toFixed( 1 );
+            }
         }
     }
 </script>

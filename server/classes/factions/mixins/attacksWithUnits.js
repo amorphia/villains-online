@@ -179,7 +179,7 @@ let obj = {
         if( !args.deadly ) this.applyDroneDiceReduction( victim, args );
 
         // resolve attack
-        let rolls = [].concat( _.roll( args.attacks.length ) );
+        let rolls = [].concat( _.roll( args.attacks.length, 10, this.game(), this ) );
         let toHit = this.getToHitNumber( args, victim );
         let hits = this.calculateHits( rolls, toHit );
 

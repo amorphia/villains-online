@@ -53,6 +53,7 @@ class Game {
     ];
 
     data = {
+        rolls : [],
         gameType : 'optimized',
         creator : null,
         gameAction : 0,
@@ -97,6 +98,11 @@ class Game {
         if( process.env.HOMEPATH ===  '\\Users\\jerem' ) {
             this.localServer = true;
             this.fastMode = true;
+        }
+
+        // set dice rolls tracker values
+        for( let i=1; i <= 10; i++ ){
+            this.data.rolls[i] = 0;
         }
 
     }

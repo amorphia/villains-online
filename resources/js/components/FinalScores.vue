@@ -14,12 +14,25 @@
                     <th class="faction-score__ap-header"><img class="icon-image" src="/images/icons/ap.png"></th>
                     <th class="faction-score__pp-header"><img class="icon-image" src="/images/icons/pp.png"></th>
                     <th class="faction-score__token-header">capitol token</th>
+                    <th class="faction-score__rolls-header">AVG roll</th>
                 </tr>
                 <faction-score v-for="(score, index) in scores"
                                :score="score"
                                :key="score.faction"
                                :winner="index === 0"></faction-score>
             </table>
+
+
+            <div class="rolls-table d-flex width-50 pull-center my-5 p-3">
+                <div v-for="(count, roll) in rolls" class="rolls-table__column d-flex flex-column width-10 align-center" :hidden="!roll">
+                    <div class="rolls-table__roll-header">{{ roll }}</div>
+                    <div class="rolls-table__bar-container p-3 d-flex align-end">
+                        <span class="rolls-table__bar width-100 d-block" :style="{ height : barHeight( count ) }"></span>
+                    </div>
+                    <div class="rolls-table__bar-count highlight">{{ count }}</div>
+                </div>
+            </div>
+
 
             <end-game>
                 <div class="button d-inline-block final-score__conclude">Conclude Game</div>
@@ -43,8 +56,8 @@
 
 
         methods : {
-            closeGame(){
-
+            barHeight( count ){
+                return ( ( count / this.maxRollCount ) * 100 ) + '%';
             }
         },
 
@@ -53,8 +66,18 @@
                 return this.scores[0].faction;
             },
             scores(){
-                return this.shared.player.prompt.data;
+                return this.shared.player.prompt.data.scores;
             },
+            rolls(){
+                return this.shared.player.prompt.data.rolls;
+            },
+            maxRollCount(){
+                let max = 0;
+                this.rolls.forEach( count => {
+                   if( count > max ) max = count;
+                });
+                return max;
+            }
 
         },
 
@@ -63,6 +86,23 @@
 
 
 <style>
+
+    .rolls-table {
+        font-family: var(--primary-font);
+        font-size: 1.5rem;
+        background-color: rgba(255, 131, 213, 0.11);
+    }
+
+
+    .rolls-table__bar-container {
+        width: 100%;
+        height: 5rem;
+    }
+
+    .rolls-table__bar {
+        background-color: var(--highlight-color);
+        border-bottom: 2px solid var(--highlight-color);
+    }
 
     .final-score {
         padding-bottom: .5rem;

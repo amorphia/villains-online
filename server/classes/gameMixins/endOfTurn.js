@@ -109,7 +109,10 @@ let obj = {
         let scores = this.calculateFinalScores();
         _.forEach( this.players, player => player.setPrompt({
                 name : 'final-scores',
-                data : scores,
+                data : {
+                    scores : scores,
+                    rolls : this.data.rolls
+                },
                 active : false,
                 passive : true
             }));
@@ -128,7 +131,8 @@ let obj = {
                 pp : faction.data.pp,
                 total : faction.data.ap + faction.data.pp,
                 hasVictory : faction.hasVictory(),
-                capitolToken : faction.lastCapitolToken()
+                capitolToken : faction.lastCapitolToken(),
+                rolls: faction.data.rolls
             }
         });
 

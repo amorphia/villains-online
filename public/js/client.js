@@ -2403,6 +2403,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'faction-score',
   props: ['score', 'winner'],
@@ -2421,6 +2422,17 @@ __webpack_require__.r(__webpack_exports__);
     },
     factionIcon: function factionIcon() {
       return _.factionIcon(this.score.faction);
+    },
+    rollAvg: function rollAvg() {
+      var total_val = 0;
+      var total_rolls = 0;
+      this.score.rolls.forEach(function (val, index) {
+        if (!index) return;
+        total_rolls += val;
+        total_val += val * index;
+      });
+      console.log('total_rolls', total_rolls, 'total_val', total_val);
+      return (total_val / total_rolls).toFixed(1);
     }
   }
 });
@@ -2468,6 +2480,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'final-scores',
   data: function data() {
@@ -2476,14 +2501,26 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    closeGame: function closeGame() {}
+    barHeight: function barHeight(count) {
+      return count / this.maxRollCount * 100 + '%';
+    }
   },
   computed: {
     winner: function winner() {
       return this.scores[0].faction;
     },
     scores: function scores() {
-      return this.shared.player.prompt.data;
+      return this.shared.player.prompt.data.scores;
+    },
+    rolls: function rolls() {
+      return this.shared.player.prompt.data.rolls;
+    },
+    maxRollCount: function maxRollCount() {
+      var max = 0;
+      this.rolls.forEach(function (count) {
+        if (count > max) max = count;
+      });
+      return max;
     }
   }
 });
@@ -14012,7 +14049,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.final-score {\n    padding-bottom: .5rem;\n}\n.victory {\n    font-size: 4.5rem;\n    text-transform: uppercase;\n    z-index: 3;\n    color: #ffff2a;\n    text-shadow: 0 0 5px var(--highlight-color);\n    letter-spacing: .1em;\n    white-space: nowrap;\n}\n.final-scores__table {\n    width: 60rem;\n    font-size: 1.75em;\n    border-spacing: 4px;\n    color: var(--primary-light-color)\n}\n.final-scores__table th {\n    border-bottom: 1px solid;\n    border-left: 1px solid;\n    font-size: .8em;\n    text-transform: uppercase;\n    padding: 0.2em 0.5em;\n    white-space: nowrap;\n    font-family: var(--secondary-font);\n    border-color: #e953cd;\n    font-weight: 200;\n    overflow: hidden;\n}\n.final-scores__table td {\n    padding: .5rem .3rem;\n}\n\n", ""]);
+exports.push([module.i, "\n.rolls-table {\n    font-family: var(--primary-font);\n    font-size: 1.5rem;\n    background-color: rgba(255, 131, 213, 0.11);\n}\n.rolls-table__bar-container {\n    width: 100%;\n    height: 5rem;\n}\n.rolls-table__bar {\n    background-color: var(--highlight-color);\n    border-bottom: 2px solid var(--highlight-color);\n}\n.final-score {\n    padding-bottom: .5rem;\n}\n.victory {\n    font-size: 4.5rem;\n    text-transform: uppercase;\n    z-index: 3;\n    color: #ffff2a;\n    text-shadow: 0 0 5px var(--highlight-color);\n    letter-spacing: .1em;\n    white-space: nowrap;\n}\n.final-scores__table {\n    width: 60rem;\n    font-size: 1.75em;\n    border-spacing: 4px;\n    color: var(--primary-light-color)\n}\n.final-scores__table th {\n    border-bottom: 1px solid;\n    border-left: 1px solid;\n    font-size: .8em;\n    text-transform: uppercase;\n    padding: 0.2em 0.5em;\n    white-space: nowrap;\n    font-family: var(--secondary-font);\n    border-color: #e953cd;\n    font-weight: 200;\n    overflow: hidden;\n}\n.final-scores__table td {\n    padding: .5rem .3rem;\n}\n\n", ""]);
 
 // exports
 
@@ -57936,6 +57973,11 @@ var render = function() {
       _c("td", {
         staticClass: "faction-score__token",
         domProps: { innerHTML: _vm._s(_vm.capitol) }
+      }),
+      _vm._v(" "),
+      _c("td", {
+        staticClass: "faction-score__rolls",
+        domProps: { textContent: _vm._s(_vm.rollAvg) }
       })
     ]
   )
@@ -58008,6 +58050,10 @@ var render = function() {
               _vm._v(" "),
               _c("th", { staticClass: "faction-score__token-header" }, [
                 _vm._v("capitol token")
+              ]),
+              _vm._v(" "),
+              _c("th", { staticClass: "faction-score__rolls-header" }, [
+                _vm._v("AVG roll")
               ])
             ]),
             _vm._v(" "),
@@ -58019,6 +58065,45 @@ var render = function() {
             })
           ],
           2
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "rolls-table d-flex width-50 pull-center my-5 p-3" },
+          _vm._l(_vm.rolls, function(count, roll) {
+            return _c(
+              "div",
+              {
+                staticClass:
+                  "rolls-table__column d-flex flex-column width-10 align-center",
+                attrs: { hidden: !roll }
+              },
+              [
+                _c("div", { staticClass: "rolls-table__roll-header" }, [
+                  _vm._v(_vm._s(roll))
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "rolls-table__bar-container p-3 d-flex align-end"
+                  },
+                  [
+                    _c("span", {
+                      staticClass: "rolls-table__bar width-100 d-block",
+                      style: { height: _vm.barHeight(count) }
+                    })
+                  ]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "rolls-table__bar-count highlight" }, [
+                  _vm._v(_vm._s(count))
+                ])
+              ]
+            )
+          }),
+          0
         ),
         _vm._v(" "),
         _c("end-game", [
@@ -95038,10 +95123,16 @@ var helpers = {
   roll: function roll() {
     var count = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+    var game = arguments.length > 2 ? arguments[2] : undefined;
+    var faction = arguments.length > 3 ? arguments[3] : undefined;
     var rolls = [];
 
     for (var i = 0; i < count; i++) {
-      rolls.push(_.random(1, max));
+      var roll = _.random(1, max);
+
+      rolls.push(roll);
+      if (game) game.data.rolls[roll]++;
+      if (faction) faction.data.rolls[roll]++;
     }
 
     if (rolls.length === 1) rolls = rolls[0];

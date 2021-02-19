@@ -29,10 +29,13 @@ let helpers = {
     },
 
 
-    roll( count = 1, max = 10 ){
+    roll( count = 1, max = 10, game, faction ){
         let rolls = [];
         for( let i = 0; i < count; i++ ){
-            rolls.push( _.random( 1, max ) );
+            let roll = _.random( 1, max );
+            rolls.push( roll );
+            if( game ) game.data.rolls[roll]++;
+            if( faction ) faction.data.rolls[roll]++;
         }
 
         if( rolls.length === 1 ) rolls = rolls[0];

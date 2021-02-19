@@ -188,7 +188,7 @@ let setup = {
         let startingArea;
 
         while( !startingArea || startingArea.name === 'capitol' ){
-            let rand = -1 + _.roll(1, 9 );
+            let rand = -1 + _.roll(1, 9, this );
             startingArea = this.areas[ this.data.areaOrder[rand] ];
         }
 
