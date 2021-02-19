@@ -13,8 +13,11 @@ class Swarm extends Faction {
         this.data.focusDescription = "Have units in many areas";
         this.data.title = "The Swarm";
         this.data.factionDefenseBonus = 0;
+        this.data.hatchCount = 3;
 
         // tokens
+        this.tokens['deploy'].count = 4;
+
         this.tokens['scatter'] = {
             count: 1,
             data: {
@@ -26,8 +29,10 @@ class Swarm extends Faction {
             }
         };
 
+
+
         // units
-        this.units['patsy'].count = 3;
+        this.units['patsy'].count = 6;
         this.units['goon'].count = 3;
         this.units['mole'].count = 3;
 
@@ -59,7 +64,7 @@ class Swarm extends Faction {
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                onKilled: 'returnUnitToReserves'
+                onDeploy: 'deployPlaceDrone'
             }
         };
     }
@@ -111,14 +116,12 @@ class Swarm extends Faction {
 
         let units = [];
 
-        for( let i = 0; i < 4; i++ ){
-            let drone = this.data.units.find( unit => unit.type === 'drone' && _.unitInReserves( unit ) );
-            drone.location = area.name;
-            units.push( drone );
+        for( let i = 0; i < this.data.hatchCount; i++ ){
+            units.push( this.placeDrone( area ) );
         }
 
         this.game().sound( 'hatch' );
-        let message = `Broodnest hatches, spawning four <span class="faction-swarm">drones</span> in The ${area.name}`;
+        let message = `Broodnest hatches, spawning ${this.data.hatchCount} <span class="faction-swarm">drones</span> in The ${area.name}`;
         this.game().message({ faction : this, message: message });
 
         await this.game().timedPrompt('units-shifted', {
@@ -126,6 +129,19 @@ class Swarm extends Faction {
             units: units
         }).catch( error => console.error( error ) );
     }
+
+
+    deployPlaceDrone( event ) {
+        let area = this.game().areas[event.unit.location];
+        this.placeDrone( area )
+    }
+
+    placeDrone( area ){
+        let drone = this.data.units.find( unit => unit.type === 'drone' && _.unitInReserves( unit ) );
+        drone.location = area.name;
+        return drone;
+    }
+
 
     canActivateScatter( token, area ) {
         return !area.isTrapped( this ) && this.unitsInArea( area ).filter( unit => unit.type !== 'champion' ).length;

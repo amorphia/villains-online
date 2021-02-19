@@ -198,7 +198,7 @@ class PlanTester {
     }
 
     loseUnits( faction, lostUnits ){
-        let factionLostUnits = faction.data.units.filter( unit => unit.killed && unit.killed !== faction.name ).length;
+        let factionLostUnits = faction.data.units.filter( unit => unit.killed ).length;
         let result = factionLostUnits >= lostUnits;
 
         if( this.debug ) console.log (
