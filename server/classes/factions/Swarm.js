@@ -13,7 +13,8 @@ class Swarm extends Faction {
         this.data.focusDescription = "Have units in many areas";
         this.data.title = "The Swarm";
         this.data.factionDefenseBonus = 0;
-        this.data.hatchCount = 3;
+        this.data.hatchCount = 4;
+        this.data.bonusDeploy = { type: 'champion', count : 1 };
 
         // tokens
         this.tokens['deploy'].count = 4;
@@ -64,7 +65,6 @@ class Swarm extends Faction {
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                onDeploy: 'deployPlaceDrone'
             }
         };
     }
@@ -130,11 +130,12 @@ class Swarm extends Faction {
         }).catch( error => console.error( error ) );
     }
 
-
+    /*
     deployPlaceDrone( event ) {
         let area = this.game().areas[event.unit.location];
         this.placeDrone( area )
     }
+    */
 
     placeDrone( area ){
         let drone = this.data.units.find( unit => unit.type === 'drone' && _.unitInReserves( unit ) );
