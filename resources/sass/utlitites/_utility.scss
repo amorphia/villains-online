@@ -1,11 +1,3 @@
-/* CSS Document */
-$size-1 : .125vw;
-$size-2 : .25vw;
-$size-3 : .5vw;
-$size-4 : 1vw;
-$size-5 : 2vw;
-$size-6 : 3vw;
-
 .z--1 { z-index: -1 }
 .z-0 { z-index: 0 }
 .z-1 { z-index: 1 }
@@ -20,150 +12,87 @@ $size-6 : 3vw;
 .z-negative { z-index: -1 }
 
 
-/* ratios */
-.ratio-square {
-    position: relative;
 
-    &:after {
-        content: "";
-        padding-bottom: 100%;
-        display: block;
+// ratios
+$ratios : (
+    "square" : 100%,
+    "80" : 80%,
+    "60" : 60%,
+    "50" : 50%
+);
+
+@each $name, $value in $ratios {
+    .ratio-#{$name} {
+        position: relative;
+
+        &:after {
+            content: "";
+            padding-bottom: $value;
+            display: block;
+        }
     }
 }
 
-.ratio-80 {
-    position: relative;
 
-    &:after {
-        content: "";
-        padding-bottom: 80%;
-        display: block;
+
+
+// margin and paddings
+$props: (
+    "p"  : "padding",
+    "pr" : "padding-right",
+    "pl" : "padding-left",
+    "pt" : "padding-top",
+    "pb" : "padding-bottom",
+    "m"  : "margin",
+    "mr" : "margin-right",
+    "ml" : "margin-left",
+    "mt" : "margin-top",
+    "mb" : "margin-bottom",
+);
+
+$sizes: (
+    "0" : 0,
+    "1" : .125vw,
+    "2" : .25vw,
+    "3" : .5vw,
+    "4" : 1vw,
+    "5" : 2vw,
+    "6" : 3vw,
+    "7" : 4vw,
+    "8" : 5vw,
+    "9" : 6vw,
+    "auto" : auto
+);
+
+
+
+// core margins and padding
+@each $identifier, $property in $props {
+    @each $size, $value in $sizes {
+        .#{$identifier}-#{$size} { #{$property}: $value; }
     }
 }
 
-.ratio-60 {
-    position: relative;
-
-    &:after {
-        content: "";
-        padding-bottom: 60%;
-        display: block;
-    }
+// padding-x
+@each $size, $value in $sizes {
+    .px-#{$size} { padding-right: $value; padding-left : $value }
 }
 
-.ratio-50 {
-    position: relative;
-
-    &:after {
-        content: "";
-        padding-bottom: 50%;
-        display: block;
-    }
+// padding-y
+@each $size, $value in $sizes {
+    .py-#{$size} { padding-top: $value; padding-bottom : $value }
 }
 
-/* Padding */
-.p-1 { padding: $size-1 }
-.p-2 { padding: $size-2 }
-.p-3 { padding: $size-3 }
-.p-4 { padding: $size-4 }
-.p-5 { padding: $size-5 }
-.p-6 { padding: $size-6 }
-.px-1 { padding-right : $size-1; padding-left : $size-1 }
-.px-2 { padding-right : $size-2; padding-left : $size-2; }
-.px-3 { padding-right : $size-3; padding-left : $size-3; }
-.px-4 { padding-right : $size-4; padding-left : $size-4; }
-.px-5 { padding-right : $size-5; padding-left : $size-5; }
-.px-6 { padding-right : $size-6; padding-left : $size-6; }
-.py-1 { padding-top: $size-1; padding-bottom : $size-1 }
-.py-2 { padding-top: $size-2; padding-bottom : $size-2; }
-.py-3 { padding-top: $size-3; padding-bottom : $size-3; }
-.py-4 { padding-top: $size-4; padding-bottom : $size-4; }
-.py-5 { padding-top: $size-5; padding-bottom : $size-5; }
-.py-6 { padding-top: $size-6; padding-bottom : $size-6; }
-.pr-1 { padding-right: $size-1 }
-.pr-2 { padding-right: $size-2 }
-.pr-3 { padding-right: $size-3 }
-.pr-4 { padding-right: $size-4 }
-.pr-5 { padding-right: $size-5 }
-.pr-6 { padding-right: $size-6 }
-.pl-1 { padding-left: $size-1 }
-.pl-2 { padding-left: $size-2 }
-.pl-3 { padding-left: $size-3 }
-.pl-4 { padding-left: $size-4 }
-.pl-5 { padding-left: $size-5 }
-.pl-6 { padding-left: $size-6 }
-.pt-1 { padding-top: $size-1 }
-.pt-2 { padding-top: $size-2 }
-.pt-3 { padding-top: $size-3 }
-.pt-4 { padding-top: $size-4 }
-.pt-5 { padding-top: $size-5 }
-.pt-6 { padding-top: $size-6 }
-.pb-1 { padding-bottom: $size-1 }
-.pb-2 { padding-bottom: $size-2 }
-.pb-3 { padding-bottom: $size-3 }
-.pb-4 { padding-bottom: $size-4 }
-.pb-5 { padding-bottom: $size-5 }
-.pb-6 { padding-bottom: $size-6 }
-.p-0 { padding : 0 }
-.pt-0 { padding-top: 0 }
-.pr-0 { padding-right: 0 }
-.pb-0 { padding-bottom: 0 }
-.pl-0 { padding-left: 0 }
-.px-0 { padding-right: 0; padding-left : 0 }
-.py-0 { padding-top: 0; padding-bottom : 0 }
+// margin-x
+@each $size, $value in $sizes {
+    .mx-#{$size} { margin-right: $value; margin-left : $value }
+}
 
-/* Margins */
-.m-1 { margin: $size-1 }
-.m-2 { margin: $size-2 }
-.m-3 { margin: $size-3 }
-.m-4 { margin: $size-4 }
-.m-5 { margin: $size-5 }
-.m-6 { margin: $size-6 }
-.mx-1 { margin-right : $size-1; margin-left : $size-1 }
-.mx-2 { margin-right : $size-2; margin-left : $size-2; }
-.mx-3 { margin-right : $size-3; margin-left : $size-3; }
-.mx-4 { margin-right : $size-4; margin-left : $size-4; }
-.mx-5 { margin-right : $size-5; margin-left : $size-5; }
-.mx-6 { margin-right : $size-6; margin-left : $size-6; }
-.my-1 { margin-top: $size-1; margin-bottom : $size-1 }
-.my-2 { margin-top: $size-2; margin-bottom : $size-2; }
-.my-3 { margin-top: $size-3; margin-bottom : $size-3; }
-.my-4 { margin-top: $size-4; margin-bottom : $size-4; }
-.my-5 { margin-top: $size-5; margin-bottom : $size-5; }
-.my-6 { margin-top: $size-6; margin-bottom : $size-6; }
-.mr-1 { margin-right: $size-1 }
-.mr-2 { margin-right: $size-2 }
-.mr-3 { margin-right: $size-3 }
-.mr-4 { margin-right: $size-4 }
-.mr-5 { margin-right: $size-5 }
-.mr-6 { margin-right: $size-6 }
-.ml-1 { margin-left: $size-1 }
-.ml-2 { margin-left: $size-2 }
-.ml-3 { margin-left: $size-3 }
-.ml-4 { margin-left: $size-4 }
-.ml-5 { margin-left: $size-5 }
-.ml-6 { margin-left: $size-6 }
-.mt-1 { margin-top: $size-1 }
-.mt-2 { margin-top: $size-2 }
-.mt-3 { margin-top: $size-3 }
-.mt-4 { margin-top: $size-4 }
-.mt-5 { margin-top: $size-5 }
-.mt-6 { margin-top: $size-6 }
-.mb-1 { margin-bottom: $size-1 }
-.mb-2 { margin-bottom: $size-2 }
-.mb-3 { margin-bottom: $size-3 }
-.mb-4 { margin-bottom: $size-4 }
-.mb-5 { margin-bottom: $size-5 }
-.mb-5 { margin-bottom: $size-6 }
-.m-auto { margin: auto }
+// margin-y
+@each $size, $value in $sizes {
+    .my-#{$size} { margin-top: $value; margin-bottom : $value }
+}
 
-.m-0 { margin : 0 }
-.mt-0 { margin-top: 0 }
-.mr-0 { margin-right: 0 }
-.mb-0 { margin-bottom: 0 }
-.ml-0 { margin-left: 0 }
-.mx-0 { margin-right: 0; margin-left : 0 }
-.my-0 { margin-top: 0; margin-bottom : 0 }
 
 .pull-right { margin-left: auto }
 .pull-left { margin-right: auto }
