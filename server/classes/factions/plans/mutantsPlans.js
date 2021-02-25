@@ -22,13 +22,13 @@ let obj = [
                     { test : 'influenceInAreas', args : [6,1] },
                     { test : 'controlTarget', args : [] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
                     { test : 'unitsInPlay', args : [10] },
                 ],
-                value : 1
+                value : 2
             },
         ]
     },
