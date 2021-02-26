@@ -238,6 +238,7 @@ class Society extends Faction {
                             unitTypes: this.potentialHypnosisTypes( args.area ),
                             enemyOnly : true,
                             payCost: true,
+                            canDecline : true,
                             message: "Choose a unit to hypnotize" }
                 }).catch( error => console.error( error ) );
 
