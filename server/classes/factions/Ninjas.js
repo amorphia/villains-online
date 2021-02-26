@@ -155,7 +155,6 @@ class Ninjas extends Faction {
             attacks: unit.attack,
             unit: unit,
             noDecline: true,
-            seeking: true,
             bonusDice: this.data.bladesBonusDice
         });
 
