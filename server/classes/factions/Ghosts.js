@@ -205,8 +205,10 @@ class Ghosts extends Faction {
             // if they have none move on
             if( ! patsiesInArea.length ) return;
 
+            let patsies = null;
+
             // check if we can auto select two patsies for this faction
-            // let patsies = this.autoSelectPatsies( patsiesInArea );
+            // patsies = this.autoSelectPatsies( patsiesInArea );
 
             // if we have successfully auto selected patsies then add them to the units array and return
             if( patsies ) return units = units.concat( patsies );
