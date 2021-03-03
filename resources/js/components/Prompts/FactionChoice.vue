@@ -9,6 +9,7 @@
          class="choose-factions__faction pointer d-flex justify-end align-center">
         {{ faction.name }}<span class="choose-factions__status pl-3" :class="`choose-factions__status-${faction.status}`"></span>
         <span class="choose-factions__circle pl-1" :class="faction.name === selected ? 'icon-circle' : 'icon-circle-open'"></span>
+        <span class="icon-x pl-1 choose-factions__block" :class="{active : faction.blocked}" @click.stop="$emit( 'blocked', faction.name )"></span>
     </div>
 </template>
 
@@ -40,10 +41,21 @@
             }
         },
 
+        /*
+        watch : {
+            'faction.blocked' : function( val ){
+                if( val && this.checkIsSelectable() ) this.$emit( 'isSelectable', true );
+            }
+        },
+        */
+
         methods : {
             checkIsSelectable(){
                 // if the faction is already taken, then it can't be taken
                 if( this.faction.owner !== null ) return false;
+
+                // if we've blocked this faction, them don't let it be selected
+                if( this.faction.blocked ) return false;
 
                 // otherwise if we are in free for all mode then anything goes
                 if( this.shared.data && this.shared.data.gameType === 'anarchy' ) return true;
@@ -101,6 +113,15 @@
 
 
 <style>
+
+    .choose-factions__block {
+        font-size: .5em;
+        color: var(--off-white);
+    }
+
+    .choose-factions__block.active {
+        color: var(--faction-commies);
+    }
 
 </style>
 

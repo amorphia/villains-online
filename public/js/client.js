@@ -7063,6 +7063,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-factions',
   data: function data() {
@@ -7127,6 +7129,17 @@ __webpack_require__.r(__webpack_exports__);
       this.random = true;
       this.selectedFaction = _.sample(unselectedFactions).name;
       this.chooseFaction();
+    },
+    blockFaction: function blockFaction(factionName) {
+      var faction = Object.values(this.shared.data.factions).find(function (item) {
+        return item.name === factionName;
+      });
+      faction.blocked = !faction.blocked;
+      if (!faction.blocked) faction.selectable = true;
+    },
+    setIsSelectable: function setIsSelectable(faction, val) {
+      console.log('isSelectable', faction.name, val);
+      faction.selectable = val;
     },
     chooseFaction: function chooseFaction() {
       App.event.emit('sound', 'ui');
@@ -9202,6 +9215,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'faction-choice',
   props: ['faction', 'selected', 'selectable', "remainingPlayers", "killersSelected", "expansionsSelected"],
@@ -9217,10 +9231,20 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit('isSelectable', true);
     }
   },
+
+  /*
+  watch : {
+      'faction.blocked' : function( val ){
+          if( val && this.checkIsSelectable() ) this.$emit( 'isSelectable', true );
+      }
+  },
+  */
   methods: {
     checkIsSelectable: function checkIsSelectable() {
       // if the faction is already taken, then it can't be taken
-      if (this.faction.owner !== null) return false; // otherwise if we are in free for all mode then anything goes
+      if (this.faction.owner !== null) return false; // if we've blocked this faction, them don't let it be selected
+
+      if (this.faction.blocked) return false; // otherwise if we are in free for all mode then anything goes
 
       if (this.shared.data && this.shared.data.gameType === 'anarchy') return true; // if the faction is defined as unselectable (and its not anarchy mode) return false
 
@@ -14677,6 +14701,25 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n.units-hud__unit.deploy__ghost:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 25%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.has-ghosts .units-hud__unit {\n    height: 8vw;\n}\n.deploy__ghost .unit-hud__unit-image {\n    /*  opacity: .8; */\n}\n.deploy__toggle-ghost {\n    background-color: #192236;\n}\n.deploy__ghost .deploy__toggle-ghost {\n    background-color: var(--faction-ghosts);\n}\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionChoice.vue?vue&type=style&index=0&lang=css&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/FactionChoice.vue?vue&type=style&index=0&lang=css& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.choose-factions__block {\n    font-size: .5em;\n    color: var(--off-white);\n}\n.choose-factions__block.active {\n    color: var(--faction-commies);\n}\n\n", ""]);
 
 // exports
 
@@ -55827,6 +55870,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionChoice.vue?vue&type=style&index=0&lang=css&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/FactionChoice.vue?vue&type=style&index=0&lang=css& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./FactionChoice.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionChoice.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionFlipper.vue?vue&type=style&index=0&lang=css&":
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/FactionFlipper.vue?vue&type=style&index=0&lang=css& ***!
@@ -62968,8 +63041,9 @@ var render = function() {
                       clicked: function(e) {
                         return (_vm.selectedFaction = e)
                       },
+                      blocked: _vm.blockFaction,
                       isSelectable: function(e) {
-                        return (faction.selectable = e)
+                        return _vm.setIsSelectable(faction, e)
                       }
                     }
                   })
@@ -62994,8 +63068,9 @@ var render = function() {
                       clicked: function(e) {
                         return (_vm.selectedFaction = e)
                       },
+                      blocked: _vm.blockFaction,
                       isSelectable: function(e) {
-                        return (faction.selectable = e)
+                        return _vm.setIsSelectable(faction, e)
                       }
                     }
                   })
@@ -64895,6 +64970,17 @@ var render = function() {
         staticClass: "choose-factions__circle pl-1",
         class:
           _vm.faction.name === _vm.selected ? "icon-circle" : "icon-circle-open"
+      }),
+      _vm._v(" "),
+      _c("span", {
+        staticClass: "icon-x pl-1 choose-factions__block",
+        class: { active: _vm.faction.blocked },
+        on: {
+          click: function($event) {
+            $event.stopPropagation()
+            return _vm.$emit("blocked", _vm.faction.name)
+          }
+        }
       })
     ]
   )
@@ -89980,7 +90066,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FactionChoice_vue_vue_type_template_id_6b5ad862___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FactionChoice.vue?vue&type=template&id=6b5ad862& */ "./resources/js/components/Prompts/FactionChoice.vue?vue&type=template&id=6b5ad862&");
 /* harmony import */ var _FactionChoice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FactionChoice.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/FactionChoice.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _FactionChoice_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FactionChoice.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Prompts/FactionChoice.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -89988,7 +90076,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _FactionChoice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _FactionChoice_vue_vue_type_template_id_6b5ad862___WEBPACK_IMPORTED_MODULE_0__["render"],
   _FactionChoice_vue_vue_type_template_id_6b5ad862___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -90017,6 +90105,22 @@ component.options.__file = "resources/js/components/Prompts/FactionChoice.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./FactionChoice.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionChoice.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Prompts/FactionChoice.vue?vue&type=style&index=0&lang=css&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/Prompts/FactionChoice.vue?vue&type=style&index=0&lang=css& ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./FactionChoice.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/FactionChoice.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionChoice_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
 
 /***/ }),
 
@@ -94928,6 +95032,7 @@ var obj = {
   mutants: {
     name: 'mutants',
     owner: null,
+    blocked: false,
     status: 3,
     basic: true,
     selectable: true
@@ -94935,6 +95040,7 @@ var obj = {
   mafia: {
     name: 'mafia',
     owner: null,
+    blocked: false,
     status: 3,
     basic: true,
     selectable: true
@@ -94942,6 +95048,7 @@ var obj = {
   scientists: {
     name: 'scientists',
     owner: null,
+    blocked: false,
     status: 3,
     basic: true,
     selectable: true
@@ -94949,6 +95056,7 @@ var obj = {
   robots: {
     name: 'robots',
     owner: null,
+    blocked: false,
     killer: true,
     status: 3,
     basic: true,
@@ -94957,6 +95065,7 @@ var obj = {
   bankers: {
     name: 'bankers',
     owner: null,
+    blocked: false,
     status: 3,
     basic: true,
     selectable: true
@@ -94964,6 +95073,7 @@ var obj = {
   commies: {
     name: 'commies',
     owner: null,
+    blocked: false,
     status: 3,
     basic: true,
     selectable: true
@@ -94971,6 +95081,7 @@ var obj = {
   aliens: {
     name: 'aliens',
     owner: null,
+    blocked: false,
     status: 2,
     basic: true,
     selectable: true
@@ -94978,6 +95089,7 @@ var obj = {
   cultists: {
     name: 'cultists',
     owner: null,
+    blocked: false,
     killer: true,
     status: 3,
     basic: true,
@@ -94986,18 +95098,21 @@ var obj = {
   loyalists: {
     name: 'loyalists',
     owner: null,
+    blocked: false,
     status: 3,
     selectable: true
   },
   swarm: {
     name: 'swarm',
     owner: null,
+    blocked: false,
     status: 3,
     selectable: true
   },
   vampires: {
     name: 'vampires',
     owner: null,
+    blocked: false,
     killer: true,
     status: 2,
     selectable: true
@@ -95005,18 +95120,21 @@ var obj = {
   society: {
     name: 'society',
     owner: null,
+    blocked: false,
     status: 2,
     selectable: true
   },
   hackers: {
     name: 'hackers',
     owner: null,
+    blocked: false,
     status: 1,
     selectable: true
   },
   ninjas: {
     name: 'ninjas',
     owner: null,
+    blocked: false,
     killer: true,
     status: 1,
     selectable: true
@@ -95024,48 +95142,55 @@ var obj = {
   guerrillas: {
     name: 'guerrillas',
     owner: null,
+    blocked: false,
     killer: true,
     status: 1,
     selectable: true
   },
-  //parasites : { name: 'parasites', owner : null, status : 0, selectable : false },
+  //parasites : { name: 'parasites', owner : null, blocked : false, status : 0, selectable : false },
   conquistadors: {
     name: 'conquistadors',
     owner: null,
+    blocked: false,
     status: 2,
     selectable: true
   },
   witches: {
     name: 'witches',
     owner: null,
+    blocked: false,
     status: 1,
     selectable: true
   },
   bureau: {
     name: 'bureau',
     owner: null,
+    blocked: false,
     status: 2,
     selectable: true
   },
   plants: {
     name: 'plants',
     owner: null,
+    blocked: false,
     status: 1,
     selectable: true
   },
   ghosts: {
     name: 'ghosts',
     owner: null,
+    blocked: false,
     status: 0,
     selectable: true
   },
   spiders: {
     name: 'spiders',
     owner: null,
+    blocked: false,
     status: 0,
     killer: true,
     selectable: false
-  } //skeletons : { name: 'skeletons', owner : null, status : 0, selectable : false },
+  } //skeletons : { name: 'skeletons', owner : null, blocked : false, status : 0, selectable : false },
 
 };
 module.exports = Object.assign({}, obj);

@@ -29,10 +29,11 @@
                         <faction-choice
                             v-for="faction in basicFactions"
                             @clicked="e => selectedFaction = e"
+                            @blocked="blockFaction"
                             :faction="faction"
                             :selected="selectedFaction"
                             :key="faction.name"
-                            @isSelectable="e => faction.selectable = e"
+                            @isSelectable="e => setIsSelectable( faction, e )"
                             :remainingPlayers="remainingPlayers"
                             :killersSelected="killersSelected"
                             :expansionsSelected="expansionsSelected"
@@ -43,10 +44,11 @@
                         <faction-choice
                             v-for="faction in expansionFactions"
                             @clicked="e => selectedFaction = e"
+                            @blocked="blockFaction"
                             :faction="faction"
                             :selected="selectedFaction"
                             :key="faction.name"
-                            @isSelectable="e => faction.selectable = e"
+                            @isSelectable="e => setIsSelectable( faction, e )"
                             :remainingPlayers="remainingPlayers"
                             :killersSelected="killersSelected"
                             :expansionsSelected="expansionsSelected"
@@ -137,6 +139,17 @@
                 this.selectedFaction = _.sample( unselectedFactions ).name;
 
                 this.chooseFaction();
+            },
+
+            blockFaction( factionName ){
+                let faction = Object.values( this.shared.data.factions ).find( item => item.name === factionName );
+                faction.blocked = !faction.blocked;
+                if( !faction.blocked ) faction.selectable = true;
+            },
+
+            setIsSelectable( faction, val ){
+                console.log( 'isSelectable', faction.name, val );
+                faction.selectable = val;
             },
 
             chooseFaction(){
