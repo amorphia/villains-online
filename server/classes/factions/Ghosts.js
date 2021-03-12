@@ -208,7 +208,7 @@ class Ghosts extends Faction {
             let patsies = null;
 
             // check if we can auto select two patsies for this faction
-            // patsies = this.autoSelectPatsies( patsiesInArea );
+            patsies = this.autoSelectPatsies( patsiesInArea );
 
             // if we have successfully auto selected patsies then add them to the units array and return
             if( patsies ) return units = units.concat( patsies );
@@ -257,10 +257,15 @@ class Ghosts extends Faction {
         // if the number of patsies is less than or equal to the number we need to bounce, just return them all
         if( patsiesInArea.length <= this.data.scarePatsiesBounced ) return patsiesInArea;
 
+        /*
+        HERE BE DRAGONS
+        todo figure out why the following didn't let me select my patsies when I was the witches and had some flipped and some unflipped patsies in the area
+
         // if we have more patsies than we need to bounce, lets check if there are enough patsies without
         // anything fancy going on (like being ready, or flipped) that we can safely select and if so return enough of them
         let basicPatsies = patsiesInArea.map( unit => !unit.ready && !unit.flipped ).filter( unit => unit );
         if( basicPatsies.length >= this.data.scarePatsiesBounced ) return patsiesInArea.slice( 0, this.data.scarePatsiesBounced );
+         */
     }
 
 }
