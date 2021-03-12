@@ -2,6 +2,9 @@
 
 return [
 
+
+    'log_lines_to_display' => 5,
+
     'max_saves' => 10,
 
     'core_file_folders' => [

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+// Display console log
+Route::get('/log/{id?}', 'LogController@show' )->middleware( 'auth' );
 
 // Landing
 Route::get('/', 'LandingController@index' )->name( 'landing' );
