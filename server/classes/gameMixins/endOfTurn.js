@@ -117,7 +117,7 @@ let obj = {
                 passive : true
             }));
         this.updateAll();
-        Server.saveToTracker( this, scores, incomplete );
+        if( Object.keys( this.factions ).length >= 4 ) Server.saveToTracker( this, scores, incomplete );
     },
 
 
