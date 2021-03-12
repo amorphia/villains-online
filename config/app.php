@@ -3,7 +3,7 @@
 return [
 
 
-    'log_lines_to_display' => 25,
+    'log_lines_to_display' => 100,
 
     'max_saves' => 10,
 
