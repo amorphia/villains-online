@@ -71,7 +71,7 @@ Start the local node game server
 
 #### Avoiding localhost CORS issues
 
-Chances are you will need to tell your browser to allow the http server and game server to talk to each other, as most modern browsers block communication from one port to another on localhost (and don't follow the usual CORS header instructions when on localhost). You can read more about the problem [here](https://medium.com/swlh/avoiding-cors-errors-on-localhost-in-2020-5a656ed8cefa).  
+Chances are you will need to tell your browser to allow the http server and game server to talk to each other, as modern browsers block communication from one port to another on localhost. You can read more about the problem [here](https://medium.com/swlh/avoiding-cors-errors-on-localhost-in-2020-5a656ed8cefa).  
 
 My solution for chrome on Windows is to call up the Windows Run Dialog (Windows key + R) and run Chrome with the --disable-web-security flag set.
 
