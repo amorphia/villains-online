@@ -1,43 +1,40 @@
-# Eat Columbus
+# Villains Online
 
-> A personal project I made to help me and my significant other keep track of what restaurants in Columbus Ohio we both like, or want to try, and then find matches between our lists. Intended to help streamline the sometimes laborious process of trying to decide where we both want to eat. 
+> My covid-19 project! My game group missed being able to get together to play our self created board game Villains. So I decided to bring it to the web so we could keep playing while staying safe.
 
 Visit the live site:
-https://eat.jeremykalgreen.com
+https://playvillains.jeremykalgreen.com
 
-Eat Columbus uses the Yelp API to list all of the restaurants in Columbus Ohio, and allows users to quickly flag the restaurants they want to try and rate those that they have already visited. Once you've rated or flagged some restaurants you can compare your list to another users and find out what places you are both itching to try, or love. 
+Villains is a board game for 3-5 players in which players take on the role of a villainous faction attempting to take over The City. Place your hidden action tokens in the city in a devilish attempt to complete your secret plans.  
 
-Comb through restaurants with a list view, or swipe through a a Tinder-esque interface. 
+Since this site was created to allow my game group to keep playing during the pandemic it assumes the users are already familiar with how to play Villains, and thus doesn't include any sort of tutorials (yet). But you can read the full game rules [here](public/files/villains_full_rules.pdf). 
 
-List View             |  Swipe View
-:-------------------------:|:-------------------------:
-![](public/images/readme/list.jpg)  |  ![](public/images/readme/details.jpg)
-
+![](public/images/readme/details.jpg)
 
 
 ## Built With
 * Laravel
-* Laravel Sanctum 
 * Vue
-* Yelp API
+* Node
+* Express
+* Socket.io
 
 ## Prerequisites
 
 * PHP 7.4
-* PHP Imagick Extension
 * MySQL 8
 * Composer
-* NPM
+* Node
 
 ## Installation
 
 Clone the repository
 
-    https://github.com/amorphia/eat.git
+    git clone https://github.com/amorphia/villains-online.git
 
 Switch to the repository's folder
 
-    cd eat
+    cd villains-online
 
 Install php dependencies using composer
 
@@ -49,7 +46,7 @@ Install node dependencies using NPM
     
 Copy the example env file and update its contents to suit your local environment (most importantly set up a local database and configure it within your .env)
 
-    cp .env.example .env
+    copy .env.example .env
 
 Generate an application key
 
@@ -59,23 +56,44 @@ Run the database migrations
 
     php artisan migrate
     
-Seed the database
 
-    php artisan db:seed
-
-Start the local development server
+Start the local http server
 
     php artisan serve
+    
+Open a new command line and navigate to the game server's folder
 
-You can now access the server at http://localhost:8000
+    cd villains-online/server
+    
+Start the local node game server
+
+    node server.js    
+
+#### Avoiding localhost CORS issues
+
+Chances are you will need to tell your browser to allow the http server and game server to talk to each other, as most modern browsers block communication from one port to another on localhost (and don't follow the usual CORS header instructions when on localhost). You can read more about the problem [here](https://medium.com/swlh/avoiding-cors-errors-on-localhost-in-2020-5a656ed8cefa).  
+
+My solution for chrome on Windows is to call up the Windows Run Dialog (Windows key + R) and run Chrome with the --disable-web-security flag set.
+
+    chrome.exe --user-data-dir="c:/tmp/chrome_dev" --disable-web-security 
+       
+But there are a number of other possible solutions that, again, you can read about [here](https://medium.com/swlh/avoiding-cors-errors-on-localhost-in-2020-5a656ed8cefa)
+
+#### Installation complete 
+
+You can now access villains-online at http://localhost:8000 
+
+Of course since villains online is a multiplayer game you'll need to run at least two parallel sessions to really poke around very far. The easiest way I've found to do that is to use the [SessionBox](https://chrome.google.com/webstore/detail/sessionbox-multi-login-to/megbklhjamjbcafknkgmokldgolkdfig?hl=en) extension for Chrome. 
 
 ## Project Status
 
-Woof, this is still very much a work in progress, but a few things a re floating to the top of my to-do list:
-* Fix some UI/UX issues that still linger
-* Add more instructional tours for various parts of the site
-* Add ability to compare more than two people (or at least match two people that aren't you)
-* Add a friend system to limit who can view your matches (and clean up the choose match select)
+This is still very much a work in progress, but I have a few things I'm really looking to tackle soon:
+* Add tutorials and information for new players
+* Add informational popups to basically everything on right click
+* Add a spectator mode to allow guests to view a game in progress
+* Fix a number of UI/UX issues
+* Minor gameplay bugs
+
 
 
 ## About Me
