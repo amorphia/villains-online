@@ -34,6 +34,8 @@
         "socket.io": "^2.4.0",
         "sqlite3": "^4.2.0",
         "uuid": "^8.3.2",
-        "vue-scrollto": "^2.20.0"
+        "vue-scrollto": "^2.20.0",
+        "is-svg": ">=4.2.2",
+        "ssri": ">=8.0.1"
     }
 }
