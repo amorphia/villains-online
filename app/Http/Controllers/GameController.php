@@ -48,15 +48,4 @@ class GameController extends Controller
         $game = Game::where( 'uuid', $game )->first();
         $game->update( ['concluded' => true] );
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Game  $game
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Game $game)
-    {
-        //
-    }
 }

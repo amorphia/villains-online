@@ -3,23 +3,14 @@ const axios = require( "axios" );
 class DB {
 
     host;
-    prodHost = 'https://playvillains.jeremykalgreen.com';
-    localHost = "http://localhost";
-    prodTrackerHost = 'https://villains.jeremykalgreen.com';
-    localTrackerHost = "http://villains.localhost";
+    trackerHost;
 
     constructor() {
-        if( process.env.HOMEPATH ===  '\\Users\\jerem' ){
-            this.host = this.localHost;
-            this.trackerHost = this.localTrackerHost;
-        } else {
-            this.host = this.prodHost;
-            this.trackerHost = this.prodTrackerHost;
-        }
+        this.host = process.env.APP_ENV === 'local' ? 'http://localhost' : process.env.APP_URL;
+        this.trackerHost = process.env.TRACKER_URL;
     }
 
     create( game ){
-
         let data = {
             uuid: game.id,
             players: Object.keys( game.players )
@@ -30,11 +21,13 @@ class DB {
             .catch( errors => console.log( errors ) );
     }
 
+
     conclude( gameId ){
         axios.get(`${this.host}/game/conclude/${gameId}` )
             .then( result => {} )
             .catch( errors => console.log( errors ) );
     }
+
 
     save( game, options = {} ) {
         console.log( 'save game' );
@@ -55,11 +48,9 @@ class DB {
 
 
     track( game, scores, incomplete ) {
-        if( !game || !game.id ) return;
-
+        if( !game || !game.id || !this.trackerHost ) return;
 
         let data = this.getGameData( game, scores, incomplete );
-        console.log( 'track game', data );
 
         axios.post( `${this.trackerHost}/api/import`, data )
             .then( result => {} )

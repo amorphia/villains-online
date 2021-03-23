@@ -93914,7 +93914,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
  * all outgoing HTTP requests automatically have it attached. This is just
- * a simple convenience so we don't have to attach every token manually.
+ * a convenience so we don't have to attach every token manually.
  */
 
 var getToken = function getToken() {
@@ -93939,18 +93939,11 @@ Vue.config.devtools = true;
  * Set core app object
  */
 
-window.App = window.App || {};
-/**
- *  Moment
- */
+window.App = window.App || {}; // Moment
 
-window.Moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/**
- * Scroll To
- */
+window.Moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"); // Scroll To
 
-window.VueScrollTo = __webpack_require__(/*! vue-scrollto */ "./node_modules/vue-scrollto/vue-scrollto.js"); // You can also pass in the default options
-
+window.VueScrollTo = __webpack_require__(/*! vue-scrollto */ "./node_modules/vue-scrollto/vue-scrollto.js");
 Vue.use(VueScrollTo, {
   container: "body",
   duration: 500,

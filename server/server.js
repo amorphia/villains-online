@@ -2,6 +2,9 @@
  * Utilities
  */
 global._ = require( 'lodash' );
+const path = require('path');
+require('dotenv').config( { path: path.resolve(__dirname, '../.env') } );
+
 const { v4: uuid4 } = require( 'uuid' );
 global.uuid = uuid4;
 

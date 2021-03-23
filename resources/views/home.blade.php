@@ -3,11 +3,11 @@
 @push( 'header-scripts' )
     <script>
         App.user = {
-            'name' : '{{ $user->name }}',
-            'uuid' : '{{ $user->uuid }}',
-            'admin' : {{ $user->admin }}
+            'name'  : '{{ auth()->user()->name }}',
+            'uuid'  : '{{ auth()->user()->uuid }}',
+            'admin' : {{ auth()->user()->admin }}
         };
-        App.server = '{{ $game_server }}';
+        App.server = '{{ config('app.game_server') }}';
     </script>
 @endpush
 
