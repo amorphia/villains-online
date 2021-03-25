@@ -57,7 +57,7 @@
 
                 </div>
                 <div class="d-flex justify-end" :inivisible="!shared.isActive()">
-                    <button class="button button-empty"
+                    <button :disabled="!canRandom" class="button button-empty"
                             @click="chooseRandomFaction">Random</button>
 
                     <button :disabled="!selectedFaction || !shared.data.factions[ selectedFaction ].selectable"
@@ -115,7 +115,12 @@
 
             experimentalsSelected(){
                 return Object.values( this.shared.data.factions ).filter( faction => faction.status === 0 && faction.owner ).length;
+            },
+
+            canRandom(){
+                return this.shared.isActive() && !! Object.values( this.shared.data.factions ).find( faction => faction.selectable );
             }
+
         },
 
         methods : {

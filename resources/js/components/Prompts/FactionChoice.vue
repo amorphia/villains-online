@@ -9,7 +9,7 @@
          class="choose-factions__faction pointer d-flex justify-end align-center">
         {{ faction.name }}<span class="choose-factions__status pl-3" :class="`choose-factions__status-${faction.status}`"></span>
         <span class="choose-factions__circle pl-1" :class="faction.name === selected ? 'icon-circle' : 'icon-circle-open'"></span>
-        <span class="icon-x pl-1 choose-factions__block" :class="{active : faction.blocked}" @click.stop="$emit( 'blocked', faction.name )"></span>
+        <span v-if="shared.isActive()" class="icon-x pl-1 choose-factions__block" :class="{active : faction.blocked}" @click.stop="$emit( 'blocked', faction.name )"></span>
     </div>
 </template>
 

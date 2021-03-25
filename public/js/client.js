@@ -7108,6 +7108,11 @@ __webpack_require__.r(__webpack_exports__);
       return Object.values(this.shared.data.factions).filter(function (faction) {
         return faction.status === 0 && faction.owner;
       }).length;
+    },
+    canRandom: function canRandom() {
+      return this.shared.isActive() && !!Object.values(this.shared.data.factions).find(function (faction) {
+        return faction.selectable;
+      });
     }
   },
   methods: {
@@ -63090,6 +63095,7 @@ var render = function() {
                   "button",
                   {
                     staticClass: "button button-empty",
+                    attrs: { disabled: !_vm.canRandom },
                     on: { click: _vm.chooseRandomFaction }
                   },
                   [_vm._v("Random")]
@@ -64972,16 +64978,18 @@ var render = function() {
           _vm.faction.name === _vm.selected ? "icon-circle" : "icon-circle-open"
       }),
       _vm._v(" "),
-      _c("span", {
-        staticClass: "icon-x pl-1 choose-factions__block",
-        class: { active: _vm.faction.blocked },
-        on: {
-          click: function($event) {
-            $event.stopPropagation()
-            return _vm.$emit("blocked", _vm.faction.name)
-          }
-        }
-      })
+      _vm.shared.isActive()
+        ? _c("span", {
+            staticClass: "icon-x pl-1 choose-factions__block",
+            class: { active: _vm.faction.blocked },
+            on: {
+              click: function($event) {
+                $event.stopPropagation()
+                return _vm.$emit("blocked", _vm.faction.name)
+              }
+            }
+          })
+        : _vm._e()
     ]
   )
 }
