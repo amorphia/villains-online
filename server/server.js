@@ -9,7 +9,7 @@ const { v4: uuid4 } = require( 'uuid' );
 global.uuid = uuid4;
 
 
-_.mixin( require( './partials/helpers') );
+_.mixin( require( '../resources/js/mixins/helpers') );
 
 
 /**

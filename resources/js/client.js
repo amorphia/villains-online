@@ -1,30 +1,20 @@
 /**
  * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
+ * includes Vue and other libraries.
  */
-
 require('./dependencies');
 
+
 /**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
+ * Automatically register our Vue components globally. It will recursively scan this directory for the Vue
  * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
-
-
 const files = require.context('./components', true, /\.vue$/i);
 files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 
-window.App = window.App || {};
-
 /**
- *
- * Import partials
- *
+ * Import our partials and helpers
  */
 require( './partials/_ajax' ); // ajax helper
 require( './partials/_onload' ); // onload helper
@@ -37,6 +27,10 @@ require( './partials/_filters' ); // filters
 require( './partials/_drag' ); // drag directive
 require( './partials/_preload' ); // image preloader
 
+
+/**
+ * Start core Vue instance
+ */
 const VueApp = new Vue({
     el: '#app',
 });
