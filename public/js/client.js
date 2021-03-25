@@ -13616,7 +13616,7 @@ __webpack_require__.r(__webpack_exports__);
       } // ghosts
 
 
-      if (!this.skilled && this.faction.name === 'ghosts') {
+      if (!this.skilled && this.faction.ghostDeploy) {
         var areaGhosts = this.faction.ghosts.filter(function (ghost) {
           return ghost.location === _this.area;
         });
@@ -13738,7 +13738,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       } // show ghosts
 
 
-      if (this.faction.name === 'ghosts') {
+      if (this.faction.ghostDeploy) {
         var areaGhosts = this.faction.ghosts.filter(function (unit) {
           return unit.location === _this.area.name;
         });

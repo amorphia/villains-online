@@ -70,19 +70,31 @@ class Ghosts extends Faction {
     startOfTurnPrompt() {
         let target, card;
 
-        // sect a random card, if we select one without a target do it again until we find one with a target
-        while( !target ){
-            card = _.sample( this.data.cards.hand );
-            target = card.target;
+        if( this.data.randomTarget ){
+            // sect a random card, if we select one without a target do it again until we find one with a target
+            while( !target ){
+                card = _.sample( this.data.cards.hand );
+                target = card.target;
+            }
+
+            card.randomTarget = true;
         }
 
-        card.randomTarget = true;
         return 'choose-target';
     }
 
-    processUpgrade( n ){
-        this.data.deployLimit += ( n - this.data.upgradeDeploy );
-        this.data.upgradeDeploy = n;
+
+    processUpgrade( upgradeNumber ){
+        // if we haven't upgraded out deploy yet, upgrade it by one
+        if( ! this.data.upgradeDeploy ){
+            this.data.deployLimit++;
+            this.data.upgradeDeploy = 1;
+        }
+
+        // if this is our second upgrade remove our random target selecting
+        if( upgradeNumber === 2 ){
+            this.data.randomTarget = false;
+        }
     }
 
 

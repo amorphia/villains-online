@@ -92,7 +92,7 @@
                 }
 
                 // show ghosts
-                if( this.faction.name === 'ghosts' ){
+                if( this.faction.ghostDeploy ){
                     let areaGhosts = this.faction.ghosts.filter( unit => unit.location === this.area.name );
 
                     for( let i = 0; i < areaGhosts.length; i++ ){

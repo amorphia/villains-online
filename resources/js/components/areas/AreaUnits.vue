@@ -41,7 +41,7 @@
                 }
 
                 // ghosts
-                if( !this.skilled && this.faction.name === 'ghosts' ){
+                if( !this.skilled && this.faction.ghostDeploy ){
                     let areaGhosts = this.faction.ghosts.filter( ghost => ghost.location === this.area );
                     for( let i = 0; i < areaGhosts.length; i++ ){
                         let ghost = areaGhosts[i];
