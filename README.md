@@ -9,7 +9,7 @@ Villains is a board game for 3-5 players in which players take on the role of a 
 
 Since this site was created to allow my game group to keep playing during the pandemic it assumes the users are already familiar with how to play Villains, and thus doesn't include any sort of tutorials (yet). But you can read the full game rules [here](public/files/villains_full_rules.pdf). 
 
-![](public/images/readme/details.jpg)
+![](public/images/readme/villains.mp4)
 
 
 ## Built With
