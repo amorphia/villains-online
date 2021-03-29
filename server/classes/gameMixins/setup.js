@@ -203,7 +203,7 @@ let setup = {
             this.cards[name] = new Func( this );
         });
 
-        let cards = _.cloneDeep( require('../data/cards') );
+        let cards = _.cloneDeep( require('../data/cardList') );
         cards.forEach( card => {
             card.owner = null;
             card.area = null;

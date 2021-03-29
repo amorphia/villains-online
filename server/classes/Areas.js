@@ -1,24 +1,19 @@
-let Capitol = require( './areas/Capitol' );
-let Sewers = require( './areas/Sewers' );
-let Police = require( './areas/Police' );
-let Laboratory = require( './areas/Laboratory' );
-let Factory = require( './areas/Factory' );
-let Bank = require( './areas/Bank' );
-let University = require( './areas/University' );
-let Subway = require( './areas/Subway' );
-let Church = require( './areas/Church' );
+let areas = [
+    'capitol',
+    'sewers',
+    'police',
+    'laboratory',
+    'factory',
+    'bank',
+    'university',
+    'subway',
+    'church'
+];
 
+// Build our export object collecting each area class using the list of area names
+let exportAreas = {};
+areas.forEach( area => exportAreas[area] = require( `./areas/${_.startCase( area )}` ) );
 
-module.exports = {
-    capitol: Capitol,
-    sewers: Sewers,
-    police: Police,
-    laboratory: Laboratory,
-    factory: Factory,
-    bank: Bank,
-    university: University,
-    subway: Subway,
-    church: Church
-};
+module.exports = exportAreas;
 
 
