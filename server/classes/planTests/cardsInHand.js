@@ -1,0 +1,15 @@
+const test = function cardsInHand( debug, faction, cardCount ){
+    let factionCardsInHand = faction.data.cards.hand.length;
+    let result = factionCardsInHand >= cardCount;
+
+    if( debug ) console.log(
+        'discardCards',
+        'cardCount req:', cardCount,
+        'factionCardsInHand:', factionCardsInHand,
+        'result:', result
+    );
+
+    return result;
+};
+
+module.exports = test;
