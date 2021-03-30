@@ -55,7 +55,7 @@
                 }
                 this.shared.event.emit('areaSelected', this.area );
             },
-            'shared.data.playerAction'(){
+            'shared.data.gameAction'(){
                 this.reset();
             }
         },

@@ -10,7 +10,7 @@ let obj = {
         this.setActivePlayerListener();
         this.allPlayers({ passed : false } );
         Server.saveToDB( this );
-        await this.pushGameDataToAllPlayers();
+        await this.pushGameDataToPlayers();
     },
 
 
@@ -71,7 +71,7 @@ let obj = {
     takePassAction( player ){
         player.data.passed = true;
         this.message({ message: `Have passed`, faction : player.faction() });
-        this.data.playerAction++;
+        this.data.gameAction++;
         if( this.allPlayersHavePassed() ){
             this.startCombatStep();
         } else {
@@ -81,7 +81,7 @@ let obj = {
 
     takeLockedAction( player ){
         this.message({ message: `are locked`, faction : player.faction() });
-        this.data.playerAction++;
+        this.data.gameAction++;
         this.advancePlayer();
     },
 
@@ -92,7 +92,7 @@ let obj = {
         let remainingSkips = faction.data.skips.max - faction.data.skips.used;
         this.message({ message: `skip their turn <span class="highlight">(${remainingSkips} skips remaining)</span>`, faction : faction });
 
-        this.data.playerAction++;
+        this.data.gameAction++;
         this.advancePlayer();
     },
 

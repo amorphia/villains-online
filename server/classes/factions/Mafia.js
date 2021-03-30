@@ -61,9 +61,9 @@ class Mafia extends Faction {
         player.setPrompt({ name : 'choose-target' });
 
         this.game().message({ message: `Is spying on the ${spy}`, faction: this });
-        this.game().data.playerAction++;
+        this.game().data.gameAction++;
         Server.saveToDB( this.game() );
-        await this.game().pushGameDataToAllPlayers();
+        await this.game().pushGameDataToPlayers();
     }
 
     factionCleanUp(){

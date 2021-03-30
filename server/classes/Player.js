@@ -112,12 +112,12 @@ class Player {
 
         // should we send the current game data to all players
         if( prompt.update ){
-            await this.game().pushGameDataToAllPlayers();
+            await this.game().pushGameDataToPlayers();
         }
 
         // should we send the game's player data to all players
         if( prompt.updatePlayerData ){
-            this.game().updatePlayerData();
+            await this.game().updatePlayerData();
         }
     }
 

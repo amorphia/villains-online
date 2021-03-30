@@ -33,7 +33,7 @@ let obj = {
         this.setAllPlayersActive();
         this.setStartOfTurnPrompts();
         Server.saveToDB( this, { type:'turn' } );
-        await this.pushGameDataToAllPlayers();
+        await this.pushGameDataToPlayers();
     },
 
     setStartOfTurnPrompts(){
@@ -61,13 +61,13 @@ let obj = {
         });
 
         this.message({ message: 'Have chosen their Target', faction : faction });
-        this.data.playerAction++;
+        this.data.gameAction++;
 
         if( this.allPlayersInactive() ){
             this.startPlaceTokensStep();
         } else {
             Server.saveToDB( this );
-            await this.pushGameDataToAllPlayers();
+            await this.pushGameDataToPlayers();
         }
     },
 

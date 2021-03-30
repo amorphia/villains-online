@@ -10185,7 +10185,7 @@ __webpack_require__.r(__webpack_exports__);
 
       this.shared.event.emit('areaSelected', this.area);
     },
-    'shared.data.playerAction': function sharedDataPlayerAction() {
+    'shared.data.gameAction': function sharedDataGameAction() {
       this.reset();
     }
   },

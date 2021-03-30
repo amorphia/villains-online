@@ -1,39 +1,56 @@
 let mixin = {
 
-    setPoints( player, data ){
+    /**
+     *
+     * @param player
+     */
+    joinGame( player ){
+        this.addPlayer( player );
+    },
+
+
+    /**
+     *
+     * @param player
+     */
+    leaveGame( player ){
+        this.removePlayer( player );
+    },
+
+    async setPoints( player, data ){
         let pointsTypeText = data.type;
 
         switch( data.type ){
             case 'ap':
                 pointsTypeText = 'Area Points';
                 this.factions[data.faction].gainAP( data.val );
-                this.updatePoints();
+                await this.updatePoints();
                 break;
             case 'pp':
                 pointsTypeText = 'Area Points';
                 this.factions[data.faction].gainPP( data.val );
-                this.updatePoints();
+                await this.updatePoints();
                 break;
             case 'energy':
                 this.factions[data.faction].data.energy += data.val;
-                this.updateResources();
+                await this.updateResources();
                 break;
             case 'resources':
                 this.factions[data.faction].data.resources += data.val;
-                this.updateResources();
+                await this.updateResources();
                 break;
         }
 
         this.message({ message: `manually adjusted the ${data.faction} ${pointsTypeText} (${data.val})`, class: 'warning', player : player });
-        this.updatePoints();
+        await this.updatePoints();
     },
 
-    sendBribe( player, recipient, bribe ){
+    async sendBribe( player, recipient, bribe ){
         player.faction().data.resources -= bribe;
         this.factions[recipient].gainResources( bribe );
         let icons = Array( bribe ).fill('xRx' ).join('');
         this.message({ message: `bribed ${this.getPlayerByFaction( recipient ).data.name} with ${icons}`, faction : player.faction() });
-        this.updateResources();
+        await this.updateResources();
     },
 
     hasPlayer( playerId ) {
@@ -113,7 +130,7 @@ let mixin = {
     },
 
     currentPlayer(){
-        return this.players[ this.data.playerOrder[this.data.activeIndex] ];
+        return this.players[ this.data.playerOrder[this.data.activePlayerIndex] ];
     },
 
     clearAllPlayerPrompts(){
@@ -122,7 +139,7 @@ let mixin = {
 
     async clearPlayerPrompt( player ){
         player.setPrompt({ active : false });
-        await this.pushGameDataToAllPlayers();
+        await this.pushGameDataToPlayers();
     },
 
     async advancePlayer( listener, advance = true ){
@@ -131,18 +148,18 @@ let mixin = {
         this.data.gameAction++;
         Server.saveToDB( this );
         this.setTimeout();
-        await this.pushGameDataToAllPlayers();
+        await this.pushGameDataToPlayers();
     },
 
     resetToFirstPlayer(){
-        // this.data.activeIndex = this.firstPlayer;
+        // this.data.activePlayerIndex = this.firstPlayer;
         // this.setOnePlayerActive( this.data.playerOrder[ this.firstPlayer ] );
-        this.data.activeIndex = 0;
+        this.data.activePlayerIndex = 0;
         this.setOnePlayerActive( this.data.playerOrder[0] );
     },
 
     advanceActivePlayer(){
-        let currentIndex = this.data.activeIndex;
+        let currentIndex = this.data.activePlayerIndex;
         let newIndex = null;
 
         while( newIndex === null ){
@@ -156,8 +173,8 @@ let mixin = {
             }
         }
 
-        this.data.activeIndex = newIndex;
-        this.setActivePlayerByActiveIndex();
+        this.data.activePlayerIndex = newIndex;
+        this.setActivePlayerByactivePlayerIndex();
     },
 
     getPlayerByIndex( index ){
@@ -169,12 +186,12 @@ let mixin = {
         return this.players[ this.factions[ faction ].data.owner ];
     },
 
-    setActivePlayerByActiveIndex(){
-        this.setOnePlayerActive( this.data.playerOrder[ this.data.activeIndex ] );
+    setActivePlayerByactivePlayerIndex(){
+        this.setOnePlayerActive( this.data.playerOrder[ this.data.activePlayerIndex ] );
     },
 
     setActivePlayerByPlayerOrder(){
-        this.data.activeIndex = 0;
+        this.data.activePlayerIndex = 0;
         this.setOnePlayerActive( this.data.playerOrder[ 0 ] );
     },
 
@@ -189,7 +206,7 @@ let mixin = {
         listener.name = listener.name || this.defaultListener || this.data.phase;
 
         _.forEach( this.players, player => {
-            if( player.id === this.data.playerOrder[ this.data.activeIndex ]  ){
+            if( player.id === this.data.playerOrder[ this.data.activePlayerIndex ]  ){
                 listener.players = player;
                 this.listen( listener );
             }
@@ -198,7 +215,7 @@ let mixin = {
 
     setActivePlayerPrompt( prompt, data ){
         _.forEach( this.players, player => {
-            if( player.id === this.data.playerOrder[ this.data.activeIndex ]  ){
+            if( player.id === this.data.playerOrder[ this.data.activePlayerIndex ]  ){
                 player.setPrompt({
                     name : prompt,
                     data : data
@@ -220,7 +237,7 @@ let mixin = {
             Server.io.to( 'lobby' ).emit( 'openGame', this.data );
         } else if( this.data.state !== 'loading' ) {
             player.joinRoom( this.data.id );
-            await this.pushGameDataToAllPlayers( player );
+            await this.pushGameDataToPlayers( player );
         }
     },
 

@@ -116,7 +116,7 @@ let obj = {
                 active : false,
                 passive : true
             }));
-        this.pushGameDataToAllPlayers();
+        this.pushGameDataToPlayers();
         if( Object.keys( this.factions ).length >= 4 ) Server.saveToTracker( this, scores, incomplete );
     },
 

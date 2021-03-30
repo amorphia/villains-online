@@ -20,7 +20,7 @@ let obj = {
 
         this.message({ message :  `The battle in the ${area.name} concludes`, class : 'highlight' });
 
-        await this.pushGameDataToAllPlayers();
+        await this.pushGameDataToPlayers();
         await this.wait( 3 );
         this.combat = null;
         this.data.combat = null;

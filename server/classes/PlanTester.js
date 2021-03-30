@@ -1,6 +1,13 @@
 class PlanTester {
     debug = true;
 
+    /**
+     * Test a plan card to determine which objectives have been completed, and how many total points may be scored
+     *
+     * @param {Faction} faction
+     * @param {object} plan
+     * @returns {{objectives: {array}, plan: {object}, selected: boolean, points: number}}
+     */
     test( faction, plan ){
 
         if( this.debug ) console.log( '', 'plan:', plan.name, 'faction:', faction.name );

@@ -9,7 +9,7 @@ let setup = {
         this.mergeSavedData( saved );
         _.forEach( this.factions, faction => faction.onSetup() );
         this.addPlayersToRoom();
-        await this.pushGameDataToAllPlayers();
+        await this.pushGameDataToPlayers();
     },
 
     updatePlayerSockets( saved ){
@@ -114,7 +114,7 @@ let setup = {
         this.randomizePlayerOrder();
         this.addPlayersToRoom();
         Server.closeOpenGame();
-        await this.pushGameDataToAllPlayers();
+        await this.pushGameDataToPlayers();
         this.setTimeout();
     },
 
@@ -133,7 +133,7 @@ let setup = {
         let message = `chose the ${factionName}`;
         if( random ) message = `Like the mighty eagle ${player.data.name} randomly chooses the ${factionName} `;
         this.message({ message: message, player : player, class : random ? 'highlight' : ''  });
-        await this.pushGameDataToAllPlayers();
+        await this.pushGameDataToPlayers();
 
         if( this.allPlayersHaveFactions() ){
             this.generateGame();

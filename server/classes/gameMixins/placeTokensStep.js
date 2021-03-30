@@ -11,7 +11,7 @@ let obj = {
         this.setActivePlayerListener();
         this.allPlayers({ passed : false } );
         Server.saveToDB( this );
-        await this.pushGameDataToAllPlayers();
+        await this.pushGameDataToPlayers();
     },
 
     placeAToken( player, areaId, tokenId ){
@@ -39,7 +39,7 @@ let obj = {
         this.popup( faction.playerId, { place : true, area : areaName, faction: faction.name });
 
         this.message({ message: message, faction : faction });
-        this.data.playerAction++;
+        this.data.gameAction++;
         this.advancePlayer();
     },
 
@@ -60,7 +60,7 @@ let obj = {
     passToken( player ){
         player.data.passed = true;
         this.message({ message: `Have passed`, faction : player.faction() });
-        this.data.playerAction++;
+        this.data.gameAction++;
         if( this.allPlayersHavePassed() ){
             this.startTakeActionsStep();
         } else {
