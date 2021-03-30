@@ -43,7 +43,7 @@ class PlanTester {
      *
      * @param {object} objective
      * @param {Faction} faction
-     * @returns {{result: {object}, failed: {boolean}}}
+     * @returns {object}
      */
     testObjective( objective, faction ) {
         let passedAllRequirements = true;
@@ -54,7 +54,7 @@ class PlanTester {
             let testResult = this.checkRequirement(requirement, faction);
             tests.push({test: requirement.test, result: testResult});
 
-            // if we failed this requirments flag the objective as failed
+            // if we failed this requirements flag the objective as failed
             if (!testResult) {
                 passedAllRequirements = false;
             }
