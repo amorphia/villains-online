@@ -188,6 +188,7 @@
                 });
             },
 
+
             initSocket(){
                 let socket = io( App.server );
                 this.shared.init( 'socket', socket );

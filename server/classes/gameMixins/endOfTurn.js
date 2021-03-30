@@ -94,7 +94,7 @@ let obj = {
                         name: 'score-upgrades',
                         data: { upgrades: upgrades }
                     }).then(([player, data]) => {
-                        player.setPrompt({ active: false, playerUpdate: true });
+                        player.setPrompt({ active: false, updatePlayerData: true });
                     })
                 );
             });
@@ -116,7 +116,7 @@ let obj = {
                 active : false,
                 passive : true
             }));
-        this.updateAll();
+        this.pushGameDataToAllPlayers();
         if( Object.keys( this.factions ).length >= 4 ) Server.saveToTracker( this, scores, incomplete );
     },
 
@@ -179,7 +179,7 @@ let obj = {
                     }).then( ([player, data]) => {
                         results.push( data );
                         this.message({ faction: faction, message: 'have scored their plans' });
-                        player.setPrompt({ active : false, playerUpdate : true });
+                        player.setPrompt({ active : false, updatePlayerData : true });
                     })
                 );
             });

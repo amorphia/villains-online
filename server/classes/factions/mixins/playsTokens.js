@@ -27,7 +27,7 @@ let obj = {
         } else {
             let cost = this.tokenCost( token, area, wildType );
             this.game().listen({ name : 'activate-decline', players : player, data : { token : token, cost : cost, wildType : wildType } });
-            await this.game().updateAll();
+            await this.game().pushGameDataToAllPlayers();
         }
     },
 

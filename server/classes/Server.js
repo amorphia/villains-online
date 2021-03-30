@@ -61,6 +61,16 @@ class Server {
         });
     }
 
+
+    /**
+     * Begin listening to a port
+     *
+     * @param {number} port
+     */
+    listen( port ){
+        this.server.listen( port );
+    }
+
     /**
      * Save a game to the database
      *

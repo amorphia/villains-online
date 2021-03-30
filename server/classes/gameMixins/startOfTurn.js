@@ -33,7 +33,7 @@ let obj = {
         this.setAllPlayersActive();
         this.setStartOfTurnPrompts();
         Server.saveToDB( this, { type:'turn' } );
-        await this.updateAll();
+        await this.pushGameDataToAllPlayers();
     },
 
     setStartOfTurnPrompts(){
@@ -67,7 +67,7 @@ let obj = {
             this.startPlaceTokensStep();
         } else {
             Server.saveToDB( this );
-            await this.updateAll();
+            await this.pushGameDataToAllPlayers();
         }
     },
 

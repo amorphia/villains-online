@@ -122,7 +122,7 @@ let mixin = {
 
     async clearPlayerPrompt( player ){
         player.setPrompt({ active : false });
-        await this.updateAll();
+        await this.pushGameDataToAllPlayers();
     },
 
     async advancePlayer( listener, advance = true ){
@@ -131,7 +131,7 @@ let mixin = {
         this.data.gameAction++;
         Server.saveToDB( this );
         this.setTimeout();
-        await this.updateAll();
+        await this.pushGameDataToAllPlayers();
     },
 
     resetToFirstPlayer(){
@@ -220,7 +220,7 @@ let mixin = {
             Server.io.to( 'lobby' ).emit( 'openGame', this.data );
         } else if( this.data.state !== 'loading' ) {
             player.joinRoom( this.data.id );
-            await this.updateAll( player );
+            await this.pushGameDataToAllPlayers( player );
         }
     },
 

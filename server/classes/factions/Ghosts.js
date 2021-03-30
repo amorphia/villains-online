@@ -239,7 +239,7 @@ class Ghosts extends Faction {
                 // once we get a response push the selected patsies to the units array
                 data.units.forEach( unitId => units.push( _this.game().objectMap[unitId] ) );
                 // then clear the player prompt
-                player.setPrompt({ active : false, playerUpdate : true });
+                player.setPrompt({ active : false, updatePlayerData : true });
             }));
 
         });

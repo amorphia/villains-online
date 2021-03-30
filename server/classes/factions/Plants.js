@@ -118,7 +118,7 @@ class Plants extends Faction {
                     if( unit.ready ) unit.ready = false;
                     units.push( unit );
 
-                    player.setPrompt({ active : false, playerUpdate : true });
+                    player.setPrompt({ active : false, updatePlayerData : true });
                 }));
             }
 

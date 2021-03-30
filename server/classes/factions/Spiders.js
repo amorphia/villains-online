@@ -131,7 +131,7 @@ class Spiders extends Faction {
                             this.game().message({ faction : faction, message : `units remain trapped in webs` });
                         }
 
-                        player.setPrompt({ active : false, playerUpdate : true });
+                        player.setPrompt({ active : false, updatePlayerData : true });
                 }));
             }
 

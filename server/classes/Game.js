@@ -139,7 +139,7 @@ class Game {
             });
         });
 
-        await this.updateAll();
+        await this.pushGameDataToAllPlayers();
 
         await this.wait( data.wait ).catch( error => console.error( error ) );
 
@@ -176,7 +176,7 @@ class Game {
         return new Promise(async (resolve, reject) => {
             args.callback = args => resolve( args );
             this.listen( args );
-            if( updateAll ) await this.updateAll();
+            if( updateAll ) await this.pushGameDataToAllPlayers();
         });
     }
 
@@ -283,7 +283,7 @@ class Game {
         }
     }
 
-    async updateAll( player = null ){
+    async pushGameDataToAllPlayers( player = null ){
         let recipient;
 
         // await check for all player sockets to exist
@@ -339,7 +339,7 @@ class Game {
 
     conclude( socket, timeout ){
         if( timeout ) this.message({ message : 'Game timed out due to inactivity', class : 'warning' });
-        _.forEach( this.players, player => player.clearGameData() );
+        _.forEach( this.players, player => player.leaveCurrentGame() );
         Server.deleteGame( socket, this.id );
     }
 

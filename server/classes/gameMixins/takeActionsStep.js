@@ -10,7 +10,7 @@ let obj = {
         this.setActivePlayerListener();
         this.allPlayers({ passed : false } );
         Server.saveToDB( this );
-        await this.updateAll();
+        await this.pushGameDataToAllPlayers();
     },
 
 

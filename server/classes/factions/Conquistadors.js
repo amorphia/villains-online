@@ -144,7 +144,7 @@ class Conquistadors extends Faction {
 
                     let message = `sacrifices <span class="faction-${item.name}item">${unitNames.join(', ')}</span>`;
                     this.game().message({ faction: item, message: message });
-                    player.setPrompt({ active : false, playerUpdate : true });
+                    player.setPrompt({ active : false, updatePlayerData : true });
                 }));
             });
 

@@ -32,7 +32,7 @@ class ToTheDeath extends Card {
                         } else {
                             faction.game().message({ message : `The ${item} have had enough bloodshed`, class : 'warning' });
                         }
-                        player.setPrompt({ active : false, playerUpdate : true });
+                        player.setPrompt({ active : false, updatePlayerData : true });
                     }));
                 }
 

@@ -11,7 +11,7 @@ class Shakedown extends Card {
                     promises.push( faction.game().promise({ players: item.playerId, name: 'discard-card', data : { count : 1 } }).then( ([player, data]) => {
                         let eventFaction = faction.game().factions[item.name];
                         eventFaction.discardCard( data.cards );
-                        player.setPrompt({ active : false, playerUpdate : true });
+                        player.setPrompt({ active : false, updatePlayerData : true });
                     }));
                 }
             });
