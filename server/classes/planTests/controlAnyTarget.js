@@ -1,3 +1,11 @@
+/**
+ * Does this faction control x players targets?
+ *
+ * @param debug
+ * @param faction
+ * @param targetCount
+ * @returns {boolean}
+ */
 const test = function controlAnyTarget( debug, faction, targetCount ){
     let areasControlled = faction.areas();
 

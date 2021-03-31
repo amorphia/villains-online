@@ -1,3 +1,10 @@
+/**
+ * has this faction exterminate their target?
+ *
+ * @param debug
+ * @param faction
+ * @returns {*}
+ */
 const test = function exterminateTarget( debug, faction ){
     let targetArea = faction.targetArea();
     let result = faction.hasExterminatedArea( targetArea );

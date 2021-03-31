@@ -1,3 +1,11 @@
+/**
+ * Does this faction control x enemy targets?
+ *
+ * @param debug
+ * @param faction
+ * @param targetCount
+ * @returns {boolean}
+ */
 const test = function controlEnemyTargets( debug, faction, targetCount ){
     let areasControlled = faction.areas();
 

@@ -1,3 +1,12 @@
+/**
+ * Has this faction killed x units of the given types?
+ *
+ * @param debug
+ * @param faction
+ * @param types
+ * @param killCount
+ * @returns {boolean}
+ */
 const test = function killTypes( debug, faction, types, killCount ){
     let typesKilled = faction.unitTypesKilled();
     let killsOfTypes = 0;

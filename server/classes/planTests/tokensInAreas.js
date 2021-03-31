@@ -1,3 +1,12 @@
+/**
+ * Does this faction have tokens in x different areas?
+ *
+ * @param debug
+ * @param faction
+ * @param areaCount
+ * @param type
+ * @returns {boolean}
+ */
 const test = function tokensInAreas( debug, faction, areaCount, type ) {
     let factionCount = _.areasWithTokensCount( faction, faction.game().data.areas, type );
 

@@ -1,4 +1,13 @@
-const test = function unitsAtEnemyTargets( debug, faction, unitCount, unitType ){
+/**
+ * Does this faction have x units (optionally of a specific type) in enemy Target areas?
+ *
+ * @param debug
+ * @param faction
+ * @param unitCount
+ * @param unitType
+ * @returns {boolean}
+ */
+const test = function unitsAtEnemyTargets( debug, faction, unitCount, unitType = null ){
     let options = {};
     let factionUnitsAtEnemyTargets = 0;
     if( unitType ) options.type = unitType;

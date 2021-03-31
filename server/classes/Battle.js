@@ -1,20 +1,19 @@
 class Battle {
-    gameId;
-    area;
-    options;
+    gameId; // {string}
+    area; // {Area}
+    options; // {object}
 
     data = {
-        title : 'Resolving pre-combat effects',
-        factionIndex : 0,
-        attackBonus : null,
-        areaName : null,
-        currentUnit : null,
-        factions : [],
-        attacks : {},
-        lastAttack : null,
-        completed : false,
-        preCombatEffects : true,
-        isFirstStrikePhase : false,
+        title : 'Resolving pre-combat effects', // {string} text to display in the combat UI title bar
+        factionIndex : 0, // {number} the index of the faction currently resolving their attacks
+        attackBonus : null, // {number} global attack bonus applied to all units in this battle
+        areaName : null, // {string} the name of the area this battle is taking place in
+        currentUnit : null, // {Unit} the unit currently resolving its attacks
+        factions : [], // {array} the factions participating in this combat
+        lastAttack : null, // the results of the last attack made, used to display in the UI
+        completed : false, // has this battle completed
+        preCombatEffects : true, // are we in the pre-combat effect step?
+        isFirstStrikePhase : false, // are we in the first strike phase?
     };
 
 
@@ -35,6 +34,9 @@ class Battle {
      *
      */
 
+    /**
+     * Initialize a Battle
+     */
     async init(){
         // if we can't battle in this area, abort
         if( !this.area.canBattle() ) return this.game().message({
@@ -47,9 +49,12 @@ class Battle {
     }
 
 
+    /**
+     * Resolve this battle
+     */
     async resolveBattle(){
         // prebattle triggers
-        await this.resolveBeforeBattleTriggers();
+        await this.resolveBattleTriggers( 'onBeforeBattle' );
 
         // first strike phase
         if( this.hasFirstStrikeUnits() ){
@@ -62,29 +67,28 @@ class Battle {
         if( this.area.canBattle() ) await this.resolveStrikePhase();
 
         // after battle triggers
-        await this.resolveAfterBattleTriggers();
+        await this.resolveBattleTriggers( 'onAfterBattle' );
 
         // finish up
         this.data.title = 'Battle completed';
         this.data.completed = true;
     }
 
-
-    async resolveBeforeBattleTriggers(){
+    /**
+     * resolve battle triggers
+     */
+    async resolveBattleTriggers( triggerType ){
         for( let faction of Object.values( this.game().factions ) ){
-            await faction.onBeforeBattle( this );
+            await faction[triggerType]( this );
         }
-        this.data.preCombatEffects = false;
+
+        if( triggerType === 'onBeforeBattle' ) this.data.preCombatEffects = false;
     }
 
 
-    async resolveAfterBattleTriggers(){
-        for( let faction of Object.values( this.game().factions ) ){
-            await faction.onAfterBattle( this );
-        }
-    }
-
-
+    /**
+     * Resolve a strike phase
+     */
     async resolveStrikePhase(){
         this.data.factionIndex = 0;
         this.data.currentUnit = null;
@@ -107,6 +111,9 @@ class Battle {
     }
 
 
+    /**
+     * Generate our faction list
+     */
     makeFactionsList(){
         // make a list of all the units that will be attacking this battle, by faction
         _.forEach( this.game().factions, faction => this.setFactionAttackingUnits( faction ) );
@@ -125,6 +132,11 @@ class Battle {
     }
 
 
+    /**
+     * Set which units from this faction can attack
+     *
+     * @param faction
+     */
     setFactionAttackingUnits( faction ){
         // get our units in this area
         let unitsInArea = _.factionUnitsInArea( faction, this.area.name );
@@ -146,6 +158,11 @@ class Battle {
     }
 
 
+    /**
+     * Resolve a strike phase for a given faction
+     *
+     * @param faction
+     */
     async resolveFactionStrikePhase( faction ){
         this.game().message({
             faction : faction.name,
@@ -165,29 +182,43 @@ class Battle {
     }
 
 
-    async makeAttacks( factionData ){
+    /**
+     * Resolve the given faction's attacks for this strike phase
+     *
+     * @param faction
+     */
+    async makeAttacks( faction ){
         // while we still have units to attack with, resolve the next attack
-        while( this.hasUnitsToAttack( factionData ) ){
-            await this.resolveNextAttack( factionData );
+        while( this.hasUnitsToAttack( faction ) ){
+            await this.resolveNextAttack( faction );
         }
 
         // clear any units that still need to attack
-        this.clearFactionNeedsToAttack( factionData );
+        this.clearFactionNeedsToAttack( faction );
     }
 
 
-    // mark all remaining units as no longer needing to attack. Needed for cases where the
-    // opponents are wiped out before all of your units have had a chance to attack
-    clearFactionNeedsToAttack( factionData ){
-        factionData.units.forEach( unit => {
+    /**
+     * mark all remaining units as no longer needing to attack. Needed for cases where the
+     * opponents are wiped out before all of your units have had a chance to attack
+     *
+     * @param faction
+     */
+    clearFactionNeedsToAttack( faction ){
+        faction.units.forEach( unit => {
             if( unit.needsToAttack ) unit.needsToAttack = false
         });
     }
 
 
-    async resolveNextAttack( factionData ){
+    /**
+     * resolve the next attack by a faction this strike phase
+     *
+     * @param faction
+     */
+    async resolveNextAttack( faction ){
         let player, data;
-        let gameFaction = this.game().factions[factionData.name];
+        let gameFaction = this.game().factions[faction.name];
 
         // lets get our next attacker
         let unit = await this.chooseNextAttacker( gameFaction );
@@ -204,15 +235,19 @@ class Battle {
             inCombat : true,
         };
 
-
         // attack with the unit
         await gameFaction.attack( attackArgs ).catch( error => console.error( error ) );
         unit.needsToAttack = false;
         this.data.currentUnit = null;
-
     }
 
 
+    /**
+     * Allow a player to choose their next attacking unit
+     *
+     * @param gameFaction
+     * @returns {Promise<*>}
+     */
     async chooseNextAttacker( gameFaction ){
         let player, data, unit;
 
@@ -246,9 +281,13 @@ class Battle {
     }
 
 
+    /**
+     * Manually removes a unit from combat. if something unusual happens to a unit mid battle
+     * (such as it's replaced with an enemy unit) then we need to remove it from the combat entirely
+     *
+     * @param unit
+     */
     removeUnitFromCombat( unit ){
-        // if something unusual happens to a unit mid battle (such as it's replaced with an
-        // enemy unit) then we need to remove it from the combat entirely
         if( unit.needsToAttack ) unit.needsToAttack = false;
         for( let faction of this.data.factions ){
             if( faction.name !== unit.faction ) continue;
@@ -265,11 +304,24 @@ class Battle {
      *
      */
 
+
+    /**
+     * Returns this battle Game instance
+     *
+     * @returns {Game}
+     */
     game(){
         return Server.games[this.gameId];
     }
 
 
+    /**
+     * Does this faction have units that can currently attack?
+     *
+     * @param faction
+     * @param basic
+     * @returns {boolean}
+     */
     hasUnitsToAttack( faction, basic ){
         // do we have a unit with an attack that hasn't attacked yet?
         let hasAttackingUnit = _.find( faction.units, unit => unit.needsToAttack );
@@ -281,12 +333,22 @@ class Battle {
     }
 
 
-
+    /**
+     * Are there any first strike units present in this area?
+     *
+     * @returns {boolean}
+     */
     hasFirstStrikeUnits(){
         return this.area.units().filter( unit => unit.firstStrike ).length > 0;
     }
 
 
+    /**
+     * Checks to see if a given unit can attack this phase
+     *
+     * @param unit
+     * @returns {boolean}
+     */
     canAttackThisPhase( unit ){
         // does this unit have an attack value, and does this unit's attack speed match the current strike phase
         // ie. if its currently the first strike phase and the unit has first strike, or the reverse

@@ -232,9 +232,31 @@ class Game {
         }
     }
 
+    /**
+     * Generate a promise to facilitate waiting for a player to respond to a prompt
+     *
+     * @param args // the arguments for the promise
+     * @param {boolean} updateAll // should we update the game data to all players
+     * @returns {Promise}
+     */
+    async promise( args = {}, updateAll = true ){
+
+        return new Promise(async (resolve, reject) => {
+            // create an anonymous function to be our callback to the event listener response
+            args.callback = (args) => resolve( args );
+
+            // set our event listener
+            this.listen( args );
+
+            // push updated game data to all players
+            if( updateAll ) await this.pushGameDataToPlayers();
+        });
+    }
+
+
 
     /**
-     * Allow a player to respond to a game event listener
+     * Handle a player response to a game prompt promise listener
      *
      * @param player
      * @param action
@@ -268,21 +290,6 @@ class Game {
     }
 
 
-    /**
-     * Generate a promise to allow a player to respond to a game event
-     *
-     * @param args // the arguments for the promise
-     * @param {boolean} updateAll // should we update the game data to all players
-     * @returns {Promise}
-     */
-    async promise( args = {}, updateAll = true ){
-
-        return new Promise(async (resolve, reject) => {
-            args.callback = args => resolve( args );
-            this.listen( args );
-            if( updateAll ) await this.pushGameDataToPlayers();
-        });
-    }
 
 
     /**

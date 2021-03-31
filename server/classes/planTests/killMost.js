@@ -1,3 +1,10 @@
+/**
+ * Has this faction killed more units than any other player?
+ *
+ * @param debug
+ * @param faction
+ * @returns {boolean}
+ */
 const test = function killMost( debug, faction ){
     let killCounts = Object.values( faction.game().factions )
         .map( item => {

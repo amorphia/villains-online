@@ -1,3 +1,11 @@
+/**
+ * Has this faction conquered x areas?
+ *
+ * @param debug
+ * @param faction
+ * @param areaCount
+ * @returns {boolean}
+ */
 const test = function conquerAreas( debug, faction, areaCount ){
     let factionAreasConquered = faction.data.conqueredAreas.length;
     let result = factionAreasConquered >= areaCount;

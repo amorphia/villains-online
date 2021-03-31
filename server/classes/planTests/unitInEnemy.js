@@ -1,3 +1,12 @@
+/**
+ * Does this faction of x units of a given type in enemy areas?
+ *
+ * @param debug
+ * @param faction
+ * @param unitType
+ * @param unitCount
+ * @returns {boolean}
+ */
 const test = function unitInEnemy( debug, faction, unitType, unitCount ){
     let enemyAreas = [];
 

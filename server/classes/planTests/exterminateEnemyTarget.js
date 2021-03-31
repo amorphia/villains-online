@@ -1,3 +1,10 @@
+/**
+ * Has this faction exterminated an enemy target?
+ *
+ * @param debug
+ * @param faction
+ * @returns {boolean}
+ */
 const test = function exterminateEnemyTarget( debug, faction ){
     let result;
 
