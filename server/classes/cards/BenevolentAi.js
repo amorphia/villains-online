@@ -1,6 +1,6 @@
 let Card = require( './Card' );
 
-class BenevolentAI extends Card {
+class BenevolentAi extends Card {
     handle( faction ){
         faction.drawCards(1);
         faction.data.cardLimit++;
@@ -11,4 +11,4 @@ class BenevolentAI extends Card {
     }
 }
 
-module.exports = BenevolentAI;
+module.exports = BenevolentAi;
