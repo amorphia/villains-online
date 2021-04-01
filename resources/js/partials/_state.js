@@ -194,11 +194,11 @@ window.App.state = {
     },
 
     getPlayer(){
-        return this.data.players[this.id];
+        return this.data?.players[this.id];
     },
 
     isActive(){
-       return this.getPlayer().active;
+       return this.getPlayer()?.active;
     },
 
 

@@ -163,8 +163,7 @@ class Spiders extends Faction {
             // ask each player if they want to free any units in webs
             let promises = [];
             for( let factionName of factions ) {
-                let faction = this.game().factions[factionName];
-                promises.push( this.factionFreeFromWebs( faction ) );
+                promises.push( this.factionFreeFromWebs( this.game().factions[factionName] ) );
             }
 
             // wait for all players to finish
@@ -185,7 +184,7 @@ class Spiders extends Faction {
         let player, data;
 
         return this.game().promise({ players: faction.playerId, name: 'free-units', data : {} })
-            .then( async ([player, data]) => this.handleFreeFromWebsResponse( player, data, faction ) );
+            .then( ([player, data]) => this.handleFreeFromWebsResponse( player, data, faction ) );
     }
 
 

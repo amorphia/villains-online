@@ -96064,10 +96064,14 @@ window.App.state = {
     return this.getPlayerFaction(player).name;
   },
   getPlayer: function getPlayer() {
-    return this.data.players[this.id];
+    var _this$data;
+
+    return (_this$data = this.data) === null || _this$data === void 0 ? void 0 : _this$data.players[this.id];
   },
   isActive: function isActive() {
-    return this.getPlayer().active;
+    var _this$getPlayer;
+
+    return (_this$getPlayer = this.getPlayer()) === null || _this$getPlayer === void 0 ? void 0 : _this$getPlayer.active;
   },
   groupByCount: function groupByCount(collection, grouping) {
     var output = _.groupBy(collection, grouping);
