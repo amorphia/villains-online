@@ -16,7 +16,7 @@ class Loyalists extends Faction {
         //this.data.statusIcon = 'knight';
         //this.data.statusDescription = 'has knighted units';
 
-        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent'];
+        this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent'];
 
         // tokens
         this.tokens['knight'] = {
@@ -69,7 +69,7 @@ class Loyalists extends Faction {
                 hitsAssigned: 0,
                 onMove: 'placeServants',
                 onDeploy: 'placeServants',
-                onKilled: 'queenDeath'
+                onUnitKilled: 'queenDeath'
             }
         };
     }

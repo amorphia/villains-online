@@ -79,7 +79,7 @@ class Battle {
      */
     async resolveBattleTriggers( triggerType ){
         for( let faction of Object.values( this.game().factions ) ){
-            await faction[triggerType]( this );
+            if( faction.triggers[triggerType] ) await faction[ faction.triggers[triggerType] ]( this );
         }
 
         if( triggerType === 'onBeforeBattle' ) this.data.preCombatEffects = false;

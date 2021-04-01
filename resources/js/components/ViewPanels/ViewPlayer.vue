@@ -195,7 +195,7 @@
                             </div>
                          </div>
 
-                        <div v-if="faction.flippedUnits && faction.flippedUnits.includes( type )" class="width-100 pos-relative ratio-square">
+                        <div v-if="faction.flipableUnits && faction.flipableUnits.includes( type )" class="width-100 pos-relative ratio-square">
                             <div class="view-player__unit">
                                 <img class="view-player__unit-image"
                                      :src="`/images/factions/${faction.name}/units/${type}-flipped.png`">

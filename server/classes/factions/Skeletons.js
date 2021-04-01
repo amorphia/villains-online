@@ -18,7 +18,7 @@ class Vampires extends Faction {
         // icons
         this.data.statusIcon = 'skeleton';
         this.data.statusDescription = 'has skeleton units';
-        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
+        this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // tokens
         this.tokens['card'].count = 4;

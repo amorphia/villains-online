@@ -14,6 +14,11 @@ class Bureau extends Faction {
         this.data.focusDescription = "Have the most tokens in many areas";
         this.data.bonusDeploy = { type: 'champion', count : 1 };
 
+        this.triggers = {
+            "onCleanUp" : "resetUsedSkips",
+            "onAfterActivateToken" : "eraseThePast"
+        };
+
         this.data.skips = {
             max : 0,
             used : 0,
@@ -59,8 +64,16 @@ class Bureau extends Faction {
         this.data.skips.max = n === 1 ? 1 : 3;
     }
 
+    takeSkipAction( player ){
+        this.data.skips.used++;
 
-    async onAfterActivateToken( token ){
+        let remainingSkips = this.data.skips.max - this.data.skips.used;
+        this.message({ message: `skip their turn <span class="highlight">(${remainingSkips} skips remaining)</span>`, faction : this });
+
+        this.game().advancePlayer();
+    }
+
+    async eraseThePast( token ){
         let player, data, area = this.game().areas[token.location];
         if( token.faction !== this.name || !area ) return;
 
@@ -88,11 +101,30 @@ class Bureau extends Faction {
         this.game().message({ faction : this, message: `Erases the past in the ${area.name}` });
     }
 
+
     canActivateLoop( token, area ) {
         return true;
     }
 
-    async loopAction( area ){
+    loopToken() {
+        this.game().advancePlayer();
+    }
+
+
+    async takeLoopAction( player, areaName ){
+        let area = this.game().areas[areaName];
+
+        try {
+            await this.resolveLoopAction( area );
+        } catch( error ){
+            console.error( error );
+        }
+
+        this.game().advancePlayer();
+    }
+
+
+    async resolveLoopAction( area ){
         let player, data, loop = this.data.tokens.find( token => token.type === 'loop' );
 
         [player, data] = await this.game().promise({
@@ -116,11 +148,8 @@ class Bureau extends Faction {
     }
 
 
-    loopToken() {
-        this.game().advancePlayer();
-    }
 
-    factionCleanUp(){
+    resetUsedSkips(){
         this.data.skips.used = 0;
     }
 }

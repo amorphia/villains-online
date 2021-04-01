@@ -30,7 +30,7 @@ let obj = {
         if( args.pod ) return;
 
         for( let faction of Object.values( this.game().factions ) ){
-            await faction.onAfterActivateToken( args.token );
+            if( faction.triggers.onAfterActivateToken ) await faction[faction.triggers.onAfterActivateToken]( args.token );
         }
 
         this.game().advancePlayer();
@@ -50,11 +50,11 @@ let obj = {
         [player, data] = await this.game().promise({ players: player, name: 'choose-card', data : data })
             .catch( error => console.error( error ) );
 
-        return this.processCard( args, data );
+        return this.resolveCard( args, data );
     },
 
 
-    async processCard( args, data ){
+    async resolveCard( args, data ){
         if( data.decline ) return { declined : true };
 
         let card = this.game().objectMap[ data.cardId ];

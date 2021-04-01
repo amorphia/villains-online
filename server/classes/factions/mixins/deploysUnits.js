@@ -26,7 +26,7 @@ let obj = {
         if( args.pod ) return;
 
         for( let faction of Object.values( this.game().factions ) ){
-            await faction.onAfterActivateToken( args.token );
+            if( faction.triggers.onAfterActivateToken ) await faction[faction.triggers.onAfterActivateToken]( args.token );
         }
 
         this.game().advancePlayer();

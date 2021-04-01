@@ -123,7 +123,7 @@ class Area {
 
         if( newController ) {
             data.capitolToken = this.onControl(newController);
-            newController.onControlArea( this );
+            if( newController.triggers.onControlArea ) newController[newController.triggers.onControlArea]( this );
         }
 
         return data;

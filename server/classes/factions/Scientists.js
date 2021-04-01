@@ -16,8 +16,11 @@ class Scientists extends Faction {
         //this.data.maxEnergy = 10;
         this.data.fusion = 0;
         this.data.upgradeCardDraw = 0;
+        this.data.flipableUnits = ['champion'];
 
-        this.data.flippedUnits = ['champion'];
+        this.triggers = {
+            "onCleanUp" : "resetFusionCount"
+        };
 
         // tokens
         this.tokens['card'].count = 4;
@@ -86,7 +89,7 @@ class Scientists extends Faction {
         }
     }
 
-    factionCleanUp(){
+    resetFusionCount(){
        this.data.fusion = 0;
     }
 

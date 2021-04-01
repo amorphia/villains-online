@@ -7,6 +7,11 @@ class Conquistadors extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggers
+        this.triggers = {
+            "onControlArea" : "conquerArea"
+        };
+
         //data
         this.data.name = this.name;
         this.data.title = "Los Conquistadores";
@@ -87,7 +92,7 @@ class Conquistadors extends Faction {
     }
 
 
-    onControlArea( area ){
+    conquerArea( area ){
         if( !area.data.conquered ){
             area.data.conquered = true;
             this.data.conqueredAreas.push( area.name );

@@ -139,6 +139,23 @@ class Ghosts extends Faction {
     }
 
 
+    async takeMaterializeAction( player, areaName ){
+        let area = this.game().areas[areaName];
+
+        if( this.game().data.gameAction !== this.data.lastMaterializeGameAction ){
+            try {
+                await this.materializeAction( area );
+            } catch( error ){
+                console.error( error );
+            }
+        } else {
+            this.message({ message: 'Too soon to materialize again', class: 'warning' });
+        }
+
+        this.game().advancePlayer( {}, false  );
+    }
+
+
     async materializeAction( area ){
         let player, data;
 

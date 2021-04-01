@@ -7,6 +7,11 @@ class Witches extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggers
+        this.triggers = {
+            "onCleanUp" : "enchantUnits"
+        };
+
         //data
         this.data.name = this.name;
         this.data.title = "The Witches of Havlocke";
@@ -16,7 +21,7 @@ class Witches extends Faction {
         this.data.lastMagickGameAction = 0;
         this.data.magickCardsFree = false;
 
-        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
+        this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // icons
         this.data.statusIcon = 'enchanted';
@@ -47,35 +52,101 @@ class Witches extends Faction {
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                onDeploy : 'cordellaDeploy',
+                onDeploy : 'cordellaDeployTrigger',
             }
         };
     }
 
 
-    processUpgrade( n ){
-        if( n === 1 ){
+    /**
+     * Process this faction's upgrades
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+        if( upgrade === 1 ){
+            // reveal two cards instead of one
             this.data.magickCardsRevealed = 2;
         } else {
+            // reveal two cards instead of one aaaaand playing the card is freeeeeee!
             this.data.magickCardsRevealed = 2;
             this.data.magickCardsFree = true;
         }
     }
 
-    async revealMagick( area ){
-        let player, data, cards;
 
+    /**
+     * Handle the take magick action
+     *
+     * @param player
+     * @param areaName
+     */
+    async takeMagickAction( player, areaName ){
+        let area = this.game().areas[areaName];
+
+        // We can't take a magick action twice in a row
+        if( this.game().data.gameAction === this.data.lastMagickGameAction ) {
+            this.message({ message: 'Too soon to magick again', class: 'warning' });
+            return;
+        }
+
+        // resolve our magick action
+        try {
+            await this.resolveMagickAction( area );
+        } catch( error ){
+            console.error( error );
+        }
+
+        // advance to the next action, but don't advance to the next player
+        this.game().advancePlayer( {}, false );
+    }
+
+
+    /**
+     * Resolve the Magick action
+     *
+     * @param area
+     */
+    async resolveMagickAction( area ){
+        let player, data, args, card;
+
+        // record this game action as the last time we resolved the magick action (we haven't incremented
+        // the gameAction counter yet for this action, so we gotta add one to it now)
+        this.data.lastMagickGameAction = this.game().data.gameAction + 1;
+
+        // flip our units in this area to their regular side
+        this.disenchantUnits( area );
+
+        // reveal our magick card(s) and allow the player to decide which to play
+        [args, data, card] = await this.revealMagickCards( area );
+
+        // if the player can't / wont play any of the revealed cards, exit
+        if( !card ){
+            this.game().message({ faction : this, message : 'decline to cast a magick spell' });
+            return
+        }
+
+        // prepare our data, then resolve our action card
+        args.area = this.game().areas[args.area];
+        data.cardId = card;
+        data.cost = this.data.magickCardsFree ? 0 : this.game().objectMap[ card ].cost;
+        await this.resolveCard( args, data );
+    }
+
+
+    /**
+     * Reveal Magick cards and allow player to choose one to resolve (if applicable)
+     *
+     * @param area
+     */
+    async revealMagickCards( area ){
+        let player, data;
+
+        // show magick popup
         this.game().popup( this.playerId, { magick : true, area : area.name, faction : this.name });
 
-        this.drawCards( this.data.magickCardsRevealed );
-        cards = this.data.cards.hand.slice( -this.data.magickCardsRevealed );
-
-        this.game().message({
-            faction : this,
-            message: `use magick in the <span class="highlight">${area.name}</span> revealing:`,
-            type : 'cards',
-            cards : cards,
-        });
+        // draw our magick cards
+        let cards = this.drawMagickCards();
 
         let args = {
             area : area.name,
@@ -83,8 +154,10 @@ class Witches extends Faction {
             free : this.data.magickCardsFree
         };
 
+        // if we have our second upgrade, all cards are freeeeee!
         if( this.data.magickCardsFree ) args.cost = 0;
 
+        // allow player to select a valid card (if any)
         [player, data] = await this.game().promise({
             players: this.playerId,
             name: 'choose-magick',
@@ -98,40 +171,66 @@ class Witches extends Faction {
     }
 
 
-    dienchantUnits( area ){
+    /**
+     * Draw cards to be revealed to our magick ability
+     *
+     * @returns {array}
+     */
+    drawMagickCards(){
+        // draw cards equal to our magickCardsRevealed property, then remove them from our hand because we
+        // don't actually want to treat them as regularly drawn cards
+        this.drawCards( this.data.magickCardsRevealed );
+        let cards = this.data.cards.hand.slice( -this.data.magickCardsRevealed );
+
+        // reveal the cards to all players
+        this.game().message({
+            faction : this,
+            message: `use magick in the <span class="highlight">${area.name}</span> revealing:`,
+            type : 'cards',
+            cards : cards,
+        });
+
+        return cards;
+    }
+
+
+    /**
+     * Flip our enchanted units in this area to their front side
+     *
+     * @param area
+     */
+    disenchantUnits( area ){
         this.data.units.forEach( unit => {
             if( unit.location === area.name && unit.flipped ) this.unflipUnit( unit );
         })
     }
 
 
-    async magickAction( area ){
-        let player, data, args, card;
-
-        this.data.lastMagickGameAction = this.game().data.gameAction + 1;
-
-        this.dienchantUnits( area );
-        [args, data, card] = await this.revealMagick( area );
-
-        if( !card ) return this.game().message({ faction : this, message : 'decline to cast a magick spell' });
-
-        args.area = this.game().areas[args.area];
-        data.cardId = card;
-        data.cost = this.data.magickCardsFree ? 0 : this.game().objectMap[ card ].cost;
-
-        await this.processCard( args, data );
-    }
-
-
+    /**
+     * Can we activate our brew token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
     canActivateBrew( token, area ) {
-        return !! this.data.tokens.find( token => token.location === area.name && token.revealed && token.type !== 'brew' );
+        // do we have at least one other revealed token in this area? Then yes.
+        return !! this.data.tokens.find( token => token.location === area.name
+                                               && token.revealed
+                                               && token.type !== 'brew' );
     }
 
 
+    /**
+     * Resolve our brew token
+     *
+     * @param args
+     */
     async brewToken( args ) {
+
+        // flip each token in this area that is revealed, except the brew token itself
         this.data.tokens.forEach( token => {
-            if(
-                token.location === args.area.name
+            if( token.location === args.area.name
                 && token.revealed
                 && token.type !== 'brew'
             ){
@@ -143,6 +242,10 @@ class Witches extends Faction {
         this.game().advancePlayer();
     }
 
+
+    /**
+     * Each unit in play becomes enchanted
+     */
     enchantUnits(){
         let areas = this.areas();
 
@@ -151,20 +254,24 @@ class Witches extends Faction {
         });
     }
 
+
+    /**
+     * The given unit becomes enchanted
+     *
+     * @param unit
+     */
     enchantUnit( unit ){
         unit.flipped = true;
     }
 
-    async cordellaDeploy( event ){
+
+    /**
+     * When cordella is deployed, she becomes enchanted
+     *
+     * @param event
+     */
+    async cordellaDeployTrigger( event ){
         this.enchantUnit( event.unit );
-    }
-
-    factionCleanUp(){
-        this.enchantUnits();
-    }
-
-    unflipUnit( unit ) {
-        unit.flipped = false;
     }
 
 }

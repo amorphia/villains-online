@@ -1,17 +1,78 @@
 
 let setup = {
 
+    /**
+     * Handle a player response to the "choose faction" prompt
+     *
+     * @param player
+     * @param factionName
+     * @param random
+     */
+    async chooseFaction( player, factionName, random ){
+        if( ! player.data.active ) return;
+        let faction = this.data.factions[ factionName ];
+
+        // set player data and faction owner
+        player.data.faction = factionName;
+        faction.owner = player.id;
+
+        // emit faction selected and advance the active player
+        Server.io.to( this.id ).emit( 'factionSelected', factionName );
+        this.advanceActivePlayer();
+
+        // send our game log message for this player's choice, being sure to laud those players bold enough to
+        // choose their faction randomly
+        let message = `chose the ${factionName}`;
+        if( random ) message = `Like the mighty eagle ${player.data.name} randomly chooses the ${factionName} `;
+        this.message({ message: message, player : player, class : random ? 'highlight' : ''  });
+
+        // update players
+        await this.pushGameDataToPlayers();
+
+        // if all players have chosen their factions then build the game world
+        // and start the first turn
+        if( this.allPlayersHaveFactions() ){
+            this.generateGame();
+            _.forEach( this.factions, faction => faction.onSetup() );
+            this.resolveStartOfTurnStep();
+        }
+    },
+
+
+    /**
+     * Manage loading a saved game
+     *
+     * @param saved
+     */
     async loadSavedGame( saved ){
         this.data.state = 'loading';
 
+        // update the game's player sockets to make sure they match the player's current socket IDs
         this.updatePlayerSockets( saved );
+
+        // build the game world
         this.generateGame( saved );
+
+        // merge in the saved data
         this.mergeSavedData( saved );
+
+        // run each faction's on setup trigger
         _.forEach( this.factions, faction => faction.onSetup() );
+
+        // add each player to this game room
         this.addPlayersToRoom();
+
+        // push the game data to each player
         await this.pushGameDataToPlayers();
     },
 
+
+    /**
+     * update the game's player sockets to make sure they match the player's current socket IDs
+     * and have them join the game
+     *
+     * @param saved
+     */
     updatePlayerSockets( saved ){
         _.forEach( saved.players, (player, id) =>{
             if( Server.players[id] ){
@@ -23,11 +84,23 @@ let setup = {
         delete saved.data.socketMap;
     },
 
+
+
+    /**
+     * Handle merging the saved game data into our generated game object
+     *
+     * @param saved
+     */
     mergeSavedData( saved ){
 
+        // update our saved socketmap to our current socket map so we don't merge in outdated socket IDs
         saved.socketMap = this.socketMap;
+
+        // set our game action
         this.data.gameAction = saved.data.gameAction;
 
+        // the linking function we will use to make sure we rebuild all of our
+        // references properly when merging in saved game data
         let linkFunc = ( objVal, srcVal ) => {
             if ( _.isArray( objVal ) ) {
                 let linked = [];
@@ -68,100 +141,74 @@ let setup = {
         _.mergeWith( this.deck, saved.deck, linkFunc );
         this.data.discard = this.deck.discard;
 
-        //this.relinkSavedData( saved.data );
     },
 
 
-    relinkSavedData( saved ){
-        this.relink( this.areas, saved.areas );
-        this.relink( this.factions, saved.factions );
-        this.relink( this.deck, saved.deck );
-    },
-
-    relink( target, source ){
-        _.mergeWith( target, source, (objVal, srcVal) => {
-
-            if( Server.playerSocketMap[objVal] ){
-                return objVal;
-            }
-
-            if (_.isArray( objVal ) ) {
-                let linked = [];
-                srcVal.forEach( item => {
-                   if( item && item.id ){
-                       linked.push( this.objectMap[item.id]);
-                   } else {
-                       linked.push( srcVal );
-                   }
-                });
-                return linked;
-            }
-        });
-    },
-
+    /**
+     * Start our game, wee haw!
+     *
+     * @param player
+     * @param options
+     */
     async startGame( player, options = {} ){
-        if( this.data.state !==  'open' ) return;
+        // if we aren't currenly open then there must be a mistake, abort!
+        if( this.data.state !== 'open' ) return;
 
         // set game options
-        console.log( 'options', options );
         Object.assign( this.data, options );
 
+        // create a new save game model in the DB
         Server.saveNewGame( this );
 
         this.data.state = 'choose-factions';
         this.data.factions = _.cloneDeep( require('../data/factionList') );
 
+        // reandomize our player order and add those players to this socket.io game room
         this.randomizePlayerOrder();
         this.addPlayersToRoom();
+
+        // close our game to new players
         Server.closeOpenGame();
+
+        // push our game data to each player
         await this.pushGameDataToPlayers();
+
+        // set our game timeout counter
         this.setTimeout();
     },
 
 
-    async chooseFaction( player, factionName, random ){
-        if( ! player.data.active ) return;
 
-        let faction = this.data.factions[ factionName ];
 
-        player.data.faction = factionName;
-        faction.owner = player.id;
-
-        Server.io.to( this.id ).emit( 'factionSelected', factionName );
-        this.advanceActivePlayer();
-
-        let message = `chose the ${factionName}`;
-        if( random ) message = `Like the mighty eagle ${player.data.name} randomly chooses the ${factionName} `;
-        this.message({ message: message, player : player, class : random ? 'highlight' : ''  });
-        await this.pushGameDataToPlayers();
-
-        if( this.allPlayersHaveFactions() ){
-            this.generateGame();
-            _.forEach( this.factions, faction => faction.onSetup() );
-            this.startTurn();
-        }
-    },
-
-    generateGame( saved ){
+    /**
+     * Generate our game's core object class instances
+     *
+     * @param saved // optional
+     */
+    generateGame( saved = null ){
         this.buildActionDeck( saved );
         this.buildAreas( saved );
         this.buildFactions( saved );
     },
 
-    generateTempFactions( saved ){
-        let factions = {};
-        _.forEach( saved.data.factions, (value, name) => {
-            factions[name] = { owner : value.owner };
-        });
-        return factions;
-    },
 
-    buildFactions( saved ){
+    /**
+     * Build up our Faction instances
+     *
+     * @param saved
+     */
+    buildFactions( saved = null ){
         let factionClasses = require( '../Factions' );
-        let tempFactions = saved ? this.generateTempFactions( saved ) : _.clone( this.data.factions );
-        this.data.factions = {};
-        _.forEach( tempFactions, ( value, name ) => {
 
+        // if we have a saved state to build from generate our temporary factions object from that saved state,
+        // otherwise clone the this.data.factions object which would be filled with simple data objects after
+        // the choose factions step, and not fully initialized Faction classes
+        let tempFactions = saved ? this.generateTempFactionsFromSaveData( saved ) : _.clone( this.data.factions );
+
+        this.data.factions = {};
+
+        // build our final full faction instances
+        _.forEach( tempFactions, ( value, name ) => {
             if( value.owner !== null ){
                 let faction = new factionClasses[name]( value.owner, this );
                 faction.setupUnits( saved );
@@ -173,9 +220,27 @@ let setup = {
         });
     },
 
+
+    /**
+     * Generate our temporary factions list of simple objects from our saved game data
+     *
+     * @param saved
+     */
+    generateTempFactionsFromSaveData( saved ){
+        let factions = {};
+        _.forEach( saved.data.factions, (value, name) => {
+            factions[name] = { owner : value.owner };
+        });
+        return factions;
+    },
+
+
+    /**
+     * Build our Area instances and set our neutral area
+     */
     buildAreas() {
         let areaClasses = require('../Areas');
-        _.forEach(areaClasses, (Func, name) => {
+        _.forEach( areaClasses, (Func, name) => {
             let area = new Func( name, this );
             this.areas[name] = area;
             this.data.areas[name] = area.data;
@@ -183,26 +248,35 @@ let setup = {
         this.setNeutralArea();
     },
 
+
+    /**
+     * Determine which area will be neutral controlled at the start of the turn
+     */
     setNeutralArea(){
 
-        let startingArea;
-
-        while( !startingArea || startingArea.name === 'capitol' ){
-            let rand = -1 + _.roll(1, 9, this );
-            startingArea = this.areas[ this.data.areaOrder[rand] ];
-        }
-
+        // roll an 8 sided die to decide our neutral controlled area
+        let roll = _.roll( 1, 8, this );
+        let startingArea = this.areas[ this.data.areaOrder[roll] ];
         startingArea.data.owner = 'neutral';
 
         this.message({ message: `The ${startingArea.name} is controlled by neutrals`, class: 'none' });
     },
 
-    buildActionDeck( saved ){
+
+    /**
+     * Build the action deck by instantiating the appropriate card classes then shuffling the deck
+     *
+     * @param saved
+     */
+    buildActionDeck( saved = null ){
+
+        // instantiate our Action Card handler classes
         let cardClasses = require('../Cards');
         _.forEach( cardClasses, (Func, name) => {
             this.cards[name] = new Func( this );
         });
 
+        // Create our card objects deck
         let cards = _.cloneDeep( require('../data/cardList') );
         cards.forEach( card => {
             card.owner = null;
@@ -213,24 +287,27 @@ let setup = {
             this.deck.deck.push( card );
         });
 
+
+        // shuffle the deck and set up the appropriate references
         this.shuffle( this.deck.deck );
         this.data.discard = this.deck.discard;
         this.data.deckCount = this.deck.deck.length;
     },
 
 
+    /**
+     * Returns whether every player has been assigned a faction yet or not
+     *
+     * @returns {boolean}
+     */
     allPlayersHaveFactions(){
-        let allHaveFactions = true;
-
-        _.forEach( this.players, ( player, playerId ) => {
-            if( ! player.data.faction ){
-                allHaveFactions = false;
-            }
-        });
-
-        return allHaveFactions;
+        return Object.values( this.players ).every( player => player.data.faction );
     },
 
+
+    /**
+     * Add each player to the socket.io room for this game
+     */
     addPlayersToRoom(){
         let room = this.data.id;
         _.forEach( this.players, ( player, id ) =>{
@@ -238,15 +315,22 @@ let setup = {
         });
     },
 
+
+    /**
+     * Shuffle the player order and set the active player by the newly shuffled order
+     */
     randomizePlayerOrder() {
 
+        // build our players array
         let players = [];
         for( let player in this.players ) {
             players.push( player );
         }
 
+        //shuffle it
         this.shuffle( players );
 
+        // store our player order in the game object and set the active player
         this.data.playerOrder = players;
         this.setActivePlayerByPlayerOrder();
     },

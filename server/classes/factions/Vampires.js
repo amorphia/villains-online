@@ -7,6 +7,11 @@ class Vampires extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggers
+        this.triggers = {
+            "onAfterTokenReveal" : "handleBatMove"
+        };
+
         //data
         this.data.name = this.name;
         this.data.title = "The Czarkovian Aristocrats";
@@ -18,7 +23,7 @@ class Vampires extends Faction {
         this.data.statusIcon = 'vampires';
         this.data.statusDescription = 'has vampire units';
 
-        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent'];
+        this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // tokens
         this.tokens['feast'] = {
@@ -64,12 +69,22 @@ class Vampires extends Faction {
                 cost: 2,
                 vampire: true,
                 killed: false,
+                toughness: true,
+                flipped: false,
                 selected: false,
                 hitsAssigned: 0,
             }
         };
     }
 
+
+    /**
+     * Get a list of our faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
     factionCombatMods( mods, area ) {
         mods.push({
             type: 'becomeVampire',
@@ -79,112 +94,149 @@ class Vampires extends Faction {
         return mods;
     }
 
-    processUpgrade( n ) {
-        this.data.batMove = n + 1;
+
+    /**
+     * Process our upgrades
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ) {
+        this.data.batMove = upgrade + 1;
     }
 
 
-    async onAfterReveal( token ){
+    /**
+     * Triggered event for after a token is revealed.
+     * Allows player to make a batmove after revealing one of their tokens
+     *
+     * @param token
+     */
+    async handleBatMove( token ){
+        // if we didn't reveal the token, abort
         if( token.faction !== this.name ) return;
-        let player, data, destinationAreaName = token.location;
 
-        // check for areas with vampires (that aren't this area)
+        let destinationAreaName = token.location;
+
+        // check for areas with vampires (that aren't this area), if we have none, abort
         let potentialAreas = this.areasWithUnits({ hasProp : "vampire", excludesArea : destinationAreaName });
         if( !potentialAreas.length ) return;
 
-        let message = this.data.batMove > 1 ? `Fly up to ${this.data.batMove} vampires to the ${destinationAreaName}` : `Fly a vampire to the ${destinationAreaName}?`;
+        // get our bats to move
+        let units = await this.chooseBatsToMove( potentialAreas, destinationAreaName );
+        if( !units ) return;
 
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-units',
-            data: {
-                    count : this.data.batMove,
-                    areas : potentialAreas,
-                    playerOnly : true,
-                    hasProp : 'vampire',
-                    canDecline : true,
-                    optionalMax : true,
-                    message: message
-                }
-            }).catch( error => console.error( error ) );
-        if( data.decline ) return false;
-
-        let units = data.units.map( unitId => this.game().objectMap[ unitId ] );
-
-        units.forEach( unit => {
-            unit.location = destinationAreaName;
-            if( unit.ready ) unit.ready = false;
-        });
-
-
+        // message and log the move
         this.game().sound( 'bats' );
         this.game().message({ faction : this, message: `Fly ${units.length} vampire${units.length > 1 ? 's':'' } to The ${destinationAreaName}` });
-
         await this.game().timedPrompt('units-shifted', {
             message : `${units.length === 1 ? 'A Vampire flies' : 'Vampires fly'} to The ${destinationAreaName}`,
             units: units
         });
-
     }
 
 
+    /**
+     * Allow the player to choose which bats to move, and them process those move
+     *
+     * @param potentialAreas
+     * @param areaName
+     * @returns {array}
+     */
+    async chooseBatsToMove( potentialAreas, areaName ){
+        let player, data, units = [];
+
+        // show player prompt
+        let message = this.data.batMove > 1 ? `Fly up to ${this.data.batMove} vampires to the ${areaName}` : `Fly a vampire to the ${areaName}?`;
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'choose-units',
+            data: {
+                count : this.data.batMove,
+                areas : potentialAreas,
+                playerOnly : true,
+                hasProp : 'vampire',
+                canDecline : true,
+                optionalMax : true,
+                message: message
+            }
+        }).catch( error => console.error( error ) );
+
+        if( data.decline ) return [];
+
+        // map our unit references
+        units = data.units.map( unitId => this.game().objectMap[ unitId ] );
+
+        // move the selected units
+        units.forEach( unit => {
+            unit.location = areaName;
+            if( unit.ready ) unit.ready = false;
+        });
+
+        return units;
+    }
+
+
+    /**
+     * Can we activate our feast token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
     canActivateFeast( token, area ) {
         return this.feastAreas().length > 0;
     }
 
-    feastAreas(){
 
+    /**
+     * Return an array of the areas we can feast in
+     *
+     * @returns {array}
+     */
+    feastAreas(){
         let areas = {};
-        this.data.tokens.forEach( token => {
-            if( token.type === 'deploy' && token.location && token.revealed ){
-                let area = this.game().areas[token.location];
-                let hasUnit = !! this.data.units.find( unit => _.unitInArea( unit, area.name ) );
-                let hasEnemy = Object.keys( _.enemyUnitsInArea( this, area.name, this.game().data.factions ) ).length;
-                if( hasUnit && hasEnemy && !area.hasCard( 'cease-fire' ) ) areas[area.name] = true;
-            }
+
+        // grab our revealed deploy tokens in play
+        let feastTokens = this.data.tokens.filter( token => token.type === 'deploy'
+                                                            && token.location
+                                                            && token.revealed );
+
+        feastTokens.forEach( token => {
+            // get the token's area
+            let area = this.game().areas[token.location];
+            // do we have a unit there?
+            let hasUnit = !! this.data.units.find( unit => _.unitInArea( unit, area.name ) );
+            // do we have someone to bite?
+            let hasEnemy = Object.keys( _.enemyUnitsInArea( this, area.name, this.game().data.factions ) ).length;
+            // if we have everything we need then add this area name to our areas object
+            if( hasUnit && hasEnemy && !area.hasCard( 'cease-fire' ) ) areas[area.name] = true;
         });
 
         return Object.keys( areas );
     }
 
+
+    /**
+     * Resolve a feast token
+     *
+     * @param args
+     */
     async feastToken( args ) {
-        let data, player;
         let areas = this.feastAreas();
         let output = [];
 
+        // feast in each of our feast areas
         for( let area of areas ){
-            let message = `Feasts in The ${ area }`;
-            this.message({ message: message, faction : this });
-
-            // prompt player to select a unit
-            [player, data] = await this.game().promise({
-                players: this.playerId,
-                name: 'choose-units',
-                data: { count : 1,
-                        areas : [area],
-                        hasAttack: true,
-                        playerOnly : true,
-                        showEnemyUnits: true,
-                        message: "Choose a unit to attack" }
-                }).catch( error => console.error( error ) );
-
-            let unit = this.game().objectMap[ data.units[0] ];
-
-            // resolve attack with that unit
-            let attackArea = this.game().areas[ unit.location ];
-            output.push( await this.attack({
-                area : attackArea,
-                attacks : unit.attack,
-                unit : unit,
-                noDecline : true
-            }) );
+           output.push( await this.resolveFeastAttack( area ) );
         }
 
         let message = `Has finished feasting`;
         this.message({ message: message, faction : this });
 
+        // filter empty values from output array
         output = output.filter( item => item );
 
+        // show results to each player
         if( output.length ){
             await this.game().timedPrompt('noncombat-attack', { output : output } )
                 .catch( error => console.error( error ) );
@@ -193,18 +245,68 @@ class Vampires extends Faction {
         this.game().advancePlayer();
     }
 
-    becomeVampire( event ) {
-        let unit = event.unit;
 
-        if( !unit.flipped && !unit.killed ){
-            unit.flipped = true;
-            unit.vampire = true;
-            unit.attack = unit.baseAttack.map( attack => attack - 2 );
-            let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;
-            this.message({ message: message, faction : this });
-        }
+    /**
+     * Resolve a feast attack
+     *
+     * @param areaName
+     * @return
+     */
+    async resolveFeastAttack( areaName ){
+        let data, player;
+
+        let message = `Feasts in The ${ areaName }`;
+        this.message({ message: message, faction : this });
+
+        // prompt player to select a unit
+        [player, data] = await this.game().promise({
+            players: this.playerId,
+            name: 'choose-units',
+            data: { count : 1,
+                areas : [areaName],
+                hasAttack: true,
+                playerOnly : true,
+                showEnemyUnits: true,
+                message: "Choose a unit to attack" }
+        }).catch( error => console.error( error ) );
+
+        // grab our unit from the object map
+        let unit = this.game().objectMap[ data.units[0] ];
+
+        // resolve attack with that unit
+        return await this.attack({
+            area : this.game().areas[ unit.location ],
+            attacks : unit.attack,
+            unit : unit,
+            noDecline : true
+        });
     }
 
+
+    /**
+     * Become vampire triggered event
+     *
+     * @param event
+     */
+    becomeVampire( event ) {
+        let unit = event.unit;
+        if( unit.flipped || unit.killed ) return;
+
+        unit.flipped = true;
+        unit.vampire = true;
+
+        // improve attacks by 2
+        unit.attack = unit.baseAttack.map( attack => attack - 2 );
+        let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;
+        this.message({ message: message, faction : this });
+
+    }
+
+    /**
+     * Unflip a unit
+     *
+     * @param unit
+     */
     unflipUnit( unit ) {
         unit.flipped = false;
         unit.vampire = false;

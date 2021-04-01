@@ -7,6 +7,13 @@ class Ninjas extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggers
+        this.triggers = {
+            "onCleanUp" : "clearSmokeFromAreas",
+            "onAfterTokenReveal" : "lotusDancerMove"
+        };
+
+
         //data
         this.data.name = this.name;
         this.data.focus = 'kill-types-focus';
@@ -86,7 +93,7 @@ class Ninjas extends Faction {
         this.data.bladesBonusDice = n;
     }
 
-    async onAfterReveal(token) {
+    async lotusDancerMove(token) {
         let player, data;
 
         let lotusDancer = this.data.units.find(unit => unit.type === 'champion' && _.unitInPlay(unit));
@@ -173,7 +180,7 @@ class Ninjas extends Faction {
         this.game().message({faction: this, message: `Release a smoke bomb in the  ${event.unit.location}`});
     }
 
-    async factionCleanUp() {
+    async clearSmokeFromAreas() {
         if( !this.data.smokeAreas.length ) return;
 
         this.data.smokeAreas = [];

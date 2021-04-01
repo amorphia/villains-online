@@ -14,7 +14,7 @@ class Robots extends Faction {
         this.data.upgradeAttackBonus = 0;
         this.data.focus = 'exterminate-focus';
         this.data.focusDescription = "Exterminate areas";
-        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
+        this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // tokens
         this.tokens['wild'] = {

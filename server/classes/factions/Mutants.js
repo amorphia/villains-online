@@ -8,13 +8,18 @@ class Mutants extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
+        // triggers
+        this.triggers = {
+            "onCleanUp" : "healOozes"
+        };
+
         // data
         this.data.name = this.name;
         this.data.focus = 'units-focus';
         this.data.focusDescription = "Have many units in play";
         this.data.title = "The Undercity Awakens";
         this.data.upgradeDeploy = 0;
-        this.data.flippedUnits = ['champion'];
+        this.data.flipableUnits = ['champion'];
 
         // tokens
         this.tokens['biohazard'] = {
@@ -72,7 +77,7 @@ class Mutants extends Faction {
         return mods;
     }
 
-    async factionCleanUp(){
+    async healOozes(){
 
         let areasWithHealedOozes = {};
         this.data.units.forEach( unit => {

@@ -7,6 +7,10 @@ class Society extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
+        this.triggers = {
+            "onCleanUp" : "setXavierTokenLocation"
+        };
+
         //data
         this.data.name = this.name;
         this.data.focus = 'token-focus';
@@ -89,7 +93,7 @@ class Society extends Faction {
                 selected: false,
                 hitsAssigned: 0,
                 token: null,
-                onKilled: 'clearXavierToken',
+                onUnitKilled: 'clearXavierToken',
                 onMove: 'placeHenchman',
                 onDeploy: 'placeHenchman',
             }
@@ -117,7 +121,7 @@ class Society extends Faction {
     }
 
 
-    revealXavierToken( player ){
+    takeXavierAction( player ){
         let xavier = this.getXavier();
         let token = this.game().objectMap[ xavier.token.id ];
         let area = this.game().areas[ xavier.location ];
@@ -137,7 +141,7 @@ class Society extends Faction {
     }
 
 
-    factionCleanUp(){
+    setXavierTokenLocation(){
         //this.data.tokensNotDiscarded = 0;
         let xavier = this.getXavier();
         if( xavier && xavier.token ){

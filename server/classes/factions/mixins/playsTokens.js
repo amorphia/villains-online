@@ -15,7 +15,7 @@ let obj = {
 
         try {
             for( let faction of Object.values( this.game().factions ) ){
-                await faction.onAfterReveal( token );
+                if( faction.triggers.onAfterTokenReveal ) await faction[faction.triggers.onAfterTokenReveal]( token );
             }
         } catch( error ){
             console.error( error );

@@ -7,6 +7,11 @@ class Hackers extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggers
+        this.triggers = {
+            "onBeforeSkill" : "shouldHax0rArea"
+        };
+
         //data
         this.data.name = this.name;
         this.data.focus = 'skills-focus';
@@ -66,7 +71,7 @@ class Hackers extends Faction {
     }
 
 
-    async onBeforeSkill( area ){
+    async shouldHax0rArea( area ){
         let player = {}, data = {};
         if( this.data.hax0red.includes( area.name ) ) return this.game().message({ message: `Hackers can't double the skill ability in the ${area.name}`, class : 'warning'});
 

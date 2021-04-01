@@ -7,12 +7,17 @@ class Guerrillas extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        this.triggers = {
+            "onCleanUp" : "resetAmbushUsedCount",
+            "onStartOfTurn" : "setViperDeployLimit",
+        };
+
         //data
         this.data.name = this.name;
         this.data.title = "The People's Alliance";
         this.data.focus = 'enemy-kills-focus';
         this.data.focusDescription = "Kill many units in enemy areas";
-        this.data.flippedUnits = ['champion'];
+        this.data.flipableUnits = ['champion'];
 
         this.data.ambushes = {
             max : 1,
@@ -115,7 +120,21 @@ class Guerrillas extends Faction {
         this.game().advancePlayer();
     }
 
-    async ambushAction( area ){
+
+    async takeAmbushAction( player, areaName ){
+        let area = this.game().areas[areaName];
+
+        try {
+            await this.resolveAmbushAction( area );
+        } catch( error ){
+            console.error( error );
+        }
+
+        this.game().advancePlayer();
+    }
+
+
+    async resolveAmbushAction( area ){
         let player, data;
         let hasAmbushes = this.data.ambushes.used < this.data.ambushes.max;
         this.data.ambushes.used++;
@@ -153,7 +172,7 @@ class Guerrillas extends Faction {
     }
 
 
-    onStartOfTurn(){
+    setViperDeployLimit(){
         let viperInReserves = this.data.units.find( unit => unit.type === 'champion' && !unit.location );
         if( viperInReserves ) this.toggleViperDeployLimit( true );
     }
@@ -215,7 +234,7 @@ class Guerrillas extends Faction {
 
     }
 
-    factionCleanUp(){
+    resetAmbushUsedCount(){
         this.data.ambushes.used = 0;
     }
 }

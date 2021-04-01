@@ -59,7 +59,7 @@ class Laboratory extends Area {
 
         args.area = faction.game().areas[args.area];
         args.cost = 0;
-        await faction.processCard( args, data );
+        await faction.resolveCard( args, data );
     }
 }
 

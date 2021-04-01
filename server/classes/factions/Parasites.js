@@ -7,6 +7,13 @@ class Parasites extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggers
+        this.triggers = {
+            "onAfterBattle" : "firstHostInfect",
+            "onAfterSkill" : "afterSkillInfect",
+            "onAfterActivateToken" : "podCopyActon"
+        };
+
         //data
         this.data.name = this.name;
         this.data.title = "The Tau Ceti Parasites";
@@ -116,12 +123,12 @@ class Parasites extends Faction {
 
 
 
-    async onAfterSkill( area, units ) {
+    async afterSkillInfect( area, units ) {
         if ( !units.length ) return;
         await this.infect( area );
     }
 
-    async onAfterBattle( combat ) {
+    async firstHostInfect( combat ) {
         let firstHost = this.data.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, combat.area ) );
         if ( !firstHost ) return;
 
@@ -129,7 +136,7 @@ class Parasites extends Faction {
     }
 
 
-    async onAfterActivateToken( token ){
+    async podCopyAction( token ){
         let player, data, area = this.game().areas[token.location];
         if(! token || !area ) return;
 

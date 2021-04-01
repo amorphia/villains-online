@@ -7,6 +7,13 @@ class Ninjas extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggers
+        this.triggers = {
+            "onBeforeBattle" : "resetFirstAttack",
+            "onAfterBattle" : "revealHiddenUnits",
+            "onAfterTokenReveal" : "lotusDancerMove"
+        };
+
         //data
         this.data.name = this.name;
         this.data.focus = 'kill-types-focus';
@@ -14,7 +21,7 @@ class Ninjas extends Faction {
         this.data.title = "The Clan of the Pale Moon";
         this.data.bladesBonusDice = 0;
         this.data.firstAttackThisBattle = false;
-        this.data.flippedUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
+        this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // icons
         this.data.statusIcon = 'hidden';
@@ -84,11 +91,11 @@ class Ninjas extends Faction {
         this.data.bladesBonusDice = n;
     }
 
-    onBeforeBattle( battle ){
+    resetFirstAttack( battle ){
         this.data.firstAttackThisBattle = true;
     }
 
-    async onAfterReveal( token ){
+    async lotusDancerMove( token ){
         let player, data;
 
         let lotusDancer = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
@@ -129,7 +136,7 @@ class Ninjas extends Faction {
         return !! this.data.units.find( unit => _.unitInArea( unit, area, { notHidden : true } ) );
     }
 
-    onAfterBattle( combat ) {
+    revealHiddenUnitsInArea( combat ) {
         let hiddenUnits = this.data.units.filter( unit => unit.hidden && _.unitInArea( unit, combat.area ) );
         hiddenUnits.forEach( unit => this.unflipUnit( unit ) );
 

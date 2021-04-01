@@ -1,45 +1,64 @@
 let obj = {
+
+    /**
+     * Begin resolving the combat step
+     */
     async startCombatStep(){
+        //set phase
         this.data.phase = "combat-phase";
 
+        // show title card
         await this.timedPrompt( 'title-card', { wait : this.titleCardTimer, message : 'Combat Step' } )
             .catch( error => console.error( error ) );
 
+        // prep player prompts and whatnot
         this.defaultListener = null;
-        this.allPlayers({ passed : false } );
-        this.clearAllPlayerPrompts();
+        this.setPropsForAllPlayers({ passed : false } );
+        this.clearAllPrompts();
         await this.pushGameDataToPlayers();
 
+        // resolve the combat step
         this.resolveCombatStep();
     },
 
-    areasWithBattleMarkers(){
-        let areas = [];
-        _.forEach( this.areas, area => {
-           if( area.data.battle ) areas.push( area );
-        });
-        return areas;
-    },
 
+    /**
+     * Resolve the combat step
+     */
     async resolveCombatStep(){
+
+        // get the areas with battle markers
         let areas = this.areasWithBattleMarkers();
 
+        console.log( "areasWithBattleMarkers", areas );
+
         try {
-            if (areas.length) {
-                for (let i = 0; i < areas.length; i++) {
-                    await this.battle(areas[i]);
-                }
+
+            for(let area of areas ){
+                await this.battle( area );
             }
 
-            for (let faction in this.factions) {
-                await this.factions[faction].onAfterCombatStep();
+            // then check each faction for any onAfterCombatStep triggers
+            for(let faction of this.factions) {
+                if( faction.triggers.onAfterCombatStep ) await faction[faction.triggers.onAfterCombatStep]();
             }
         } catch( error ){
             console.error( error );
         }
-        this.startEndOfTurnStep();
-    }
 
+        // move to the end of turn step
+        this.resolveEndOfTurnStep();
+    },
+
+
+    /**
+     * Returns an array of the areas with battle markers
+     *
+     * @returns {array}
+     */
+    areasWithBattleMarkers(){
+        return Object.values( this.areas ).filter( area => area.data.battle );
+    },
 };
 
 module.exports = obj;

@@ -7,6 +7,11 @@ class Mafia extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
+        // triggers
+        this.triggers = {
+            "onCleanUp" : "resetSpy"
+        };
+
         // data
         this.data.name = this.name;
         this.data.spy = null;
@@ -66,7 +71,7 @@ class Mafia extends Faction {
         await this.game().pushGameDataToPlayers();
     }
 
-    factionCleanUp(){
+    resetSpy(){
         this.data.spy = null;
     }
 
@@ -111,7 +116,7 @@ class Mafia extends Faction {
         this.game().sound( 'hit' );
 
         try {
-            result = await this.game().assignHits( unit, this );
+            result = await this.game().assignHitsToUnit( unit, this );
         } catch( error ){
             console.error( error );
         }

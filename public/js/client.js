@@ -69077,8 +69077,8 @@ var render = function() {
                             ]
                           ),
                           _vm._v(" "),
-                          _vm.faction.flippedUnits &&
-                          _vm.faction.flippedUnits.includes(type)
+                          _vm.faction.flipableUnits &&
+                          _vm.faction.flipableUnits.includes(type)
                             ? _c(
                                 "div",
                                 {

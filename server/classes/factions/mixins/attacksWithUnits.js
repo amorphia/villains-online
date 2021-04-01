@@ -220,7 +220,7 @@ let obj = {
         if( args.unit ) await this.triggeredEvents('hit', [{ unit: args.unit, hits: hits }] );
 
         if( args.targetUnit ){
-            result = await this.game().assignHits( args.targetUnit, this, hits );
+            result = await this.game().assignHitsToUnit( args.targetUnit, this, hits );
             this.game().message({ faction: this, message: `hits <span class="faction-${args.targetUnit.faction}">${args.targetUnit.faction} ${args.targetUnit.name}</span> in the ${args.area.name}` });
         } else if ( args.deadly ){
             result = await this.assignDeadlyHits( hits, args );
@@ -297,7 +297,7 @@ let obj = {
 
         for( let target of  data.targets ){
             let unit = this.game().objectMap[ target.id ];
-            let result = await this.game().assignHits( unit, killer, target.hits );
+            let result = await this.game().assignHitsToUnit( unit, killer, target.hits );
             if( result === 'kills' ) hasKill = 'kills';
             results.push(`${result} <span class="faction-${this.name}">${unit.name}</span>`);
         }
@@ -386,7 +386,7 @@ let obj = {
         if( args.pod ) return;
 
         for( let faction of Object.values( this.game().factions ) ){
-            await faction.onAfterActivateToken( args.token );
+            if( faction.triggers.onAfterActivateToken ) await faction[faction.triggers.onAfterActivateToken]( args.token );
         }
 
         this.game().advancePlayer();

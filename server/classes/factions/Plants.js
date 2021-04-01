@@ -15,8 +15,13 @@ class Plants extends Faction {
         this.data.maxEnergy = 8;
         this.data.vines = [];
         this.data.plants = {};
-        this.data.flippedUnits = ['champion'];
+        this.data.flipableUnits = ['champion'];
         this.data.additionalUnitIcon = ['plant'];
+
+        this.triggers = {
+            "onAfterCombatStep" : "sproutPlants",
+            "onCleanUp" : "removePlantsFromUnitMix"
+        };
 
         // tokens
         this.tokens['vines'] = {
@@ -137,13 +142,14 @@ class Plants extends Faction {
     }
 
 
-    async factionCleanUp() {
+    removePlantsFromUnitMix() {
         // plant units are removed from your reserves
         this.data.units = this.data.units.filter( unit => !unit.plant );
     }
 
+
     // Turn killed units into plants
-    async onAfterCombatStep(){
+    async sproutPlants(){
         let player, data;
         let areas = this.areasWithDeadUnits();
 

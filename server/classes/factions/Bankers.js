@@ -7,6 +7,11 @@ class Bankers extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
+        // triggers
+        this.triggers = {
+            "onStartOfTurn" : "gainBonusResources",
+        };
+
         // data
         this.data.name = this.name;
         this.data.title = "Omni Financial Group";
@@ -82,7 +87,7 @@ class Bankers extends Faction {
     }
 
 
-    onStartOfTurn(){
+    gainBonusResources(){
         this.gainResources( this.data.bonusResources );
     }
 }

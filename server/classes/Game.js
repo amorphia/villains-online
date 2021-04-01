@@ -398,14 +398,14 @@ class Game {
      * @param saved // an optional saved game to rebuild the object from
      * @returns {object}
      */
-    newObject( object, saved = {} ){
+    newObject( object, saved = null ){
 
         // generate an object ID for this object by counting the number of items currently in the object map
         object.id =  'o' + Object.keys( this.objectMap ).length;
 
         // if we are given a saved game to build from and that save's object map has a matching itemID then
         // merge the object properties from the saved object to our object
-        if( saved.objectMap && saved.objectMap[object.id] ){
+        if( saved?.objectMap[object.id] ){
             Object.assign( object, saved.objectMap[object.id] );
         }
 
