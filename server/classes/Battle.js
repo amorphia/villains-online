@@ -289,7 +289,7 @@ class Battle {
      */
     removeUnitFromCombat( unit ){
         if( unit.needsToAttack ) unit.needsToAttack = false;
-        for( let faction of this.data.factions ){
+        for( let faction of Object.values( this.data.factions ) ){
             if( faction.name !== unit.faction ) continue;
             faction.units = faction.units.filter( item => item.id !== unit.id );
         }

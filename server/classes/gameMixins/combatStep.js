@@ -39,7 +39,7 @@ let obj = {
             }
 
             // then check each faction for any onAfterCombatStep triggers
-            for(let faction of this.factions) {
+            for(let faction of Object.values( this.factions ) ) {
                 if( faction.triggers.onAfterCombatStep ) await faction[faction.triggers.onAfterCombatStep]();
             }
         } catch( error ){
