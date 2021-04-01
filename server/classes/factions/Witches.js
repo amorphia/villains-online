@@ -146,7 +146,7 @@ class Witches extends Faction {
         this.game().popup( this.playerId, { magick : true, area : area.name, faction : this.name });
 
         // draw our magick cards
-        let cards = this.drawMagickCards();
+        let cards = this.drawMagickCards( area );
 
         let args = {
             area : area.name,
@@ -176,7 +176,7 @@ class Witches extends Faction {
      *
      * @returns {array}
      */
-    drawMagickCards(){
+    drawMagickCards( area ){
         // draw cards equal to our magickCardsRevealed property, then remove them from our hand because we
         // don't actually want to treat them as regularly drawn cards
         this.drawCards( this.data.magickCardsRevealed );
