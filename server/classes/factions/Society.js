@@ -7,6 +7,7 @@ class Society extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
+        // triggers
         this.triggers = {
             "onCleanUp" : "setXavierTokenLocation"
         };
@@ -101,17 +102,32 @@ class Society extends Faction {
     }
 
 
+    /**
+     * Process faction upgrade
+     *
+     * @param upgrade
+     */
     processUpgrade( upgrade ) {
         this.upgradeVariableTokens( upgrade, this.data.words );
     }
 
 
+    /**
+     * Place henchman when we deploy Xavier to an area
+     *
+     * @param event
+     */
     placeHenchman( event ){
         let henchman = this.data.units.find( unit => unit.type === 'henchman' && !unit.killed );
         if( henchman ) henchman.location = event.unit.location;
     }
 
 
+    /**
+     * Clear Xavier's token (triggered when he's killed)
+     *
+     * @param event
+     */
     clearXavierToken( event ){
         let xavier = this.getXavier();
         if( !xavier.token ) return;
@@ -121,28 +137,46 @@ class Society extends Faction {
     }
 
 
+    /**
+     * Reveal, and optionally activate the token on Xavier
+     *
+     * @param player
+     */
     takeXavierAction( player ){
         let xavier = this.getXavier();
         let token = this.game().objectMap[ xavier.token.id ];
         let area = this.game().areas[ xavier.location ];
 
+        // move this token to xavier's area
         token.location = area.name;
-
         area.data.tokens.push( token );
+
+        // null xavier's token property
         xavier.token = null;
 
         this.message({ message: "Reveals the token on Xavier Blackstone", faction : this });
+
+        // resolve xavier's token
         this.game().takeTokenAction( player, token.id );
     }
 
 
+    /**
+     * Return xavier blackstone's unit object
+     *
+     * @returns {object}
+     */
     getXavier(){
         return this.data.units.find( unit => unit.type === 'champion' );
     }
 
 
+    /**
+     * Set the token placed on xavier back to having its location as "xavier" instead of null
+     * which happens automatically during cleanup. This allows us to keep the token on xavier
+     * at the end of the turn instead of returning it to our reserves
+     */
     setXavierTokenLocation(){
-        //this.data.tokensNotDiscarded = 0;
         let xavier = this.getXavier();
         if( xavier && xavier.token ){
             xavier.token.location = 'xavier';
@@ -150,9 +184,15 @@ class Society extends Faction {
     }
 
 
+    /**
+     * Our start of turn prompt
+     *
+     * @returns {string}
+     */
     startOfTurnPrompt() {
         return 'deploy-xavier';
     }
+
 
 
     async resolveStartOfTurn( player, area ){

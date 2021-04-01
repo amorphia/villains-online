@@ -185,19 +185,29 @@ class Spiders extends Faction {
         let player, data;
 
         return this.game().promise({ players: faction.playerId, name: 'free-units', data : {} })
-            .then( async ([player, data]) => {
-                let areas = data.areas;
+            .then( async ([player, data]) => this.handleFreeFromWebsResponse( player, data, faction ) );
+    }
 
-                // if that player didn't choose an areas, clear their prompt and return
-                if( ! areas.length ) {
-                    this.game().message({ faction : faction, message : `units remain trapped in webs` });
-                    player.setPrompt({ active : false, updatePlayerData : true });
-                    return;
-                }
 
-                // otherwise resolve freeing the units from webs
-                this.resolveFreeFromWebs( faction, areas, player );
-            });
+    /**
+     * Handle the response from our free from webs prompt
+     *
+     * @param player
+     * @param data
+     * @param faction
+     */
+    async handleFreeFromWebsResponse( player, data, faction ){
+        let areas = data.areas;
+
+        // if that player didn't choose an areas, clear their prompt and return
+        if( ! areas.length ) {
+            this.game().message({ faction : faction, message : `units remain trapped in webs` });
+            player.setPrompt({ active : false, updatePlayerData : true });
+            return;
+        }
+
+        // otherwise resolve freeing the units from webs
+        this.resolveFreeFromWebs( faction, areas, player );
     }
 
 
