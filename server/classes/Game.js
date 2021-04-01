@@ -206,7 +206,7 @@ class Game {
         if( !isNaN( data.wait ) ) return data.wait;
 
         // if we are in fast mode, return 1 second
-        if( this.fastMode ) return 1;
+        if( this.fastMode ) return .25;
 
         // if this is the units-shifted prompt and we have a lot of units return 10 seconds
         if( prompt === 'units-shifted' && data.units.length > 4 ) return 10;

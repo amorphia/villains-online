@@ -259,7 +259,7 @@ class Faction {
 
         // faction specific end of turn shizz
         try {
-            if( this.triggers.onCleanUp ) await this[ this.triggers.onCleanUp ];
+            if( this.triggers.onCleanUp ) await this[ this.triggers.onCleanUp ]();
         } catch( error ){
             console.error( error );
         }
