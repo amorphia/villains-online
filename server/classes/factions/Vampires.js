@@ -310,7 +310,7 @@ class Vampires extends Faction {
     unflipUnit( unit ) {
         unit.flipped = false;
         unit.vampire = false;
-        unit.attack = [...unit.baseAttack];
+        if( unit.baseAttack ) unit.attack = [...unit.baseAttack];
     }
 
 }

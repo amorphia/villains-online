@@ -120,7 +120,7 @@ let mixin = {
      * @returns {string}
      */
     currentPlayerFactionName(){
-        return this.getPlayerFaction( this.currentPlayer() ).name;
+        return this.getPlayerFaction( this.currentPlayer() )?.name;
     },
 
 

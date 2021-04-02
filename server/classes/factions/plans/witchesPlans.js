@@ -68,14 +68,14 @@ let obj = [
                 requirements : [
                     { test : 'playRules', args : [3, 'stack'] },
                 ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
                     { test : 'unitsInPlay', args : [8] },
                     { test : 'useSkills', args : [2] },
                 ],
-                value : 2
+                value : 1
             },
         ]
     },
