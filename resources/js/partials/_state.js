@@ -166,7 +166,7 @@ window.App.state = {
     getPlayerFaction( player ) {
         let faction = null;
         _.forEach( this.data.factions, ( value, prop ) => {
-            if( value.owner == player.id ){
+            if( value.owner === player.id ){
                 faction = this.data.factions[prop];
             }
         });

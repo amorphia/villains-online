@@ -96040,7 +96040,7 @@ window.App.state = {
     var faction = null;
 
     _.forEach(this.data.factions, function (value, prop) {
-      if (value.owner == player.id) {
+      if (value.owner === player.id) {
         faction = _this2.data.factions[prop];
       }
     });

@@ -123,7 +123,7 @@ class Vampires extends Faction {
 
         // get our bats to move
         let units = await this.chooseBatsToMove( potentialAreas, destinationAreaName );
-        if( !units ) return;
+        if( !units.length ) return;
 
         // message and log the move
         this.game().sound( 'bats' );

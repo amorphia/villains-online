@@ -122,14 +122,15 @@ class Game {
         if( process.env.APP_ENV === 'local' ) {
             this.localServer = true;
             this.fastMode = true;
+            this.titleCardTimer = .5;
         }
 
         // create dice rolls array values for every possible roll from 1-10
         for( let i=1; i <= 10; i++ ){
             this.data.rolls[i] = 0;
         }
-
     }
+
 
     /**
      * Add each of our basic event listeners to a player's socket
