@@ -1,0 +1,46 @@
+let obj = {
+
+    async useSkill( area ) {
+        if( typeof area === 'string' ) area = this.game().areas[area];
+
+        if( _.hasUsedSkill( this, area ) ){
+            this.message( `has already used the ${area.name}'s skill ability` );
+            return;
+        }
+
+        this.message( `activate the skill ability of the ${area.name}` );
+
+
+        let modifySkill;
+        if( this.triggers.onBeforeSkill ){
+            modifySkill = await this[this.triggers.onBeforeSkill]( area );
+        }
+
+        let triggered = [];
+        this.data.usedSkills.push( area.name );
+
+        this.data.units.forEach( unit => {
+            if( _.unitReadyInArea( unit, area ) ){
+                triggered.push({ unit : unit });
+                unit.ready = false;
+            }
+        });
+
+        this.game().popup( this.playerId, { skill : true, area : area.name, faction : this.name });
+
+        try {
+            await area.skill( this );
+            await this.triggeredEvents( 'skill', triggered );
+            if( this.triggers.onAfterSkill ) await this[this.triggers.onAfterSkill]( area, triggered );
+            if( modifySkill && modifySkill.doubleResolve ) await area.skill( this );
+
+        } catch ( error ) {
+            console.error( error );
+        }
+
+    },
+
+};
+
+module.exports = obj;
+

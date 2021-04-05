@@ -1,0 +1,102 @@
+let obj = {
+
+    canActivateCard( token, area ){
+        let lowestCost = this.data.cards.hand.reduce( (acc, card) => {
+            return card.cost < acc ? card.cost : acc;
+        }, 100 );
+
+        return this.money() >= lowestCost;
+    },
+
+
+    async cardToken( args ) {
+        let output;
+        let cardsPlayed = 0;
+        let declined = false;
+
+        while( cardsPlayed < this.data.cardLimit && !declined ) {
+            let output = await this.playACard( args );
+            if( output && output.declined ) declined = true;
+            else {
+                cardsPlayed++;
+            }
+        }
+
+        if( declined && cardsPlayed === 0 ){
+            if( !args.pod ) this.game().declineToken( this.playerId, args.token, true );
+            return;
+        }
+
+        if( args.pod ) return;
+
+        for( let faction of Object.values( this.game().factions ) ){
+            if( faction.triggers.onAfterActivateToken ) await faction[faction.triggers.onAfterActivateToken]( args.token );
+        }
+
+        this.game().advancePlayer();
+    },
+
+
+    async playACard( args ){
+        let player = args.player;
+        let data = {
+            area : args.area.name,
+            free : args.free,
+            cards : args.cards || [],
+            fusion : args.fusion,
+            reduceCost : args.reduceCost
+        };
+
+        [player, data] = await this.game().promise({ players: player, name: 'choose-card', data : data })
+            .catch( error => console.error( error ) );
+
+        return this.resolveCard( args, data );
+    },
+
+
+    async resolveCard( args, data ){
+        if( data.decline ) return { declined : true };
+
+        let card = this.game().objectMap[ data.cardId ];
+
+        this.payCost( data.cost, false, 'card' );
+
+        this.placeCardInProperArray( card, args.area );
+
+        let message = `Pay xC${data.cost}x to play <span class="highlight">${ card.name }</span>`;
+        this.message({ message: message, faction : this, type: 'cards', cards: [card], area : args.area });
+
+        try {
+            await this.game().cards[ card.class ].handle( this, args.area );
+        } catch( error ){
+            console.error( error );
+        }
+
+        return { cost: data.cost, card: card, area: data.areaName };
+    },
+
+
+    placeCardInProperArray( card, area ){
+        let target;
+        if( card.type === 'event' ){
+            target = this.game().deck.discard;
+        } else if( card.scope === 'local' ){
+            card.owner = this.name;
+            target = area.data.cards;
+        } else {
+            card.playedIn = area.name;
+            target = this.data.cards.active;
+        }
+
+        _.moveItemById( card.id, this.data.cards.hand, target );
+
+        // sort cards by faction in location
+        if( card.scope === 'local' ){
+            area.data.cards = _.orderBy( area.data.cards, 'owner', 'asc' );
+        }
+
+    }
+
+};
+
+module.exports = obj;
