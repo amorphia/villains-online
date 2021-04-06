@@ -95,7 +95,7 @@ let obj = {
 
         // check for any triggered events on the victim unit that triggers when it is killed
         try {
-            await faction.triggeredEvents( 'unitKilled', [{ unit : unit }] );
+            await faction.unitTriggeredEvents( 'unitKilled', [{ unit : unit }] );
         } catch( error ){
             console.error( error );
         }

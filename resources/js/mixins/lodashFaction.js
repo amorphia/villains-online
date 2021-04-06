@@ -40,7 +40,6 @@ let helpers = {
         }
 
         rules.areas = Object.keys( globalAreas ).length;
-        console.log( Object.keys( globalAreas ) );
         globalAreas = Object.values( globalAreas );
 
         if( globalAreas.length ){

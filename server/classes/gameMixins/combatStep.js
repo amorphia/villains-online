@@ -33,7 +33,6 @@ let obj = {
         console.log( "areasWithBattleMarkers", areas );
 
         try {
-
             for(let area of areas ){
                 await this.battle( area );
             }

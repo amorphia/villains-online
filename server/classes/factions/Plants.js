@@ -7,21 +7,27 @@ class Plants extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggered events
+        this.triggers = {
+            "onAfterCombatStep" : "sproutPlants",
+            "onCleanUp" : "removePlantsFromUnitMix"
+        };
+
         //data
         this.data.name = this.name;
         this.data.title = "The Reclamation of Gaia";
         this.data.focus = 'enemy-in-areas-focus';
         this.data.focusDescription = "Have many enemy units in your areas";
         this.data.maxEnergy = 8;
-        this.data.vines = [];
-        this.data.plants = {};
         this.data.flipableUnits = ['champion'];
         this.data.additionalUnitIcon = ['plant'];
 
-        this.triggers = {
-            "onAfterCombatStep" : "sproutPlants",
-            "onCleanUp" : "removePlantsFromUnitMix"
-        };
+        // used to store additional word tokens before the appropriate upgrade is scored
+        this.data.vines = [];
+
+        // used to record the areas we have created plants
+        this.data.plants = {};
+
 
         // tokens
         this.tokens['vines'] = {
@@ -64,72 +70,66 @@ class Plants extends Faction {
         };
     }
 
-    factionCombatMods( mods, area ) {
-        if ( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ) {
-            mods.push({
-                type: 'soulHeal',
-                text: `If The Soul of the Green is wounded, heal her at the end of combat`
-            });
-        }
 
-        return mods;
+    /**
+     * Process faction upgrade
+     */
+    processUpgrade() {
+        // add additional vines tokens to our reserves
+        this.upgradeVariableTokens( this.data.vines );
     }
 
 
-    processUpgrade( upgrade ) {
-        this.upgradeVariableTokens( upgrade, this.data.vines );
-    }
-
-
+    /**
+     * Returns array of factions which have one or more patsies adjacent to the given area
+     *
+     * @param area
+     * @returns {string[]}
+     */
     factionsWithAdjacentPatsies( area ){
         let factions = {};
 
         area.data.adjacent.forEach( areaName => {
             Object.values( this.game().factions ).forEach( faction => {
+                // don;t include ourselves
                 if( faction.name === this.name ) return;
-                if( faction.data.units.find( unit => _.unitInArea( unit, areaName, { type : 'patsy' } ) ) ) factions[ faction.name ] = true;
+
+                // check for a patsy
+                if( faction.typeInArea( "patsy", area ) ){
+                    factions[ faction.name ] = true;
+                }
             });
         });
 
         return Object.keys( factions );
     }
 
+
+    /**
+     * Handle our champion skill trigger to lure enemy patsies to this area
+     *
+     * @param event
+     */
     async soulLure( event ){
-        let player, data, promises = [], units = [], area = this.game().areas[event.unit.location];
+        let units = [], area = this.game().areas[event.unit.location];
 
-        this.game().message({ faction : this, message : `The Soul of the Green begins to sing...` });
+        this.message( `The Soul of the Green begins to sing...` );
 
+        // get our possible factions to lure, if we have none, then abort
         let factions = this.factionsWithAdjacentPatsies( area );
-
-        if( !factions.length ) return this.game().message({ message : 'No adjacent patsies to lure', class : 'warning' });
+        if( !factions.length ) return this.message( 'No adjacent patsies to lure', { class : 'warning' });
 
         try {
+            // for each faction  cycle through and allow them to choose a patsy to lure
+            let promises = [];
             for( let factionName of factions ) {
-                let faction = this.game().factions[factionName];
-
-                let factionAreas = faction.areasWithUnits({ adjacent : area.data.adjacent, types : ['patsy'] });
-
-                promises.push( this.game().promise({ players: faction.playerId, name: 'choose-units', data : {
-                    count : 1,
-                    areas : factionAreas,
-                    unitTypes : ['patsy'],
-                    playerOnly : true,
-                    message : `Choose a patsy to move to The ${area.name}`
-                }}).then( async ([player, data]) => {
-
-                    let unit = this.game().objectMap[data.units[0]];
-
-                    unit.location = area.name;
-                    if( unit.ready ) unit.ready = false;
-                    units.push( unit );
-
-                    player.setPrompt({ active : false, updatePlayerData : true });
-                }));
+                promises.push( this.factionChooseSoulLure( this.game().factions[factionName], units, area ) );
             }
 
-
+            // wait for everyone to finish
             await Promise.all( promises );
 
+            // display the moved patsies
             await this.game().timedPrompt('units-shifted', {
                 message: `Patsies were lured to The ${area.name}`,
                 units: units
@@ -138,68 +138,151 @@ class Plants extends Faction {
         } catch( error ){
             console.error( error );
         }
-
     }
 
 
+    /**
+     * Allow an opponent to choose a patsy to lure
+     *
+     * @param faction
+     * @param units
+     * @param area
+     */
+    factionChooseSoulLure( faction, units, area ){
+        let player, response;
+        let factionAreas = faction.areasWithUnits({ adjacent : area.data.adjacent, types : ['patsy'] });
+
+        let data = {
+            count : 1,
+            areas : factionAreas,
+            unitTypes : ['patsy'],
+            playerOnly : true,
+            message : `Choose a patsy to move to The ${area.name}`
+        };
+
+        return this.game().promise({ players: faction.playerId, name: 'choose-units', data : data })
+            .then( async ([player, response]) => { this.handleSoulLureResponse( player, response, area, units )});
+    }
+
+
+    /**
+     * Handle a faction's soul lure response
+     *
+     * @param player
+     * @param response
+     * @param area
+     * @param units
+     */
+    async handleSoulLureResponse( player, response, area, units ){
+        let unit = this.game().objectMap[response.units[0]];
+
+        unit.location = area.name;
+        if( unit.ready ) unit.ready = false;
+        units.push( unit );
+
+        player.setPrompt({ active : false, updatePlayerData : true });
+    }
+
+
+    /**
+     * Permanently remove each unit we've converted to plant from our unit pool
+     */
     removePlantsFromUnitMix() {
-        // plant units are removed from your reserves
+        // plant units are removed from your unit pool
         this.data.units = this.data.units.filter( unit => !unit.plant );
     }
 
 
-    // Turn killed units into plants
+    /**
+     * Handle converting our killed units into plants
+     */
     async sproutPlants(){
-        let player, data;
+
+        this.message( `The Plants must choose which dead shall be reborn into Gaia's embrace` );
+
+        // get the areas where we have a killed unit to convert, and if we have no areas abort
         let areas = this.areasWithDeadUnits();
+        if( !areas.length ) return this.message('Have no killed units to convert into plants', { class : 'warning' });
 
-        if( !areas.length ) return this.game().message({ message: 'The Plants have no killed units to convert into plants', class : 'warning' });
-
-        this.game().message({ faction: this, message: `The Plants must choose which dead shall be reborn into Gaia's embrace` });
-
+        // cycle through each area and convert
         for( let area of areas ){
-            [player, data] = await this.game().promise({
-                players: this.playerId,
-                name: 'choose-units',
-                data: {
-                    count : 1,
-                    areas : [area],
-                    playerOnly : true,
-                    killedOnly : true,
-                    canDecline : true,
-                    basicOnly : true,
-                    message: `choose a killed unit in The ${area} to transform into a plant`
-                }
-            }).catch( error => console.error( error ) );
-
-            if( data.decline ){
-                this.game().message({ faction: this, message: `The Plants decline to seed The ${area}` });
-                continue;
-            }
-
-            let unit = this.game().objectMap[data.units[0]];
-            this.becomePlant( unit );
+            await this.choosePlantConvert( area );
         }
     }
 
+
+    /**
+     * Choose a killed unit to convert to a plant
+     *
+     * @param area
+     */
+    async choosePlantConvert( area ){
+
+        let data = {
+            count : 1,
+            areas : [area],
+            playerOnly : true,
+            killedOnly : true,
+            canDecline : true,
+            basicOnly : true,
+            message: `choose a killed unit in The ${area} to transform into a plant`
+        };
+
+        // prompt player to choose a unit to convert
+        let response = await this.prompt('choose-units', data );
+
+        // if we decline to convert a unit, then abort
+        if( response.decline ){
+            this.message( `The Plants decline to seed The ${area}` );
+            return;
+        }
+
+        // make our chosen unit a plant
+        let unit = this.game().objectMap[response.units[0]];
+        this.becomePlant( unit );
+    }
+
+
+    /**
+     * Convert a unit to a plant
+     *
+     * @param unit
+     */
     becomePlant( unit ){
         let area = unit.location;
         unit.plant = true;
+
+        // if we already have plants here, increment our plant count, otherwise create property for this area
         if( this.data.plants[area] ) this.data.plants[area]++;
         else this.data.plants[area] = 1;
-        this.game().message({ faction: this, message: `The Plants' ${unit.type} in The ${area} is reborn from Gaia's touch` });
+
+        this.message( `The Plants' ${unit.type} in The ${area} is reborn from Gaia's touch` );
     }
 
+
+    /**
+     * Can we activate our vines token?
+     *
+     * @returns {boolean}
+     */
     canActivateVines() {
+        // but of course we can
         return true;
     }
 
-    vinesToken() {
+
+    /**
+     * Handle activating a vines token
+     */
+    activateVinesToken() {
+        // welp, that was easy
         this.game().advancePlayer();
     }
 
 
-
+    /**
+     * Remove the vines tokens we haven't unlocked yet from our reserves
+     */
     onSetup(){
         this.setupVariableTokens( 'vines', this.data.vines );
     }

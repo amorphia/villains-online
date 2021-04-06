@@ -2,7 +2,7 @@ let Card = require( './Card' );
 
 class BenevolentAi extends Card {
     handle( faction ){
-        faction.drawCards(1);
+        faction.drawCards(1, true );
         faction.data.cardLimit++;
     }
 

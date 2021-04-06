@@ -7,7 +7,7 @@
  * @returns {boolean}
  */
 const test = function enemyUnitsInAreas( debug, faction, unitCount ){
-    let factionEnemyUnitsInAreas = faction.enemyUnitsInAreas();
+    let factionEnemyUnitsInAreas = faction.enemyUnitsInOurAreasCount();
     let result = factionEnemyUnitsInAreas >= unitCount;
 
     if( debug ) console.log(

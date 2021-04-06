@@ -12,13 +12,12 @@ class Ghosts extends Faction {
         this.data.title = "The Lost Legion";
         this.data.focus = 'control-targets-focus';
         this.data.focusDescription = "Control any player's Targets";
-        this.data.ghosts = [];
+        this.data.ghosts = []; // used to store our ghost units
         this.data.upgradeDeploy = 0;
         this.data.lastMaterializeGameAction = 0;
-        this.data.randomTarget = true;
-        this.data.ghostDeploy = true;
-        this.data.scarePatsiesBounced = 2;
-        //this.data.hiddenReserves = true;
+        this.data.randomTarget = true; // should we choose our target randomly
+        this.data.ghostDeploy = true; // do we deploy ghosts
+        this.data.scarePatsiesBounced = 2; // how many patsies do we bounce with our scare token
 
         // tokens
         this.tokens['scare'] = {
@@ -67,6 +66,12 @@ class Ghosts extends Faction {
         };
     }
 
+
+    /**
+     * During the start of turn select a target an random if we have to
+     *
+     * @returns {string}
+     */
     startOfTurnPrompt() {
         let target, card;
 
@@ -84,20 +89,32 @@ class Ghosts extends Faction {
     }
 
 
-    processUpgrade( upgradeNumber ){
-        // if we haven't upgraded out deploy yet, upgrade it by one
-        if( ! this.data.upgradeDeploy ){
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+        // if we haven't upgraded our deploy yet, upgrade it by one
+        if( !this.data.upgradeDeploy ){
             this.data.deployLimit++;
-            this.data.upgradeDeploy = 1;
+            this.data.upgradeDeploy = true;
         }
 
         // if this is our second upgrade remove our random target selecting
-        if( upgradeNumber === 2 ){
+        if( upgrade === 2 ){
             this.data.randomTarget = false;
         }
     }
 
 
+    /**
+     * Handle ghost unit deploy
+     *
+     * @param units
+     * @param area
+     * @returns {[]}
+     */
     deployGhosts( units, area ){
         let output = [];
 
@@ -120,6 +137,11 @@ class Ghosts extends Faction {
     }
 
 
+    /**
+     * Make a unit a ghost
+     *
+     * @param unit
+     */
     becomeGhost( unit ){
         // move unit from units array to ghosts array
         if( !unit.ghost ) _.moveItemById( unit.id, this.data.units, this.data.ghosts );
@@ -129,6 +151,12 @@ class Ghosts extends Faction {
         unit.flipped = true;
     }
 
+
+    /**
+     * Revert a ghost unit to normal
+     *
+     * @param unit
+     */
     unGhost( unit ){
         // move unit from units array to ghosts array
         if( unit.ghost ) _.moveItemById( unit.id, this.data.ghosts, this.data.units );
@@ -139,54 +167,73 @@ class Ghosts extends Faction {
     }
 
 
+    /**
+     * Handle our Materialize action
+     *
+     * @param player
+     * @param areaName
+     */
     async takeMaterializeAction( player, areaName ){
         let area = this.game().areas[areaName];
 
-        if( this.game().data.gameAction !== this.data.lastMaterializeGameAction ){
-            try {
-                await this.materializeAction( area );
-            } catch( error ){
-                console.error( error );
-            }
-        } else {
-            this.message({ message: 'Too soon to materialize again', class: 'warning' });
+        // if this game action equals our last materialize action we can't go again
+        if( this.game().data.gameAction === this.data.lastMaterializeGameAction ){
+            this.message('Too soon to materialize again', { class: 'warning' });
+            this.game().advancePlayer( {}, false  );
+            return;
+        }
+
+        // initiate our materialize
+        try {
+            await this.beginMaterializing( area );
+        } catch( error ){
+            console.error( error );
         }
 
         this.game().advancePlayer( {}, false  );
     }
 
 
-    async materializeAction( area ){
-        let player, data;
+    /**
+     * Begin the materializing process by doing some book keeping
+     *
+     * @param area
+     */
+    async beginMaterializing( area ){
+
+        // choose units to materalize
+        let response = await this.prompt( 'choose-units', {
+            areas : [area.name],
+            playerOnly : true,
+            ghostOnly : true,
+            canDecline : true,
+            payCost: true,
+            count: 30,
+            optionalMax : true,
+            hideMax : true,
+            message: `Reveal ghosts in The ${area.name}`
+        });
+
+        // if we change our mind then back out and unset our last materialize action
+        if( response.decline ) return;
 
         // set the last materialize action counter (to prevent us from doing this twice in a row without taking another action)
         this.data.lastMaterializeGameAction = this.game().data.gameAction + 1;
 
-        // choose units to materalize
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-units',
-            data: {
-                    areas : [area.name],
-                    playerOnly : true,
-                    ghostOnly : true,
-                    canDecline : true,
-                    payCost: true,
-                    count: 30,
-                    optionalMax : true,
-                    hideMax : true,
-                    message: `Reveal ghosts in The ${area.name}`
-                }
-            }).catch( error => console.error( error ) );
+        // resolve our materialize
+        await this.resolveMaterialize( response, area );
+    }
 
-        // if we change our mind then back out and unset our last materialize action
-        if( data.decline ){
-            this.data.lastMaterializeGameAction--;
-            return;
-        }
 
+    /**
+     * Resolve our materialize action
+     *
+     * @param response
+     * @param area
+     */
+    async resolveMaterialize( response, area ){
         // turn our unitIds into the full objects
-        let units = data.units.map( unitId => this.game().objectMap[ unitId ] );
+        let units = response.units.map( unitId => this.game().objectMap[ unitId ] );
         let cost = 0;
 
         // for each unit un-ghost it ad add up its costs
@@ -199,8 +246,7 @@ class Ghosts extends Faction {
         if( cost > 0 ) this.payCost( cost, true );
 
         // show our work
-        this.game().message({ faction : this, message: `Reveals ghosts in the ${area.name}` });
-
+        this.message( `Reveals ghosts in the ${area.name}` );
         await this.game().timedPrompt('units-shifted', {
             message : `${units.length === 1 ? 'A Ghost' : 'Ghosts'} revealed in The ${area.name}`,
             units: units
@@ -208,6 +254,13 @@ class Ghosts extends Faction {
     }
 
 
+    /**
+     * Can we activate our scare token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
     canActivateScare( token, area ) {
         // check if there are any enemy patsies in the area
         let enemyPatsies = Object.keys( this.enemyUnitsInArea( area, { type : 'patsy' } ) );
@@ -217,50 +270,23 @@ class Ghosts extends Faction {
     }
 
 
-    async scareToken( args ) {
+    /**
+     * Handle our scare token activation
+     *
+     * @param args
+     */
+    async activateScareToken( args ) {
         let area = args.area;
         let promises = [];
         let units = [];
-        let _this = this;
 
         // cycle through each player and check for patsies
-        _.forEach( this.game().factions, item => {
-            // scare doesn't effect the ghosts
-            if( item.name === _this.name ) return;
+        for( let faction of Object.values( this.game().factions ) ){
+            // get scared units from each faction
+            let response = this.handleFactionScare( faction, units, area );
+            if( response ) promises.push( response );
 
-            // get the current faction's patsies in this area
-            let patsiesInArea = item.unitsInArea( area, { type : 'patsy' });
-
-            // if they have none move on
-            if( ! patsiesInArea.length ) return;
-
-            let patsies = null;
-
-            // check if we can auto select two patsies for this faction
-            patsies = this.autoSelectPatsies( patsiesInArea );
-
-            // if we have successfully auto selected patsies then add them to the units array and return
-            if( patsies ) return units = units.concat( patsies );
-
-            // if not then ask the player manually select which patsies will be bounced
-            promises.push( _this.game().promise({
-                players: item.playerId,
-                name: 'choose-units',
-                data : {
-                    count : _this.data.scarePatsiesBounced,
-                    areas : [area.name],
-                    playerOnly : true,
-                    unitTypes: ['patsy']
-                }
-            }).then( async ([player, data]) => {
-                // once we get a response push the selected patsies to the units array
-                data.units.forEach( unitId => units.push( _this.game().objectMap[unitId] ) );
-                // then clear the player prompt
-                player.setPrompt({ active : false, updatePlayerData : true });
-            }));
-
-        });
-
+        }
         // wait for everyone who needs to to respond
         await Promise.all( promises );
 
@@ -282,6 +308,69 @@ class Ghosts extends Faction {
     }
 
 
+    /**
+     * Handle the scaring of patsies for one faction
+     *
+     * @param faction
+     * @param units
+     * @param area
+     */
+    handleFactionScare( faction, units, area ){
+        // scare doesn't effect the ghosts
+        if( faction.name === this.name ) return;
+
+        // get the current faction's patsies in this area
+        let patsiesInArea = faction.unitsInArea( area, { type : 'patsy' });
+
+        // if they have none move on
+        if( ! patsiesInArea.length ) return;
+
+        // check if we can auto select two patsies for this faction
+        let patsies = this.autoSelectPatsies( patsiesInArea );
+
+        // if we have successfully auto selected patsies then add them to the units array and return
+        if( patsies ){
+            units = units.concat( patsies );
+            return;
+        }
+
+        // if not then ask the player manually select which patsies will be bounced
+        let data = {
+            count : this.data.scarePatsiesBounced,
+            areas : [area.name],
+            playerOnly : true,
+            unitTypes: ['patsy']
+        };
+
+        return this.game().promise({ players: faction.playerId, name: 'choose-units', data : data })
+            .then( async ([player, response]) => { this.handleScareUnitsResponse( player, response, units ) });
+
+    }
+
+
+    /**
+     * Handle the response from our choose scare units prompt
+     *
+     * @param player
+     * @param response
+     * @param units
+     */
+    async handleScareUnitsResponse( player, response, units ){
+        console.log( 'handleScareUnitsResponse' );
+
+        // once we get a response push the selected patsies to the units array
+        response.units.forEach( unitId => units.push( this.game().objectMap[unitId] ) );
+        // then clear the player prompt
+        player.setPrompt({ active : false, updatePlayerData : true });
+    }
+
+
+    /**
+     * Auto select our patsies, if able
+     *
+     * @param patsiesInArea
+     * @returns {*}
+     */
     autoSelectPatsies( patsiesInArea ){
         // if the number of patsies is less than or equal to the number we need to bounce, just return them all
         if( patsiesInArea.length <= this.data.scarePatsiesBounced ) return patsiesInArea;

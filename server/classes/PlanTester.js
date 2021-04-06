@@ -25,9 +25,9 @@ class PlanTester {
             if( !result.passed ) hasFailedObjective = true;
 
             // determine if objective is scorable, an objective is scorable if this objective has passed its tests,
-            // and either no objectives before it on this plan card have failed, or the player controls the church
-            // which allows them to score plan objectives in any order
-            result.scoreable = result.passed && ( !hasFailedObjective || faction.controlsArea('church') );
+            // and either no objectives before it on this plan card have failed, or the player can score plan
+            // objectives in any order
+            result.scoreable = result.passed && ( !hasFailedObjective || faction.data.anyOrderPlans );
 
             // add our result to the array
             results.push( result );
@@ -80,7 +80,6 @@ class PlanTester {
      */
     scorablePoints( faction, results ) {
         let points = 0;
-        let controlsChurch = faction.controlsArea('church');
 
         // determine how many points we can score by looping through the test results
         // and adding up the points from each passed test. Once we fail a test return the total
@@ -90,7 +89,7 @@ class PlanTester {
             if( result.passed ){
                 points += result.val;
             } else {
-                if( !controlsChurch ) return points;
+                if( !faction.data.anyOrderPlans ) return points;
             }
         }
 

@@ -18,7 +18,7 @@
         },
         computed : {
             focus(){
-                return _.factionEnemyInAreas(
+                return _.factionEnemyInAreasCount(
                     this.faction,
                     this.shared.data.factions,
                     this.shared.data.areas,

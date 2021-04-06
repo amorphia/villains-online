@@ -69,8 +69,165 @@ class Conquistadors extends Faction {
         };
     }
 
-    factionCombatMods(mods, area) {
 
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ) {
+        this.data.bonusDiceInUnconquered = upgrade;
+    }
+
+
+    /**
+     * Returns the number of resources we collect each collect resources step
+     *
+     * @returns {number}
+     */
+    resourcesToCollect(){
+        let resources = this.data.conqueredAreas.length;
+        if( this.areas().includes( 'bank' ) ) resources++;
+        return resources;
+    }
+
+
+    /**
+     * Conquer an area
+     *
+     * @param area
+     */
+    conquerArea( area ){
+        if( area.data.conquered ) return;
+
+        area.data.conquered = true;
+        this.data.conqueredAreas.push( area.name );
+        this.message( `Conquers The ${area.name}` );
+    }
+
+
+    /**
+     * Can we activate our pox token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
+    canActivatePox( token, area ) {
+        // are there any enemy units in this area?
+        let enemyUnits = this.enemyUnitsInArea( area, { basic : true } );
+        return Object.keys( enemyUnits ).length > 0;
+    }
+
+
+    /**
+     * Handle activating our Pox token
+     *
+     * @param args
+     */
+    async activatePoxToken( args ) {
+
+        let promises = [];
+        let units = [];
+
+        this.message( `The Pox descends on the ${args.area.name}` );
+
+        // ask each player which unit they want to sacrifice
+        _.forEach( this.game().factions, faction => {
+            promises.push( this.factionChoosePoxVictim( faction, units, args ) );
+        });
+
+        await Promise.all( promises ).catch( error => console.log( error ) );
+
+        // if we killed any units, then display the results
+        if( units.length ){
+            await this.game().timedPrompt('units-shifted', {
+                message: `The Pox killed the following units`,
+                units: units
+            });
+        }
+
+        // advance the game
+        this.game().advancePlayer();
+    }
+
+
+    /**
+     * allow a player to choose which unit to sacrifice to our pox token
+     *
+     * @param faction
+     * @param units
+     * @param args
+     * @returns {Promise<void>}
+     */
+    factionChoosePoxVictim( faction, units, args ) {
+        // only opponents are effected
+        if( faction.name === this.name ) return;
+
+        // if opponent has no units skip them
+        if( ! faction.data.units.find( unit => _.unitInArea( unit, args.area, { basic : true } ) ) ) return;
+
+        return this.game().promise({
+            players: faction.playerId,
+            name: 'sacrifice-units',
+            data : {
+                count : 1,
+                basicOnly : true,
+                areas : [ args.area.name ]
+            }
+        }).then( async ([player, response]) => await this.killPoxUnit( player, response, units, faction ) );
+    }
+
+
+    /**
+     * Kill a poxed unit
+     *
+     * @param player
+     * @param response
+     * @param units
+     * @param faction
+     */
+    async killPoxUnit( player, response, units, faction ){
+        // get the unit
+        let unit = this.game().objectMap[response.units[0]];
+        units.push( unit );
+
+        // kill the unit
+        await this.game().killUnit( unit, this );
+
+        // display the response and set our player prompt
+        this.message( `sacrifices <span class="faction-${faction.name}item">${unit.name}</span>` );
+        player.setPrompt({ active : false, updatePlayerData : true });
+    }
+
+
+    /**
+     * Handle Diego's enter area battle marker trigger
+     *
+     * @param event
+     */
+    addCombatMarker( event ) {
+        let area = this.game().areas[event.unit.location];
+
+        // if we already have a battle marker, abort
+        if (area.data.battle) return;
+
+        // add battle marker
+        area.data.battle = true;
+        this.message( `<span class="faction-conquistadors">Diego</span> adds a combat marker to The ${area.name}` );
+    }
+
+
+    /**
+     * Generate display text for faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ) {
+
+        // upgrade bonus dice in unconquered areas
         if ( !area.data.conquered  && this.data.bonusDiceInUnconquered ) {
             let existingMod = mods.find(mod => mod.type === 'bonusDice');
             if (existingMod) {
@@ -82,101 +239,6 @@ class Conquistadors extends Faction {
         }
 
         return mods;
-    }
-
-    resourcesToCollect(){
-        let resources = this.data.conqueredAreas.length;
-        if( this.areas().includes( 'bank' ) ) resources++;
-        return resources;
-    }
-
-
-    conquerArea( area ){
-        if( !area.data.conquered ){
-            area.data.conquered = true;
-            this.data.conqueredAreas.push( area.name );
-            let message = `Conquers The ${area.name}`;
-            this.game().message({ faction: this, message: message });
-        }
-    }
-
-
-    processUpgrade(n) {
-        this.data.bonusDiceInUnconquered = n;
-    }
-
-
-    canActivatePox( token, area ) {
-        let enemyUnits = this.enemyUnitsInArea( area, { basic : true } );
-        return Object.keys( enemyUnits ).length > 0;
-    }
-
-
-    async poxToken( args ) {
-
-        let promises = [];
-        let units = [];
-
-        let message = `The Pox descends on the ${args.area.name}`;
-        this.game().message({ faction: this, message: message });
-
-        try {
-            _.forEach( this.game().factions, item => {
-                // only opponents are effected
-                if( item.name === this.name ) return;
-
-                // if opponent has no units skip them
-                if( ! item.data.units.find( unit => _.unitInArea( unit, args.area, { basic : true } ) ) ) return;
-
-                promises.push( this.game().promise({
-                    players: item.playerId,
-                    name: 'sacrifice-units',
-                    data : {
-                        count : 1,
-                        basicOnly : true,
-                        areas : [ args.area.name ]
-                    }
-                }).then( async ([player, data]) => {
-
-                    let unitNames = [];
-                    for( let u of data.units ){
-                        let unit = this.game().objectMap[u];
-                        unitNames.push( unit.name );
-                        units.push( unit );
-                        await this.game().killUnit( unit, this );
-                    }
-
-                    let message = `sacrifices <span class="faction-${item.name}item">${unitNames.join(', ')}</span>`;
-                    this.game().message({ faction: item, message: message });
-                    player.setPrompt({ active : false, updatePlayerData : true });
-                }));
-            });
-
-
-            await Promise.all( promises );
-
-            if( units.length ){
-                await this.game().timedPrompt('units-shifted', {
-                    message: `The Pox killed the following units`,
-                    units: units
-                });
-            }
-
-        } catch( error ){
-            console.error( error );
-        }
-
-        this.game().advancePlayer();
-    }
-
-    addCombatMarker(event) {
-        let area = this.game().areas[event.unit.location];
-
-        if (!area.data.battle) {
-            area.data.battle = true;
-            let message = `<span class="faction-conquistadors">Diego</span> adds a combat marker to The ${area.name}`;
-            this.message({message: message, faction: this});
-        }
     }
 
 }

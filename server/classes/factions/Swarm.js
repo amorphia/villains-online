@@ -12,9 +12,9 @@ class Swarm extends Faction {
         this.data.focus = 'unit-areas-focus';
         this.data.focusDescription = "Have units in many areas";
         this.data.title = "The Swarm";
-        this.data.factionDefenseBonus = 0;
-        this.data.hatchCount = 4;
-        this.data.bonusDeploy = { type: 'champion', count : 1 };
+        this.data.factionDefenseBonus = 0; // the negative modifier we apply to enemy die rolls
+        this.data.hatchCount = 4; // how many drones to hatch
+        this.data.bonusDeploy = { type: 'champion', count : 1 }; // our champion doesn't use up deploy limit
 
         this.triggers = {
             "onAfterCombatStep" : "hatchBroodnest"
@@ -74,44 +74,9 @@ class Swarm extends Faction {
 
 
     /**
-     * Generate display text for faction combat modifications
-     *
-     * @param mods
-     * @param area
-     * @returns {*}
-     */
-    factionCombatMods( mods, area ) {
-
-        mods.push({
-            type: 'goonDeflect',
-            text: `Units attacking The Swarm throw one fewer dice (to a minimum of 1)`
-        });
-
-        if ( this.data.factionDefenseBonus ) {
-            let existingMod = mods.find(mod => mod.type === 'defenseBonus');
-
-            // if we already have a defense bonus mod, just change the value
-            if (existingMod) {
-                existingMod.val += this.data.factionDefenseBonus;
-                existingMod.text = `Enemies suffer -${existingMod.val} to their attack rolls`
-            } else {
-                // otherwise add the defense mod whole
-                mods.push({
-                    type: 'defenseBonus',
-                    text: `Enemies suffer ${this.data.factionDefenseBonus} to their attack rolls`,
-                    val: this.data.factionDefenseBonus
-                });
-            }
-        }
-
-        return mods;
-    }
-
-
-    /**
      * Process faction upgrade
      *
-     * @param upgrade
+     * @param {number} upgrade
      */
     processUpgrade( upgrade ) {
         this.data.factionDefenseBonus = upgrade;
@@ -123,7 +88,7 @@ class Swarm extends Faction {
      */
     async hatchBroodnest() {
         // is our broodnest in play?
-        let broodnest = this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
+        let broodnest = this.getChampionInPlay();
         if ( !broodnest ) return;
 
         // place our drones
@@ -156,7 +121,7 @@ class Swarm extends Faction {
         // send out the birth announcements
         this.game().sound( 'hatch' );
         let message = `Broodnest hatches, spawning ${this.data.hatchCount} <span class="faction-swarm">drones</span> in The ${area.name}`;
-        this.game().message({ faction : this, message: message });
+        this.message( message );
 
         await this.game().timedPrompt('units-shifted', {
             message : `The Swarm Broodnest hatches, spawning drones in the ${area.name}`,
@@ -197,7 +162,7 @@ class Swarm extends Faction {
      * @param args
      * @returns {Promise<void>}
      */
-    async scatterToken( args ) {
+    async activateScatterToken( args ) {
 
         try {
             await this.moveAwayToken( args, {
@@ -213,6 +178,43 @@ class Swarm extends Faction {
         }
 
         this.game().advancePlayer();
+    }
+
+
+    /**
+     * Generate display text for faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ) {
+
+        mods.push({
+            type: 'goonDeflect',
+            text: `Units attacking The Swarm throw one fewer dice (to a minimum of 1)`
+        });
+
+        // if we don't have any faction defense bonus, then we are done here
+        if( !this.data.factionDefenseBonus ) return mods;
+
+        // see if we already have other defense bonuses
+        let existingMod = mods.find(mod => mod.type === 'defenseBonus');
+
+        // if we already have a defense bonus mod, just change the value
+        if (existingMod) {
+            existingMod.val += this.data.factionDefenseBonus;
+            existingMod.text = `Enemies suffer -${existingMod.val} to their attack rolls`
+        } else {
+            // otherwise add the defense mod whole
+            mods.push({
+                type: 'defenseBonus',
+                text: `Enemies suffer ${this.data.factionDefenseBonus} to their attack rolls`,
+                val: this.data.factionDefenseBonus
+            });
+        }
+
+        return mods;
     }
 }
 

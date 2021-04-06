@@ -58,40 +58,30 @@ class Mutants extends Faction {
         };
     }
 
-    factionCombatMods( mods, area ){
 
-        if( this.hasBiohazardInArea( area ) ){
-            let existingMod = mods.find( mod => mod.type === 'defenseBonus' );
-            if( existingMod ){
-                existingMod.val += 2;
-                existingMod.text = `Enemies suffer -${existingMod.val} to their attack rolls`
-            } else {
-                mods.push( { type : 'defenseBonus', text : `Enemies suffer -2 to their attack rolls`, val : 2 });
-            }
-        }
-
-        if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
-            mods.push( { type : 'motherOoze', text : `Wounded Mother Ooozes heal and spawn new units at the end of the turn` });
-        }
-
-        return mods;
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+        this.data.deployLimit += ( upgrade - this.data.upgradeDeploy );
+        this.data.upgradeDeploy = upgrade;
     }
 
+
+    /**
+     * Handle our Heal Oozes end of turn trigger
+     */
     async healOozes(){
 
-        let areasWithHealedOozes = {};
-        this.data.units.forEach( unit => {
-            if( unit.type === 'champion' && unit.flipped && _.unitInPlay( unit ) ){
-                areasWithHealedOozes[ unit.location ] = true;
-                unit.flipped = false;
-            }
-        });
-        areasWithHealedOozes = Object.keys( areasWithHealedOozes );
+        // heal our oozes, and keep track of the areas where we did it
+        let areasWithHealedOozes = this.getHealedOozeAreas();
 
-        if( areasWithHealedOozes.length ){
-            let message = `spawn units as their wounded Mother Oozes heal`;
-            this.game().message({ faction: this, message: message });
-        }
+        // if we didn't have any wounded oozes, then we are done here
+        if( !areasWithHealedOozes.length ) return;
+
+        this.message( `spawn units as their wounded Mother Oozes heal` );
 
         for( let area of areasWithHealedOozes ){
                 let args = {
@@ -106,19 +96,74 @@ class Mutants extends Faction {
         }
     }
 
-    processUpgrade( n ){
-        this.data.deployLimit += ( n - this.data.upgradeDeploy );
-        this.data.upgradeDeploy = n;
+
+    /**
+     * heal our oozes, and keep track of the areas where we did it
+     *
+     * @returns {string[]}
+     */
+    getHealedOozeAreas(){
+        let areasWithHealedOozes = {};
+
+        this.data.units.forEach( unit => {
+            if( unit.type === 'champion' && unit.flipped && _.unitInPlay( unit ) ){
+                areasWithHealedOozes[ unit.location ] = true;
+                this.unflipUnit( unit );
+            }
+        });
+
+        return Object.keys( areasWithHealedOozes );
     }
 
-    biohazardToken( args ){
-        this.game().advancePlayer();
-    }
 
+    /**
+     * Can we activate our Biohazard token?
+     *
+     * @returns {boolean}
+     */
     canActivateBiohazard() {
+        // as a matter of fact, we can
         return true;
     }
 
+
+    /**
+     * Handle activating a biohazard token
+     *
+     * @param args
+     */
+    activateBiohazardToken( args ){
+        this.game().advancePlayer();
+    }
+
+
+    /**
+     * Generate display text for faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ){
+
+        // defense mod from biohazard token
+        if( this.hasBiohazardInArea( area ) ){
+            let existingMod = mods.find( mod => mod.type === 'defenseBonus' );
+            if( existingMod ){
+                existingMod.val += 2;
+                existingMod.text = `Enemies suffer -${existingMod.val} to their attack rolls`
+            } else {
+                mods.push( { type : 'defenseBonus', text : `Enemies suffer -2 to their attack rolls`, val : 2 });
+            }
+        }
+
+        // mother ooze heal / deploy
+        if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
+            mods.push( { type : 'motherOoze', text : `Wounded Mother Ooozes heal and spawn new units at the end of the turn` });
+        }
+
+        return mods;
+    }
 }
 
 module.exports = Mutants;

@@ -1,38 +1,36 @@
 let obj = {
-
-
-    testPlans(){
-        let results = [];
-        this.data.plans.current.forEach( plan => {
-            let planResults = this.game().planTester.test( this, plan );
-            results.push( planResults );
-        });
-        return results;
+    deploy: {
+        count: 3,
+        data: {
+            influence: 1,
+            cost: 0,
+            req: "This token must be discarded if you don't deploy any units"
+        }
     },
-
-
-    /**
-     * Score a plan, if appropriate
-     *
-     * @param plan
-     */
-    scorePlan( plan ){
-        // if this plan wasn't selected then abort
-        if( !plan.selected ) return;
-
-        // gain plan points
-        this.gainPP( plan.points );
-
-        // tag plan with data on when/how scored
-        let planObject = this.game().objectMap[ plan.plan.id ];
-        planObject.turnScored = this.game().data.turn;
-        planObject.objectives = plan.objectives;
-        planObject.plan = { num : plan.num };
-        planObject.points = plan.points;
-
-        // move plan to completed array
-        _.moveItemById( plan.plan.id , this.data.plans.current, this.data.plans.completed );
-
+    card: {
+        count: 3,
+        data: {
+            influence: 1,
+            cost: 0,
+            req: "This token must be discarded if you don't play a card"
+        }
+    },
+    move: {
+        count: 1,
+        data: {
+            influence: 1,
+            cost: 2,
+            req: "This token must be discarded if you don't move any units"
+        }
+    },
+    battle: {
+        count: 1,
+        data: {
+            influence: 1,
+            resource: 1,
+            cost: 0,
+            req: "This token must be discarded if you cannot start a battle"
+        }
     }
 };
 

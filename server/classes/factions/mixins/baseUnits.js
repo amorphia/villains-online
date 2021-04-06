@@ -1,39 +1,65 @@
 let obj = {
-    tokens : {
-        deploy : {
-            count : 3,
-            data : {
-                influence: 1,
-                cost : 0,
-                req : "This token must be discarded if you don't deploy any units"
-            }
-        },
-        card : {
-            count : 3,
-            data : {
-                influence: 1,
-                cost : 0,
-                req : "This token must be discarded if you don't play a card"
-            }
-        },
-        move : {
-            count : 1,
-            data : {
-                influence: 1,
-                cost : 2,
-                req : "This token must be discarded if you don't move any units"
-            }
-        },
-        battle : {
-            count : 1,
-            data : {
-                influence: 1,
-                resource: 1,
-                cost : 0,
-                req : "This token must be discarded if you cannot start a battle"
-            }
-        },
-    }
+    goon: {
+        count: 5,
+        data: {
+            name: 'Goon',
+            influence: 1,
+            basic: true,
+            killed: false,
+            type: 'goon',
+            attack: [5, 5],
+            cost: 2,
+            selected: false,
+            hitsAssigned: 0
+        }
+    },
+    mole: {
+        count: 5,
+        data: {
+            name: 'Mole',
+            influence: 2,
+            basic: true,
+            type: 'mole',
+            killed: false,
+            attack: [9],
+            cost: 1,
+            selected: false,
+            hitsAssigned: 0
+        }
+    },
+    talent: {
+        count: 3,
+        data: {
+            name: 'Talent',
+            ready: false,
+            influence: 1,
+            skilled: true,
+            basic: true,
+            killed: false,
+            type: 'talent',
+            attack: [7],
+            cost: 1,
+            selected: false,
+            hitsAssigned: 0
+        }
+    },
+    patsy: {
+        count: 4,
+        data: {
+            name: 'Patsy',
+            ready: false,
+            influence: 0,
+            skilled: false,
+            basic: true,
+            type: 'patsy',
+            killed: false,
+            attack: [],
+            cost: 0,
+            selected: false,
+            hitsAssigned: 0
+        }
+    },
+    champion: {}
 };
 
-module.exports = obj;
+module.exports = module.exports = obj;

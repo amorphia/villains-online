@@ -7,10 +7,12 @@ class Guerrillas extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggers
         this.triggers = {
             "onCleanUp" : "resetAmbushUsedCount",
             "onStartOfTurn" : "setViperDeployLimit",
         };
+
 
         //data
         this.data.name = this.name;
@@ -19,6 +21,7 @@ class Guerrillas extends Faction {
         this.data.focusDescription = "Kill many units in enemy areas";
         this.data.flipableUnits = ['champion'];
 
+        // tracks the number of ambush actions we have available each turn
         this.data.ambushes = {
             max : 1,
             used : 0,
@@ -62,7 +65,6 @@ class Guerrillas extends Faction {
                 attack: [6, 6],
                 cost: 1,
                 killed: false,
-                //redeployFree: true,
                 selected: false,
                 hitsAssigned: 0,
                 toughness: true,
@@ -72,42 +74,61 @@ class Guerrillas extends Faction {
         };
     }
 
-    processUpgrade( upgradeNumber ){
-       this.data.ambushes.max = upgradeNumber + 1;
+
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+       this.data.ambushes.max = upgrade + 1;
     }
 
+
+    /**
+     * Can we activate our sniper token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
     canActivateSnipers( token, area ) {
-        let validTargets = !! this.areasWithEnemyUnits({ adjacent: area.name }).length;
+        // do we have a valid target?
+        let validTargets = !! this.areasWithEnemyUnits({}, area.name ).length;
+        // do we have a unit in this area to be our trigger man
         let hasUnitToShootWith = this.hasUnitsInArea( area );
         return validTargets && hasUnitToShootWith;
     }
 
-    async snipersToken( args ) {
-        let player, data, area = args.area;
+
+    /**
+     * Handle activating our sniper token
+     *
+     * @param args
+     */
+    async activateSnipersToken( args ) {
+        let area = args.area;
 
         // get areas with units
-        let areas = this.areasWithEnemyUnits({adjacent: area.name });
+        let areas = this.areasWithEnemyUnits({}, area.name );
 
+        // if there are no targets we are donezo here
         if ( ! areas.length ) {
-            this.game().message({ faction: this, message: "snipers couldn't find a target", class: 'warning' });
-            return false;
+            this.message( "snipers couldn't find a target", { class: 'warning' } );
+            return;
         }
 
-        this.message({ faction: this, message: `Snipers are searching for targets` });
+        this.message(`Snipers are searching for targets` );
 
-        // prompt player to select an area
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-area',
-            data: {
-                areas: areas,
-                show: 'units',
-                enemyOnly: true,
-                message: "Choose an area to target with your sniper attack of xA1x"
-            }
-        }).catch(error => console.error(error));
+        // prompt player to select an area to snipe
+        let response = await this.prompt( 'choose-area',  {
+            areas: areas,
+            show: 'units',
+            enemyOnly: true,
+            message: "Choose an area to target with your sniper attack of xA1x"
+        });
 
-        let targetArea = this.game().areas[data.area];
+        let targetArea = this.game().areas[response.area];
 
         // resolve attack with that unit
         let output = await this.attack({ area: targetArea, attacks: [1] });
@@ -121,6 +142,12 @@ class Guerrillas extends Faction {
     }
 
 
+    /**
+     * Handle our ambush action
+     *
+     * @param player
+     * @param areaName
+     */
     async takeAmbushAction( player, areaName ){
         let area = this.game().areas[areaName];
 
@@ -134,58 +161,95 @@ class Guerrillas extends Faction {
     }
 
 
+    /**
+     * Resolve our ambush action
+     *
+     * @param area
+     */
     async resolveAmbushAction( area ){
-        let player, data;
-        let hasAmbushes = this.data.ambushes.used < this.data.ambushes.max;
-        this.data.ambushes.used++;
 
-        if( ! _.find( area.data.tokens, token => token.faction === this.name && token.revealed ) ){
-            faction.game().message({ faction : faction, message: "No tokens to discard", class : 'warning'  });
-            return false;
+        // if we don't have any ambushes left, or any revealed tokens to discard here then we can't resolve this action
+        if( (this.data.ambushes.used < this.data.ambushes.max) || !this.hasRevealedTokenInArea( area ) ) {
+            this.message( `Can't ambush in the ${ area.name }`, { class: 'warning' } );
+            return;
         }
 
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-tokens',
-            data : {
-                count : 1,
-                areas : [area.name],
-                playerOnly : true,
-                revealedOnly : true
-            }
-        }).catch( error => console.error( error ) );
+        // chose our token to discard
+        let response = await this.prompt( 'choose-tokens', {
+            count : 1,
+            areas : [area.name],
+            playerOnly : true,
+            revealedOnly : true
+        });
 
-        let token = this.game().objectMap[data.tokens[0]];
+        let token = this.game().objectMap[response.tokens[0]];
+        if( !token ) return this.message( `Declines to ambush in the ${ area.name }`, { class: 'warning' });
 
-        if( !token || !hasAmbushes ) return this.game().message({ faction: this, message: `Can't ambush in the ${ area.name }`, class: 'warning' });
+        // use up an ambush
+        this.data.ambushes.used++;
 
         _.discardToken( token, area );
 
-        this.game().message({ faction: this, message: `Launches an ambush in the ${ area.name }`, class: 'highlight' });
+        this.message(`Launches an ambush in the ${ area.name }`,{ class: 'highlight' });
+
+        // begin a battle in this area
         await this.game().battle( area ).catch( error => console.error( error ) );
     }
 
 
+    /**
+     * Do we have a revealed token in the area?
+     *
+     * @param area
+     * @returns {boolean}
+     */
+    hasRevealedTokenInArea( area ){
+        return area.data.tokens.some( token => token.faction === this.name && token.revealed );
+    }
+
+
+    /**
+     * Handle viper deploy trigger
+     *
+     * @param event
+     */
     async viperDeploy( event ){
+        // viper is no longer free to our deploy limit
         this.toggleViperDeployLimit( false );
+
+        // handle bring units trigger
         await this.bringUnits( event );
     }
 
 
-    setViperDeployLimit(){
-        let viperInReserves = this.data.units.find( unit => unit.type === 'champion' && !unit.location );
-        if( viperInReserves ) this.toggleViperDeployLimit( true );
-    }
-
-
+    /**
+     * Add or remove the free deploy limit on Red Viper
+     *
+     * @param set
+     */
     toggleViperDeployLimit( set = true ){
         if( set ) this.data.bonusDeploy = { type: 'champion', count : 1 };
         else delete this.data.bonusDeploy;
     }
 
 
+    /**
+     * Handle our end of turn viper deploy limit trigger
+     */
+    setViperDeployLimit(){
+        // if red viper is in our reserves, then she is free to deploy again next turn
+        let viperInReserves = this.data.units.find( unit => unit.type === 'champion' && !unit.location );
+        if( viperInReserves ) this.toggleViperDeployLimit( true );
+    }
+
+
+    /**
+     * Handle Red Viper's bring units ability
+     *
+     * @param event
+     */
     async bringUnits( event ) {
-        let player, data, vines = 0;
+        let area = this.game().areas[ event.from  ];
 
         // if we didn't deploy from another area then return
         if (!event.from || event.from === event.unit.location) return;
@@ -193,50 +257,65 @@ class Guerrillas extends Faction {
         // if we don't have any more units in the from area then return
         if( ! this.data.units.find( unit => _.unitInArea( unit, event.from ) ) ) return;
 
-        let area = this.game().areas[ event.from  ];
-        if( this.game().factions['plants'] ){
-            console.log( 'checking for vines' );
-            console.log( 'area.tokens', area.data.tokens );
-            vines = area.data.tokens.filter( token => token.type === 'vines' ).length;
-        }
+        // if the plants are in this game, check for vines
+        let vines = area.data.tokens.filter( token => token.type === 'vines' ).length;
 
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-units',
-            data: {
-                count : 2,
-                areas : [event.from],
-                playerOnly : true,
-                canDecline : true,
-                optionalMax : true,
-                policePayoff : event.unit.location,
-                vines: vines,
-                message: `Choose units to move with Red Viper to The ${event.from}`
-            }
-        }).catch( error => console.error( error ) );
-        if( data.decline ) return false;
+        // Let player choose which units to bring, if any
+        let response = this.prompt( 'choose-units', {
+            count : 2,
+            areas : [event.from],
+            playerOnly : true,
+            canDecline : true,
+            optionalMax : true,
+            policePayoff : event.unit.location,
+            vines: vines,
+            message: `Choose units to move with Red Viper to The ${event.from}`
+        });
 
-        if( data.cost ) this.payCost( data.cost );
-        let units = data.units.map( unitId => this.game().objectMap[ unitId ] );
+        if( response.decline ) return;
 
+        // bring our units along
+        await this.resolveBringUnits( response.units, response.cost, event );
+    }
+
+
+    /**
+     * Actually move the units we decided to bring with red viper
+     *
+     * @param units
+     * @param cost
+     * @param event
+     */
+    async resolveBringUnits( units, cost, event ) {
+        // pay any costs to move these units
+        if( cost ) this.payCost( cost );
+
+        // grab the units from our object map
+        units = units.map( unitId => this.game().objectMap[ unitId ] );
+
+        // move our units
         units.forEach( unit => {
             unit.location = event.unit.location;
             if( unit.ready ) unit.ready = false;
         });
 
-
-        this.game().message({ faction : this, message: `Sneaks ${units.length} unit${units.length > 1 ? 's':'' } to The ${event.unit.location}` });
-
+        // display results
+        this.message( `Sneaks ${units.length} unit${units.length > 1 ? 's':'' } to The ${event.unit.location}` );
         await this.game().timedPrompt('units-shifted', {
             message : `${units.length === 1 ? 'A Unit sneaks' : 'Units sneak'} to The ${event.unit.location}`,
             units: units
         });
-
     }
 
+
+    /**
+     * handle end of turn reset ambush trigger
+     */
     resetAmbushUsedCount(){
         this.data.ambushes.used = 0;
     }
+
+
 }
 
 

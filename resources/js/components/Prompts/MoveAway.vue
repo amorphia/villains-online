@@ -88,24 +88,6 @@
                 this.$set( unit, 'selected', null );
             },
 
-            /*
-            policePayoffs( area ){
-                let policePayoff = 0;
-
-                _.forEach( area.cards, card => {
-                    if( card.class === 'police-payoff' // if there is a police payoff here
-                        && card.owner !== this.shared.faction.name // which we don't own
-                        && !_.hasKauImmunity( this.shared.faction, area ) // and we don't already have kau immunity in this area
-                        && !_.find( this.selected, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
-                    {
-                        policePayoff++; // increase our police payoff cost by one
-                    }
-                });
-
-                return policePayoff;
-            },
-            */
-
         },
 
         computed : {
@@ -123,6 +105,7 @@
 
                 if( this.data.enemyOnly ){ // enemy units
                     Object.values( this.shared.data.factions ).forEach( faction => {
+                        if( faction.name === this.shared.faction.name ) return;
                         units = units.concat( faction.units );
                     });
                 } else { // player units

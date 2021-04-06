@@ -1,12 +1,18 @@
-//let PlanTester = require( '../Plans' );
 let Token = require( '../../Token' );
 let Unit = require( '../../Unit' );
 
 let obj = {
 
-    setupUnits( saved ){
+    /**
+     * Build up our unit reinforcements
+     *
+     * @param saved // option save game state
+     */
+    setupUnits( saved = null ){
+
         _.forEach( this.units, ( value, name ) => {
             for( let i = 0; i < value.count; i++ ) {
+                // setup our unit objects
                 let unit = new Unit( this, name, value.data );
                 unit = this.game().newObject( unit, saved );
 
@@ -19,8 +25,13 @@ let obj = {
         });
     },
 
-    // saves the specified properties to a "baseXxxxx" property for use
-    // with transforming units that change stats back and forth
+
+    /**
+     * saves the specified properties to a "baseXxxxx" property for use
+     * with transforming units that change stats back and forth
+     *
+     * @param unit
+     */
     setUnitBaseStats( unit ){
         if( this.shouldSetUnitBaseStats.basic && !unit.basic ) return;
 
@@ -31,6 +42,11 @@ let obj = {
     },
 
 
+    /**
+     * Build up our token reinforcements
+     *
+     * @param saved
+     */
     setupTokens( saved ){
         _.forEach( this.tokens, ( value, name ) => {
             for( let i = 0; i < value.count; i++ ) {
@@ -42,6 +58,11 @@ let obj = {
     },
 
 
+    /**
+     * Setup our plan objects
+     *
+     * @param saved
+     */
     setupPlans( saved ){
         let plans = _.cloneDeep( require( `../plans/${this.name}Plans` ) );
 
@@ -55,8 +76,10 @@ let obj = {
         this.game().shuffle( this.data.plans.deck );
     },
 
-    // absract
+
+    // abstract
     onSetup(){}
+
 };
 
 module.exports = obj;

@@ -10,11 +10,10 @@ class Aliens extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Centari Invasion";
-        this.data.kau = null;
-        this.data.farMove = false;
+        this.data.kau = null; // a reference for kau, so we can access it easier down the line
         this.data.focus = 'captured-markers-focus';
         this.data.focusDescription = "Capture many enemy markers";
-        this.data.teleports = true;
+        this.data.teleports = true; // our units cannot be prevented from entering or leaving areas
 
         this.capturedRewards = [
             { ap : 1, maxEnergy : 1 },
@@ -25,6 +24,7 @@ class Aliens extends Faction {
             { ap : 1, pp : 1 },
         ];
 
+        // we can capture more tokens than usual, neat!
         this.data.captured.max = this.capturedRewards.length;
 
         // tokens
@@ -61,44 +61,48 @@ class Aliens extends Faction {
             }
         };
     }
-    F
 
-    processUpgrade( n ){
-        switch( n ){
-            case 2 :
-                this.data.tokens.forEach( token => {
-                    if( token.type === 'move' ) token.cost = 0
-                });
-                break;
-            case 1 :
-                this.data.tokens.forEach( token => {
-                    if( token.type === 'move' ) token.cost = 1
-                });
-                break;
-        }
+
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+        let moveCost = upgrade === 1 ? 1 : 0;
+        this.data.tokens.forEach( token => {
+            if( token.type === 'move' ) token.cost = moveCost;
+        });
     }
 
-    cardsToDraw(){
-        let cardCount = super.cardsToDraw();
-        if( this.data.captured.current >= 4 ) cardCount++;
-        return cardCount;
-    }
 
-    async invadeToken( args ){
+    /**
+     * Handle our invade token activation
+     *
+     * @param args
+     */
+    async activateInvadeToken( args ){
+
+        // deploy, but with a deployLimit of 17
         args.deployLimit = 17;
-
         let output = await this.deploy( args );
 
-        if( output && output.declined ){
+        // if we didn't deploy anything, discard the token
+        if( output?.declined ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
         }
 
+        // advance the game
         this.game().advancePlayer();
     }
 
+
+    /**
+     * On setup, make a convenience reference to kau
+     */
     onSetup(){
-        this.data.kau = _.find( this.data.units, unit => unit.type === 'champion' );
+        this.data.kau = this.getChampion();
     }
 }
 

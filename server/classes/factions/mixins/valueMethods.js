@@ -6,19 +6,35 @@ let mixin = {
      *
      */
 
+    /**
+     * Return our game instance
+     *
+     * @returns {Game}
+     */
     game(){
         return Server.games[this.gameId];
     },
 
 
+    /**
+     * Return our player instance
+     *
+     * @returns {Player}
+     */
     getPlayer(){
         return this.game().players[this.playerId];
     },
 
 
+    /**
+     * Get our player order
+     *
+     * @returns {number}
+     */
     playerOrder(){
         return _.indexOf( this.game().data.playerOrder, this.playerId );
     },
+
 
     /**
      *
@@ -28,11 +44,21 @@ let mixin = {
      */
 
 
+    /**
+     * Have we achieved victory
+     *
+     * @returns {boolean}
+     */
     hasVictory(){
         return this.data.ap >= this.game().data.maxAP || this.data.pp >= this.game().data.maxPP;
     },
 
 
+    /**
+     * What turn did we capture our last captiol token?
+     *
+     * @returns {number}
+     */
     lastCapitolToken(){
         if( this.data.capitolTokens.length ){
             return _.last( this.data.capitolTokens ).turn;
@@ -41,89 +67,131 @@ let mixin = {
         return 0;
     },
 
+
     /**
      *
      * AREAS
      *
      */
 
+
+    /**
+     * Returns an array of area names matching the areas we control
+     *
+     * @returns {string[]}
+     */
     areas() {
-        let areas = [];
-        _.forEach( this.game().areas, ( area, name ) => {
-            if( area.data.owner === this.name ){
-                areas.push( name );
-            }
-        });
-        return areas;
+        return Object.values( this.game().areas )
+            .filter( area => area.data.owner === this.name )
+            .map( area => area.name );
     },
 
 
+    /**
+     * Does this faction control the given area?
+     *
+     * @param area
+     * @returns {boolean}
+     */
     controlsArea( area ){
         if( typeof area !== 'string' ) area = area.name;
         return this.areas().includes( area );
     },
 
 
-    areasWithEnemyUnits( args = {} ){
+    /**
+     * Returns an array of area names with enemy units in them
+     *
+     * @param args
+     * @param adjacentToArea
+     * @returns {Array}
+     */
+    areasWithEnemyUnits( args = {}, adjacentToArea = null ){
         let areas = [];
 
-        let firstArgs = Object.assign({}, args );
-        delete firstArgs.adjacent;
-
-        _.forEach( this.game().factions, faction => {
-            if( faction.name !== this.name ){
-                areas = _.union( areas, faction.areasWithUnits( firstArgs ) );
-            }
+        // cycle through each game faction looking for areas where each enemy player has units
+        Object.values( this.game().factions ).forEach( faction => {
+            // enemy units only
+            if( faction.name === this.name ) return;
+            // get this faction's areas with units
+            areas = _.union( areas, faction.areasWithUnits( args ) );
         });
 
-        console.log( 'areas pre adjacent', areas  );
-
-        if( args.adjacent ){
-            let adjacentArea = args.adjacent;
-            if( typeof args.adjacent === 'string' ) adjacentArea = this.game().areas[args.adjacent];
-            let adjacentArray = adjacentArea.data.adjacent;
-            console.log( 'adjacentArray', adjacentArray  );
-            areas = _.intersection( areas, adjacentArray );
-        }
-
-        console.log('areas post adjacent', areas  );
+        // if we need to filter by adjacent areas do so here
+        if( adjacentToArea ) areas = this.filterAreasArrayByAdjacentArea( adjacentToArea, areas );
 
         return areas;
     },
 
 
+    /**
+     * Filter an array of area names to only include areas adjacent to the given area
+     *
+     * @param adjacentArea
+     * @param areas
+     */
+    filterAreasArrayByAdjacentArea( adjacentArea, areas ){
+        if( typeof args.adjacent === 'string' ) adjacentArea = this.game().areas[args.adjacent];
+        return _.intersection( areas, adjacentArea.data.adjacent );
+    },
+
+
+    /**
+     * Returns an array of area names that this faction has units who can attack in
+     *
+     * @returns {string[]}
+     */
     areasWithAttackingUnits(){
-        let areas = {};
-
-        this.data.units.forEach( unit => {
-            if( _.unitInPlay( unit ) && unit.attack.length ){
-                areas[ unit.location ] = true;
-            }
-        });
-
-        areas = Object.keys( areas );
-        areas = areas.filter( areaName => {
-            let area = this.game().areas[ areaName ];
-            if( !_.find( area.data.cards, card => card.class === 'cease-fire' )
-                && _.factionsWithUnitsInArea( this.game().data.factions, areaName, { exclude : this.name, notHidden : true } ).length
-            ) return true;
-
-        });
-
-        return areas;
+        let areas = this.areasWithUnits( { attacks : true } );
+        return this.filterAreasWhereOurUnitsCantAttack( areas );
     },
 
 
+    /**
+     * Filter an area list to remove areas where this faction could not make an attack
+     *
+     * @param areas
+     * @returns {string[]}
+     */
+    filterAreasWhereOurUnitsCantAttack( areas ){
+        return areas.filter( areaName => {
+            let area = this.game().areas[ areaName ];
+            let hasCeaseFire = area.hasCard( 'cease-fire' );
+            let attackableUnitsInArea = _.factionsWithUnitsInArea( this.game().data.factions, areaName, { exclude : this.name, notHidden : true } ).length > 0;
+            return !hasCeaseFire && attackableUnitsInArea;
+        });
+    },
+
+
+    /**
+     * Return a list of areas with our dead units in them
+     *
+     * @returns {[]}
+     */
     areasWithDeadUnits(){
         return _.factionAreasWithDeadUnits( this );
     },
 
+
+    /**
+     * Are there any enemy units in this area?
+     *
+     * @param area
+     * @param options
+     * @returns {boolean}
+     */
     hasEnemyUnitsInArea( area, options = {} ){
         let enemyUnits = this.enemyUnitsInArea( area, options );
         return Object.keys( enemyUnits ).length > 0;
     },
 
 
+    /**
+     *
+     * @param area
+     * @param options
+     * @returns {string[]}
+     */
     enemyUnitTypesInArea( area, options = {} ){
         let types = {};
         let enemyUnits = this.enemyUnitsInArea( area, options );
@@ -138,78 +206,167 @@ let mixin = {
     },
 
 
+    /**
+     * Returns the enemy units in this area
+     *
+     * @param area
+     * @param options
+     * @returns {object} // returns an object with the structure { factionOne : [units], factionTwo : [units], ect... }
+     */
     enemyUnitsInArea( area, options = {} ){
         return _.enemyUnitsInArea( this.data, area.name, this.game().data.factions, options );
     },
 
 
+    /**
+     * Returns an array of areaNames matching the areas where we have units
+     *
+     * @param options
+     * @returns {string[]}
+     */
     areasWithUnits( options = {} ){
         return _.areasWithUnits( this, options );
     },
 
-    enemyUnitsInAreas(){
-        return _.factionEnemyInAreas( this.data, this.game().data.factions, this.game().data.areas );
+
+    /**
+     * Returns the count of total enemy units in areas this faction controls
+     *
+     * @returns {number}
+     */
+    enemyUnitsInOurAreasCount(){
+        return _.factionEnemyInAreasCount( this.data, this.game().data.factions, this.game().data.areas );
     },
 
+
+    /**
+     * Does this faction have units in the given area?
+     *
+     * @param area
+     * @param options
+     * @returns {boolean}
+     */
     hasUnitsInArea( area, options = {} ) {
         return _.hasUnitsInArea( this.data, area, options );
     },
 
 
+    /**
+     * Returns an array of this faction's units in a given area
+     *
+     * @param area
+     * @param options
+     * @returns {units[]}
+     */
     unitsInArea( area, options = {} ) {
         return _.factionUnitsInArea( this, area, options );
     },
 
 
+    /**
+     * Returns how much influence this faction has in a given area
+     *
+     * @param area
+     * @returns {number}
+     */
     influenceInArea( area ){
         return _.influence( this, area, this.game().data.factions );
     },
 
 
+    /**
+     * Returns the area instance of this faction's target for the turn
+     *
+     * @returns {Area}
+     */
     targetArea(){
         let areaName = this.data.cards.target[0].target;
         return this.game().areas[areaName];
     },
 
 
+    /**
+     * Return the name of this faction's target for the turn
+     *
+     * @returns {*}
+     */
     targetName(){
        return this.data.cards.target[0].target;
     },
 
 
+    /**
+     * Has this faction exterminated the given area?
+     *
+     * @param area
+     * @returns {boolean}
+     */
     hasExterminatedArea( area ){
         if( typeof area === 'string' ) area = this.game().data.areas[area];
         return _.areaExterminated( area, this.game().data.factions ) === this.name;
     },
 
 
-    totalKills(){
-        let kills = 0;
+    /**
+     * Return the total number of units this faction has killed
+     *
+     * @returns {number}
+     */
+    totalKills() {
+        return Object.values( this.game().factions ).reduce( (kills, faction) => {
+            if(faction.name === this.name) return kills; // skip our own units
 
-        _.forEach( this.game().factions, ( faction, name ) => {
-            if( name === this.name ) return;
+            // count up our kills
             kills += faction.data.units.filter( unit => unit.killed === this.name ).length;
-        });
-
-        return kills;
+            return kills;
+        }, 0 );
     },
 
 
+    /**
+     * Does this faction have a revealed biohazard token in the area?
+     *
+     * @param area
+     * @returns {boolean}
+     */
     hasBiohazardInArea( area ){
+        // if we aren't the mutants, then nope
         if( this.name !== 'mutants' ) return false;
-        let bio = this.data.tokens.find( token => token.name === 'biohazard' );
-        return bio && bio.revealed && bio.location === area.name;
+
+        // check for the token
+        return this.data.tokens.some( token => token.name === 'biohazard'
+                                            && token.revealed
+                                            && token.location === area.name );
     },
 
 
+    /**
+     * Returns a count of the areas where we have the most units
+     *
+     * @returns {number}
+     */
     areasMostUnits(){
         return _.areasMostUnits( this, this.game().data.factions ).length;
     },
 
+
+    /**
+     * Returns a count of the number of areas where we have the most tokens
+     *
+     * @returns {number}
+     */
     areasMostTokens(){
         return _.areasMostTokens( this, this.game().data.areas );
     },
 
+
+    /**
+     * Return an array of faction names who have units in the given area
+     *
+     * @param area
+     * @param options
+     * @returns {string[]}
+     */
     enemiesWithUnitsInArea( area, options = {} ){
         let enemies = [];
         for( let faction of Object.values( this.game().data.factions ) ){
@@ -226,11 +383,24 @@ let mixin = {
      *
      */
 
+
+    /**
+     * Have we used the given area's skill?
+     *
+     * @param area
+     * @returns {boolean}
+     */
     hasUsedSkill( area ){
         return _.hasUsedSkill( this, area );
     },
 
 
+    /**
+     * Can we activate the given area's skill?
+     *
+     * @param area
+     * @returns {boolean}
+     */
     canUseSkill( area ){
         return _.canUseSkill( this, area, this.game().data.factions );
     },
@@ -242,11 +412,23 @@ let mixin = {
      *
      */
 
+
+    /**
+     * Return an array of units we have in play
+     *
+     * @returns {*}
+     */
     unitsInPlay() {
         return _.unitsInPlay( this );
     },
 
 
+    /**
+     * Return an array of unit types we have in play
+     *
+     * @param basicOnly
+     * @returns {string[]}
+     */
     unitTypesInPlay( basicOnly ){
         let types = {};
         this.data.units.forEach( unit => {
@@ -256,6 +438,12 @@ let mixin = {
     },
 
 
+    /**
+     * Return an array of unit types we have in our reserves
+     *
+     * @param basicOnly
+     * @returns {string[]}
+     */
     unitTypesInReserves( basicOnly ){
         let types = {};
         this.data.units.forEach( unit => {
@@ -265,51 +453,127 @@ let mixin = {
     },
 
 
+    /**
+     * Do we have a unit of the given type in the given area?
+     *
+     * @param type
+     * @param area
+     * @returns {boolean}
+     */
+    typeInArea( type, area ){
+        return this.data.units.some( unit => _.unitInArea( unit, area, { type : type } ) );
+    },
+
+
+    /**
+     * Is our champion in the given area?
+     *
+     * @param area
+     * @returns {*}
+     */
+    championInArea( area ){
+        return this.data.units.some( unit => _.unitInArea( unit, area, { type : 'champion' } ) );
+    },
+
+
+    /**
+     * Returns our champion unit
+     *
+     * @returns {Unit}
+     */
+    getChampion(){
+        return this.data.units.find( unit => unit.type === 'champion' );
+    },
+
+
+    /**
+     * Returns our champion unit, if it is in play
+     *
+     * @returns {unit|undefined}
+     */
+    getChampionInPlay(){
+        return this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
+    },
+
+
+    /**
+     * Returns an array of the units in our reserves
+     *
+     * @returns {Unit[]}
+     */
     reserves(){
         return this.data.units.filter( unit => !unit.location );
     },
 
 
+    /**
+     * Returns an array of our units that are dead
+     *
+     * @returns {Unit[]}
+     */
     dead(){
         return this.data.units.filter( unit => unit.killed );
     },
 
 
+    /**
+     * Returns an array of area names where we have scored at least one kill
+     *
+     * @returns {string[]}
+     */
     areasWithKills(){
         return _.areasWithFactionKills( this, this.game().data.factions );
     },
 
 
+    /**
+     * Returns an array of the units we have killed
+     *
+     * @returns {Unit[]}
+     */
     kills(){
         return _.factionKills( this, this.game().data.factions );
     },
 
+
+    /**
+     * Returns an object tallying the amount of each unit type killed
+     *
+     * @returns {object} // structured { typeOne : {number}, typeTwo: {number}, etc... }
+     */
     unitTypesKilled(){
         return _.factionTypesKilled( this, this.game().data.factions );
     },
 
 
+    /**
+     * Returns an array of units we have killed in enemy areas
+     *
+     * @returns {Unit[]}
+     */
     killsInEnemy(){
         return _.factionKillsInEnemy( this, this.game().data.factions, this.game().data.areas );
     },
 
 
+    /**
+     * Returns our kills in a given area
+     *
+     * @param area
+     * @returns {[]}
+     */
     killsIn( area ){
-        area = typeof area === 'string' ? area : area.name;
-        let kills = [];
-
-        _.forEach( this.game().data.factions, faction => {
-            faction.units.forEach( unit => {
-                if( _.factionKilledUnitHere( this, unit, area ) ){
-                    kills.push( unit );
-                }
-            })
-        });
-
-        return kills;
+        return _,killsInArea( this.name, area, this.game().data.factions );
     },
 
 
+    /**
+     * Did we kill the given unit in the given area?
+     *
+     * @param unit
+     * @param area
+     * @returns {boolean}
+     */
     killedUnitHere( unit, area ){
         return _.factionKilledUnitHere( this, unit, area );
     },
@@ -322,11 +586,22 @@ let mixin = {
      *
      */
 
+
+    /**
+     * Returns the total amount of resources + energy we have to spend
+     *
+     * @returns {number}
+     */
     money(){
         return this.data.resources + this.data.energy;
     },
 
 
+    /**
+     * Returns the number of resources we are entitled to collect during the collect resources step
+     *
+     * @returns {number}
+     */
     resourcesToCollect(){
         let areas = this.areas();
         let resources = areas.length;
@@ -335,30 +610,48 @@ let mixin = {
     },
 
 
+    /**
+     * Returns an array of area names for the areas we have exterminated, optionally
+     * filtering out any areas that aren't a target
+     *
+     * @param {boolean} targetOnly // should we include target areas only?
+     * @returns {string[]}
+     */
     areasExterminated( targetOnly = false ){
         let areas = [], targets = [];
 
+        // if we are filtering by targets, make an array of valid target areas
         if( targetOnly ){
             targets = Object.values( this.game().factions )
-                .map( item => item.targetName() ).filter( item => item ); // get rid of false values
+                .map( faction => faction.targetName() )
+                .filter( item => item ); // get rid of false values
         }
 
+        // create our array of area names
         _.forEach( this.game().areas, area => {
             let areaExterminatedBy = _.areaExterminated( area, this.game().data.factions );
-            if( areaExterminatedBy === this.name && (!targetOnly || targets.includes( area.name )) ) areas.push( area.name );
+            if( areaExterminatedBy === this.name
+                && (!targetOnly || targets.includes( area.name ) )
+            ) areas.push( area.name );
         });
+
         return areas;
     },
 
+
+    /**
+     * Returns the number of areas where we have the given minimum influence
+     *
+     * @param influenceCount
+     * @returns {number}
+     */
     areasWithMinInfluence( influenceCount ){
-        let areasWithMinInfluence = 0;
-
-        _.forEach( this.game().areas, area => {
+        return Object.values( this.game().areas ).reduce( (areasWithMinInfluence, area ) => {
             if( this.influenceInArea( area ) >= influenceCount ) areasWithMinInfluence++;
-        });
-
-        return areasWithMinInfluence;
+            return areasWithMinInfluence;
+        }, 0 );
     },
+
 
     /**
      *
@@ -367,6 +660,12 @@ let mixin = {
      */
 
 
+    /**
+     * Generate an array of basic combat modifiers
+     *
+     * @param area
+     * @returns {object[]}
+     */
     combatModifiersList( area ){
         let mods = [];
 
@@ -379,6 +678,7 @@ let mixin = {
         // bonus dice
         if( this.data.bonusDice ) mods.push( { type : 'bonusDice', text : `Units gain +${this.data.bonusDice} extra dice`, val : this.data.bonusDice });
 
+        // add in any faction specific combat mods, then return the results
         return this.factionCombatMods( mods, area );
     },
 
@@ -389,6 +689,23 @@ let mixin = {
      *
      */
 
+
+    /**
+     * Return's our player name
+     *
+     * @returns {string}
+     */
+    playerName(){
+        let player = this.game().getPlayerByFaction( this.name );
+        return player.data.name;
+    },
+
+
+    /**
+     * Returns an object tallying how many rule action cards we've played this turn
+     *
+     * @returns {object} // { total : {number}, areas: {number}, stack : {number} }
+     */
     rulesPlayed(){
         return _.rulesPlayed( this, this.game().data.areas );
     }

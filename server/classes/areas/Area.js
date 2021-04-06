@@ -60,12 +60,7 @@ class Area {
 
     herMajestyInArea(){
         if( !this.game().factions['loyalists'] ) return false;
-
-        return !! this.game().factions['loyalists'].data.units.find(
-            unit => unit.type === 'champion'
-                && !unit.killed
-                && unit.location === this.name
-        );
+        return this.game().factions['loyalists'].championInArea( this.name );
     }
 
     hasCard( cardClass ){

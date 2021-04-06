@@ -120,7 +120,6 @@ let setup = {
 
         // merge factions
         _.forEach( this.factions, (faction, name) => {
-            faction.endOfTurn = saved.factions[name].endOfTurn;
             _.mergeWith( faction.data, saved.factions[name].data, linkFunc );
         });
 

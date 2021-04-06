@@ -4,8 +4,8 @@ let Faction = require( './Faction' );
 class Hackers extends Faction {
     name = 'hackers';
 
-    constructor(owner, game) {
-        super(owner, game);
+    constructor( owner, game ) {
+        super( owner, game );
 
         // triggers
         this.triggers = {
@@ -16,7 +16,7 @@ class Hackers extends Faction {
         this.data.name = this.name;
         this.data.focus = 'skills-focus';
         this.data.focusDescription = "Activate many area skill abilities";
-        this.data.hax0red = [];
+        this.data.hax0red = []; // areas we have used our hax0red ability this game
 
         this.data.title = "The Kaos Klub";
         this.data.baseMaxEnergy = this.data.maxEnergy = 8;
@@ -43,7 +43,7 @@ class Hackers extends Faction {
 
 
         // units
-        this.units['goon'].count = [3];
+        this.units['goon'].count = [4];
         this.units['mole'].count = [4];
         this.units['talent'].count = [8];
 
@@ -53,9 +53,11 @@ class Hackers extends Faction {
                 name: "Zero Day",
                 type: 'champion',
                 basic: false,
-                influence: 1,
+                influence: 0,
                 attack: [8,8],
                 cost: 0,
+                skilled : true,
+                ready : false,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
@@ -66,74 +68,119 @@ class Hackers extends Faction {
     }
 
 
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
     processUpgrade( upgrade ){
         this.data.maxEnergy = this.data.baseMaxEnergy + upgrade;
     }
 
 
+    /**
+     * Allow a player to choose if they want to double resolve this skill ability
+     *
+     * @param area
+     */
     async shouldHax0rArea( area ){
-        let player = {}, data = {};
-        if( this.data.hax0red.includes( area.name ) ) return this.game().message({ message: `Hackers can't double the skill ability in the ${area.name}`, class : 'warning'});
+        // if we have already hax0red this area then we can't do it again
+        if( this.data.hax0red.includes( area.name ) ) return;
 
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'double-resolve',
-            data: {
-                count : 1,
-                area : area.name
-            }
-        }).catch( error => console.error( error ) );
+        // ask the player if they want to double resolve this skill
+        let response = await this.prompt( 'double-resolve', { count : 1, area : area.name });
 
-        if( !data.doubleResolve ){
-            this.message({ message: `The hackers decline to resolve the ${area.name} skill twice`, faction : this });
-            return;
+        // I guess not
+        if( !response.doubleResolve ){
+            this.message(`The hackers decline to resolve the ${area.name} skill twice` );
+            return { doubleResolve : false };
         }
 
-        //this.payCost( 1 );
+        // flag this area
         this.data.hax0red.push( area.name );
-        this.message({ message: `The hackers resolve the ${area.name} skill twice`, faction : this });
+        this.message(`The hackers resolve the ${area.name} skill twice` );
         return { doubleResolve : true };
     }
 
 
+    /**
+     * Handle Zero Day's enter area trigger to exhaust all enemy units
+     *
+     * @param event
+     */
     async exhaustEnemyUnitsInArea( event ){
-        let units = [], area = this.game().areas[event.unit.location];
+        let  area = this.game().areas[event.unit.location];
 
-        Object.values( this.game().data.factions ).forEach( faction => {
-            if( faction.name !== this.name ) {
-                faction.units.forEach(unit => {
-                    if (unit.ready
-                        && unit.location === area.name
-                    ) {
-                        unit.ready = false;
-                        units.push(unit);
-                    }
-                });
-            }
-        });
+        // exhaust enemy units in this
+        let units = this.resolveExhaustReadyEnemyUnitsInArea( area );
+        if( !units.length ) return;
 
-        if( units.length ){
-            this.message({ message: `Zero day exhausts all enemy units in The ${area.name}`, faction : this } );
-            await this.game().timedPrompt('units-shifted', {
-                message : `Zero day exhausts enemy units in The ${area.name}`,
-                units: units
-            }).catch( error => console.error( error ) );
-        }
+        // display results to all players
+        this.message(`Zero day exhausts all enemy units in The ${area.name}` );
+        await this.game().timedPrompt('units-shifted', {
+            message : `Zero day exhausts enemy units in The ${area.name}`,
+            units: units
+        }).catch( error => console.error( error ) );
+
     }
 
+
+    /**
+     * Actually do the exhausting of enemy units in this area
+     *
+     * @param area
+     * @returns {Unit[]}
+     */
+    resolveExhaustReadyEnemyUnitsInArea( area ){
+        let units = [];
+
+        // cycle through each faction
+        Object.values( this.game().data.factions ).forEach( faction => {
+            // don't exhause our own units
+            if( faction.name === this.name ) return;
+
+            // cycle through this faction's units
+            faction.units.forEach( unit => {
+                // if this unit is ready and in this area then exhaust it and add it to our collection
+                if ( unit.ready && unit.location === area.name ) {
+                    unit.ready = false;
+                    units.push(unit);
+                }
+            });
+        });
+
+        return units;
+    }
+
+
+    /**
+     * Can we active our boot up token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
     canActivateBootUp( token, area ) {
+        // do we have any unready killed units in this area?
         return !! this.data.units.find( unit => _.unitInArea( unit, area )
             && ( unit.skilled )
             && !unit.ready );
     }
 
-    async bootUpToken( args ) {
 
+    /**
+     * Handle boot up token activation
+     *
+     * @param args
+     */
+    async activateBootUpToken( args ) {
+
+        // ready our skilled units here
         this.data.units
             .filter( unit => _.unitInArea( unit, args.area.name ) && unit.skilled )
             .forEach( unit => unit.ready = true );
 
-        this.message({ message: `Skilled units became ready in The ${args.area.name}`, faction : this } );
+        this.message( `Skilled units became ready in The ${args.area.name}` );
         this.game().advancePlayer();
     }
 

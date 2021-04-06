@@ -1,101 +1,78 @@
 let obj = {
 
-    canActivateCard( token, area ){
-        let lowestCost = this.data.cards.hand.reduce( (acc, card) => {
-            return card.cost < acc ? card.cost : acc;
-        }, 100 );
+    /**
+     * Setup variable tokens for factions that has a variable number of tokens that unlock along with their upgrades
+     * (i.e. they start with 1 copy, then upgrade 1 unlocks a second, and upgrade 2 unlocks the third)
+     *
+     * @param tokenName
+     * @param tokenCache
+     */
+    setupVariableTokens( tokenName, tokenCache ){
+        // how many tokens should be in our cache?
+        let numThatShouldBeInCache = 2 - this.data.upgrade;
 
-        return this.money() >= lowestCost;
+        // if there are too few in the cache move some from our reserves to the cache
+        if( tokenCache.length < numThatShouldBeInCache ){
+            this.moveVariableTokensToCache( numThatShouldBeInCache, tokenName, tokenCache );
+        }
+
+        // if there are too many tokens in our cache move tokens from our cache to our reserves
+        if( tokenCache.length > numThatShouldBeInCache ){
+            this.moveVariableTokensToReserves( numThatShouldBeInCache, tokenCache );
+        }
     },
 
 
-    async cardToken( args ) {
-        let output;
-        let cardsPlayed = 0;
-        let declined = false;
-
-        while( cardsPlayed < this.data.cardLimit && !declined ) {
-            let output = await this.playACard( args );
-            if( output && output.declined ) declined = true;
-            else {
-                cardsPlayed++;
-            }
+    /**
+     * Move variable tokens from our reserves to our cache
+     *
+     * @param numThatShouldBeInCache
+     * @param tokenName
+     * @param tokenCache
+     */
+    moveVariableTokensToCache( numThatShouldBeInCache, tokenName, tokenCache ){
+        while( tokenCache.length < numThatShouldBeInCache ){
+            let token = this.getVariableTokenFromReserves( tokenName );
+            if( token ) _.moveItemById( token.id, this.data.tokens, tokenCache );
         }
-
-        if( declined && cardsPlayed === 0 ){
-            if( !args.pod ) this.game().declineToken( this.playerId, args.token, true );
-            return;
-        }
-
-        if( args.pod ) return;
-
-        for( let faction of Object.values( this.game().factions ) ){
-            if( faction.triggers.onAfterActivateToken ) await faction[faction.triggers.onAfterActivateToken]( args.token );
-        }
-
-        this.game().advancePlayer();
     },
 
 
-    async playACard( args ){
-        let player = args.player;
-        let data = {
-            area : args.area.name,
-            free : args.free,
-            cards : args.cards || [],
-            fusion : args.fusion,
-            reduceCost : args.reduceCost
-        };
-
-        [player, data] = await this.game().promise({ players: player, name: 'choose-card', data : data })
-            .catch( error => console.error( error ) );
-
-        return this.resolveCard( args, data );
+    /**
+     * Get a matching variable token from our reserves that isn't in play or revealed
+     *
+     * @param tokenName
+     * @returns {Token}
+     */
+    getVariableTokenFromReserves( tokenName ){
+        return this.data.tokens.find( token => token.type === tokenName && !token.location && !token.revealed );
     },
 
 
-    async resolveCard( args, data ){
-        if( data.decline ) return { declined : true };
-
-        let card = this.game().objectMap[ data.cardId ];
-
-        this.payCost( data.cost, false, 'card' );
-
-        this.placeCardInProperArray( card, args.area );
-
-        let message = `Pay xC${data.cost}x to play <span class="highlight">${ card.name }</span>`;
-        this.message({ message: message, faction : this, type: 'cards', cards: [card], area : args.area });
-
-        try {
-            await this.game().cards[ card.class ].handle( this, args.area );
-        } catch( error ){
-            console.error( error );
+    /**
+     * Move variable tokens from our cache to our reserves
+     *
+     * @param numThatShouldBeInCache
+     * @param tokenCache
+     */
+    moveVariableTokensToReserves( numThatShouldBeInCache, tokenCache ){
+        while( tokenCache.length > numThatShouldBeInCache ) {
+            this.data.tokens.push( tokenCache.pop() );
         }
-
-        return { cost: data.cost, card: card, area: data.areaName };
     },
 
 
-    placeCardInProperArray( card, area ){
-        let target;
-        if( card.type === 'event' ){
-            target = this.game().deck.discard;
-        } else if( card.scope === 'local' ){
-            card.owner = this.name;
-            target = area.data.cards;
-        } else {
-            card.playedIn = area.name;
-            target = this.data.cards.active;
-        }
-
-        _.moveItemById( card.id, this.data.cards.hand, target );
-
-        // sort cards by faction in location
-        if( card.scope === 'local' ){
-            area.data.cards = _.orderBy( area.data.cards, 'owner', 'asc' );
-        }
-
-    }
+    /**
+     * Upgrade a variable token by adding additional tokens to our reserves from our
+     *  token cache until we reach our upgrade value
+     *
+     * @param tokenCache
+     */
+    upgradeVariableTokens( tokenCache ){
+        // get the number of tokens to add
+        let numThatShouldBeInCache = 2 - this.data.upgrade;
+        this.moveVariableTokensToReserves( numThatShouldBeInCache, tokenCache );
+    },
 
 };
 

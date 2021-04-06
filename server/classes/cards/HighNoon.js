@@ -56,7 +56,7 @@ class HighNoon extends Card {
 
         for( let unit of units ){
             let deployFaction = faction.game().factions[unit.faction];
-            await deployFaction.processDeploy( deployFaction.playerId, {
+            await deployFaction.resolveDeploy( deployFaction.playerId, {
                 cost: 0,
                 units: [unit.id],
                 toArea: area.name,

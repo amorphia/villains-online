@@ -7,20 +7,20 @@ class Scientists extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
+        // triggers
+        this.triggers = {
+            "onCleanUp" : "resetFusionCount"
+        };
+
         // data
         this.data.focus = 'fusion-focus';
         this.data.focusDescription = "Play many cards";
         this.data.name = this.name;
         this.data.title = "The Union of Mad Science";
         this.data.cardDraw = 4;
-        //this.data.maxEnergy = 10;
-        this.data.fusion = 0;
+        this.data.fusion = 0; // tracks how may cards we have played with mr fusion each turn
         this.data.upgradeCardDraw = 0;
         this.data.flipableUnits = ['champion'];
-
-        this.triggers = {
-            "onCleanUp" : "resetFusionCount"
-        };
 
         // tokens
         this.tokens['card'].count = 4;
@@ -54,32 +54,41 @@ class Scientists extends Faction {
                 cost: 2,
                 killed : false,
                 onDeploy: 'drTyrannosaurusDeploy',
-                onAttack: 'drTyrannosaurusHit',
+                onAttack: 'drTyrannosaurusDraw',
                 selected : false,
                 hitsAssigned : 0
             }
         };
     }
 
-    factionCombatMods( mods, area ) {
-        if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
-            mods.push( { type : 'drCards', text : `Draws a card each time Dr. Tyrannosaurus attacks` });
-        }
 
-        return mods;
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+        this.data.cardDraw += upgrade - this.data.upgradeCardDraw;
+        this.data.upgradeCardDraw = upgrade;
     }
 
-    processUpgrade( n ){
-        this.data.cardDraw += n - this.data.upgradeCardDraw;
-        this.data.upgradeCardDraw = n;
-    }
 
-    async drTyrannosaurusHit( event ){
+    /**
+     * Handle our Dr T attack trigger
+     *
+     * @param event
+     */
+    drTyrannosaurusDraw( event ){
         this.drawCards( 1, true );
-        this.message({ message: `<span class="faction-scientists">Dr Tyrannosaurus</span> learned a lot while playing with their food` });
+        this.message(`<span class="faction-scientists">Dr Tyrannosaurus</span> learned a lot while playing with their food` );
     }
 
 
+    /**
+     * Handle our Dr T deployment trigger to start a combat
+     *
+     * @param event
+     */
     async drTyrannosaurusDeploy( event ){
         let area = this.game().areas[ event.unit.location ];
         try {
@@ -89,13 +98,24 @@ class Scientists extends Faction {
         }
     }
 
+
+    /**
+     * Reset our Fusion count for the turn
+     */
     resetFusionCount(){
        this.data.fusion = 0;
     }
 
-    async mrFusionToken( args ){
+
+    /**
+     * Handle activating our Mr. Fusion token
+     *
+     * @param args
+     */
+    async activateMrFusionToken( args ){
         let fusing = true;
 
+        // keep playing cards until we decide to stop
         while( fusing ) {
             args.fusion = true;
             let output = await this.playACard( args );
@@ -105,11 +125,29 @@ class Scientists extends Faction {
             }
         }
 
+        // if we didn't play any cards at all, then discard this token
         if( this.data.fusion === 0 ){
             this.game().declineToken( this.playerId, args.token, true );
-        } else {
-            this.game().advancePlayer();
+            return;
         }
+
+        this.game().advancePlayer();
+    }
+
+
+    /**
+     * Generate display text for faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ) {
+        if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
+            mods.push( { type : 'drCards', text : `Draws a card each time Dr. Tyrannosaurus attacks` });
+        }
+
+        return mods;
     }
 }
 

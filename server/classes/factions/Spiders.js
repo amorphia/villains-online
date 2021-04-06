@@ -21,8 +21,6 @@ class Spiders extends Faction {
         this.data.focusDescription = "Trap enemy units in webs";
         this.data.xchxchDeploy = 1; // how many patsies do we deploy at the start of combat with xchxch?
         this.data.webs = []; // where we store our webbed victims
-        this.data.onFactionKillsUnit = "webKilledUnit";
-
 
         // tokens
         delete this.tokens['battle'];
@@ -63,27 +61,13 @@ class Spiders extends Faction {
     }
 
 
-    /**
-     * Generate display text for faction combat modifications
-     *
-     * @param mods
-     * @param area
-     * @returns {*}
-     */
-    factionCombatMods( mods, area ) {
-        mods.push({
-            type: 'deadly',
-            text: `Patsies and champions are deadly, deadly units attack all enemies can't be modified`
-        });
 
-        return mods;
-    }
 
 
     /**
      * Process faction upgrade
      *
-     * @param upgrade
+     * @param {number} upgrade
      */
     processUpgrade( upgrade ) {
         this.data.xchxchDeploy = upgrade + 1;
@@ -259,8 +243,7 @@ class Spiders extends Faction {
         let data, player;
 
         // is Xchxch here? No? then return
-        let xchxch = this.data.units.some( unit => unit.type === 'champion' && _.unitInArea( unit, battle.area.name ) );
-        if( !xchxch ) return;
+        if( !this.championInArea( battle.area.name ) ) return;
 
         let options = {
             area: battle.area,
@@ -271,7 +254,7 @@ class Spiders extends Faction {
             unitTypes: ['patsy'],
         };
 
-        this.game().message({ faction : this, message : `Xchxch calls her brood to the feast` });
+        this.message( `Xchxch calls her brood to the feast` );
 
         // resolve deploy
         await this.deploy( options );
@@ -303,6 +286,23 @@ class Spiders extends Faction {
         await this.game().battle( args.area );
 
         this.game().advancePlayer();
+    }
+
+
+    /**
+     * Generate display text for faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ) {
+        mods.push({
+            type: 'deadly',
+            text: `Patsies and champions are deadly, deadly units attack all enemies can't be modified`
+        });
+
+        return mods;
     }
 
 }

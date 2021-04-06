@@ -127,7 +127,7 @@ class Battle {
         // then check with each faction to see if they have an ability that places them
         // somewhere else in the battle's player order (like say, the ninjas going first)
         Object.values( this.game().factions ).forEach( faction => {
-            faction.battleOrderSort( this.data.factions );
+            if( faction.battleOrderSort ) faction.battleOrderSort( this.data.factions );
         });
     }
 

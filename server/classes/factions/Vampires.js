@@ -17,7 +17,7 @@ class Vampires extends Faction {
         this.data.title = "The Czarkovian Aristocrats";
         this.data.focus = 'kill-areas-focus';
         this.data.focusDescription = "Kill units in many different areas";
-        this.data.batMove = 1;
+        this.data.batMove = 1; // how many bats we can move when revealing a token
 
         // icons
         this.data.statusIcon = 'vampires';
@@ -78,21 +78,6 @@ class Vampires extends Faction {
     }
 
 
-    /**
-     * Get a list of our faction combat modifications
-     *
-     * @param mods
-     * @param area
-     * @returns {*}
-     */
-    factionCombatMods( mods, area ) {
-        mods.push({
-            type: 'becomeVampire',
-            text: `Face up units that roll a hit become vampires, improving their attacks`
-        });
-
-        return mods;
-    }
 
 
     /**
@@ -127,7 +112,7 @@ class Vampires extends Faction {
 
         // message and log the move
         this.game().sound( 'bats' );
-        this.game().message({ faction : this, message: `Fly ${units.length} vampire${units.length > 1 ? 's':'' } to The ${destinationAreaName}` });
+        this.message( `Fly ${units.length} vampire${units.length > 1 ? 's':'' } to The ${destinationAreaName}` );
         await this.game().timedPrompt('units-shifted', {
             message : `${units.length === 1 ? 'A Vampire flies' : 'Vampires fly'} to The ${destinationAreaName}`,
             units: units
@@ -143,14 +128,12 @@ class Vampires extends Faction {
      * @returns {array}
      */
     async chooseBatsToMove( potentialAreas, areaName ){
-        let player, data, units = [];
+        let units = [];
 
         // show player prompt
         let message = this.data.batMove > 1 ? `Fly up to ${this.data.batMove} vampires to the ${areaName}` : `Fly a vampire to the ${areaName}?`;
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-units',
-            data: {
+
+        let response = await this.prompt('choose-units', {
                 count : this.data.batMove,
                 areas : potentialAreas,
                 playerOnly : true,
@@ -158,13 +141,12 @@ class Vampires extends Faction {
                 canDecline : true,
                 optionalMax : true,
                 message: message
-            }
-        }).catch( error => console.error( error ) );
+        });
 
-        if( data.decline ) return [];
+        if( response.decline ) return [];
 
         // map our unit references
-        units = data.units.map( unitId => this.game().objectMap[ unitId ] );
+        units = response.units.map( unitId => this.game().objectMap[ unitId ] );
 
         // move the selected units
         units.forEach( unit => {
@@ -204,12 +186,12 @@ class Vampires extends Faction {
         feastTokens.forEach( token => {
             // get the token's area
             let area = this.game().areas[token.location];
-            // do we have a unit there?
-            let hasUnit = !! this.data.units.find( unit => _.unitInArea( unit, area.name ) );
-            // do we have someone to bite?
-            let hasEnemy = Object.keys( _.enemyUnitsInArea( this, area.name, this.game().data.factions ) ).length;
+
             // if we have everything we need then add this area name to our areas object
-            if( hasUnit && hasEnemy && !area.hasCard( 'cease-fire' ) ) areas[area.name] = true;
+            if( this.hasUnitsInArea( area )
+                && this.hasEnemyUnitsInArea( area )
+                && !area.hasCard( 'cease-fire' )
+            ) areas[area.name] = true;
         });
 
         return Object.keys( areas );
@@ -221,7 +203,7 @@ class Vampires extends Faction {
      *
      * @param args
      */
-    async feastToken( args ) {
+    async activateFeastToken( args ) {
         let areas = this.feastAreas();
         let output = [];
 
@@ -230,8 +212,7 @@ class Vampires extends Faction {
            output.push( await this.resolveFeastAttack( area ) );
         }
 
-        let message = `Has finished feasting`;
-        this.message({ message: message, faction : this });
+        this.message(`Has finished feasting` );
 
         // filter empty values from output array
         output = output.filter( item => item );
@@ -255,23 +236,20 @@ class Vampires extends Faction {
     async resolveFeastAttack( areaName ){
         let data, player;
 
-        let message = `Feasts in The ${ areaName }`;
-        this.message({ message: message, faction : this });
+        this.message(`Feasts in The ${ areaName }` );
 
         // prompt player to select a unit
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-units',
-            data: { count : 1,
-                areas : [areaName],
-                hasAttack: true,
-                playerOnly : true,
-                showEnemyUnits: true,
-                message: "Choose a unit to attack" }
-        }).catch( error => console.error( error ) );
+        let response = await this.prompt( 'choose-units', {
+            count : 1,
+            areas : [areaName],
+            hasAttack: true,
+            playerOnly : true,
+            showEnemyUnits: true,
+            message: "Choose a unit to attack"
+        });
 
         // grab our unit from the object map
-        let unit = this.game().objectMap[ data.units[0] ];
+        let unit = this.game().objectMap[ response.units[0] ];
 
         // resolve attack with that unit
         return await this.attack({
@@ -298,7 +276,7 @@ class Vampires extends Faction {
         // improve attacks by 2
         unit.attack = unit.baseAttack.map( attack => attack - 2 );
         let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;
-        this.message({ message: message, faction : this });
+        this.message(message );
 
     }
 
@@ -311,6 +289,23 @@ class Vampires extends Faction {
         unit.flipped = false;
         unit.vampire = false;
         if( unit.baseAttack ) unit.attack = [...unit.baseAttack];
+    }
+
+
+    /**
+     * Get a list of our faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ) {
+        mods.push({
+            type: 'becomeVampire',
+            text: `Face up units that roll a hit become vampires, improving their attacks`
+        });
+
+        return mods;
     }
 
 }

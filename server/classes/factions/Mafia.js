@@ -14,7 +14,7 @@ class Mafia extends Faction {
 
         // data
         this.data.name = this.name;
-        this.data.spy = null;
+        this.data.spy = null; // the faction we are spying on
         this.data.title = "La Cosa Nostra";
         this.data.focusDescription = "Infiltrate or control enemy targets";
 
@@ -52,84 +52,146 @@ class Mafia extends Faction {
         };
     }
 
-    processUpgrade( n ){
+
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
         this.data.bonusDeploy = { type: 'champion', count: 1 };
     }
 
 
+    /**
+     * Set our start of turn prompt
+     *
+     * @returns {string}
+     */
     startOfTurnPrompt() {
         return this.areas().includes( 'police' ) ? 'choose-target' : 'choose-spy';
     }
 
-    async resolveStartOfTurn( player, spy ){
-        this.data.spy = spy;
-        player.setPrompt({ name : 'choose-target' });
 
-        this.game().message({ message: `Is spying on the ${spy}`, faction: this });
+    /**
+     * Resolve our start of turn prompt
+     *
+     * @param player
+     * @param spyFaction
+     */
+    async resolveStartOfTurn( player, spyFaction ){
+
+        // set our spy faction
+        this.data.spy = spyFaction;
+        this.message( `Is spying on the ${spyFaction}` );
+
+        // set our prompt and advance the game
+        player.setPrompt({ name : 'choose-target' });
         this.game().data.gameAction++;
         Server.saveToDB( this.game() );
         await this.game().pushGameDataToPlayers();
     }
 
+
+    /**
+     * Reset the faction we are spying on end of turn trigger
+     */
     resetSpy(){
         this.data.spy = null;
     }
 
+
+    /**
+     * Handle our onDeploy fixer triggered ability
+     *
+     * @param event
+     */
     async fixerDeploy( event ){
         let fixer = event.unit;
 
+        // ready the fixer
         if( !this.hasUsedSkill( fixer.location ) ){
-            this.message({ message: `<span class="faction-mafia">The Fixer</span> is ready for action` });
+            this.message(`<span class="faction-mafia">The Fixer</span> is ready for action` );
             fixer.ready = true;
         }
 
-        if( this.data.upgrade === 2){
-            let area = this.game().areas[ fixer.location ];
-            let output = await this.attack( { area : area, attacks : fixer.attack , unit : event.unit, optional : true } ).catch( error => console.error( error ) );
+        /// if we don't have our second upgrade yet, then we are done
+        if( this.data.upgrade !== 2) return;
 
-            if( output ){
-                await this.game().timedPrompt('noncombat-attack', { output : [output] } )
-                    .catch( error => console.error( error ) );
-            }
+        // the fixer makes an attack upon entering the area if we have our second upgrade
+        let area = this.game().areas[ fixer.location ];
+        let output = await this.attack( { area : area, attacks : fixer.attack , unit : event.unit, optional : true } ).catch( error => console.error( error ) );
+
+        if( output ){
+            await this.game().timedPrompt('noncombat-attack', { output : [output] } )
+                .catch( error => console.error( error ) );
         }
+
     }
 
 
-    async hitManToken( args ){
-        let player, data, result;
+    /**
+     * Can we activate our hitman token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
+    canActivateHitMan( token, area ) {
+        // are there any basic units in this area that don't belong to us, and aren't hidden?
+        return _.factionsWithUnitsInArea( this.game().factions, area, {
+                    exclude : this.name,
+                    basic : true,
+                    notHidden : true }
+                ).length > 0;
+    }
 
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'assassinate-unit',
-            data : {
-                faction : this.name,
-                areas : [args.area.name]
-            }
-        }).catch( error => console.error( error ) );
 
-        if( data.decline ){
-            this.game().declineToken( this.playerId, args.token, true );
-            return;
-        }
+    /**
+     * Handle hit man token activation
+     *
+     * @param args
+     */
+    async activateHitManToken( args ){
 
-        let unit = this.game().objectMap[data.unit];
+        // get our victim
+        let unit = await this.chooseHitmanVictim( args );
+        if( !unit ) return;
+
+        // apply the hit
+        let result = await this.game().assignHitsToUnit( unit, this );
         this.game().sound( 'hit' );
 
-        try {
-            result = await this.game().assignHitsToUnit( unit, this );
-        } catch( error ){
-            console.error( error );
-        }
+        // display results
+        this.message(`the hitman ${result} <span class="faction-${unit.faction}">the ${unit.faction}'s ${unit.name}</span> in <span class="highlight">the ${args.area.name}</span>` );
 
-        this.game().message({ message : `the hitman ${result} <span class="faction-${unit.faction}">the ${unit.faction}'s ${unit.name}</span> in <span class="highlight">the ${args.area.name}</span>`, faction : this });
-
+        // advance game
         this.game().advancePlayer();
     }
 
 
-    canActivateHitMan( token, area ) {
-        return _.factionsWithUnitsInArea( this.game().factions, area, { exclude : this.name, basic : true, notHidden : true }).length > 0;
+    /**
+     * Choose the victim for our hitman token
+     *
+     * @param args
+     */
+    async chooseHitmanVictim( args ){
+        // choose a unit to hit
+        let response = await this.prompt( 'assassinate-unit', {
+            faction : this.name,
+            areas : [args.area.name]
+        });
+
+        // if we decline then pull the token and abort
+        if( response.decline ){
+            this.game().declineToken( this.playerId, args.token, true );
+            return;
+        }
+
+        // grab our unit object
+        return this.game().objectMap[response.unit];
     }
+
 }
 
 

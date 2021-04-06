@@ -2665,7 +2665,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     focus: function focus() {
-      return _.factionEnemyInAreas(this.faction, this.shared.data.factions, this.shared.data.areas, this.shared.areaLeaders);
+      return _.factionEnemyInAreasCount(this.faction, this.shared.data.factions, this.shared.data.areas, this.shared.areaLeaders);
     }
   }
 });
@@ -5027,7 +5027,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     attacks: function attacks() {
-      return this.data.output.filter(function (attack) {
+      var _this$data$output;
+
+      return (_this$data$output = this.data.output) === null || _this$data$output === void 0 ? void 0 : _this$data$output.filter(function (attack) {
         return attack;
       });
     },
@@ -9952,22 +9954,6 @@ __webpack_require__.r(__webpack_exports__);
     removeUnitFromArea: function removeUnitFromArea(unit) {
       this.$set(unit, 'selected', null);
     }
-    /*
-    policePayoffs( area ){
-        let policePayoff = 0;
-         _.forEach( area.cards, card => {
-            if( card.class === 'police-payoff' // if there is a police payoff here
-                && card.owner !== this.shared.faction.name // which we don't own
-                && !_.hasKauImmunity( this.shared.faction, area ) // and we don't already have kau immunity in this area
-                && !_.find( this.selected, unit => unit.type === 'champion' && unit.faction === 'aliens' ) ) // and we aren't deploying kau
-            {
-                policePayoff++; // increase our police payoff cost by one
-            }
-        });
-         return policePayoff;
-    },
-    */
-
   },
   computed: {
     fromArea: function fromArea() {
@@ -9984,6 +9970,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.data.enemyOnly) {
         // enemy units
         Object.values(this.shared.data.factions).forEach(function (faction) {
+          if (faction.name === _this.shared.faction.name) return;
           units = units.concat(faction.units);
         });
       } else {
@@ -93983,26 +93970,26 @@ Vue.use(VueScrollTo, {
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./areas": "./resources/js/mixins/areas.js",
-	"./areas.js": "./resources/js/mixins/areas.js",
-	"./combat": "./resources/js/mixins/combat.js",
-	"./combat.js": "./resources/js/mixins/combat.js",
-	"./faction": "./resources/js/mixins/faction.js",
-	"./faction.js": "./resources/js/mixins/faction.js",
-	"./general": "./resources/js/mixins/general.js",
-	"./general.js": "./resources/js/mixins/general.js",
-	"./influence": "./resources/js/mixins/influence.js",
-	"./influence.js": "./resources/js/mixins/influence.js",
-	"./kills": "./resources/js/mixins/kills.js",
-	"./kills.js": "./resources/js/mixins/kills.js",
+	"./lodashAreas": "./resources/js/mixins/lodashAreas.js",
+	"./lodashAreas.js": "./resources/js/mixins/lodashAreas.js",
+	"./lodashCombat": "./resources/js/mixins/lodashCombat.js",
+	"./lodashCombat.js": "./resources/js/mixins/lodashCombat.js",
+	"./lodashFaction": "./resources/js/mixins/lodashFaction.js",
+	"./lodashFaction.js": "./resources/js/mixins/lodashFaction.js",
+	"./lodashGeneral": "./resources/js/mixins/lodashGeneral.js",
+	"./lodashGeneral.js": "./resources/js/mixins/lodashGeneral.js",
+	"./lodashInfluence": "./resources/js/mixins/lodashInfluence.js",
+	"./lodashInfluence.js": "./resources/js/mixins/lodashInfluence.js",
+	"./lodashKills": "./resources/js/mixins/lodashKills.js",
+	"./lodashKills.js": "./resources/js/mixins/lodashKills.js",
+	"./lodashSkills": "./resources/js/mixins/lodashSkills.js",
+	"./lodashSkills.js": "./resources/js/mixins/lodashSkills.js",
+	"./lodashTokens": "./resources/js/mixins/lodashTokens.js",
+	"./lodashTokens.js": "./resources/js/mixins/lodashTokens.js",
+	"./lodashUnits": "./resources/js/mixins/lodashUnits.js",
+	"./lodashUnits.js": "./resources/js/mixins/lodashUnits.js",
 	"./lodash_mixins": "./resources/js/mixins/lodash_mixins.js",
-	"./lodash_mixins.js": "./resources/js/mixins/lodash_mixins.js",
-	"./skills": "./resources/js/mixins/skills.js",
-	"./skills.js": "./resources/js/mixins/skills.js",
-	"./tokens": "./resources/js/mixins/tokens.js",
-	"./tokens.js": "./resources/js/mixins/tokens.js",
-	"./units": "./resources/js/mixins/units.js",
-	"./units.js": "./resources/js/mixins/units.js"
+	"./lodash_mixins.js": "./resources/js/mixins/lodash_mixins.js"
 };
 
 
@@ -94027,10 +94014,10 @@ webpackContext.id = "./resources/js/mixins sync recursive ^\\.\\/.*$";
 
 /***/ }),
 
-/***/ "./resources/js/mixins/areas.js":
-/*!**************************************!*\
-  !*** ./resources/js/mixins/areas.js ***!
-  \**************************************/
+/***/ "./resources/js/mixins/lodashAreas.js":
+/*!********************************************!*\
+  !*** ./resources/js/mixins/lodashAreas.js ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -94160,28 +94147,6 @@ var helpers = {
     });
     return Object.keys(areas);
   },
-  factionTypesKilled: function factionTypesKilled(faction, factions) {
-    var types = {};
-    var kills = this.factionKills(faction, factions);
-    kills.forEach(function (unit) {
-      if (types.hasOwnProperty(unit.type)) types[unit.type]++;else types[unit.type] = 1;
-    });
-    return Object.keys(types).length ? types : false;
-  },
-  killsInArea: function killsInArea(factionName, areaName, factions) {
-    var _this4 = this;
-
-    if (typeof factionName !== 'string') factionName = factionName.name;
-    if (typeof areaName !== 'string') areaName = areaName.name;
-    var kills = 0;
-    this.forEach(factions, function (faction, name) {
-      if (name === factionName) return;
-      kills += faction.units.filter(function (unit) {
-        return _this4.factionKilledUnitHere(factionName, unit, areaName);
-      }).length;
-    });
-    return kills;
-  },
   areasWithTokensCount: function areasWithTokensCount(faction, areas, type) {
     var count = 0;
 
@@ -94199,7 +94164,7 @@ var helpers = {
     if (typeof options.types === 'string') options.types = [options.types];
     var areas = {};
     faction.units.forEach(function (unit) {
-      if (_.unitInPlay(unit) && (!options.types || options.types.includes(unit.type)) && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.flipped || unit.flipped) && (!options.deployable || !unit.noDeploy) && (!options.notHidden || !unit.hidden) && (!options.basic || unit.basic) && (!options.hasProp || unit[options.hasProp])) {
+      if (_.unitInPlay(unit) && (!options.attacks || unit.attack.length) && (!options.types || options.types.includes(unit.type)) && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.flipped || unit.flipped) && (!options.deployable || !unit.noDeploy) && (!options.notHidden || !unit.hidden) && (!options.basic || unit.basic) && (!options.hasProp || unit[options.hasProp])) {
         areas[unit.location] = true;
       }
     });
@@ -94287,10 +94252,10 @@ module.exports = helpers;
 
 /***/ }),
 
-/***/ "./resources/js/mixins/combat.js":
-/*!***************************************!*\
-  !*** ./resources/js/mixins/combat.js ***!
-  \***************************************/
+/***/ "./resources/js/mixins/lodashCombat.js":
+/*!*********************************************!*\
+  !*** ./resources/js/mixins/lodashCombat.js ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -94339,10 +94304,10 @@ module.exports = helpers;
 
 /***/ }),
 
-/***/ "./resources/js/mixins/faction.js":
-/*!****************************************!*\
-  !*** ./resources/js/mixins/faction.js ***!
-  \****************************************/
+/***/ "./resources/js/mixins/lodashFaction.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/lodashFaction.js ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -94400,7 +94365,6 @@ var helpers = {
     }
 
     rules.areas = Object.keys(globalAreas).length;
-    console.log(Object.keys(globalAreas));
     globalAreas = Object.values(globalAreas);
 
     if (globalAreas.length) {
@@ -94416,10 +94380,10 @@ module.exports = helpers;
 
 /***/ }),
 
-/***/ "./resources/js/mixins/general.js":
-/*!****************************************!*\
-  !*** ./resources/js/mixins/general.js ***!
-  \****************************************/
+/***/ "./resources/js/mixins/lodashGeneral.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/lodashGeneral.js ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -94532,10 +94496,10 @@ module.exports = helpers;
 
 /***/ }),
 
-/***/ "./resources/js/mixins/influence.js":
-/*!******************************************!*\
-  !*** ./resources/js/mixins/influence.js ***!
-  \******************************************/
+/***/ "./resources/js/mixins/lodashInfluence.js":
+/*!************************************************!*\
+  !*** ./resources/js/mixins/lodashInfluence.js ***!
+  \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -94645,21 +94609,35 @@ module.exports = helpers;
 
 /***/ }),
 
-/***/ "./resources/js/mixins/kills.js":
-/*!**************************************!*\
-  !*** ./resources/js/mixins/kills.js ***!
-  \**************************************/
+/***/ "./resources/js/mixins/lodashKills.js":
+/*!********************************************!*\
+  !*** ./resources/js/mixins/lodashKills.js ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
 var helpers = {
+  killsInArea: function killsInArea(factionName, areaName, factions) {
+    var _this = this;
+
+    if (typeof factionName !== 'string') factionName = factionName.name;
+    if (typeof areaName !== 'string') areaName = areaName.name;
+    var kills = 0;
+    this.forEach(factions, function (faction, name) {
+      if (name === factionName) return;
+      kills += faction.units.filter(function (unit) {
+        return _this.factionKilledUnitHere(factionName, unit, areaName);
+      }).length;
+    });
+    return kills;
+  },
   factionKilledUnitHere: function factionKilledUnitHere(faction, unit, area) {
     if (typeof faction !== 'string') faction = faction.name;
     if (typeof area !== 'string') area = area.name;
     return unit.killed === faction && unit.location === area;
   },
   areaExterminated: function areaExterminated(area, factions) {
-    var _this = this;
+    var _this2 = this;
 
     if (area.data) area = area.data;
 
@@ -94674,10 +94652,10 @@ var helpers = {
     _.forEach(factions, function (faction, name) {
       if (faction.data) faction = faction.data;
       if (faction.units.some(function (unit) {
-        return _this.unitInArea(unit, area);
+        return _this2.unitInArea(unit, area);
       })) factionsWithUnitsHere.push(name);
       if (faction.units.some(function (unit) {
-        return _this.unitInArea(unit, area, {
+        return _this2.unitInArea(unit, area, {
           notHidden: true
         });
       })) factionsWithNonHiddenUnitsHere.push(name);
@@ -94692,8 +94670,14 @@ var helpers = {
     if (factionsWithNonHiddenUnitsHere.length === 1 && this.killsInArea(factionsWithNonHiddenUnitsHere[0], area.name, factions) > 0) {
       return factionsWithNonHiddenUnitsHere[0];
     }
-
-    return;
+  },
+  factionTypesKilled: function factionTypesKilled(faction, factions) {
+    var types = {};
+    var kills = this.factionKills(faction, factions);
+    kills.forEach(function (unit) {
+      if (types.hasOwnProperty(unit.type)) types[unit.type]++;else types[unit.type] = 1;
+    });
+    return Object.keys(types).length ? types : false;
   },
   allKilledUnitsInAreaByFaction: function allKilledUnitsInAreaByFaction(areaName, factions) {
     if (typeof areaName !== 'string') areaName = areaName.name;
@@ -94737,32 +94721,10 @@ module.exports = helpers;
 
 /***/ }),
 
-/***/ "./resources/js/mixins/lodash_mixins.js":
-/*!**********************************************!*\
-  !*** ./resources/js/mixins/lodash_mixins.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Mixins to merge with lodash
- */
-var mixins = ['general', 'faction', 'combat', 'tokens', 'skills', 'units', 'areas', 'influence', 'kills'];
-/**
- * Do the mergin'
- */
-
-mixins.forEach(function (mixin) {
-  return _.mixin(__webpack_require__("./resources/js/mixins sync recursive ^\\.\\/.*$")("./" + mixin));
-});
-module.exports = {};
-
-/***/ }),
-
-/***/ "./resources/js/mixins/skills.js":
-/*!***************************************!*\
-  !*** ./resources/js/mixins/skills.js ***!
-  \***************************************/
+/***/ "./resources/js/mixins/lodashSkills.js":
+/*!*********************************************!*\
+  !*** ./resources/js/mixins/lodashSkills.js ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -94819,10 +94781,10 @@ module.exports = helpers;
 
 /***/ }),
 
-/***/ "./resources/js/mixins/tokens.js":
-/*!***************************************!*\
-  !*** ./resources/js/mixins/tokens.js ***!
-  \***************************************/
+/***/ "./resources/js/mixins/lodashTokens.js":
+/*!*********************************************!*\
+  !*** ./resources/js/mixins/lodashTokens.js ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -94869,10 +94831,10 @@ module.exports = helpers;
 
 /***/ }),
 
-/***/ "./resources/js/mixins/units.js":
-/*!**************************************!*\
-  !*** ./resources/js/mixins/units.js ***!
-  \**************************************/
+/***/ "./resources/js/mixins/lodashUnits.js":
+/*!********************************************!*\
+  !*** ./resources/js/mixins/lodashUnits.js ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -94992,7 +94954,7 @@ var helpers = {
 
     return units;
   },
-  factionEnemyInAreas: function factionEnemyInAreas(faction, factions, areas) {
+  factionEnemyInAreasCount: function factionEnemyInAreasCount(faction, factions, areas) {
     var areaLeaders = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var winningAreas = [];
     var count = 0;
@@ -95039,6 +95001,28 @@ var helpers = {
   }
 };
 module.exports = helpers;
+
+/***/ }),
+
+/***/ "./resources/js/mixins/lodash_mixins.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/lodash_mixins.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Mixins to merge with lodash
+ */
+var mixins = ['lodashGeneral', 'lodashFaction', 'lodashCombat', 'lodashTokens', 'lodashSkills', 'lodashUnits', 'lodashAreas', 'lodashInfluence', 'lodashKills'];
+/**
+ * Do the mergin'
+ */
+
+mixins.forEach(function (mixin) {
+  return _.mixin(__webpack_require__("./resources/js/mixins sync recursive ^\\.\\/.*$")("./" + mixin));
+});
+module.exports = {};
 
 /***/ }),
 

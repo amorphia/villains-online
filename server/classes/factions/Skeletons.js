@@ -7,13 +7,18 @@ class Vampires extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggers
+        this.triggers = {
+            "onCleanup" : "reviveUnits"
+        };
+
         //data
         this.data.name = this.name;
         this.data.title = "The Restless Dead";
         this.data.focus = 'units-in-enemy-areas-focus';
         this.data.focusDescription = "Have units of specific types in enemy areas";
-        this.data.optionalAttack = true;
-        this.data.endOfTurnRevive = 0;
+        this.data.optionalAttack = true; // this faction doesn't need to attack with its units
+        this.data.endOfTurnRevive = 0; // how many skeletons to revive at the end of the turn
 
         // icons
         this.data.statusIcon = 'skeleton';
@@ -81,26 +86,38 @@ class Vampires extends Faction {
         };
     }
 
-    factionCombatMods( mods, area ) {
-        mods.push({
-            type: 'becomeSkeleton',
-            text: `Face up units assigned a hit become skeletons, rather than being killed`
-        });
-        return mods;
-    }
 
 
+
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
     processUpgrade( upgrade ) {
         this.data.endOfTurnRevive = upgrade;
     }
 
 
+    /**
+     * Can we activate our lich token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
     canActivateLich( token, area ) {
+        // can we activate a deploy token, or do we have any units in this area?
         return this.canActivateDeploy( token, area ) || this.hasUnitsInArea( area );
     }
 
 
-    async lichToken( args ) {
+    /**
+     * Handle activating our lich token
+     *
+     * @param args
+     */
+    async activateLichToken( args ) {
 
         // resolve deploy
         let output = await this.deploy( args );
@@ -118,8 +135,14 @@ class Vampires extends Faction {
 
     }
 
+
+    /**
+     * Handle flipping units from face up to face down and vice versa
+     *
+     * @param options
+     */
     async flipUnits( options = {} ){
-        let areas, player, data;
+        let areas;
 
         // set area(s) we are allowed to flip units in
         if( options.area ) areas = [options.area.name];
@@ -147,20 +170,28 @@ class Vampires extends Faction {
         if( options.flippedOnly ) chooseData.flippedOnly = true;
 
         // choose units to flip
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-units',
-            data : chooseData,
-        }).catch( error => console.error( error ) );
+        let response = await this.prompt( 'choose-units', chooseData );
 
         // no unit selected? Welp, guess we are done here
-        if( !data.units ){
-            this.game().message({  message : 'Declines to flip units', faction : this });
+        if( !response.units ){
+            this.message( 'Declines to flip units' );
             return;
         }
 
+        // flip our units
+        await this.resolveFlipUnits( response );
+
+    }
+
+    /**
+     * Resolve flipping units
+     *
+     * @param response
+     */
+    async resolveFlipUnits( response ){
+
         // convert IDs to unit objects
-        let units = data.units.map( unitId => this.game().objectMap[unitId] );
+        let units = response.units.map( unitId => this.game().objectMap[unitId] );
 
         // then flip the selected units appropriately
         units.forEach( unit => {
@@ -173,10 +204,17 @@ class Vampires extends Faction {
             message : `Skeleton units flipped`,
             units: units
         });
-
     }
 
+
+    /**
+     * Can this unit become a skeleton after being assigned hits?
+     *
+     * @param event
+     * @returns {string}
+     */
     checkBecomeSkeleton( event ){
+        // event.count is the number of hits assigned to this unit
         if( event.unit.flipped || event.count > 1 ) return;
 
         this.becomeSkeleton( event.unit );
@@ -184,6 +222,11 @@ class Vampires extends Faction {
     }
 
 
+    /**
+     * Flip a unit to their skeleton side
+     *
+     * @param unit
+     */
     becomeSkeleton( unit ) {
         if( !unit.flipped && !unit.killed ) {
             unit.flipped = true;
@@ -196,6 +239,11 @@ class Vampires extends Faction {
     }
 
 
+    /**
+     * Revert a skeleton to its face up side
+     *
+     * @param unit
+     */
     unflipUnit( unit ) {
         unit.flipped = false;
         unit.attack = [...unit.baseAttack];
@@ -205,6 +253,12 @@ class Vampires extends Faction {
     }
 
 
+    /**
+     * Returns a list of areas that are adjacent to the given area, and where we have tokens
+     *
+     * @param toArea
+     * @returns {[]}
+     */
     getTokenMoveAreas( toArea ){
         let areas = [];
 
@@ -217,33 +271,46 @@ class Vampires extends Faction {
     }
 
 
+    /**
+     * Handle XerZhuls enter an area trigger, allowing the player to drag a token to his new area
+     *
+     * @param event
+     */
     async xerZhulEnters( event ){
         let unit = event.unit;
-        let player, data, area = this.game().areas[unit.location];
+        let area = this.game().areas[unit.location];
 
         // get adjacent areas with valid tokens to move
         let areasWithValidTokens = this.getTokenMoveAreas( area );
         // if we don't have any valid tokens to move abort
-        if( ! areasWithValidTokens.length ) return this.game().message({ faction: this, message : "No valid tokens for Xer'Zhul to move" });
+        if( ! areasWithValidTokens.length ) return this.message("No valid tokens for Xer'Zhul to move" );
 
         // player optionally chooses a token to move
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-tokens',
-            data : {
-                count : 1,
-                areas : areasWithValidTokens,
-                optional : true,
-                playerOnly : true,
-                message : `Have Xer'Zhul move a token to the ${area.name}?`
-            }
-        }).catch( error => console.error( error ) );
+        let response = await this.prompt( 'choose-tokens', {
+            count : 1,
+            areas : areasWithValidTokens,
+            optional : true,
+            playerOnly : true,
+            message : `Have Xer'Zhul move a token to the ${area.name}?`
+        });
 
         // if we didn't choose a token, abort
-        if( !data.tokens ) return this.game().message({ faction: this, message : `Declines to move a token to the ${area.name}` });
+        if( !response.tokens ) return this.message( `Declines to move a token to the ${area.name}` );
 
+        // resolve our token drag
+        this.resolveTokenMove( response, area );
+      }
+
+
+    /**
+     * Resolve moving a token from XerZhul entering an area
+     *
+     * @param response
+     * @param area
+     */
+    resolveTokenMove( response, area ){
         // move token
-        let token = this.game().objectMap[ data.tokens[0] ] ;
+        let token = this.game().objectMap[ response.tokens[0] ] ;
 
         // remove from old area
         let fromArea = this.game().areas[token.location];
@@ -252,11 +319,14 @@ class Vampires extends Faction {
         //move to new area
         token.location = area.name;
         area.data.tokens.push( token );
-        this.game().message({ faction: this, message : `Xer'Zhul moves a token from The ${fromArea.name} to the ${area.name}` });
+        this.message( `Xer'Zhul moves a token from The ${fromArea.name} to the ${area.name}` );
     }
 
 
-    async cleanUp() {
+    /**
+     * Handle our end of turn revival trigger
+     */
+    async reviveUnits() {
         if( !this.data.endOfTurnRevive ) return;
 
         await this.flipUnits({
@@ -264,6 +334,23 @@ class Vampires extends Faction {
             flippedOnly : true
         })
     }
+
+
+    /**
+     * Generate display text for faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ) {
+        mods.push({
+            type: 'becomeSkeleton',
+            text: `Face up units assigned a hit become skeletons, rather than being killed`
+        });
+        return mods;
+    }
+
 
 }
 

@@ -270,7 +270,7 @@ let mixin = {
     addPlayerDataToPlayers( player ){
         // if our player object already has an entry for the given player, update our player object properties
         // with the old data, except the socketID property, as that changes each time the player connects/disconnects
-        if( !this.players[ player.id ] ) {
+        if( this.players[ player.id ] ) {
             let oldPlayer = this.players[player.id];
             for (let prop in oldPlayer) {
                 if (prop !== 'socketId') {

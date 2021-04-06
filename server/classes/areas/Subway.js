@@ -31,6 +31,14 @@ class Subway extends Area {
         }
 
     }
+
+    takeControl( faction ){
+        faction.data.farMove = true;
+    }
+
+    loseControl( faction ){
+        faction.data.farMove = false;
+    }
 }
 
 

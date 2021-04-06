@@ -75,36 +75,44 @@ class Robots extends Faction {
         };
     }
 
-    factionCombatMods( mods, area ) {
-        mods.push( { type : 'robotUnits', text : `Units all have toughness and throw an extra die` });
-        return mods;
+
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+        this.data.attackBonus += upgrade - this.data.upgradeAttackBonus;
+        this.data.upgradeAttackBonus = upgrade;
     }
 
+
+    /**
+     * Handle our bully goat skill trigger attack
+     *
+     * @param event
+     */
     async fireBullyGoat( event ){
-        let player, data;
 
         // get areas with units
-        let areas = this.areasWithEnemyUnits({ adjacent : event.unit.location } );
+        let areas = this.areasWithEnemyUnits({}, event.unit.location );
 
         if( ! areas.length  ){
-            this.game().message({ faction : this, message: "Bully G.O.A.T couldn't lock on to a target", class: 'warning' });
-            return false;
+            this.message( "Bully G.O.A.T couldn't lock on to a target", { class: 'warning' });
+            return;
         }
 
-        this.message({ message: `<span class="faction-robots">Bully G.O.A.T</span> is searching for targets` });
+        this.message(`<span class="faction-robots">Bully G.O.A.T</span> is searching for targets` );
 
-        // prompt player to select a unit
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-area',
-            data : {
-                areas : areas,
-                show: 'units',
-                enemyOnly: true,
-                message: "Choose an area to target with Bully G.O.A.T"
-            }
-        }).catch( error => console.error( error ) );
-        let area = this.game().areas[ data.area ];
+        // prompt player to select an area
+        let response = await this.prompt( 'choose-area', {
+            areas : areas,
+            show: 'units',
+            enemyOnly: true,
+            message: "Choose an area to target with Bully G.O.A.T"
+        });
+
+        let area = this.game().areas[ response.area ];
 
         // resolve attack with that unit
         let output = await this.attack( { area : area, attacks : event.unit.attack, unit : event.unit } );
@@ -115,56 +123,51 @@ class Robots extends Faction {
         }
     }
 
-    async wildToken( args ){
-        let player, data, output;
-        let cardsPlayed = 0;
 
-        /*
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-wild',
-            data : { area : args.area.name }
-        }).catch( error => console.error( error ) );
+    /**
+     * Can we activate our wild token?
+     *
+     * @returns {boolean}
+     */
+    canActivateWild(){
+        // heck yeah we can
+        return true;
+    }
 
-        this.game().message({ message : `have chosen to treat their <span class="faction-robots">wild</span> token as a ${data.type} token`, faction : this });
-         */
+    /**
+     * Handle activating a wild token
+     *
+     * @param args
+     */
+    async activateWildToken( args ){
 
-        let tokenMethod = 'canActivate' + _.classCase( args.wildType );
-        let canActivate = this[tokenMethod]( args.token, args.area );
         args.fromToken = true;
 
-        switch( args.wildType ){
-            case 'battle':
-                if( canActivate ){
-                    await this.game().battle( args.area );
-                    output = {};
-                }
-                break;
-            case 'deploy':
-                if( canActivate ) output = await this.deploy( args );
-                break;
-            case 'card':
-                if( canActivate ){
-                    let declined = false;
+        // determine if we can even play this type of token
+        let tokenMethod = 'canActivate' + _.classCase( args.wildType );
+        let canActivate = this[tokenMethod]( args.token, args.area );
 
-                    while( cardsPlayed < this.data.cardLimit && !declined ) {
-                        output = await this.playACard( args );
-                        if( output && output.declined ) declined = true;
-                        else {
-                            cardsPlayed++;
-                        }
-                    }
-                }
+        // if we can't activate this token type, abort
+        if( !canActivate ){
+            this.game().declineToken( this.playerId, args.token, true );
+            return;
+        }
+
+        // attempt to resolve our token action
+        let success;
+        switch( args.wildType ){
+            case 'battle': success = await this.resolveWildBattle( args );
                 break;
-            case 'move':
-                if( canActivate ) {
-                    this.payCost(2, true);
-                    output = await this.move(args);
-                }
+            case 'deploy': success = await this.resolveWildDeploy( args );
+                break;
+            case 'card': success = await this.resolveWildCard( args );
+                break;
+            case 'move': success = await this.resolveWildMove( args );
                 break;
         }
 
-        if( !canActivate || ( output && output.declined && !cardsPlayed ) ){
+        // if we didn't successfully resolve our token action, then remove this token
+        if( !success ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
         }
@@ -173,15 +176,74 @@ class Robots extends Faction {
     }
 
 
-    processUpgrade( n ){
-        this.data.attackBonus += n - this.data.upgradeAttackBonus;
-        this.data.upgradeAttackBonus = n;
-    }
-
-
-    canActivateWild(){
+    /**
+     * Resolve a battle action with our wild token
+     *
+     * @param args
+     */
+    async resolveWildBattle( args ){
+        await this.game().battle( args.area );
         return true;
     }
+
+
+    /**
+     * Resolve a deploy action with our wild token
+     *
+     * @param args
+     */
+    async resolveWildDeploy( args ){
+        let output = await this.deploy( args );
+        return output && !output.declined;
+    }
+
+
+    /**
+     * Resolve a card action with our wild token
+     *
+     * @param args
+     */
+    async resolveWildCard( args ){
+        let declined = false;
+        let cardsPlayed = 0;
+
+        while( cardsPlayed < this.data.cardLimit && !declined ) {
+            let output = await this.playACard( args );
+            if( output && output.declined ){
+                declined = true;
+            } else {
+                cardsPlayed++;
+            }
+        }
+
+        return cardsPlayed > 0;
+    }
+
+
+    /**
+     * Resolve a move action with our wild token
+     *
+     * @param args
+     */
+    async resolveWildMove( args ){
+        this.payCost( 2, true );
+        let output = await this.move( args );
+        return output && !output.declined;
+    }
+
+
+    /**
+     * Generate display text for faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ) {
+        mods.push( { type : 'robotUnits', text : `Units all have toughness and throw an extra die` });
+        return mods;
+    }
+
 
 }
 

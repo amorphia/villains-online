@@ -1,63 +1,62 @@
 
-
 class Faction {
 
-    endOfTurn = [];
-    gameId;
-    playerId;
-    triggers = {};
+    gameId; // game Id
+    playerId; // player Id
+    triggers = {}; // used to store faction game event triggers
+    shouldSetUnitBaseStats = null; // do we need to save any unit base stats during setup?
 
     data = {
-        owner : null,
-        message : '',
-        rolls : [],
+        owner : null, //the player who owns this faction
+        rolls : [], // used to track our faction die rolls
 
         // progress
-        ap : 0,
-        pp : 0,
-        upgrade : 0,
+        ap : 0, // area points
+        pp : 0, // plan points
+        upgrade : 0, // our current upgrade
         captured : {
-            current : 0,
+            current : 0, // how many markers has this unit captured
             max : null // set by constructor
         },
 
         // core stats
-        deployLimit : 2,
-        cardLimit: 1,
-        planLimit : 3,
-        cardDraw : 3,
+        deployLimit : 2, // base deploy limit
+        cardLimit: 1, // how many cards we can play with each CARD token
+        planLimit : 3, // how many plans to draw up to each start phase
+        cardDraw : 3, // how many action cards to draw at the start of each turn
 
         // money
-        resources : 0,
-        energy : 0,
-        maxEnergy : 9,
-        tokenCost : 1,
+        resources : 0, // how many resource cubes we have
+        energy : 0, // our current energy
+        maxEnergy : 9, // our maximum energy
+        tokenCost : 1, // the cost to place an action token
 
         // combat
-        attackBonus : 0,
-        defenseBonus : 0,
-        bonusDice : 0,
+        attackBonus : 0, // bonus to apply to our unit's die rolls
+        defenseBonus : 0, // penalty to apply to our enemies unit's die rolls
+        bonusDice : 0, // how many extra dice our units throw when attacking
 
         // area stuff
-        anyOrderPlans : false,
-        capitolTokens : [],
-        spyAll : false,
-        usedSkills : [],
-        tokenSpy : [],
-        areasCapturedThisTurn : [],
+        anyOrderPlans : false, // can we score our plans in any order? Set by the church
+        capitolTokens : [], // stores which capitol tokens we have collected
+        spyAll : false, // can we see all player's targets? Set by police
+        tokenSpy : [], // which areas can we spy on tokens? Set by university
+        skilledPatsies : false, // have our patsies gained the skilled ability? Set by the university
+        usedSkills : [], // which area skills have we used this turn
+        areasCapturedThisTurn : [], // which areas did we capture this turn
 
-        // objects
+        // used to track our plans
         plans : {
             current : [],
             deck : [],
             completed : [],
         },
-        objective : {
-            card : null,
-            tests : {}
-        },
-        units : [],
-        tokens : [],
+
+
+        units : [], // store our units
+        tokens : [], // store our tokens
+
+        // store our action cards
         cards : {
             hand : [],
             active : [],
@@ -65,6 +64,7 @@ class Faction {
         }
     };
 
+    // the rewards we get for each enemy marker we capture
     capturedRewards = [
         { ap : 1, maxEnergy : 1 },
         { ap : 1, cardDraw : 1 },
@@ -72,216 +72,116 @@ class Faction {
         { ap : 2 },
     ];
 
-    tokens = {
-        deploy : {
-            count : 3,
-            data : {
-                influence: 1,
-                cost : 0,
-                req : "This token must be discarded if you don't deploy any units"
-            }
-        },
-        card : {
-            count : 3,
-            data : {
-                influence: 1,
-                cost : 0,
-                req : "This token must be discarded if you don't play a card"
-            }
-        },
-        move : {
-            count : 1,
-            data : {
-                influence: 1,
-                cost : 2,
-                req : "This token must be discarded if you don't move any units"
-            }
-        },
-        battle : {
-            count : 1,
-            data : {
-                influence: 1,
-                resource: 1,
-                cost : 0,
-                req : "This token must be discarded if you cannot start a battle"
-            }
-        },
-    } ;
-
-    units  = {
-        goon : {
-            count: 5,
-            data : {
-                name : 'Goon',
-                influence : 1,
-                basic : true,
-                killed : false,
-                type : 'goon',
-                attack : [ 5, 5 ],
-                cost : 2,
-                selected : false,
-                hitsAssigned : 0
-            }
-        },
-        mole : {
-            count: 5,
-            data : {
-                name : 'Mole',
-                influence : 2,
-                basic : true,
-                type : 'mole',
-                killed : false,
-                attack : [ 9 ],
-                cost : 1,
-                selected : false,
-                hitsAssigned : 0
-            }
-        },
-        talent : {
-            count: 3,
-            data : {
-                name : 'Talent',
-                ready : false,
-                influence : 1,
-                skilled : true,
-                basic : true,
-                killed : false,
-                type : 'talent',
-                attack : [ 7 ],
-                cost : 1,
-                selected : false,
-                hitsAssigned : 0
-            }
-        },
-        patsy : {
-            count : 4,
-            data : {
-                name : 'Patsy',
-                ready : false,
-                influence : 0,
-                skilled : false,
-                basic : true,
-                type : 'patsy',
-                killed : false,
-                attack : [],
-                cost : 0,
-                selected : false,
-                hitsAssigned : 0
-            }
-        },
-        champion : {}
-    };
-
-    shouldSetUnitBaseStats = null;
 
     constructor( playerId, game ) {
         this.playerId = playerId;
         this.gameId = game.id;
         this.data.owner = playerId;
         this.data.captured.max = this.capturedRewards.length;
+        this.tokens = _.cloneDeep( require( './mixins/baseTokens' ) );
+        this.units = _.cloneDeep( require( './mixins/baseUnits' ) );
 
         // set dice rolls tracker values
         for( let i=1; i <= 10; i++ ){
             this.data.rolls[i] = 0;
         }
 
+        // set godmode if applicable
         if( this.game().godMode && this.game().localServer ) this.godMode();
 
     }
 
+
+    /**
+     * Set God mode
+     */
     godMode(){
-        console.log( 'god mode enabled' );
         this.data.cardDraw = 10;
         this.data.planLimit = 8;
         this.data.maxEnergy = 30;
     }
 
-    // abstracts
-    processUpgrade(){}
-    factionCombatMods( mods ){ return mods }
-    battleOrderSort(){}
 
+    /**
+     * Generate display text for faction combat modifications
+     *
+     * @param mods
+     * @returns {*}
+     */
+    factionCombatMods( mods ){
+        return mods
+    }
+
+
+    /**
+     * Return our faction start of turn prompt
+     *
+     * @returns {string}
+     */
     startOfTurnPrompt() {
         return 'choose-target';
     }
 
-    playerName(){
-        let player = this.game().getPlayerByFaction( this.name );
-        return player.data.name;
+
+    /**
+     * Set a prompt for a player to respond to
+     *
+     * @param prompt
+     * @param data
+     * @returns {object} // the player's response
+     */
+    async prompt( prompt, data ){
+        let [player, response] = await this.game().promise({
+            players: this.playerId,
+            name: prompt,
+            data: data
+        }).catch( error => console.error( error ) );
+
+        return response;
     }
 
+
+    /**
+     * Emit a sound
+     *
+     * @param sound
+     * @param options
+     */
     sound( sound, options ){
         this.game().sound( sound, options );
     }
 
-    message( args ){
+
+    /**
+     * Send a message to all players via the game log
+     *
+     * @param message
+     * @param options
+     */
+    message( message, options = {} ){
+        let args = {
+            faction : this,
+            message : message,
+            ...options
+        };
+
         this.game().message( args );
     }
 
+
+    /**
+     * Send a message to just this player's game log
+     *
+     * @param message
+     */
     messagePlayer( message ){
         this.game().messagePlayer( this.playerId, message );
     }
 
-    async cleanUp(){
 
-        // reset tokens
-        this.data.tokens.forEach( token => {
-            if( token.location !== 'xavier' ) token.location = null;
-            token.revealed = false;
-        });
-
-        // remove active cards
-        this.data.cards.active.forEach( card => {
-            this.game().cards[card.class].clear( this );
-            card.owner = null;
-            card.playedIn = null;
-        });
-
-        let cards = this.data.cards.active.splice( 0 );
-        cards.forEach( card => this.game().deck.discard.push( card ) );
-
-
-        // discard target
-        _.moveItemById(
-            this.data.cards.target[0].id,
-            this.data.cards.target,
-            this.game().deck.discard
-        );
-
-        // reset used skills
-        this.data.usedSkills = [];
-
-        // reset token spy
-        this.data.tokenSpy = [];
-
-        // clear objective tests
-        this.data.objective.tests = {};
-
-        // faction specific end of turn shizz
-        try {
-            if( this.triggers.onCleanUp ) await this[ this.triggers.onCleanUp ]();
-        } catch( error ){
-            console.error( error );
-        }
-
-        // reset dead units
-        this.cleanUpKilled();
-
-        // clear captured this turn
-        this.data.areasCapturedThisTurn = [];
-    }
-
-    cleanUpKilled(){
-        this.data.units.forEach( unit => {
-            if( unit.killed ) this.returnUnitToReserves( unit );
-        });
-    }
-
-
-    resetEnergy(){
-        this.data.energy = this.data.maxEnergy;
-    }
-
+    /**
+     * draw plans up to our plan limit
+     */
     drawPlans(){
         let toDraw = this.data.planLimit - this.data.plans.current.length;
         for( let i = 0; i < toDraw; i++ ){
@@ -290,217 +190,63 @@ class Faction {
     }
 
 
+    /**
+     * Draw a plan card (if we have any left)
+     */
     drawPlan(){
         let plan = this.data.plans.deck.shift();
         if( plan ) this.data.plans.current.push( plan );
     }
 
-    drawTurnCards(){
-        let cardsToDraw = this.data.cardDraw;
 
-        // if we are the last player in a 5 player game then draw an extra card
-        if( this.game().data.turn === 1
-         && this.game().data.playerOrder[4] === this.playerId
-        ){
-            this.game().message({ faction : this, message: 'Draws an extra card for going last in a 5 player game' });
-            cardsToDraw++;
-        }
-
-        this.drawCards( cardsToDraw );
-    }
-
-    drawCards( n = 1, messagePlayer ){
-        for( let i = 0; i < n; i++ ){
-            this.data.cards.hand.push( this.game().drawCard() );
-        }
-        let text = `Draw ${ n } card${ n > 1 ? 's' : ''}`;
-        this.message({
-            message : text,
-            faction : this
-        });
-
-        if( messagePlayer ){
-            let newCards = this.data.cards.hand.slice( -n );
-            this.messagePlayer({
-                message : 'You drew the following',
-                type : 'cards',
-                cards : newCards
-            });
-        }
-    }
-
+    /**
+     * Handle unflipping a unit
+     *
+     * @param unit
+     */
     unflipUnit( unit ){
         unit.flipped = false;
     }
 
-    async replaceUnit( unit, options = {} ){
-        let units = [];
 
-        if( typeof unit === 'string' ) unit = this.game().objectMap[ unit ];
-        let replacement = this.data.units.find(
-                item => !item.location
-                && item.type === unit.type
-                && !item.killed
-        );
+    /**
+     * Gain Area Points and display the results
+     *
+     * @param number
+     * @param options
+     */
+    gainAP( number = 1, options = {} ){
+        this.data.ap += number;
 
-        if( !replacement ) {
-            this.game().message({ faction : this, message: "Unable to replace unit", class : 'warning' });
-            return false;
-        }
+        let message = number > 0 ? 'gain' : 'lose';
+        message += ` xAP${ Math.abs( number ) }x`;
 
-
-        // replace unit
-        replacement.location = unit.location;
-        // if original was ready, replacement is too
-        if( unit.ready ) replacement.ready = true;
-
-        // prepare data for popup prompt
-        units.push( replacement );
-        units.push( _.clone( unit ) );
-
-        // return original to owner
-        let owner = this.game().factions[unit.faction];
-        owner.returnUnitToReserves( unit );
-
-        await this.game().timedPrompt('units-shifted', {
-            message : options.message,
-            units: units.reverse()
-        });
-
-        return true;
-    }
-
-    discardCard( cards ){
-        if( !Array.isArray( cards ) ) cards = [cards];
-
-        cards = cards.map( card => {
-            return typeof card === 'string' ? this.game().objectMap[card] : card;
-        });
-
-        console.log( 'cards', cards );
-
-        for( let card of cards ) {
-            _.moveItemById(
-                card.id,
-                this.data.cards.hand,
-                this.game().deck.discard
-            );
-        }
-
-        let message = `discards cards`;
-        this.game().message({
-            faction : this,
-            message: message,
-            type: 'cards',
-            cards: cards
-        });
+        this.message( message );
     }
 
 
-    gainAP( n = 1, options = {} ){
-        this.data.ap += n;
+    /**
+     * Gain Plan Points and display the results
+     *
+     * @param number
+     * @param options
+     */
+    gainPP( number = 1, options = {}  ){
+        this.data.pp += number;
 
-        let message = n > 0 ? 'gain' : 'lose';
-        message += ` xAP${Math.abs(n)}x`;
+        let message = number > 0 ? 'gain' : 'lose';
+        message += ` xPP${ Math.abs( number ) }x`;
 
-        this.message({
-            message : message,
-            faction : this
-        });
-    }
-
-    gainPP( n = 1, options = {}  ){
-        this.data.pp += n;
-
-        let message = n > 0 ? 'gain' : 'lose';
-        message += ` xPP${Math.abs(n)}x`;
-
-        this.message({
-            message : message,
-            faction : this
-        });
-    }
-
-    payCost( n, announce = false, type = null ){
-        if( !n ) return;
-
-        let message = `Pay xC${n}x`;
-
-        if( this.data.darkEnergy && type === 'card' ){
-            if( this.data.darkEnergy >= n ){
-                this.data.darkEnergy -= n;
-                n = 0;
-            } else {
-                n -= this.data.darkEnergy;
-                this.data.darkEnergy = 0;
-            }
-        }
-
-        if( this.data.energy >= n ){
-            this.data.energy -= n;
-        } else {
-            n -= this.data.energy;
-            this.data.energy = 0;
-            this.data.resources -= n;
-            if( this.data.resources < 0 ){
-                this.data.resources = 0;
-            }
-        }
-
-        if( announce ) this.game().message({
-            message: message,
-            faction : this
-        });
-    }
-
-    collectUpgrades(){
-        let maxPoints = Math.max( this.data.ap, this.data.pp );
-        let newUpgrade;
-
-        if( maxPoints >= this.game().data.upgradePoints[0] && this.data.upgrade < 1 ) {
-            this.data.upgrade = 1;
-            newUpgrade = 1;
-        }
-
-        if( maxPoints >= this.game().data.upgradePoints[1] && this.data.upgrade < 2 ){
-            this.data.upgrade = 2;
-            newUpgrade = 2;
-        }
-
-        if( newUpgrade ){
-            this.processUpgrade( newUpgrade );
-            return {
-                faction : this.name,
-                upgrade: newUpgrade
-            };
-        }
-
-    }
-
-    readySkilledUnits() {
-        if( this.controlsArea( 'university' ) ) this.game().message({
-            message: `patsies have become readied`,
-            faction : this
-        });
-
-        this.data.units.forEach( unit => {
-            if( _.unitInPlay( unit ) && unit.skilled ) unit.ready = true;
-            if( !unit.skilled && unit.ready ) unit.ready = false;
-        });
+        this.message( message );
     }
 
 
-    gainResources( n ){
-        this.data.resources += n;
-        let message = '';
-        for( let i = 0; i < n; i++ ){
-            message += 'xRx';
-        }
-        message = 'Gain ' + message;
-        this.game().sound('coin', { player: this.playerId} );
-        this.game().message({ message: message, faction : this });
-    }
 
+    /**
+     * Return a unit to our reserves
+     *
+     * @param unit
+     */
     returnUnitToReserves( unit ){
         // when calling this directly from an event we need to get the unit from the event data
         if( unit.unit ) unit = unit.unit;
@@ -512,111 +258,6 @@ class Faction {
         unit.location = null;
         if( unit.ready ) unit.ready = false;
         if( unit.flipped ) this.unflipUnit( unit );
-    }
-
-
-
-    applyCapturedRewards(){
-        let rewards = this.capturedRewards[ this.data.captured.current - 1 ];
-        _.forEach( rewards, (value, prop ) => {
-            if( prop === 'ap' ){
-                this.gainAP( value );
-            } else if( prop === 'pp' ){
-                this.gainPP( value );
-            } else {
-                this.data[prop] += value;
-            }
-        });
-        return rewards;
-    }
-
-
-    captureEnemyMarker( area ){
-        this.data.areasCapturedThisTurn.push( area.name );
-
-        if( area.data.owner
-            && area.data.owner !== this.name
-            && this.data.captured.current < this.data.captured.max
-        ){
-            this.data.captured.current++;
-            return this.applyCapturedRewards();
-        }
-    }
-
-
-    collectResources(){
-        this.gainResources( this.resourcesToCollect() );
-    }
-
-    gainControlOfArea( area ){
-        area.data.owner = this.name;
-        area.takeControl( this );
-    }
-
-    loseControlOfArea( area ){
-        area.data.owner = null;
-        area.loseControl( this );
-    }
-
-    testPlans(){
-        let results = [];
-        this.data.plans.current.forEach( plan => {
-            let planResults = this.game().planTester.test( this, plan );
-            results.push( planResults );
-        });
-        return results;
-    }
-
-
-    /**
-     * Score a plan, if appropriate
-     *
-     * @param plan
-     */
-    scorePlan( plan ){
-        // if this plan wasn't selected then abort
-        if( !plan.selected ) return;
-
-        // gain plan points
-        this.gainPP( plan.points );
-
-        // tag plan with data on when/how scored
-        let planObject = this.game().objectMap[ plan.plan.id ];
-        planObject.turnScored = this.game().data.turn;
-        planObject.objectives = plan.objectives;
-        planObject.plan = { num : plan.num };
-        planObject.points = plan.points;
-
-        // move plan to completed array
-        _.moveItemById( plan.plan.id , this.data.plans.current, this.data.plans.completed );
-
-    }
-
-
-    upgradeVariableTokens( upgrade, tokenCache ){
-        let tokensToAdd = _.min( [ upgrade, tokenCache.length ] );
-        while( tokensToAdd ){
-            this.data.tokens.push( tokenCache.pop() );
-            tokensToAdd--;
-        }
-    }
-
-
-    setupVariableTokens( tokenName, tokenCache ){
-        let numToSetAside = 2 - this.data.upgrade;
-
-        if( numToSetAside > tokenCache.length ){
-            while( numToSetAside > tokenCache.length ){
-                console.log( 'first loop' );
-                let token = this.data.tokens.find( obj => obj.type === tokenName && !obj.location && !obj.revealed );
-                if( token ) _.moveItemById( token.id, this.data.tokens, tokenCache );
-            }
-        } else if( numToSetAside < tokenCache.length ){
-            while( numToSetAside < tokenCache.length ) {
-                console.log( 'second loop' );
-                this.data.tokens.push( tokenCache.pop() );
-            }
-        }
     }
 
 }
@@ -634,7 +275,15 @@ Object.assign( Faction.prototype, require( "./mixins/deploysUnits" ) );
 Object.assign( Faction.prototype, require( "./mixins/playsCards" ) );
 Object.assign( Faction.prototype, require( "./mixins/movesUnits" ) );
 Object.assign( Faction.prototype, require( "./mixins/attacksWithUnits" ) );
-Object.assign( Faction.prototype, require( "./mixins/triggeredEvents" ) );
+Object.assign( Faction.prototype, require( "./mixins/makesNonCombatAttacks" ) );
+Object.assign( Faction.prototype, require( "./mixins/unitTriggeredEvents" ) );
 Object.assign( Faction.prototype, require( "./mixins/activatesSkills" ) );
+Object.assign( Faction.prototype, require( "./mixins/variableTokens" ) );
+Object.assign( Faction.prototype, require( "./mixins/handlePlans" ) );
+Object.assign( Faction.prototype, require( "./mixins/controlsAreas" ) );
+Object.assign( Faction.prototype, require( "./mixins/factionCleanup" ) );
+Object.assign( Faction.prototype, require( "./mixins/replacesUnits" ) );
+Object.assign( Faction.prototype, require( "./mixins/collectsUpgrades" ) );
+Object.assign( Faction.prototype, require( "./mixins/hasMoney" ) );
 
 module.exports = Faction;

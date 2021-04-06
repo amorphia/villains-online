@@ -15,7 +15,7 @@ class Bankers extends Faction {
         // data
         this.data.name = this.name;
         this.data.title = "Omni Financial Group";
-        this.data.bonusResources = 2;
+        this.data.bonusResources = 2; // how many bonus resources to earn at the start of each turn
         this.data.focus = 'control-focus';
         this.data.focusDescription = "Control many areas";
 
@@ -54,6 +54,65 @@ class Bankers extends Faction {
     }
 
 
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+        // our bonus resources are 2/4/6 for 0/1/2 plans completed
+        this.data.bonusResources =  ( upgrade * 2 ) + 2;
+    }
+
+
+    /**
+     * Handle gnome successful attack trigger
+     *
+     * @param event
+     */
+    gainGnomeCash( event ){
+        // gain resources equal to the hits scored
+        this.gainResources( event.hits );
+        this.message(`<span class="faction-bankers">The Gnome of Zurich</span> enriches the bankers` );
+    }
+
+
+    /**
+     * Can we activate our freeze token?
+     *
+     * @returns {boolean}
+     */
+    canActivateCreditFreeze(){
+        return true;
+    }
+
+
+    /**
+     * Handle credit freeze token activation
+     *
+     * @param args
+     */
+    activateCreditFreezeToken( args ){
+        // just advance the game, easy as pie
+        this.game().advancePlayer();
+    }
+
+
+    /**
+     * Gain bonus resources at the start of the turn
+     */
+    gainBonusResources(){
+        this.gainResources( this.data.bonusResources );
+    }
+
+
+    /**
+     * Generate display text for faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
     factionCombatMods( mods, area ) {
         if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
             mods.push( { type : 'gnomeCash', text : `Gains xRx for each hit scored by the Gnome of Zurich` });
@@ -63,32 +122,6 @@ class Bankers extends Faction {
         return mods;
     }
 
-
-    gainGnomeCash( event ){
-        this.gainResources( event.hits );
-        this.message({ message: `<span class="faction-bankers">The Gnome of Zurich</span> enriches the bankers` });
-    }
-
-
-    creditFreezeToken( args ){
-        this.game().advancePlayer();
-    }
-
-
-    canActivateCreditFreeze(){
-        return true;
-    }
-
-
-    processUpgrade( n ){
-        // our bonus resources are 2/4/6 for 0/1/2 plans completed
-        this.data.bonusResources =  ( n * 2 ) + 2;
-    }
-
-
-    gainBonusResources(){
-        this.gainResources( this.data.bonusResources );
-    }
 }
 
 

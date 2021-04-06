@@ -42,12 +42,16 @@ class University extends Area {
     }
 
     takeControl( faction ){
+        faction.data.skilledPatsies = true;
+
         faction.data.units.forEach( unit => {
             if( unit.type === 'patsy' ) unit.skilled = true;
         });
     }
 
     loseControl( faction ){
+        faction.data.skilledPatsies = false;
+
         faction.data.units.forEach( unit => {
             if( unit.type === 'patsy' && unit.skilled ){
                 unit.skilled = false;

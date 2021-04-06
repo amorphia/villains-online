@@ -58,7 +58,7 @@
         computed : {
 
             attacks(){
-                return this.data.output.filter( attack => attack );
+                return this.data.output?.filter( attack => attack );
             },
 
             data(){

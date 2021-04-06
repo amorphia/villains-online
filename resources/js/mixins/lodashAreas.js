@@ -124,31 +124,7 @@ let helpers = {
     },
 
 
-    factionTypesKilled( faction, factions ){
-        let types = {};
 
-        let kills = this.factionKills( faction, factions );
-        kills.forEach( unit => {
-            if( types.hasOwnProperty( unit.type ) ) types[unit.type]++;
-            else types[unit.type] = 1;
-        });
-
-        return Object.keys( types ).length ? types : false;
-    },
-
-
-    killsInArea( factionName, areaName, factions ){
-        if( typeof factionName !== 'string' ) factionName = factionName.name;
-        if( typeof areaName !== 'string' ) areaName = areaName.name;
-        let kills = 0;
-
-        this.forEach( factions, ( faction, name ) => {
-            if( name === factionName ) return;
-            kills += faction.units.filter( unit => this.factionKilledUnitHere( factionName, unit, areaName ) ).length;
-        });
-
-        return kills;
-    },
 
     areasWithTokensCount( faction, areas, type ){
         let count = 0;
@@ -172,6 +148,7 @@ let helpers = {
         let areas = {};
         faction.units.forEach( unit => {
             if( _.unitInPlay( unit )
+                && ( !options.attacks || unit.attack.length )
                 && ( !options.types || options.types.includes( unit.type ) )
                 && ( !options.adjacent || options.adjacent.includes( unit.location ) )
                 && ( !options.flipped || unit.flipped )

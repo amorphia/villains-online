@@ -116,7 +116,7 @@ let helpers = {
 
 
 
-    factionEnemyInAreas( faction, factions, areas, areaLeaders = false ){
+    factionEnemyInAreasCount( faction, factions, areas, areaLeaders = false ){
         let winningAreas = [];
         let count = 0;
 

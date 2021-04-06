@@ -2,15 +2,15 @@
  * Mixins to merge with lodash
  */
 let mixins = [
-    'general',
-    'faction',
-    'combat',
-    'tokens',
-    'skills',
-    'units',
-    'areas',
-    'influence',
-    'kills',
+    'lodashGeneral',
+    'lodashFaction',
+    'lodashCombat',
+    'lodashTokens',
+    'lodashSkills',
+    'lodashUnits',
+    'lodashAreas',
+    'lodashInfluence',
+    'lodashKills',
 ];
 
 /**

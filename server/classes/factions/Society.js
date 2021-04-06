@@ -104,11 +104,9 @@ class Society extends Faction {
 
     /**
      * Process faction upgrade
-     *
-     * @param upgrade
      */
-    processUpgrade( upgrade ) {
-        this.upgradeVariableTokens( upgrade, this.data.words );
+    processUpgrade() {
+        this.upgradeVariableTokens( this.data.words );
     }
 
 
@@ -154,7 +152,7 @@ class Society extends Faction {
         // null xavier's token property
         xavier.token = null;
 
-        this.message({ message: "Reveals the token on Xavier Blackstone", faction : this });
+        this.message( "Reveals the token on Xavier Blackstone" );
 
         // resolve xavier's token
         this.game().takeTokenAction( player, token.id );
@@ -167,7 +165,7 @@ class Society extends Faction {
      * @returns {object}
      */
     getXavier(){
-        return this.data.units.find( unit => unit.type === 'champion' );
+        return this.getChampion();
     }
 
 
@@ -176,7 +174,7 @@ class Society extends Faction {
      * which happens automatically during cleanup. This allows us to keep the token on xavier
      * at the end of the turn instead of returning it to our reserves
      */
-    setXavierTokenLocation(){
+    async setXavierTokenLocation(){
         let xavier = this.getXavier();
         if( xavier && xavier.token ){
             xavier.token.location = 'xavier';
@@ -194,9 +192,14 @@ class Society extends Faction {
     }
 
 
-
+    /**
+     * Resolve our Xavier deploy
+     *
+     * @param player
+     * @param area
+     */
     async resolveStartOfTurn( player, area ){
-        let xavier = this.data.units.find( unit => unit.type === 'champion' );
+        let xavier = this.getChampion();
 
         let data = {
             cost : 0,
@@ -205,12 +208,10 @@ class Society extends Faction {
             hidePrompt : true
         };
 
-        try {
-            await this.processDeploy( player, data );
-        } catch( error ){
-            console.error( error );
-        }
+        // deploy Xavier
+        await this.resolveDeploy( player, data );
 
+        // set our new prompt
         player.setPrompt({ name : 'choose-target' });
         this.game().data.gameAction++;
         Server.saveToDB( this.game() );
@@ -218,29 +219,25 @@ class Society extends Faction {
     }
 
 
+    /**
+     * Can we activate our push token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
     canActivatePush( token, area ) {
+        // if there are basic enemy units in this area, then yes
         return this.hasEnemyUnitsInArea( area, { basic : true } );
     }
 
 
-    potentialHypnosisTypes( area ){
-        let reservesTypes = this.unitTypesInReserves( true );
-        let enemyTypes = this.enemyUnitTypesInArea( area, { basic : true } );
-        return _.intersection( reservesTypes, enemyTypes );
-    }
-
-
-    canActivateHypnosis( token, area ) {
-        return this.potentialHypnosisTypes( area ).length;
-    }
-
-
-    canActivateWordOfCommand( token, area ) {
-        return !this.hasUsedSkill( area );
-    }
-
-
-    async pushToken( args ) {
+    /**
+     * Handle activating our push token
+     *
+     * @param args
+     */
+    async activatePushToken( args ) {
 
         try {
             await this.moveAwayToken( args, {
@@ -261,7 +258,105 @@ class Society extends Faction {
     }
 
 
-    async wordOfCommandToken( args ) {
+    /**
+     * Can we activate our Hypnosis token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
+    canActivateHypnosis( token, area ) {
+        return this.potentialHypnosisTypes( area ).length > 0;
+    }
+
+
+    /**
+     * Determines the potential types of units we can hypnotize in the given area
+     *
+     * @param area
+     */
+    potentialHypnosisTypes( area ){
+        // the types we have in our reserves
+        let reservesTypes = this.unitTypesInReserves( true );
+        // the types our opponents have in this area
+        let enemyTypes = this.enemyUnitTypesInArea( area, { basic : true } );
+        // whatever types are on both arrays are hypnotizable
+        return _.intersection( reservesTypes, enemyTypes );
+    }
+
+
+    /**
+     * Handle our Hypnosis token
+     *
+     * @param args
+     */
+    async activateHypnosisToken( args ) {
+
+        // choose a unit to hypnotize
+        let response = await this.prompt( 'choose-units', {
+            count : 1,
+            areas : [args.area.name],
+            basicOnly: true,
+            unitTypes: this.potentialHypnosisTypes( args.area ),
+            enemyOnly : true,
+            payCost: true,
+            canDecline : true,
+            message: "Choose a unit to hypnotize"
+        });
+
+        // if we declined, then abort
+        if( response.decline ){
+            this.game().declineToken( this.playerId, args.token, true );
+            return;
+        }
+
+        // resolve our hypnosis replacement
+        await this.resolveHypnosis( response );
+
+        // advance game
+        this.game().advancePlayer();
+    }
+
+
+    /**
+     * Resolve a hypnotize replacement
+     *
+     * @param response
+     */
+    async resolveHypnosis( response ){
+
+        // get our unit object, then pay its cost
+        let unit = this.game().objectMap[ response.units[0] ];
+        if( unit.cost > 0 ) this.payCost( unit.cost, true );
+
+        // replace the unit and show results to all players
+        let message = `Replaces <span class="faction-${unit.faction}">The ${unit.faction} ${unit.name}</span> in the ${unit.location}`;
+        this.game().message( message );
+        this.game().sound( 'hypnotize' );
+
+        // resolve the replacement
+        await this.replaceUnit( unit, { message : `The Society hypnotizes a unit in The ${unit.location}` } );
+    }
+
+
+    /**
+     * Can we activate our Word of Command token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
+    canActivateWordOfCommand( token, area ) {
+        return !this.hasUsedSkill( area );
+    }
+
+
+    /**
+     * Handle our Word of Command Token
+     *
+     * @param args
+     */
+    async activateWordOfCommandToken( args ) {
         try {
             await this.useSkill( args.area );
         } catch( error ){
@@ -271,38 +366,9 @@ class Society extends Faction {
     }
 
 
-    async hypnosisToken( args ) {
-        let data, player;
-
-        [player, data] = await this.game().promise({ players: this.playerId,
-                    name: 'choose-units',
-                    data : { count : 1,
-                            areas : [args.area.name],
-                            basicOnly: true,
-                            unitTypes: this.potentialHypnosisTypes( args.area ),
-                            enemyOnly : true,
-                            payCost: true,
-                            canDecline : true,
-                            message: "Choose a unit to hypnotize" }
-                }).catch( error => console.error( error ) );
-
-        if( data.decline ){
-            this.game().declineToken( this.playerId, args.token, true );
-            return;
-        }
-
-        let unit = this.game().objectMap[ data.units[0] ];
-        if( unit.cost > 0 ) this.payCost( unit.cost, true );
-
-        let message = `Replaces <span class="faction-${unit.faction}">The ${unit.faction} ${unit.name}</span> in the ${unit.location}`;
-        this.game().message({ faction : this, message: message });
-        this.game().sound( 'hypnotize' );
-        await this.replaceUnit( unit, { message : `The Society hypnotizes a unit in The ${unit.location}` } );
-
-        this.game().advancePlayer();
-    }
-
-
+    /**
+     * On setup remove two of our word of command tokens from our reserves
+     */
     onSetup(){
         this.setupVariableTokens( 'word-of-command', this.data.words );
     }

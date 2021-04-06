@@ -70,7 +70,7 @@ let obj = {
 
         // if we are placing our token on xavier blackstone do this weird stuff, because he is weird
         if( areaId === 'xavier' ){
-            let xavier = this.data.factions['society'].units.find( unit => unit.type === 'champion' );
+            let xavier = this.factions['society'].getChampion();
             xavier.token = token;
             areaName = xavier.location;
             message = `Place a token on <span class="faction-society">Xavier Blackstone</span>`;

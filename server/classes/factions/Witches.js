@@ -17,9 +17,10 @@ class Witches extends Faction {
         this.data.title = "The Witches of Havlocke";
         this.data.focus = 'rule-focus';
         this.data.focusDescription = "Play many rule cards";
-        this.data.magickCardsRevealed = 1;
-        this.data.lastMagickGameAction = 0;
-        this.data.magickCardsFree = false;
+
+        this.data.magickCardsRevealed = 1; // how many cards we reveal when using our magick ability
+        this.data.lastMagickGameAction = 0; // used to track if we are permitted to use magick again
+        this.data.magickCardsFree = false; // are our magick cards free to play?
 
         this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
@@ -86,7 +87,7 @@ class Witches extends Faction {
 
         // We can't take a magick action twice in a row
         if( this.game().data.gameAction === this.data.lastMagickGameAction ) {
-            this.message({ message: 'Too soon to magick again', class: 'warning' });
+            this.message('Too soon to magick again', { class: 'warning' } );
             return;
         }
 
@@ -108,29 +109,38 @@ class Witches extends Faction {
      * @param area
      */
     async resolveMagickAction( area ){
-        let player, data, args, card;
 
+        this.beginResolvingMagick( area );
+
+        // reveal our magick card(s) and allow the player to decide which to play
+        let [args, response, card] = await this.revealMagickCards( area );
+
+        // if the player can't / wont play any of the revealed cards, exit
+        if( !card ){
+            this.game().message( 'decline to cast a magick spell' );
+            return
+        }
+
+        // prepare our data, then resolve our action card
+        args.area = this.game().areas[args.area];
+        response.cardId = card;
+        response.cost = this.data.magickCardsFree ? 0 : this.game().objectMap[ card ].cost;
+        await this.resolveCard( args, response );
+    }
+
+
+    /**
+     * Do our book keeping at the start of the magick process
+     *
+     * @param area
+     */
+    beginResolvingMagick( area ){
         // record this game action as the last time we resolved the magick action (we haven't incremented
         // the gameAction counter yet for this action, so we gotta add one to it now)
         this.data.lastMagickGameAction = this.game().data.gameAction + 1;
 
         // flip our units in this area to their regular side
         this.disenchantUnits( area );
-
-        // reveal our magick card(s) and allow the player to decide which to play
-        [args, data, card] = await this.revealMagickCards( area );
-
-        // if the player can't / wont play any of the revealed cards, exit
-        if( !card ){
-            this.game().message({ faction : this, message : 'decline to cast a magick spell' });
-            return
-        }
-
-        // prepare our data, then resolve our action card
-        args.area = this.game().areas[args.area];
-        data.cardId = card;
-        data.cost = this.data.magickCardsFree ? 0 : this.game().objectMap[ card ].cost;
-        await this.resolveCard( args, data );
     }
 
 
@@ -140,7 +150,6 @@ class Witches extends Faction {
      * @param area
      */
     async revealMagickCards( area ){
-        let player, data;
 
         // show magick popup
         this.game().popup( this.playerId, { magick : true, area : area.name, faction : this.name });
@@ -158,16 +167,12 @@ class Witches extends Faction {
         if( this.data.magickCardsFree ) args.cost = 0;
 
         // allow player to select a valid card (if any)
-        [player, data] = await this.game().promise({
-            players: this.playerId,
-            name: 'choose-magick',
-            data : args
-        }).catch( error => console.error( error ) );
+        let response = await this.prompt( 'choose-magick', args );
 
         // discard unselected cards (if any)
-        if( data.unselected.length ) this.discardCard( data.unselected );
+        if( response.unselected.length ) this.discardCards( response.unselected );
 
-        return [args, data, data.selected];
+        return [args, response, response.selected];
     }
 
 
@@ -226,7 +231,7 @@ class Witches extends Faction {
      *
      * @param args
      */
-    async brewToken( args ) {
+    async activateBrewToken( args ) {
 
         // flip each token in this area that is revealed, except the brew token itself
         this.data.tokens.forEach( token => {
@@ -238,7 +243,7 @@ class Witches extends Faction {
             }
         });
 
-        this.game().message({ faction : this, message: `Flip their tokens face down in The ${args.area.name}` });
+        this.message( `Flip their tokens face down in The ${args.area.name}` );
         this.game().advancePlayer();
     }
 

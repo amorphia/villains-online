@@ -1,5 +1,18 @@
 let helpers = {
 
+    killsInArea( factionName, areaName, factions ){
+        if( typeof factionName !== 'string' ) factionName = factionName.name;
+        if( typeof areaName !== 'string' ) areaName = areaName.name;
+        let kills = 0;
+
+        this.forEach( factions, ( faction, name ) => {
+            if( name === factionName ) return;
+            kills += faction.units.filter( unit => this.factionKilledUnitHere( factionName, unit, areaName ) ).length;
+        });
+
+        return kills;
+    },
+
     factionKilledUnitHere( faction, unit, area ){
         if( typeof faction !== 'string' ) faction = faction.name;
         if( typeof area !== 'string' ) area = area.name;
@@ -30,7 +43,20 @@ let helpers = {
             return factionsWithNonHiddenUnitsHere[0];
         }
 
-        return;
+    },
+
+
+
+    factionTypesKilled( faction, factions ){
+        let types = {};
+
+        let kills = this.factionKills( faction, factions );
+        kills.forEach( unit => {
+            if( types.hasOwnProperty( unit.type ) ) types[unit.type]++;
+            else types[unit.type] = 1;
+        });
+
+        return Object.keys( types ).length ? types : false;
     },
 
 
