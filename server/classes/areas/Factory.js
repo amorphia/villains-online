@@ -11,49 +11,76 @@ class Factory extends Area {
         this.data.adjacent = [ 'laboratory', 'capitol', 'bank' ];
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     takeControl( faction ){
         faction.data.attackBonus += 2;
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     loseControl( faction ){
         faction.data.attackBonus -= 2;
     }
 
-    async skill( faction ){
-        let player = {}, data = {};
 
+    /**
+     * Resolve this area's skill ability
+     *
+     * @param faction
+     */
+    async skill( faction ){
+        // get areas where we have units
         let areasWithFactionUnits = faction.areasWithUnits();
-        let areaOptions = [];
+
+        // get our area options, and if there are none then abort
+        let areas = this.getBattleAreaOptions( areasWithFactionUnits, faction );
+        if( !areas.length ){
+            faction.message( 'No valid areas to start a battle', { class : 'warning' } );
+            return;
+        }
+
+        // choose from our areas the area to start a battle in
+        let response = await faction.prompt( 'choose-area', {
+            areas : areas,
+            show : 'units',
+            message : 'Choose an area to start a battle'
+        });
+
+        // start a battle in that area
+        let area = faction.game().areas[response.area];
+        await faction.game().battle( area );
+    }
+
+
+    /**
+     * Return an array of areas where we can trigger our battle skill
+     *
+     * @param areasWithFactionUnits
+     * @param faction
+     * @returns {[]}
+     */
+    getBattleAreaOptions( areasWithFactionUnits, faction ){
+        let areas = [];
 
         areasWithFactionUnits.forEach( areaName => {
             let area = faction.game().areas[areaName];
             if( area.canBattle() ){
-                areaOptions.push( areaName );
+                areas.push( areaName );
             }
         });
 
-        if( !areaOptions.length ){
-            faction.game().message({
-                message: 'No valid areas to start a battle',
-                class : 'warning'
-            });
-            return;
-        }
-
-        // choose from the above areas
-        [player, data] = await faction.game().promise({
-            players: faction.playerId,
-            name: 'choose-area',
-            data : {
-                areas : areaOptions,
-                show : 'units',
-                message : 'Choose an area to start a battle'
-            }
-        }).catch( error => console.error( error ) );
-        let area = faction.game().areas[data.area];
-
-        await faction.game().battle( area );
+        return areas;
     }
+
 }
 
 

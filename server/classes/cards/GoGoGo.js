@@ -1,12 +1,19 @@
 let Card = require( './Card' );
 
 class GoGoGo extends Card {
-    handle( faction ){
-        faction.data.deployLimit++;
-        faction.gainResources( 1 );
+
+    /**
+     * Resolve this card ability
+     */
+    handle(){
+        // gain a deploy limit
+        this.faction.data.deployLimit++;
+        // and a resource
+        this.faction.gainResources( 1 );
     }
 
     clear( faction ){
+        // lose our deploy unit
         faction.data.deployLimit--;
     }
 }

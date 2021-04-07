@@ -10,86 +10,128 @@ class Sewers extends Area {
         this.data.adjacent = [ 'capitol', 'police', 'church' ];
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     takeControl( faction ){
+        // gain +1 deploy limit
         faction.data.deployLimit++;
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     loseControl( faction ){
+        // lose 1 deploy limit
         faction.data.deployLimit--;
     }
 
 
-    cloneableUnitTypes( faction, areasWithUnits ){
-        // lets make a list of unit types we can deploy
-        let potentialUnitTypes = {
-            'goon' : 0,
-            'talent' : 0,
-            'patsy' : 0 ,
-            'mole' : 0,
-            'champion' : 0
-        };
+    /**
+     * Resolve this area's skill ability
+     *
+     * @param faction
+     */
+    async skill( faction ){
 
+        // get areas where we have units, and if we have none abort
+        let areasWithUnits = faction.areasWithUnits( faction, { deployable : true } );
+        if( ! areasWithUnits.length  ){
+            faction.message( "No units in play", { class: 'warning' } );
+            return false;
+        }
+
+        // get the unit types we can clone, and if there are none abort
+        let unitTypes = this.getCloneableUnitTypes( faction, areasWithUnits );
+        if( !unitTypes.length ){
+            faction.message( "No valid unit types to duplicate", { class: 'warning' });
+            return false;
+        }
+
+        // prompt player to choose a unit to clone
+        let response = await faction.prompt( 'choose-units', {
+            count : 1,
+            areas : areasWithUnits,
+            unitTypes: unitTypes,
+            playerOnly : true,
+            message: "Choose a unit to duplicate"
+        });
+
+        await this.resolveCloneUnit( response, faction );
+    }
+
+
+    /**
+     * Return an array of cloneable unit types
+     *
+     * @param faction
+     * @param areasWithUnits
+     * @returns {[]}
+     */
+    getCloneableUnitTypes( faction, areasWithUnits ){
+        // lets make a list of unit types we can deploy
+        let unitTypes = {};
+
+        // get areas that are trapped
+        let trappedAreas = this.getTrappedAreas( areasWithUnits, faction );
+
+        // cycle through our units
+        faction.data.units.forEach( unit => {
+            if( this.unitTypeIsCloneable( unit, trappedAreas ) ){
+                unitTypes[unit.type] = true;
+            }
+        });
+
+        return Object.keys( unitTypes );
+    }
+
+
+    /**
+     * Return an array of areas that are trapped from our areas with units
+     *
+     * @param areasWithUnits
+     * @param faction
+     * @returns {Area[]}
+     */
+    getTrappedAreas( areasWithUnits, faction ){
         let trappedAreas = [];
+
         areasWithUnits.forEach( area => {
             if( _.areaIsTrapped( faction, this.game().data.areas[area] ) ) trappedAreas.push( area );
         });
 
-        // from our reserves
-        faction.data.units.forEach( unit => {
-            if( _.unitInReserves( unit ) ){
-                potentialUnitTypes[unit.type] = 2;
-            } else if( _.unitInPlay( unit ) && !trappedAreas.includes( unit.location ) ) {
-                potentialUnitTypes[unit.type]++;
-            }
-        });
-
-        let unitTypes = [];
-        _.forEach( potentialUnitTypes, (val,type) => {
-            if( val >= 1 ) unitTypes.push( type );
-        });
-
-        return unitTypes;
+        return trappedAreas;
     }
 
-    async skill( faction ){
-        let player = {}, data = {};
+
+    /**
+     * Is our unit type cloneable?
+     *
+     * @param unit
+     * @param trappedAreas
+     * @returns {boolean}
+     */
+    unitTypeIsCloneable( unit,  trappedAreas ){
+        return _.unitInReserves( unit )
+            || ( _.unitInPlay( unit ) && !trappedAreas.includes( unit.location ) )
+    }
 
 
-        let areasWithUnits = faction.areasWithUnits( faction, { deployable : true } );
-        if( ! areasWithUnits.length  ){
-            faction.game().message({
-                faction: faction,
-                message: "No units in play",
-                class: 'warning'
-            });
-            return false;
-        }
-
-
-        let unitTypes = this.cloneableUnitTypes( faction, areasWithUnits );
-        if( !unitTypes.length ){
-            faction.game().message({
-                faction : faction,
-                message: "No valid unit types to duplicate",
-                class: 'warning'
-            });
-            return false;
-        }
-
-
-        [player, data] = await faction.game().promise({
-            players: faction.playerId,
-            name: 'choose-units',
-            data : {
-                count : 1,
-                areas : areasWithUnits,
-                unitTypes: unitTypes,
-                playerOnly : true,
-                message: "Choose a unit to duplicate"
-            }
-        }).catch( error => console.error( error ) );
-        let unit = faction.game().objectMap[ data.units[0] ];
-
+    /**
+     * Resolve our clone unit skill
+     *
+     * @param response
+     * @param faction
+     */
+    async resolveCloneUnit( response, faction ){
+        // get our unit object
+        let unit = this.game().objectMap[ response.units[0] ];
 
         let args = {
             area: unit.location,
@@ -100,15 +142,14 @@ class Sewers extends Area {
             unitTypes: [unit.type],
         };
 
+        // deploy the selected unit
         let output = await faction.deploy( args );
-        if ( output && output.declined ){
-            faction.game().message({
-                faction: faction,
-                message: `Can't deploy to the ${unit.location}`
-            });
-        }
 
+        if ( output?.declined ){
+            faction.message( `Can't deploy to the ${unit.location}` );
+        }
     }
+
 }
 
 

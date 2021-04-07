@@ -177,7 +177,9 @@ let obj = {
 
         // resolve the card
         try {
-            await this.game().cards[ card.class ].handle( this, args.area );
+            // new up our card class
+            let cardClass = this.game().cards[ card.class ];
+            await new cardClass().resolve( this, args.area );
         } catch( error ){
             console.error( error );
         }

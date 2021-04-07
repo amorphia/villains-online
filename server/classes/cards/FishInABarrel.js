@@ -1,8 +1,15 @@
 let Card = require( './Card' );
 
 class FishInABarrel extends Card {
-    async handle( faction, area ){
-        await faction.nonCombatAttack(4, 3, area ).catch( error => console.error( error ) );
+
+    /**
+     * Resolve this card ability
+     */
+    async handle(){
+
+        // make three attacks of 4 in this area
+        await this.faction.nonCombatAttack(4, 3, this.area )
+            .catch( error => console.error( error ) );
     }
 }
 

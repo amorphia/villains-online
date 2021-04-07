@@ -8758,7 +8758,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var units = this.shared.faction.units.filter(function (unit) {
-        return !unit.noDeploy && _.unitInArea(unit, area) && (unit.type !== 'champion' || !_this2.destinationBlockedByKau) && (!_this2.data.unitTypes || _this2.data.unitTypes.includes(unit.type));
+        return !unit.noDeploy && _.unitInArea(unit, area) && unit.cost <= _.money(_this2.shared.faction) && (unit.type !== 'champion' || !_this2.destinationBlockedByKau) && (!_this2.data.unitTypes || _this2.data.unitTypes.includes(unit.type));
       });
 
       if (this.shared.faction.ghostDeploy) {
@@ -8843,7 +8843,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this7 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return !unit.selected && (!_this7.data.unitTypes || _this7.data.unitTypes.includes(unit.type)) && !unit.noDeploy && (unit.type !== 'champion' || !_this7.destinationBlockedByKau) && !unit.location;
+        return !unit.selected && (!_this7.data.unitTypes || _this7.data.unitTypes.includes(unit.type)) && !unit.noDeploy && unit.cost <= _.money(_this7.shared.faction) && (unit.type !== 'champion' || !_this7.destinationBlockedByKau) && !unit.location;
       });
     },
     destinationBlockedByKau: function destinationBlockedByKau() {
@@ -96252,7 +96252,7 @@ var obj = {
     blocked: false,
     status: 0,
     killer: true,
-    selectable: false
+    selectable: true
   } //skeletons : { name: 'skeletons', owner : null, blocked : false, status : 0, selectable : false },
 
 };

@@ -1,8 +1,13 @@
 let Card = require( './Card' );
 
 class Windfall extends Card {
-    handle( faction ){
-        faction.gainResources( 2 );
+
+    /**
+     * Resolve this card ability
+     */
+    handle(){
+        // gain two resources
+        this.faction.gainResources( 2 );
     }
 }
 

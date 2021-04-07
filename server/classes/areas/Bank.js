@@ -10,6 +10,12 @@ class Bank extends Area {
         this.data.adjacent = [ 'factory', 'capitol', 'university' ];
     }
 
+
+    /**
+     * Resolve this area's skill ability
+     *
+     * @param faction
+     */
     skill( faction ){
         faction.gainResources( 2 );
     }

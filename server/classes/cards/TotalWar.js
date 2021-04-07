@@ -1,12 +1,13 @@
 let Card = require( './Card' );
 
 class TotalWar extends Card {
-    handle( faction ){
-        _.forEach(faction.game().areas, (item , name) => {
-            item.data.battle = true;
-        });
 
-        faction.data.attackBonus += 1;
+    /**
+     * Resolve this card ability
+     */
+    handle(){
+        Object.values( this.game.areas ).forEach( area => area.data.battle = true );
+        this.faction.data.attackBonus += 1;
     }
 
     clear( faction ){

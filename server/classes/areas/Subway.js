@@ -10,33 +10,44 @@ class Subway extends Area {
         this.data.adjacent = [ 'university', 'capitol', 'church' ];
     }
 
-
+    /**
+     * Resolve this area's skill ability
+     *
+     * @param faction
+     */
     async skill( faction ){
 
-        let args = {
+        // deploy one unit to any area
+        let output = await faction.deploy({
             faction: faction,
             player: faction.playerId,
             deployLimit: 1,
-        };
+        });
 
-        let output = await faction.deploy( args );
-
-        if ( output && output.declined ){
-            faction.game().message({
-                faction : faction,
-                message: `Failed to deploy`,
-                class : 'warning'
-            });
-            return;
+        if ( output?.declined ){
+            faction.message( `Failed to deploy`, { class : 'warning' });
         }
-
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     takeControl( faction ){
+        // this faction's moves are no longer limited by adjacency
         faction.data.farMove = true;
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     loseControl( faction ){
+        // this faction's moves are now limited by adjacency
         faction.data.farMove = false;
     }
 }

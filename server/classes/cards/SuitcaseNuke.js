@@ -1,67 +1,119 @@
 let Card = require( './Card' );
 
 class SuitcaseNuke extends Card {
-    async handle( faction, area ){
-        let player = {}, data = {};
 
-        // can we sacrifice a unit
-        if( !_.find( faction.data.units, unit => _.unitInArea( unit, area ) ) ){
-            faction.game().message({ faction : faction, message: "don't have a unit to sacrifice to suitcase nuke", class : 'warning' });
-            _.remove( area.data.cards, card => card.class === 'suitcase-nuke' );
-            return;
-        }
+    /**
+     * Resolve this card ability
+     */
+    async handle(){
 
-        // do we want to sacrifice a unit
-        [player, data] = await faction.game().promise({
-            players: faction.playerId,
-            name: 'sacrifice-units',
-            data : {
-                count : 1,
-                areas : [area.name],
-                optional : true
-            }
+        // if we can't sacrifice a unit, abort
+        if( !this.canWeSacrificeUnit() ) return;
+
+        // do we want to sacrifice a unit?
+        let response = await this.faction.prompt( 'sacrifice-units', {
+            count : 1,
+            areas : [this.area.name],
+            optional : true
         });
 
-        if( !data.units.length ){
-            faction.game().message({ faction : faction, message: "chose not to activate the suitcase nuke", class : 'text' });
-            _.remove( area.data.cards, card => card.class === 'suitcase-nuke' );
+        // if we didn't choose to sacrifice a unit, discard suitcase nuke and abort
+        if( !response.units.length ) return this.discardSuitcaseNuke( "chose not to activate the suitcase nuke" );
+
+        // BOOOOOOOOOOM!
+        await this.explodeSuitcaseNuke();
+    }
+
+
+    /**
+     * Can we sacrifice a unit in this area?
+     *
+     * @returns {boolean}
+     */
+    canWeSacrificeUnit(){
+        // if we have a unit here, then yup we can
+        if( _.find( this.faction.data.units, unit => _.unitInArea( unit, this.area ) ) ) return true;
+
+        // if not announce discard this card
+        this.discardSuitcaseNuke( "don't have a unit to sacrifice to suitcase nuke" );
+    }
+
+
+    /**
+     * Discard the suitcase nuke from this area
+     *
+     * @param message
+     */
+    discardSuitcaseNuke( message ){
+        this.faction.message( message, { class : 'warning' } );
+        _.remove( this.area.data.cards, card => card.class === 'suitcase-nuke' );
+    }
+
+
+    /**
+     * Make bomb go boom
+     */
+    async explodeSuitcaseNuke() {
+
+        // booooooom!
+        this.game.sound( 'explosion' );
+
+        this.clearNukedAreaOwner();
+        this.clearNukedAreaTokens();
+        await this.clearNukedAreaUnits();
+    }
+
+
+    /**
+     * Remove the current owner of this area, if any
+     */
+    clearNukedAreaOwner(){
+        // no owner to begin with? abort
+        if( !this.area.data.owner ) return;
+
+        // if its owned by the neutral, just null them out and return
+        if( this.area.data.owner === 'neutral' ){
+            this.area.data.owner = null;
             return;
         }
 
-        //
-        //
-        // BOOOOOOOOOOM!
-        //
-        //
+        // otherwise we need to clear out ownership abilities as well
+        let owner = this.game.factions[ this.area.data.owner ];
+        owner.loseControlOfArea( this.area );
+    }
 
-        faction.game().sound( 'explosion' );
 
-        // lose control of area
-        if( area.data.owner ){
-            if( area.data.owner === 'neutral' ){
-                area.data.owner = null;
-            } else {
-                let owner = faction.game().factions[ area.data.owner ];
-                owner.loseControlOfArea( area );
-            }
-        }
-
-        // remove all tokens
-        area.data.tokens.forEach( token => {
+    /**
+     * Clear the tokens from a nuked area
+     */
+    clearNukedAreaTokens(){
+        // return tokens to reserves
+        this.area.data.tokens.forEach( token => {
             token.location = null;
             token.revealed = false;
         });
-        area.data.tokens = [];
 
-        // kill all units
-        for( let fac of Object.values( faction.game().factions ) ){
-            for( let unit of fac.data.units ) {
-                if( _.unitInArea( unit, area ) ){
-                    await faction.game().killUnit( unit, faction );
-                }
+        // clear tokens array
+        this.area.data.tokens = [];
+    }
+
+
+    /**
+     * Kill all units in the nuked area
+     */
+    async clearNukedAreaUnits(){
+
+        // cycle through each faction
+        for( let faction of Object.values( this.game.factions ) ){
+            // for each faction cycle through each unit
+            for( let unit of faction.data.units ) {
+                // if this unit is in the nuked area, kill it
+                if( _.unitInArea( unit, this.area ) ) await this.game.killUnit( unit, faction );
             }
         }
     }
+
+
 }
 
 module.exports = SuitcaseNuke;

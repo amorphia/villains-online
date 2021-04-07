@@ -1,12 +1,14 @@
 let Card = require( './Card' );
 
 class Mobilize extends Card {
-    async handle( faction, area ){
-        let args = {
-            free: true,
-            deployLimit: 2
-        };
-        return await this.cardDeploy( faction, area, args ).catch( error => console.error( error ) );
+
+    /**
+     * Resolve this card ability
+     */
+    async handle(){
+        // deploy two free units
+        return await this.cardDeploy( this.faction, this.area, { free: true, deployLimit: 2 } )
+            .catch( error => console.error( error ) );
     }
 }
 

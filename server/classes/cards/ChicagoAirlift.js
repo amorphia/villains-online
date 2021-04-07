@@ -1,20 +1,27 @@
 let Card = require( './Card' );
 
 class ChicagoAirlift extends Card {
-    async handle( faction, area ){
+
+    /**
+     * Resolve this card ability
+     */
+    async handle(){
 
         let args = {
-            area: area,
-            faction: faction,
-            player: faction.playerId,
+            area: this.area,
+            faction: this.faction,
+            player: this.faction.playerId,
             farMove : true,
         };
 
+        // take a move action
+        let output = await this.faction.move( args )
+            .catch( error => console.error( error ) );
 
-        let output = await faction.move( args ).catch( error => console.error( error ) );
+        // if we declined return nothing
+        if ( output?.declined ) return;
 
-        if ( output && output.declined ) return;
-
+        // otherwise return our output
         return output;
     }
 }

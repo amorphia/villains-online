@@ -10,59 +10,95 @@ class Church extends Area {
         this.data.adjacent = [ 'sewers', 'subway', 'capitol' ];
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     takeControl( faction ){
         faction.data.anyOrderPlans = true;
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     loseControl( faction ){
         faction.data.anyOrderPlans = false;
     }
 
+
+    /**
+     * Return an array of area names for the the areas where we have revealed tokens
+     *
+     * @param faction
+     * @returns {string[]}
+     */
     areasWithRevealedTokens( faction ){
-        let areasWithRevealedTokens = {};
+        let areas = {};
+
+        // cycle through our tokens
         faction.data.tokens.forEach( token => {
-            if( token.location
-                && token.location !== 'xavier'
-                && token.revealed
-            ) areasWithRevealedTokens[token.location] = true;
+            // if this token is in play, not on xavier, and not revealed add its location to our areas
+            if( token.location && token.location !== 'xavier' && token.revealed ){
+                areas[token.location] = true;
+            }
         });
-        return Object.keys( areasWithRevealedTokens );
+
+        return Object.keys( areas );
     }
 
+
+    /**
+     * Resolve this area's skill ability
+     *
+     * @param faction
+     */
     async skill( faction ){
-        let player = {}, data = {};
 
-
+        // get areas where we have a revealed token, and if there are none abort
         let areasWithRevealedTokens = this.areasWithRevealedTokens( faction );
         if( ! areasWithRevealedTokens.length  ){
-            faction.game().message({
-                faction : faction,
-                message: "No tokens to flip with Church skill ability",
-                class: 'warning' });
+            faction.message( "No tokens to flip with Church skill ability", { class: 'warning' } );
             return false;
         }
 
+        // prompt our player to choose a token to flip faced down
+        let response = await faction.prompt( 'choose-tokens', {
+            count : 1,
+            areas : areasWithRevealedTokens,
+            playerOnly : true,
+            revealedOnly : true
+        });
 
-        [player, data] = await faction.game().promise({
-            players: faction.playerId,
-            name: 'choose-tokens',
-            data : {
-                count : 1,
-                areas : areasWithRevealedTokens,
-                playerOnly : true,
-                revealedOnly : true
-            }
-        }).catch( error => console.error( error ) );
+        // handle our response
+        this.resolveTokenFlipResponse( response, faction );
+    }
 
-        if( !data.tokens ) return;
-        let token = faction.game().objectMap[ data.tokens[0] ];
+
+    /**
+     * Resolve our token flip ability
+     *
+     * @param response
+     * @param faction
+     */
+    resolveTokenFlipResponse( response, faction ){
+        // if we didn't choose a token, abort
+        if( !response.tokens ) return;
+
+        // get our token object
+        let token = faction.game().objectMap[ response.tokens[0] ];
+
+        // flip it face down
         token.revealed = false;
 
-        faction.game().message({
-            faction : faction,
-            message: `flips their <span class="faction-${token.faction}">${token.name}</span> token in the ${token.location} face down`
-        });
+        // announce our response
+        faction.message( `flips their <span class="faction-${token.faction}">${token.name}</span> token in the ${token.location} face down` );
     }
+
 }
 
 module.exports = Church;

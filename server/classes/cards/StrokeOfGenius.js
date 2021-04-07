@@ -1,8 +1,13 @@
 let Card = require( './Card' );
 
 class StrokeOfGenius extends Card {
-    handle( faction ){
-        faction.drawCards(2, true );
+
+    /**
+     * Resolve this card ability
+     */
+    handle(){
+        // draw two cards
+        this.faction.drawCards(2, true );
     }
 }
 

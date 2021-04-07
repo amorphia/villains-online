@@ -1,14 +1,15 @@
 let Card = require( './Card' );
 
 class SlipInTheBack extends Card {
-    async handle( faction, area ){
 
-        if( !faction.data.units.find(
-            unit => unit.type === 'talent'
-                && !unit.noDeploy
-                && !unit.killed
-        )){
-            faction.game().message({ faction : faction, message: "No talents to deploy", class : 'warning'  });
+    /**
+     * Resolve this card ability
+     */
+    async handle(){
+
+        // do we have a talent to deploy?
+        if( ! this.hasTalentToDeploy() ){
+            this.faction.message( "No talents to deploy", { class : 'warning'  });
             return;
         }
 
@@ -18,7 +19,22 @@ class SlipInTheBack extends Card {
             unitTypes: ['talent'],
             readyUnits: true
         };
-        return await this.cardDeploy( faction, area, args ).catch( error => console.error( error ) );
+
+        // deploy a talent, and ready it
+        return await this.cardDeploy( this.faction, this.area, args )
+            .catch( error => console.error( error ) );
+    }
+
+
+    /**
+     * Do we have a talent to deploy?
+     *
+     * @returns {boolean}
+     */
+    hasTalentToDeploy(){
+        return this.faction.data.units.some( unit => unit.type === 'talent' // do we have a talent
+                                                 && !unit.noDeploy // that isn't prevented from being deployed
+                                                 && !unit.killed ); // and isn't killed?
     }
 }
 

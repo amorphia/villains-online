@@ -53,7 +53,8 @@ let obj = {
     removeActiveCards(){
         // remove active cards
         this.data.cards.active.forEach( card => {
-            this.game().cards[card.class].clear( this );
+            let cardClass = this.game().cards[card.class];
+            new cardClass().clear( this );
             card.owner = null;
             card.playedIn = null;
         });

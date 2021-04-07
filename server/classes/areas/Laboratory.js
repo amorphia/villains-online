@@ -11,26 +11,41 @@ class Laboratory extends Area {
         this.data.adjacent = [ 'police', 'capitol', 'factory' ];
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     takeControl( faction ){
         faction.data.cardDraw++;
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     loseControl( faction ){
         faction.data.cardDraw--;
     }
 
+    /**
+     * Resolve this area's skill ability
+     *
+     * @param faction
+     */
     async skill( faction ){
-        let player = {}, data = {};
 
+        // draw a card
         faction.drawCards();
 
+        // get the card we just drew
         let card = _.last( faction.data.cards.hand );
-        faction.game().message({
-            faction : faction,
-            message: `reveals`,
-            type : 'cards',
-            cards : [card]
-        });
+
+        // reveal the card to all players
+        faction.message( `reveals`, { type : 'cards', cards : [card] });
 
         let args = {
             area : 'laboratory',
@@ -42,24 +57,35 @@ class Laboratory extends Area {
             free : true
         };
 
-        [player, data] = await faction.game().promise({
-            players: faction.playerId,
-            name: 'choose-card',
-            data : args
-        }).catch( error => console.error( error ) );
+        // prompt the player to play this card
+        let response = await faction.prompt( 'choose-card', args );
+
+        // handle the response
+        await this.resolveChooseCardResponse( response, faction, args );
+    }
 
 
-        if( data.decline ){
-            faction.game().message({
-                faction : faction,
-                message: `chooses not to play the card`
-            });
+    /**
+     * Handle the response to our choose-card prompt
+     *
+     * @param response
+     * @param faction
+     * @param args
+     */
+    async resolveChooseCardResponse( response, faction, args ){
+
+        // if we declined to play the card, abort
+        if( response.decline ){
+            faction.message( `chooses not to play the card` );
             return;
         }
 
-        args.area = faction.game().areas[args.area];
+        // set some additional arguments
+        args.area = this.game().areas[args.area];
         args.cost = 0;
-        await faction.resolveCard( args, data );
+
+        // play the card
+        await faction.resolveCard( args, response );
     }
 }
 

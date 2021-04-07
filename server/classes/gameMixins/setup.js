@@ -272,7 +272,7 @@ let setup = {
         // instantiate our Action Card handler classes
         let cardClasses = require('../Cards');
         _.forEach( cardClasses, (Func, name) => {
-            this.cards[name] = new Func( this );
+            this.cards[name] = Func;
         });
 
         // Create our card objects deck

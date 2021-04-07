@@ -1,8 +1,13 @@
 let Card = require( './Card' );
 
 class GoWithGod extends Card {
-    handle( faction ){
-        faction.data.defenseBonus += 2;
+
+    /**
+     * Resolve this card ability
+     */
+    handle(){
+        // gain defense bonus
+        this.faction.data.defenseBonus += 2;
     }
 
     clear( faction ){

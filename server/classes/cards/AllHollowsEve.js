@@ -2,60 +2,76 @@ let Card = require( './Card' );
 
 class AllHollowsEve extends Card {
 
-    async handle( faction, area ){
-        let player, data;
-        let reviveCount = 4;
-        let units = [];
+    reviveCount = 4;
+
+    /**
+     * Resolve this card ability
+     */
+    async handle(){
+
+        // get our potential areas, and if we have none abort
+        let areas = this.getAreasWithKilledUnits();
+        if( !areas.length ){
+            this.faction.message( 'No killed units to revive', { class : 'warning' } );
+            return;
+        }
+
+        // let player choose their next unit
+        let response = await this.faction.prompt( 'choose-units', {
+            count : this.reviveCount,
+            optionalMax: true,
+            areas : areas,
+            playerOnly : true,
+            killedOnly : true,
+            message: `Choose up to ${this.reviveCount} units killed to revive`,
+        });
+
+        // no unit selected? Welp, guess we are done here
+        if( !response.units ){
+            this.faction.message( 'Declines to revive any units', { class : 'warning' } );
+            return;
+        }
+
+        // revive our units
+        await this.resolveUnitRevival( response );
+    }
+
+
+    /**
+     * Return an array of area names where we have killed units
+     *
+     * @returns {string[]}
+     */
+    getAreasWithKilledUnits(){
         let areas = {};
 
         // get areas where we have killed units
-        faction.data.units.forEach( unit => {
+        this.faction.data.units.forEach( unit => {
             if( unit.killed && unit.location ){
                 areas[unit.location] = true;
             }
         });
-        areas = Object.keys( areas );
 
-        if( !areas.length ){
-            faction.game().message({ message : 'No killed units to revive', class : 'warning' });
-            return;
-        }
+        return Object.keys( areas );
+    }
 
 
-        // let player choose their next unit
-        [player, data] = await faction.game().promise({
-            players: faction.playerId,
-            name: 'choose-units',
-            data : {
-                count : reviveCount,
-                optionalMax: true,
-                areas : areas,
-                playerOnly : true,
-                killedOnly : true,
-                message: `Choose up to ${reviveCount} units killed to revive`,
-            }
-        }).catch( error => console.error( error ) );
+    async resolveUnitRevival( response ){
+        // get our unit objects
+        let units = response.units.map( unitId => this.game.objectMap[unitId] );
 
-        // no unit selected? Welp, guess we are done here
-        if( !data.units ){
-            faction.game().message({ message : 'Declines to revive any units', class : 'warning' });
-            return;
-        }
-
-        units = data.units.map( unitId => faction.game().objectMap[unitId] );
-
+        // revive our units
         units.forEach( unit => {
             unit.killed = false;
             if( unit.ready ) unit.ready = false;
-            if( unit.flipped ) faction.unflipUnit( unit );
+            if( unit.flipped ) this.faction.unflipUnit( unit );
         });
 
-
-        await faction.game().timedPrompt('units-shifted', {
-            message: `The ${faction.name} returns killed units to play`,
+        // display the results
+        await this.game.timedPrompt('units-shifted', {
+            message: `The ${this.faction.name} returns killed units to play`,
             units: units
         }).catch( error => console.error( error ) );
-
     }
 }
 

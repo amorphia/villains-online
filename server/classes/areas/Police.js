@@ -9,50 +9,65 @@ class Police extends Area {
         this.data.skill = "Make an attack with any one of your units";
         this.data.adjacent = [ 'sewers', 'capitol', 'laboratory' ];
     }
-
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     takeControl( faction ){
         faction.data.spyAll = true;
     }
-
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     loseControl( faction ){
         faction.data.spyAll = false;
     }
 
 
+    /**
+     * Resolve this area's skill ability
+     *
+     * @param faction
+     */
     async skill( faction ){
-        let player = {}, data = {};
 
-        // get areas with units
+        // get areas with our attacking units in them, if none, abort
         let areas = faction.areasWithAttackingUnits();
-
-        if( ! areas.length  ){
-            faction.game().message({
-                faction : faction,
-                message: "No attacks may be made",
-                class: 'warning'
-            });
+        if( !areas.length  ){
+            faction.message( "No attacks may be made", { class: 'warning' });
             return false;
         }
 
-        // prompt player to select a unit
-        [player, data] = await faction.game().promise({
-            players: faction.playerId,
-            name: 'choose-units',
-            data : {
-                count : 1,
-                areas : areas,
-                hasAttack: true,
-                playerOnly : true,
-                showEnemyUnits: true,
-                message: "Choose a unit to make an attack"
-            }
-        }).catch( error => console.error( error ) );
-        let unit = faction.game().objectMap[ data.units[0] ];
+        // prompt player to select a unit to attack with
+        let response = await faction.prompt( 'choose-units', {
+            count : 1,
+            areas : areas,
+            hasAttack: true,
+            playerOnly : true,
+            showEnemyUnits: true,
+            message: "Choose a unit to make an attack"
+        });
+
+        await this.resolvePoliceAttack( response, faction );
+    }
+
+
+    /**
+     * Resolve our police attack
+     *
+     * @param response
+     * @param faction
+     */
+    async resolvePoliceAttack( response, faction ){
+        // get our unit object
+        let unit = faction.game().objectMap[ response.units[0] ];
 
         // resolve attack with that unit
-        let area = this.game().areas[ unit.location ];
         let output = await faction.attack({
-            area : area,
+            area : this.game().areas[ unit.location ],
             attacks : unit.attack,
             unit : unit
         });
@@ -61,8 +76,8 @@ class Police extends Area {
             await this.game().timedPrompt('noncombat-attack', { output : [output] } )
                 .catch( error => console.error( error ) );
         }
-
     }
+
 }
 
 module.exports = Police;

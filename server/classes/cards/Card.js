@@ -1,21 +1,62 @@
 class Card {
 
-    // abstracts
-    handle(){}
-    clear(){}
+    game;
+    faction;
+    area;
 
-    async cardDeploy( faction, area, newArgs ) {
+    /**
+     * Resolve this card
+     *
+     * @param faction
+     * @param area
+     */
+    async resolve( faction, area ){
+
+        // set up our properties
+        this.game = faction.game();
+        this.faction = faction;
+        this.area = area;
+
+        await this.handle();
+    }
+
+
+    /**
+     * Resolve this card ability
+     */
+    async handle(){}
+
+
+    /**
+     * Clear this effect at the end of the turn
+     *
+     * @param {Faction} faction
+     */
+    clear( faction ){}
+
+
+    /**
+     * Resolve a deploy from a card
+     *
+     * @param faction
+     * @param area
+     * @param options
+     * @returns {object}
+     */
+    async cardDeploy( faction, area, options = {} ) {
         let args = {
             area: area,
             faction: faction,
             player: faction.playerId,
+            ...options
         };
-        Object.assign( args, newArgs );
+
         let output = await faction.deploy( args ).catch( error => console.error( error ) );
-        if ( output && output.declined ) return;
+        if ( output?.declined ) return false;
 
         return output;
     }
+
 }
 
 module.exports = Card;

@@ -1,8 +1,15 @@
 let Card = require( './Card' );
 
+
 class PublicBacklash extends Card {
-    async handle( faction, area ){
-        await faction.nonCombatAttack(5, 2, area ).catch( error => console.error( error ) );
+
+    /**
+     * Resolve this card ability
+     */
+    async handle(){
+        // make two attacks of 5 in this area
+        await this.faction.nonCombatAttack(5, 2, this.area )
+            .catch( error => console.error( error ) );
     }
 }
 

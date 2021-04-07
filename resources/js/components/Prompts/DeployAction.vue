@@ -203,6 +203,7 @@
                 let units = this.shared.faction.units
                     .filter( unit => ! unit.noDeploy
                             && _.unitInArea( unit, area )
+                            && unit.cost <= _.money( this.shared.faction )
                             && (unit.type !== 'champion' || !this.destinationBlockedByKau )
                             && (! this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
                     );
@@ -292,6 +293,7 @@
                     unit => !unit.selected
                             && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
                             && !unit.noDeploy
+                            && unit.cost <= _.money( this.shared.faction )
                             && (unit.type !== 'champion' || !this.destinationBlockedByKau)
                             && !unit.location
                 );

@@ -10,48 +10,63 @@ class University extends Area {
         this.data.adjacent = [ 'bank', 'capitol', 'subway' ];
     }
 
+
+    /**
+     * Resolve this area's skill ability
+     *
+     * @param faction
+     */
     async skill( faction ){
-        let player = {}, data = {};
 
+        // get the areas we can spy on, and if none exist abort
         let areas = faction.game().areasWithUnrevealedTokens();
-
         if( ! areas.length  ){
-            faction.game().message({
-                faction : faction,
-                message: "No areas with unrevealed tokens",
-                class: 'warning'
-            });
+            faction.message( "No areas with unrevealed tokens", { class: 'warning'} );
             return false;
         }
 
-        [player, data] = await faction.game().promise({
-            players: faction.playerId,
-            name: 'choose-area',
-            data : {
-                areas : areas,
-                show : 'tokens',
-                message : 'Choose area to spy on tokens'
-            }
-        }).catch( error => console.error( error ) );
+        // prompt player to choose an area to spy on
+        let response = await faction.prompt( 'choose-area', {
+            areas : areas,
+            show : 'tokens',
+            message : 'Choose area to spy on tokens'
+        });
 
-        faction.data.tokenSpy.push( data.area );
+        // resolve token spy ability, and announce the results
+        faction.data.tokenSpy.push( response.area );
         faction.game().message({
             faction : faction,
-            message: `looks at the tokens in the ${data.area}`
+            message: `looks at the tokens in the ${response.area}`
         });
     }
 
+
+    /**
+     * Handle a faction taking control of this area
+     *
+     * @param faction
+     */
     takeControl( faction ){
+        // this faction gains skilled patsies flag
         faction.data.skilledPatsies = true;
 
+        // set each patsy to skilled
         faction.data.units.forEach( unit => {
             if( unit.type === 'patsy' ) unit.skilled = true;
         });
     }
 
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+     */
     loseControl( faction ){
+        // this faction loses skilled patsies flag
         faction.data.skilledPatsies = false;
 
+        // remove skilled from each patsy
         faction.data.units.forEach( unit => {
             if( unit.type === 'patsy' && unit.skilled ){
                 unit.skilled = false;
