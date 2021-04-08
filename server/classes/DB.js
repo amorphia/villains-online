@@ -7,7 +7,7 @@ class DB {
     constructor() {
         //if we are on local dev environment set the host to localhost otherwise use our APP_URL in the .env
         this.host = process.env.APP_ENV === 'local' ? 'http://localhost' : process.env.APP_URL;
-        this.trackerHost = process.env.TRACKER_URL;
+        this.trackerHost = process.env.VILLAINS_TRACKER_URL;
     }
 
 
