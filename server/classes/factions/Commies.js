@@ -121,7 +121,7 @@ class Commies extends Faction {
     async activateRiseUpToken( args ){
 
         // if we have any bonus rise patsies, deploy them
-        if( !this.data.risePatsies ){
+        if( this.data.risePatsies ){
             await this.deploy( {
                 area: args.area,
                 faction: this,

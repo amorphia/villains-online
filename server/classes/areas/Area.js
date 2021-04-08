@@ -131,7 +131,7 @@ class Area {
      */
     hasKau(){
         let aliens = this.game().factions['aliens'];
-        if( aliens && this.name === aliens.data.kau.location ) return true;
+        if( aliens && this.name === aliens.data.kau.location && !aliens.data.kau.killed ) return true;
     }
 
 

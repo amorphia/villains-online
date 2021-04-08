@@ -3,7 +3,7 @@ let obj = {
     mafia : { name: 'mafia', owner : null, blocked : false, status : 3, basic: true, selectable : true },
     scientists : { name: 'scientists', owner : null, blocked : false, status : 3, basic: true, selectable : true },
     robots : { name: 'robots', owner : null, blocked : false, killer : true, status : 3, basic: true, selectable : true },
-    bankers : { name: 'bankers', owner : null, blocked : false, status : 3, basic: true, selectable : true },
+    bankers : { name: 'bankers', owner : null, blocked : false, status : 2, basic: true, selectable : true },
     commies : { name: 'commies', owner : null, blocked : false, status : 3, basic: true, selectable : true },
     aliens : { name: 'aliens', owner : null, blocked : false, status : 2, basic: true, selectable : true },
     cultists : { name: 'cultists', owner : null, blocked : false, killer : true, status : 3, basic: true, selectable : true },
