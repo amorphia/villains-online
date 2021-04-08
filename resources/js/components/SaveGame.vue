@@ -25,7 +25,7 @@
 
             <div v-if="save.turns.length" class="save-game__type-block">
                 <div class="save-game__type">start of turn</div>
-                <div v-for="item in save.turns" class="save-game__save" @click="loadGame( item.id )">turn {{ item.turn }} - {{ item.created_at }}</div>
+                <div v-for="item in save.turns" class="save-game__save" @click="loadGame( item.id )">turn {{ item.turn }} - {{ item.created_at }} {{ item.note }}</div>
             </div>
 
         </div>

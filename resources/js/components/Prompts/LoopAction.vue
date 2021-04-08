@@ -42,7 +42,6 @@
             },
 
             selectToken( token ){
-                console.log( token );
                 if( this.token && this.token.id === token.id ) this.token = null;
                 else this.token = token;
             }

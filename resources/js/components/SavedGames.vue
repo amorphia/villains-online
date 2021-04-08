@@ -47,7 +47,6 @@
             getSavedGames(){
                 axios.get( `/game` )
                     .then( response => {
-                        console.log( response.data );
                         this.shared.savedGames = response.data;
                     })
                     .catch( errors => console.log( errors ) );

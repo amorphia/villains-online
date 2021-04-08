@@ -169,7 +169,7 @@ class Guerrillas extends Faction {
     async resolveAmbushAction( area ){
 
         // if we don't have any ambushes left, or any revealed tokens to discard here then we can't resolve this action
-        if( (this.data.ambushes.used < this.data.ambushes.max) || !this.hasRevealedTokenInArea( area ) ) {
+        if( (this.data.ambushes.used >= this.data.ambushes.max) || !this.hasRevealedTokenInArea( area ) ) {
             this.message( `Can't ambush in the ${ area.name }`, { class: 'warning' } );
             return;
         }

@@ -6283,7 +6283,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       if (!faction.ambushes || faction.ambushes.used >= faction.ambushes.max) return areas;
 
       _.forEach(this.shared.data.areas, function (area) {
-        if (_this3.firstRevealedToken(area)) areas.push(area.name);
+        if (!_this3.firstRevealedToken(area)) return;
+        if (_.factionsWithUnitsInArea(_this3.shared.data.factions, area).length < 2) return;
+        areas.push(area.name);
       });
 
       return areas;
@@ -6503,7 +6505,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
     },
     setAction: function setAction(name, param) {
-      console.log('set action', name, param);
       var action = {
         name: name
       };
@@ -9627,7 +9628,6 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     selectToken: function selectToken(token) {
-      console.log(token);
       if (this.token && this.token.id === token.id) this.token = null;else this.token = token;
     }
   },
@@ -10510,7 +10510,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     resolve: function resolve(choice) {
-      console.log('choice', choice);
       var data = {};
       data.answer = choice;
       data = Object.assign({}, this.data, data);
@@ -10862,7 +10861,6 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get("/game").then(function (response) {
-        console.log(response.data);
         _this.shared.savedGames = response.data;
       })["catch"](function (errors) {
         return console.log(errors);
@@ -62303,7 +62301,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\r\n                            Discard a token here to start a battle?\r\n                        "
+                                        "\n                            Discard a token here to start a battle?\n                        "
                                       )
                                     ]
                                   )
@@ -62364,7 +62362,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\r\n                            Use your magick ability in this area?\r\n                        "
+                                        "\n                            Use your magick ability in this area?\n                        "
                                       )
                                     ]
                                   )
@@ -62393,7 +62391,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\r\n                            Reveal ghosts in this area?\r\n                        "
+                                        "\n                            Reveal ghosts in this area?\n                        "
                                       )
                                     ]
                                   )
@@ -62425,7 +62423,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\r\n                            Replace Loop token with a face down token from your reserves?\r\n                        "
+                                        "\n                            Replace Loop token with a face down token from your reserves?\n                        "
                                       )
                                     ]
                                   )
@@ -62488,7 +62486,7 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\r\n                        back\r\n                    "
+                          "\n                        back\n                    "
                         )
                       ]
                     ),
@@ -62502,9 +62500,9 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\r\n                        " +
+                          "\n                        " +
                             _vm._s(_vm.buttonMessage) +
-                            "\r\n                    "
+                            "\n                    "
                         )
                       ]
                     )
@@ -62666,7 +62664,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\r\n                            Use your magick ability in this area?\r\n                        "
+                                        "\n                            Use your magick ability in this area?\n                        "
                                       )
                                     ]
                                   )
@@ -62688,7 +62686,7 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\r\n                        back\r\n                    "
+                          "\n                        back\n                    "
                         )
                       ]
                     ),
@@ -62702,9 +62700,9 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\r\n                        " +
+                          "\n                        " +
                             _vm._s(_vm.buttonMessage) +
-                            "\r\n                    "
+                            "\n                    "
                         )
                       ]
                     )
@@ -66600,7 +66598,9 @@ var render = function() {
                           "turn " +
                             _vm._s(item.turn) +
                             " - " +
-                            _vm._s(item.created_at)
+                            _vm._s(item.created_at) +
+                            " " +
+                            _vm._s(item.note)
                         )
                       ]
                     )
@@ -94731,52 +94731,115 @@ module.exports = helpers;
 /***/ (function(module, exports) {
 
 var helpers = {
+  /**
+   * Has the given faction used the given area's skill?
+   *
+   * @param faction
+   * @param area
+   * @returns {boolean}
+   */
   hasUsedSkill: function hasUsedSkill(faction, area) {
+    // format inputs
     if (faction.data) faction = faction.data;
     if (typeof area !== 'string') area = area.name;
     return faction.usedSkills.includes(area);
   },
+
+  /**
+   * Can the given faction use the magick ability in the given area?
+   *
+   * @param faction
+   * @param area
+   * @param factions
+   * @returns {boolean}
+   */
   canUseMagick: function canUseMagick(faction, area, factions) {
     var _this = this;
 
+    // format inputs
     if (faction.data) faction = faction.data;
-    if (area.data) area = area.data;
-    if (faction.name !== 'witches') return;
-    if (faction.units.find(function (unit) {
-      return _this.unitInArea(unit, area) && unit.flipped;
-    })) return true;
+    if (area.data) area = area.data; // if we aren't witches then heck no
+
+    if (faction.name !== 'witches') return false; // do we have any flipped units in this area?
+
+    return faction.units.some(function (unit) {
+      return _this.unitInArea(unit, area, {
+        flipped: true
+      });
+    });
   },
+
+  /**
+   * Can the given faction activate the skill ability of the given area?
+   *
+   * @param faction
+   * @param area
+   * @param factions
+   * @returns {boolean}
+   */
   canUseSkill: function canUseSkill(faction, area, factions) {
     var _this2 = this;
 
+    // format data
     if (faction.data) faction = faction.data;
-    if (area.data) area = area.data;
-    if (this.hasUsedSkill(faction, area)) return;
-    if (faction.units.find(function (unit) {
+    if (area.data) area = area.data; // if we've already used this skill then hard no
+
+    if (this.hasUsedSkill(faction, area)) return false; // check if we have at least one ready unit here
+
+    return faction.units.some(function (unit) {
       return _this2.unitReadyInArea(unit, area);
-    })) return true;
-    /*
-    // Zero Day special ability
-    if( faction.name === 'hackers'
-        && faction.units.find( unit => this.unitInArea( unit, area ) && unit.type === 'champion' )
-    ){
-        for( let fac of Object.values( factions ) ){
-            if( fac.name === faction.name ) continue;
-            if( fac.units.find( unit => this.unitReadyInArea( unit, area ) && unit.basic ) ) return true;
-        }
-    }
-    */
+    });
   },
+
+  /**
+   * Is the given unit ready and in play?
+   *
+   * @param unit
+   * @param options
+   * @returns {boolean}
+   */
   unitReady: function unitReady(unit) {
-    return !unit.killed && unit.ready && unit.location;
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    options.notKilled = true;
+    options.ready = true;
+    options.onBoard = true;
+    return this.isValidUnit(unit, options);
   },
+
+  /**
+   * Is the given unit ready and in the given area?
+   *
+   * @param unit
+   * @param area
+   * @param options
+   * @returns {boolean}
+   */
   unitReadyInArea: function unitReadyInArea(unit, area) {
-    if (typeof area !== 'string') area = area.name;
-    return unit.location === area && !unit.killed && unit.ready;
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    if (typeof area !== 'string') area = area.name; // format input
+
+    options.notKilled = true;
+    options.ready = true;
+    options.location = area;
+    return this.isValidUnit(unit, options);
   },
+
+  /**
+   * Is the given unit ready and in the given area?
+   *
+   * @param unit
+   * @param area
+   * @param options
+   * @returns {boolean}
+   */
   unitNotReadyInArea: function unitNotReadyInArea(unit, area) {
-    if (typeof area !== 'string') area = area.name;
-    return unit.location === area && !unit.killed && !unit.ready;
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    if (typeof area !== 'string') area = area.name; // format inputs
+
+    options.notKilled = true;
+    options.notReady = true;
+    options.location = area;
+    return this.isValidUnit(unit, options);
   }
 };
 module.exports = helpers;
@@ -94791,8 +94854,16 @@ module.exports = helpers;
 /***/ (function(module, exports) {
 
 var helpers = {
+  /**
+   * Returns a tally of the total units the spiders have trapped in webs, and how many from each faction are webbed
+   *
+   * @param spiders
+   * @param factions
+   * @returns {{total: {number}, factions: { name : {number}, name : {number} } } }
+   */
   webbedTotals: function webbedTotals(spiders, factions) {
-    if (spiders.data) spiders = spiders.data;
+    if (spiders.data) spiders = spiders.data; // format data
+
     var webbed = spiders.webs;
     var output = {
       total: webbed.length,
@@ -94808,22 +94879,32 @@ var helpers = {
     });
     return output;
   },
+
+  /**
+   * Return our webbed units filtered by our options
+   *
+   *
+   * @param spiders
+   * @param options
+   * @returns {Unit[]}
+   */
   webbedUnits: function webbedUnits(spiders) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    if (spiders.data) spiders = spiders.data;
-    var webbed = spiders.webs;
+    if (spiders.data) spiders = spiders.data; // format data
+
+    var webbed = spiders.webs; // filter by areas
 
     if (options.area) {
-      var area = options.area;
-      if (typeof area !== 'string') area = area.name;
+      var area = typeof options.area === 'string' ? options.area : options.area.name; // format input
+
       webbed = webbed.filter(function (unit) {
         return unit.location === area;
       });
     }
 
     if (options.faction) {
-      var faction = options.faction;
-      if (typeof faction !== 'string') faction = faction.name;
+      var faction = typeof options.faction === 'string' ? options.faction : options.faction.name; // format input
+
       webbed = webbed.filter(function (unit) {
         return unit.faction === faction;
       });
@@ -94844,33 +94925,87 @@ module.exports = helpers;
 /***/ (function(module, exports) {
 
 var helpers = {
+  /**
+   * Returns a count of each type of token the given faction has revealed in the given area
+   *
+   * @param faction
+   * @param area
+   * @return {object} // formatted { typeOne : {number}, typeTwo : {number} }
+   */
   getTokenCounts: function getTokenCounts(faction, area) {
+    if (area.data) area = area.data; // format input
+
     var tokens = {};
     area.tokens.forEach(function (token) {
+      // cycle through all of the tokens in an area for revealed token belonging to this faction
       if (token.faction === faction.name && token.revealed) {
         tokens[token.type] = tokens[token.type] ? tokens[token.type] + 1 : 1;
       }
     });
     return tokens;
   },
+
+  /**
+   * Returns the first token from an area filtered by our options
+   *
+   * @param area
+   * @param options
+   *      {string} enemy // if provided with a faction name, then only that faction's enemies' tokens will be returned
+   *      {string} player // if provided with a faction name, then only that faction's tokens will be returned
+   * @returns {*}
+   */
+  getFirstToken: function getFirstToken(area, options) {
+    if (area.data) area = area.data; // format input
+
+    return this.find(area.tokens, function (token) {
+      return (!options.hasOwnProperty('revealed') || (token === null || token === void 0 ? void 0 : token.revealed) === options.revealed) && (!options.enemy || token.faction !== options.enemy) && (!options.player || token.faction === options.player);
+    });
+  },
+
+  /**
+   * Returns the first unrevealed token in a given area
+   *
+   * @param area
+   * @param options
+   * @returns {Token}
+   */
   firstUnrevealedToken: function firstUnrevealedToken(area) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    if (area.data) area = area.data;
-    return this.find(area.tokens, function (token) {
-      return token && token.revealed === false && (!options.enemy || token.faction !== options.enemy);
-    });
+    if (area.data) area = area.data; // format input
+
+    options.revealed = false;
+    return this.getFirstToken(area, options);
   },
+
+  /**
+   * Returns the first revealed token in a given area
+   *
+   * @param area
+   * @param options
+   * @returns {*}
+   */
   firstRevealedToken: function firstRevealedToken(area) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    if (area.data) area = area.data;
-    return this.find(area.tokens, function (token) {
-      return token && token.revealed && (!options.enemy || token.faction !== options.enemy) && (!options.player || token.faction === options.player);
-    });
+    if (area.data) area = area.data; // format data
+
+    options.revealed = true;
+    return this.getFirstToken(area, options);
   },
+
+  /**
+   * Discards the given token from its area token track and return it to its owner's reserves
+   *
+   * @param token
+   * @param area
+   * @returns {boolean|number}
+   */
   discardToken: function discardToken(token, area) {
-    if (area.data) area = area.data;
-    var tokenSpace = false;
-    token.location = null;
+    if (area.data) area = area.data; // format
+
+    var tokenSpace = false; // set token location to null, returning it to its owner's reserves
+
+    token.location = null; // cycle through this area's tokens until we find our token, then replace it with
+    // an empty object, return the token spot number that this token was discarded from
 
     _.forEach(area.tokens, function (item, index, collection) {
       if (item.id && token.id === item.id) {
@@ -95003,7 +95138,7 @@ var helpers = {
    * @param {object} factions
    * @param area
    * @param options
-   * @returns {[]}
+   * @returns {string[]}
    */
   factionsWithUnitsInArea: function factionsWithUnitsInArea(factions, area) {
     var _this4 = this;

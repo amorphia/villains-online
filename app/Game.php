@@ -25,6 +25,7 @@ class Game extends Model
         return $this->hasMany( Save::class );
     }
 
+
     public function getTurnsAttribute(){
         return $this->getSaveByType( 'turn' )->get();
     }

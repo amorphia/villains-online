@@ -415,7 +415,10 @@
                 if( !faction.ambushes || faction.ambushes.used >= faction.ambushes.max ) return areas;
 
                 _.forEach( this.shared.data.areas, area => {
-                    if( this.firstRevealedToken( area ) ) areas.push( area.name );
+                    if( ! this.firstRevealedToken( area ) ) return;
+                    if( _.factionsWithUnitsInArea( this.shared.data.factions, area ).length < 2 ) return;
+
+                    areas.push( area.name );
                 });
 
                 return areas;

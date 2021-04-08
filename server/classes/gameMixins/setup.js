@@ -45,6 +45,7 @@ let setup = {
      * @param saved
      */
     async loadSavedGame( saved ){
+
         this.data.state = 'loading';
 
         // update the game's player sockets to make sure they match the player's current socket IDs
@@ -64,6 +65,9 @@ let setup = {
 
         // push the game data to each player
         await this.pushGameDataToPlayers();
+
+        // if we are loading a post-combat save fire off the end of turn step
+        if( saved.saveNote === 'post-combat' ) this.resolveEndOfTurnStep();
     },
 
 

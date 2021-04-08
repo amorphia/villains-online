@@ -545,7 +545,7 @@ let obj = {
 
         // if we decided to buy off some hits, pay the costs here
         if( response.cost > 0 ){
-            this.payCost( data.cost, true );
+            this.payCost( response.cost, true );
         }
 
         // assign hits to smoke instead?

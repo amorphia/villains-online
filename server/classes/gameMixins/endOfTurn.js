@@ -67,8 +67,10 @@ let obj = {
         // for each area, determine the current controller
         for( let i = 0; i < this.data.areaOrder.length; i++ ) {
             let area = this.areas[ this.data.areaOrder[i] ];
-            areaData.push( area.determineControl() );
+            areaData.push( await area.determineControl() );
         }
+
+        console.log( 'areaData', areaData );
 
         // display the results to all players
         await this.timedPrompt( 'determine-control', { wait : slideSpeed * 9, slideSpeed : slideSpeed, areas : areaData })

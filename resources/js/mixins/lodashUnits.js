@@ -115,7 +115,7 @@ let helpers = {
      * @param {object} factions
      * @param area
      * @param options
-     * @returns {[]}
+     * @returns {string[]}
      */
     factionsWithUnitsInArea( factions, area, options = {} ){
         if( typeof area !== 'string' ) area = area.name;

@@ -24,6 +24,7 @@ class SaveController extends Controller
             'active_player' => $request->active,
             'action' => $request->action,
             'turn' => $request->turn,
+            'note' => $request->note,
             'data' => $request->data
         ]);
 

@@ -30,8 +30,6 @@ let obj = {
         // get the areas with battle markers
         let areas = this.areasWithBattleMarkers();
 
-        console.log( "areasWithBattleMarkers", areas );
-
         try {
             for(let area of areas ){
                 await this.battle( area );
@@ -44,6 +42,8 @@ let obj = {
         } catch( error ){
             console.error( error );
         }
+
+        Server.saveToDB( this, { type:'turn', note: 'post-combat' } );
 
         // move to the end of turn step
         this.resolveEndOfTurnStep();

@@ -48,6 +48,8 @@ class DB {
     save( game, options = {} ) {
         if( !game || !game.id ) return;
 
+        game.saveNote = options.note;
+
         let data = {
             type: options.type || 'automatic',
             active : game.currentPlayerFactionName(),

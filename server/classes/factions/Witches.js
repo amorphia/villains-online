@@ -252,7 +252,6 @@ class Witches extends Faction {
      * Each unit in play becomes enchanted
      */
     enchantUnits(){
-        console.log( 'run enchant units' );
         this.data.units.forEach( unit => {
             if( _.unitInPlay( unit ) && !unit.flipped ) this.enchantUnit( unit )
         });

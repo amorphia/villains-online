@@ -36,7 +36,6 @@
 
         methods : {
             resolve( choice ){
-                console.log( 'choice', choice );
                 let data = {};
                 data.answer = choice;
                 data = Object.assign( {}, this.data, data );

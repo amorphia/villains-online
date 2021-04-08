@@ -192,6 +192,7 @@ class Server {
      * @param {string} save // ID of a saved game
      */
     async loadGame( save ){
+
         this.message( 'lobby', { message : 'loading saved game' });
 
         // get the game data from the database

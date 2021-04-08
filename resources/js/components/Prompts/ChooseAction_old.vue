@@ -115,8 +115,6 @@
 
             setAction( name, param ){
 
-                console.log( 'set action', name, param );
-
                 let action = { name : name };
 
                 if( name === 'token' ){
