@@ -44,7 +44,7 @@ class Commies extends Faction {
                 skilled: true,
                 ready: false,
                 killed : false,
-                onSkill : 'papovMove',
+                onSkill : 'papovShoot', //papovMove
                 selected : false,
                 hitsAssigned : 0
             }
@@ -80,6 +80,27 @@ class Commies extends Faction {
         }).catch( error => console.error( error ) );
     }
 
+
+    /**
+     * Handle Papov's skill triggered ability
+     *
+     * @param event
+     */
+    async papovShoot( event ){
+        this.message(`<span class="faction-commies">Commissar Papova</span> inspires her patsies to riot` );
+
+        let area = this.game().areas[event.unit.location];
+
+        // get the count of patsies we have in this area, and if we have none abort
+        let patsiesInAreaCount = this.unitsInArea( area, { type : 'patsy' } ).length;
+        if( !patsiesInAreaCount ){
+            this.message( 'has no patsies to riot', { class : 'warning' } );
+            return;
+        }
+
+        await this.nonCombatAttack(8, patsiesInAreaCount, area )
+            .catch( error => console.error( error ) );
+    }
 
     /**
      * Can we activate our rise token?
