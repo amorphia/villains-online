@@ -94619,29 +94619,63 @@ module.exports = helpers;
 /***/ (function(module, exports) {
 
 var helpers = {
+  /**
+   * Returns the number of kills the given faction has in the given area
+   *
+   * @param factionName
+   * @param areaName
+   * @param factions
+   * @returns {number}
+   */
   killsInArea: function killsInArea(factionName, areaName, factions) {
     var _this = this;
 
+    // format inputs
     if (typeof factionName !== 'string') factionName = factionName.name;
     if (typeof areaName !== 'string') areaName = areaName.name;
-    var kills = 0;
-    this.forEach(factions, function (faction, name) {
-      if (name === factionName) return;
-      kills += faction.units.filter(function (unit) {
+    var results = 0; // cycle through each faction counting our kills
+
+    Object.values(factions).forEach(function (faction) {
+      if (faction.data) faction = faction.data; //format input
+      // ignore our units
+
+      if (faction.name === factionName) return; // add our killed to our results
+
+      results += faction.units.filter(function (unit) {
         return _this.factionKilledUnitHere(factionName, unit, areaName);
       }).length;
     });
-    return kills;
+    return results;
   },
+
+  /**
+   * Has the given faction killed the given unit in the given area?
+   *
+   * @param faction
+   * @param unit
+   * @param area
+   * @returns {boolean}
+   */
   factionKilledUnitHere: function factionKilledUnitHere(faction, unit, area) {
+    //format inputs
     if (typeof faction !== 'string') faction = faction.name;
     if (typeof area !== 'string') area = area.name;
     return unit.killed === faction && unit.location === area;
   },
+
+  /**
+   * Returns the faction name of the faction that has exterminated the given area,
+   * or false if this area has not been exterminated
+   *
+   * @param area
+   * @param factions
+   * @returns {string|boolean} // faction name or false
+   */
   areaExterminated: function areaExterminated(area, factions) {
     var _this2 = this;
 
-    if (area.data) area = area.data;
+    if (area.data) area = area.data; // format input
+    // if the area has been nuked, return the name of the faction that played the nuke
 
     var suitcaseNuke = _.find(area.cards, function (card) {
       return card["class"] === 'suitcase-nuke';
@@ -94650,19 +94684,20 @@ var helpers = {
     if (suitcaseNuke) return suitcaseNuke.owner;
     var factionsWithUnitsHere = [];
     var factionsWithNonHiddenUnitsHere = [];
+    Object.values(factions).forEach(function (faction) {
+      if (faction.data) faction = faction.data; // format input
+      // get all of the factions with units in this area
 
-    _.forEach(factions, function (faction, name) {
-      if (faction.data) faction = faction.data;
       if (faction.units.some(function (unit) {
         return _this2.unitInArea(unit, area);
-      })) factionsWithUnitsHere.push(name);
+      })) factionsWithUnitsHere.push(faction.name); // get all of the factions with non-hidden units in this area
+
       if (faction.units.some(function (unit) {
         return _this2.unitInArea(unit, area, {
           notHidden: true
         });
-      })) factionsWithNonHiddenUnitsHere.push(name);
+      })) factionsWithNonHiddenUnitsHere.push(faction.name);
     }); // if only one player has units here (including hidden units), and that player has a kill they have scored an exterminate
-
 
     if (factionsWithUnitsHere.length === 1 && this.killsInArea(factionsWithUnitsHere[0], area.name, factions) > 0) {
       return factionsWithUnitsHere[0];
@@ -94672,7 +94707,18 @@ var helpers = {
     if (factionsWithNonHiddenUnitsHere.length === 1 && this.killsInArea(factionsWithNonHiddenUnitsHere[0], area.name, factions) > 0) {
       return factionsWithNonHiddenUnitsHere[0];
     }
+
+    return false;
   },
+
+  /**
+   * Returns an object that tallies the number of each unit type killed by the given player, or
+   * false if that player has killed no units
+   *
+   * @param faction
+   * @param factions
+   * @returns {boolean}
+   */
   factionTypesKilled: function factionTypesKilled(faction, factions) {
     var types = {};
     var kills = this.factionKills(faction, factions);
@@ -94681,39 +94727,71 @@ var helpers = {
     });
     return Object.keys(types).length ? types : false;
   },
+
+  /**
+   * Returns all of the killed units in the given area organized by the killing faction
+   *
+   * @param areaName
+   * @param factions
+   * @returns {object} // { factionName : [Units], factionsName: [Units], etc... }
+   */
   allKilledUnitsInAreaByFaction: function allKilledUnitsInAreaByFaction(areaName, factions) {
-    if (typeof areaName !== 'string') areaName = areaName.name;
-    var areaDead = {};
-    this.forEach(factions, function (faction) {
+    if (typeof areaName !== 'string') areaName = areaName.name; // format input
+
+    var results = {};
+    Object.values(factions).forEach(function (faction) {
+      if (faction.data) faction = faction.data; // format input
+
       faction.units.forEach(function (unit) {
         if (unit.location === areaName && unit.killed) {
-          if (areaDead.hasOwnProperty(unit.killed)) {
-            areaDead[unit.killed].push(unit);
+          if (results.hasOwnProperty(unit.killed)) {
+            results[unit.killed].push(unit);
           } else {
-            areaDead[unit.killed] = [unit];
+            results[unit.killed] = [unit];
           }
         }
       });
     });
-    return areaDead;
+    return results;
   },
-  factionKills: function factionKills(faction, factions) {
-    var kills = [];
 
-    _.forEach(factions, function (fac) {
-      if (fac.name === faction.name) return;
-      fac.units.forEach(function (unit) {
-        if (unit.killed === faction.name) {
-          kills.push(unit);
-        }
+  /**
+   * Returns all of the units killed by a given faction
+   *
+   * @param killingFaction
+   * @param factions
+   * @returns {[]}
+   */
+  factionKills: function factionKills(killingFaction, factions) {
+    var results = []; // cycle through each faction
+
+    Object.values(factions).forEach(function (faction) {
+      if (faction.data) faction = faction.data; //format inputs
+
+      if (faction.name === killingFaction.name) return; // only count enemy factions
+      // cycle through each of that faction's units
+
+      faction.units.forEach(function (unit) {
+        // if that unit has been killed by our killingFaction add it to our results
+        if (unit.killed === killingFaction.name) results.push(unit);
       });
     });
-
-    return kills;
+    return results;
   },
+
+  /**
+   * Returns all of the units killed by a given faction in enemy owned areas, if a set of predictions are provided
+   * instead use those predictions to calculate which areas are predicted to be enemy owned at the end of the turn
+   *
+   * @param faction
+   * @param factions
+   * @param areas
+   * @param predictions
+   * @returns {Unit[]}
+   */
   factionKillsInEnemy: function factionKillsInEnemy(faction, factions, areas) {
-    var areaLeaders = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    var enemyAreas = this.determineEnemyAreas(faction, factions, areas, areaLeaders);
+    var predictions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var enemyAreas = this.determineEnemyAreas(faction, factions, areas, predictions);
     return this.factionKills(faction, factions).filter(function (unit) {
       return enemyAreas.includes(unit.location);
     });
