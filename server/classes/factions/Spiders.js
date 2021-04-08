@@ -266,7 +266,7 @@ class Spiders extends Faction {
      *
      * @param args
      */
-    async dropToken( args ) {
+    async activateDropToken( args ) {
 
         // deploy up to two patsies here
         let options = {
