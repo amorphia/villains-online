@@ -8850,7 +8850,7 @@ __webpack_require__.r(__webpack_exports__);
     destinationBlockedByKau: function destinationBlockedByKau() {
       var aliens = this.shared.data.factions['aliens'];
       if (!aliens || this.shared.faction.name === 'aliens') return false;
-      if (this.area.name === aliens.kau.location) return true;
+      if (this.area.name === aliens.kau.location && !aliens.kau.killed) return true;
     },
     selected: function selected() {
       var units = this.shared.faction.units.filter(function (unit) {
@@ -9808,7 +9808,7 @@ __webpack_require__.r(__webpack_exports__);
     destinationBlockedByKau: function destinationBlockedByKau() {
       var aliens = this.shared.data.factions['aliens'];
       if (!aliens || this.shared.faction.name === 'aliens') return false;
-      if (this.area.name === aliens.kau.location) return true;
+      if (this.area.name === aliens.kau.location && !aliens.kau.killed) return true;
     },
     fromAreas: function fromAreas() {
       var _this2 = this;

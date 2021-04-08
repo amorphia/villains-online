@@ -146,7 +146,7 @@
             destinationBlockedByKau(){
                 let aliens = this.shared.data.factions['aliens'];
                 if( !aliens || this.shared.faction.name === 'aliens' ) return false;
-                if( this.area.name === aliens.kau.location ) return true;
+                if( this.area.name === aliens.kau.location && !aliens.kau.killed ) return true;
             },
 
             fromAreas(){
