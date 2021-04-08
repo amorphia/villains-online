@@ -106,9 +106,11 @@ class SuitcaseNuke extends Card {
         // cycle through each faction
         for( let faction of Object.values( this.game.factions ) ){
             // for each faction cycle through each unit
-            for( let unit of faction.data.units ) {
-                // if this unit is in the nuked area, kill it
-                if( _.unitInArea( unit, this.area ) ) await this.game.killUnit( unit, this.faction );
+
+            let units = faction.unitsInArea( this.area );
+
+            for( let unit of units ) {
+                await this.game.killUnit( unit, this.faction );
             }
         }
     }
