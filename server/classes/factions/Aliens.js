@@ -14,6 +14,7 @@ class Aliens extends Faction {
         this.data.focus = 'captured-markers-focus';
         this.data.focusDescription = "Capture many enemy markers";
         this.data.teleports = true; // our units cannot be prevented from entering or leaving areas
+        this.data.flipableUnits = ['champion'];
 
         this.capturedRewards = [
             { ap : 1, maxEnergy : 1 },
@@ -57,6 +58,8 @@ class Aliens extends Faction {
                 cost: 1,
                 killed : false,
                 selected : false,
+                toughness : true,
+                flipped : false,
                 hitsAssigned : 0
             }
         };
