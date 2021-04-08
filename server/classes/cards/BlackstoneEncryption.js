@@ -32,7 +32,7 @@ class BlackstoneEncryption extends Card {
         let areas = {};
 
         Object.values( this.game.areas ).forEach( area => {
-            if( _.hasUnitsInArea( this.faction, area ) && !_.hasUsedSkill( this.faction, area ) ){
+            if( _.factionHasUnitsInArea( this.faction, area ) && !_.hasUsedSkill( this.faction, area ) ){
                 areas[area.name] = true;
             }
         });

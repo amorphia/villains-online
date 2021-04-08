@@ -11,6 +11,7 @@ let mixins = [
     'lodashAreas',
     'lodashInfluence',
     'lodashKills',
+    'lodashSpiders',
 ];
 
 /**

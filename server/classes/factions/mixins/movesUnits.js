@@ -147,7 +147,7 @@ let obj = {
         response.units.forEach( unitId => this.resolveMoveUnit( unitId, units, output, response ) );
 
         // send move log message
-        await this.outputMoveMessage( output, response );
+        await this.outputMoveMessage( output, response, units );
 
         // handle any unit move triggers
         await this.unitTriggeredEvents( 'move', output.units )
@@ -190,8 +190,9 @@ let obj = {
      *
      * @param output
      * @param response
+     * @param units
      */
-    async outputMoveMessage( output, response ){
+    async outputMoveMessage( output, response, units ){
         let unitNames = output.units.map( data => data.unit.name );
         let message = ` <span class="faction-${this.name}">${ unitNames.join(', ') }</span> to the ${output.units[0].unit.location}`;
 
@@ -210,7 +211,7 @@ let obj = {
         // show units shifted prompt
         await this.game().timedPrompt('units-shifted', {
                 message : `The ${this.name} move units to the ${response.toArea}`,
-                units: output.units
+                units: units,
             }).catch( error => console.error( error ) );
     },
 

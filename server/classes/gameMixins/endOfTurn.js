@@ -56,7 +56,7 @@ let obj = {
     async determineControlStep(){
 
         let slideSpeed = 4;
-        if( this.fastMode ) slideSpeed = .25;
+        if( this.fastMode ) slideSpeed = .5;
 
         // show title card
         await this.timedPrompt( 'title-card',{ wait: this.titleCardTimer, message : 'Determine Control Step' } )
@@ -91,7 +91,7 @@ let obj = {
 
         let targets = [];
         let slideSpeed = 3;
-        if( this.fastMode ) slideSpeed = .25;
+        if( this.fastMode ) slideSpeed = .5;
 
         // score each target and record the results
         _.forEach( this.factions, faction => {
@@ -139,7 +139,7 @@ let obj = {
         let promises = [];
         let results = [];
         let slideSpeed = 5;
-        if( this.fastMode ) slideSpeed = .25;
+        if( this.fastMode ) slideSpeed = .5;
 
         try {
             _.forEach( this.factions, faction => {

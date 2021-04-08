@@ -62303,7 +62303,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\n                            Discard a token here to start a battle?\n                        "
+                                        "\r\n                            Discard a token here to start a battle?\r\n                        "
                                       )
                                     ]
                                   )
@@ -62364,7 +62364,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\n                            Use your magick ability in this area?\n                        "
+                                        "\r\n                            Use your magick ability in this area?\r\n                        "
                                       )
                                     ]
                                   )
@@ -62393,7 +62393,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\n                            Reveal ghosts in this area?\n                        "
+                                        "\r\n                            Reveal ghosts in this area?\r\n                        "
                                       )
                                     ]
                                   )
@@ -62425,7 +62425,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\n                            Replace Loop token with a face down token from your reserves?\n                        "
+                                        "\r\n                            Replace Loop token with a face down token from your reserves?\r\n                        "
                                       )
                                     ]
                                   )
@@ -62488,7 +62488,7 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\n                        back\n                    "
+                          "\r\n                        back\r\n                    "
                         )
                       ]
                     ),
@@ -62502,9 +62502,9 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\n                        " +
+                          "\r\n                        " +
                             _vm._s(_vm.buttonMessage) +
-                            "\n                    "
+                            "\r\n                    "
                         )
                       ]
                     )
@@ -62666,7 +62666,7 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "\n                            Use your magick ability in this area?\n                        "
+                                        "\r\n                            Use your magick ability in this area?\r\n                        "
                                       )
                                     ]
                                   )
@@ -62688,7 +62688,7 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\n                        back\n                    "
+                          "\r\n                        back\r\n                    "
                         )
                       ]
                     ),
@@ -62702,9 +62702,9 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\n                        " +
+                          "\r\n                        " +
                             _vm._s(_vm.buttonMessage) +
-                            "\n                    "
+                            "\r\n                    "
                         )
                       ]
                     )
@@ -93984,6 +93984,8 @@ var map = {
 	"./lodashKills.js": "./resources/js/mixins/lodashKills.js",
 	"./lodashSkills": "./resources/js/mixins/lodashSkills.js",
 	"./lodashSkills.js": "./resources/js/mixins/lodashSkills.js",
+	"./lodashSpiders": "./resources/js/mixins/lodashSpiders.js",
+	"./lodashSpiders.js": "./resources/js/mixins/lodashSpiders.js",
 	"./lodashTokens": "./resources/js/mixins/lodashTokens.js",
 	"./lodashTokens.js": "./resources/js/mixins/lodashTokens.js",
 	"./lodashUnits": "./resources/js/mixins/lodashUnits.js",
@@ -94781,6 +94783,59 @@ module.exports = helpers;
 
 /***/ }),
 
+/***/ "./resources/js/mixins/lodashSpiders.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/lodashSpiders.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var helpers = {
+  webbedTotals: function webbedTotals(spiders, factions) {
+    if (spiders.data) spiders = spiders.data;
+    var webbed = spiders.webs;
+    var output = {
+      total: webbed.length,
+      factions: {}
+    }; // set factions properties
+
+    Object.values(factions).forEach(function (faction) {
+      if (faction.name === 'spiders') return;
+      output.factions[faction.name] = 0;
+    });
+    webbed.forEach(function (unit) {
+      output.factions[unit.faction]++;
+    });
+    return output;
+  },
+  webbedUnits: function webbedUnits(spiders) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    if (spiders.data) spiders = spiders.data;
+    var webbed = spiders.webs;
+
+    if (options.area) {
+      var area = options.area;
+      if (typeof area !== 'string') area = area.name;
+      webbed = webbed.filter(function (unit) {
+        return unit.location === area;
+      });
+    }
+
+    if (options.faction) {
+      var faction = options.faction;
+      if (typeof faction !== 'string') faction = faction.name;
+      webbed = webbed.filter(function (unit) {
+        return unit.faction === faction;
+      });
+    }
+
+    return webbed;
+  }
+};
+module.exports = helpers;
+
+/***/ }),
+
 /***/ "./resources/js/mixins/lodashTokens.js":
 /*!*********************************************!*\
   !*** ./resources/js/mixins/lodashTokens.js ***!
@@ -94839,162 +94894,251 @@ module.exports = helpers;
 /***/ (function(module, exports) {
 
 var helpers = {
-  factionUnitsInArea: function factionUnitsInArea(faction, area) {
+  /**
+   * Checks if the given unit meets all of the filters in our options parameter
+   *
+   * @param unit
+   * @param options
+   * @returns {boolean}
+   */
+  isValidUnit: function isValidUnit(unit, options) {
+    if (options.location && typeof options.location !== 'string') options.location = options.location.name; // format input
+
+    return (!options.killed || unit.killed) && (!options.notKilled || !unit.killed) && (!options.location || options.location == unit.location) // intentionally coercive to match different falsy values
+    && (!options.onBoard || unit.location) // intentionally coercive to match different falsy values
+    && (!options.inReserves || !unit.location) // intentionally coercive to match different falsy values
+    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || options.type === unit.type) && (!options.notType || options.type !== unit.type) && (!options.notChampion || options.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden);
+  },
+
+  /**
+   * Returns the given faction's units in play
+   *
+   * @param faction
+   * @param options
+   * @returns {Unit[]}
+   */
+  unitsInPlay: function unitsInPlay(faction) {
     var _this = this;
 
-    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    if (faction.data) faction = faction.data;
-    if (typeof area !== 'string') area = area.name;
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    if (faction.data) faction = faction.data; //format data
+
     return faction.units.filter(function (unit) {
-      return _this.unitInArea(unit, area, options);
+      return _this.unitInPlay(unit, options);
     });
   },
-  hasUnitsInArea: function hasUnitsInArea(faction, area) {
-    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    if (faction.data) faction = faction.data;
-    if (typeof area !== 'string') area = area.name;
-    return !!this.find(faction.units, function (unit) {
-      return _.unitInArea(unit, area, options);
-    });
+
+  /**
+   * Is the given unit in our reserves and not killed?
+   *
+   * @param unit
+   * @param options
+   * @returns {boolean}
+   */
+  unitInReserves: function unitInReserves(unit) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    options.inReserves = true;
+    options.notKilled = true;
+    return this.isValidUnit(unit, options);
   },
-  factionsWithUnitsInArea: function factionsWithUnitsInArea(factions, area, args) {
+
+  /**
+   * Is the given unit in play and not killed?
+   *
+   * @param unit
+   * @param options
+   * @returns {boolean}
+   */
+  unitInPlay: function unitInPlay(unit) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    options.onBoard = true;
+    options.notKilled = true;
+    return this.isValidUnit(unit, options);
+  },
+
+  /**
+   * Returns the units the given faction has in the given area
+   *
+   * @param faction
+   * @param area
+   * @param options
+   * @returns {Unit[]}
+   */
+  factionUnitsInArea: function factionUnitsInArea(faction, area) {
     var _this2 = this;
 
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    // format inputs
+    if (faction.data) faction = faction.data;
+    if (typeof area !== 'string') area = area.name; // apply unit filters
+
+    return faction.units.filter(function (unit) {
+      return _this2.unitInArea(unit, area, options);
+    });
+  },
+
+  /**
+   * Does the given faction have units in the given area?
+   *
+   * @param faction
+   * @param area
+   * @param options
+   * @returns {boolean}
+   */
+  factionHasUnitsInArea: function factionHasUnitsInArea(faction, area) {
+    var _this3 = this;
+
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    // format inputs
+    if (faction.data) faction = faction.data;
+    if (typeof area !== 'string') area = area.name;
+    return this.some(faction.units, function (unit) {
+      return _this3.unitInArea(unit, area, options);
+    });
+  },
+
+  /**
+   * Return an array of faction names of factions that have units in the given area
+   *
+   * @param {object} factions
+   * @param area
+   * @param options
+   * @returns {[]}
+   */
+  factionsWithUnitsInArea: function factionsWithUnitsInArea(factions, area) {
+    var _this4 = this;
+
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (typeof area !== 'string') area = area.name;
     var factionsWithUnits = [];
-
-    _.forEach(factions, function (faction, name) {
-      var exclude = false;
-
-      if (args.exclude) {
-        if (Array.isArray(args.exclude) && args.exclude.includes(name)) exclude = true;else if (args.exclude === name) exclude = true;
-      }
-
-      if (_this2.hasUnitsInArea(faction, area, {
-        basic: args.basic,
-        notHidden: args.notHidden,
-        types: args.types
-      }) && !exclude) {
-        factionsWithUnits.push(name);
-      }
+    Object.values(factions).forEach(function (faction) {
+      // if our exclude option equals or include this faction name, skip this faction
+      if (options.exclude === faction.name || Array.isArray(options.exclude) && options.exclude.includes(faction.name)) return;
+      if (_this4.factionHasUnitsInArea(faction, area, options)) factionsWithUnits.push(faction.name);
     });
-
     return factionsWithUnits;
   },
+
+  /**
+   * Is the given unit dead and in the given area
+   *
+   * @param unit
+   * @param area
+   * @param options
+   * @returns {boolean}
+   */
   deadInArea: function deadInArea(unit, area) {
-    if (typeof area !== 'string') area = area.name;
-    return unit.location === area && unit.killed;
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    if (typeof area !== 'string') area = area.name; // format input
+
+    options.killed = true;
+    options.location = area;
+    return this.isValidUnit(unit, options);
   },
-  webbedTotals: function webbedTotals(spiders, factions) {
-    if (spiders.data) spiders = spiders.data;
-    var webbed = spiders.webs;
-    var output = {
-      total: webbed.length,
-      factions: {}
-    }; // set factions properties
 
-    Object.values(factions).forEach(function (faction) {
-      if (faction.name === 'spiders') return;
-      output.factions[faction.name] = 0;
-    });
-    webbed.forEach(function (unit) {
-      output.factions[unit.faction]++;
-    });
-    return output;
-  },
-  webbedUnits: function webbedUnits(spiders) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    if (spiders.data) spiders = spiders.data;
-    var webbed = spiders.webs;
-
-    if (options.area) {
-      var area = options.area;
-      if (typeof area !== 'string') area = area.name;
-      webbed = webbed.filter(function (unit) {
-        return unit.location === area;
-      });
-    }
-
-    if (options.faction) {
-      var faction = options.faction;
-      if (typeof faction !== 'string') faction = faction.name;
-      webbed = webbed.filter(function (unit) {
-        return unit.faction === faction;
-      });
-    }
-
-    return webbed;
-  },
+  /**
+   * Is the given unit alive in the given area
+   *
+   * @param unit
+   * @param area
+   * @param options
+   * @returns {boolean}
+   */
   unitInArea: function unitInArea(unit, area) {
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (typeof area !== 'string') area = area.name;
-    return unit.location === area && !unit.killed && (!options.basic || unit.basic) && (!options.flipped || unit.flipped) && (!options.skilled || unit.skilled) && (!options.type || options.type === unit.type) && (!options.types || options.types.includes(unit.type)) && (!options.notHidden || !unit.hidden);
+    options.location = area;
+    options.notKilled = true;
+    return this.isValidUnit(unit, options);
   },
+
+  /**
+   * Returns the enemy units for a given faction in a given area
+   *
+   * @param faction
+   * @param area
+   * @param factions
+   * @param options
+   */
   enemyUnitsInArea: function enemyUnitsInArea(faction, area, factions) {
+    var _this5 = this;
+
     var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
     if (faction.data) faction = faction.data;
-    var units = {};
+    var results = {};
+    Object.values(factions).forEach(function (enemy) {
+      if (enemy.name === faction.name) return; // grab this factions units in the given area, and if they have any ass to our results object
 
-    _.forEach(factions, function (fac) {
-      if (fac.name === faction.name) return;
+      var units = _this5.factionUnitsInArea(enemy, area, options);
 
-      var factionUnits = _.factionUnitsInArea(fac, area, options);
-
-      if (options.basic) factionUnits = factionUnits.filter(function (unit) {
-        return unit.basic;
-      });
-      if (options.notHidden) factionUnits = factionUnits.filter(function (unit) {
-        return !unit.hidden;
-      });
-
-      if (factionUnits.length) {
-        units[fac.name] = factionUnits;
-      }
+      if (units.length) results[enemy.name] = units;
     });
-
-    return units;
+    return results;
   },
+
+  /**
+   * Return the number of enemy units in areas you own, or are predicted to own
+   *
+   * @param faction
+   * @param factions
+   * @param areas
+   * @param predictions
+   * @returns {number}
+   */
   factionEnemyInAreasCount: function factionEnemyInAreasCount(faction, factions, areas) {
-    var areaLeaders = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    var winningAreas = [];
+    var predictions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var count = 0;
-
-    if (areaLeaders) {
-      winningAreas = this.factionWinningAreas(faction, factions, areas, areaLeaders);
-    } else {
-      Object.values(areas).forEach(function (area) {
-        if (area.owner === faction.name) winningAreas.push(area.name);
-      });
-    }
-
-    Object.values(factions).forEach(function (fac) {
-      if (fac.name === faction.name) return;
-      count += fac.units.filter(function (unit) {
+    var winningAreas = this.determineWinningAreas(faction, factions, areas, predictions);
+    Object.values(factions).forEach(function (enemy) {
+      if (enemy.name === faction.name) return;
+      count += enemy.units.filter(function (unit) {
         return winningAreas.includes(unit.location) && !unit.killed;
       }).length;
     });
     return count;
   },
-  unitsInPlay: function unitsInPlay(faction) {
-    var _this3 = this;
 
-    if (faction.data) faction = faction.data;
-    return faction.units.filter(function (unit) {
-      return _this3.unitInPlay(unit);
+  /**
+   * Returns an array of area names for the areas you are either currently winning (if a prediction
+   * object is supplied) or you own (if no predictions object is supplied)
+   *
+   * @param faction
+   * @param factions
+   * @param areas
+   * @param predictions
+   * @returns {string[]}
+   */
+  determineWinningAreas: function determineWinningAreas(faction, factions, areas) {
+    var predictions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    // if we are using a predictions object to determine the predicted owner of each area
+    // use them to build our results
+    if (predictions) return this.factionWinningAreas(faction, factions, areas, predictions); // otherwise just look at the current owners
+
+    var results = [];
+    Object.values(areas).forEach(function (area) {
+      if (area.data) area = area.data; // format input
+
+      if (area.owner === faction.name) results.push(area.name);
     });
+    return results;
   },
-  unitInReserves: function unitInReserves(unit) {
-    return !unit.location && !unit.killed;
-  },
-  unitInPlay: function unitInPlay(unit) {
-    return unit.location && !unit.killed;
-  },
+
+  /**
+   * Return the unit types the given faction controls in enemy areas
+   *
+   * @param faction
+   * @param factions
+   * @param areas
+   * @param predictions
+   */
   unitTypesInEnemy: function unitTypesInEnemy(faction, factions, areas) {
-    var areaLeaders = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    var enemyAreas = this.determineEnemyAreas(faction, factions, areas, areaLeaders);
+    var predictions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var enemyAreas = this.determineEnemyAreas(faction, factions, areas, predictions);
     var typesInEnemy = {};
     faction.units.forEach(function (unit) {
-      if (!enemyAreas.includes(unit.location)) return;
+      // if this unit isn't in an enemy area, abort
+      if (!enemyAreas.includes(unit.location)) return; // otherwise add it to our our type tally
+
       if (!typesInEnemy[unit.type]) typesInEnemy[unit.type] = 1;else typesInEnemy[unit.type]++;
     });
     return typesInEnemy;
@@ -95014,7 +95158,7 @@ module.exports = helpers;
 /**
  * Mixins to merge with lodash
  */
-var mixins = ['lodashGeneral', 'lodashFaction', 'lodashCombat', 'lodashTokens', 'lodashSkills', 'lodashUnits', 'lodashAreas', 'lodashInfluence', 'lodashKills'];
+var mixins = ['lodashGeneral', 'lodashFaction', 'lodashCombat', 'lodashTokens', 'lodashSkills', 'lodashUnits', 'lodashAreas', 'lodashInfluence', 'lodashKills', 'lodashSpiders'];
 /**
  * Do the mergin'
  */

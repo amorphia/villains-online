@@ -247,7 +247,7 @@ let mixin = {
      * @returns {boolean}
      */
     hasUnitsInArea( area, options = {} ) {
-        return _.hasUnitsInArea( this.data, area, options );
+        return _.factionHasUnitsInArea( this.data, area, options );
     },
 
 
@@ -370,7 +370,7 @@ let mixin = {
     enemiesWithUnitsInArea( area, options = {} ){
         let enemies = [];
         for( let faction of Object.values( this.game().data.factions ) ){
-            if( faction.name !== this.name && _.hasUnitsInArea( faction, area, options ) ) enemies.push( faction.name );
+            if( faction.name !== this.name && _.factionHasUnitsInArea( faction, area, options ) ) enemies.push( faction.name );
         }
         return enemies;
     },

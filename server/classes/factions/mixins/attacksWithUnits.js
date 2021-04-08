@@ -285,6 +285,8 @@ let obj = {
             types : args.types
         });
 
+        if( !targetFactions.length ) return;
+
         // if we have only one option, and we must choose a faction then just return that faction
         if( targetFactions.length === 1 && !args.optional ) {
             return this.game().factions[ targetFactions[0] ];
