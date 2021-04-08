@@ -131,7 +131,7 @@ let mixin = {
      * @param areas
      */
     filterAreasArrayByAdjacentArea( adjacentArea, areas ){
-        if( typeof args.adjacent === 'string' ) adjacentArea = this.game().areas[args.adjacent];
+        if( typeof adjacentArea === 'string' ) adjacentArea = this.game().areas[adjacentArea];
         return _.intersection( areas, adjacentArea.data.adjacent );
     },
 

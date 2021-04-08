@@ -28,6 +28,8 @@ let obj = {
         // use our skilled units to activate this ability
         let exhaustedUnits = this.useSkilledUnitsToActivateSkill( area );
 
+        console.log( 'exhaustedUnits', exhaustedUnits );
+
         try {
             // activate this area's skill
             await area.skill( this );
