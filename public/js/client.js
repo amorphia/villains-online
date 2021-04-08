@@ -8844,7 +8844,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this7 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return !unit.selected && (!_this7.data.unitTypes || _this7.data.unitTypes.includes(unit.type)) && !unit.noDeploy && unit.cost <= _.money(_this7.shared.faction) && (unit.type !== 'champion' || !_this7.destinationBlockedByKau) && !unit.location;
+        return !unit.selected && (!_this7.data.unitTypes || _this7.data.unitTypes.includes(unit.type)) && !unit.noDeploy && (unit.cost <= _.money(_this7.shared.faction) || _this7.data.free) && (unit.type !== 'champion' || !_this7.destinationBlockedByKau) && !unit.location;
       });
     },
     destinationBlockedByKau: function destinationBlockedByKau() {

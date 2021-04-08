@@ -293,7 +293,7 @@
                     unit => !unit.selected
                             && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
                             && !unit.noDeploy
-                            && unit.cost <= _.money( this.shared.faction )
+                            && (unit.cost <= _.money( this.shared.faction ) || this.data.free )
                             && (unit.type !== 'champion' || !this.destinationBlockedByKau)
                             && !unit.location
                 );
