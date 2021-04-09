@@ -103,7 +103,7 @@ class LetGodSortThemOut extends Card {
             // add it to our units results array
             units.push( unit );
             // kill this unit
-            await this.game.killUnit( unit, faction );
+            await this.game.killUnit( unit, this.faction );
         }
 
         // log the results
