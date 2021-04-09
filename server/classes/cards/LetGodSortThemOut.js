@@ -107,7 +107,7 @@ class LetGodSortThemOut extends Card {
         }
 
         // log the results
-        let message = `sacrifices <span class="faction-${item.name}item">${unitNames.join(', ')}</span>`;
+        let message = `sacrifices <span class="faction-${faction.name}item">${unitNames.join(', ')}</span>`;
         faction.message( message );
     }
 
