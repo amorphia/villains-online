@@ -112,9 +112,11 @@
                     units = this.shared.faction.units;
                 }
 
-                return units.filter( unit => _.unitInArea( unit, this.fromArea )
-                                            && ( !this.data.noChampion || unit.type !== 'champion' )
-                                            && ( !this.data.basicOnly || unit.basic ) );
+                return units.filter( unit => _.unitInArea( unit, this.fromArea, {
+                        basic : this.data.basicOnly,
+                        notChampion : this.data.noChampion
+                    } ));
+
             },
 
 
@@ -142,7 +144,7 @@
                 let cost = 0;
 
                 this.toAreas.forEach( area => {
-                   let payoffs = _.policePayoffs( this.shared.faction, area, this.selected );
+                   let payoffs = _.policePayoffs( this.shared.faction, area );
                    if( this.fromAreaUnits.filter( unit => unit.selected === area.name ).length ){
                        cost += payoffs;
                    }

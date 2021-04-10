@@ -68,7 +68,7 @@
             ministerSpy(){
                 if( this.shared.faction.name !== 'bureau' ) return;
 
-                let ministerInArea = !! this.shared.faction.units.find( unit => unit.type === 'champion' && _.unitInArea( unit, this.area ) );
+                let ministerInArea = !! this.shared.faction.units.find( unit => _.unitInArea( unit, this.area, { type : 'champion' } ) );
                 let firstUnrevealedEnemy = _.firstUnrevealedToken( this.area, { enemy : this.shared.faction.name });
 
                 return ministerInArea && ( firstUnrevealedEnemy && this.token.id === firstUnrevealedEnemy.id );

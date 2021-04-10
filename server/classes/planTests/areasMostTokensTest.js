@@ -7,7 +7,7 @@
  * @returns {boolean}
  */
 const test = function areasMostTokens( debug, faction, areaCount ){
-    let factionAreasMostTokens = faction.areasMostTokens();
+    let factionAreasMostTokens = faction.areasWithMostTokens();
     let result = factionAreasMostTokens >= areaCount;
 
     if( debug ) console.log(

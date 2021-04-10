@@ -97,9 +97,7 @@
 
              Object.values( this.shared.data.factions ).forEach( faction => {
 
-
                  let units = faction.units.filter( unit => _.unitInArea( unit, this.combat.areaName ) );
-                 console.log( 'units', units );
 
                  if( units.length ){
                      factions.push({

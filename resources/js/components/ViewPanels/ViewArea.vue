@@ -151,9 +151,9 @@
             killedPlant(){
                 if( !this.shared.data.factions['plants'] ) return;
 
-                return _.factionAreasWithDeadUnits( this.shared.data.factions['plants'] ).includes( this.area.name );
+                return _.factionAreasWithDead( this.shared.data.factions['plants'] ).includes( this.area.name );
             },
-            
+
             webbedCount(){
                 if( ! this.shared.data.factions['spiders'] ) return false;
                 return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;

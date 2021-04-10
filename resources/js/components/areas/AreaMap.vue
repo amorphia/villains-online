@@ -171,7 +171,7 @@
             killedPlant(){
                 if( !this.shared.data.factions['plants'] ) return;
 
-                return _.factionAreasWithDeadUnits( this.shared.data.factions['plants'] ).includes( this.area.name );
+                return _.factionAreasWithDead( this.shared.data.factions['plants'] ).includes( this.area.name );
             },
 
             showXavier(){
@@ -213,7 +213,7 @@
             graveyard(){
                 let dead = {};
                 _.forEach( this.shared.data.factions, faction => {
-                    let kills = _.killsInArea( faction, this.area, this.shared.data.factions );
+                    let kills = _.factionKillCountInArea( faction, this.area, this.shared.data.factions );
                     if( kills ) dead[faction.name] = kills;
                 });
 

@@ -316,7 +316,7 @@
             },
 
             policePayoffs(){
-                return _.policePayoffs( this.shared.faction, this.area, this.selected ) * this.selected.length;
+                return _.policePayoffs( this.shared.faction, this.area ) * this.selected.length;
             },
 
             vinesCost(){

@@ -101,8 +101,8 @@ let obj = {
         if( this.data.skilledPatsies ) this.message(`patsies have become readied` );
 
         this.data.units.forEach( unit => {
-            if( _.unitInPlay( unit ) && unit.skilled ) unit.ready = true;
-            if( !unit.skilled && unit.ready ) unit.ready = false;
+            if( _.unitInPlay( unit, { skilled : true } ) ) unit.ready = true;
+            if( unit.ready && ( !unit.skilled || !unit.location || unit.killed ) ) unit.ready = false;
         });
     }
 

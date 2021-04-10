@@ -19,7 +19,7 @@
         },
         computed : {
             focus(){
-                return _.areasMostTokens( this.faction, this.shared.data.areas );
+                return _.factionAreasWithMostTokens( this.faction, this.shared.data.areas );
             },
             skips(){
                 return this.faction.skips.max - this.faction.skips.used;

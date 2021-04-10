@@ -137,7 +137,7 @@ class Swarm extends Faction {
      * @returns {object}
      */
     placeDrone( area ){
-        let drone = this.data.units.find( unit => unit.type === 'drone' && _.unitInReserves( unit ) );
+        let drone = this.data.units.find( unit => _.unitInReserves( unit, { type : 'drone' } ) );
         drone.location = area.name;
         return drone;
     }

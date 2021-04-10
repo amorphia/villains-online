@@ -1,44 +1,82 @@
 let helpers = {
 
+    /**
+     * Returns the number of hits we are able to assign to the given units
+     *
+     * @param units
+     * @param options
+     * @returns {number}
+     */
     assignableHits( units, options = {} ){
         let assignableHits = 0;
+
         units.forEach( unit => {
-            if( !unit.hidden && ( !options.nonPatsy || unit.type !== 'patsy' ) ){
-                assignableHits += ( unit.toughness && !unit.flipped )
-                || (unit.flipped && unit.faction === 'vampires' && unit.type === 'champion') ? 2 : 1;
-                assignableHits -= unit.hits ? unit.hits : 0;
+            // ignore units that can't be assigned hits
+            if( unit.hidden || ( options.nonPatsy && unit.type === 'patsy' ) ) return;
+
+            // units with toughness that have't taken a hit yet can be assigned two hits
+            if( unit.toughness && !unit.flipped ) {
+                assignableHits += 2;
+                return;
             }
+
+            // other units can be assigned one hit
+            assignableHits++;
         });
+
         return assignableHits;
     },
 
 
-    calculateDefenseBonus( attackingFaction, targetFaction, area, options = {} ){
+    /**
+     * Calculate a faction's defense bonus
+     *
+     * @param attackingFaction
+     * @param defendingFaction
+     * @param area
+     * @param options
+     * @returns {number}
+     */
+    calculateDefenseBonus( attackingFaction, defendingFaction, area, options = {} ){
+        // format inputs
         if( attackingFaction.data ) attackingFaction = attackingFaction.data;
-        if( targetFaction.data ) targetFaction = targetFaction.data;
+        if( defendingFaction.data ) defendingFaction = defendingFaction.data;
         if( area.data ) area = area.data;
 
         let defenseBonus = 0;
-        if( ! options.unit ) return defenseBonus;
 
-        if( targetFaction.defenseBonus ){
-            defenseBonus += targetFaction.defenseBonus;
-            if( options.debug ) console.log( 'Apply targetFaction.defenseBonus defense bonus:', defenseBonus  );
-        }
+        // defense bonuses only apply to attacks from units
+        if( !options.unit ) return defenseBonus;
 
-        if( targetFaction.name === 'mutants' && _.find( area.tokens, token => token.revealed && token.name === 'biohazard') ){
-            defenseBonus += 2;
-            if( options.debug ) console.log( 'Apply bioHazard defense bonus:', defenseBonus  );
-        }
+        // if the defending faction has a basic defense bonus apply it
+        if( defendingFaction.defenseBonus ) defenseBonus += defendingFaction.defenseBonus;
 
-        if( targetFaction.factionDefenseBonus ){
-            defenseBonus += targetFaction.factionDefenseBonus;
-            if( options.debug ) console.log( 'Apply targetFaction.factionDefenseBonus defense bonus:', defenseBonus  );
-        }
+        // if the defending player has a biohazard token they gain +2 defense
+        if( this.hasBiohazardInArea( defendingFaction, area ) ) defenseBonus += 2;
 
-        if( options.debug ) console.log( 'Final defense bonus:', defenseBonus  );
+        // if the defending player has a special faction defense bonus apply it
+        if( defendingFaction.factionDefenseBonus ) defenseBonus += defendingFaction.factionDefenseBonus;
+
         return defenseBonus;
     },
+
+
+    /**
+     * Does this faction have a revealed biohazard token in the area?
+     *
+     * @param faction
+     * @param area
+     * @returns {boolean}
+     */
+    hasBiohazardInArea( faction, area ) {
+        if( area.data ) area = area.data; // format inputs
+
+        // if we aren't the mutants, then nope
+        if( faction.name !== 'mutants' ) return false;
+
+        // check for the token
+        return area.tokens.some( token => token.name === 'biohazard' && token.revealed );
+    }
 
 };
 

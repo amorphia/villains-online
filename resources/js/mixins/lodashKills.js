@@ -1,6 +1,47 @@
 let helpers = {
 
     /**
+     * Return an array of area names matching the areas the given faction has scored at least one kill
+     *
+     * @param faction
+     * @param factions
+     * @returns {string[]}
+     */
+    factionAreasWithKills( faction, factions ){
+        let areas = {};
+
+        this.factionKills( faction, factions ).forEach( kill => {
+            areas[kill.location] = true;
+        });
+
+        return Object.keys( areas );
+    },
+
+
+    /**
+     * Returns an array of area names matching the areas where the given faction has dead units
+     *
+     * @param faction
+     * @param options
+     * @returns {string[]}
+     */
+    factionAreasWithDead( faction, options = {} ){
+        if( faction.data ) faction = faction.data; // format inputs
+
+        let areas = {};
+        options.killed = true;
+        options.onBoard = true;
+
+        // cycle through our units checking for killed units on board and adding their areas to our areas object
+        faction.units.forEach( unit => {
+            if( this.isValidUnit( unit, options ) ) areas[ unit.location ] = true;
+        });
+
+        return Object.keys( areas );
+    },
+
+
+    /**
      * Returns the number of kills the given faction has in the given area
      *
      * @param factionName
@@ -8,7 +49,7 @@ let helpers = {
      * @param factions
      * @returns {number}
      */
-    killsInArea( factionName, areaName, factions ){
+    factionKillCountInArea( factionName, areaName, factions ){
         // format inputs
         if( typeof factionName !== 'string' ) factionName = factionName.name;
         if( typeof areaName !== 'string' ) areaName = areaName.name;
@@ -77,12 +118,12 @@ let helpers = {
 
 
         // if only one player has units here (including hidden units), and that player has a kill they have scored an exterminate
-        if( factionsWithUnitsHere.length === 1 && this.killsInArea( factionsWithUnitsHere[0], area.name, factions ) > 0 ){
+        if( factionsWithUnitsHere.length === 1 && this.factionKillCountInArea( factionsWithUnitsHere[0], area.name, factions ) > 0 ){
             return factionsWithUnitsHere[0];
         }
 
         // if multiple players have units here, but only one has non-hidden units and they have a kill, that player has scored an exterminate
-        if( factionsWithNonHiddenUnitsHere.length === 1 && this.killsInArea( factionsWithNonHiddenUnitsHere[0], area.name, factions ) > 0 ){
+        if( factionsWithNonHiddenUnitsHere.length === 1 && this.factionKillCountInArea( factionsWithNonHiddenUnitsHere[0], area.name, factions ) > 0 ){
             return factionsWithNonHiddenUnitsHere[0];
         }
 
@@ -104,8 +145,7 @@ let helpers = {
 
         let kills = this.factionKills( faction, factions );
         kills.forEach( unit => {
-            if( types.hasOwnProperty( unit.type ) ) types[unit.type]++;
-            else types[unit.type] = 1;
+            types[unit.type] = types[unit.type] + 1 || 1;
         });
 
         return Object.keys( types ).length ? types : false;

@@ -253,8 +253,7 @@ class Plants extends Faction {
         unit.plant = true;
 
         // if we already have plants here, increment our plant count, otherwise create property for this area
-        if( this.data.plants[area] ) this.data.plants[area]++;
-        else this.data.plants[area] = 1;
+        this.data.plants[area] = this.data.plants[area] + 1 || 1;
 
         this.message( `The Plants' ${unit.type} in The ${area} is reborn from Gaia's touch` );
     }

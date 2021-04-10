@@ -78,7 +78,7 @@
             cost(){
                 let cost = 0;
                 // do we have to pay for a police payoff?
-                if( this.data.policePayoff ) cost += _.policePayoffs( this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected ) * this.selected.length;
+                if( this.data.policePayoff ) cost += _.policePayoffs( this.shared.faction, this.shared.data.areas[this.data.policePayoff] ) * this.selected.length;
 
                 // do we have to pay for vines?
                 if( this.data.vines ) cost += this.selected.length * this.data.vines;
@@ -166,7 +166,7 @@
                 // and cycle through them adding the first of each type to the collection
                 let reserves = {};
                 this.shared.data.factions[this.data.showReserves].units.forEach( unit => {
-                    if( unit.basic && _.unitInReserves( unit ) && !reserves[unit.type] ) reserves[unit.type] = unit;
+                    if( _.unitInReserves( unit, { basic : true } ) && !reserves[unit.type] ) reserves[unit.type] = unit;
                 });
 
                 // return an array of just the units

@@ -14,12 +14,42 @@ let helpers = {
         area.tokens.forEach( token => {
             // cycle through all of the tokens in an area for revealed token belonging to this faction
             if( token.faction === faction.name && token.revealed ){
-                tokens[token.type] = tokens[token.type] ? tokens[token.type] + 1 : 1;
+                tokens[token.type] = tokens[token.type] + 1 || 1;
             }
         });
 
         return tokens;
     },
+
+
+    /**
+     * Return the number of area the given faction has the most tokens in
+     *
+     * @param faction
+     * @param areas
+     * @returns {number}
+     */
+    factionAreasWithMostTokens( faction, areas ){
+        if( faction.data ) faction = faction.data;
+        let mostTokens = 0;
+
+        // cycle through each faction
+        Object.values( areas ).forEach( area => {
+            let tokensInArea = {};
+
+            // make a list of how many tokens this faction in each area
+            area.tokens.forEach( token => {
+                if( token.faction ) tokensInArea[token.faction] = tokensInArea[token.faction] + 1 || 1;
+            });
+
+            // compare this list of tokens per area to our list of most by area, if this faction has more than
+            // the existing entry (if any) it takes the top spot
+            if( this.maxSingleObject( tokensInArea ) === faction.name ) mostTokens++;
+        });
+
+        return mostTokens;
+    },
+
 
 
     /**

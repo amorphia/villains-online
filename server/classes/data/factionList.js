@@ -16,7 +16,7 @@ let obj = {
     guerrillas : { name: 'guerrillas', owner : null, blocked : false, killer : true, status : 1, selectable : true },
     //parasites : { name: 'parasites', owner : null, blocked : false, status : 0, selectable : false },
     conquistadors : { name: 'conquistadors', owner : null, blocked : false, status : 2, selectable : true },
-    witches : { name: 'witches', owner : null, blocked : false, status : 1, selectable : true },
+    witches : { name: 'witches', owner : null, blocked : false, status : 2, selectable : true },
     bureau : { name: 'bureau', owner : null, blocked : false, status : 2, selectable : true },
     plants : { name: 'plants', owner : null, blocked : false, status : 1, selectable : true },
     ghosts : { name: 'ghosts', owner : null, blocked : false, status : 0, selectable : true },

@@ -8,7 +8,7 @@
  * @returns {boolean}
  */
 const test = function tokensInAreas( debug, faction, areaCount, type ) {
-    let factionCount = _.areasWithTokensCount( faction, faction.game().data.areas, type );
+    let factionCount = _.areasWithTokensCount( faction, faction.game().data.areas, { type : type } );
 
     let result = factionCount >= areaCount;
 

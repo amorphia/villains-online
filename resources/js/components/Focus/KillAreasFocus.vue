@@ -18,7 +18,7 @@
         },
         computed : {
             focus(){
-                return _.areasWithFactionKills( this.shared.faction, this.shared.data.factions ).length;
+                return _.factionAreasWithKills( this.shared.faction, this.shared.data.factions ).length;
             }
         }
     }

@@ -162,9 +162,7 @@ class Hackers extends Faction {
      */
     canActivateBootUp( token, area ) {
         // do we have any unready killed units in this area?
-        return !! this.data.units.find( unit => _.unitInArea( unit, area )
-            && ( unit.skilled )
-            && !unit.ready );
+        return this.data.units.some( unit => _.unitInArea( unit, area, { killed : true, notReady : true } ));
     }
 
 
@@ -177,7 +175,7 @@ class Hackers extends Faction {
 
         // ready our skilled units here
         this.data.units
-            .filter( unit => _.unitInArea( unit, args.area.name ) && unit.skilled )
+            .filter( unit => _.unitInArea( unit, args.area.name, { skilled : true } ) )
             .forEach( unit => unit.ready = true );
 
         this.message( `Skilled units became ready in The ${args.area.name}` );

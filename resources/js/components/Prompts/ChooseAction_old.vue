@@ -316,7 +316,7 @@
             },
 
             flippedUnitsInArea(){
-                return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area ) && unit.flipped );
+                return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area, { flipped : true } ));
             },
 
             useableSkills(){

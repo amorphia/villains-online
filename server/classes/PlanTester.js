@@ -104,7 +104,7 @@ class PlanTester {
      * @param {object} faction
      */
     checkRequirement( requirement, faction ){
-        let test = require( `./planTests/${requirement.test}` );
+        let test = require( `./planTests/${requirement.test}Test` );
         return test( this.debug, faction, ...requirement.args );
     }
 

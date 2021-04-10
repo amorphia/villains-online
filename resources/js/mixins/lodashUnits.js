@@ -13,6 +13,7 @@ let helpers = {
         return ( !options.killed || unit.killed )
             && ( !options.notKilled || !unit.killed )
             && ( !options.location || options.location == unit.location ) // intentionally coercive to match different falsy values
+            && ( !options.adjacent || options.adjacent.includes( unit.location ) )
             && ( !options.onBoard || unit.location ) // intentionally coercive to match different falsy values
             && ( !options.inReserves || !unit.location ) // intentionally coercive to match different falsy values
             && ( !options.basic || unit.basic )
@@ -28,7 +29,10 @@ let helpers = {
             && ( !options.notChampion || options.type !== 'champion' )
             && ( !options.types || options.types.includes( unit.type ) )
             && ( !options.hidden || unit.hidden )
-            && ( !options.notHidden || !unit.hidden );
+            && ( !options.notHidden || !unit.hidden )
+            && ( !options.deployable || !unit.noDeploy )
+            && ( !options.hasProp || unit[options.hasProp] )
+            && ( !options.attacks || unit.attack.length );
     },
 
 
@@ -256,8 +260,7 @@ let helpers = {
             if( !enemyAreas.includes( unit.location ) ) return;
 
             // otherwise add it to our our type tally
-            if( !typesInEnemy[unit.type] ) typesInEnemy[unit.type] = 1;
-            else typesInEnemy[unit.type]++;
+            typesInEnemy[unit.type] = typesInEnemy[unit.type] + 1 || 1;
         });
 
         return typesInEnemy;

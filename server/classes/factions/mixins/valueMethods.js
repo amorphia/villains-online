@@ -169,7 +169,7 @@ let mixin = {
      * @returns {[]}
      */
     areasWithDeadUnits(){
-        return _.factionAreasWithDeadUnits( this );
+        return _.factionAreasWithDead( this );
     },
 
 
@@ -330,13 +330,7 @@ let mixin = {
      * @returns {boolean}
      */
     hasBiohazardInArea( area ){
-        // if we aren't the mutants, then nope
-        if( this.name !== 'mutants' ) return false;
-
-        // check for the token
-        return this.data.tokens.some( token => token.name === 'biohazard'
-                                            && token.revealed
-                                            && token.location === area.name );
+        return _.hasBiohazardInArea( this, area );
     },
 
 
@@ -355,8 +349,8 @@ let mixin = {
      *
      * @returns {number}
      */
-    areasMostTokens(){
-        return _.areasMostTokens( this, this.game().data.areas );
+    areasWithMostTokens(){
+        return _.factionAreasWithMostTokens( this, this.game().data.areas );
     },
 
 
@@ -418,8 +412,8 @@ let mixin = {
      *
      * @returns {*}
      */
-    unitsInPlay() {
-        return _.unitsInPlay( this );
+    unitsInPlay( options = {} ) {
+        return _.unitsInPlay( this, options );
     },
 
 
@@ -432,7 +426,7 @@ let mixin = {
     unitTypesInPlay( basicOnly ){
         let types = {};
         this.data.units.forEach( unit => {
-            if( _.unitInPlay( unit ) && ( ! basicOnly || unit.basic ) ) types[unit.type] = true;
+            if( _.unitInPlay( unit, { basic : basicOnly } ) ) types[unit.type] = true;
         });
         return Object.keys( types );
     },
@@ -446,9 +440,11 @@ let mixin = {
      */
     unitTypesInReserves( basicOnly ){
         let types = {};
+
         this.data.units.forEach( unit => {
-           if( _.unitInReserves( unit ) && ( ! basicOnly || unit.basic ) ) types[unit.type] = true;
+           if( _.unitInReserves( unit, { basic : basicOnly } ) ) types[unit.type] = true;
         });
+
         return Object.keys( types );
     },
 
@@ -492,7 +488,7 @@ let mixin = {
      * @returns {unit|undefined}
      */
     getChampionInPlay(){
-        return this.data.units.find( unit => unit.type === 'champion' && _.unitInPlay( unit ) );
+        return this.data.units.find( unit => _.unitInPlay( unit, { type : 'champion' } ) );
     },
 
 
@@ -522,7 +518,7 @@ let mixin = {
      * @returns {string[]}
      */
     areasWithKills(){
-        return _.areasWithFactionKills( this, this.game().data.factions );
+        return _.factionAreasWithKills( this, this.game().data.factions );
     },
 
 
@@ -557,13 +553,13 @@ let mixin = {
 
 
     /**
-     * Returns our kills in a given area
+     * Returns the number of kills we have in the given area
      *
      * @param area
-     * @returns {[]}
+     * @returns {number}
      */
-    killsIn( area ){
-        return _,killsInArea( this.name, area, this.game().data.factions );
+    killsCountIn( area ){
+        return _,factionKillCountInArea( this.name, area, this.game().data.factions );
     },
 
 

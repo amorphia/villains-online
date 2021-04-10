@@ -253,7 +253,7 @@ class Witches extends Faction {
      */
     enchantUnits(){
         this.data.units.forEach( unit => {
-            if( _.unitInPlay( unit ) && !unit.flipped ) this.enchantUnit( unit )
+            if( _.unitInPlay( unit, { notFlipped : true } ) ) this.enchantUnit( unit )
         });
     }
 

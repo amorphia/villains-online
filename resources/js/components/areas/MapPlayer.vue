@@ -110,7 +110,7 @@
 
             kills(){
                 if( !this.faction ) return 0;
-                return _.killsInArea( this.faction, this.area, this.shared.data.factions );
+                return _.factionKillCountInArea( this.faction, this.area, this.shared.data.factions );
             },
 
 

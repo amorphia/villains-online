@@ -2857,7 +2857,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     focus: function focus() {
-      return _.areasWithFactionKills(this.shared.faction, this.shared.data.factions).length;
+      return _.factionAreasWithKills(this.shared.faction, this.shared.data.factions).length;
     }
   }
 });
@@ -2980,7 +2980,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     focus: function focus() {
-      return _.areasMostTokens(this.faction, this.shared.data.areas);
+      return _.factionAreasWithMostTokens(this.faction, this.shared.data.areas);
     },
     skips: function skips() {
       return this.faction.skips.max - this.faction.skips.used;
@@ -6301,7 +6301,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this5 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this5.area) && unit.flipped;
+        return _.unitInArea(unit, _this5.area, {
+          flipped: true
+        });
       });
     },
     ghostsInArea: function ghostsInArea() {
@@ -6702,7 +6704,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this4 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this4.area) && unit.flipped;
+        return _.unitInArea(unit, _this4.area, {
+          flipped: true
+        });
       });
     },
     useableSkills: function useableSkills() {
@@ -7932,7 +7936,7 @@ __webpack_require__.r(__webpack_exports__);
     cost: function cost() {
       var cost = 0; // do we have to pay for a police payoff?
 
-      if (this.data.policePayoff) cost += _.policePayoffs(this.shared.faction, this.shared.data.areas[this.data.policePayoff], this.selected) * this.selected.length; // do we have to pay for vines?
+      if (this.data.policePayoff) cost += _.policePayoffs(this.shared.faction, this.shared.data.areas[this.data.policePayoff]) * this.selected.length; // do we have to pay for vines?
 
       if (this.data.vines) cost += this.selected.length * this.data.vines; // do we have to pay to materialize ghosts?
 
@@ -8006,7 +8010,9 @@ __webpack_require__.r(__webpack_exports__);
 
       var reserves = {};
       this.shared.data.factions[this.data.showReserves].units.forEach(function (unit) {
-        if (unit.basic && _.unitInReserves(unit) && !reserves[unit.type]) reserves[unit.type] = unit;
+        if (_.unitInReserves(unit, {
+          basic: true
+        }) && !reserves[unit.type]) reserves[unit.type] = unit;
       }); // return an array of just the units
 
       return Object.values(reserves);
@@ -8866,7 +8872,7 @@ __webpack_require__.r(__webpack_exports__);
       return units;
     },
     policePayoffs: function policePayoffs() {
-      return _.policePayoffs(this.shared.faction, this.area, this.selected) * this.selected.length;
+      return _.policePayoffs(this.shared.faction, this.area) * this.selected.length;
     },
     vinesCost: function vinesCost() {
       return _.vinesCost(this.shared.faction, this.selected, this.shared.data.factions);
@@ -9838,7 +9844,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     policePayoffs: function policePayoffs() {
-      return _.policePayoffs(this.shared.faction, this.area, this.selected) * this.selected.length;
+      return _.policePayoffs(this.shared.faction, this.area) * this.selected.length;
     },
     vinesCost: function vinesCost() {
       return _.vinesCost(this.shared.faction, this.selected, this.shared.data.factions);
@@ -9979,7 +9985,10 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return units.filter(function (unit) {
-        return _.unitInArea(unit, _this.fromArea) && (!_this.data.noChampion || unit.type !== 'champion') && (!_this.data.basicOnly || unit.basic);
+        return _.unitInArea(unit, _this.fromArea, {
+          basic: _this.data.basicOnly,
+          notChampion: _this.data.noChampion
+        });
       });
     },
     currentAreaUnits: function currentAreaUnits() {
@@ -10013,7 +10022,7 @@ __webpack_require__.r(__webpack_exports__);
 
       var cost = 0;
       this.toAreas.forEach(function (area) {
-        var payoffs = _.policePayoffs(_this4.shared.faction, area, _this4.selected);
+        var payoffs = _.policePayoffs(_this4.shared.faction, area);
 
         if (_this4.fromAreaUnits.filter(function (unit) {
           return unit.selected === area.name;
@@ -11049,7 +11058,9 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.shared.faction.name !== 'bureau') return;
       var ministerInArea = !!this.shared.faction.units.find(function (unit) {
-        return unit.type === 'champion' && _.unitInArea(unit, _this.area);
+        return _.unitInArea(unit, _this.area, {
+          type: 'champion'
+        });
       });
 
       var firstUnrevealedEnemy = _.firstUnrevealedToken(this.area, {
@@ -11682,6 +11693,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-discards',
   data: function data() {
@@ -11690,21 +11704,23 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    // Sorts our discard pile by name
     sortedDiscard: function sortedDiscard() {
       return this.shared.data.discard.sort(function (a, b) {
         return a.file < b.file ? -1 : a.file > b.file ? 1 : 0;
       });
     },
+    // sets our shuffle message to alert players if the deck has been shuffled yet this game
     shuffleMessage: function shuffleMessage() {
       return this.shared.data.reshuffled ? 'Reshuffled' : 'Never Reshuffled';
     }
   },
   watch: {
+    // whenever we open or close this panel play our little UI click sound
     "shared.viewDiscard": function sharedViewDiscard() {
       App.event.emit('sound', 'ui');
     }
-  },
-  methods: {}
+  }
 });
 
 /***/ }),
@@ -12019,7 +12035,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     killedPlant: function killedPlant() {
       if (!this.shared.data.factions['plants']) return;
-      return _.factionAreasWithDeadUnits(this.shared.data.factions['plants']).includes(this.area.name);
+      return _.factionAreasWithDead(this.shared.data.factions['plants']).includes(this.area.name);
     },
     webbedCount: function webbedCount() {
       if (!this.shared.data.factions['spiders']) return false;
@@ -12221,7 +12237,6 @@ __webpack_require__.r(__webpack_exports__);
         var units = faction.units.filter(function (unit) {
           return _.unitInArea(unit, _this.combat.areaName);
         });
-        console.log('units', units);
 
         if (units.length) {
           factions.push({
@@ -12712,50 +12727,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'villains-online',
   data: function data() {
     return {
       shared: App.state,
-      chatClosed: false
+      chatClosed: false,
+      disconnectionWait: 5,
+      // how long to wait (in seconds) for a disconnected socket to reconnect before escalating
+      reconnectTimeout: 1 // how long to wait (in seconds) between reconnection attempts
+
     };
   },
   watch: {
-    'shared.socket.disconnected': function sharedSocketDisconnected() {
-      if (this.shared.socket.disconnected) {
-        console.log('disconnection detected');
-
-        var _this = this;
-
-        setTimeout(function () {
-          if (!_this.shared.socket || _this.shared.socket.disconnected) {
-            console.log('disconnection confirmed');
-
-            _this.clearGame();
-          }
-        }, 3000);
-      }
-    },
-    'shared.game': function sharedGame() {
-      if (this.shared.playerIndex === null) {
-        this.setPlayerIndex();
-      }
-
-      if (this.shared.factionName === null) {
-        this.setPlayerFactionName();
-      }
-    }
+    'shared.socket.disconnected': 'watchDisconnected',
+    'shared.game': 'watchSharedGame'
   },
   created: function created() {
     var _this2 = this;
 
-    console.log('Villians Online initializing in env:', "local");
     this.shared.id = App.user.uuid;
     this.shared.name = App.user.name;
     this.shared.admin = App.user.admin;
     this.initSocket();
-    this.initCoreSocketFunctions();
-    this.shared.init('event', App.event);
+    this.initCoreSocketListeners(); // bind our event handler to our shared state
+
+    this.shared.init('event', App.event); // bind ordered players to our shared state
+
     this.shared.init('orderedPlayers', function () {
       if (!_this2.shared.data || !_this2.shared.data.playerOrder) return;
       var players = [];
@@ -12768,32 +12767,143 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
-    setPlayerIndex: function setPlayerIndex() {
+    /**
+     * Initialize our socket
+     */
+    initSocket: function initSocket() {
+      var socket = io(App.server);
+      this.shared.init('socket', socket);
+      this.shared.socket.emit('newPlayer', {
+        name: App.user.name,
+        id: App.user.uuid
+      });
+    },
+
+    /**
+     * Initialize our core socket event listeners
+     */
+    initCoreSocketListeners: function initCoreSocketListeners() {
       var _this3 = this;
 
-      if (!this.shared.data || !this.shared.data.playerOrder) return null;
-      var playerIndex = null;
-      this.shared.data.playerOrder.forEach(function (value, index) {
-        if (value === _this3.shared.id) {
-          playerIndex = index;
-        }
+      // try to reconnect on disconnect
+      this.shared.socket.on('disconnect', function () {
+        var socket = _this3.shared.socket;
+        var _this = _this3;
+        setTimeout(function () {
+          socket.connect();
+          socket.emit('newPlayer', {
+            name: App.user.name,
+            id: App.user.uuid
+          });
+        }, _this.reconnectTimeout * 1000);
+      }); // listen for open games
+
+      this.shared.socket.on('openGame', function (game) {
+        _this3.$set(_this3.shared, 'game', game);
+      }); // listen for saved games
+
+      this.shared.socket.on('savedGame', function (game) {
+        _this3.shared.saveGame = game;
+      }); // listen for concluded game
+
+      this.shared.socket.on('clearGame', this.clearGame); // listen for lobby players update
+
+      this.shared.socket.on('lobbyPlayers', function (data) {
+        _this3.shared.lobbyPlayers = data;
+      }); // listen for full game data update
+
+      this.shared.socket.on('update', function (data) {
+        App.event.emit('unselectAreas');
+        _this3.shared.data = data;
+        _this3.shared.player = _this3.shared.getPlayer();
+        _this3.shared.faction = _this3.shared.getFaction();
+      }); // listen for player data update
+
+      this.shared.socket.on('updatePlayerData', function (data) {
+        _this3.shared.data.players = data;
+        _this3.shared.player = _this3.shared.getPlayer();
+        _this3.shared.faction = _this3.shared.getFaction();
+      }); // listen for resource update
+
+      this.shared.socket.on('updateResources', function (data) {
+        data.forEach(function (item) {
+          _this3.shared.data.factions[item.faction].resources = item.resources;
+          _this3.shared.data.factions[item.faction].energy = item.energy;
+        });
+      }); // listen for points update
+
+      this.shared.socket.on('updatePoints', function (data) {
+        data.forEach(function (item) {
+          _this3.shared.data.factions[item.faction].pp = item.pp;
+          _this3.shared.data.factions[item.faction].ap = item.ap;
+        });
       });
-      this.shared.playerIndex = playerIndex;
     },
-    setPlayerFactionName: function setPlayerFactionName() {
+
+    /**
+     * Watch our socket for a disconnected status
+     */
+    watchDisconnected: function watchDisconnected() {
+      // if we are no longer disconnected, do nothing
+      if (!this.shared.socket.disconnected) return; // wait x seconds on a disconnection, if we haven't connected again yet by the time we
+      // are done waiting then cleat the game and return to the lobby
+
+      var _this = this;
+
+      setTimeout(function () {
+        if (!_this.shared.socket || _this.shared.socket.disconnected) {
+          _this.clearGame();
+        }
+      }, this.disconnectionWait * 1000);
+    },
+
+    /**
+     * Watch our shared game for any time we don't have a playerIndex or factionName property
+     * and regenerate those properties
+     */
+    watchSharedGame: function watchSharedGame() {
+      if (this.shared.playerIndex === null) {
+        this.setPlayerIndex();
+      }
+
+      if (this.shared.factionName === null) {
+        this.setPlayerFactionName();
+      }
+    },
+
+    /**
+     * Set our player index based on the playerOrder
+     *
+     * @returns {null}
+     */
+    setPlayerIndex: function setPlayerIndex() {
       var _this4 = this;
+
+      if (!this.shared.data || !this.shared.data.playerOrder) return null;
+      this.shared.data.playerOrder.forEach(function (playerId, index) {
+        if (playerId === _this4.shared.id) _this4.shared.playerIndex = index;
+      });
+    },
+
+    /**
+     * Set our faction name based on our game factions data
+     *
+     * @returns {null}
+     */
+    setPlayerFactionName: function setPlayerFactionName() {
+      var _this5 = this;
 
       if (this.shared.playerIndex === null || !this.shared.data.factions) return null;
       var faction = null;
 
-      _.forEach(this.shared.data.factions, function (value, prop) {
-        if (value.owner == _this4.shared.playerIndex) {
-          faction = prop;
-        }
+      _.forEach(this.shared.data.factions, function (factionData, factionName) {
+        if (factionData.owner === _this5.shared.playerIndex) _this5.shared.factionName = factionName;
       });
-
-      this.shared.factionName = faction;
     },
+
+    /**
+     * Clear all game data from our shared data
+     */
     clearGame: function clearGame() {
       this.shared.data = null;
       this.shared.faction = null;
@@ -12809,70 +12919,6 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.token = null;
       this.shared.showXavier = false;
       this.shared.viewDiscard = false;
-    },
-    initCoreSocketFunctions: function initCoreSocketFunctions() {
-      var _this5 = this;
-
-      // try to reconnect on disconnect
-      this.shared.socket.on('disconnect', function () {
-        var socket = _this5.shared.socket;
-        setTimeout(function () {
-          socket.connect();
-          socket.emit('newPlayer', {
-            name: App.user.name,
-            id: App.user.uuid
-          });
-        }, 1000);
-      }); // listen for open games
-
-      this.shared.socket.on('openGame', function (game) {
-        _this5.$set(_this5.shared, 'game', game);
-      }); // listen for saved games
-
-      this.shared.socket.on('savedGame', function (game) {
-        _this5.shared.saveGame = game;
-      }); // listen for concluded game
-
-      this.shared.socket.on('clearGame', this.clearGame); // listen for lobby players update
-
-      this.shared.socket.on('lobbyPlayers', function (data) {
-        _this5.shared.lobbyPlayers = data;
-      }); // listen for full game data update
-
-      this.shared.socket.on('update', function (data) {
-        App.event.emit('unselectAreas');
-        _this5.shared.data = data;
-        _this5.shared.player = _this5.shared.getPlayer();
-        _this5.shared.faction = _this5.shared.getFaction();
-      }); // listen for player data update
-
-      this.shared.socket.on('updatePlayerData', function (data) {
-        _this5.shared.data.players = data;
-        _this5.shared.player = _this5.shared.getPlayer();
-        _this5.shared.faction = _this5.shared.getFaction();
-      }); // listen for resource update
-
-      this.shared.socket.on('updateResources', function (data) {
-        data.forEach(function (item) {
-          _this5.shared.data.factions[item.faction].resources = item.resources;
-          _this5.shared.data.factions[item.faction].energy = item.energy;
-        });
-      }); // listen for points update
-
-      this.shared.socket.on('updatePoints', function (data) {
-        data.forEach(function (item) {
-          _this5.shared.data.factions[item.faction].pp = item.pp;
-          _this5.shared.data.factions[item.faction].ap = item.ap;
-        });
-      });
-    },
-    initSocket: function initSocket() {
-      var socket = io(App.server);
-      this.shared.init('socket', socket);
-      this.shared.socket.emit('newPlayer', {
-        name: App.user.name,
-        id: App.user.uuid
-      });
     }
   }
 });
@@ -13339,7 +13385,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     killedPlant: function killedPlant() {
       if (!this.shared.data.factions['plants']) return;
-      return _.factionAreasWithDeadUnits(this.shared.data.factions['plants']).includes(this.area.name);
+      return _.factionAreasWithDead(this.shared.data.factions['plants']).includes(this.area.name);
     },
     showXavier: function showXavier() {
       return this.shared.showXavier && this.xavier;
@@ -13382,7 +13428,7 @@ __webpack_require__.r(__webpack_exports__);
       var dead = {};
 
       _.forEach(this.shared.data.factions, function (faction) {
-        var kills = _.killsInArea(faction, _this4.area, _this4.shared.data.factions);
+        var kills = _.factionKillCountInArea(faction, _this4.area, _this4.shared.data.factions);
 
         if (kills) dead[faction.name] = kills;
       });
@@ -13749,7 +13795,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     kills: function kills() {
       if (!this.faction) return 0;
-      return _.killsInArea(this.faction, this.area, this.shared.data.factions);
+      return _.factionKillCountInArea(this.faction, this.area, this.shared.data.factions);
     },
     statusIcons: function statusIcons() {
       var _this2 = this;
@@ -69268,7 +69314,7 @@ var render = function() {
         [
           !_vm.shared.data
             ? _c("game-lobby")
-            : _vm.shared.data.state == "choose-factions"
+            : _vm.shared.data.state === "choose-factions"
             ? _c("choose-factions")
             : _c("game-container")
         ],
@@ -94036,26 +94082,28 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var helpers = {
-  factionAreasWithDeadUnits: function factionAreasWithDeadUnits(faction) {
-    if (faction.data) faction = faction.data;
-    var areas = {};
-    faction.units.forEach(function (unit) {
-      if (unit.killed && unit.location) areas[unit.location] = true;
-    });
-    return Object.keys(areas);
-  },
+  /**
+   * Returns a tally of the areas where the given faction has the most units
+   *
+   * @param faction
+   * @param factions
+   * @param options
+   * @returns {[]}
+   */
   areasMostUnits: function areasMostUnits(faction, factions) {
     var _this = this;
 
-    if (faction.data) faction = faction.data;
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    if (faction.data) faction = faction.data; // format input
+
     var mostUnits = {}; // cycle through each faction
 
     Object.values(factions).forEach(function (faction) {
       var unitsInArea = {}; // make a list of how many units this faction in each area
 
       faction.units.forEach(function (unit) {
-        if (_this.unitInPlay(unit)) {
-          if (unitsInArea[unit.location]) unitsInArea[unit.location]++;else unitsInArea[unit.location] = 1;
+        if (_this.unitInPlay(unit, options)) {
+          unitsInArea[unit.location] = unitsInArea[unit.location] + 1 || 1;
         }
       }); // compare this list of units per area to our list of most by area, if this faction has more than
       // the existing entry (if any) it takes the top spot
@@ -94077,124 +94125,186 @@ var helpers = {
     });
     return mostUnits;
   },
-  areasMostTokens: function areasMostTokens(faction, areas) {
-    var _this2 = this;
 
-    if (faction.data) faction = faction.data;
-    var mostTokens = 0; // cycle through each faction
-
-    Object.values(areas).forEach(function (area) {
-      var tokensInArea = {}; // make a list of how many units this faction in each area
-
-      area.tokens.forEach(function (token) {
-        if (token.faction) {
-          if (tokensInArea[token.faction]) tokensInArea[token.faction]++;else tokensInArea[token.faction] = 1;
-        }
-      }); // compare this list of units per area to our list of most by area, if this faction has more than
-      // the existing entry (if any) it takes the top spot
-
-      if (_this2.maxSingleObject(tokensInArea) === faction.name) mostTokens++;
-    });
-    return mostTokens;
-  },
+  /**
+   * Returns an array of area names that this faction controls
+   *
+   * @param faction
+   * @param areas
+   * @returns {[]}
+   */
   factionAreas: function factionAreas(faction, areas) {
     var factionAreas = [];
     this.forEach(areas, function (area, name) {
-      if (area.owner === faction.name) {
-        factionAreas.push(name);
-      }
+      if (area.owner === faction.name) factionAreas.push(name);
     });
     return factionAreas;
   },
-  factionWinningAreas: function factionWinningAreas(faction, factions, areas, areaLeaders) {
-    var _this3 = this;
 
-    var winningAreas = [];
-    Object.keys(areas).forEach(function (areaName) {
-      if (areaLeaders[areaName] && areaLeaders[areaName] === faction.name) winningAreas.push(areaName);
-    });
+  /**
+   * Return an array of areas the given faction is currently winning
+   *
+   * @param faction
+   * @param factions
+   * @param areas
+   * @param areaLeaders
+   * @returns {[]}
+   */
+  factionWinningAreas: function factionWinningAreas(faction, factions, areas, areaLeaders) {
+    var _this2 = this;
+
+    var queen = {},
+        winningAreas = []; // get the queen if the loyalists are in play
 
     if (factions['loyalists']) {
-      var queen = factions['loyalists'].units.find(function (unit) {
-        return _this3.unitInPlay(unit) && unit.type === 'champion';
+      queen = factions['loyalists'].units.find(function (unit) {
+        return _this2.unitInPlay(unit, {
+          type: 'champion'
+        });
       });
-      if (queen) winningAreas = winningAreas.filter(function (area) {
-        return area !== queen.location;
-      });
-    }
+    } // is this faction the current influence leader in this area?
 
-    return winningAreas;
-  },
-  determineEnemyAreas: function determineEnemyAreas(faction, factions, areas) {
-    var areaLeaders = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    var enemyAreas = [];
 
-    if (areaLeaders) {
-      var winningAreas = this.factionWinningAreas(faction, factions, areas, areaLeaders);
-      Object.keys(areas).forEach(function (areaName) {
-        if (!winningAreas.includes(areaName)) enemyAreas.push(areaName);
-      });
-    } else {
-      Object.values(areas).forEach(function (area) {
-        if (area.owner && area.owner !== faction.name) enemyAreas.push(area.name);
-      });
-    }
-
-    return enemyAreas;
-  },
-  areasWithFactionKills: function areasWithFactionKills(faction, factions) {
-    var areas = {};
-    this.factionKills(faction, factions).forEach(function (kill) {
-      areas[kill.location] = true;
-    });
-    return Object.keys(areas);
-  },
-  areasWithTokensCount: function areasWithTokensCount(faction, areas, type) {
-    var count = 0;
-
-    _.forEach(areas, function (area) {
-      if (_.find(area.tokens, function (token) {
-        if (token.revealed && token.faction === faction.name && (!type || token.type === type)) return true;
-      })) count++;
-    });
-
-    return count;
-  },
-  areasWithUnits: function areasWithUnits(faction) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    if (faction.data) faction = faction.data;
-    if (typeof options.types === 'string') options.types = [options.types];
-    var areas = {};
-    faction.units.forEach(function (unit) {
-      if (_.unitInPlay(unit) && (!options.attacks || unit.attack.length) && (!options.types || options.types.includes(unit.type)) && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.flipped || unit.flipped) && (!options.deployable || !unit.noDeploy) && (!options.notHidden || !unit.hidden) && (!options.basic || unit.basic) && (!options.hasProp || unit[options.hasProp])) {
-        areas[unit.location] = true;
+    Object.keys(areas).forEach(function (areaName) {
+      // if the queen is in the area the loyalists are winning the area
+      if (queen.location === areaName) {
+        if (faction.name === 'loyalists') winningAreas.push(areaName); // otherwise if we have the most influence in the area add this to our winning areas
+      } else if (areaLeaders[areaName] && areaLeaders[areaName] === faction.name) {
+        winningAreas.push(areaName);
       }
     });
-    var areasArray = Object.keys(areas);
+    return winningAreas;
+  },
+
+  /**
+   * Determine which areas belong to enemy factions, or are predicted to belong to enemy factions if a predictions
+   * object is provided
+   *
+   * @param faction
+   * @param factions
+   * @param areas
+   * @param predictions
+   * @returns {[]}
+   */
+  determineEnemyAreas: function determineEnemyAreas(faction, factions, areas) {
+    var predictions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    var enemyAreas = []; // if we have a set of predictions use those to determine our enemy areas
+
+    if (predictions) {
+      var winningAreas = this.factionWinningAreas(faction, factions, areas, predictions);
+      return Object.keys(areas).filter(function (areaName) {
+        return !winningAreas.includes(areaName);
+      });
+    } // otherwise cycle through each area and push the ones we don't control to our results
+
+
+    Object.values(areas).forEach(function (area) {
+      if (area.owner && area.owner !== 'neutral' && area.owner !== faction.name) enemyAreas.push(area.name);
+    });
+    return enemyAreas;
+  },
+
+  /**
+   * Returns the number of areas where a faction has one or more revealed tokens
+   *
+   * @param faction
+   * @param areas
+   * @param options
+   * @returns {number}
+   */
+  areasWithTokensCount: function areasWithTokensCount(faction, areas) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var count = 0;
+    Object.values(areas).forEach(function (area) {
+      if (area.data) area = area.data; // format input
+      // if the token...
+
+      if (area.tokens.some(function (token) {
+        return token.faction === faction.name // .. belongs to the given faction
+        && (options.revealed === false || token.revealed) // ... and is revealed (or the options allow unrevealed)
+        && (!options.type || token.type === type);
+      }) // ...and the options don't care about type, or we have the proper type
+      ) {
+          count++;
+        } // increment the count
+
+    });
+    return count;
+  },
+
+  /**
+   * Returns an array of area names matching the areas where the given faction has one or more units
+   *
+   * @param faction
+   * @param options
+   * @returns {string[]}
+   */
+  areasWithUnits: function areasWithUnits(faction) {
+    var _this3 = this;
+
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    // format inputs
+    if (faction.data) faction = faction.data;
+    if (typeof options.types === 'string') options.types = [options.types]; // cycle through units to build our results object
+
+    var results = {};
+    faction.units.forEach(function (unit) {
+      // if this unit is in play add this area name to our results
+      if (_this3.unitInPlay(unit, options)) results[unit.location] = true;
+    }); // convert object to keys array
+
+    results = Object.keys(results); // filter excluded area
 
     if (options.excludesArea) {
-      areasArray = areasArray.filter(function (area) {
+      results = results.filter(function (area) {
         return area !== options.excludesArea;
       });
     }
 
-    return areasArray;
+    return results;
   },
-  getCardCounts: function getCardCounts(faction, area) {
-    var cards = {};
+
+  /**
+   * Return a tally of the number of each card the given faction has played in the given area
+   *
+   * @param faction
+   * @param area
+   * @returns {object} // { cardClassName : {number}, cardClassName : {number}, etc... }
+   */
+  getFactionCardCountsInArea: function getFactionCardCountsInArea(faction, area) {
+    var results = {}; // cycle through each card in the area
+
     area.cards.forEach(function (card) {
+      // if our faction owns the card add it's class name to our tally
       if (card.owner === faction.name) {
-        cards[card["class"]] = cards[card["class"]] ? cards[card["class"]] + 1 : 1;
+        results[card["class"]] = results[card["class"]] + 1 || 1;
       }
     });
-    return cards;
+    return results;
   },
-  shouldStandDown: function shouldStandDown(faction, area) {
+
+  /**
+   * Is this area under the effect of a stand down action card
+   *
+   * @param faction
+   * @param area
+   * @returns {boolean}
+   */
+  areaShouldStandDown: function areaShouldStandDown(faction, area) {
     return area.cards.some(function (card) {
       return card["class"] === 'stand-down';
     });
   },
+
+  /**
+   * Are the given faction's units trapped in the given area?
+   *
+   * @param faction
+   * @param area
+   * @returns {boolean}
+   */
   areaIsTrapped: function areaIsTrapped(faction, area) {
+    // format inputs
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data; // the aliens can't be trapped
 
@@ -94204,23 +94314,38 @@ var helpers = {
       return token.type === 'vines' && token.revealed;
     });
 
-    if (faction.name !== 'plants' && !faction.teleports && vines.length) {
-      return _.money(faction) < vines.length;
-    }
+    if (faction.name !== 'plants' && _.money(faction) < vines.length) {
+      return true;
+    } // finally is there a trapped like rats played here?
+
 
     return area.cards.some(function (card) {
       return card["class"] === 'trapped-like-rats';
     });
   },
+
+  /**
+   * Calculate the cost levied by vines tokens to move the given units
+   *
+   * @param faction
+   * @param units
+   * @param factions
+   * @returns {number}
+   */
   vinesCost: function vinesCost(faction, units, factions) {
-    if (faction.name === 'plants' || faction.teleports || !factions['plants']) return 0; // find out where each of our vines tokens is located
+    // if we are the plants, the aliens, or there are no vines in the game return 0
+    if (faction.name === 'plants' || faction.teleports || !factions['plants']) return 0; // find out where each of the vines tokens is located
 
     var vinesAreas = {};
-    var vines = factions['plants'].tokens.forEach(function (token) {
-      if (token.type === 'vines' && token.revealed && token.location) {
-        if (vinesAreas[token.location]) vinesAreas[token.location] = vinesAreas[token.location] + 1;else vinesAreas[token.location] = 1;
-      }
-    });
+    var vines = factions['plants'].tokens // look through the plants tokens
+    .filter(function (token) {
+      return token.type === 'vines' && token.revealed && token.location;
+    }) // find our revealed vines in play
+    .forEach(function (token) {
+      return vinesAreas[token.location] = vinesAreas[token.location] + 1 || 1;
+    }); // and tally the areas they are in
+    // if there are no vines revealed in play, then there are no costs to pay
+
     if (!Object.keys(vinesAreas).length) return 0; // apply appropriate cost per vines token
 
     var cost = 0;
@@ -94229,23 +94354,33 @@ var helpers = {
     });
     return cost;
   },
-  policePayoffs: function policePayoffs(faction, area, units) {
+
+  /**
+   * Calculate the cost levied by police payoffs to move/deploy units into the given area
+   *
+   * @param faction
+   * @param area
+   * @returns {number}
+   */
+  policePayoffs: function policePayoffs(faction, area) {
+    // format inputs
     if (faction.data) faction = faction.data;
-    if (area.data) area = area.data;
-    var policePayoff = 0; // if our faction teleports, police payoff never applies
+    if (area.data) area = area.data; // if our faction teleports, police payoff never applies
 
-    if (faction.teleports) return policePayoff;
+    if (faction.teleports) return 0; // return the number of police payoffs played by other players in this area
 
-    _.forEach(area.cards, function (card) {
-      if (card["class"] === 'police-payoff' // if there is a police payoff here
-      && card.owner !== faction.name // which we don't own
-      ) {
-          policePayoff++; // increase our police payoff cost by one
-        }
-    });
-
-    return policePayoff;
+    return area.cards.filter(function (card) {
+      return card["class"] === 'police-payoff' && card.owner !== faction.name;
+    }).length;
   },
+
+  /**
+   * Does the given area have Kau in it
+   *
+   * @param faction
+   * @param area
+   * @returns {boolean}
+   */
   hasKau: function hasKau(faction, area) {
     return faction.kau && faction.kau.location === area.name && !faction.kau.killed;
   }
@@ -94262,44 +94397,74 @@ module.exports = helpers;
 /***/ (function(module, exports) {
 
 var helpers = {
+  /**
+   * Returns the number of hits we are able to assign to the given units
+   *
+   * @param units
+   * @param options
+   * @returns {number}
+   */
   assignableHits: function assignableHits(units) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     var assignableHits = 0;
     units.forEach(function (unit) {
-      if (!unit.hidden && (!options.nonPatsy || unit.type !== 'patsy')) {
-        assignableHits += unit.toughness && !unit.flipped || unit.flipped && unit.faction === 'vampires' && unit.type === 'champion' ? 2 : 1;
-        assignableHits -= unit.hits ? unit.hits : 0;
-      }
+      // ignore units that can't be assigned hits
+      if (unit.hidden || options.nonPatsy && unit.type === 'patsy') return; // units with toughness that have't taken a hit yet can be assigned two hits
+
+      if (unit.toughness && !unit.flipped) {
+        assignableHits += 2;
+        return;
+      } // other units can be assigned one hit
+
+
+      assignableHits++;
     });
     return assignableHits;
   },
-  calculateDefenseBonus: function calculateDefenseBonus(attackingFaction, targetFaction, area) {
+
+  /**
+   * Calculate a faction's defense bonus
+   *
+   * @param attackingFaction
+   * @param defendingFaction
+   * @param area
+   * @param options
+   * @returns {number}
+   */
+  calculateDefenseBonus: function calculateDefenseBonus(attackingFaction, defendingFaction, area) {
     var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    // format inputs
     if (attackingFaction.data) attackingFaction = attackingFaction.data;
-    if (targetFaction.data) targetFaction = targetFaction.data;
+    if (defendingFaction.data) defendingFaction = defendingFaction.data;
     if (area.data) area = area.data;
-    var defenseBonus = 0;
-    if (!options.unit) return defenseBonus;
+    var defenseBonus = 0; // defense bonuses only apply to attacks from units
 
-    if (targetFaction.defenseBonus) {
-      defenseBonus += targetFaction.defenseBonus;
-      if (options.debug) console.log('Apply targetFaction.defenseBonus defense bonus:', defenseBonus);
-    }
+    if (!options.unit) return defenseBonus; // if the defending faction has a basic defense bonus apply it
 
-    if (targetFaction.name === 'mutants' && _.find(area.tokens, function (token) {
-      return token.revealed && token.name === 'biohazard';
-    })) {
-      defenseBonus += 2;
-      if (options.debug) console.log('Apply bioHazard defense bonus:', defenseBonus);
-    }
+    if (defendingFaction.defenseBonus) defenseBonus += defendingFaction.defenseBonus; // if the defending player has a biohazard token they gain +2 defense
 
-    if (targetFaction.factionDefenseBonus) {
-      defenseBonus += targetFaction.factionDefenseBonus;
-      if (options.debug) console.log('Apply targetFaction.factionDefenseBonus defense bonus:', defenseBonus);
-    }
+    if (this.hasBiohazardInArea(defendingFaction, area)) defenseBonus += 2; // if the defending player has a special faction defense bonus apply it
 
-    if (options.debug) console.log('Final defense bonus:', defenseBonus);
+    if (defendingFaction.factionDefenseBonus) defenseBonus += defendingFaction.factionDefenseBonus;
     return defenseBonus;
+  },
+
+  /**
+   * Does this faction have a revealed biohazard token in the area?
+   *
+   * @param faction
+   * @param area
+   * @returns {boolean}
+   */
+  hasBiohazardInArea: function hasBiohazardInArea(faction, area) {
+    if (area.data) area = area.data; // format inputs
+    // if we aren't the mutants, then nope
+
+    if (faction.name !== 'mutants') return false; // check for the token
+
+    return area.tokens.some(function (token) {
+      return token.name === 'biohazard' && token.revealed;
+    });
   }
 };
 module.exports = helpers;
@@ -94320,25 +94485,53 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 var helpers = {
+  /**
+   * Returns the image path for the given faction's icon
+   *
+   * @param faction
+   * @returns {string}
+   */
   factionIcon: function factionIcon(faction) {
     if (typeof faction !== 'string') faction = faction.name;
     return "/images/factions/".concat(faction, "/icon.jpg");
   },
+
+  /**
+   * Returns the total money a faction has to spend (resources + energy + dark energy)
+   *
+   * @param {object} faction
+   * @param {boolean} darkEnergy
+   * @returns {number}
+   */
   money: function money(faction) {
     var darkEnergy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-    if (faction.data) faction = faction.data;
+    if (faction.data) faction = faction.data; // format inputs
+
     var money = faction.resources + faction.energy;
     if (darkEnergy && faction.hasOwnProperty('darkEnergy')) money += faction.darkEnergy;
     return money;
   },
+
+  /**
+   * Returns a tally of the number of rule action cards played by a faction
+   *    total : the total number of rule cards the faction has played
+   *    stack : the greatest number of rule cards the faction has played in a single area
+   *    areas : the number of different areas the faction has played rule cards in
+   *
+   * @param faction
+   * @param areas
+   * @returns {{total: *, stack: number, areas: number}}
+   */
   rulesPlayed: function rulesPlayed(faction, areas) {
-    if (faction.data) faction = faction.data;
+    if (faction.data) faction = faction.data; // format input
+    // build results object
+
     var rules = {
       total: faction.cards.active.length,
       areas: 0,
       stack: 0
     };
-    var globalAreas = {};
+    var globalAreas = {}; // flag each area where we've played a global card
 
     var _iterator = _createForOfIteratorHelper(faction.cards.active),
         _step;
@@ -94346,8 +94539,9 @@ var helpers = {
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
         var card = _step.value;
-        if (globalAreas[card.playedIn]) globalAreas[card.playedIn]++;else globalAreas[card.playedIn] = 1;
-      }
+        globalAreas[card.playedIn] = globalAreas[card.playedIn] + 1 || 1;
+      } // cycle through each area
+
     } catch (err) {
       _iterator.e(err);
     } finally {
@@ -94356,17 +94550,22 @@ var helpers = {
 
     for (var _i = 0, _Object$values = Object.values(areas); _i < _Object$values.length; _i++) {
       var area = _Object$values[_i];
+      // grab all the rules we have played
       var areaRules = area.cards.filter(function (card) {
         return card.owner === faction.name;
       });
 
       if (areaRules.length) {
-        rules.total += areaRules.length;
+        rules.total += areaRules.length; // increment our total rules
+        // add these cards to our tally
+
         if (globalAreas[area.name]) globalAreas[area.name] += areaRules.length;else globalAreas[area.name] = areaRules.length;
       }
-    }
+    } // get the number of different areas where we have played cards
 
-    rules.areas = Object.keys(globalAreas).length;
+
+    rules.areas = Object.keys(globalAreas).length; // get the largest number of rule cards played in a single area
+
     globalAreas = Object.values(globalAreas);
 
     if (globalAreas.length) {
@@ -94403,16 +94602,18 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var helpers = {
   /**
+   * Takes a string, capitalizes every word, and removes spaces: "activate battleToken" => "ActivateBattleToken"
    *
-   * @param str
+   * @param {string} string
    * @returns {string|void}
    */
-  classCase: function classCase(str) {
-    return this.startCase(this.camelCase(str)).replace(/ /g, '');
+  classCase: function classCase(string) {
+    return this.startCase(this.camelCase(string)).replace(/ /g, '');
   },
 
   /**
-   * Deep diff between two object, using lodash
+   * Deep difference between two objects
+   *
    * @param  {Object} object Object compared
    * @param  {Object} base   Object to compare with
    * @return {Object}        Return a new object who represent the diff
@@ -94428,70 +94629,112 @@ var helpers = {
 
     return changes(object, base, this);
   },
+
+  /**
+   * Roll x dice
+   *
+   * @param count
+   * @param max
+   * @param game
+   * @param faction
+   * @returns {number|number[]}
+   */
   roll: function roll() {
     var count = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
-    var game = arguments.length > 2 ? arguments[2] : undefined;
-    var faction = arguments.length > 3 ? arguments[3] : undefined;
+    var game = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var faction = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
     var rolls = [];
 
     for (var i = 0; i < count; i++) {
       var roll = _.random(1, max);
 
-      rolls.push(roll);
+      rolls.push(roll); // record roll data for game and faction
+
       if (game) game.data.rolls[roll]++;
       if (faction) faction.data.rolls[roll]++;
-    }
+    } // if we are only rolling one dice, unwrap it from the array
+
 
     if (rolls.length === 1) rolls = rolls[0];
     return rolls;
   },
+
+  /**
+   * Remove and return a random element from an array
+   *
+   * @param array
+   * @returns {any}
+   */
   popRandom: function popRandom(array) {
     return array.splice(Math.floor(Math.random() * array.length), 1)[0];
   },
+
+  /**
+   * Move an element (identified by its ID) from one array to another
+   *
+   * @param id
+   * @param source
+   * @param target
+   * @param mode // what array method should we use when adding the element to the target array: push, unshift, etc...
+   * @returns {boolean}
+   */
   moveItemById: function moveItemById(id, source, target) {
     var mode = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'push';
-    if (typeof id !== 'string') id = id.id;
+    if (!Array.isArray(source)) throw "moveItemById failed: source is not a valid array";
+    if (!Array.isArray(target)) throw "moveItemById failed: target is not a valid array";
+    if (typeof id !== 'string') id = id.id; //format input
+    // get the item's index
 
     var index = _.findIndex(source, function (item) {
       return item.id === id;
-    });
+    }); // move the item
 
-    var item = _.pullAt(source, index);
 
-    target[mode](item[0]);
-    return true;
+    return this.moveItem(index, source, target, mode);
   },
   moveItem: function moveItem(index, source, target) {
     var mode = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'push';
+    if (!Array.isArray(source)) throw "moveItemById failed: source is not a valid array";
+    if (!Array.isArray(target)) throw "moveItemById failed: target is not a valid array";
+    if (typeof source[index] === 'undefined') throw "moveItem failed: source index ".concat(index, " does not exist"); // remove element from the source array
 
-    if (!Array.isArray(source) || !Array.isArray(target) || !source[index]) {
-      return false;
-    }
+    var item = _.pullAt(source, index); // add the element to the target array
 
-    var item = _.pullAt(source, index);
 
     target[mode](item[0]);
     return true;
   },
-  maxSingleObject: function maxSingleObject(object, property) {
-    var max = 0;
+
+  /**
+   * Takes an object made up of property key/numeric values and returns the key name that has the
+   * largest non-zero value, but only if there is a single key with that highest value.
+   * If more than one key is tied for highest value, or no values are greater than 0 false is returned;
+   *
+   * @param {object} object // formatted { key : {number}, key : {number}, etc... }
+   * @returns {string|boolean}
+   */
+  maxSingleObject: function maxSingleObject(object) {
+    var max = 0; // cycle through our object finding the highest value
+
     Object.values(object).forEach(function (val) {
       if (val > max) max = val;
-    });
-    console.log(max);
-    if (!max) return false;
-    var hasMax = [];
+    }); // if no values were greater than 0 return false
+
+    if (!max) return false; // now cycle through the properties looking for any that have that max value and add them to our array
+
+    var results = [];
 
     for (var _i = 0, _Object$entries = Object.entries(object); _i < _Object$entries.length; _i++) {
       var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
           key = _Object$entries$_i[0],
           value = _Object$entries$_i[1];
 
-      if (value === max) hasMax.push(key);
-    }
+      if (value === max) results.push(key);
+    } // if we have exactly one result return it, otherwise return false
 
-    return hasMax.length === 1 ? hasMax[0] : false;
+
+    return results.length === 1 ? results[0] : false;
   }
 };
 module.exports = helpers;
@@ -94506,69 +94749,146 @@ module.exports = helpers;
 /***/ (function(module, exports) {
 
 var helpers = {
+  /**
+   * Returns faction/influence pairs for each faction's influence in a given area
+   *
+   * @param area
+   * @param factions
+   * @param {boolean} withZeros // should we include factions that have zero influence?
+   * @returns {object[]} // { factionName : {number} }
+   */
   eachInfluenceInArea: function eachInfluenceInArea(area, factions, withZeros) {
     var _this = this;
 
-    var influences = [];
+    if (area.data) area = area.data; //format input
+
+    var influences = []; // The neutral get 1 influence in its area
+
     if (area.owner === 'neutral') influences.push({
       faction: 'neutrals',
       influence: 1
     });
-    this.forEach(factions, function (faction) {
-      var influence = _this.influence(faction, area, factions);
+    Object.values(factions).forEach(function (faction) {
+      if (faction.data) faction = faction.data; //format input
+      // get this faction's influence here
+
+      var influence = _this.influence(faction, area, factions); // add this faction's influence to our array if it's greater than 0, or if we have withZeros set to true
+
 
       if (withZeros || influence) influences.push({
         faction: faction.name,
         influence: influence
       });
-    });
+    }); // sort from highest to lowest
+
     influences.sort(function (a, b) {
       return b.influence - a.influence;
     });
     return influences;
   },
+
+  /**
+   * Returns the number of influence a faction has in the given area
+   *
+   * @param faction
+   * @param area
+   * @param factions
+   * @returns {number}
+   */
   influence: function influence(faction, area, factions) {
+    // format inputs
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
     var influence = 0;
-    if (area.owner === faction.name) influence++;
-    influence += this.unitInfluence(faction, area);
-    influence += this.tokenInfluence(faction, factions, area);
-    influence += this.cardInfluence(faction, factions, area);
-    influence += this.churchInfluence(faction, area, factions);
-    influence += this.plantInfluence(faction, area);
+    if (area.owner === faction.name) influence++; // if we currently own the area gain 1
+
+    influence += this.unitInfluence(faction, area); // get influence from our units
+
+    influence += this.tokenInfluence(faction, factions, area); // get influence from our tokens
+
+    influence += this.cardInfluence(faction, factions, area); // get influence from our action cards
+
+    influence += this.cultistKillInfluence(faction, area, factions); // get cultist kill influence
+
+    influence += this.plantInfluence(faction, area); // get plant influence
+
     return influence;
   },
+
+  /**
+   * Return's the card influence a given faction has in the given area
+   *
+   * @param faction
+   * @param factions
+   * @param area
+   * @returns {number}
+   */
   cardInfluence: function cardInfluence(faction, factions, area) {
     var influence = 0;
-    var cards = this.getCardCounts(faction, area);
-    var tokens = this.getTokenCounts(faction, area);
-    var areaScared = this.areaIsScared(faction, factions, area);
-    if (cards['rousing-speech']) influence += 2 * cards['rousing-speech'];
-    if (cards['blown-cover']) influence += cards['blown-cover'];
-    if (!areaScared && cards['march-the-streets'] && tokens['deploy']) influence += 2 * cards['march-the-streets'] * tokens['deploy'];
+    var cards = this.getFactionCardCountsInArea(faction, area); // get the counts of each card type we have played in this area
+
+    var tokens = this.getTokenCounts(faction, area); // get the token counts of each token we have revealed in this area
+
+    var areaScared = this.areaIsScared(faction, factions, area); // is this area scared by the ghosts champion?
+    // gain 2 influence for each rousing speech
+
+    if (cards['rousing-speech']) influence += 2 * cards['rousing-speech']; // gain 1 influence for each blown cover
+
+    if (cards['blown-cover']) influence += cards['blown-cover']; // March the streets gives 2 influence in this area for each deploy token we have revealed
+    // (unless tokens produce no influence due to the ghost champion)
+
+    if (!areaScared && cards['march-the-streets'] && tokens['deploy']) influence += 2 * cards['march-the-streets'] * tokens['deploy']; // Display of Brilliance gives 2 influence in this area for each card token we have revealed
+    // (unless tokens produce no influence due to the ghost chmapion)
+
     if (!areaScared && cards['display-of-brilliance'] && tokens['card']) influence += 2 * cards['display-of-brilliance'] * tokens['card'];
     return influence;
   },
+
+  /**
+   * Returns the amount of influence the given faction gains in this area from their plants
+   *
+   * @param faction
+   * @param area
+   * @returns {number}
+   */
   plantInfluence: function plantInfluence(faction, area) {
+    // format input
     if (faction.data) faction = faction.data;
-    if (area.data) area = area.data;
-    if (faction.name !== 'plants') return 0;
+    if (area.data) area = area.data; // only the plants faction has plants
+
+    if (faction.name !== 'plants') return 0; // return the number of plants we have in this area
+
     return faction.plants[area.name] ? faction.plants[area.name] : 0;
   },
+
+  /**
+   * Returns the amount of influence a faction gains in an area from their units
+   *
+   * @param faction
+   * @param area
+   * @returns {number}
+   */
   unitInfluence: function unitInfluence(faction, area) {
     var _this2 = this;
 
+    // format inputs
     if (faction.data) faction = faction.data;
     if (area.data) area = area.data;
-    var influence = 0;
+    var influence = 0; // should this faction gain the benefits of a rise up token?
+
     var shouldRiseUp = this.shouldRiseUp(faction, area);
 
-    if (!this.shouldStandDown(faction, area)) {
-      if (faction.data) faction = faction.data;
+    if (!this.areaShouldStandDown(faction, area)) {
+      // in areas with a stand down no units produce influence
+      if (faction.data) faction = faction.data; // format input
+      // cycle through our units
+
       faction.units.forEach(function (unit) {
         if (_this2.unitInArea(unit, area)) {
-          influence += unit.influence;
+          // if this unit is in this area
+          influence += unit.influence; // add its influence to our tally
+          // if we have a rise up then our patsies  also produce an influence
+
           if (shouldRiseUp && unit.type === 'patsy') influence++;
         }
       });
@@ -94576,29 +94896,70 @@ var helpers = {
 
     return influence;
   },
+
+  /**
+   * Should the given faction gain the benefits of a rise up token in this area?
+   *
+   * @param faction
+   * @param area
+   * @returns {boolean}
+   */
   shouldRiseUp: function shouldRiseUp(faction, area) {
-    if (faction.data) faction = faction.data;
-    if (area.data) area = area.data;
-    if (faction.name !== 'commies') return false;
-    return !!this.find(area.tokens, function (token) {
+    // only the commies have a rise up token
+    if (faction.name !== 'commies') return false; // look for a revealed token named rise-up in this area
+
+    return area.tokens.some(function (token) {
       return token.name === 'rise-up' && token.revealed;
     });
   },
-  churchInfluence: function churchInfluence(faction, area, factions) {
-    if (faction.name !== 'cultists') return 0;
-    return this.killsInArea(faction.name, area.name, factions);
+
+  /**
+   * Returns the amount of influence the given faction should gain in this area for the cultist kills ability
+   *
+   * @param faction
+   * @param area
+   * @param factions
+   * @returns {number}
+   */
+  cultistKillInfluence: function cultistKillInfluence(faction, area, factions) {
+    // only the cultists can gain this bonus
+    if (faction.name !== 'cultists') return 0; // return the count of our kills in this area
+
+    return this.factionKillCountInArea(faction.name, area.name, factions);
   },
+
+  /**
+   * Has this area been scared by the Ghost Champion?
+   *
+   * @param faction
+   * @param factions
+   * @param area
+   * @returns {boolean}
+   */
   areaIsScared: function areaIsScared(faction, factions, area) {
     var _this3 = this;
 
-    if (faction.name === 'ghosts' || !factions['ghosts']) return false;
+    // only the ghosts enemies are effected by this ability
+    if (faction.name === 'ghosts' || !factions['ghosts']) return false; // do we have any units with the blockEnemyTokenInfluence ability in this area?
+
     return factions['ghosts'].units.some(function (unit) {
       return unit.blockEnemyTokenInfluence && _this3.unitInArea(unit, area.name);
     });
   },
+
+  /**
+   * Returns the total influence a given faction gain in the given area from tokens
+   *
+   * @param faction
+   * @param factions
+   * @param area
+   * @returns {number}
+   */
   tokenInfluence: function tokenInfluence(faction, factions, area) {
+    // if the area has been scared for this faction, tokens produce no influence
     if (this.areaIsScared(faction, factions, area)) return 0;
-    var influence = 0;
+    var influence = 0; // cycle through each token if this faction has revealed it add its influence to our tally
+
     area.tokens.forEach(function (token) {
       if (token.faction === faction.name && token.revealed) {
         influence += token.influence;
@@ -94620,6 +94981,44 @@ module.exports = helpers;
 
 var helpers = {
   /**
+   * Return an array of area names matching the areas the given faction has scored at least one kill
+   *
+   * @param faction
+   * @param factions
+   * @returns {string[]}
+   */
+  factionAreasWithKills: function factionAreasWithKills(faction, factions) {
+    var areas = {};
+    this.factionKills(faction, factions).forEach(function (kill) {
+      areas[kill.location] = true;
+    });
+    return Object.keys(areas);
+  },
+
+  /**
+   * Returns an array of area names matching the areas where the given faction has dead units
+   *
+   * @param faction
+   * @param options
+   * @returns {string[]}
+   */
+  factionAreasWithDead: function factionAreasWithDead(faction) {
+    var _this = this;
+
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    if (faction.data) faction = faction.data; // format inputs
+
+    var areas = {};
+    options.killed = true;
+    options.onBoard = true; // cycle through our units checking for killed units on board and adding their areas to our areas object
+
+    faction.units.forEach(function (unit) {
+      if (_this.isValidUnit(unit, options)) areas[unit.location] = true;
+    });
+    return Object.keys(areas);
+  },
+
+  /**
    * Returns the number of kills the given faction has in the given area
    *
    * @param factionName
@@ -94627,8 +95026,8 @@ var helpers = {
    * @param factions
    * @returns {number}
    */
-  killsInArea: function killsInArea(factionName, areaName, factions) {
-    var _this = this;
+  factionKillCountInArea: function factionKillCountInArea(factionName, areaName, factions) {
+    var _this2 = this;
 
     // format inputs
     if (typeof factionName !== 'string') factionName = factionName.name;
@@ -94642,7 +95041,7 @@ var helpers = {
       if (faction.name === factionName) return; // add our killed to our results
 
       results += faction.units.filter(function (unit) {
-        return _this.factionKilledUnitHere(factionName, unit, areaName);
+        return _this2.factionKilledUnitHere(factionName, unit, areaName);
       }).length;
     });
     return results;
@@ -94672,7 +95071,7 @@ var helpers = {
    * @returns {string|boolean} // faction name or false
    */
   areaExterminated: function areaExterminated(area, factions) {
-    var _this2 = this;
+    var _this3 = this;
 
     if (area.data) area = area.data; // format input
     // if the area has been nuked, return the name of the faction that played the nuke
@@ -94689,22 +95088,22 @@ var helpers = {
       // get all of the factions with units in this area
 
       if (faction.units.some(function (unit) {
-        return _this2.unitInArea(unit, area);
+        return _this3.unitInArea(unit, area);
       })) factionsWithUnitsHere.push(faction.name); // get all of the factions with non-hidden units in this area
 
       if (faction.units.some(function (unit) {
-        return _this2.unitInArea(unit, area, {
+        return _this3.unitInArea(unit, area, {
           notHidden: true
         });
       })) factionsWithNonHiddenUnitsHere.push(faction.name);
     }); // if only one player has units here (including hidden units), and that player has a kill they have scored an exterminate
 
-    if (factionsWithUnitsHere.length === 1 && this.killsInArea(factionsWithUnitsHere[0], area.name, factions) > 0) {
+    if (factionsWithUnitsHere.length === 1 && this.factionKillCountInArea(factionsWithUnitsHere[0], area.name, factions) > 0) {
       return factionsWithUnitsHere[0];
     } // if multiple players have units here, but only one has non-hidden units and they have a kill, that player has scored an exterminate
 
 
-    if (factionsWithNonHiddenUnitsHere.length === 1 && this.killsInArea(factionsWithNonHiddenUnitsHere[0], area.name, factions) > 0) {
+    if (factionsWithNonHiddenUnitsHere.length === 1 && this.factionKillCountInArea(factionsWithNonHiddenUnitsHere[0], area.name, factions) > 0) {
       return factionsWithNonHiddenUnitsHere[0];
     }
 
@@ -94723,7 +95122,7 @@ var helpers = {
     var types = {};
     var kills = this.factionKills(faction, factions);
     kills.forEach(function (unit) {
-      if (types.hasOwnProperty(unit.type)) types[unit.type]++;else types[unit.type] = 1;
+      types[unit.type] = types[unit.type] + 1 || 1;
     });
     return Object.keys(types).length ? types : false;
   },
@@ -95017,10 +95416,36 @@ var helpers = {
     area.tokens.forEach(function (token) {
       // cycle through all of the tokens in an area for revealed token belonging to this faction
       if (token.faction === faction.name && token.revealed) {
-        tokens[token.type] = tokens[token.type] ? tokens[token.type] + 1 : 1;
+        tokens[token.type] = tokens[token.type] + 1 || 1;
       }
     });
     return tokens;
+  },
+
+  /**
+   * Return the number of area the given faction has the most tokens in
+   *
+   * @param faction
+   * @param areas
+   * @returns {number}
+   */
+  factionAreasWithMostTokens: function factionAreasWithMostTokens(faction, areas) {
+    var _this = this;
+
+    if (faction.data) faction = faction.data;
+    var mostTokens = 0; // cycle through each faction
+
+    Object.values(areas).forEach(function (area) {
+      var tokensInArea = {}; // make a list of how many tokens this faction in each area
+
+      area.tokens.forEach(function (token) {
+        if (token.faction) tokensInArea[token.faction] = tokensInArea[token.faction] + 1 || 1;
+      }); // compare this list of tokens per area to our list of most by area, if this faction has more than
+      // the existing entry (if any) it takes the top spot
+
+      if (_this.maxSingleObject(tokensInArea) === faction.name) mostTokens++;
+    });
+    return mostTokens;
   },
 
   /**
@@ -95118,9 +95543,9 @@ var helpers = {
     if (options.location && typeof options.location !== 'string') options.location = options.location.name; // format input
 
     return (!options.killed || unit.killed) && (!options.notKilled || !unit.killed) && (!options.location || options.location == unit.location) // intentionally coercive to match different falsy values
-    && (!options.onBoard || unit.location) // intentionally coercive to match different falsy values
+    && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.onBoard || unit.location) // intentionally coercive to match different falsy values
     && (!options.inReserves || !unit.location) // intentionally coercive to match different falsy values
-    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || options.type === unit.type) && (!options.notType || options.type !== unit.type) && (!options.notChampion || options.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden);
+    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || options.type === unit.type) && (!options.notType || options.type !== unit.type) && (!options.notChampion || options.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks || unit.attack.length);
   },
 
   /**
@@ -95352,7 +95777,7 @@ var helpers = {
       // if this unit isn't in an enemy area, abort
       if (!enemyAreas.includes(unit.location)) return; // otherwise add it to our our type tally
 
-      if (!typesInEnemy[unit.type]) typesInEnemy[unit.type] = 1;else typesInEnemy[unit.type]++;
+      typesInEnemy[unit.type] = typesInEnemy[unit.type] + 1 || 1;
     });
     return typesInEnemy;
   }
@@ -96579,7 +97004,7 @@ var obj = {
     name: 'witches',
     owner: null,
     blocked: false,
-    status: 1,
+    status: 2,
     selectable: true
   },
   bureau: {
