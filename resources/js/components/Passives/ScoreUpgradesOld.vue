@@ -2,7 +2,7 @@
     <player-prompt classes="">
         <div class="place-token px-5">
 
-            <div class="title flex-center "><img class="determine-control__faction-icon" :src="factionIcon( currentFactionName )">
+            <div class="title flex-center "><img class="determine-control__faction-icon" :src="shared.factionIcon( currentFactionName )">
                 upgrade scored by The {{ currentFactionName | startCase }}
             </div>
 
@@ -34,10 +34,6 @@
         },
 
         methods : {
-
-            factionIcon( factionName ){
-                return _.factionIcon( factionName );
-            },
 
             incrementIndex(){
                 if( !this.data || !this.data.upgrades || this.index === this.data.upgrades.length - 1 ) {

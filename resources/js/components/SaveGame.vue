@@ -1,9 +1,12 @@
 <template>
-    <div class="save-game pos-relative overflow-hidden" :class="{ disabled : !canLoad }"
+    <div class="save-game pos-relative overflow-hidden"
+         :class="{ disabled : !canLoad }"
          @click="$emit( 'open', index )">
 
+        <!-- date -->
         <div class="save-game__date">{{ save['created_at'] }}</div>
 
+        <!-- players -->
         <div class="save-game__players">
             <span class="save-game__player ellipses capitalize mr-2"
                  v-for="(player, index) in save.players"
@@ -12,17 +15,22 @@
             </span>
         </div>
 
+        <!-- save states -->
         <div class="save-game__saves" :class="{ open : open }" >
+
+            <!-- manual saves -->
             <div v-if="save.manuals.length" class="save-game__type-block">
                 <div class="save-game__type">manual save</div>
                 <div v-for="item in save.manuals" class="save-game__save" @click="loadGame( item.id )">action {{ item.action }} - {{ item.active_player }}</div>
             </div>
 
+            <!-- automatic action saves -->
             <div v-if="save.automatics.length" class="save-game__type-block">
                 <div class="save-game__type">player actions</div>
                 <div v-for="item in save.automatics" class="save-game__save" @click="loadGame( item.id )">action {{ item.action }} - {{ item.active_player }}</div>
             </div>
 
+            <!-- start / post combat saves -->
             <div v-if="save.turns.length" class="save-game__type-block">
                 <div class="save-game__type">start of turn</div>
                 <div v-for="item in save.turns" class="save-game__save" @click="loadGame( item.id )">turn {{ item.turn }} - {{ item.created_at }} {{ item.note }}</div>
@@ -45,16 +53,20 @@
         },
 
         computed : {
+            /**
+             * Can we load this save game?
+             */
             canLoad(){
-                let canLoad = true;
-                this.save.players.forEach( player => {
-                    if( !this.shared.lobbyPlayers[player.uuid] ) canLoad = false;
-                });
-                return canLoad;
+                // if all of our players are here, sure
+                return this.save.players.every( player => this.shared.lobbyPlayers[player.uuid] );
             },
 
         },
         methods : {
+            /**
+             * Load our save game
+             * @param gameId
+             */
             loadGame( gameId ){
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'loadGame', gameId );

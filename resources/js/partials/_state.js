@@ -1,6 +1,39 @@
 window.App.state = {
 
+    csrf : null, // store our csrf token
+    data : null, // store our game data
+    game : null, // store our game id
+    lobbyPlayers : {}, // players in the lobby
+    savedGames : [], // store our saved games
+    openSettings : false, // should the settings panel be open?
+    player : null, // store our current player
+    faction : null, // store our current faction
+    actions : null, // store our available actions
+    action : null, // store our current action
+    card : null, // store our selected card
+    token : null, // store our selected token
+    showXavier : false, // should we show xavier blackstone during token placement?
+    viewDiscard : false, // should we open the discard pile?
+    messages : [], // store game messages
+    playerIndex : null, // store the current player index
+    factionName : null, // store the current faction name
+    id : null, // store our player id
+    name : null, // store our player name
 
+    // track the current influence leader for each area
+    areaLeaders : {
+        'capitol' : null,
+        'sewers' : null,
+        'police' : null,
+        'laboratory' : null,
+        'factory' : null,
+        'bank' : null,
+        'university' : null,
+        'subway' : null,
+        'church' : null,
+    },
+
+    // a map of text strings to convert to an image when calling the filterText() method
     filterMap : {
         'xSEEKx': '<img class="icon-image ml-3" src="/images/icons/seeking.png">',
         'xIx': '<img class="icon-image ml-3" src="/images/icons/influence.png">',
@@ -51,51 +84,24 @@ window.App.state = {
         'xA18x': '<img class="icon-image ml-3" src="/images/icons/attack-18.png">',
     },
 
-    filter : [],
 
-    debug : false,
-    csrf : null,
-    data : null,
-    game : null,
-    lobbyPlayers : {},
-    savedGames : [],
-    openSettings : false,
-    player : null,
-    faction : null,
-    actions : null,
-    action : null,
-    card : null,
-    token : null,
-    showXavier : false,
-    viewDiscard : false,
-    messages : [],
-    playerIndex : null,
-    factionName : null,
-    id : null,
-    name : null,
-    areaLeaders : {
-        'capitol' : null,
-        'sewers' : null,
-        'police' : null,
-        'laboratory' : null,
-        'factory' : null,
-        'bank' : null,
-        'university' : null,
-        'subway' : null,
-        'church' : null,
-    },
-
+    /**
+     * Repor an error in the console
+     * @param error
+     */
     errorReport( error ) {
         console.log( error.message );
         console.log( error.data );
     },
 
-    init( property, value ) {
 
-        if ( this.debug ){
-            console.log( `set ${property} to:` );
-            console.log( value );
-        }
+    /**
+     * Initialize a shared property into the state
+     *
+     * @param property
+     * @param value
+     */
+    init( property, value ) {
 
         let propertyArr = property.split('.');
         property = propertyArr.pop();
@@ -135,6 +141,12 @@ window.App.state = {
         }
     },
 
+    /**
+     * Filter the given text replacing anything in our filterMap with the appropriate images
+     *
+     * @param text
+     * @returns {string|void}
+     */
     filterText( text ){
         let regex = Object.keys( this.filterMap ).join('|');
         let _map = this.filterMap;
@@ -143,76 +155,150 @@ window.App.state = {
         });
     },
 
+
+    /**
+     * If the given player the first player?
+     *
+     * @param player
+     * @returns {boolean}
+     */
     isFirstPlayer( player ){
-        //return player.index === this.data.firstPlayer;
         return player.id === this.data.playerOrder[0];
     },
 
-    getFaction(){
-        return this.getPlayerFaction( this.player );
-    },
 
+    /**
+     * Handle emitting from our socket
+     *
+     * @param event
+     * @param args
+     */
     socketEmit( event, ...args ){
         this.socket.emit( event, this.data.id, ...args );
     },
 
+
+    /**
+     * Respond to an action prompt
+     *
+     * @param event
+     * @param args
+     */
     respond( event, ...args ){
+        // emit response to our prompt
         this.socket.emit( 'respond', this.data.id, event, ...args );
+
+        // clear our prompt
         this.player.prompt = false;
+
+        // unselect any areas
         App.event.emit('unselectAreas' );
+
+        // ~~click~~
         App.event.emit( 'sound', 'ui' );
     },
 
-    getPlayerFaction( player ) {
-        let faction = null;
-        _.forEach( this.data.factions, ( value, prop ) => {
-            if( value.owner === player.id ){
-                faction = this.data.factions[prop];
-            }
-        });
 
-        return faction;
+    /**
+     * Return the given player's faction
+     *
+     * @param player
+     * @returns {object} // faction data
+     */
+    getPlayerFaction( player ) {
+        return Object.values( this.data.factions ).find( faction => faction.owner === player.id );
     },
 
+
+    /**
+     * Helper for returning this player's faction
+     *
+     * @returns {object}
+     */
+    getFaction(){
+        return this.getPlayerFaction( this.player );
+    },
+
+
+    /**
+     * Return the url for the given faction's icon
+     *
+     * @param factionName
+     * @returns {string}
+     */
+    factionIcon( factionName ){
+        if( typeof factionName !== 'string' ) factionName = factionName?.name;
+        return _.factionIcon( factionName );
+    },
+
+
+    /**
+     * Can we see the given faction's target?
+     *
+     * @param faction
+     * @returns {boolean}
+     */
     canSeeTarget( faction ){
 
+        // if this is us, then sure
         if( this.faction.name === faction.name ){
             return true;
         }
 
+        // if we are allowed to spy on this faction, then sure
         if( this.faction.spy === faction.name ) {
             return true;
         }
 
+        // if we are allowed to spy on all factions and have selected our target already (or are the mafia), then sure
         if( this.faction.spyAll && ( this.faction.cards.target.length || this.faction.name === 'mafia') ){
             return true;
         }
     },
 
+
+    /**
+     * Return the given player's faction name
+     * @param player
+     * @returns {string}
+     */
     getPlayerFactionName( player ){
         return this.getPlayerFaction( player ).name;
     },
 
+
+    /**
+     * Get the current player's data
+     * @returns {object}
+     */
     getPlayer(){
         return this.data?.players[this.id];
     },
 
+
+    /**
+     * Is the current player active?
+     *
+     * @returns {boolean}
+     */
     isActive(){
        return this.getPlayer()?.active;
     },
 
 
+    /**
+     * Group a collection by the given grouping and return the count of each group
+     *
+     * @param collection
+     * @param grouping
+     */
     groupByCount( collection, grouping ) {
         let output = _.groupBy( collection, grouping );
         _.forEach( output, ( object, prop ) => output[prop] =  output[prop].length );
         return output;
     },
 
-    currentCash(){
-        return this.faction.resources + this.faction.energy;
-    }
-
-}
+};
 
 
 

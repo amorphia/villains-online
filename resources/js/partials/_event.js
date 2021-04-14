@@ -1,3 +1,6 @@
+/**
+ * Shared event handler, which is really just a wrapper around a Vue instance
+ */
 window.App.event = new class {
 
     constructor() {

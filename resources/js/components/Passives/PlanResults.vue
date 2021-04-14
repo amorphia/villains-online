@@ -2,7 +2,7 @@
     <player-prompt classes="">
         <div class="place-token px-5">
 
-            <div class="title flex-center "><img class="determine-control__faction-icon" :src="factionIcon( currentFactionName )">
+            <div class="title flex-center "><img class="determine-control__faction-icon" :src="shared.factionIcon( currentFactionName )">
                 plans scored by The {{ currentFactionName | startCase }}
             </div>
 
@@ -49,10 +49,6 @@
                 } else {
                     App.event.emit( 'sound', 'chirp' );
                 }
-            },
-
-            factionIcon( factionName ){
-                return _.factionIcon( factionName );
             },
 
             incrementIndex(){

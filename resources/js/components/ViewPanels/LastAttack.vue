@@ -3,15 +3,21 @@
          class="last-attack center-text pos-absolute-center d-flex flex-wrap align-center justify-center"
          :class="widthClass">
 
+        <!-- needed to hit -->
         <div class="width-100 uppercase">last attack <span class="last-attack__needs">needing {{ attack.toHit }}</span></div>
 
+        <!-- attacking unit icon -->
         <unit-icon v-if="unit" :unit="unit" noSelect="true" :classes="`faction-${attack.faction} mr-3`"></unit-icon>
+
+        <!-- attacking fation icon -->
         <div v-else class="units-hud__unit d-inline-block pos-relative" :class="`faction-${attack.faction}`">
-            <img class="unit-hud__unit-image" :src="factionIcon( attack.faction )">
+            <img class="unit-hud__unit-image" :src="shared.factionIcon( attack.faction )">
         </div>
 
+        <!-- victim image -->
         <img class="last-attack__victim" :src="victimImage">
 
+        <!-- rolls -->
         <div class="d-flex">
             <img v-for="roll in attack.rolls"
              class="last-attack__roll"
@@ -27,18 +33,26 @@
 
         name: 'last-attack',
         props : ['attack'],
+
         data() {
             return {
                 shared : App.state
             };
         },
+
         computed : {
+            /**
+             * Returns the image url for our victim's image
+             * @returns {string}
+             */
             victimImage(){
 
+                // deadly attacks don't target a specific faction, so just show the deadly icon
                 if( this.attack.unit.deadly ){
                     return`/images/icons/deadly-square.png`;
                 }
 
+                // if we are targeting a specific unit with this attack show that unit
                 if( this.attack.targetUnit ){
                     let unit = this.attack.targetUnit;
                     let src = `/images/factions/${unit.faction}/units/${unit.type}`;
@@ -46,9 +60,16 @@
                     return src + '.png';
                 }
 
-                return this.factionIcon( this.attack.victim );
+                // otherwise show the defending faction's icon
+                return this.shared.factionIcon( this.attack.victim );
             },
 
+
+            /**
+             * Returns the attacking unit
+             *
+             * @returns {Unit}
+             */
             unit(){
                 if( ! this.attack || !this.attack.unit ) return;
                 return this.shared.data.factions[this.attack.faction].units.find(
@@ -56,6 +77,10 @@
                 );
             },
 
+            /**
+             * Returns the width class for the dice tally, depending on dice rolled
+             * @returns {string}
+             */
             widthClass(){
                 switch( this.attack.rolls.length ){
                     case 1 : return 'width-40';
@@ -66,12 +91,6 @@
                 }
             }
         },
-
-        methods : {
-            factionIcon( factionName ){
-                return _.factionIcon( factionName );
-            },
-        }
     }
 </script>
 

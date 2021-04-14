@@ -18,6 +18,10 @@
         },
 
         methods : {
+
+            /**
+             * Allow a player to confirm if they really want to end the game
+             */
             confirmEndGame(){
                 let confirmMessage = this.track ?
                     "Conclude this game early and go to final scoring?"
@@ -26,6 +30,10 @@
                 if( confirm( confirmMessage ) ) this.concludeGame();
             },
 
+
+            /**
+             * Resolve concluding the game
+             */
             concludeGame(){
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'concludeGame', this.track );

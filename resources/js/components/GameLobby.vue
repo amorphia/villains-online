@@ -1,17 +1,19 @@
 <template>
     <div class="d-flex flex-center height-100 pos-relative">
 
+        <!-- saved games -->
         <saved-games></saved-games>
 
-        <!-- MAIN CONTENT -->
+        <!-- main content -->
         <div class="d-flex flex-center width-100 height-100 pos-relative">
 
+            <!-- view faction sheets modal -->
             <view-factions></view-factions>
 
             <!-- TOP BAR -->
             <div class="d-flex justify-between width-100 pos-absolute top-0 left-0 right-0 px-4 pt-2">
 
-                <!-- view factions button -->
+                <!-- view faction sheets button -->
                 <a class="lobby__action-link pointer grow-0 shrink-0 pr-4" @click="openFactions">view factions</a>
 
                 <!-- lobby players -->
@@ -24,17 +26,26 @@
             </div>
 
 
+            <!-- open game join/settings -->
             <div v-if="shared.game" class="open-game glass width-40">
+
+                <!-- game id -->
                 <div class="d-flex align-center open-game__id text-uppercase justify-between">
                     <div>Game Id <span>{{ shared.game.id }}</span></div>
+
+                    <!-- delete game -->
                     <div class="icon-x open-game__delete pointer" @click="deleteGame"></div>
                 </div>
+
+                <!-- players -->
                 <div class="open-game__players-title text-uppercase">Players</div>
+
                 <div class="open-game__players">
                     <div v-for="player in shared.game.players">{{ player.name | startCase }}</div>
                     <div v-if="Object.keys(shared.game.players).length === 0" class="open-game__empty">No Players</div>
                 </div>
 
+                <!-- game type -->
                 <div class="game-setup__type d-flex justify-center">
                     <div v-if="shared.game.gameType === type || shared.game.creator === shared.id" v-for="type in gameTypes"
                          class="game-setup__type-option"
@@ -43,27 +54,34 @@
                     >{{ type }}</div>
                 </div>
 
+
+                <!-- game options -->
                 <div v-if="shared.game.creator === shared.id" class="game-setup__options d-flex justify-center my-2">
                     <div v-for="(val, option) in options"
                          class="game-setup__option py-2 px-3"
                          :class="{ active : val }"
                          @click="options[option] = !options[option]"
                     ><i class="mr-2 game-setup__option-checkbox"
-                        :class="val ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>{{ startCase( option ) }}</div>
+                        :class="val ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>{{ alphaCaps( option ) }}</div>
                 </div>
 
-
-
+                <!-- join/leave/start buttons -->
                 <div class="open-game__buttons center-text">
                     <button v-if="!joinedGame" :disabled="!canJoin" class="button wide px-6" @click="joinGame">JOIN</button>
                     <button v-if="joinedGame" class="button wide px-6 button-empty" @click="leaveGame">LEAVE</button>
                     <button v-if="joinedGame" :disabled="!canStart" class="button wide px-6" @click="startGame">START</button>
                 </div>
             </div>
-            <div v-else class="">
+
+            <!-- no open game -->
+            <div v-else>
+
+                <!-- server offline -->
                 <div v-if="shared.socket.disconnected" class="server-offline">
                     <i class="icon-kill"></i>SERVER OFFLINE
                 </div>
+
+                <!-- new game button -->
                 <button v-else @click="newGame" class="button new-game-button">Create New Game</button>
             </div>
         </div>
@@ -79,11 +97,13 @@
         data() {
             return {
                 shared : App.state,
+                // game types
                 gameTypes : [
                     'basic',
                     'optimized',
                     'anarchy'
                 ],
+                // game options
                 options : {
                     allowBribes : false
                 }
@@ -91,68 +111,132 @@
         },
 
         mounted(){
+            // pre-load faction images for selected faction
             this.shared.socket.on( 'factionSelected', faction => App.preloader.loadFaction( faction ) );
         },
 
         computed : {
 
+            /**
+             * returns the number of players currently in the game
+             * returns {number}
+             */
             currentPlayerCount(){
-                return Object.keys( this.shared.game.players ).length;
+                return Object.keys( this.shared.game?.players ).length;
             },
 
+
+            /**
+             * can another player join the game?
+             * returns {boolean}
+             */
             canJoin(){
+                // if we have less than 5 players
                 return this.currentPlayerCount < 5;
             },
+
+
+            /**
+             * Can the game start?
+             * returns {boolean}
+             */
             canStart(){
+                // if we have between 2-5 players
                   return this.currentPlayerCount >= 2 && this.currentPlayerCount <= 5;
             },
+
+
+            /**
+             * Have we joined the open game?
+             * returns {boolean}
+             */
             joinedGame(){
                 for( let player in this.shared.game.players ){
                     if( this.shared.game.players[player].id === this.shared.id ) return true;
                 }
+                return false;
             }
         },
 
         methods : {
-            startCase( str ){
+            /**
+             * Transforms a string to start case (to remove underscores and separate camel case words),
+             * then transforms string to uppercase
+             *
+             * @param str
+             * @returns {string}
+             */
+            alphaCaps( str ){
                return _.startCase( str ).toUpperCase();
             },
 
+
+            /**
+             * Emits view factions event
+             */
             openFactions(){
-                console.log( 'view factions' );
                 this.shared.event.emit( 'viewFactions' );
             },
 
+
+            /**
+             * Sets the currently open game type
+             *
+             * @param type
+             */
             setGameType( type ){
-                if( this.shared.game.creator === this.shared.id ){
-                    App.event.emit( 'sound', 'ui' );
-                    this.shared.socket.emit( 'setGameType', this.shared.game.id, type );
-                } else {
-                    App.event.emit( 'sound', 'error' );
-                }
+                // only the game's creator can change the type
+                if( this.shared.game.creator !== this.shared.id ) return App.event.emit( 'sound', 'error' );
+
+                // set game type
+                App.event.emit( 'sound', 'ui' );
+                this.shared.socket.emit( 'setGameType', this.shared.game.id, type );
             },
 
+
+            /**
+             * Initialize a new game
+             */
             newGame() {
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit('newGame');
             },
 
+
+            /**
+             * Join the open game
+             */
             joinGame(){
-                App.event.emit( 'sound', 'ui' );
+                // pre-load core images
                 App.preloader.loadCore();
+
+                // join game
+                App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'joinGame', this.shared.game.id );
             },
 
+
+            /**
+             * Leave the open game
+             */
             leaveGame(){
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'leaveGame', this.shared.game.id );
             },
 
+
+            /**
+             * Delete the open game
+             */
             deleteGame(){
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'deleteGame', this.shared.game.id );
             },
 
+
+            /**
+             * Start the open game
+             */
             startGame(){
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'startGame', this.shared.game.id, this.options );

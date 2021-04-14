@@ -2365,10 +2365,17 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Allow a player to confirm if they really want to end the game
+     */
     confirmEndGame: function confirmEndGame() {
       var confirmMessage = this.track ? "Conclude this game early and go to final scoring?" : "are you sure you want to terminate this game? There's No going back.";
       if (confirm(confirmMessage)) this.concludeGame();
     },
+
+    /**
+     * Resolve concluding the game
+     */
     concludeGame: function concludeGame() {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('concludeGame', this.track);
@@ -2404,6 +2411,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'faction-score',
   props: ['score', 'winner'],
@@ -2413,16 +2434,24 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Return the proper capitol token image to display
+     * @returns {string}
+     */
     capitol: function capitol() {
+      // if we collected at least one token, show that token
       if (this.score.capitolToken) {
         return "<img class=\"icon-image ml-3\" src=\"/images/tokens/capitol-".concat(this.score.capitolToken, ".png\">");
-      }
+      } // otherwise return a dummy token with the opacity turned to 0 just to properly fill the space
+
 
       return "<img class=\"icon-image ml-3 opacity-none\" src=\"/images/tokens/capitol-1-points.png\">";
     },
-    factionIcon: function factionIcon() {
-      return _.factionIcon(this.score.faction);
-    },
+
+    /**
+     * Calculate the average roll for the player
+     * @returns {string}
+     */
     rollAvg: function rollAvg() {
       var total_val = 0;
       var total_rolls = 0;
@@ -2431,7 +2460,6 @@ __webpack_require__.r(__webpack_exports__);
         total_rolls += val;
         total_val += val * index;
       });
-      console.log('total_rolls', total_rolls, 'total_val', total_val);
       return (total_val / total_rolls).toFixed(1);
     }
   }
@@ -2493,6 +2521,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'final-scores',
   data: function data() {
@@ -2501,20 +2534,45 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Calculate roll graph bar height
+     *
+     * @param count
+     * @returns {string}
+     */
     barHeight: function barHeight(count) {
       return count / this.maxRollCount * 100 + '%';
     }
   },
   computed: {
+    /**
+     * Returns the faction name of the faction with the highest score
+     * @returns {*}
+     */
     winner: function winner() {
       return this.scores[0].faction;
     },
+
+    /**
+     * Returns the scores array
+     * @returns {object[]}
+     */
     scores: function scores() {
       return this.shared.player.prompt.data.scores;
     },
+
+    /**
+     * Returns the rolls data array
+     * @returns {number[]}
+     */
     rolls: function rolls() {
       return this.shared.player.prompt.data.rolls;
     },
+
+    /**
+     * Returns the highest roll count from our rolls array
+     * @returns {number}
+     */
     maxRollCount: function maxRollCount() {
       var max = 0;
       this.rolls.forEach(function (count) {
@@ -3710,18 +3768,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-container',
   data: function data() {
     return {
-      shared: App.state,
-      gameHudClosed: false
+      shared: App.state
     };
-  },
-  methods: {
-    drawerClosed: function drawerClosed() {
-      return gameHudClosed ? 'drawer--closed' : '';
-    }
   }
 });
 
@@ -3746,26 +3801,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-core',
-  props: ['classes'],
   data: function data() {
     return {
       shared: App.state
     };
   },
   created: function created() {
-    this.shared.player = this.shared.getPlayer();
+    // set our player data
+    this.shared.player = this.shared.getPlayer(); // set our faction data
+
     this.shared.faction = this.shared.getFaction();
   },
   watch: {
+    /**
+     * Play "you are the active player" sound each time we become the active player
+     */
     'shared.player.active': {
       handler: function handler(newValue, oldValue) {
-        if (newValue === true && oldValue !== true) {
-          App.event.emit('sound', 'active');
-        }
+        // if we are now active, and we weren't before
+        if (newValue === true && oldValue !== true) App.event.emit('sound', 'active');
       }
     }
-  },
-  methods: {}
+  }
 });
 
 /***/ }),
@@ -3779,6 +3836,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3892,71 +3954,154 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-lobby',
   data: function data() {
     return {
       shared: App.state,
+      // game types
       gameTypes: ['basic', 'optimized', 'anarchy'],
+      // game options
       options: {
         allowBribes: false
       }
     };
   },
   mounted: function mounted() {
+    // pre-load faction images for selected faction
     this.shared.socket.on('factionSelected', function (faction) {
       return App.preloader.loadFaction(faction);
     });
   },
   computed: {
+    /**
+     * returns the number of players currently in the game
+     * returns {number}
+     */
     currentPlayerCount: function currentPlayerCount() {
-      return Object.keys(this.shared.game.players).length;
+      var _this$shared$game;
+
+      return Object.keys((_this$shared$game = this.shared.game) === null || _this$shared$game === void 0 ? void 0 : _this$shared$game.players).length;
     },
+
+    /**
+     * can another player join the game?
+     * returns {boolean}
+     */
     canJoin: function canJoin() {
+      // if we have less than 5 players
       return this.currentPlayerCount < 5;
     },
+
+    /**
+     * Can the game start?
+     * returns {boolean}
+     */
     canStart: function canStart() {
+      // if we have between 2-5 players
       return this.currentPlayerCount >= 2 && this.currentPlayerCount <= 5;
     },
+
+    /**
+     * Have we joined the open game?
+     * returns {boolean}
+     */
     joinedGame: function joinedGame() {
       for (var player in this.shared.game.players) {
         if (this.shared.game.players[player].id === this.shared.id) return true;
       }
+
+      return false;
     }
   },
   methods: {
-    startCase: function startCase(str) {
+    /**
+     * Transforms a string to start case (to remove underscores and separate camel case words),
+     * then transforms string to uppercase
+     *
+     * @param str
+     * @returns {string}
+     */
+    alphaCaps: function alphaCaps(str) {
       return _.startCase(str).toUpperCase();
     },
+
+    /**
+     * Emits view factions event
+     */
     openFactions: function openFactions() {
-      console.log('view factions');
       this.shared.event.emit('viewFactions');
     },
+
+    /**
+     * Sets the currently open game type
+     *
+     * @param type
+     */
     setGameType: function setGameType(type) {
-      if (this.shared.game.creator === this.shared.id) {
-        App.event.emit('sound', 'ui');
-        this.shared.socket.emit('setGameType', this.shared.game.id, type);
-      } else {
-        App.event.emit('sound', 'error');
-      }
+      // only the game's creator can change the type
+      if (this.shared.game.creator !== this.shared.id) return App.event.emit('sound', 'error'); // set game type
+
+      App.event.emit('sound', 'ui');
+      this.shared.socket.emit('setGameType', this.shared.game.id, type);
     },
+
+    /**
+     * Initialize a new game
+     */
     newGame: function newGame() {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('newGame');
     },
+
+    /**
+     * Join the open game
+     */
     joinGame: function joinGame() {
+      // pre-load core images
+      App.preloader.loadCore(); // join game
+
       App.event.emit('sound', 'ui');
-      App.preloader.loadCore();
       this.shared.socket.emit('joinGame', this.shared.game.id);
     },
+
+    /**
+     * Leave the open game
+     */
     leaveGame: function leaveGame() {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('leaveGame', this.shared.game.id);
     },
+
+    /**
+     * Delete the open game
+     */
     deleteGame: function deleteGame() {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('deleteGame', this.shared.game.id);
     },
+
+    /**
+     * Start the open game
+     */
     startGame: function startGame() {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('startGame', this.shared.game.id, this.options);
@@ -4036,6 +4181,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-settings',
   data: function data() {
@@ -4063,60 +4218,67 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-sound',
-  props: ['classes'],
+  props: [],
   data: function data() {
     return {
       shared: App.state,
       volume: 1,
-      mute: false,
+      // initial volume setting
+      // used to store each of our sound objects
       sounds: {},
+      // data about each of our volume settings
+      volumeScale: {
+        '0': {
+          icon: 'icon-mute',
+          amp: 0
+        },
+        '1': {
+          icon: 'icon-volume-mid',
+          amp: .4
+        },
+        '2': {
+          icon: 'icon-volume-high',
+          amp: .7
+        }
+      },
+      // array of available sounds
       soundBank: ['active', 'basta', 'bats', 'combat', 'chirp', 'coin', 'error', 'explosion', 'hatch', 'hit', 'hit2', 'hit3', 'hypnotize', 'huh', 'points', 'queendeath', 'title', 'wiff', 'woosh', 'ui']
     };
   },
   mounted: function mounted() {
     var _this = this;
 
+    // for each sound initialize an audio object
     this.soundBank.forEach(function (sound) {
       _this.sounds[sound] = new Audio("/sounds/".concat(sound, ".mp3"));
-    });
-    var cookieVol = App.cookie('volume');
+    }); // check our cookies to see any previous volume settings
 
-    if (cookieVol !== null) {
-      var _cookieVol = App.cookie('volume');
+    if (App.cookie('volume') !== null) {
+      this.volume = parseInt(App.cookie('volume'));
+    } // set event listeners
 
-      this.volume = parseInt(_cookieVol);
-      this.updateVolume();
-    }
 
-    this.updateVolume();
-    this.shared.socket.on('sound', this.play);
-    this.shared.event.on('sound', this.play);
+    this.shared.socket.on('sound', this.play); // from the game server
+
+    this.shared.event.on('sound', this.play); // from the ui
   },
   computed: {
-    computedClasses: function computedClasses() {
-      var classes = '';
-      if (this.volume) classes += 'active';
-      if (this.classes) classes += " ".concat(this.classes);
-      return classes;
-    },
+    /**
+     * Get our volume icon
+     * @returns {string}
+     */
     soundIcon: function soundIcon() {
-      switch (this.volume) {
-        case 0:
-          return 'icon-mute';
-
-        case 1:
-          return 'icon-volume-mid';
-
-        case 2:
-          return 'icon-volume-high';
-      }
+      return this.volumeScale[this.volume].icon;
     }
   },
   methods: {
+    /**
+     * Toggle through our volume settings
+     */
     toggleVolume: function toggleVolume() {
+      // increment our volume by 1, looping back to 0 after 2
       switch (this.volume) {
         case 0:
           this.volume = 1;
@@ -4132,33 +4294,24 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       App.cookie('volume', this.volume);
-      this.updateVolume();
     },
-    updateVolume: function updateVolume() {
-      var vol;
 
-      switch (this.volume) {
-        case 0:
-          vol = 0;
-          break;
-
-        case 1:
-          vol = 0.4;
-          break;
-
-        case 2:
-          vol = 0.7;
-          break;
-      }
-
-      _.forEach(this.sounds, function (sound) {
-        return sound.volume = vol;
-      });
-    },
+    /**
+     * Play a sound
+     * @param sound
+     */
     play: function play(sound) {
-      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       if (this.volume === 0) return;
+      this.setVolume(this.sounds[sound]);
       this.sounds[sound].play();
+    },
+
+    /**
+     * set the volume of a sound
+     * @param sound
+     */
+    setVolume: function setVolume(sound) {
+      sound.volume = this.volumeScale[this.volume].amp;
     }
   }
 });
@@ -4668,11 +4821,6 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state
     };
-  },
-  methods: {
-    factionIcon: function factionIcon(faction) {
-      return _.factionIcon(faction);
-    }
   }
 });
 
@@ -4803,6 +4951,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'notify-queue',
   data: function data() {
@@ -4812,11 +4963,16 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Create a new notification
+     *
+     * @param {object} note
+     */
     createNote: function createNote(note) {
       var _this = this;
 
       // generate an id from a timestamp
-      note.id = new Date().getTime();
+      note.id = new Date().getTime(); // errors stick around and look scary
 
       if (note.error) {
         note["class"] = "error";
@@ -4826,12 +4982,16 @@ __webpack_require__.r(__webpack_exports__);
 
       this.queue.unshift(note); // if we don't tell this note to persist then remove it after 5 seconds
 
-      if (!note.persist) {
-        setTimeout(function () {
-          return _this.removeNote(note);
-        }, 5000);
-      }
+      if (!note.persist) setTimeout(function () {
+        return _this.removeNote(note);
+      }, 5000);
     },
+
+    /**
+     * Remove a given note from the queue
+     *
+     * @param {object} note
+     */
     removeNote: function removeNote(note) {
       this.queue = this.queue.filter(function (item) {
         return item.id !== note.id;
@@ -4839,6 +4999,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
+    // set even listener
     App.event.on('notify', this.createNote);
   }
 });
@@ -4910,9 +5071,6 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         App.event.emit('sound', 'chirp');
       }
-    },
-    factionIcon: function factionIcon(factionName) {
-      return _.factionIcon(factionName);
     },
     incrementIndex: function incrementIndex() {
       if (!this.data || this.index === 8) {
@@ -5017,14 +5175,6 @@ __webpack_require__.r(__webpack_exports__);
       shared: App.state
     };
   },
-  methods: {
-    victimImage: function victimImage(victim) {
-      return this.factionIcon(victim);
-    },
-    factionIcon: function factionIcon(factionName) {
-      return _.factionIcon(factionName);
-    }
-  },
   computed: {
     attacks: function attacks() {
       var _this$data$output;
@@ -5096,9 +5246,6 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         App.event.emit('sound', 'chirp');
       }
-    },
-    factionIcon: function factionIcon(factionName) {
-      return _.factionIcon(factionName);
     },
     incrementIndex: function incrementIndex() {
       if (!this.data || !this.data.results || this.index === this.data.results.length - 1) {
@@ -5231,9 +5378,6 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     resolve: function resolve() {
       this.shared.respond('score-upgrades', {});
-    },
-    factionIcon: function factionIcon(factionName) {
-      return _.factionIcon(factionName);
     }
   },
   computed: {
@@ -5286,9 +5430,6 @@ __webpack_require__.r(__webpack_exports__);
     App.event.emit('sound', 'coin');
   },
   methods: {
-    factionIcon: function factionIcon(factionName) {
-      return _.factionIcon(factionName);
-    },
     incrementIndex: function incrementIndex() {
       if (!this.data || !this.data.upgrades || this.index === this.data.upgrades.length - 1) {
         clearInterval(this.interval);
@@ -10790,6 +10931,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'save-game',
   props: ['save', 'open', 'index'],
@@ -10799,17 +10948,23 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Can we load this save game?
+     */
     canLoad: function canLoad() {
       var _this = this;
 
-      var canLoad = true;
-      this.save.players.forEach(function (player) {
-        if (!_this.shared.lobbyPlayers[player.uuid]) canLoad = false;
+      // if all of our players are here, sure
+      return this.save.players.every(function (player) {
+        return _this.shared.lobbyPlayers[player.uuid];
       });
-      return canLoad;
     }
   },
   methods: {
+    /**
+     * Load our save game
+     * @param gameId
+     */
     loadGame: function loadGame(gameId) {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('loadGame', gameId);
@@ -10850,6 +11005,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'saved-games',
   data: function data() {
@@ -10863,9 +11019,25 @@ __webpack_require__.r(__webpack_exports__);
     this.getSavedGames();
   },
   methods: {
-    openSave: function openSave(n) {
-      if (this.open === n) this.open = -1;else this.open = n;
+    /**
+     * Open the saved game at index x
+     *
+     * @param index
+     */
+    openSave: function openSave(index) {
+      // if this save is already open toggle it closed
+      if (this.open === index) {
+        this.open = -1;
+        return;
+      } // otherwise open the given index
+
+
+      this.open = index;
     },
+
+    /**
+     * Load our saved games
+     */
     getSavedGames: function getSavedGames() {
       var _this = this;
 
@@ -11757,6 +11929,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'combat-faction',
   props: ['faction', 'combat'],
@@ -11766,14 +11943,26 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
-    factionIcon: function factionIcon() {
-      return _.factionIcon(this.faction.name);
-    },
+    /**
+     * Returns this faction's active class.
+     * @returns {string}
+     */
     activeClass: function activeClass() {
-      if (this.faction.order === this.combat.factionIndex) return 'active';
-      if (this.faction.order < this.combat.factionIndex) return 'done';
+      // if this faction is the current faction return active
+      if (this.faction.order === this.combat.factionIndex) return 'active'; // if this faction is done return done
+
+      if (this.faction.order < this.combat.factionIndex) return 'done'; // otherwise if this faction is upcoming return nothing
+
       return '';
     },
+
+    /**
+     * Returns an array of true or false values equal to the number of units this faction has here
+     * with true for units that still need to attack, false for units that don't sorted by needs to attack
+     * first and done attacking last
+     *
+     * @returns {boolean[]}
+     */
     unitPips: function unitPips() {
       return this.faction.units.map(function (unit) {
         return unit.needsToAttack;
@@ -11817,6 +12006,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'last-attack',
   props: ['attack'],
@@ -11826,20 +12021,33 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Returns the image url for our victim's image
+     * @returns {string}
+     */
     victimImage: function victimImage() {
+      // deadly attacks don't target a specific faction, so just show the deadly icon
       if (this.attack.unit.deadly) {
         return "/images/icons/deadly-square.png";
-      }
+      } // if we are targeting a specific unit with this attack show that unit
+
 
       if (this.attack.targetUnit) {
         var unit = this.attack.targetUnit;
         var src = "/images/factions/".concat(unit.faction, "/units/").concat(unit.type);
         if (unit.flipped) src += '-flipped';
         return src + '.png';
-      }
+      } // otherwise show the defending faction's icon
 
-      return this.factionIcon(this.attack.victim);
+
+      return this.shared.factionIcon(this.attack.victim);
     },
+
+    /**
+     * Returns the attacking unit
+     *
+     * @returns {Unit}
+     */
     unit: function unit() {
       var _this = this;
 
@@ -11848,6 +12056,11 @@ __webpack_require__.r(__webpack_exports__);
         return unit.id === _this.attack.unit.id;
       });
     },
+
+    /**
+     * Returns the width class for the dice tally, depending on dice rolled
+     * @returns {string}
+     */
     widthClass: function widthClass() {
       switch (this.attack.rolls.length) {
         case 1:
@@ -11866,10 +12079,602 @@ __webpack_require__.r(__webpack_exports__);
           return 'width-90';
       }
     }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'faction-components',
+  props: ['faction'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'player-bribe',
+  props: ['player'],
+  data: function data() {
+    return {
+      shared: App.state,
+      bribe: 0
+    };
+  },
+  computed: {
+    /**
+     * Can we send a bribe to this player?
+     * @returns {boolean|number}
+     */
+    canBribe: function canBribe() {
+      return this.shared.data.allowBribes // does the game allow bribes?
+      && this.shared.player.id !== this.player.id // is this another player?
+      && this.shared.faction.resources; // do we have any resources?
+    }
   },
   methods: {
-    factionIcon: function factionIcon(factionName) {
-      return _.factionIcon(factionName);
+    /**
+     * Send a bribe event
+     */
+    sendBribe: function sendBribe() {
+      App.event.emit('sound', 'ui');
+      this.shared.socketEmit('sendBribe', this.faction.name, this.bribe);
+      this.bribe = 0;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'player-plans',
+  props: ['faction'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    /**
+     * Return this player's completed plans
+     * @returns {object}
+     */
+    completedPlans: function completedPlans() {
+      return _.groupBy(this.faction.plans.completed, 'turnScored');
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'player-state',
+  props: ['faction'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    /**
+     * Return a tally of this faction's dead units, grouped by area
+     * @returns {object} // { areaName: Unit[], etc... }
+     */
+    killedUnits: function killedUnits() {
+      var killedUnits = this.faction.units.filter(function (unit) {
+        return unit.killed;
+      });
+      if (!killedUnits.length) return;
+      return _.groupBy(killedUnits, 'location');
+    },
+
+    /**
+     * Returns this faction's target card, if legal to view
+     * @returns {object|null}
+     */
+    target: function target() {
+      if (!this.faction.cards.target || !this.shared.canSeeTarget(this.faction)) return;
+      return this.faction.cards.target[0];
+    },
+
+    /**
+     * Returns an array of area objects for each area this faction controls
+     * @returns {object[]}
+     */
+    areas: function areas() {
+      var _this = this;
+
+      var areaNames = _.factionAreas(this.faction, this.shared.data.areas);
+
+      var areas = [];
+      areaNames.forEach(function (area) {
+        return areas.push(_this.shared.data.areas[area]);
+      });
+      return areas;
+    },
+
+    /**
+     * Returns a tally of this faction's tokens that haven't been revealed yet
+     * @returns {*}
+     */
+    unrevealedTokens: function unrevealedTokens() {
+      var tokens = this.faction.tokens.filter(function (token) {
+        return !token.revealed;
+      });
+      return this.shared.groupByCount(tokens, 'name');
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'player-stats',
+  props: ['faction'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    /**
+     * Calculate our defense bonus
+     * @returns {number}
+     */
+    defenseBonus: function defenseBonus() {
+      var bonus = this.faction.defenseBonus;
+      if (this.faction.factionDefenseBonus) bonus += this.faction.factionDefenseBonus;
+      return bonus;
+    }
+  },
+  methods: {
+    /**
+     * Adjust a player's AP, PP, Energy, or Resources
+     * @param type // which resource should we adjust
+     * @param val // by how much?
+     */
+    setPoints: function setPoints(type) {
+      var val = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+      App.event.emit('sound', 'ui');
+      this.shared.socketEmit('setPoints', {
+        faction: this.faction.name,
+        type: type,
+        val: val
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'view-player',
+  data: function data() {
+    return {
+      shared: App.state,
+      player: null
+    };
+  },
+  created: function created() {
+    var _this = this;
+
+    // set event listeners
+    this.shared.event.on('viewPlayer', this.setViewPlayer); // set our player
+
+    this.shared.event.on('viewArea', function () {
+      return _this.player = null;
+    }); // clear our player when the area modal is selected
+  },
+  computed: {
+    /**
+     * Return the selected player's faction
+     */
+    faction: function faction() {
+      return this.shared.getPlayerFaction(this.player);
+    }
+  },
+  watch: {
+    /**
+     * Play a sound when a new player is selected for view
+     */
+    player: function player() {
+      App.event.emit('sound', 'ui');
+    }
+  },
+  methods: {
+    /**
+     * close this modal
+     */
+    closeViewPlayer: function closeViewPlayer() {
+      this.player = null; //this.faction = null;
+
+      App.event.emit('showChatIcon');
+    },
+
+    /**
+     * Set the player to view
+     * @param player
+     */
+    setViewPlayer: function setViewPlayer(player) {
+      // if we select the same player twice, toggle it closed
+      if (this.player && this.player.id === player.id) {
+        this.closeViewPlayer();
+        return;
+      } // otherwise set the player
+
+
+      this.player = player;
     }
   }
 });
@@ -12006,6 +12811,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-area',
   data: function data() {
@@ -12015,6 +12835,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   watch: {
+    // make a boop noise when we change areas
     area: function area() {
       App.event.emit('sound', 'ui');
     }
@@ -12022,32 +12843,52 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
+    // set event listeners
     this.shared.event.on('viewArea', this.setViewArea);
     this.shared.event.on('viewPlayer', function () {
       return _this.area = null;
     });
   },
   computed: {
+    /**
+     * Return all of the dead units in the area grouped by faction, or false if no dead units
+     * @returns {object|false}
+     */
     dead: function dead() {
       var dead = _.allKilledUnitsInAreaByFaction(this.area.name, this.shared.data.factions);
 
       return dead !== null && dead !== void 0 ? dead : false;
     },
+
+    /**
+     * Do we have any killed plant units here?
+     * @returns {boolean}
+     */
     killedPlant: function killedPlant() {
       if (!this.shared.data.factions['plants']) return;
       return _.factionAreasWithDead(this.shared.data.factions['plants']).includes(this.area.name);
     },
+
+    /**
+     * Return the number of webbed units here
+     * @returns {boolean|number}
+     */
     webbedCount: function webbedCount() {
       if (!this.shared.data.factions['spiders']) return false;
       return _.webbedUnits(this.shared.data.factions['spiders'], {
         area: this.area.name
       }).length;
     },
+
+    /**
+     * Returned the webbed units in this area, or false if none
+     * @returns {object|false}
+     */
     webbed: function webbed() {
       var _this2 = this;
 
       if (!this.shared.data.factions['spiders']) return false;
-      var webbed = {};
+      var webbed = {}; // get each faction's webbed units
 
       _.forEach(this.shared.data.factions, function (faction) {
         var units = _.webbedUnits(_this2.shared.data.factions['spiders'], {
@@ -12060,17 +12901,37 @@ __webpack_require__.r(__webpack_exports__);
 
       return Object.keys(webbed).length ? webbed : false;
     },
+
+    /**
+     * Do we have a token selected in our shared state that is in this area? If so return it.
+     * @returns {*}
+     */
     token: function token() {
       if (this.shared.token && this.shared.token.place === this.area.name) {
         return this.shared.token;
       }
     },
+
+    /**
+     * Who has exterminated this area, if anyone
+     * @returns {string|false}
+     */
     exterminated: function exterminated() {
       return _.areaExterminated(this.area, this.shared.data.factions);
     },
+
+    /**
+     * Return the influence count for each faction in this area
+     * @returns {object}
+     */
     influences: function influences() {
       return _.eachInfluenceInArea(this.area, this.shared.data.factions, true);
     },
+
+    /**
+     * Return an array of faction names belonging to factions who have activated this area's skill ability
+     * @returns {string[]}
+     */
     usedSkill: function usedSkill() {
       var _this3 = this;
 
@@ -12083,17 +12944,24 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    factionIcon: function factionIcon(factionName) {
-      return _.factionIcon(factionName);
-    },
+    /**
+     * Close the view area modal
+     */
     closeViewArea: function closeViewArea() {
       this.area = null;
     },
+
+    /**
+     * Set our area
+     * @param area
+     */
     setViewArea: function setViewArea(area) {
+      // toggle the modal closed if we select the same area twice
       if (this.area && this.area.name === area.name) {
         this.closeViewArea();
         return;
-      }
+      } // otherwise set the area
+
 
       this.area = area;
     }
@@ -12111,6 +12979,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -12208,6 +13079,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-combat',
   data: function data() {
@@ -12217,26 +13100,46 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   watch: {
+    /**
+     * Open this panel whenever combat starts
+     */
     combat: function combat() {
       if (this.combat) this.open = true;
     }
   },
   computed: {
+    /**
+     * Return the area object for where this combat is taking place
+     * @returns {*}
+     */
     area: function area() {
       return this.shared.data.areas[this.combat.areaName];
     },
+
+    /**
+     * Return this combat data object
+     * @returns {object}
+     */
     combat: function combat() {
       return this.shared.data.combat;
     },
+
+    /**
+     * Return each faction participating in this combat
+     * @returns {[]}
+     */
     factions: function factions() {
       var _this = this;
 
+      // if we aren't in the precombat state, just return the combat factions
       if (!this.combat.preCombatEffects) return this.combat.factions;
-      var factions = [];
+      var factions = []; // cycle through our factions
+
       Object.values(this.shared.data.factions).forEach(function (faction) {
+        // does this faction have units in the area?
         var units = faction.units.filter(function (unit) {
           return _.unitInArea(unit, _this.combat.areaName);
-        });
+        }); // if yes then add this faction name and its units to our output array
 
         if (units.length) {
           factions.push({
@@ -12250,9 +13153,11 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    factionIcon: function factionIcon(factionName) {
-      return _.factionIcon(factionName);
-    },
+    /**
+     * Does the given faction have any smoke in the area?
+     * @param fac
+     * @returns {boolean}
+     */
     hasSmoke: function hasSmoke(fac) {
       var faction = this.shared.data.factions[fac.name];
       return faction.smokeAreas && faction.smokeAreas.includes(this.combat.areaName);
@@ -12304,6 +13209,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-factions',
@@ -12315,16 +13227,20 @@ __webpack_require__.r(__webpack_exports__);
       selectedFaction: null
     };
   },
-  mounted: function mounted() {},
   created: function created() {
     var _this = this;
 
-    this.shared.event.on('viewFactions', function (e) {
+    // set event listener to open panel
+    this.shared.event.on('viewFactions', function () {
       _this.open = true;
       _this.selectedFaction = _this.factions[0].name;
     });
   },
   computed: {
+    /**
+     * Return our sorted faction list
+     * @returns {object[]}
+     */
     factions: function factions() {
       return Object.values(this.factionList).sort(this.sortFactions);
     }
@@ -12335,370 +13251,26 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    /**
+     * Sort our factions
+     *
+     * @param a
+     * @param b
+     * @returns {number}
+     */
     sortFactions: function sortFactions(a, b) {
+      // basic factions go first
       if (a.basic && !b.basic) return -1;
-      if (b.basic && !a.basic) return 1;
+      if (b.basic && !a.basic) return 1; // then selectable factions before unselectable
+
       if (!a.selectable) return 1;
-      if (!b.selectable) return -1;
+      if (!b.selectable) return -1; // higher status before lower status
+
       if (a.status > b.status) return -1;
-      if (a.status < b.status) return 1;
+      if (a.status < b.status) return 1; // finally sort alphabetically
+
       if (a.name > b.name) return 1;
       if (a.name < b.name) return -1;
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=script&lang=js&":
-/*!********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'view-player',
-  data: function data() {
-    return {
-      shared: App.state,
-      player: null,
-      bribe: 0
-    };
-  },
-  created: function created() {
-    var _this = this;
-
-    this.shared.event.on('viewPlayer', this.setViewPlayer);
-    this.shared.event.on('viewArea', function () {
-      return _this.player = null;
-    });
-  },
-  computed: {
-    canBribe: function canBribe() {
-      return this.shared.data.allowBribes && this.shared.player.id !== this.player.id && this.shared.faction.resources;
-    },
-    killedUnits: function killedUnits() {
-      var killedUnits = this.faction.units.filter(function (unit) {
-        return unit.killed;
-      });
-      if (!killedUnits.length) return;
-      return _.groupBy(killedUnits, 'location');
-    },
-    completedPlans: function completedPlans() {
-      return _.groupBy(this.faction.plans.completed, 'turnScored');
-    },
-    target: function target() {
-      if (!this.faction.cards.target || !this.shared.canSeeTarget(this.faction)) return;
-      return this.faction.cards.target[0];
-    },
-    defenseBonus: function defenseBonus() {
-      var bonus = this.faction.defenseBonus;
-      if (this.faction.factionDefenseBonus) bonus += this.faction.factionDefenseBonus;
-      return bonus;
-    },
-    areas: function areas() {
-      var _this2 = this;
-
-      var areaNames = _.factionAreas(this.faction, this.shared.data.areas);
-
-      var areas = [];
-      areaNames.forEach(function (area) {
-        return areas.push(_this2.shared.data.areas[area]);
-      });
-      return areas;
-    },
-    unrevealedTokens: function unrevealedTokens() {
-      var tokens = this.faction.tokens.filter(function (token) {
-        return !token.revealed;
-      });
-      return this.shared.groupByCount(tokens, 'name');
-    },
-    faction: {
-      get: function get() {
-        return this.shared.getPlayerFaction(this.player);
-      },
-      set: function set(newValue) {}
-    }
-  },
-  watch: {
-    player: function player() {
-      App.event.emit('sound', 'ui');
-    }
-  },
-  methods: {
-    setPoints: function setPoints(type, val) {
-      App.event.emit('sound', 'ui');
-      this.shared.socketEmit('setPoints', {
-        faction: this.faction.name,
-        type: type,
-        val: val
-      });
-    },
-    sendBribe: function sendBribe() {
-      App.event.emit('sound', 'ui');
-      this.shared.socketEmit('sendBribe', this.faction.name, this.bribe);
-      this.bribe = 0;
-    },
-    closeViewPlayer: function closeViewPlayer() {
-      this.player = null;
-      this.faction = null;
-      App.event.emit('showChatIcon');
-    },
-    setViewPlayer: function setViewPlayer(player) {
-      if (this.player && this.player.id === player.id) {
-        this.closeViewPlayer();
-        return;
-      }
-
-      this.player = player;
     }
   }
 });
@@ -14223,7 +14795,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.game-map {\n        display: flex;\n        flex-wrap: wrap;\n        width: 100%;\n        position: relative;\n}\n\n    /*\n    .game-map:after {\n        content: \"\";\n        background-image: url(/images/tracks.png);\n        background-position: center;\n        background-size: cover;\n        position: absolute;\n        z-index: -1;\n        width: 100%;\n        height: 100%;\n        opacity: .6;\n    }\n*/\n\n", ""]);
+exports.push([module.i, "\n.game-map {\n        display: flex;\n        flex-wrap: wrap;\n        width: 100%;\n        position: relative;\n}\n", ""]);
 
 // exports
 
@@ -15180,6 +15752,25 @@ exports.push([module.i, "\n.last-attack__victim {\n    width: 3rem;\n    margin-
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=style&index=0&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=style&index=0&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.icon-image {\n    height: 1.4em;\n    margin: 0 .1em;\n    position: relative;\n    top: .3em;\n}\n.view-player {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n}\n.view-player__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__token-wrap, .view-player__unit-wrap {\n    width: 6vw;\n}\n.view-player__token, .view-player__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__upgrade-card-image{\n     border: 3px solid rgba(0,0,0,.2);\n     border-radius: 5%/8%;\n}\n.view-player__token {\n    border-radius: 50%;\n}\n.view-player__title {\n    letter-spacing: 1px;\n    margin-bottom: .5em;\n    border-bottom: 1px solid;\n    border-left: 1px solid;\n    font-size: 1.2em;\n    text-transform: uppercase;\n    padding: .2em .5em;\n    margin-top: .5em;\n    white-space: nowrap;\n    font-family: var(--secondary-font);\n    border-color: #e953cd;\n    font-weight: 200;\n}\n.view-player__title span {\n    font-family: var(--primary-font);\n    color: var(--highlight-color);\n    font-size: 1.3em;\n}\n.view-player__title span.note {\n    color: var(--off-white);\n    font-size: .85em;\n}\n.view-player__core-stats .view-player__title {\n    margin: 0;\n}\n.view-player__empty {\n    padding: 1vw;\n    font-size: 1.3em;\n    text-align: center;\n    color: var(--primary-light-color);\n}\n.view-player .icon-ap,  .view-player .icon-pp {\n    width: 2.3rem;\n    position: relative;\n    height: 2.3rem;\n    display: inline-block;\n}\n.view-player .icon-ap:before, .view-player .icon-pp:before {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    position: absolute;\n    bottom: 0;\n}\n.view-player__areas {\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--highlight-color);\n    text-align: center;\n    text-transform: capitalize;\n}\n.view-player__card {\n    width: 11.5rem;\n    border-radius: 11%/8%;\n    border: 2px solid rgba(0,0,0,.2);\n    margin: 0 .2rem;\n}\n.view-player__areas-control {\n    font-size: 0.7em;\n    color: var(--primary-light-color);\n    letter-spacing: 1px;\n}\n.view-player__capitol-token__image {\n    width: 5.5rem;\n    border-radius: 50%;\n    border: 3px solid rgba(0,0,0,.3);\n}\n.completed-plans__points {\n    position: absolute;\n    bottom: .5rem;\n    z-index: 4;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 4rem;\n}\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewArea.vue?vue&type=style&index=0&lang=css&":
 /*!*************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/ViewArea.vue?vue&type=style&index=0&lang=css& ***!
@@ -15231,25 +15822,6 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.view-combat {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 2;\n    font-size: 1.4rem;\n    color: var(--primary-light-color);\n    transition: transform .3s;\n}\n.view-combat__header {\n    width: 100%;\n    background-size: cover;\n    background-position: center bottom;\n    background-repeat: no-repeat;\n    min-height: 9rem;\n}\n.view-combat__body {\n    min-height: 28rem;\n    padding-top: 0;\n}\n.view-combat.closed {\n    transform: translate(-100%,0);\n}\n.view-combat .minimize-toggle {\n    font-size: 1rem;\n    padding: .75rem;\n}\n.view-combat.closed .minimize-toggle {\n    transform: translate(100%,0);\n}\n\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=style&index=0&lang=css&":
-/*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=style&index=0&lang=css& ***!
-  \***************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.icon-image {\n    height: 1.4em;\n    margin: 0 .1em;\n    position: relative;\n    top: .3em;\n}\n.view-player {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n}\n.view-player__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__token-wrap, .view-player__unit-wrap {\n    width: 6vw;\n}\n.view-player__token, .view-player__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__upgrade-card-image{\n     border: 3px solid rgba(0,0,0,.2);\n     border-radius: 5%/8%;\n}\n.view-player__token {\n    border-radius: 50%;\n}\n.view-player__title {\n    letter-spacing: 1px;\n    margin-bottom: .5em;\n    border-bottom: 1px solid;\n    border-left: 1px solid;\n    font-size: 1.2em;\n    text-transform: uppercase;\n    padding: .2em .5em;\n    margin-top: .5em;\n    white-space: nowrap;\n    font-family: var(--secondary-font);\n    border-color: #e953cd;\n    font-weight: 200;\n}\n.view-player__title span {\n    font-family: var(--primary-font);\n    color: var(--highlight-color);\n    font-size: 1.3em;\n}\n.view-player__title span.note {\n    color: var(--off-white);\n    font-size: .85em;\n}\n.view-player__core-stats .view-player__title {\n    margin: 0;\n}\n.view-player__empty {\n    padding: 1vw;\n    font-size: 1.3em;\n    text-align: center;\n    color: var(--primary-light-color);\n}\n.view-player .icon-ap,  .view-player .icon-pp {\n    width: 2.3rem;\n    position: relative;\n    height: 2.3rem;\n    display: inline-block;\n}\n.view-player .icon-ap:before, .view-player .icon-pp:before {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    position: absolute;\n    bottom: 0;\n}\n.view-player__areas {\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--highlight-color);\n    text-align: center;\n    text-transform: capitalize;\n}\n.view-player__card {\n    width: 11.5rem;\n    border-radius: 11%/8%;\n    border: 2px solid rgba(0,0,0,.2);\n    margin: 0 .2rem;\n}\n.view-player__areas-control {\n    font-size: 0.7em;\n    color: var(--primary-light-color);\n    letter-spacing: 1px;\n}\n.view-player__capitol-token__image {\n    width: 5.5rem;\n    border-radius: 50%;\n    border: 3px solid rgba(0,0,0,.3);\n}\n.completed-plans__points {\n    position: absolute;\n    bottom: .5rem;\n    z-index: 4;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 4rem;\n}\n\n", ""]);
 
 // exports
 
@@ -56596,6 +57168,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../../node_modules/css-loader??ref--6-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewPlayer.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewArea.vue?vue&type=style&index=0&lang=css&":
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/ViewArea.vue?vue&type=style&index=0&lang=css& ***!
@@ -56665,36 +57267,6 @@ if(false) {}
 
 
 var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewCombat.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewCombat.vue?vue&type=style&index=0&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=style&index=0&lang=css&":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=style&index=0&lang=css& ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewPlayer.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=style&index=0&lang=css&");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -58049,7 +58621,7 @@ var render = function() {
       _c("td", { staticClass: "faction-score__name" }, [
         _c("img", {
           staticClass: "combat-faction_icon",
-          attrs: { src: _vm.factionIcon }
+          attrs: { src: _vm.shared.factionIcon(this.faction.name) }
         }),
         _vm._v(
           "\n        The " +
@@ -59613,18 +60185,7 @@ var render = function() {
       staticClass:
         "game-core width-100 height-100 d-flex align-stretch pos-relative"
     },
-    [
-      _c("game-hud", {
-        attrs: { closed: _vm.gameHudClosed },
-        on: {
-          toggleDrawer: function($event) {
-            _vm.gameHudClosed = !_vm.gameHudClosed
-          }
-        }
-      }),
-      _vm._v(" "),
-      _c("game-core", { attrs: { classes: _vm.drawerClosed } })
-    ],
+    [_c("game-hud"), _vm._v(" "), _c("game-core")],
     1
   )
 }
@@ -59654,8 +60215,7 @@ var render = function() {
     "div",
     {
       staticClass:
-        "main-content height-100 drawer__main pos-relative d-flex flex-column align-stretch",
-      class: _vm.classes
+        "main-content height-100 drawer__main pos-relative d-flex flex-column align-stretch"
     },
     [_c("game-display"), _vm._v(" "), _c("game-controls")],
     1
@@ -59900,7 +60460,7 @@ var render = function() {
                                 ? "icon-checkbox-checked"
                                 : "icon-checkbox-unchecked"
                             }),
-                            _vm._v(_vm._s(_vm.startCase(option)))
+                            _vm._v(_vm._s(_vm.alphaCaps(option)))
                           ]
                         )
                       }),
@@ -59945,7 +60505,7 @@ var render = function() {
                     : _vm._e()
                 ])
               ])
-            : _c("div", {}, [
+            : _c("div", [
                 _vm.shared.socket.disconnected
                   ? _c("div", { staticClass: "server-offline" }, [
                       _c("i", { staticClass: "icon-kill" }),
@@ -60057,7 +60617,7 @@ var render = function() {
                       }
                     },
                     [
-                      _vm._v("\n                   view game rules "),
+                      _vm._v("\n                        view game rules "),
                       _c("i", { staticClass: "icon-launch" })
                     ]
                   )
@@ -60125,7 +60685,7 @@ var render = function() {
     "div",
     {
       staticClass: "d-inline stat-icon mute-button",
-      class: _vm.computedClasses,
+      class: { active: this.volume },
       on: { click: _vm.toggleVolume }
     },
     [_c("i", { class: _vm.soundIcon })]
@@ -60977,7 +61537,7 @@ var render = function() {
         _vm._l(score, function(faction) {
           return _c("img", {
             staticClass: "score-hud__faction",
-            attrs: { src: _vm.factionIcon(faction) }
+            attrs: { src: _vm.shared.factionIcon(faction) }
           })
         }),
         0
@@ -61199,7 +61759,7 @@ var render = function() {
             _vm.currentOwner
               ? _c("img", {
                   staticClass: "determine-control__faction-icon",
-                  attrs: { src: _vm.factionIcon(_vm.currentOwner) }
+                  attrs: { src: _vm.shared.factionIcon(_vm.currentOwner) }
                 })
               : _vm._e(),
             _vm._v(_vm._s(_vm.message))
@@ -61306,7 +61866,7 @@ var render = function() {
                                 _c("img", {
                                   staticClass: "determine-control__small-icon",
                                   attrs: {
-                                    src: _vm.factionIcon(faction.faction)
+                                    src: _vm.shared.factionIcon(faction.faction)
                                   }
                                 })
                               ]
@@ -61409,7 +61969,7 @@ var render = function() {
                   _c("img", {
                     staticClass: "non-combat-attack__victim",
                     class: { "no-unit": !attack.unit },
-                    attrs: { src: _vm.victimImage(attack.victim) }
+                    attrs: { src: _vm.shared.factionIcon(attack.victim) }
                   }),
                   _vm._v(" "),
                   _vm._l(attack.rolls, function(roll) {
@@ -61457,7 +62017,7 @@ var render = function() {
       _c("div", { staticClass: "title flex-center " }, [
         _c("img", {
           staticClass: "determine-control__faction-icon",
-          attrs: { src: _vm.factionIcon(_vm.currentFactionName) }
+          attrs: { src: _vm.shared.factionIcon(_vm.currentFactionName) }
         }),
         _vm._v(
           "\n            plans scored by The " +
@@ -61568,7 +62128,7 @@ var render = function() {
             _c("div", { staticClass: "title flex-center " }, [
               _c("img", {
                 staticClass: "determine-control__faction-icon",
-                attrs: { src: _vm.factionIcon(upgrade.faction) }
+                attrs: { src: _vm.shared.factionIcon(upgrade.faction) }
               }),
               _vm._v(
                 "\n                upgrade scored by The " +
@@ -61632,7 +62192,7 @@ var render = function() {
       _c("div", { staticClass: "title flex-center " }, [
         _c("img", {
           staticClass: "determine-control__faction-icon",
-          attrs: { src: _vm.factionIcon(_vm.currentFactionName) }
+          attrs: { src: _vm.shared.factionIcon(_vm.currentFactionName) }
         }),
         _vm._v(
           "\n            upgrade scored by The " +
@@ -66687,7 +67247,7 @@ var render = function() {
     { staticClass: "saved-games game-hud drawer__aside height-100 pt-4 z-4" },
     [
       _c("div", { staticClass: "highlight secondary-font center-text pb-4" }, [
-        _vm._v("\n        saved games\n    ")
+        _vm._v("saved games")
       ]),
       _vm._v(" "),
       _c(
@@ -67412,7 +67972,7 @@ var render = function() {
         _c("div", { staticClass: "combat-faction__name mr-3" }, [
           _c("img", {
             staticClass: "combat-faction_icon",
-            attrs: { src: _vm.factionIcon }
+            attrs: { src: _vm.shared.factionIcon(_vm.faction.name) }
           }),
           _vm._v(
             "\n            The " +
@@ -67508,7 +68068,7 @@ var render = function() {
                 [
                   _c("img", {
                     staticClass: "unit-hud__unit-image",
-                    attrs: { src: _vm.factionIcon(_vm.attack.faction) }
+                    attrs: { src: _vm.shared.factionIcon(_vm.attack.faction) }
                   })
                 ]
               ),
@@ -67534,6 +68094,979 @@ var render = function() {
         1
       )
     : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=template&id=59f33ec4&":
+/*!**************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=template&id=59f33ec4& ***!
+  \**************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "view-player__side width-45 height-100 pt-4 pl-3 pb-6" },
+    [
+      _c("div", { staticClass: "view-player__title" }, [
+        _vm._v("Faction Sheet:")
+      ]),
+      _vm._v(" "),
+      _c("img", {
+        staticClass: "my-5",
+        attrs: { src: "/images/factions/" + _vm.faction.name + "/sheet.jpg" }
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "view-player__title mt-5" }, [
+        _vm._v("Unit Mix:")
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass:
+            "view-player__units d-flex mb-4 justify-center align-start"
+        },
+        _vm._l(_vm.shared.groupByCount(_vm.faction.units, "type"), function(
+          count,
+          type
+        ) {
+          return _c(
+            "div",
+            {
+              staticClass:
+                "view-player__token-wrap p-2 pos-relative d-flex flex-column"
+            },
+            [
+              _c(
+                "div",
+                { staticClass: "width-100 pos-relative ratio-square" },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "view-player__unit",
+                      attrs: { "data-count": count }
+                    },
+                    [
+                      _c("img", {
+                        staticClass: "view-player__unit-image",
+                        attrs: {
+                          src:
+                            "/images/factions/" +
+                            _vm.faction.name +
+                            "/units/" +
+                            type +
+                            ".png"
+                        }
+                      })
+                    ]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _vm.faction.flipableUnits &&
+              _vm.faction.flipableUnits.includes(type)
+                ? _c(
+                    "div",
+                    { staticClass: "width-100 pos-relative ratio-square" },
+                    [
+                      _c("div", { staticClass: "view-player__unit" }, [
+                        _c("img", {
+                          staticClass: "view-player__unit-image",
+                          attrs: {
+                            src:
+                              "/images/factions/" +
+                              _vm.faction.name +
+                              "/units/" +
+                              type +
+                              "-flipped.png"
+                          }
+                        })
+                      ])
+                    ]
+                  )
+                : _vm._e()
+            ]
+          )
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "view-player__title mt-5" }, [
+        _vm._v("Token Mix:")
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__tokens d-flex mb-4 justify-center" },
+        _vm._l(_vm.shared.groupByCount(_vm.faction.tokens, "name"), function(
+          count,
+          type
+        ) {
+          return _c(
+            "div",
+            {
+              staticClass:
+                "view-player__token-wrap p-2 ratio-square pos-relative"
+            },
+            [
+              _c("div", { staticClass: "width-100 pos-relative height-100" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "view-player__token",
+                    attrs: { "data-count": count }
+                  },
+                  [
+                    _c("img", {
+                      staticClass: "view-player__token",
+                      attrs: {
+                        src:
+                          "/images/factions/" +
+                          _vm.faction.name +
+                          "/tokens/" +
+                          type +
+                          ".png"
+                      }
+                    })
+                  ]
+                )
+              ])
+            ]
+          )
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "view-player__title mt-5" }, [
+        _vm._v("Upgrades:")
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__upgrades d-flex justify-center" },
+        [
+          _c("div", { staticClass: "view-player__upgrade-card width-50 p-3" }, [
+            _c("img", {
+              staticClass: "view-player__upgrade-card-image",
+              attrs: {
+                src: "/images/factions/" + _vm.faction.name + "/upgrade-1.jpg"
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "view-player__upgrade-card width-50 p-3" }, [
+            _c("img", {
+              staticClass: "view-player__upgrade-card-image",
+              attrs: {
+                src: "/images/factions/" + _vm.faction.name + "/upgrade-2.jpg"
+              }
+            })
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "view-player__title mt-5" }, [_vm._v("Plans:")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__upgrades d-flex flex-wrap" },
+        _vm._l(8, function(index) {
+          return _c("div", { staticClass: "width-50 p-3" }, [
+            _c("img", {
+              staticClass: "width-100 radius-1",
+              attrs: {
+                src:
+                  "/images/factions/" +
+                  _vm.faction.name +
+                  "/plans/" +
+                  index +
+                  ".jpg"
+              }
+            })
+          ])
+        }),
+        0
+      )
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=template&id=62bb092d&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=template&id=62bb092d& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "d-flex" }, [
+    _c("div", { staticClass: "view-player__title width-100 pos-relative" }, [
+      _vm.shared.isFirstPlayer(_vm.player)
+        ? _c("i", { staticClass: "first-player icon-key" })
+        : _vm._e(),
+      _vm._v(_vm._s(_vm._f("startCase")(_vm.player.name)) + "\n\n        "),
+      _vm._v(" "),
+      _vm.canBribe
+        ? _c(
+            "div",
+            {
+              staticClass:
+                "bribe-box pos-absolute top-0 right-0 d-flex align-baseline"
+            },
+            [
+              _c("i", {
+                staticClass: "icon-minimize pr-2",
+                attrs: { disabled: _vm.bribe === 0 },
+                on: {
+                  click: function($event) {
+                    _vm.bribe--
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("img", {
+                staticClass: "icon-image ml-3",
+                attrs: { src: "/images/icons/resource.png" }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "ml-2 current-bribe mr-3" }, [
+                _vm._v(_vm._s(_vm.bribe))
+              ]),
+              _vm._v(" "),
+              _c("i", {
+                staticClass: "icon-maximize",
+                attrs: { disabled: _vm.bribe >= _vm.shared.faction.resources },
+                on: {
+                  click: function($event) {
+                    _vm.bribe++
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  staticClass: "pointer ml-3",
+                  attrs: { disabled: _vm.bribe === 0 },
+                  on: { click: _vm.sendBribe }
+                },
+                [_vm._v("SEND BRIBE")]
+              )
+            ]
+          )
+        : _vm._e()
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=template&id=7d3fa47b&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=template&id=7d3fa47b& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "view-player__title" }, [
+      _vm._v("Completed Plans:")
+    ]),
+    _vm._v(" "),
+    _vm.completedPlans
+      ? _c(
+          "div",
+          { staticClass: "view-player__completed-plans py-4" },
+          _vm._l(_vm.completedPlans, function(plans, turn) {
+            return _c("div", { staticClass: "completed-plan__block" }, [
+              _c("div", { staticClass: "prompt-question center-text" }, [
+                _vm._v("TURN " + _vm._s(turn))
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "d-flex flex-wrap" },
+                _vm._l(plans, function(plan) {
+                  return _c(
+                    "div",
+                    { staticClass: "plan-block__container d-flex my-3" },
+                    [
+                      _c(
+                        "div",
+                        { staticClass: "plan-block__pips" },
+                        _vm._l(plan.objectives, function(test) {
+                          return _c("div", {
+                            staticClass: "plan-block__pip primary-light",
+                            class: {
+                              "icon-circle": test.passed,
+                              "icon-circle-open": !test.passed,
+                              highlight: test.scoreable
+                            }
+                          })
+                        }),
+                        0
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "plan-block__image-wrap pos-relative" },
+                        [
+                          _c("img", {
+                            staticClass: "completed-plans__points",
+                            attrs: {
+                              src: "/images/icons/pp-" + plan.points + ".png"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("img", {
+                            staticClass: "plan-block__image",
+                            attrs: {
+                              src:
+                                "/images/factions/" +
+                                _vm.faction.name +
+                                "/plans/" +
+                                plan.num +
+                                ".jpg"
+                            }
+                          })
+                        ]
+                      )
+                    ]
+                  )
+                }),
+                0
+              )
+            ])
+          }),
+          0
+        )
+      : _c("div", { staticClass: "view-player__empty" }, [
+          _vm._v("No Completed Plans")
+        ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=template&id=fae3b9bc&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=template&id=fae3b9bc& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm.target
+      ? _c("div", [
+          _c("div", { staticClass: "view-player__title" }, [
+            _vm._v("Current Target:")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "view-player__active-cards" }, [
+            _c("img", {
+              staticClass: "view-player__card pointer",
+              attrs: { src: "/images/cards/" + _vm.target.file + ".jpg" },
+              on: {
+                click: function($event) {
+                  _vm.shared.card = "/images/cards/" + _vm.target.file + ".jpg"
+                }
+              }
+            })
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("div", { staticClass: "view-player__title" }, [_vm._v("Active Cards:")]),
+    _vm._v(" "),
+    _vm.faction.cards.active.length
+      ? _c(
+          "div",
+          { staticClass: "view-player__active-cards" },
+          _vm._l(_vm.faction.cards.active, function(card) {
+            return _c("img", {
+              staticClass: "view-player__card pointer",
+              attrs: { src: "/images/cards/" + card.file + ".jpg" },
+              on: {
+                click: function($event) {
+                  _vm.shared.card = "/images/cards/" + card.file + ".jpg"
+                }
+              }
+            })
+          }),
+          0
+        )
+      : _c("div", { staticClass: "view-player__empty" }, [
+          _vm._v("No Active Cards")
+        ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "view-player__title" }, [
+      _vm._v("Areas Controlled:")
+    ]),
+    _vm._v(" "),
+    _vm.areas.length
+      ? _c(
+          "div",
+          { staticClass: "view-player__areas" },
+          _vm._l(_vm.areas, function(area) {
+            return _c("div", { staticClass: "view-player__areas" }, [
+              _c("div", { staticClass: "view-player__areas-name" }, [
+                _vm._v(_vm._s(area.name))
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "view-player__areas-control" }, [
+                _vm._v(_vm._s(area.control))
+              ])
+            ])
+          }),
+          0
+        )
+      : _c("div", { staticClass: "view-player__empty" }, [
+          _vm._v("No Areas Controlled")
+        ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "view-player__title" }, [
+      _vm._v("Unrevealed Tokens:")
+    ]),
+    _vm._v(" "),
+    _vm.unrevealedTokens
+      ? _c(
+          "div",
+          { staticClass: "view-player__tokens d-flex justify-center" },
+          _vm._l(_vm.unrevealedTokens, function(count, type) {
+            return _c(
+              "div",
+              {
+                staticClass:
+                  "view-player__token-wrap p-2 ratio-square pos-relative"
+              },
+              [
+                _c(
+                  "div",
+                  { staticClass: "width-100 pos-relative height-100" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "view-player__token",
+                        attrs: { "data-count": count }
+                      },
+                      [
+                        _c("img", {
+                          staticClass: "view-player__token",
+                          attrs: {
+                            src:
+                              "/images/factions/" +
+                              _vm.faction.name +
+                              "/tokens/" +
+                              type +
+                              ".png"
+                          }
+                        })
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          }),
+          0
+        )
+      : _c("div", { staticClass: "view-player__empty" }, [
+          _vm._v("No Unrevealed Tokens")
+        ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "view-player__title" }, [
+      _vm._v("Current Upgrade:")
+    ]),
+    _vm._v(" "),
+    _vm.faction.upgrade
+      ? _c("div", { staticClass: "view-player__areas" }, [
+          _c(
+            "div",
+            { staticClass: "view-player__upgrade-card p-3 center-text" },
+            [
+              _c("img", {
+                staticClass: "view-player__upgrade-card-image width-80",
+                attrs: {
+                  src:
+                    "/images/factions/" +
+                    _vm.faction.name +
+                    "/upgrade-" +
+                    _vm.faction.upgrade +
+                    ".jpg"
+                }
+              })
+            ]
+          )
+        ])
+      : _c("div", { staticClass: "view-player__empty" }, [
+          _vm._v("No Upgrade")
+        ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "view-player__title" }, [
+      _vm._v("Areas Skills Used:")
+    ]),
+    _vm._v(" "),
+    _vm.faction.usedSkills.length
+      ? _c(
+          "div",
+          { staticClass: "view-player__areas" },
+          _vm._l(_vm.faction.usedSkills, function(area) {
+            return _c("div", { staticClass: "view-player__areas" }, [
+              _c("div", { staticClass: "view-player__areas-name" }, [
+                _vm._v(_vm._s(area))
+              ])
+            ])
+          }),
+          0
+        )
+      : _c("div", { staticClass: "view-player__empty" }, [
+          _vm._v("No Skills Used")
+        ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "view-player__title" }, [
+      _vm._v("Capitol Tokens:")
+    ]),
+    _vm._v(" "),
+    _vm.faction.capitolTokens.length
+      ? _c(
+          "div",
+          { staticClass: "view-player__capitol-tokens d-flex justify-center" },
+          _vm._l(_vm.faction.capitolTokens, function(token) {
+            return _c(
+              "div",
+              { staticClass: "view-player__capitol-token center-text p-3" },
+              [
+                _c("img", {
+                  staticClass: "view-player__capitol-token__image",
+                  attrs: {
+                    src: "/images/tokens/capitol-" + token.turn + ".png"
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "view-player__capitol-token__value" },
+                  [_vm._v(_vm._s(token.ap) + " AP")]
+                )
+              ]
+            )
+          }),
+          0
+        )
+      : _c("div", { staticClass: "view-player__empty" }, [
+          _vm._v("No Capitol Tokens")
+        ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "view-player__title" }, [_vm._v("Killed Units:")]),
+    _vm._v(" "),
+    _vm.killedUnits
+      ? _c(
+          "div",
+          { staticClass: "d-flex justify-center p-4" },
+          _vm._l(_vm.killedUnits, function(units, area) {
+            return _c("unit-set", {
+              key: area,
+              attrs: { units: units, title: area, classes: "border" }
+            })
+          }),
+          1
+        )
+      : _c("div", { staticClass: "view-player__empty" }, [
+          _vm._v("No Killed Units")
+        ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=template&id=f95927a0&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=template&id=f95927a0& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "d-flex flex-wrap view-player__core-stats my-6" },
+    [
+      _c(
+        "div",
+        {
+          staticClass:
+            "view-player__AP view-player__title width-50 d-flex align-center"
+        },
+        [
+          _c("i", { staticClass: "icon-ap mr-3" }),
+          _vm._v(" "),
+          _c("span", [_vm._v(_vm._s(_vm.faction.ap))]),
+          _vm._v(" "),
+          _c("span", { staticClass: "note" }, [
+            _vm._v("/ " + _vm._s(_vm.shared.data.maxAP))
+          ]),
+          _vm._v(" "),
+          _vm.shared.admin
+            ? _c("i", {
+                staticClass: "icon-minimize pr-2",
+                attrs: { disabled: _vm.faction.ap === 0 },
+                on: {
+                  click: function($event) {
+                    return _vm.setPoints("ap", -1)
+                  }
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.shared.admin
+            ? _c("i", {
+                staticClass: "icon-maximize pr-2",
+                on: {
+                  click: function($event) {
+                    return _vm.setPoints("ap", 1)
+                  }
+                }
+              })
+            : _vm._e()
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass:
+            "view-player__PP view-player__title width-50 d-flex align-center"
+        },
+        [
+          _c("i", { staticClass: "icon-pp mr-3" }),
+          _vm._v(" "),
+          _c("span", [_vm._v(_vm._s(_vm.faction.pp))]),
+          _vm._v(" "),
+          _c("span", { staticClass: "note" }, [
+            _vm._v("/ " + _vm._s(_vm.shared.data.maxPP))
+          ]),
+          _vm._v(" "),
+          _vm.shared.admin
+            ? _c("i", {
+                staticClass: "icon-minimize pr-2",
+                attrs: { disabled: _vm.faction.pp === 0 },
+                on: {
+                  click: function($event) {
+                    return _vm.setPoints("pp", -1)
+                  }
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.shared.admin
+            ? _c("i", {
+                staticClass: "icon-maximize pr-2",
+                on: {
+                  click: function($event) {
+                    return _vm.setPoints("pp", 1)
+                  }
+                }
+              })
+            : _vm._e()
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__energy view-player__title width-50" },
+        [
+          _vm._v("Energy: "),
+          _c("span", [_vm._v(_vm._s(_vm.faction.energy))]),
+          _vm._v(" "),
+          _c("span", { staticClass: "note" }, [
+            _vm._v("/ " + _vm._s(_vm.faction.maxEnergy))
+          ]),
+          _vm._v(" "),
+          _vm.shared.admin
+            ? _c("i", {
+                staticClass: "icon-minimize pr-2",
+                attrs: { disabled: _vm.faction.energy === 0 },
+                on: {
+                  click: function($event) {
+                    return _vm.setPoints("energy", -1)
+                  }
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.shared.admin
+            ? _c("i", {
+                staticClass: "icon-maximize pr-2",
+                on: {
+                  click: function($event) {
+                    return _vm.setPoints("energy", 1)
+                  }
+                }
+              })
+            : _vm._e()
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__resources view-player__title width-50" },
+        [
+          _vm._v("Resources: "),
+          _c("span", [_vm._v(_vm._s(_vm.faction.resources))]),
+          _vm._v(" "),
+          _vm.shared.admin
+            ? _c("i", {
+                staticClass: "icon-minimize pr-2",
+                attrs: { disabled: _vm.faction.resources === 0 },
+                on: {
+                  click: function($event) {
+                    return _vm.setPoints("resources", -1)
+                  }
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.shared.admin
+            ? _c("i", {
+                staticClass: "icon-maximize pr-2",
+                on: {
+                  click: function($event) {
+                    return _vm.setPoints("resources", 1)
+                  }
+                }
+              })
+            : _vm._e()
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__resources view-player__title width-50" },
+        [
+          _vm._v(" Upgrade: "),
+          _c("span", [
+            _vm._v(_vm._s(_vm.faction.upgrade ? _vm.faction.upgrade : "none"))
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__hand view-player__title width-50" },
+        [
+          _vm._v("Cards in hand: "),
+          _c("span", [_vm._v(_vm._s(_vm.faction.cards.hand.length))]),
+          _vm._v(" "),
+          _c("span", { staticClass: "note" }, [
+            _vm._v("/ +" + _vm._s(_vm.faction.cardDraw))
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__deploy view-player__title width-50" },
+        [
+          _vm._v("Deploy Limit: "),
+          _c("span", [_vm._v(_vm._s(_vm.faction.deployLimit))])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "view-player__defense-bonus view-player__title width-50"
+        },
+        [
+          _vm._v("Defense Bonus: "),
+          _c("span", [_vm._v("+" + _vm._s(_vm.defenseBonus))])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "view-player__attack-bonus view-player__title width-50"
+        },
+        [
+          _vm._v("Attack Bonus: "),
+          _c("span", [_vm._v("+" + _vm._s(_vm.faction.attackBonus))])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__bonus-dice view-player__title width-50" },
+        [
+          _vm._v("Bonus Attack Dice: "),
+          _c("span", [_vm._v("+" + _vm._s(_vm.faction.bonusDice))])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "view-player__captured view-player__title width-100" },
+        [
+          _vm._v("Captured Markers: "),
+          _c("span", [
+            _vm._v(
+              _vm._s(_vm.faction.captured.current) +
+                " / " +
+                _vm._s(_vm.faction.captured.max)
+            )
+          ])
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=template&id=ab2e3838&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=template&id=ab2e3838& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("transition", { attrs: { name: "right" } }, [
+    _vm.player
+      ? _c(
+          "div",
+          {
+            staticClass:
+              "view-player pos-absolute width-100 height-100 top-0 p-5 d-flex align-stretch overflow-auto z-5"
+          },
+          [
+            _c("button", {
+              staticClass: "toggle fixed top right icon-x",
+              on: { click: _vm.closeViewPlayer }
+            }),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "view-player__main-content width-55 pt-4 pr-5 pb-6"
+              },
+              [
+                _c("player-bribe", {
+                  attrs: { player: _vm.player, faction: _vm.faction }
+                }),
+                _vm._v(" "),
+                _c("player-stats", { attrs: { faction: _vm.faction } }),
+                _vm._v(" "),
+                _c("div", { staticClass: "view-player__title" }, [
+                  _vm._v("Plan Focus:")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "prompt-question p-4" },
+                  [
+                    _vm._v(
+                      _vm._s(_vm.faction.focusDescription) +
+                        "\n                "
+                    ),
+                    _vm.faction.focus
+                      ? _c(_vm.faction.focus, {
+                          tag: "component",
+                          attrs: { faction: _vm.faction }
+                        })
+                      : _vm._e()
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c("player-state", { attrs: { faction: _vm.faction } }),
+                _vm._v(" "),
+                _c("player-plans", { attrs: { faction: _vm.faction } })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("faction-components", { attrs: { faction: _vm.faction } })
+          ],
+          1
+        )
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -67588,7 +69121,9 @@ var render = function() {
                         [
                           _c("img", {
                             staticClass: "determine-control__faction-icon",
-                            attrs: { src: _vm.factionIcon(_vm.area.owner) }
+                            attrs: {
+                              src: _vm.shared.factionIcon(_vm.area.owner)
+                            }
                           }),
                           _vm._v(
                             "\n                    Controlled by The " +
@@ -67609,7 +69144,9 @@ var render = function() {
                         [
                           _c("img", {
                             staticClass: "determine-control__faction-icon",
-                            attrs: { src: _vm.factionIcon(_vm.exterminated) }
+                            attrs: {
+                              src: _vm.shared.factionIcon(_vm.exterminated)
+                            }
                           }),
                           _vm._v(
                             "\n                    Exterminated by The " +
@@ -67680,7 +69217,9 @@ var render = function() {
                           _vm._v(" "),
                           _c("img", {
                             staticClass: "determine-control__faction-icon",
-                            attrs: { src: _vm.factionIcon(influence.faction) }
+                            attrs: {
+                              src: _vm.shared.factionIcon(influence.faction)
+                            }
                           }),
                           _vm._v(" "),
                           _c("span", [
@@ -67724,7 +69263,9 @@ var render = function() {
                               _c("img", {
                                 staticClass:
                                   "pos-absolute bottom-0 z-2 card-faction-icon",
-                                attrs: { src: _vm.factionIcon(card.owner) }
+                                attrs: {
+                                  src: _vm.shared.factionIcon(card.owner)
+                                }
                               })
                             ]
                           )
@@ -67747,7 +69288,7 @@ var render = function() {
                           return _c("div", { staticClass: "highlight p-3" }, [
                             _c("img", {
                               staticClass: "determine-control__faction-icon",
-                              attrs: { src: _vm.factionIcon(faction) }
+                              attrs: { src: _vm.shared.factionIcon(faction) }
                             })
                           ])
                         }),
@@ -67924,7 +69465,9 @@ var render = function() {
                                   _c("img", {
                                     staticClass:
                                       "determine-control__faction-icon",
-                                    attrs: { src: _vm.factionIcon(faction) }
+                                    attrs: {
+                                      src: _vm.shared.factionIcon(faction)
+                                    }
                                   }),
                                   _vm._v(" " + _vm._s(faction) + " Kills")
                                 ]
@@ -68273,1002 +69816,6 @@ var render = function() {
                         "/sheet.jpg')"
                     })
                   : _vm._e()
-              ]
-            )
-          ]
-        )
-      : _vm._e()
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=template&id=1b0be726&":
-/*!************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=template&id=1b0be726& ***!
-  \************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("transition", { attrs: { name: "right" } }, [
-    _vm.player
-      ? _c(
-          "div",
-          {
-            staticClass:
-              "view-player pos-absolute width-100 height-100 top-0 p-5 d-flex align-stretch overflow-auto z-5"
-          },
-          [
-            _c("button", {
-              staticClass: "toggle fixed top right icon-x",
-              on: { click: _vm.closeViewPlayer }
-            }),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "view-player__main-content width-55 pt-4 pr-5 pb-6"
-              },
-              [
-                _c("div", { staticClass: "d-flex" }, [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "view-player__title width-100 pos-relative"
-                    },
-                    [
-                      _vm.shared.isFirstPlayer(_vm.player)
-                        ? _c("i", { staticClass: "first-player icon-key" })
-                        : _vm._e(),
-                      _vm._v(
-                        _vm._s(_vm._f("startCase")(_vm.player.name)) +
-                          "\n                        "
-                      ),
-                      _vm.canBribe
-                        ? _c(
-                            "div",
-                            {
-                              staticClass:
-                                "bribe-box pos-absolute top-0 right-0 d-flex align-baseline"
-                            },
-                            [
-                              _c("i", {
-                                staticClass: "icon-minimize pr-2",
-                                attrs: { disabled: _vm.bribe === 0 },
-                                on: {
-                                  click: function($event) {
-                                    _vm.bribe--
-                                  }
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("img", {
-                                staticClass: "icon-image ml-3",
-                                attrs: { src: "/images/icons/resource.png" }
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "ml-2 current-bribe mr-3" },
-                                [_vm._v(_vm._s(_vm.bribe))]
-                              ),
-                              _vm._v(" "),
-                              _c("i", {
-                                staticClass: "icon-maximize",
-                                attrs: {
-                                  disabled:
-                                    _vm.bribe >= _vm.shared.faction.resources
-                                },
-                                on: {
-                                  click: function($event) {
-                                    _vm.bribe++
-                                  }
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "span",
-                                {
-                                  staticClass: "pointer ml-3",
-                                  attrs: { disabled: _vm.bribe === 0 },
-                                  on: { click: _vm.sendBribe }
-                                },
-                                [_vm._v("SEND BRIBE")]
-                              )
-                            ]
-                          )
-                        : _vm._e()
-                    ]
-                  )
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "d-flex flex-wrap view-player__core-stats my-6"
-                  },
-                  [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__AP view-player__title width-50 d-flex align-center"
-                      },
-                      [
-                        _c("i", { staticClass: "icon-ap mr-3" }),
-                        _vm._v(" "),
-                        _c("span", [_vm._v(_vm._s(_vm.faction.ap))]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "note" }, [
-                          _vm._v("/ " + _vm._s(_vm.shared.data.maxAP))
-                        ]),
-                        _vm._v(" "),
-                        _vm.shared.admin
-                          ? _c("i", {
-                              staticClass: "icon-minimize pr-2",
-                              attrs: { disabled: _vm.faction.ap === 0 },
-                              on: {
-                                click: function($event) {
-                                  return _vm.setPoints("ap", -1)
-                                }
-                              }
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.shared.admin
-                          ? _c("i", {
-                              staticClass: "icon-maximize pr-2",
-                              on: {
-                                click: function($event) {
-                                  return _vm.setPoints("ap", 1)
-                                }
-                              }
-                            })
-                          : _vm._e()
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__PP view-player__title width-50 d-flex align-center"
-                      },
-                      [
-                        _c("i", { staticClass: "icon-pp mr-3" }),
-                        _vm._v(" "),
-                        _c("span", [_vm._v(_vm._s(_vm.faction.pp))]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "note" }, [
-                          _vm._v("/ " + _vm._s(_vm.shared.data.maxPP))
-                        ]),
-                        _vm._v(" "),
-                        _vm.shared.admin
-                          ? _c("i", {
-                              staticClass: "icon-minimize pr-2",
-                              attrs: { disabled: _vm.faction.pp === 0 },
-                              on: {
-                                click: function($event) {
-                                  return _vm.setPoints("pp", -1)
-                                }
-                              }
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.shared.admin
-                          ? _c("i", {
-                              staticClass: "icon-maximize pr-2",
-                              on: {
-                                click: function($event) {
-                                  return _vm.setPoints("pp", 1)
-                                }
-                              }
-                            })
-                          : _vm._e()
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__energy view-player__title width-50"
-                      },
-                      [
-                        _vm._v("Energy: "),
-                        _c("span", [_vm._v(_vm._s(_vm.faction.energy))]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "note" }, [
-                          _vm._v("/ " + _vm._s(_vm.faction.maxEnergy))
-                        ]),
-                        _vm._v(" "),
-                        _vm.shared.admin
-                          ? _c("i", {
-                              staticClass: "icon-minimize pr-2",
-                              attrs: { disabled: _vm.faction.energy === 0 },
-                              on: {
-                                click: function($event) {
-                                  return _vm.setPoints("energy", -1)
-                                }
-                              }
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.shared.admin
-                          ? _c("i", {
-                              staticClass: "icon-maximize pr-2",
-                              on: {
-                                click: function($event) {
-                                  return _vm.setPoints("energy", 1)
-                                }
-                              }
-                            })
-                          : _vm._e()
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__resources view-player__title width-50"
-                      },
-                      [
-                        _vm._v("Resources: "),
-                        _c("span", [_vm._v(_vm._s(_vm.faction.resources))]),
-                        _vm._v(" "),
-                        _vm.shared.admin
-                          ? _c("i", {
-                              staticClass: "icon-minimize pr-2",
-                              attrs: { disabled: _vm.faction.resources === 0 },
-                              on: {
-                                click: function($event) {
-                                  return _vm.setPoints("resources", -1)
-                                }
-                              }
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.shared.admin
-                          ? _c("i", {
-                              staticClass: "icon-maximize pr-2",
-                              on: {
-                                click: function($event) {
-                                  return _vm.setPoints("resources", 1)
-                                }
-                              }
-                            })
-                          : _vm._e()
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__resources view-player__title width-50"
-                      },
-                      [
-                        _vm._v(" Upgrade: "),
-                        _c("span", [
-                          _vm._v(
-                            _vm._s(
-                              _vm.faction.upgrade ? _vm.faction.upgrade : "none"
-                            )
-                          )
-                        ])
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__hand view-player__title width-50"
-                      },
-                      [
-                        _vm._v("Cards in hand: "),
-                        _c("span", [
-                          _vm._v(_vm._s(_vm.faction.cards.hand.length))
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "note" }, [
-                          _vm._v("/ +" + _vm._s(_vm.faction.cardDraw))
-                        ])
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__deploy view-player__title width-50"
-                      },
-                      [
-                        _vm._v("Deploy Limit: "),
-                        _c("span", [_vm._v(_vm._s(_vm.faction.deployLimit))])
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__defense-bonus view-player__title width-50"
-                      },
-                      [
-                        _vm._v("Defense Bonus: "),
-                        _c("span", [_vm._v("+" + _vm._s(_vm.defenseBonus))])
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__attack-bonus view-player__title width-50"
-                      },
-                      [
-                        _vm._v("Attack Bonus: "),
-                        _c("span", [
-                          _vm._v("+" + _vm._s(_vm.faction.attackBonus))
-                        ])
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__bonus-dice view-player__title width-50"
-                      },
-                      [
-                        _vm._v("Bonus Attack Dice: "),
-                        _c("span", [
-                          _vm._v("+" + _vm._s(_vm.faction.bonusDice))
-                        ])
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__captured view-player__title width-100"
-                      },
-                      [
-                        _vm._v("Captured Markers: "),
-                        _c("span", [
-                          _vm._v(
-                            _vm._s(_vm.faction.captured.current) +
-                              " / " +
-                              _vm._s(_vm.faction.captured.max)
-                          )
-                        ])
-                      ]
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Plan Focus:")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "prompt-question p-4" },
-                  [
-                    _vm._v(
-                      _vm._s(_vm.faction.focusDescription) +
-                        "\n                    "
-                    ),
-                    _vm.faction.focus
-                      ? _c(_vm.faction.focus, {
-                          tag: "component",
-                          attrs: { faction: _vm.faction }
-                        })
-                      : _vm._e()
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _vm.target
-                  ? _c("div", [
-                      _c("div", { staticClass: "view-player__title" }, [
-                        _vm._v("Current Target:")
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "view-player__active-cards" }, [
-                        _c("img", {
-                          staticClass: "view-player__card pointer",
-                          attrs: {
-                            src: "/images/cards/" + _vm.target.file + ".jpg"
-                          },
-                          on: {
-                            click: function($event) {
-                              _vm.shared.card =
-                                "/images/cards/" + _vm.target.file + ".jpg"
-                            }
-                          }
-                        })
-                      ])
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Active Cards:")
-                ]),
-                _vm._v(" "),
-                _vm.faction.cards.active.length
-                  ? _c(
-                      "div",
-                      { staticClass: "view-player__active-cards" },
-                      _vm._l(_vm.faction.cards.active, function(card) {
-                        return _c("img", {
-                          staticClass: "view-player__card pointer",
-                          attrs: { src: "/images/cards/" + card.file + ".jpg" },
-                          on: {
-                            click: function($event) {
-                              _vm.shared.card =
-                                "/images/cards/" + card.file + ".jpg"
-                            }
-                          }
-                        })
-                      }),
-                      0
-                    )
-                  : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Active Cards")
-                    ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Areas Controlled:")
-                ]),
-                _vm._v(" "),
-                _vm.areas.length
-                  ? _c(
-                      "div",
-                      { staticClass: "view-player__areas" },
-                      _vm._l(_vm.areas, function(area) {
-                        return _c(
-                          "div",
-                          { staticClass: "view-player__areas" },
-                          [
-                            _c(
-                              "div",
-                              { staticClass: "view-player__areas-name" },
-                              [_vm._v(_vm._s(area.name))]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "view-player__areas-control" },
-                              [_vm._v(_vm._s(area.control))]
-                            )
-                          ]
-                        )
-                      }),
-                      0
-                    )
-                  : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Areas Controlled")
-                    ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Unrevealed Tokens:")
-                ]),
-                _vm._v(" "),
-                _vm.unrevealedTokens
-                  ? _c(
-                      "div",
-                      {
-                        staticClass: "view-player__tokens d-flex justify-center"
-                      },
-                      _vm._l(_vm.unrevealedTokens, function(count, type) {
-                        return _c(
-                          "div",
-                          {
-                            staticClass:
-                              "view-player__token-wrap p-2 ratio-square pos-relative"
-                          },
-                          [
-                            _c(
-                              "div",
-                              {
-                                staticClass: "width-100 pos-relative height-100"
-                              },
-                              [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "view-player__token",
-                                    attrs: { "data-count": count }
-                                  },
-                                  [
-                                    _c("img", {
-                                      staticClass: "view-player__token",
-                                      attrs: {
-                                        src:
-                                          "/images/factions/" +
-                                          _vm.faction.name +
-                                          "/tokens/" +
-                                          type +
-                                          ".png"
-                                      }
-                                    })
-                                  ]
-                                )
-                              ]
-                            )
-                          ]
-                        )
-                      }),
-                      0
-                    )
-                  : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Unrevealed Tokens")
-                    ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Current Upgrade:")
-                ]),
-                _vm._v(" "),
-                _vm.faction.upgrade
-                  ? _c("div", { staticClass: "view-player__areas" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "view-player__upgrade-card p-3 center-text"
-                        },
-                        [
-                          _c("img", {
-                            staticClass:
-                              "view-player__upgrade-card-image width-80",
-                            attrs: {
-                              src:
-                                "/images/factions/" +
-                                _vm.faction.name +
-                                "/upgrade-" +
-                                _vm.faction.upgrade +
-                                ".jpg"
-                            }
-                          })
-                        ]
-                      )
-                    ])
-                  : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Upgrade")
-                    ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Areas Skills Used:")
-                ]),
-                _vm._v(" "),
-                _vm.faction.usedSkills.length
-                  ? _c(
-                      "div",
-                      { staticClass: "view-player__areas" },
-                      _vm._l(_vm.faction.usedSkills, function(area) {
-                        return _c(
-                          "div",
-                          { staticClass: "view-player__areas" },
-                          [
-                            _c(
-                              "div",
-                              { staticClass: "view-player__areas-name" },
-                              [_vm._v(_vm._s(area))]
-                            )
-                          ]
-                        )
-                      }),
-                      0
-                    )
-                  : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Skills Used")
-                    ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Capitol Tokens:")
-                ]),
-                _vm._v(" "),
-                _vm.faction.capitolTokens.length
-                  ? _c(
-                      "div",
-                      {
-                        staticClass:
-                          "view-player__capitol-tokens d-flex justify-center"
-                      },
-                      _vm._l(_vm.faction.capitolTokens, function(token) {
-                        return _c(
-                          "div",
-                          {
-                            staticClass:
-                              "view-player__capitol-token center-text p-3"
-                          },
-                          [
-                            _c("img", {
-                              staticClass: "view-player__capitol-token__image",
-                              attrs: {
-                                src:
-                                  "/images/tokens/capitol-" +
-                                  token.turn +
-                                  ".png"
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "view-player__capitol-token__value"
-                              },
-                              [_vm._v(_vm._s(token.ap) + " AP")]
-                            )
-                          ]
-                        )
-                      }),
-                      0
-                    )
-                  : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Capitol Tokens")
-                    ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Killed Units:")
-                ]),
-                _vm._v(" "),
-                _vm.killedUnits
-                  ? _c(
-                      "div",
-                      { staticClass: "d-flex justify-center p-4" },
-                      _vm._l(_vm.killedUnits, function(units, area) {
-                        return _c("unit-set", {
-                          key: area,
-                          attrs: {
-                            units: units,
-                            title: area,
-                            classes: "border"
-                          }
-                        })
-                      }),
-                      1
-                    )
-                  : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Killed Units")
-                    ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Completed Plans:")
-                ]),
-                _vm._v(" "),
-                _vm.completedPlans
-                  ? _c(
-                      "div",
-                      { staticClass: "view-player__completed-plans py-4" },
-                      _vm._l(_vm.completedPlans, function(plans, turn) {
-                        return _c(
-                          "div",
-                          { staticClass: "completed-plan__block" },
-                          [
-                            _c(
-                              "div",
-                              { staticClass: "prompt-question center-text" },
-                              [_vm._v("TURN " + _vm._s(turn))]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "d-flex flex-wrap" },
-                              _vm._l(plans, function(plan) {
-                                return _c(
-                                  "div",
-                                  {
-                                    staticClass:
-                                      "plan-block__container d-flex my-3"
-                                  },
-                                  [
-                                    _c(
-                                      "div",
-                                      { staticClass: "plan-block__pips" },
-                                      _vm._l(plan.objectives, function(test) {
-                                        return _c("div", {
-                                          staticClass:
-                                            "plan-block__pip primary-light",
-                                          class: {
-                                            "icon-circle": test.passed,
-                                            "icon-circle-open": !test.passed,
-                                            highlight: test.scoreable
-                                          }
-                                        })
-                                      }),
-                                      0
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "plan-block__image-wrap pos-relative"
-                                      },
-                                      [
-                                        _c("img", {
-                                          staticClass:
-                                            "completed-plans__points",
-                                          attrs: {
-                                            src:
-                                              "/images/icons/pp-" +
-                                              plan.points +
-                                              ".png"
-                                          }
-                                        }),
-                                        _vm._v(" "),
-                                        _c("img", {
-                                          staticClass: "plan-block__image",
-                                          attrs: {
-                                            src:
-                                              "/images/factions/" +
-                                              _vm.faction.name +
-                                              "/plans/" +
-                                              plan.num +
-                                              ".jpg"
-                                          }
-                                        })
-                                      ]
-                                    )
-                                  ]
-                                )
-                              }),
-                              0
-                            )
-                          ]
-                        )
-                      }),
-                      0
-                    )
-                  : _c("div", { staticClass: "view-player__empty" }, [
-                      _vm._v("No Completed Plans")
-                    ])
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass:
-                  "view-player__side width-45 height-100 pt-4 pl-3 pb-6"
-              },
-              [
-                _c("div", { staticClass: "view-player__title" }, [
-                  _vm._v("Faction Sheet:")
-                ]),
-                _vm._v(" "),
-                _c("img", {
-                  staticClass: "my-5",
-                  attrs: {
-                    src: "/images/factions/" + _vm.faction.name + "/sheet.jpg"
-                  }
-                }),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title mt-5" }, [
-                  _vm._v("Unit Mix:")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "view-player__units d-flex mb-4 justify-center align-start"
-                  },
-                  _vm._l(
-                    _vm.shared.groupByCount(_vm.faction.units, "type"),
-                    function(count, type) {
-                      return _c(
-                        "div",
-                        {
-                          staticClass:
-                            "view-player__token-wrap p-2 pos-relative d-flex flex-column"
-                        },
-                        [
-                          _c(
-                            "div",
-                            {
-                              staticClass: "width-100 pos-relative ratio-square"
-                            },
-                            [
-                              _c(
-                                "div",
-                                {
-                                  staticClass: "view-player__unit",
-                                  attrs: { "data-count": count }
-                                },
-                                [
-                                  _c("img", {
-                                    staticClass: "view-player__unit-image",
-                                    attrs: {
-                                      src:
-                                        "/images/factions/" +
-                                        _vm.faction.name +
-                                        "/units/" +
-                                        type +
-                                        ".png"
-                                    }
-                                  })
-                                ]
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _vm.faction.flipableUnits &&
-                          _vm.faction.flipableUnits.includes(type)
-                            ? _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "width-100 pos-relative ratio-square"
-                                },
-                                [
-                                  _c(
-                                    "div",
-                                    { staticClass: "view-player__unit" },
-                                    [
-                                      _c("img", {
-                                        staticClass: "view-player__unit-image",
-                                        attrs: {
-                                          src:
-                                            "/images/factions/" +
-                                            _vm.faction.name +
-                                            "/units/" +
-                                            type +
-                                            "-flipped.png"
-                                        }
-                                      })
-                                    ]
-                                  )
-                                ]
-                              )
-                            : _vm._e()
-                        ]
-                      )
-                    }
-                  ),
-                  0
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title mt-5" }, [
-                  _vm._v("Token Mix:")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "view-player__tokens d-flex mb-4 justify-center"
-                  },
-                  _vm._l(
-                    _vm.shared.groupByCount(_vm.faction.tokens, "name"),
-                    function(count, type) {
-                      return _c(
-                        "div",
-                        {
-                          staticClass:
-                            "view-player__token-wrap p-2 ratio-square pos-relative"
-                        },
-                        [
-                          _c(
-                            "div",
-                            {
-                              staticClass: "width-100 pos-relative height-100"
-                            },
-                            [
-                              _c(
-                                "div",
-                                {
-                                  staticClass: "view-player__token",
-                                  attrs: { "data-count": count }
-                                },
-                                [
-                                  _c("img", {
-                                    staticClass: "view-player__token",
-                                    attrs: {
-                                      src:
-                                        "/images/factions/" +
-                                        _vm.faction.name +
-                                        "/tokens/" +
-                                        type +
-                                        ".png"
-                                    }
-                                  })
-                                ]
-                              )
-                            ]
-                          )
-                        ]
-                      )
-                    }
-                  ),
-                  0
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title mt-5" }, [
-                  _vm._v("Upgrades:")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "view-player__upgrades d-flex justify-center"
-                  },
-                  [
-                    _c(
-                      "div",
-                      { staticClass: "view-player__upgrade-card width-50 p-3" },
-                      [
-                        _c("img", {
-                          staticClass: "view-player__upgrade-card-image",
-                          attrs: {
-                            src:
-                              "/images/factions/" +
-                              _vm.faction.name +
-                              "/upgrade-1.jpg"
-                          }
-                        })
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "view-player__upgrade-card width-50 p-3" },
-                      [
-                        _c("img", {
-                          staticClass: "view-player__upgrade-card-image",
-                          attrs: {
-                            src:
-                              "/images/factions/" +
-                              _vm.faction.name +
-                              "/upgrade-2.jpg"
-                          }
-                        })
-                      ]
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "view-player__title mt-5" }, [
-                  _vm._v("Plans:")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "view-player__upgrades d-flex flex-wrap" },
-                  _vm._l(8, function(index) {
-                    return _c("div", { staticClass: "width-50 p-3" }, [
-                      _c("img", {
-                        staticClass: "width-100 radius-1",
-                        attrs: {
-                          src:
-                            "/images/factions/" +
-                            _vm.faction.name +
-                            "/plans/" +
-                            index +
-                            ".jpg"
-                        }
-                      })
-                    ])
-                  }),
-                  0
-                )
               ]
             )
           ]
@@ -82834,15 +83381,6 @@ files.keys().map(function (key) {
 __webpack_require__(/*! ./partials/_ajax */ "./resources/js/partials/_ajax.js"); // ajax helper
 
 
-__webpack_require__(/*! ./partials/_onload */ "./resources/js/partials/_onload.js"); // onload helper
-
-
-__webpack_require__(/*! ./partials/_ifCsrf */ "./resources/js/partials/_ifCsrf.js"); // set ifCsrf handler
-
-
-__webpack_require__(/*! ./partials/_helpers */ "./resources/js/partials/_helpers.js"); // set up shared state
-
-
 __webpack_require__(/*! ./partials/_state */ "./resources/js/partials/_state.js"); // set up shared state
 
 
@@ -83003,11 +83541,16 @@ var map = {
 	"./ViewDiscards.vue": "./resources/js/components/ViewDiscards.vue",
 	"./ViewPanels/CombatFaction.vue": "./resources/js/components/ViewPanels/CombatFaction.vue",
 	"./ViewPanels/LastAttack.vue": "./resources/js/components/ViewPanels/LastAttack.vue",
+	"./ViewPanels/Player/FactionComponents.vue": "./resources/js/components/ViewPanels/Player/FactionComponents.vue",
+	"./ViewPanels/Player/PlayerBribe.vue": "./resources/js/components/ViewPanels/Player/PlayerBribe.vue",
+	"./ViewPanels/Player/PlayerPlans.vue": "./resources/js/components/ViewPanels/Player/PlayerPlans.vue",
+	"./ViewPanels/Player/PlayerState.vue": "./resources/js/components/ViewPanels/Player/PlayerState.vue",
+	"./ViewPanels/Player/PlayerStats.vue": "./resources/js/components/ViewPanels/Player/PlayerStats.vue",
+	"./ViewPanels/Player/ViewPlayer.vue": "./resources/js/components/ViewPanels/Player/ViewPlayer.vue",
 	"./ViewPanels/ViewArea.vue": "./resources/js/components/ViewPanels/ViewArea.vue",
 	"./ViewPanels/ViewCard.vue": "./resources/js/components/ViewPanels/ViewCard.vue",
 	"./ViewPanels/ViewCombat.vue": "./resources/js/components/ViewPanels/ViewCombat.vue",
 	"./ViewPanels/ViewFactions.vue": "./resources/js/components/ViewPanels/ViewFactions.vue",
-	"./ViewPanels/ViewPlayer.vue": "./resources/js/components/ViewPanels/ViewPlayer.vue",
 	"./VillainsOnline.vue": "./resources/js/components/VillainsOnline.vue",
 	"./areas/AreaAction.vue": "./resources/js/components/areas/AreaAction.vue",
 	"./areas/AreaActions.vue": "./resources/js/components/areas/AreaActions.vue",
@@ -92784,6 +93327,438 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/ViewPanels/Player/FactionComponents.vue":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/FactionComponents.vue ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _FactionComponents_vue_vue_type_template_id_59f33ec4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FactionComponents.vue?vue&type=template&id=59f33ec4& */ "./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=template&id=59f33ec4&");
+/* harmony import */ var _FactionComponents_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FactionComponents.vue?vue&type=script&lang=js& */ "./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _FactionComponents_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _FactionComponents_vue_vue_type_template_id_59f33ec4___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _FactionComponents_vue_vue_type_template_id_59f33ec4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ViewPanels/Player/FactionComponents.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionComponents_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./FactionComponents.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionComponents_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=template&id=59f33ec4&":
+/*!********************************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=template&id=59f33ec4& ***!
+  \********************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionComponents_vue_vue_type_template_id_59f33ec4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./FactionComponents.vue?vue&type=template&id=59f33ec4& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/FactionComponents.vue?vue&type=template&id=59f33ec4&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionComponents_vue_vue_type_template_id_59f33ec4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FactionComponents_vue_vue_type_template_id_59f33ec4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerBribe.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerBribe.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _PlayerBribe_vue_vue_type_template_id_62bb092d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlayerBribe.vue?vue&type=template&id=62bb092d& */ "./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=template&id=62bb092d&");
+/* harmony import */ var _PlayerBribe_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PlayerBribe.vue?vue&type=script&lang=js& */ "./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _PlayerBribe_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PlayerBribe_vue_vue_type_template_id_62bb092d___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PlayerBribe_vue_vue_type_template_id_62bb092d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ViewPanels/Player/PlayerBribe.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerBribe_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlayerBribe.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerBribe_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=template&id=62bb092d&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=template&id=62bb092d& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerBribe_vue_vue_type_template_id_62bb092d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlayerBribe.vue?vue&type=template&id=62bb092d& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerBribe.vue?vue&type=template&id=62bb092d&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerBribe_vue_vue_type_template_id_62bb092d___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerBribe_vue_vue_type_template_id_62bb092d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerPlans.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerPlans.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _PlayerPlans_vue_vue_type_template_id_7d3fa47b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlayerPlans.vue?vue&type=template&id=7d3fa47b& */ "./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=template&id=7d3fa47b&");
+/* harmony import */ var _PlayerPlans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PlayerPlans.vue?vue&type=script&lang=js& */ "./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _PlayerPlans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PlayerPlans_vue_vue_type_template_id_7d3fa47b___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PlayerPlans_vue_vue_type_template_id_7d3fa47b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ViewPanels/Player/PlayerPlans.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerPlans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlayerPlans.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerPlans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=template&id=7d3fa47b&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=template&id=7d3fa47b& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerPlans_vue_vue_type_template_id_7d3fa47b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlayerPlans.vue?vue&type=template&id=7d3fa47b& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerPlans.vue?vue&type=template&id=7d3fa47b&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerPlans_vue_vue_type_template_id_7d3fa47b___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerPlans_vue_vue_type_template_id_7d3fa47b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerState.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerState.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _PlayerState_vue_vue_type_template_id_fae3b9bc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlayerState.vue?vue&type=template&id=fae3b9bc& */ "./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=template&id=fae3b9bc&");
+/* harmony import */ var _PlayerState_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PlayerState.vue?vue&type=script&lang=js& */ "./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _PlayerState_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PlayerState_vue_vue_type_template_id_fae3b9bc___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PlayerState_vue_vue_type_template_id_fae3b9bc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ViewPanels/Player/PlayerState.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerState_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlayerState.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerState_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=template&id=fae3b9bc&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=template&id=fae3b9bc& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerState_vue_vue_type_template_id_fae3b9bc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlayerState.vue?vue&type=template&id=fae3b9bc& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerState.vue?vue&type=template&id=fae3b9bc&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerState_vue_vue_type_template_id_fae3b9bc___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerState_vue_vue_type_template_id_fae3b9bc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerStats.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerStats.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _PlayerStats_vue_vue_type_template_id_f95927a0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlayerStats.vue?vue&type=template&id=f95927a0& */ "./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=template&id=f95927a0&");
+/* harmony import */ var _PlayerStats_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PlayerStats.vue?vue&type=script&lang=js& */ "./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _PlayerStats_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PlayerStats_vue_vue_type_template_id_f95927a0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PlayerStats_vue_vue_type_template_id_f95927a0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ViewPanels/Player/PlayerStats.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerStats_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlayerStats.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerStats_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=template&id=f95927a0&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=template&id=f95927a0& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerStats_vue_vue_type_template_id_f95927a0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlayerStats.vue?vue&type=template&id=f95927a0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/PlayerStats.vue?vue&type=template&id=f95927a0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerStats_vue_vue_type_template_id_f95927a0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlayerStats_vue_vue_type_template_id_f95927a0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/ViewPlayer.vue":
+/*!******************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/ViewPlayer.vue ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ViewPlayer_vue_vue_type_template_id_ab2e3838___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ViewPlayer.vue?vue&type=template&id=ab2e3838& */ "./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=template&id=ab2e3838&");
+/* harmony import */ var _ViewPlayer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ViewPlayer.vue?vue&type=script&lang=js& */ "./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ViewPlayer.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _ViewPlayer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ViewPlayer_vue_vue_type_template_id_ab2e3838___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ViewPlayer_vue_vue_type_template_id_ab2e3838___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ViewPanels/Player/ViewPlayer.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewPlayer.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=style&index=0&lang=css&":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=style&index=0&lang=css& ***!
+  \***************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader!../../../../../node_modules/css-loader??ref--6-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewPlayer.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=template&id=ab2e3838&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=template&id=ab2e3838& ***!
+  \*************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_template_id_ab2e3838___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewPlayer.vue?vue&type=template&id=ab2e3838& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/Player/ViewPlayer.vue?vue&type=template&id=ab2e3838&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_template_id_ab2e3838___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_template_id_ab2e3838___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/ViewPanels/ViewArea.vue":
 /*!*********************************************************!*\
   !*** ./resources/js/components/ViewPanels/ViewArea.vue ***!
@@ -93109,93 +94084,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewFactions_vue_vue_type_template_id_45e533dc___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewFactions_vue_vue_type_template_id_45e533dc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/ViewPanels/ViewPlayer.vue":
-/*!***********************************************************!*\
-  !*** ./resources/js/components/ViewPanels/ViewPlayer.vue ***!
-  \***********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ViewPlayer_vue_vue_type_template_id_1b0be726___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ViewPlayer.vue?vue&type=template&id=1b0be726& */ "./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=template&id=1b0be726&");
-/* harmony import */ var _ViewPlayer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ViewPlayer.vue?vue&type=script&lang=js& */ "./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ViewPlayer.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _ViewPlayer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ViewPlayer_vue_vue_type_template_id_1b0be726___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ViewPlayer_vue_vue_type_template_id_1b0be726___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/ViewPanels/ViewPlayer.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=script&lang=js&":
-/*!************************************************************************************!*\
-  !*** ./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=script&lang=js& ***!
-  \************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewPlayer.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=style&index=0&lang=css&":
-/*!********************************************************************************************!*\
-  !*** ./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=style&index=0&lang=css& ***!
-  \********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewPlayer.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-
-
-/***/ }),
-
-/***/ "./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=template&id=1b0be726&":
-/*!******************************************************************************************!*\
-  !*** ./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=template&id=1b0be726& ***!
-  \******************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_template_id_1b0be726___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewPlayer.vue?vue&type=template&id=1b0be726& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ViewPanels/ViewPlayer.vue?vue&type=template&id=1b0be726&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_template_id_1b0be726___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewPlayer_vue_vue_type_template_id_1b0be726___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -95827,6 +96715,75 @@ window.App.ajax = new ( /*#__PURE__*/function () {
   }
 
   _createClass(_class, [{
+    key: "post",
+
+    /**
+     * Make a POST request
+     *
+     * @param url
+     * @param data
+     * @param message
+     * @returns {Promise}
+     */
+    value: function post(url, data, message) {
+      return this.axios('post', url, data, message);
+    }
+    /**
+     * Make a GET request
+     *
+     * @param url
+     * @param message
+     * @returns {Promise}
+     */
+
+  }, {
+    key: "get",
+    value: function get(url, message) {
+      return this.axios('get', url, {}, message);
+    }
+    /**
+     * Make a patch request
+     *
+     * @param url
+     * @param data
+     * @param message
+     * @returns {Promise}
+     */
+
+  }, {
+    key: "patch",
+    value: function patch(url, data, message) {
+      data = data || {};
+      data._method = 'patch';
+      return this.axios('post', url, data, message);
+    }
+    /**
+     * Make a DELETE request
+     *
+     * @param url
+     * @param data
+     * @param message
+     * @returns {*|Promise<unknown>}
+     */
+
+  }, {
+    key: "delete",
+    value: function _delete(url, data, message) {
+      data = data || {};
+      data._method = 'delete';
+      return this.axios('post', url, data, message);
+    }
+    /**
+     * Make a multipart/formdata request
+     *
+     * @param url
+     * @param originalData
+     * @param file
+     * @param message
+     * @returns {Promise}
+     */
+
+  }, {
     key: "file",
     value: function file(url, originalData, _file, message) {
       // set multipart form headers
@@ -95847,30 +96804,17 @@ window.App.ajax = new ( /*#__PURE__*/function () {
 
       return this.axios('post', url, data, message, headers);
     }
-  }, {
-    key: "post",
-    value: function post(url, data, message) {
-      return this.axios('post', url, data, message);
-    }
-  }, {
-    key: "get",
-    value: function get(url, message) {
-      return this.axios('get', url, {}, message);
-    }
-  }, {
-    key: "patch",
-    value: function patch(url, data, message) {
-      data = data || {};
-      data._method = 'patch';
-      return this.axios('post', url, data, message);
-    }
-  }, {
-    key: "delete",
-    value: function _delete(url, data, message) {
-      data = data || {};
-      data._method = 'delete';
-      return this.axios('post', url, data, message);
-    }
+    /**
+     * Make an axios call
+     *
+     * @param type
+     * @param url
+     * @param data
+     * @param message // our success message
+     * @param headers
+     * @returns {Promise}
+     */
+
   }, {
     key: "axios",
     value: function (_axios) {
@@ -95893,8 +96837,7 @@ window.App.ajax = new ( /*#__PURE__*/function () {
           resolve(response);
         })["catch"](function (error) {
           // log error
-          console.log(error); // notify erro
-          // reject
+          console.log(error); // reject
 
           reject(error);
         });
@@ -95913,6 +96856,12 @@ window.App.ajax = new ( /*#__PURE__*/function () {
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -96012,28 +96961,50 @@ window.App._cookieHandler = new ( /*#__PURE__*/function () {
 
       document.cookie = name + "=" + value + expires + "; path=/";
     }
+    /**
+     * Do all the garbage nonsense we have to do to read a cookie in javascript
+     * @param name
+     * @returns {string|null}
+     */
+
   }, {
     key: "readCookie",
     value: function readCookie(name) {
       var nameEQ = name + "=";
-      var ca = document.cookie.split(';');
+      var cookieArray = document.cookie.split(';');
 
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
+      var _iterator = _createForOfIteratorHelper(cookieArray),
+          _step;
 
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1, c.length);
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var cookie = _step.value;
+
+          while (cookie.charAt(0) == ' ') {
+            cookie = cookie.substring(1, cookie.length);
+          }
+
+          if (cookie.indexOf(nameEQ) === 0) return cookie.substring(nameEQ.length, cookie.length);
         }
-
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
       }
 
       return null;
     }
+    /**
+     * Returns a cookie of the given name. If the return value is valid JSON parse it first
+     *
+     * @param name
+     * @returns {*}
+     */
+
   }, {
     key: "getCookie",
     value: function getCookie(name) {
-      var value = this.readCookie(name);
+      var value = this.readCookie(name); // parse JSON if we passed it
 
       if (this.isJson(value)) {
         return JSON.parse(value);
@@ -96047,11 +97018,15 @@ window.App._cookieHandler = new ( /*#__PURE__*/function () {
 }())(); // public API
 
 window.App.cookie = function (name, value, time) {
+  // if we supplied a value, run set cookie
   if (value !== undefined) {
     App._cookieHandler.setCookie(name, value, time);
-  } else {
-    return App._cookieHandler.getCookie(name);
-  }
+
+    return;
+  } // otherwise run get cookie
+
+
+  return App._cookieHandler.getCookie(name);
 };
 
 /***/ }),
@@ -96069,6 +97044,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mouseup", function() { return mouseup; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mousemove", function() { return mousemove; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDraggerOffset", function() { return setDraggerOffset; });
+/**
+ * Vue drag directive, I don't know where I got this, but I didn't write it.
+ */
 var _data = {
   down: false,
   initialX: 0,
@@ -96125,6 +97103,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+/**
+ * Shared event handler, which is really just a wrapper around a Vue instance
+ */
 window.App.event = new ( /*#__PURE__*/function () {
   function _class() {
     _classCallCheck(this, _class);
@@ -96162,10 +97143,17 @@ window.App.event = new ( /*#__PURE__*/function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+/**
+ * Apply lodash start case to a string
+ */
 Vue.filter('startCase', function (value) {
   if (!value) return '';
   return _.startCase(value);
 });
+/**
+ * Remove hyphens from a string
+ */
+
 Vue.filter('clearHyphens', function (value) {
   if (!value) return '';
   return value.replace('-', ' ');
@@ -96433,87 +97421,24 @@ var Form = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./resources/js/partials/_helpers.js":
-/*!*******************************************!*\
-  !*** ./resources/js/partials/_helpers.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-window.$ = function (selector) {
-  var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
-  return element.querySelectorAll(selector);
-};
-
-window.forEach = function (collection, callback, scope) {
-  if (Object.prototype.toString.call(collection) === '[object Object]') {
-    for (var prop in collection) {
-      if (Object.prototype.hasOwnProperty.call(collection, prop)) {
-        callback.call(scope, collection[prop], prop, collection);
-      }
-    }
-  } else {
-    for (var i = 0, len = collection.length; i < len; i++) {
-      callback.call(scope, collection[i], i, collection);
-    }
-  }
-};
-
-/***/ }),
-
-/***/ "./resources/js/partials/_ifCsrf.js":
-/*!******************************************!*\
-  !*** ./resources/js/partials/_ifCsrf.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-window.App.ifCsrf = function (callback) {
-  var wrapper = function wrapper() {
-    if (App.csrf) {
-      callback();
-    } else {
-      console.log('csrf not found');
-      setTimeout(wrapper, 200);
-    }
-  };
-
-  wrapper();
-};
-
-/***/ }),
-
-/***/ "./resources/js/partials/_onload.js":
-/*!******************************************!*\
-  !*** ./resources/js/partials/_onload.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-window.addtoOnLoad = function (func) {
-  var preOnload = window.onload;
-
-  if (typeof window.onload != 'function') {
-    window.onload = func;
-  } else {
-    window.onload = function () {
-      if (preOnload) {
-        preOnload();
-      }
-
-      func();
-    };
-  }
-};
-
-/***/ }),
-
 /***/ "./resources/js/partials/_preload.js":
 /*!*******************************************!*\
   !*** ./resources/js/partials/_preload.js ***!
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -96526,10 +97451,12 @@ window.App.preloader = new ( /*#__PURE__*/function () {
     _classCallCheck(this, _class);
 
     this.loaded = false;
-    this.list = [];
-    this.imgs;
-    this.t;
-    this.timer;
+    this.list = []; // images we are currently loading
+
+    this.images = []; // images we want to load
+
+    this.timeout;
+    this.timer = null;
   }
 
   _createClass(_class, [{
@@ -96538,8 +97465,8 @@ window.App.preloader = new ( /*#__PURE__*/function () {
       var _this = this;
 
       this.loaded = false;
-      this.imgs = array.slice(0);
-      this.t = timeout || 15 * 1000;
+      this.images = [].concat(_toConsumableArray(this.images), _toConsumableArray(array));
+      this.timeout = timeout || 15 * 1000; // should we load our images yet?
 
       if (!waitForOtherResources || document.readyState === 'complete') {
         this.loadNow();
@@ -96551,7 +97478,7 @@ window.App.preloader = new ( /*#__PURE__*/function () {
         }); // in case window.addEventListener doesn't get called (sometimes some resource gets stuck)
         // then preload the images anyway after some timeout time
 
-        this.timer = setTimeout(this.loadNow, this.t);
+        this.timer = setTimeout(this.loadNow, this.timeout);
       }
     }
   }, {
@@ -96561,10 +97488,9 @@ window.App.preloader = new ( /*#__PURE__*/function () {
 
       if (!this.loaded) {
         this.loaded = true;
-
-        var _loop = function _loop(i) {
-          if (!_this2.imgs[i].includes('.jpg') && !_this2.imgs[i].includes('.png')) return "continue";
-          var img = new Image();
+        this.images.forEach(function (image) {
+          if (!image.includes('.jpg') && !image.includes('.png')) return;
+          var img = new Image(); // once this image loads,
 
           img.onload = img.onerror = img.onabort = function () {
             var index = _this2.list.indexOf(img);
@@ -96574,20 +97500,25 @@ window.App.preloader = new ( /*#__PURE__*/function () {
               // for memory consumption reasons
               _this2.list.splice(index, 1);
             }
-          };
+          }; // push this image to our list
 
-          _this2.list.push(img);
 
-          img.src = _this2.imgs[i];
-        };
+          _this2.list.push(img); // then set its url
 
-        for (var i = 0; i < this.imgs.length; i++) {
-          var _ret = _loop(i);
 
-          if (_ret === "continue") continue;
-        }
+          img.src = image;
+        });
+        this.images = [];
       }
     }
+    /**
+     * Add files to our pre-loader
+     *
+     * @param files
+     * @param wait
+     * @param timeout
+     */
+
   }, {
     key: "add",
     value: function add(files, wait, timeout) {
@@ -96595,6 +97526,10 @@ window.App.preloader = new ( /*#__PURE__*/function () {
       if (!Array.isArray(files)) files = [files];
       this.preloadImages(files, wait, timeout);
     }
+    /**
+     * load our core game assets
+     */
+
   }, {
     key: "loadCore",
     value: function loadCore() {
@@ -96604,6 +97539,12 @@ window.App.preloader = new ( /*#__PURE__*/function () {
         return _this3.add(result.data);
       });
     }
+    /**
+     * load a faction's assets
+     *
+     * @param faction
+     */
+
   }, {
     key: "loadFaction",
     value: function loadFaction(faction) {
@@ -96628,6 +97569,57 @@ window.App.preloader = new ( /*#__PURE__*/function () {
 /***/ (function(module, exports) {
 
 window.App.state = {
+  csrf: null,
+  // store our csrf token
+  data: null,
+  // store our game data
+  game: null,
+  // store our game id
+  lobbyPlayers: {},
+  // players in the lobby
+  savedGames: [],
+  // store our saved games
+  openSettings: false,
+  // should the settings panel be open?
+  player: null,
+  // store our current player
+  faction: null,
+  // store our current faction
+  actions: null,
+  // store our available actions
+  action: null,
+  // store our current action
+  card: null,
+  // store our selected card
+  token: null,
+  // store our selected token
+  showXavier: false,
+  // should we show xavier blackstone during token placement?
+  viewDiscard: false,
+  // should we open the discard pile?
+  messages: [],
+  // store game messages
+  playerIndex: null,
+  // store the current player index
+  factionName: null,
+  // store the current faction name
+  id: null,
+  // store our player id
+  name: null,
+  // store our player name
+  // track the current influence leader for each area
+  areaLeaders: {
+    'capitol': null,
+    'sewers': null,
+    'police': null,
+    'laboratory': null,
+    'factory': null,
+    'bank': null,
+    'university': null,
+    'subway': null,
+    'church': null
+  },
+  // a map of text strings to convert to an image when calling the filterText() method
   filterMap: {
     'xSEEKx': '<img class="icon-image ml-3" src="/images/icons/seeking.png">',
     'xIx': '<img class="icon-image ml-3" src="/images/icons/influence.png">',
@@ -96677,49 +97669,24 @@ window.App.state = {
     'xA17x': '<img class="icon-image ml-3" src="/images/icons/attack-17.png">',
     'xA18x': '<img class="icon-image ml-3" src="/images/icons/attack-18.png">'
   },
-  filter: [],
-  debug: false,
-  csrf: null,
-  data: null,
-  game: null,
-  lobbyPlayers: {},
-  savedGames: [],
-  openSettings: false,
-  player: null,
-  faction: null,
-  actions: null,
-  action: null,
-  card: null,
-  token: null,
-  showXavier: false,
-  viewDiscard: false,
-  messages: [],
-  playerIndex: null,
-  factionName: null,
-  id: null,
-  name: null,
-  areaLeaders: {
-    'capitol': null,
-    'sewers': null,
-    'police': null,
-    'laboratory': null,
-    'factory': null,
-    'bank': null,
-    'university': null,
-    'subway': null,
-    'church': null
-  },
+
+  /**
+   * Repor an error in the console
+   * @param error
+   */
   errorReport: function errorReport(error) {
     console.log(error.message);
     console.log(error.data);
   },
+
+  /**
+   * Initialize a shared property into the state
+   *
+   * @param property
+   * @param value
+   */
   init: function init(property, value) {
     var _this = this;
-
-    if (this.debug) {
-      console.log("set ".concat(property, " to:"));
-      console.log(value);
-    }
 
     var propertyArr = property.split('.');
     property = propertyArr.pop();
@@ -96764,6 +97731,13 @@ window.App.state = {
       this.errorReport(error);
     }
   },
+
+  /**
+   * Filter the given text replacing anything in our filterMap with the appropriate images
+   *
+   * @param text
+   * @returns {string|void}
+   */
   filterText: function filterText(text) {
     var regex = Object.keys(this.filterMap).join('|');
     var _map = this.filterMap;
@@ -96771,13 +97745,23 @@ window.App.state = {
       return _map[matched];
     });
   },
+
+  /**
+   * If the given player the first player?
+   *
+   * @param player
+   * @returns {boolean}
+   */
   isFirstPlayer: function isFirstPlayer(player) {
-    //return player.index === this.data.firstPlayer;
     return player.id === this.data.playerOrder[0];
   },
-  getFaction: function getFaction() {
-    return this.getPlayerFaction(this.player);
-  },
+
+  /**
+   * Handle emitting from our socket
+   *
+   * @param event
+   * @param args
+   */
   socketEmit: function socketEmit(event) {
     var _this$socket;
 
@@ -96787,6 +97771,13 @@ window.App.state = {
 
     (_this$socket = this.socket).emit.apply(_this$socket, [event, this.data.id].concat(args));
   },
+
+  /**
+   * Respond to an action prompt
+   *
+   * @param event
+   * @param args
+   */
   respond: function respond(event) {
     var _this$socket2;
 
@@ -96794,51 +97785,110 @@ window.App.state = {
       args[_key2 - 1] = arguments[_key2];
     }
 
-    (_this$socket2 = this.socket).emit.apply(_this$socket2, ['respond', this.data.id, event].concat(args));
+    // emit response to our prompt
+    (_this$socket2 = this.socket).emit.apply(_this$socket2, ['respond', this.data.id, event].concat(args)); // clear our prompt
 
-    this.player.prompt = false;
-    App.event.emit('unselectAreas');
+
+    this.player.prompt = false; // unselect any areas
+
+    App.event.emit('unselectAreas'); // ~~click~~
+
     App.event.emit('sound', 'ui');
   },
+
+  /**
+   * Return the given player's faction
+   *
+   * @param player
+   * @returns {object} // faction data
+   */
   getPlayerFaction: function getPlayerFaction(player) {
-    var _this2 = this;
-
-    var faction = null;
-
-    _.forEach(this.data.factions, function (value, prop) {
-      if (value.owner === player.id) {
-        faction = _this2.data.factions[prop];
-      }
+    return Object.values(this.data.factions).find(function (faction) {
+      return faction.owner === player.id;
     });
-
-    return faction;
   },
+
+  /**
+   * Helper for returning this player's faction
+   *
+   * @returns {object}
+   */
+  getFaction: function getFaction() {
+    return this.getPlayerFaction(this.player);
+  },
+
+  /**
+   * Return the url for the given faction's icon
+   *
+   * @param factionName
+   * @returns {string}
+   */
+  factionIcon: function factionIcon(factionName) {
+    var _factionName;
+
+    if (typeof factionName !== 'string') factionName = (_factionName = factionName) === null || _factionName === void 0 ? void 0 : _factionName.name;
+    return _.factionIcon(factionName);
+  },
+
+  /**
+   * Can we see the given faction's target?
+   *
+   * @param faction
+   * @returns {boolean}
+   */
   canSeeTarget: function canSeeTarget(faction) {
+    // if this is us, then sure
     if (this.faction.name === faction.name) {
       return true;
-    }
+    } // if we are allowed to spy on this faction, then sure
+
 
     if (this.faction.spy === faction.name) {
       return true;
-    }
+    } // if we are allowed to spy on all factions and have selected our target already (or are the mafia), then sure
+
 
     if (this.faction.spyAll && (this.faction.cards.target.length || this.faction.name === 'mafia')) {
       return true;
     }
   },
+
+  /**
+   * Return the given player's faction name
+   * @param player
+   * @returns {string}
+   */
   getPlayerFactionName: function getPlayerFactionName(player) {
     return this.getPlayerFaction(player).name;
   },
+
+  /**
+   * Get the current player's data
+   * @returns {object}
+   */
   getPlayer: function getPlayer() {
     var _this$data;
 
     return (_this$data = this.data) === null || _this$data === void 0 ? void 0 : _this$data.players[this.id];
   },
+
+  /**
+   * Is the current player active?
+   *
+   * @returns {boolean}
+   */
   isActive: function isActive() {
     var _this$getPlayer;
 
     return (_this$getPlayer = this.getPlayer()) === null || _this$getPlayer === void 0 ? void 0 : _this$getPlayer.active;
   },
+
+  /**
+   * Group a collection by the given grouping and return the count of each group
+   *
+   * @param collection
+   * @param grouping
+   */
   groupByCount: function groupByCount(collection, grouping) {
     var output = _.groupBy(collection, grouping);
 
@@ -96847,9 +97897,6 @@ window.App.state = {
     });
 
     return output;
-  },
-  currentCash: function currentCash() {
-    return this.faction.resources + this.faction.energy;
   }
 };
 

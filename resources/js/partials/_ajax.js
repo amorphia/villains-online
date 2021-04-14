@@ -1,5 +1,69 @@
 window.App.ajax = new class {
 
+    /**
+     * Make a POST request
+     *
+     * @param url
+     * @param data
+     * @param message
+     * @returns {Promise}
+     */
+    post( url, data, message ){
+        return this.axios( 'post', url, data, message );
+    }
+
+
+    /**
+     * Make a GET request
+     *
+     * @param url
+     * @param message
+     * @returns {Promise}
+     */
+    get( url, message ){
+        return this.axios( 'get', url, {}, message );
+    }
+
+
+    /**
+     * Make a patch request
+     *
+     * @param url
+     * @param data
+     * @param message
+     * @returns {Promise}
+     */
+    patch( url, data, message ){
+        data = data || {};
+        data._method = 'patch';
+        return this.axios( 'post', url, data, message );
+    }
+
+
+    /**
+     * Make a DELETE request
+     *
+     * @param url
+     * @param data
+     * @param message
+     * @returns {*|Promise<unknown>}
+     */
+    delete( url, data, message ){
+        data = data || {};
+        data._method = 'delete';
+        return this.axios( 'post', url, data, message );
+    }
+
+
+    /**
+     * Make a multipart/formdata request
+     *
+     * @param url
+     * @param originalData
+     * @param file
+     * @param message
+     * @returns {Promise}
+     */
     file( url, originalData, file, message ){
         // set multipart form headers
         let headers = { headers: { 'Content-Type': 'multipart/form-data' } };
@@ -18,26 +82,17 @@ window.App.ajax = new class {
         return this.axios( 'post', url, data, message, headers )
     }
 
-    post( url, data, message ){
-        return this.axios( 'post', url, data, message );
-    }
 
-    get( url, message ){
-        return this.axios( 'get', url, {}, message );
-    }
-
-    patch( url, data, message ){
-        data = data || {};
-        data._method = 'patch';
-        return this.axios( 'post', url, data, message );
-    }
-
-    delete( url, data, message ){
-        data = data || {};
-        data._method = 'delete';
-        return this.axios( 'post', url, data, message );
-    }
-
+    /**
+     * Make an axios call
+     *
+     * @param type
+     * @param url
+     * @param data
+     * @param message // our success message
+     * @param headers
+     * @returns {Promise}
+     */
     axios( type, url, data, message, headers ){
 
         // return an axios call wrapped in a promise
@@ -53,8 +108,6 @@ window.App.ajax = new class {
                 .catch( error => {
                     // log error
                     console.log( error );
-
-                    // notify erro
 
                     // reject
                     reject( error );

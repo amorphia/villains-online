@@ -2,7 +2,7 @@
     <player-prompt classes="">
         <div class="place-token px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
-                <div class="title flex-center"><img v-if="currentOwner" class="determine-control__faction-icon" :src="factionIcon( currentOwner )">{{ message }}</div>
+                <div class="title flex-center"><img v-if="currentOwner" class="determine-control__faction-icon" :src="shared.factionIcon( currentOwner )">{{ message }}</div>
 
                 <div v-if="currentAreaData.capture" class="d-flex align-center primary-light determine-control__capture-container">
                     The {{ currentAreaData.newController }} captured a control marker, gaining <img class="determine-control__ap-icon" :src="`/images/icons/ap-${currentAreaData.capture.ap}.png`">
@@ -19,7 +19,7 @@
                                 <div v-for="faction in currentAreaInfluences" class="determine-control__faction-influence">
                                     <img class="determine-control__small-icon" src="/images/icons/influence.png">
                                     <div class="determine-control__influence">{{ faction.influence }}</div>
-                                    <img class="determine-control__small-icon" :src="factionIcon( faction.faction )">
+                                    <img class="determine-control__small-icon" :src="shared.factionIcon( faction.faction )">
                                 </div>
                                 <div v-if="!currentAreaInfluences.length" class="determine-control__faction-influence">
                                     <span class="determine-control__no-influence">No factions with influence in this area</span>
@@ -59,10 +59,6 @@
                 } else {
                     App.event.emit( 'sound', 'chirp' );
                 }
-            },
-
-            factionIcon( factionName ){
-                return _.factionIcon( factionName );
             },
 
             incrementIndex(){

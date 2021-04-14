@@ -1,83 +1,95 @@
 <template>
 <transition name="right">
     <div v-if="area" class="view-area pos-absolute width-100 height-100 p-5 top-0 overflow-auto z-4">
+
+        <!-- close button -->
         <button class="toggle fixed top right icon-x"
                 @click="closeViewArea"
         ></button>
 
         <div class="d-flex align-stretch">
+
+            <!-- area details -->
             <div class="view-area__main-content width-40 pt-4 pr-5 pb-6">
 
+                <!-- owner -->
                 <div v-if="area.owner" class="title d-flex align-center view-area__controller">
-                    <img class="determine-control__faction-icon" :src="factionIcon( area.owner )">
+                    <img class="determine-control__faction-icon" :src="shared.factionIcon( area.owner )">
                     Controlled by The {{ area.owner | startCase }}
                 </div>
 
+                <!-- exterminated -->
                 <div v-if="exterminated" class="title d-flex align-center view-area__controller">
-                    <img class="determine-control__faction-icon" :src="factionIcon( exterminated )">
+                    <img class="determine-control__faction-icon" :src="shared.factionIcon( exterminated )">
                     Exterminated by The {{ exterminated | startCase }}
                 </div>
 
+                <!-- control ability -->
                 <div class="view-player__title">Control Ability</div>
                 <div class="p-3 primary-light" v-html="shared.filterText( area.control )"></div>
 
+                <!-- skill ability -->
                 <div class="view-player__title">Skill Ability</div>
                 <div class="p-3 primary-light" v-html="shared.filterText( area.skill )"></div>
 
+                <!-- faction influence -->
                 <div class="view-player__title">Influence</div>
                 <div class="view-area__influence-container">
                     <div v-for="influence in influences" class="d-flex view-area__influence player-hud">
                         <div class="influence-marker mb-2"><img src="/images/icons/influence.png"></div>
                         <div class="view-area__influence-count">{{ influence.influence }}{{ influence.faction === 'plants' && killedPlant ? '*' : '' }}</div>
-                        <img class="determine-control__faction-icon" :src="factionIcon( influence.faction )">
+                        <img class="determine-control__faction-icon" :src="shared.factionIcon( influence.faction )">
                         <span>The {{ influence.faction | startCase }}</span>
                     </div>
                 </div>
 
+                <!-- active cards -->
                 <div class="view-player__title">Active Cards:</div>
                 <div v-if="area.cards.length" class="view-player__active-cards pt-4">
                     <div v-for="card in area.cards" class="pos-relative view-player__card">
                         <img class="z-1 view-player__card pointer"
                              @click="shared.card = `/images/cards/${card.file}.jpg`"
                              :src="`/images/cards/${card.file}.jpg`">
-                        <img class="pos-absolute bottom-0 z-2 card-faction-icon" :src="factionIcon( card.owner )">
+                        <img class="pos-absolute bottom-0 z-2 card-faction-icon" :src="shared.factionIcon( card.owner )">
                     </div>
                 </div>
                 <div v-else class="view-player__empty">No Active Cards</div>
 
-
+                <!-- skill ability -->
                 <div class="view-player__title">Used Skill Ability:</div>
                 <div v-if="usedSkill.length" class="view-player__areas">
                     <div v-for="faction in usedSkill" class="highlight p-3">
-                        <img class="determine-control__faction-icon" :src="factionIcon( faction )">
+                        <img class="determine-control__faction-icon" :src="shared.factionIcon( faction )">
                     </div>
                 </div>
                 <div v-else class="view-player__empty">No factions have used this skill ability</div>
-
-
             </div>
 
+            <!-- components -->
             <div class="view-player__main-content width-60 pt-6 pr-5 pb-3 h-100">
 
                 <div class="p-0 width-100 view-area__area pos-relative" :class="`area-${area.name}`">
 
+                    <!-- tokens -->
                     <div class="view-area__tokens pos-absolute width-100 z-2">
                         <token-row :area="area" :token="token"></token-row>
                     </div>
 
+                    <!-- header -->
                     <div class="view-area__header area-zoom__header p-4 pos-relative grow-0 shrink-0"></div>
 
 
                     <div class="view-area__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap">
 
+                        <!-- webs icons -->
                         <div v-if="webbed" class="d-inline-block unit-row web-row">
                             <div class="units-hud__unit d-inline-block pos-relative">
                                 <div class="view-area__web-count">{{ webbedCount }}</div>
                                 <img class="unit-hud__unit-image" src="/images/factions/spiders/units/web.png">
                             </div>
-
                         </div>
 
+                        <!-- default units -->
                         <area-units v-for="faction in shared.data.factions"
                                     :faction="faction"
                                     :key="faction.name"
@@ -85,6 +97,7 @@
                         </area-units>
                     </div>
 
+                    <!-- ready units -->
                     <div class="view-area__footer area-zoom__footer p-4 pos-relative grow-0 shrink-0 center-text overflow-auto">
                         <area-units v-for="faction in shared.data.factions"
                                     :faction="faction"
@@ -96,6 +109,7 @@
                     </div>
                 </div>
 
+                <!-- webbed units -->
                 <div v-if="webbed" class="view-area__dead">
                     <div class="title d-flex align-center view-area__controller"><img class="determine-control__faction-icon" src="/images/factions/spiders/units/web.png">Units Trapped in Webs</div>
 
@@ -104,9 +118,10 @@
                     </div>
                 </div>
 
+                <!-- dead units -->
                 <div v-if="dead" class="view-area__dead">
                     <div v-for="(units,faction) in dead" :key="faction" class="view-area__dead-block">
-                        <div class="title d-flex align-center view-area__controller"><img class="determine-control__faction-icon" :src="factionIcon( faction )"> {{ faction }} Kills</div>
+                        <div class="title d-flex align-center view-area__controller"><img class="determine-control__faction-icon" :src="shared.factionIcon( faction )"> {{ faction }} Kills</div>
                         <unit-row :units="units"></unit-row>
                     </div>
                 </div>
@@ -131,38 +146,60 @@
         },
 
         watch : {
+            // make a boop noise when we change areas
             area(){
                 App.event.emit( 'sound', 'ui' );
             }
         },
 
         created(){
+            // set event listeners
             this.shared.event.on( 'viewArea', this.setViewArea );
             this.shared.event.on( 'viewPlayer', () => this.area = null );
         },
 
 
         computed : {
+            /**
+             * Return all of the dead units in the area grouped by faction, or false if no dead units
+             * @returns {object|false}
+             */
             dead(){
                 let dead = _.allKilledUnitsInAreaByFaction( this.area.name, this.shared.data.factions );
                 return dead ?? false;
             },
 
+
+            /**
+             * Do we have any killed plant units here?
+             * @returns {boolean}
+             */
             killedPlant(){
                 if( !this.shared.data.factions['plants'] ) return;
 
                 return _.factionAreasWithDead( this.shared.data.factions['plants'] ).includes( this.area.name );
             },
 
+
+            /**
+             * Return the number of webbed units here
+             * @returns {boolean|number}
+             */
             webbedCount(){
                 if( ! this.shared.data.factions['spiders'] ) return false;
                 return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;
             },
 
+
+            /**
+             * Returned the webbed units in this area, or false if none
+             * @returns {object|false}
+             */
             webbed(){
                 if( ! this.shared.data.factions['spiders'] ) return false;
 
                 let webbed = {};
+                // get each faction's webbed units
                 _.forEach( this.shared.data.factions, faction => {
                     let units = _.webbedUnits( this.shared.data.factions['spiders'], { faction : faction.name, area : this.area.name } );
                     if( units.length ) webbed[faction.name] = units;
@@ -171,19 +208,40 @@
                 return Object.keys( webbed ).length ? webbed : false;
             },
 
+
+            /**
+             * Do we have a token selected in our shared state that is in this area? If so return it.
+             * @returns {*}
+             */
             token(){
                 if( this.shared.token && this.shared.token.place === this.area.name ){
                     return this.shared.token;
                 }
             },
+
+
+            /**
+             * Who has exterminated this area, if anyone
+             * @returns {string|false}
+             */
             exterminated(){
                 return _.areaExterminated( this.area, this.shared.data.factions );
             },
 
+
+            /**
+             * Return the influence count for each faction in this area
+             * @returns {object}
+             */
             influences(){
                 return _.eachInfluenceInArea( this.area, this.shared.data.factions, true );
             },
 
+
+            /**
+             * Return an array of faction names belonging to factions who have activated this area's skill ability
+             * @returns {string[]}
+             */
             usedSkill(){
                 return [];
 
@@ -196,19 +254,25 @@
 
         methods : {
 
-            factionIcon( factionName ){
-                return _.factionIcon( factionName );
-            },
-
+            /**
+             * Close the view area modal
+             */
             closeViewArea(){
                 this.area = null;
             },
 
+            /**
+             * Set our area
+             * @param area
+             */
             setViewArea( area ){
+                // toggle the modal closed if we select the same area twice
                 if( this.area && this.area.name === area.name ){
                     this.closeViewArea();
                     return
                 }
+
+                // otherwise set the area
                 this.area = area;
             }
         }

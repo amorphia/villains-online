@@ -77,33 +77,48 @@ window.App._cookieHandler = new class {
         document.cookie = name + "=" + value + expires + "; path=/";
     }
 
+    /**
+     * Do all the garbage nonsense we have to do to read a cookie in javascript
+     * @param name
+     * @returns {string|null}
+     */
     readCookie( name ) {
         let nameEQ = name + "=";
-        let ca = document.cookie.split(';');
-        for( let i=0;i < ca.length;i++ ) {
-            let c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        let cookieArray = document.cookie.split(';' );
+        for( let cookie of cookieArray ) {
+            while ( cookie.charAt(0) == ' ' ) cookie = cookie.substring( 1, cookie.length );
+            if ( cookie.indexOf( nameEQ ) === 0 ) return cookie.substring( nameEQ.length, cookie.length );
         }
         return null;
     }
 
+    /**
+     * Returns a cookie of the given name. If the return value is valid JSON parse it first
+     *
+     * @param name
+     * @returns {*}
+     */
     getCookie( name ){
         let value = this.readCookie( name );
 
+        // parse JSON if we passed it
         if( this.isJson( value ) ){
             return JSON.parse( value );
         }
+
         return value;
     }
-}
+};
 
 // public API
 window.App.cookie = function( name, value, time ){
+
+    // if we supplied a value, run set cookie
     if( value !== undefined ){
         App._cookieHandler.setCookie( name, value, time );
+        return;
     }
-    else {
-        return App._cookieHandler.getCookie( name );
-    }
+
+    // otherwise run get cookie
+    return App._cookieHandler.getCookie( name );
 };

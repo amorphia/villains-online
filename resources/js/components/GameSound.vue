@@ -1,6 +1,5 @@
 <template>
-
-    <div class="d-inline stat-icon mute-button" :class="computedClasses" @click="toggleVolume">
+    <div class="d-inline stat-icon mute-button" :class="{active : this.volume}" @click="toggleVolume">
         <i :class="soundIcon" ></i>
     </div>
 </template>
@@ -10,13 +9,23 @@
     export default {
 
         name: 'game-sound',
-        props: ['classes'],
+        props: [],
         data() {
             return {
                 shared : App.state,
-                volume : 1,
-                mute : false,
+                volume : 1, // initial volume setting
+
+                // used to store each of our sound objects
                 sounds : {},
+
+                // data about each of our volume settings
+                volumeScale : {
+                    '0' : { icon : 'icon-mute', amp : 0 },
+                    '1' : { icon : 'icon-volume-mid', amp : .4 },
+                    '2' : { icon : 'icon-volume-high', amp : .7 },
+                },
+
+                // array of available sounds
                 soundBank : [
                     'active',
                     'basta',
@@ -43,70 +52,68 @@
         },
 
         mounted() {
+
+            // for each sound initialize an audio object
             this.soundBank.forEach(sound => {
                 this.sounds[sound] = new Audio(`/sounds/${sound}.mp3`);
             });
 
-            let cookieVol = App.cookie( 'volume' );
-
-            if( cookieVol !== null ){
-                let cookieVol = App.cookie( 'volume' );
-                this.volume = parseInt( cookieVol );
-                this.updateVolume();
+            // check our cookies to see any previous volume settings
+            if(  App.cookie( 'volume' ) !== null ){
+                this.volume = parseInt(  App.cookie( 'volume' ) );
             }
 
-            this.updateVolume();
-
-            this.shared.socket.on( 'sound', this.play );
-            this.shared.event.on( 'sound', this.play );
+            // set event listeners
+            this.shared.socket.on( 'sound', this.play ); // from the game server
+            this.shared.event.on( 'sound', this.play ); // from the ui
         },
 
         computed : {
 
-            computedClasses(){
-                let classes = '';
-                if( this.volume ) classes += 'active';
-                if( this.classes ) classes += ` ${this.classes}`;
-                return classes;
-            },
-
+            /**
+             * Get our volume icon
+             * @returns {string}
+             */
            soundIcon(){
-                switch ( this.volume  ) {
-                    case 0: return 'icon-mute';
-                    case 1: return 'icon-volume-mid';
-                    case 2: return 'icon-volume-high';
-                }
+                return this.volumeScale[ this.volume ].icon;
            }
         },
 
         methods : {
+
+            /**
+             * Toggle through our volume settings
+             */
             toggleVolume(){
-                switch ( this.volume  ) {
+                // increment our volume by 1, looping back to 0 after 2
+                switch ( this.volume ) {
                     case 0: this.volume = 1; break;
                     case 1: this.volume = 2; break;
                     case 2: this.volume = 0; break;
                 }
 
                 App.cookie( 'volume', this.volume );
-                this.updateVolume();
             },
 
-            updateVolume(){
-                let vol;
 
-                switch( this.volume ){
-                    case 0: vol = 0; break;
-                    case 1: vol = 0.4; break;
-                    case 2: vol = 0.7; break;
-                }
-
-                _.forEach( this.sounds, sound => sound.volume = vol );
-            },
-
-            play( sound, options = {} ){
+            /**
+             * Play a sound
+             * @param sound
+             */
+            play( sound ){
                 if( this.volume === 0 ) return;
+                this.setVolume( this.sounds[sound] );
                 this.sounds[sound].play();
-            }
+            },
+
+
+            /**
+             * set the volume of a sound
+             * @param sound
+             */
+            setVolume( sound ){
+                sound.volume = this.volumeScale[this.volume].amp;
+            },
         }
     }
 </script>

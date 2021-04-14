@@ -3,7 +3,7 @@
         <div class="place-token px-5">
 
             <div v-for="upgrade in data.upgrades" class="p-3">
-                <div class="title flex-center "><img class="determine-control__faction-icon" :src="factionIcon( upgrade.faction )">
+                <div class="title flex-center "><img class="determine-control__faction-icon" :src="shared.factionIcon( upgrade.faction )">
                     upgrade scored by The {{ upgrade.faction | startCase }}
                 </div>
 
@@ -41,10 +41,6 @@
         methods : {
             resolve(){
                 this.shared.respond( 'score-upgrades', {} );
-            },
-
-            factionIcon( factionName ){
-                return _.factionIcon( factionName );
             },
         },
 

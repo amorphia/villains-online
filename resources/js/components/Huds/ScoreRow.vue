@@ -1,7 +1,7 @@
 <template>
     <div class="score-hud__row d-flex" :class="`score-hud__${type}`">
         <div v-for="score in scores" class="score-hud__cell">
-            <img v-for="faction in score" class="score-hud__faction" :src="factionIcon( faction )">
+            <img v-for="faction in score" class="score-hud__faction" :src="shared.factionIcon( faction )">
         </div>
     </div>
 </template>
@@ -17,12 +17,6 @@
                 shared : App.state
             };
         },
-
-        methods : {
-            factionIcon( faction ){
-                return _.factionIcon( faction );
-            },
-        }
     }
 </script>
 

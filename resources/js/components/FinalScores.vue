@@ -2,11 +2,14 @@
     <player-prompt classes="">
         <div class="p-5 center-text final-score">
 
+            <!-- victory title -->
             <div class="victory">
                 Victory for The {{ winner | startCase }}!
             </div>
 
+            <!-- final scores table -->
             <table class="final-scores__table width-50 pull-center mb-3">
+                <!-- table headers -->
                 <tr>
                     <th class="faction-score__name-header">faction name</th>
                     <th class="faction-score__victory-header">objective</th>
@@ -16,13 +19,15 @@
                     <th class="faction-score__token-header">capitol token</th>
                     <th class="faction-score__rolls-header">AVG roll</th>
                 </tr>
+
+                <!-- table content -->
                 <faction-score v-for="(score, index) in scores"
                                :score="score"
                                :key="score.faction"
                                :winner="index === 0"></faction-score>
             </table>
 
-
+            <!-- dice rolls distribution -->
             <div class="rolls-table d-flex width-50 pull-center my-5 p-3">
                 <div v-for="(count, roll) in rolls" class="rolls-table__column d-flex flex-column width-10 align-center" :hidden="!roll">
                     <div class="rolls-table__roll-header">{{ roll }}</div>
@@ -33,7 +38,7 @@
                 </div>
             </div>
 
-
+            <!-- conclude game -->
             <end-game>
                 <div class="button d-inline-block final-score__conclude">Conclude Game</div>
             </end-game>
@@ -56,21 +61,49 @@
 
 
         methods : {
+            /**
+             * Calculate roll graph bar height
+             *
+             * @param count
+             * @returns {string}
+             */
             barHeight( count ){
                 return ( ( count / this.maxRollCount ) * 100 ) + '%';
             }
         },
 
         computed : {
+
+            /**
+             * Returns the faction name of the faction with the highest score
+             * @returns {*}
+             */
             winner(){
                 return this.scores[0].faction;
             },
+
+
+            /**
+             * Returns the scores array
+             * @returns {object[]}
+             */
             scores(){
                 return this.shared.player.prompt.data.scores;
             },
+
+
+            /**
+             * Returns the rolls data array
+             * @returns {number[]}
+             */
             rolls(){
                 return this.shared.player.prompt.data.rolls;
             },
+
+            /**
+             * Returns the highest roll count from our rolls array
+             * @returns {number}
+             */
             maxRollCount(){
                 let max = 0;
                 this.rolls.forEach( count => {

@@ -18,7 +18,7 @@
 
                         <img class="non-combat-attack__victim"
                              :class="{ 'no-unit' : !attack.unit}"
-                             :src="victimImage( attack.victim )">
+                             :src="shared.factionIcon( attack.victim )">
 
                             <img v-for="roll in attack.rolls"
                                  class="last-attack__roll z-2"
@@ -41,18 +41,6 @@
             return {
                 shared : App.state,
             };
-        },
-
-        methods : {
-
-            victimImage( victim ){
-                return this.factionIcon( victim );
-            },
-
-            factionIcon( factionName ){
-                return _.factionIcon( factionName );
-            },
-
         },
 
         computed : {
