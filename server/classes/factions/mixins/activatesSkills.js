@@ -23,7 +23,10 @@ let obj = {
         this.game().popup( this.playerId, { skill : true, area : area.name, faction : this.name });
 
         // handle any pre-skill triggers (that may modify our skill)
-        let skillModification = this.handlePreSkillTriggers( area );
+        let skillModification = null;
+        if( this.triggers.onBeforeSkill ){
+            skillModification = await this[this.triggers.onBeforeSkill]( area );
+        }
 
         // use our skilled units to activate this ability
         let exhaustedUnits = this.useSkilledUnitsToActivateSkill( area );
@@ -66,17 +69,6 @@ let obj = {
         return units;
     },
 
-
-    /**
-     * Handle any pre-skill triggers and return any skill effect modifications from them
-     *
-     * @param area
-     */
-    async handlePreSkillTriggers( area ){
-        if( this.triggers.onBeforeSkill ){
-            return await this[this.triggers.onBeforeSkill]( area );
-        }
-    },
 
 
     /**

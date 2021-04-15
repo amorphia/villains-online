@@ -83,11 +83,13 @@ class Hackers extends Faction {
      * @param area
      */
     async shouldHax0rArea( area ){
+
         // if we have already hax0red this area then we can't do it again
         if( this.data.hax0red.includes( area.name ) ) return;
 
         // ask the player if they want to double resolve this skill
         let response = await this.prompt( 'double-resolve', { count : 1, area : area.name });
+
 
         // I guess not
         if( !response.doubleResolve ){
