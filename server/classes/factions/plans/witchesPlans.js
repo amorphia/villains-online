@@ -92,9 +92,15 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 2] },
+                    { test : 'exterminateAreas', args : [1] },
                 ],
-                value : 2
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'unitInEnemy', args : ['mole', 1] },
+                ],
+                value : 1
             },
         ]
     },
@@ -106,6 +112,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'playRules', args : [5, 'total'] },
+                    { test : 'controlTarget', args : [] },
                 ],
                 value : 3
             },

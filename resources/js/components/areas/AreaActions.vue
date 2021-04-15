@@ -4,6 +4,8 @@
         <div v-if="actions.length"
              :class="{ closed : closed }"
              class="area-map__actions d-flex justify-center align-stretch z-7">
+
+            <!-- close button -->
             <button @click="toggleClose" class="toggle minimize-toggle top right">
                 <i :class="closed ? 'icon-maximize' : 'icon-minimize'"></i>
                 <loading-streak v-if="closed" position="left"></loading-streak>
@@ -11,6 +13,7 @@
                 <loading-streak v-if="closed" position="top"></loading-streak>
                 <loading-streak v-if="closed" position="bottom"></loading-streak>
             </button>
+
             <div class="area-map__actions-content ">
                 <area-action v-for="action in actions"
                              :action="action"
