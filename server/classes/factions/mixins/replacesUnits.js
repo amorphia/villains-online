@@ -46,7 +46,7 @@ let obj = {
         const units = [];
 
         // replace unit
-        replacement.location = unit.location;
+        replacement.location = original.location;
 
         // if original was ready, replacement is too
         if( original.ready ) replacement.ready = true;
