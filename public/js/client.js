@@ -60117,7 +60117,7 @@ var render = function() {
       _c("td", { staticClass: "faction-score__name" }, [
         _c("img", {
           staticClass: "combat-faction_icon",
-          attrs: { src: _vm.shared.factionIcon(this.faction.name) }
+          attrs: { src: _vm.shared.factionIcon(_vm.score.faction) }
         }),
         _vm._v(
           "\n        The " +

@@ -3,7 +3,7 @@
     <tr class="faction-score" :class="{highlight : winner}">
         <!-- name -->
         <td class="faction-score__name">
-            <img class="combat-faction_icon" :src="shared.factionIcon( this.faction.name )">
+            <img class="combat-faction_icon" :src="shared.factionIcon( score.faction )">
             The {{ score.faction | startCase }}
         </td>
 
