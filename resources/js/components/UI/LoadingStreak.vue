@@ -7,14 +7,8 @@
 
 <script>
     export default {
-
         name: 'loading-streak',
         props : ['position'],
-        data() {
-            return {
-
-            }
-        }
     }
 </script>
 

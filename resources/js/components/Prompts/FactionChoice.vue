@@ -1,14 +1,15 @@
 <template>
-    <div :class="{
-            active : selected === faction.name,
-            taken : !isSelectable,
-            killer : faction.killer,
-            basic : faction.basic
-            }"
+    <div :class="classes"
          @click="$emit( 'clicked', faction.name )"
          class="choose-factions__faction pointer d-flex justify-end align-center">
+
+        <!-- faction name / status -->
         {{ faction.name }}<span class="choose-factions__status pl-3" :class="`choose-factions__status-${faction.status}`"></span>
+
+        <!-- faction selected icon -->
         <span class="choose-factions__circle pl-1" :class="faction.name === selected ? 'icon-circle' : 'icon-circle-open'"></span>
+
+        <!-- block faction -->
         <span v-if="shared.isActive()" class="icon-x pl-1 choose-factions__block" :class="{active : faction.blocked}" @click.stop="$emit( 'blocked', faction.name )"></span>
     </div>
 </template>
@@ -40,14 +41,6 @@
                 this.$emit( 'isSelectable', true );
             }
         },
-
-        /*
-        watch : {
-            'faction.blocked' : function( val ){
-                if( val && this.checkIsSelectable() ) this.$emit( 'isSelectable', true );
-            }
-        },
-        */
 
         methods : {
             checkIsSelectable(){
@@ -87,21 +80,55 @@
         },
 
         computed : {
+
+            /**
+             * Return the computed classes for this faction
+             * @returns {object}
+             */
+            classes(){
+                return {
+                    active : this.selected === this.faction.name,
+                    taken : !this.isSelectable,
+                    killer : this.faction.killer,
+                    basic : this.faction.basic
+                }
+            },
+
+
+            /**
+             * Can we select more killer factions?
+             * @returns {boolean}
+             */
             moreKillersAllowed(){
                 let allowed = this.playerCount === 5 ? 2 : 1;
                 return this.killersSelected < allowed;
             },
 
+
+            /**
+             * Are more expansion factions allowed?
+             * @returns {boolean}
+             */
             moreExpansionsAllowed(){
                 let allowed = this.playerCount === 5 ? 3 : 2;
                 return this.expansionsSelected < allowed;
             },
 
+
+            /**
+             * Returns the current player count
+             * @returns {number}
+             */
             playerCount(){
                 if( !this.shared.data ) return 0;
                 return Object.keys( this.shared.data.players ).length;
             },
 
+
+            /**
+             * Is the faction selectable?
+             * @returns {boolean}
+             */
             isSelectable(){
                 let selectable = this.checkIsSelectable();
                 this.$emit( 'isSelectable', selectable );

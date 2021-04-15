@@ -5681,6 +5681,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'activate-decline',
   data: function data() {
@@ -5689,18 +5697,35 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Resolve this prompt
+     * @param choice
+     */
     resolve: function resolve(choice) {
       this.shared.respond('activate-decline', choice, this.data.token.id, this.data.wildType);
     }
   },
   computed: {
+    /**
+     * Can we activate this token?
+     * @returns {boolean}
+     */
     canActivate: function canActivate() {
-      return this.shared.faction.resources + this.shared.faction.energy >= this.data.cost;
+      return _.money(this.shared.faction) >= this.data.cost;
     },
-    canActivateCard: function canActivateCard() {},
+
+    /**
+     * Return our prompt data object
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Return our area object, if applicable
+     * @returns {Area|null}
+     */
     area: function area() {
       if (this.data.token) {
         return this.shared.data.areas[this.data.token.location];
@@ -5720,6 +5745,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
 //
 //
 //
@@ -5755,53 +5790,96 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Return an array potential target units to kill
+     * @returns {Unit[]}
+     */
     units: function units() {
       return _.enemyUnitsInArea(this.shared.faction, this.area, this.shared.data.factions, {
         basic: true,
         notHidden: true
       });
     },
+
+    /**
+     * Returns title message
+     * @returns {string}
+     */
     message: function message() {
       return this.data.message ? this.data.message : 'Choose your victim';
     },
+
+    /**
+     * Returns our current area object
+     * @returns {Area}
+     */
     area: function area() {
-      return this.shared.data.areas[this.currentArea];
+      return this.shared.data.areas[this.currentAreaName];
     },
-    currentArea: function currentArea() {
+
+    /**
+     * Returns our current area name
+     * @returns {string}
+     */
+    currentAreaName: function currentAreaName() {
       return this.data.areas[this.index];
     },
+
+    /**
+     * Returns an array of our area objects
+     * @returns {Area[]}
+     */
     areas: function areas() {
       var _this = this;
 
-      var areas = [];
-      this.data.areas.forEach(function (areaName) {
-        areas.push(_this.shared.data.areas[areaName]);
+      return this.data.areas.map(function (areaName) {
+        return _this.shared.data.areas[areaName];
       });
-      return areas;
     },
+
+    /**
+     * Returns our prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     }
   },
   methods: {
-    updateArea: function updateArea(n) {
-      if (n === this.index) return; //this.areaUnits.forEach( unit => this.$set( unit, 'selected', false ) );
-
-      this.index = n;
+    /**
+     * Update our area index
+     * @param index
+     */
+    updateArea: function updateArea(index) {
+      if (index === this.index) return;
+      this.index = index;
     },
+
+    /**
+     * Resolve this prompt
+     * @param val
+     */
     resolve: function resolve(val) {
-      var data = {
-        area: this.area.name
-      };
-
-      if (val) {
-        data.unit = this.unit.id;
-      } else {
-        data.declines = true;
-      }
-
-      data = Object.assign({}, this.data, data);
+      var data = this.getResolveData(val);
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('assassinate-unit', data);
+    },
+
+    /**
+     * Return our resolve data
+     * @param val
+     */
+    getResolveData: function getResolveData(val) {
+      // if we decline return our decline response
+      if (!val) return {
+        declines: true,
+        area: this.area.name
+      }; // otherwise return our unit data
+
+      return {
+        area: this.area.name,
+        unit: this.unit.id
+      };
     }
   }
 });
@@ -5817,6 +5895,18 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5873,6 +5963,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    // add smoke token to the area, if applicable
     if (this.hasSmoke) {
       this.shared.faction.units.push({
         id: 'smoke',
@@ -5885,21 +5976,30 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    /**
+     * Resolve this prompt
+     * @param option
+     */
     resolve: function resolve(option) {
       var data = {
         cost: this.cost,
         area: this.area.name,
         targets: []
-      };
+      }; // add our unit hits
+
       this.units.forEach(function (unit) {
         if (unit.hits) data.targets.push({
           id: unit.id,
           hits: unit.hits
         });
       });
-      data = Object.assign({}, this.data, data);
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('assign-hits', data);
     },
+
+    /**
+     * Clear all unit hits
+     */
     clearAllHits: function clearAllHits() {
       var _this = this;
 
@@ -5907,7 +6007,15 @@ __webpack_require__.r(__webpack_exports__);
         return _this.$set(unit, 'hits', 0);
       });
     },
+
+    /**
+     * Assign a hit to a unit
+     *
+     * @param unit
+     * @param hpLeft
+     */
     assignHit: function assignHit(unit, hpLeft) {
+      // assign hits to a smoke token
       if (unit.type === 'smoke') {
         if (hpLeft) {
           this.clearAllHits();
@@ -5916,45 +6024,79 @@ __webpack_require__.r(__webpack_exports__);
         } else {
           this.$set(unit, 'hits', 0);
         }
-      }
+      } // return if we have no hits to assign
+
 
       if (!this.hitsToAssign) {
         if (unit.hits) this.$set(unit, 'hits', unit.hits - 1);
         return;
-      }
+      } // we can't assign seeking hits to patsies (unless no other options)
+
 
       if (unit.type === 'patsy' && this.mustAssignToNonPatsy) {
         App.event.emit('sound', 'error');
         return;
-      }
+      } // assign a hit to this unit, if we can
+
 
       if (hpLeft) {
         if (!unit.hits) this.$set(unit, 'hits', 1);else this.$set(unit, 'hits', unit.hits + 1);
-      } else {
-        this.$set(unit, 'hits', 0);
-      }
+        return;
+      } // otherwise clear the hits
+
+
+      this.$set(unit, 'hits', 0);
     }
   },
   computed: {
+    /**
+     * Is there a smoke token able to take hits for us?
+     * @returns {boolean}
+     */
     hasSmoke: function hasSmoke() {
       var _this$shared$faction$;
 
       return this.data.unit && ((_this$shared$faction$ = this.shared.faction.smokeAreas) === null || _this$shared$faction$ === void 0 ? void 0 : _this$shared$faction$.includes(this.area.name));
     },
+
+    /**
+     * Are we forced to assign these hits to non-patsies
+     * @returns {boolean}
+     */
     mustAssignToNonPatsy: function mustAssignToNonPatsy() {
       return this.data.seeking && this.assignableNonPatsyHits > 0;
     },
+
+    /**
+     * Return our button text
+     * @returns {string}
+     */
     buttonMessage: function buttonMessage() {
       return this.hitsToAssign === 0 ? "confirm hit assignment" : "assign ".concat(this.hitsToAssign, " more hits");
     },
+
+    /**
+     * Can we use the gnome delfect to block hits?
+     * @returns {boolean}
+     */
     canDeflect: function canDeflect() {
       if (this.hitsToAssign === 0) return;
       var money = this.shared.faction.resources + this.shared.faction.energy;
       return money >= this.cost + 2;
     },
+
+    /**
+     * Calculate our gnome deflect cost
+     * @returns {number}
+     */
     cost: function cost() {
       return 2 * this.gnomeDeflects;
     },
+
+    /**
+     * Do we have a gnome here?
+     * @returns {boolean}
+     */
     hasGnome: function hasGnome() {
       var _this2 = this;
 
@@ -5962,24 +6104,48 @@ __webpack_require__.r(__webpack_exports__);
         return unit.location === _this2.area.name && unit.type === 'champion';
       });
     },
+
+    /**
+     * How many hits do we have left to assign?
+     * @returns {number}
+     */
     hitsToAssign: function hitsToAssign() {
       return this.data.hits - this.hitsAssigned - this.gnomeDeflects;
     },
+
+    /**
+     * How many hits can be assigned to these units?
+     * @returns {number}
+     */
     assignableHits: function assignableHits() {
       return _.assignableHits(this.units);
     },
+
+    /**
+     * How many hits can be assigned to non-patsies?
+     * @returns {number}
+     */
     assignableNonPatsyHits: function assignableNonPatsyHits() {
       return _.assignableHits(this.units, {
         nonPatsy: true
       });
     },
+
+    /**
+     * How many hits have we assigned so far?
+     * @returns {number}
+     */
     hitsAssigned: function hitsAssigned() {
-      var hits = 0;
-      this.units.forEach(function (unit) {
+      return this.units.reduce(function (hits, unit) {
         if (unit.hits) hits += unit.hits;
-      });
-      return hits;
+        return hits;
+      }, 0);
     },
+
+    /**
+     * Returns an array of the units we can assign hits to
+     * @returns {Unit[]}
+     */
     units: function units() {
       var _this3 = this;
 
@@ -5989,9 +6155,19 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
+
+    /**
+     * Returns our prompt data
+     * @returns {null}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Returns our area object
+     * @returns {Area}
+     */
     area: function area() {
       return this.shared.data.areas[this.data.area];
     }
@@ -6021,6 +6197,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+//
+//
 //
 //
 //
@@ -6193,6 +6371,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     this.setDefaultAction();
   },
   methods: {
+    /**
+     * Set our default action
+     */
     setDefaultAction: function setDefaultAction() {
       var actionKeys = Object.keys(this.actions);
 
@@ -6204,37 +6385,56 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
       }
     },
+
+    /**
+     * Set our action
+     *
+     * @param name
+     * @param param
+     */
     setAction: function setAction(name, param) {
       var action = {
         name: name
-      };
+      }; // if this is an area action set our shared action area
 
       if (this.areaActions.includes(name)) {
         action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
-      }
+      } // if this is a token action set our token
+
 
       if (name === 'token') {
         action.token = this.firstUnrevealed(action.area);
-      }
+      } // handle xavier action
+
 
       if (name === 'xavier') {
         action.area = this.xavier.location;
         action.token = this.xavier.token;
         this.$set(this.xavier, 'placedToken', this.xavier.token);
-      }
+      } // select the appropriate area
+
 
       if (action.area) this.shared.event.emit('areaSelected', {
         name: action.area
-      });
+      }); // set our action
+
       this.action = action;
       this.shared.action = action;
     },
+
+    /**
+     * Clear our action
+     */
     clearAction: function clearAction() {
       if (this.action.name === 'xavier') this.$set(this.xavier, 'placedToken', null);
       this.action = null;
       this.shared.action = null;
       App.event.emit('unselectAreas');
     },
+
+    /**
+     * Build our action options
+     */
     generateActions: function generateActions() {
       var actions = {}; // can we activate skills?
 
@@ -6260,6 +6460,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.actions = actions;
       this.shared.actions = actions;
     },
+
+    /**
+     * Save our action
+     */
     saveAction: function saveAction() {
       var _this$shared;
 
@@ -6285,19 +6489,39 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.shared.actions = null;
       this.clearAction();
     },
+
+    /**
+     * Set pass action
+     */
     setPassAction: function setPassAction() {
       this.setAction('pass');
     },
+
+    /**
+     * Set Locked action
+     */
     setLockedAction: function setLockedAction() {
       this.setAction('locked');
     },
+
+    /**
+     * Set skip action
+     */
     setSkipAction: function setSkipAction() {
       this.setAction('skip');
     },
+
+    /**
+     * Get the first unrevealed token in the given area
+     */
     firstUnrevealed: function firstUnrevealed(area) {
       if (typeof area === 'string') area = this.shared.data.areas[area];
       return _.firstUnrevealedToken(area);
     },
+
+    /**
+     * Get the first revealed token in the given area
+     */
     firstRevealedToken: function firstRevealedToken(area) {
       if (typeof area === 'string') area = this.shared.data.areas[area];
       return _.firstRevealedToken(area, {
@@ -6306,9 +6530,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     }
   },
   computed: {
+    /**
+     * Does this action use the top bar?
+     * @returns {boolean}
+     */
     hasTopAction: function hasTopAction() {
       return this.actions.pass || this.actions.locked || this.actions.skip;
     },
+    // should show pass type actions
     showPass: function showPass() {
       return this.actions.pass;
     },
@@ -6318,9 +6547,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     showLocked: function showLocked() {
       return this.actions.locked;
     },
+
+    /**
+     * Returns our current token (if applicable)
+     * @returns {Token|null}
+     */
     currentToken: function currentToken() {
       return this.action.name === 'token' ? this.firstUnrevealed(this.area) : null;
     },
+
+    /**
+     * Returns our button message
+     * @returns {string}
+     */
     buttonMessage: function buttonMessage() {
       var message;
 
@@ -6368,69 +6607,114 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       return this.saveDisabled ? "Choose your action" : message;
     },
+
+    /**
+     * Returns our area if any
+     * @returns {Area|null}
+     */
     area: function area() {
       if (!this.action.area) return;
       return this.shared.data.areas[this.action.area];
     },
+
+    /**
+     * Returns the token we have chosen to reveal with this action if applicable
+     * @returns {Token|null}
+     */
     firstToken: function firstToken() {
-      if (this.action.name === 'token') {
-        return this.firstUnrevealed(this.area);
-      }
+      if (this.action.name === 'token') return this.firstUnrevealed(this.area);
     },
+
+    /**
+     * Returns the first revealed token in this area for this ambush action, if applicable
+     * @returns {Token|null}
+     */
     firstRevealed: function firstRevealed() {
-      if (this.action.name === 'ambush') {
-        return this.firstRevealedToken(this.area);
-      }
+      if (this.action.name === 'ambush') return this.firstRevealedToken(this.area);
     },
+
+    /**
+     * Returns an array of the tokens we have remaining to reveal this turn
+     * @returns {Token[]}
+     */
     activeTokens: function activeTokens() {
       return this.shared.faction.tokens.filter(function (token) {
         return token.location && token.revealed === false && token.location !== 'xavier';
       });
     },
+
+    /**
+     * Returns xavier blackstone, if we are the society
+     * @returns {Unit|null}
+     */
     xavier: function xavier() {
       if (this.shared.faction.name !== 'society') return;
       return this.shared.faction.units.find(function (unit) {
         return unit.type === 'champion';
       });
     },
+
+    /**
+     * Returns Xavier blackstone's area object, if applicable
+     * @returns {Area|null}
+     */
     xavierArea: function xavierArea() {
       if (this.shared.faction.name !== 'society') return;
       return this.shared.data.areas[this.xavier.location];
     },
+
+    /**
+     * Return Xaviers token, if we can activate it, or null if not applicable
+     * @returns {Token|null}
+     */
     canXavier: function canXavier() {
       if (this.shared.faction.name !== 'society') return;
       return this.xavier.token;
     },
+
+    /**
+     * Returns an array of area names that we can reveal a token in
+     * @returns {string[]}
+     */
     revealableTokens: function revealableTokens() {
       var _this2 = this;
 
-      var areas = [];
-
-      _.forEach(this.shared.data.areas, function (area) {
+      return Object.values(this.shared.data.areas).reduce(function (tokens, area) {
         var firstUnrevealed = _this2.firstUnrevealed(area);
 
-        if (firstUnrevealed && firstUnrevealed.faction === _this2.shared.faction.name) {
-          areas.push(area.name);
+        if ((firstUnrevealed === null || firstUnrevealed === void 0 ? void 0 : firstUnrevealed.faction) === _this2.shared.faction.name) {
+          tokens.push(area.name);
         }
-      });
 
-      return areas;
+        return tokens;
+      }, []);
     },
+
+    /**
+     * Returns an array of area names matching the areas we can ambush
+     * @returns {[]}
+     */
     ambushAreas: function ambushAreas() {
       var _this3 = this;
 
       var areas = [];
-      var faction = this.shared.faction;
-      if (!faction.ambushes || faction.ambushes.used >= faction.ambushes.max) return areas;
+      var faction = this.shared.faction; // if we can't ambush at all, return the empty array
 
-      _.forEach(this.shared.data.areas, function (area) {
+      if (!faction.ambushes || faction.ambushes.used >= faction.ambushes.max) return areas; // check each area to see if we have a revealed token there, and there are two players
+      // with units in that area
+
+      Object.values(this.shared.data.areas).forEach(function (area) {
         if (!_this3.firstRevealedToken(area)) return;
         if (_.factionsWithUnitsInArea(_this3.shared.data.factions, area).length < 2) return;
         areas.push(area.name);
       });
-
       return areas;
     },
+
+    /**
+     * Return an array of our skilled units in our selected area
+     * @returns {Unit[]}
+     */
     skilledUnitsInArea: function skilledUnitsInArea() {
       var _this4 = this;
 
@@ -6438,6 +6722,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         return _.unitReadyInArea(unit, _this4.area);
       });
     },
+
+    /**
+     * Return an array of our flipped units in our selected area
+     * @returns {Unit[]}
+     */
     flippedUnitsInArea: function flippedUnitsInArea() {
       var _this5 = this;
 
@@ -6447,6 +6736,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         });
       });
     },
+
+    /**
+     * Return an array of our ghost units in our selected area
+     * @returns {Unit[]}
+     */
     ghostsInArea: function ghostsInArea() {
       var _this6 = this;
 
@@ -6455,30 +6749,48 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         return ghost.location === _this6.area.name;
       });
     },
+
+    /**
+     * Return an array of area names matching the areas where we can activate the area skill
+     * @returns {[]}
+     */
     useableSkills: function useableSkills() {
       var _this7 = this;
 
-      var areas = [];
-
-      _.forEach(this.shared.data.areas, function (area) {
+      return Object.values(this.shared.data.areas).reduce(function (array, area) {
         if (_.canUseSkill(_this7.shared.faction, area, _this7.shared.data.factions)) {
-          areas.push(area.name);
+          array.push(area.name);
         }
-      });
 
-      return areas;
+        return array;
+      }, []);
     },
+
+    /**
+     * Returns our loop token, if revealed and in play
+     * @returns {Token|null}
+     */
     loopToken: function loopToken() {
       return this.shared.faction.tokens.find(function (token) {
         return token.type === 'loop' && token.revealed && token.location;
       });
     },
+
+    /**
+     * Returns an array of area names matching areas we can play a loop action
+     * @returns {string[]}
+     */
     useableLoop: function useableLoop() {
       var reserves = this.shared.faction.tokens.find(function (token) {
         return !token.location;
       });
       return this.loopToken && reserves ? [this.loopToken.location] : [];
     },
+
+    /**
+     * Returns an array of area names matching the areas where we can take a materialize action
+     * @returns {string[]|Array}
+     */
     useableMaterialize: function useableMaterialize() {
       if (this.shared.faction.name !== 'ghosts' || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction) return [];
       var areas = {};
@@ -6487,397 +6799,39 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
       return Object.keys(areas);
     },
+
+    /**
+     * Returns an array of area names matching the areas where we can take a magick action
+     * @returns {string[]|Array}
+     */
     useableMagick: function useableMagick() {
       var _this8 = this;
 
-      var areas = [];
-      if (this.shared.faction.name !== 'witches' || this.shared.faction.lastMagickGameAction === this.shared.data.gameAction) return areas;
-
-      _.forEach(this.shared.data.areas, function (area) {
+      // if not applicable, return an empty array
+      if (this.shared.faction.name !== 'witches' || this.shared.faction.lastMagickGameAction === this.shared.data.gameAction) return [];
+      return Object.values(this.shared.data.areas).reduce(function (array, area) {
         if (_.canUseMagick(_this8.shared.faction, area, _this8.shared.data.factions)) {
-          areas.push(area.name);
+          array.push(area.name);
         }
-      });
 
-      return areas;
+        return array;
+      }, []);
     },
+
+    /**
+     * Is our ability to save our choice disabled?
+     * @returns {boolean}
+     */
     saveDisabled: function saveDisabled() {
       if (!this.action || this.wildTokenNeedsType) return true;
     },
+
+    /**
+     * Does our wild token still need to be assigned a type?
+     * @returns {boolean}
+     */
     wildTokenNeedsType: function wildTokenNeedsType() {
       return this.firstToken && this.firstToken.name === 'wild' && !this.wildType;
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'choose-action',
-  data: function data() {
-    return {
-      shared: App.state,
-      action: null,
-      actions: {}
-    };
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    App.event.on('actionClicked', function (args) {
-      return _this.setAction.apply(_this, _toConsumableArray(args));
-    });
-    this.generateActions();
-    this.setDefaultAction();
-  },
-  methods: {
-    setDefaultAction: function setDefaultAction() {
-      var actionKeys = Object.keys(this.actions);
-
-      if (actionKeys.length === 1) {
-        var actionSet = this.actions[actionKeys[0]];
-
-        if (actionKeys[0] === 'pass' || actionKeys[0] === 'locked' || actionKeys[0] === 'skip' || actionSet.length === 1) {
-          this.setAction(actionKeys[0]);
-        }
-      }
-    },
-    setAction: function setAction(name, param) {
-      var action = {
-        name: name
-      };
-
-      if (name === 'token') {
-        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
-        action.token = this.firstUnrevealed(action.area);
-      }
-
-      if (name === 'skill') {
-        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
-      }
-
-      if (name === 'xavier') {
-        action.area = this.xavier.location;
-        action.token = this.xavier.token;
-        this.$set(this.xavier, 'placedToken', this.xavier.token);
-      }
-
-      if (name === 'magick') {
-        action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
-      }
-
-      if (action.area) this.shared.event.emit('areaSelected', {
-        name: action.area
-      });
-      this.action = action;
-      this.shared.action = action;
-    },
-    clearAction: function clearAction() {
-      if (this.action.name === 'xavier') this.$set(this.xavier, 'placedToken', null);
-      this.action = null;
-      this.shared.action = null;
-      App.event.emit('unselectAreas');
-    },
-    generateActions: function generateActions() {
-      var actions = {}; // can we activate skills?
-
-      if (this.useableSkills.length) actions.skill = this.useableSkills; // can we reveal tokens?
-
-      if (this.revealableTokens.length) actions.token = this.revealableTokens; // can we pass?
-
-      if (!this.activeTokens.length) actions.pass = true; // can we skip?
-
-      if (this.shared.faction.hasOwnProperty('skips') && this.shared.faction.skips.used < this.shared.faction.skips.max) actions.skip = true; // can we magick?
-
-      if (this.useableMagick.length) actions.magick = this.useableMagick; // can we declare ourselves locked?
-
-      if (!this.revealableTokens.length && this.activeTokens.length) actions.locked = true; // can we reveal an xavier token?
-
-      if (this.canXavier) actions.xavier = this.xavier.location;
-      this.actions = actions;
-      this.shared.actions = actions;
-    },
-    saveAction: function saveAction() {
-      var _this$shared;
-
-      var args = [];
-
-      switch (this.action.name) {
-        case 'skill':
-          args = [this.action.area];
-          break;
-
-        case 'token':
-          args = [this.action.token.id];
-          break;
-
-        case 'magick':
-          args = [this.action.area];
-          break;
-      }
-
-      (_this$shared = this.shared).respond.apply(_this$shared, ['choose-action', this.action.name].concat(_toConsumableArray(args)));
-
-      this.shared.actions = null;
-      this.clearAction();
-    },
-    setPassAction: function setPassAction() {
-      this.setAction('pass');
-    },
-    setLockedAction: function setLockedAction() {
-      this.setAction('locked');
-    },
-    setSkipAction: function setSkipAction() {
-      this.setAction('skip');
-    },
-    firstUnrevealed: function firstUnrevealed(area) {
-      if (typeof area === 'string') area = this.shared.data.areas[area];
-      return _.firstUnrevealedToken(area);
-    }
-  },
-  computed: {
-    hasTopAction: function hasTopAction() {
-      return this.actions.pass || this.actions.locked || this.actions.skip;
-    },
-    showPass: function showPass() {
-      return this.actions.pass;
-    },
-    showSkip: function showSkip() {
-      return this.actions.skip;
-    },
-    showLocked: function showLocked() {
-      return this.actions.locked;
-    },
-    currentToken: function currentToken() {
-      return this.action.name === 'token' ? this.firstUnrevealed(this.area) : null;
-    },
-    buttonMessage: function buttonMessage() {
-      var message;
-
-      switch (this.action.name) {
-        case 'skill':
-          message = "Activate the ".concat(this.area.name, " skill ability");
-          break;
-
-        case 'token':
-          message = "Reveal token in the ".concat(this.area.name);
-          break;
-
-        case 'pass':
-          message = "Pass for the turn";
-          break;
-
-        case 'skip':
-          message = "Skip this action";
-          break;
-
-        case 'locked':
-          message = "Declare yourself locked";
-          break;
-
-        case 'xavier':
-          message = "Reveal token on Xavier";
-          break;
-
-        case 'magick':
-          message = "Use magick in the ".concat(this.area.name);
-          break;
-      }
-
-      return this.saveDisabled ? "Choose your action" : message;
-    },
-    area: function area() {
-      if (!this.action.area) return;
-      return this.shared.data.areas[this.action.area];
-    },
-    firstToken: function firstToken() {
-      if (this.action.name === 'token') {
-        return this.firstUnrevealed(this.area);
-      }
-    },
-    activeTokens: function activeTokens() {
-      return this.shared.faction.tokens.filter(function (token) {
-        return token.location && token.revealed === false && token.location !== 'xavier';
-      });
-    },
-    xavier: function xavier() {
-      if (this.shared.faction.name !== 'society') return;
-      return this.shared.faction.units.find(function (unit) {
-        return unit.type === 'champion';
-      });
-    },
-    xavierArea: function xavierArea() {
-      if (this.shared.faction.name !== 'society') return;
-      return this.shared.data.areas[this.xavier.location];
-    },
-    canXavier: function canXavier() {
-      if (this.shared.faction.name !== 'society') return;
-      return this.xavier.token;
-    },
-    revealableTokens: function revealableTokens() {
-      var _this2 = this;
-
-      var areas = [];
-
-      _.forEach(this.shared.data.areas, function (area) {
-        var firstUnrevealed = _this2.firstUnrevealed(area);
-
-        if (firstUnrevealed && firstUnrevealed.faction === _this2.shared.faction.name) {
-          areas.push(area.name);
-        }
-      });
-
-      return areas;
-    },
-    skilledUnitsInArea: function skilledUnitsInArea() {
-      var _this3 = this;
-
-      return this.shared.faction.units.filter(function (unit) {
-        return _.unitReadyInArea(unit, _this3.area);
-      });
-    },
-    flippedUnitsInArea: function flippedUnitsInArea() {
-      var _this4 = this;
-
-      return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this4.area, {
-          flipped: true
-        });
-      });
-    },
-    useableSkills: function useableSkills() {
-      var _this5 = this;
-
-      var areas = [];
-
-      _.forEach(this.shared.data.areas, function (area) {
-        if (_.canUseSkill(_this5.shared.faction, area, _this5.shared.data.factions)) {
-          areas.push(area.name);
-        }
-      });
-
-      return areas;
-    },
-    useableMagick: function useableMagick() {
-      var _this6 = this;
-
-      var areas = [];
-
-      _.forEach(this.shared.data.areas, function (area) {
-        if (_.canUseMagick(_this6.shared.faction, area, _this6.shared.data.factions)) {
-          areas.push(area.name);
-        }
-      });
-
-      return areas;
-    },
-    saveDisabled: function saveDisabled() {
-      if (!this.action) return true;
     }
   }
 });
@@ -6893,6 +6847,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -6926,22 +6893,33 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   updated: function updated() {
+    // select area when updated
     if (this.data.prompt.name === 'choose-area') {
       this.shared.event.emit('areaSelected', this.area);
     }
   },
   computed: {
+    /**
+     * Return our button message
+     * @returns {string}
+     */
     buttonMessage: function buttonMessage() {
       return "choose the ".concat(this.area.name);
     },
+
+    /**
+     * Return a tally of area units grouped by faction
+     * @returns {Unit[]}
+     */
     units: function units() {
       var _this = this;
 
       var units = {};
+      Object.values(this.shared.data.factions).forEach(function (faction) {
+        // if enemy only abort if this faction is us
+        if (_this.data.enemyOnly && faction.name === _this.shared.faction.name) return; // if player only abort if this faction isn't us
 
-      _.forEach(this.shared.data.factions, function (faction) {
-        if (_this.data.enemyOnly && faction.name === _this.shared.faction.name) return;
-        if (_this.data.playerOnly && faction.name !== _this.shared.faction.name) return;
+        if (_this.data.playerOnly && faction.name !== _this.shared.faction.name) return; // get the faction's units in the area and add them to out tally
 
         var factionUnits = _.factionUnitsInArea(faction, _this.area.name);
 
@@ -6949,69 +6927,77 @@ __webpack_require__.r(__webpack_exports__);
           units[faction.name] = factionUnits;
         }
       });
-
       return units;
     },
+
+    /**
+     * Get our title message
+     * @returns {string}
+     */
     message: function message() {
       return this.data.message ? this.data.message : 'Choose an area';
     },
+
+    /**
+     * Returns our current area object
+     * @returns {Area}
+     */
     area: function area() {
-      return this.shared.data.areas[this.currentArea];
+      return this.shared.data.areas[this.currentAreaName];
     },
-    currentArea: function currentArea() {
+
+    /**
+     * Returns our current are name
+     * @returns {string}
+     */
+    currentAreaName: function currentAreaName() {
       return this.data.areas[this.index];
     },
+
+    /**
+     * Return an array of our area objects
+     * @returns {Area[]}
+     */
     areas: function areas() {
       var _this2 = this;
 
-      var areas = [];
-      this.data.areas.forEach(function (areaName) {
-        areas.push(_this2.shared.data.areas[areaName]);
+      return this.data.areas.map(function (areaName) {
+        return _this2.shared.data.areas[areaName];
       });
-      return areas;
     },
+
+    /**
+     * Returns our prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     }
   },
   methods: {
+    /**
+     * Resolve this prompt
+     */
     resolve: function resolve() {
-      var data = {};
-      data.area = this.area.name;
-      data = Object.assign({}, this.data, data);
+      var data = _objectSpread({
+        area: this.area.name
+      }, this.data);
+
       this.shared.respond('choose-area', data);
     },
-    updateArea: function updateArea(n) {
+
+    /**
+     * Update this area index
+     * @param index
+     */
+    updateArea: function updateArea(index) {
       var _this3 = this;
 
-      if (n === this.index) return;
+      if (index === this.index) return;
       this.area.tokens.forEach(function (token) {
         return _this3.$set(token, 'selected', false);
       });
-      this.index = n;
-    },
-    tokenClicked: function tokenClicked(token) {
-      var _this4 = this;
-
-      if (token.location !== this.area.name || this.data.unrevealedOnly && token.revealed || this.data.revealedOnly && !token.revealed || this.data.enemyOnly && token.faction === this.shared.faction.name || this.data.playerOnly && token.faction !== this.shared.faction.name) {
-        return;
-      }
-
-      if (token.selected) {
-        this.$set(token, 'selected', false);
-      } else {
-        if (this.needToSelect === 0) {
-          if (this.data.count > 1) {
-            return;
-          }
-
-          this.area.tokens.forEach(function (token) {
-            return _this4.$set(token, 'selected', false);
-          });
-        }
-
-        this.$set(token, 'selected', true);
-      }
+      this.index = index;
     }
   }
 });
@@ -7060,6 +7046,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-card',
   data: function data() {
@@ -7074,53 +7067,116 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    /**
+     * Resolve this prompt
+     * @param option
+     */
     resolve: function resolve(option) {
-      var data = {};
-
-      if (!option) {
-        data.decline = true;
-      } else {
-        data.areaName = this.area.name;
-        data.cardId = this.selected.id;
-        data.cost = this.cost;
-      }
-
+      var data = this.getResolveData(option);
       this.shared.respond('choose-card', data);
+    },
+
+    /**
+     * Return our resolution data
+     * @param option
+     * @returns {object}
+     */
+    getResolveData: function getResolveData(option) {
+      // decline playing a card
+      if (!option) return {
+        decline: true
+      };
+      return {
+        areaName: this.area.name,
+        cardId: this.selected.id,
+        cost: this.cost
+      };
     }
   },
   computed: {
+    /**
+     * Return decline message
+     * @returns {string}
+     */
     declineMessage: function declineMessage() {
       return this.data.declineMessage ? this.data.declineMessage : 'decline';
     },
+
+    /**
+     * Return save message
+     * @returns {string}
+     */
     saveMessage: function saveMessage() {
       return this.data.saveMessage ? this.data.saveMessage : 'choose a card';
     },
+
+    /**
+     * Return title message
+     * @returns {string}
+     */
     message: function message() {
       return this.data.message ? this.data.message : "Play a card in the ".concat(this.area.name);
     },
+
+    /**
+     * Return our selected card (or an empty object if none selected)
+     * @returns {object}
+     */
     selected: function selected() {
       if (!this.cards.length) return {};
       return this.cards[this.index];
     },
+
+    /**
+     * Return the cards to choose from
+     * @returns {Card[]}
+     */
     cards: function cards() {
-      if (this.data.cards.length) return this.data.cards;
+      // if the prompt provided the cards use them
+      if (this.data.cards && this.data.cards.length) return this.data.cards; // otherwise return the cards in our hand
+
       return this.shared.faction.cards.hand;
     },
+
+    /**
+     * Can we save our choice?
+     * @returns {boolean}
+     */
     canSave: function canSave() {
       return this.selected.name && this.money >= this.cost;
     },
+
+    /**
+     * Return our faction's money
+     * @returns {number}
+     */
     money: function money() {
       return _.money(this.shared.faction, true);
     },
+
+    /**
+     * Returns the cost to choose this card
+     * @returns {number}
+     */
     cost: function cost() {
-      var baseCost = this.data.free ? 0 : this.selected.cost;
-      if (baseCost && this.data.reduceCost) baseCost -= this.data.reduceCost;
-      if (baseCost < 0) baseCost = 0;
-      return baseCost;
+      var cost = this.data.free ? 0 : this.selected.cost;
+      if (cost && this.data.reduceCost) cost -= this.data.reduceCost;
+      if (cost < 0) cost = 0;
+      return cost;
     },
+
+    /**
+     * Returns prompt data
+     * @returns {null}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Returns this area object
+     * @returns {Area}
+     */
     area: function area() {
       return this.shared.data.areas[this.data.area];
     }
@@ -7213,6 +7269,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-factions',
   data: function data() {
@@ -7223,40 +7288,74 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    // set our initial faction
     this.selectedFaction = this.basicFactions[0].name;
   },
-  watch: {},
   computed: {
+    /**
+     * Return an array of our basic factions
+     * @returns {faction[]}
+     */
     basicFactions: function basicFactions() {
       return Object.values(this.shared.data.factions).filter(function (faction) {
         return faction.basic;
       }).sort(this.sortFactions);
     },
+
+    /**
+     * Return an array of our expansion factions
+     * @returns {faction[]}
+     */
     expansionFactions: function expansionFactions() {
       return Object.values(this.shared.data.factions).filter(function (faction) {
         return !faction.basic;
       }).sort(this.sortFactions);
     },
+
+    /**
+     * How many players remain to pick?
+     * @returns {number}
+     */
     remainingPlayers: function remainingPlayers() {
       return Object.values(this.shared.data.players).filter(function (player) {
         return !player.faction;
       }).length;
     },
+
+    /**
+     * How many killer factions have been selected
+     * @returns {number}
+     */
     killersSelected: function killersSelected() {
       return Object.values(this.shared.data.factions).filter(function (faction) {
         return faction.killer && faction.owner;
       }).length;
     },
+
+    /**
+     * How many expansion factions have been selected
+     * @returns {number}
+     */
     expansionsSelected: function expansionsSelected() {
       return Object.values(this.shared.data.factions).filter(function (faction) {
         return !faction.basic && faction.owner;
       }).length;
     },
+
+    /**
+     * How many experimental factions have been selected
+     * @returns {number}
+     */
     experimentalsSelected: function experimentalsSelected() {
       return Object.values(this.shared.data.factions).filter(function (faction) {
         return faction.status === 0 && faction.owner;
       }).length;
     },
+
+    /**
+     * Can we select a random faction?
+     * @returns {boolean}
+     */
     canRandom: function canRandom() {
       return this.shared.isActive() && !!Object.values(this.shared.data.factions).find(function (faction) {
         return faction.selectable;
@@ -7264,17 +7363,36 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    /**
+     * Sort our factions
+     * @param a
+     * @param b
+     * @returns {number}
+     */
     sortFactions: function sortFactions(a, b) {
+      // selectable first
       if (a.unselectable) return 1;
-      if (b.unselectable) return -1;
+      if (b.unselectable) return -1; // status second
+
       if (a.status > b.status) return -1;
-      if (a.status < b.status) return 1;
+      if (a.status < b.status) return 1; // alphabetically third
+
       if (a.name > b.name) return 1;
       if (a.name < b.name) return -1;
     },
+
+    /**
+     * Return the given player's title text
+     * @param player
+     * @returns {string|*}
+     */
     factionText: function factionText(player) {
       if (player.active) return "Choosing...";else if (player.faction) return player.faction;
     },
+
+    /**
+     * Choose a random faction
+     */
     chooseRandomFaction: function chooseRandomFaction() {
       var unselectedFactions = Object.values(this.shared.data.factions).filter(function (faction) {
         return faction.selectable === true;
@@ -7283,6 +7401,11 @@ __webpack_require__.r(__webpack_exports__);
       this.selectedFaction = _.sample(unselectedFactions).name;
       this.chooseFaction();
     },
+
+    /**
+     * Toggle blocking the given faction from being selected randomly
+     * @param factionName
+     */
     blockFaction: function blockFaction(factionName) {
       var faction = Object.values(this.shared.data.factions).find(function (item) {
         return item.name === factionName;
@@ -7290,10 +7413,19 @@ __webpack_require__.r(__webpack_exports__);
       faction.blocked = !faction.blocked;
       if (!faction.blocked) faction.selectable = true;
     },
+
+    /**
+     * Set a faction's selectability
+     * @param faction
+     * @param val
+     */
     setIsSelectable: function setIsSelectable(faction, val) {
-      console.log('isSelectable', faction.name, val);
       faction.selectable = val;
     },
+
+    /**
+     * Save our faction choice
+     */
     chooseFaction: function chooseFaction() {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('chooseFaction', this.shared.data.id, this.selectedFaction, this.random);
@@ -7312,7 +7444,12 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -7358,46 +7495,82 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    // if we only have one selectable card, select it
     if (this.selectableCards.length === 1) {
       this.$set(this.selectableCards[0], 'selected', true);
     }
   },
   methods: {
     cardClicked: function cardClicked(card) {
+      // unselect a card if we click it when selected
       if (card.selected) {
         this.$set(card, 'selected', false);
-      } else {
-        if (this.selected.length || !this.canSelectCard(card)) return;
-        this.$set(card, 'selected', true);
-      }
-    },
-    resolve: function resolve(action) {
-      var data = {};
+        return;
+      } // if we can't select this card, abort
 
-      if (action) {
-        data.selected = this.selected[0].id;
-        data.unselected = this.data.cards.filter(function (card) {
+
+      if (this.selected.length || !this.canSelectCard(card)) return; // select the card
+
+      this.$set(card, 'selected', true);
+    },
+
+    /**
+     * Resolve this prompt
+     * @param action
+     */
+    resolve: function resolve(action) {
+      var data = this.getResolveData(action);
+      data = _objectSpread(_objectSpread({}, data), this.data);
+      this.shared.respond('choose-magick', data);
+    },
+
+    /**
+     * Get our resolve data
+     *
+     * @param action
+     * @returns {object}
+     */
+    getResolveData: function getResolveData(action) {
+      // if we didn't select anything
+      if (!action) return {
+        unselected: this.data.cards.map(function (card) {
+          return card.id;
+        })
+      }; // if we selected a card
+
+      return {
+        selected: this.selected[0].id,
+        unselected: this.data.cards.filter(function (card) {
           return !card.selected;
         }).map(function (card) {
           return card.id;
-        });
-      } else {
-        data.unselected = this.data.cards.map(function (card) {
-          return card.id;
-        });
-      }
-
-      data = Object.assign({}, this.data, data);
-      this.shared.respond('choose-magick', data);
+        })
+      };
     },
+
+    /**
+     * Can we select the given card?
+     *
+     * @param card
+     * @returns {boolean}
+     */
     canSelectCard: function canSelectCard(card) {
       return card.type === 'rule' && (this.data.free || _.money(this.shared.faction) >= card.cost);
     }
   },
   computed: {
+    /**
+     * Return prompt data
+     * @returns {null}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Return an array of selectable cards
+     * @returns {Card[]}
+     */
     selectableCards: function selectableCards() {
       var _this = this;
 
@@ -7405,10 +7578,20 @@ __webpack_require__.r(__webpack_exports__);
         return _this.canSelectCard(card);
       });
     },
+
+    /**
+     * calculate our cost
+     * @returns {number}
+     */
     cost: function cost() {
       if (this.data.free) return 0;
       return this.selected.length ? this.selected[0].cost : 0;
     },
+
+    /**
+     * Return an array of our selected cards
+     * @returns {Card[]}
+     */
     selected: function selected() {
       return this.data.cards.filter(function (card) {
         return card.selected;
@@ -7428,6 +7611,23 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -7469,101 +7669,74 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Can we submit our choice?
+     * @returns {boolean}
+     */
     canSubmit: function canSubmit() {
       return this.selected.length && !this.data.count || this.selected.length === this.data.count;
     },
+
+    /**
+     * Return prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Get title message
+     * @returns {string}
+     */
     message: function message() {
       return this.data.message ? this.data.message : "select players";
     }
   },
   methods: {
+    /**
+     * Handle clicking on a player
+     * @param faction
+     */
     playerClicked: function playerClicked(faction) {
+      // unselect a faction if it was already selected
       if (this.selected.includes(faction)) {
         this.selected = this.selected.filter(function (fac) {
           return fac !== faction;
         });
-      } else {
-        this.selected.push(faction);
-      }
+        return;
+      } // otherwise select it
+
+
+      this.selected.push(faction);
     },
+
+    /**
+     * Resolve this prompt
+     * @param action
+     */
     resolve: function resolve(action) {
-      var data = {};
-
-      if (action === true) {
-        data.factions = this.selected;
-      } else {
-        data.factions = [];
-        data.decline = true;
-      }
-
-      data = Object.assign({}, this.data, data);
+      var data = this.getResolveData(action);
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('choose-players', data);
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js&":
-/*!****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'choose-pod',
-  data: function data() {
-    return {
-      shared: App.state
-    };
-  },
-  computed: {
-    buttonMessage: function buttonMessage() {
-      return "Take ".concat(this.data.token.type, " action");
     },
-    message: function message() {
-      return "Take a ".concat(this.data.token.type, " action in the ").concat(this.area.name, "?");
-    },
-    area: function area() {
-      return this.shared.data.areas[this.data.area];
-    },
-    data: function data() {
-      return this.shared.player.prompt.data;
-    }
-  },
-  methods: {
-    resolve: function resolve(activate) {
-      var data = {};
-      if (!activate) data.decline = true;
-      data = Object.assign({}, this.data, data);
-      this.shared.respond('choose-pod', data);
+
+    /**
+     * Get our resolution data
+     *
+     * @param action
+     * @returns {object}
+     */
+    getResolveData: function getResolveData(action) {
+      // return our selected factions if we didn't decline
+      if (action === true) return {
+        factions: this.selected
+      }; // if we declined...
+
+      return {
+        factions: [],
+        decline: true
+      };
     }
   }
 });
@@ -7579,6 +7752,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
 //
 //
 //
@@ -7606,46 +7789,82 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Get button message
+     * @returns {string}
+     */
     buttonMessage: function buttonMessage() {
       return "Activate the ".concat(this.area.name, " skill");
     },
+
+    /**
+     * Get title message
+     * @returns {string}
+     */
     message: function message() {
       return this.data.message ? this.data.message : 'Choose a skill to activate';
     },
+
+    /**
+     * Get current area object
+     * @returns {Area}
+     */
     area: function area() {
-      return this.shared.data.areas[this.currentArea];
+      return this.shared.data.areas[this.currentAreaName];
     },
-    currentArea: function currentArea() {
+
+    /**
+     * Get current are name
+     * @returns {string}
+     */
+    currentAreaName: function currentAreaName() {
       return this.data.areas[this.index];
     },
+
+    /**
+     * Return an array of our area objects
+     * @returns {Area[]}
+     */
     areas: function areas() {
       var _this = this;
 
-      var areas = [];
-      this.data.areas.forEach(function (areaName) {
-        areas.push(_this.shared.data.areas[areaName]);
+      return this.data.areas.map(function (areaName) {
+        return _this.shared.data.areas[areaName];
       });
-      return areas;
     },
+
+    /**
+     * Return our prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     }
   },
   methods: {
+    /**
+     * Resolve this prompt
+     */
     resolve: function resolve() {
-      var data = {};
-      data.area = this.area.name;
-      data = Object.assign({}, this.data, data);
+      var data = {
+        area: this.area.name
+      };
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('choose-skill', data);
     },
-    updateArea: function updateArea(n) {
+
+    /**
+     * Update selected area
+     * @param index
+     */
+    updateArea: function updateArea(index) {
       var _this2 = this;
 
-      if (n === this.index) return;
+      if (index === this.index) return;
       this.area.tokens.forEach(function (token) {
         return _this2.$set(token, 'selected', false);
       });
-      this.index = n;
+      this.index = index;
     }
   }
 });
@@ -7692,6 +7911,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-spy',
   data: function data() {
@@ -7701,11 +7927,18 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Return button message
+     * @returns {string}
+     */
     buttonMessage: function buttonMessage() {
       return this.spy ? "spy on the ".concat(this.spy) : "choose faction";
     }
   },
   methods: {
+    /**
+     * Save our choice
+     */
     saveSpy: function saveSpy() {
       App.event.emit('sound', 'ui');
       this.shared.socketEmit('factionStartOfTurnResponse', this.spy);
@@ -7802,6 +8035,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-target',
   data: function data() {
@@ -7813,6 +8051,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    // handle randomly selected targets
     var randomCard = this.shared.faction.cards.hand.find(function (card) {
       return card.randomTarget;
     });
@@ -7822,12 +8061,24 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    /**
+     * Save our choices if in confirm mode, otherwise switch to confirm mode
+     * @returns {string}
+     */
     saveChoices: function saveChoices() {
       if (this.mode !== 'confirm') return this.mode = 'confirm';
       App.event.emit('sound', 'ui');
       this.shared.socketEmit('chooseTargetPlan', this.plan, this.target);
     },
+
+    /**
+     * Handle clicking a card
+     *
+     * @param type
+     * @param object
+     */
     itemClicked: function itemClicked(type, object) {
+      // abort if this wasn't a valid card to click
       if (this.shared.faction.randomTarget && type === 'target' || !this.mustChoosePlan && type === 'plan') return App.event.emit('sound', 'error'); // clicking the selected object unselects it
 
       if (this[type] && this[type].id === object.id) return this[type] = null; // if this card doesn't have a target, do nothing
@@ -7841,13 +8092,27 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Get our save button text
+     * @returns {string}
+     */
     confirmMessage: function confirmMessage() {
       if (this.mode === 'confirm') return "FINALIZE CHOICES";
       return "CONFIRM CHOICES";
     },
+
+    /**
+     * Do we need to choose a plan?
+     * @returns {boolean}
+     */
     mustChoosePlan: function mustChoosePlan() {
       return this.shared.faction.plans.current.length >= 3;
     },
+
+    /**
+     * Get our title message
+     * @returns {string}
+     */
     message: function message() {
       switch (this.mode) {
         case 'plans':
@@ -7860,6 +8125,11 @@ __webpack_require__.r(__webpack_exports__);
           return "Confirm Choices";
       }
     },
+
+    /**
+     * Can we confirm our choices?
+     * @returns {boolean}
+     */
     canConfirm: function canConfirm() {
       return (this.plan || !this.mustChoosePlan) && this.target;
     }
@@ -7877,6 +8147,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
 //
 //
 //
@@ -7906,85 +8186,151 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Can we submit our choices
+     * @returns {boolean}
+     */
     canSubmit: function canSubmit() {
       return this.needToSelect === 0 || this.data.optional;
     },
-    message: function message() {
-      if (this.data.message) return this.data.message;
-      var message = [];
-      message.push("Choose ".concat(this.data.count)); //if( this.data.playerOnly ) message.push( 'of your' );
 
+    /**
+     * Return our title message
+     * @returns {string}
+     */
+    message: function message() {
+      // if we were given a message use it
+      if (this.data.message) return this.data.message; // otherwise build up a message from our options
+
+      var message = [];
+      message.push("Choose ".concat(this.data.count));
       if (this.data.revealedOnly) message.push('revealed');
       if (this.data.unrevealedOnly) message.push('unrevealed');
       if (this.data.enemyOnly) message.push('enemy');
       this.data.count > 1 ? message.push("tokens") : message.push('token');
       return message.join(' ');
     },
+
+    /**
+     * Returns our current area object
+     * @returns {Area}
+     */
     area: function area() {
-      return this.shared.data.areas[this.currentArea];
+      return this.shared.data.areas[this.currentAreaName];
     },
-    currentArea: function currentArea() {
+
+    /**
+     * Returns our current area name
+     * @returns {string}
+     */
+    currentAreaName: function currentAreaName() {
       return this.data.areas[this.index];
     },
+
+    /**
+     * Return an array of our area objects
+     * @returns {Area[]}
+     */
     areas: function areas() {
       var _this = this;
 
-      var areas = [];
-      this.data.areas.forEach(function (areaName) {
-        areas.push(_this.shared.data.areas[areaName]);
+      return this.data.areas.map(function (areaName) {
+        return _this.shared.data.areas[areaName];
       });
-      return areas;
     },
+
+    /**
+     * Return the number of tokens we still need to select
+     * @returns {number}
+     */
     needToSelect: function needToSelect() {
       return this.data.count - this.selected.length;
     },
+
+    /**
+     * Return our selected tokens
+     * @returns {Token[]}
+     */
     selected: function selected() {
       return this.area.tokens.filter(function (token) {
         return token.selected;
       });
     },
+
+    /**
+     * Return our prompt data
+     * @returns {null}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     }
   },
   methods: {
+    /**
+     * Resolve this prompt
+     */
     resolve: function resolve() {
       var data = {};
       if (this.selected.length) data.tokens = _.map(this.selected, 'id');
-      data = Object.assign({}, this.data, data);
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('choose-tokens', data);
     },
-    updateArea: function updateArea(n) {
+
+    /**
+     * Update our current area
+     * @param index
+     */
+    updateArea: function updateArea(index) {
       var _this2 = this;
 
-      if (n === this.index) return;
+      if (index === this.index) return;
       this.area.tokens.forEach(function (token) {
         return _this2.$set(token, 'selected', false);
       });
-      this.index = n;
+      this.index = index;
     },
+
+    /**
+     * Handle a clicked token
+     * @param token
+     */
     tokenClicked: function tokenClicked(token) {
       var _this3 = this;
 
-      if (token.location !== this.area.name || this.data.unrevealedOnly && token.revealed || this.data.revealedOnly && !token.revealed || this.data.enemyOnly && token.faction === this.shared.faction.name || this.data.playerOnly && token.faction !== this.shared.faction.name) {
-        return;
-      }
+      // if we can't select this token, abort
+      if (!this.canSelectToken(token)) return; // unselect this token if it was already selected
 
       if (token.selected) {
         this.$set(token, 'selected', false);
-      } else {
-        if (this.needToSelect === 0) {
-          if (this.data.count > 1) {
-            return;
-          }
+        return;
+      } // if we can't select any more tokens, and our token count is greater than 1 abort
 
-          this.area.tokens.forEach(function (token) {
-            return _this3.$set(token, 'selected', false);
-          });
-        }
 
-        this.$set(token, 'selected', true);
-      }
+      if (this.needToSelect === 0 && this.data.count > 1) return; // if we can't select any more tokens, any only need to select 1 total token
+      // unselect all other tokens before selecting this one
+
+      if (this.needToSelect === 0) {
+        this.area.tokens.forEach(function (token) {
+          return _this3.$set(token, 'selected', false);
+        });
+      } // select our token
+
+
+      this.$set(token, 'selected', true);
+    },
+
+    /**
+     * Can we select this token?
+     *
+     * @param token
+     * @returns {boolean}
+     */
+    canSelectToken: function canSelectToken(token) {
+      return !(token.location !== this.area.name // check token area
+      || this.data.unrevealedOnly && token.revealed // check unrevealed only
+      || this.data.revealedOnly && !token.revealed // check revealed only
+      || this.data.enemyOnly && token.faction === this.shared.faction.name // check enemy only
+      || this.data.playerOnly && token.faction !== this.shared.faction.name); // check player only
     }
   }
 });
@@ -8459,6 +8805,15 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
 //
 //
 //
@@ -8496,10 +8851,14 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Calculate our attack modifier
+     * @returns {number}
+     */
     attackMod: function attackMod() {
       var _this$shared$faction$, _this$data$attackBonu;
 
-      if (!this.faction || !this.data.unitAttack) return false;
+      if (!this.faction || !this.data.unitAttack) return 0;
       var targetFaction = this.shared.data.factions[this.faction];
 
       var defenseBonus = _.calculateDefenseBonus(this.shared.faction, targetFaction, this.area);
@@ -8508,21 +8867,27 @@ __webpack_require__.r(__webpack_exports__);
       var combatAttackBonus = (_this$data$attackBonu = this.data.attackBonus) !== null && _this$data$attackBonu !== void 0 ? _this$data$attackBonu : 0;
       return combatAttackBonus + factionAttackBonus - defenseBonus;
     },
+
+    /**
+     * Return our potential victims units
+     */
     units: function units() {
       var _this = this;
 
       var units = {};
 
       _.forEach(this.shared.data.factions, function (faction) {
-        if (faction.name === _this.data.faction) return;
-        if (_this.data.targetFactions && _this.data.targetFactions.length && !_this.data.targetFactions.includes(faction.name)) return;
+        // ignore our own units
+        if (faction.name === _this.data.faction) return; // abort if we can only target certain factions
+
+        if (_this.data.targetFactions && _this.data.targetFactions.length && !_this.data.targetFactions.includes(faction.name)) return; // get this faction's units and add them to our results
 
         var factionUnits = _.factionUnitsInArea(faction, _this.area.name, {
           notHidden: true
         });
 
         if (factionUnits.length) {
-          units[faction.name] = factionUnits;
+          units[faction.name] = factionUnits; // if this faction has smoke in the area, add it
 
           if (faction.smokeAreas && faction.smokeAreas.includes(_this.area.name)) {
             units[faction.name].push({
@@ -8536,29 +8901,55 @@ __webpack_require__.r(__webpack_exports__);
 
       return units;
     },
+
+    /**
+     * Get our title message
+     * @returns {string}
+     */
     message: function message() {
       return this.data.message ? this.shared.filterText(this.data.message) : 'Choose your victim';
     },
+
+    /**
+     * Return our area object
+     * @returns {Area}
+     */
     area: function area() {
-      return this.shared.data.areas[this.currentArea];
+      return this.shared.data.areas[this.currentAreaName];
     },
-    currentArea: function currentArea() {
+
+    /**
+     * Get our current area name
+     * @returns {string}
+     */
+    currentAreaName: function currentAreaName() {
       return this.data.areas[this.index];
     },
+
+    /**
+     * Return an array of our area objects
+     * @returns {Area[]}
+     */
     areas: function areas() {
       var _this2 = this;
 
-      var areas = [];
-      this.data.areas.forEach(function (areaName) {
-        areas.push(_this2.shared.data.areas[areaName]);
+      return this.data.areas.map(function (areaName) {
+        return _this2.shared.data.areas[areaName];
       });
-      return areas;
     },
+
+    /**
+     * Return our prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     }
   },
   methods: {
+    /**
+     * Select the currently selected faction's units
+     */
     selectCurrentFactionUnits: function selectCurrentFactionUnits() {
       var _this3 = this;
 
@@ -8568,39 +8959,64 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    selectFaction: function selectFaction(unit) {
-      if (this.faction === unit.faction) {
-        this.faction = null;
-      } else {
-        this.faction = unit.faction;
-      }
 
+    /**
+     * Select a faction based on the unit clicked
+     * @param unit
+     */
+    selectFaction: function selectFaction(unit) {
+      this.faction = this.faction !== unit.faction ? unit.faction : null;
       this.selectCurrentFactionUnits();
     },
+
+    /**
+     * Should we set this faction's opacity?
+     * @param faction
+     * @returns {string|null}
+     */
     shouldSetOpacity: function shouldSetOpacity(faction) {
       if (this.faction && this.faction !== faction) return 'opacity-7';
     },
+
+    /**
+     * Resolve this prompt
+     * @param val
+     */
     resolve: function resolve(val) {
-      var data = {};
-
-      if (val) {
-        data.area = this.area.name;
-        data.faction = this.faction;
-      } else {
-        data.declined = true;
-      }
-
-      data = Object.assign({}, this.data, data);
+      var data = this.getResolveData(val);
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('choose-victim', data);
     },
-    updateArea: function updateArea(n) {
+
+    /**
+     * Get our resolve data
+     *
+     * @param val
+     * @returns {object}
+     */
+    getResolveData: function getResolveData(val) {
+      // if we declined...
+      if (!val) return {
+        declined: true
+      };
+      return {
+        area: this.area.name,
+        faction: this.faction
+      };
+    },
+
+    /**
+     * Update our selected area
+     * @param index
+     */
+    updateArea: function updateArea(index) {
       var _this4 = this;
 
-      if (n === this.index) return;
+      if (index === this.index) return;
       this.area.tokens.forEach(function (token) {
         return _this4.$set(token, 'selected', false);
       });
-      this.index = n;
+      this.index = index;
     }
   }
 });
@@ -8616,6 +9032,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
 //
 //
 //
@@ -8665,33 +9091,71 @@ __webpack_require__.r(__webpack_exports__);
     this.shared.event.on('tokenClicked', this.selectToken);
   },
   computed: {
+    /**
+     * Get our button message
+     * @returns {string}
+     */
     buttonMessage: function buttonMessage() {
       return this.type ? "activate as a ".concat(this.type.name, " token") : 'Choose Basic Token';
     },
+
+    /**
+     * Is submitting disabled?
+     * @returns {boolean}
+     */
     disabled: function disabled() {
       return !this.type || this.shared.faction.resources + this.shared.faction.energy < this.cost;
     },
+
+    /**
+     * What is our token cost?
+     * @returns {number}
+     */
     cost: function cost() {
       return this.type && this.type.name === 'move' ? 2 : 0;
     },
+
+    /**
+     * get our title message
+     * @returns {string}
+     */
     message: function message() {
       return this.data.message ? this.data.message : 'Choose how to activate your wild token';
     },
+
+    /**
+     * Return our token area object
+     * @returns {Area}
+     */
     area: function area() {
       return this.shared.data.areas[this.data.area];
     },
+
+    /**
+     * Return our prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     }
   },
   methods: {
+    /**
+     * Select a token
+     * @param token
+     */
     selectToken: function selectToken(token) {
       this.type = token;
     },
+
+    /**
+     * Resolve this prompt
+     */
     resolve: function resolve() {
-      var data = {};
-      data.type = this.type.name;
-      data = Object.assign({}, this.data, data);
+      var data = _objectSpread({
+        type: this.type.name
+      }, this.data);
+
       this.shared.respond('choose-wild', data);
     }
   }
@@ -8708,6 +9172,28 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -8798,11 +9284,13 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   watch: {
+    // unselect all areas when we choose our reserves
     fromAreaIndex: function fromAreaIndex() {
       if (this.fromAreaIndex === -1) {
         App.event.emit('unselectAreas');
       }
     },
+    // when our destination becomes blocked by kau, remove all champions from our selection
     destinationBlockedByKau: function destinationBlockedByKau() {
       var _this = this;
 
@@ -8813,59 +9301,105 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    // if we have nothing to deploy from our reserves
-    if (this.reserves.length === 0 && this.fromAreas.length > 0) this.fromAreaIndex = 0; // if we have no units to deploy at all
+    // if we have nothing to deploy from our reserves set our fromIndex to 0
+    if (this.reserves.length === 0 && this.fromAreas.length > 0) this.fromAreaIndex = 0; // if we have no units to deploy at all set our from index to -2
 
     if (this.reserves.length === 0 && this.fromAreas.length === 0) this.fromAreaIndex = -2;
   },
   methods: {
+    /**
+     * Toggle whether to deploy a unit as a ghost
+     * @param unit
+     */
     toggleGhost: function toggleGhost(unit) {
-      if (unit.asGhost) this.$set(unit, 'asGhost', false);else this.$set(unit, 'asGhost', true);
-    },
-    resolve: function resolve(option) {
-      var data = {};
+      if (unit.asGhost) {
+        this.$set(unit, 'asGhost', false);
+        return;
+      }
 
-      if (!option) {
-        data.decline = true;
-      } else {
-        data.toArea = this.area.name;
-        data.units = this.selected.filter(function (unit) {
+      this.$set(unit, 'asGhost', true);
+    },
+
+    /**
+     * Resolve this prompt
+     * @param option
+     */
+    resolve: function resolve(option) {
+      var data = this.getResponseData(option);
+      data = _objectSpread(_objectSpread({}, data), this.data);
+      this.shared.respond('deploy-action', data);
+    },
+
+    /**
+     * Get our response data
+     * @param option
+     * @returns {object}
+     */
+    getResponseData: function getResponseData(option) {
+      // if we declined...
+      if (!option) return {
+        decline: true
+      };
+      return {
+        toArea: this.area.name,
+        units: this.selected.filter(function (unit) {
           return !unit.asGhost;
         }).map(function (unit) {
           return unit.id;
-        });
-        data.ghosts = this.selected.filter(function (unit) {
+        }),
+        ghosts: this.selected.filter(function (unit) {
           return unit.asGhost;
         }).map(function (unit) {
           return unit.id;
-        });
-        data.cost = this.cost;
-      }
-
-      data = Object.assign({}, this.data, data);
-      this.shared.respond('deploy-action', data);
+        }),
+        cost: this.cost
+      };
     },
+
+    /**
+     * Update our destination area index
+     * @param index
+     */
     updateToIndex: function updateToIndex(index) {
       this.toAreaIndex = index;
     },
+
+    /**
+     * Update our from area index
+     * @param index
+     */
     updateFromIndex: function updateFromIndex(index) {
       this.fromAreaIndex = index;
     },
+
+    /**
+     * Switch to selecting from our reserves
+     */
     switchToReserves: function switchToReserves() {
-      if (this.fromAreaIndex !== -1) {
-        this.fromAreaIndex = -1;
-        this.shared.event.emit('unselectAreas');
-      }
+      // if we are already selecting the reserves, abort
+      if (this.fromAreaIndex === -1) return;
+      this.fromAreaIndex = -1;
+      this.shared.event.emit('unselectAreas');
     },
+
+    /**
+     * Switch from our reserves, to redeploying from an area
+     */
     switchToRedeploy: function switchToRedeploy() {
-      if (this.fromAreaIndex === -1) {
-        this.fromAreaIndex = 0;
-        this.shared.event.emit('areaSelected', this.fromAreas[this.fromAreaIndex]);
-      }
+      // if we are already redeploying, abort
+      if (this.fromAreaIndex !== -1) return;
+      this.fromAreaIndex = 0;
+      this.shared.event.emit('areaSelected', this.fromAreas[this.fromAreaIndex]);
     },
+
+    /**
+     * Can we add this unit?
+     * @param type
+     * @returns {boolean}
+     */
     canAddUnit: function canAddUnit(type) {
       var usedDeploy = this.selected.length;
-      var deployLimit = this.data.deployLimit; // commie bonus patsies
+      var deployLimit = this.data.deployLimit; // unit type specific bonus deploy
 
       if (this.shared.faction.bonusDeploy && this.data.fromToken) {
         usedDeploy = this.nonBonusUsedDeploy;
@@ -8875,39 +9409,74 @@ __webpack_require__.r(__webpack_exports__);
 
       return usedDeploy < deployLimit;
     },
+
+    /**
+     * Add a unit from play
+     * @param unit
+     */
     addUnitFromPlay: function addUnitFromPlay(unit) {
+      // unselect the unit if it was already selected
       if (unit.selected) {
         this.$set(unit, 'selected', false);
         if (unit.asGhost) this.$set(unit, 'asGhost', false);
         return;
-      }
+      } // if we can't add this unit abort
 
-      if (!this.canAddUnit(unit.type)) return;
+
+      if (!this.canAddUnit(unit.type)) return; // get our unit and select it
+
       unit = _.find(this.currentFromAreaUnits, function (old) {
         return unit.id === old.id;
       });
-      this.$set(unit, 'selected', true);
+      this.$set(unit, 'selected', true); // do our ghost shenanigans
+
       if (this.shared.faction.ghostDeploy) this.$set(unit, 'asGhost', true);
     },
+
+    /**
+     * Add a unit from our reserves
+     * @param type
+     */
     addUnitFromReserves: function addUnitFromReserves(type) {
-      if (!this.canAddUnit(type)) return;
+      // if we can't add this unit abort
+      if (!this.canAddUnit(type)) return; // get our unit and select it
 
       var unit = _.find(this.reserves, function (unit) {
         return unit.type === type;
       });
 
-      this.$set(unit, 'selected', true);
+      this.$set(unit, 'selected', true); // do our ghost shenanigans
+
       if (this.shared.faction.ghostDeploy && !this.data.free) this.$set(unit, 'asGhost', true);
     },
+
+    /**
+     * Group array by prop helper
+     *
+     * @param array
+     * @param prop
+     * @returns {Object}
+     */
     groupBy: function groupBy(array, prop) {
       return _.groupBy(array, prop);
     },
+
+    /**
+     * Return from area units
+     * @param area
+     * @returns {Array}
+     */
     fromAreaUnits: function fromAreaUnits(area) {
       var _this2 = this;
 
+      // get our units
       var units = this.shared.faction.units.filter(function (unit) {
-        return !unit.noDeploy && _.unitInArea(unit, area) && unit.cost <= _.money(_this2.shared.faction) && (unit.type !== 'champion' || !_this2.destinationBlockedByKau) && (!_this2.data.unitTypes || _this2.data.unitTypes.includes(unit.type));
-      });
+        return unit.cost <= _.money(_this2.shared.faction) && _.unitInArea(unit, area, {
+          deployable: true,
+          noChampion: _this2.destinationBlockedByKau,
+          types: _this2.data.unitTypes
+        });
+      }); // include any ghosts
 
       if (this.shared.faction.ghostDeploy) {
         var ghosts = this.shared.faction.ghosts.filter(function (unit) {
@@ -8920,17 +9489,36 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Return our bonus deploy count
+     * @returns {number}
+     */
     bonusDeployCount: function bonusDeployCount() {
       if (!this.showBonusPips) return 0;
       return this.shared.faction.bonusDeploy.count;
     },
+
+    /**
+     * Should we show any bonus pips?
+     * @returns {boolean}
+     */
     showBonusPips: function showBonusPips() {
       return this.shared.faction.hasOwnProperty('bonusDeploy') && this.data.fromToken && !this.data.noBonusUnits;
     },
+
+    /**
+     * Calculate our net bonus units
+     * @returns {number}
+     */
     netBonusUnits: function netBonusUnits() {
       if (!this.shared.faction.bonusDeploy || this.data.noBonusUnits) return 0;
       return this.bonusUnitsInDeploy - this.shared.faction.bonusDeploy.count;
     },
+
+    /**
+     * Count our bonus units being deployed
+     * @returns {number}
+     */
     bonusUnitsInDeploy: function bonusUnitsInDeploy() {
       var _this3 = this;
 
@@ -8939,6 +9527,11 @@ __webpack_require__.r(__webpack_exports__);
         return unit.type === _this3.shared.faction.bonusDeploy.type;
       }).length;
     },
+
+    /**
+     * How much of our base deploy have we used?
+     * @returns {number}
+     */
     nonBonusUsedDeploy: function nonBonusUsedDeploy() {
       var _this4 = this;
 
@@ -8947,6 +9540,11 @@ __webpack_require__.r(__webpack_exports__);
         return unit.type !== _this4.shared.faction.bonusDeploy.type;
       }).length;
     },
+
+    /**
+     * How much of our deploy limit have we used?
+     * @returns {number}
+     */
     usedDeploy: function usedDeploy() {
       if (this.shared.faction.bonusDeploy && this.data.fromToken && !this.data.noBonusUnits) {
         var usedDeploy = this.nonBonusUsedDeploy;
@@ -8956,49 +9554,102 @@ __webpack_require__.r(__webpack_exports__);
 
       return this.selected.length;
     },
+
+    /**
+     * Can we decline this action?
+     * @returns {boolean}
+     */
     canDecline: function canDecline() {
-      if (this.data.fromToken) return true;
-      return !this.reserves.length && !this.hasFromAreaUnits || this.shared.faction.resources + this.shared.faction.energy < this.policePayoffs;
+      // if this deploy action if from a token, then yes
+      if (this.data.fromToken) return true; // if we have no units to deploy, then yes
+
+      if (!this.reserves.length && !this.hasFromAreaUnits) return true; // if we can't afford to deploy any units then we may decline
+
+      return _.money(this.shared.faction) < this.policePayoffs;
     },
+
+    /**
+     * Can we save our choices?
+     * @returns {boolean}
+     */
     canSave: function canSave() {
-      var unitsSelectedTest = this.selected.length >= 1;
-      var costTest = this.shared.faction.resources + this.shared.faction.energy >= this.cost;
-      return unitsSelectedTest && costTest;
+      // if we don't have any units selected, then no
+      if (this.selected.length < 1) return false; // can we afford to deploy this units?
+
+      return _.money(this.shared.faction) >= this.cost;
     },
+
+    /**
+     * Return our from area objects
+     * @returns {Area[]}
+     */
     fromAreas: function fromAreas() {
       var _this5 = this;
 
-      var areas = [];
-      this.data.fromAreas.forEach(function (areaName) {
-        areas.push(_this5.shared.data.areas[areaName]);
+      return this.data.fromAreas.map(function (areaName) {
+        return _this5.shared.data.areas[areaName];
       });
-      return areas;
     },
+
+    /**
+     * Do we have units in our from areas?
+     */
     hasFromAreaUnits: function hasFromAreaUnits() {
       var _this6 = this;
 
-      this.data.fromAreas.forEach(function (area) {
-        if (_this6.fromAreaUnits(area).length > 0) return true;
+      return this.data.fromAreas.some(function (area) {
+        return _this6.fromAreaUnits(area).length > 0;
       });
     },
+
+    /**
+     * Return our current area
+     * @returns {Area}
+     */
     currentArea: function currentArea() {
       return this.data.fromAreas[this.fromAreaIndex];
     },
+
+    /**
+     * Return our units in the current from area
+     * @returns {Unit[]}
+     */
     currentFromAreaUnits: function currentFromAreaUnits() {
       return this.fromAreaUnits(this.currentArea);
     },
+
+    /**
+     * Return the deployable units in our reserves
+     * @returns {Unit[]}
+     */
     reserves: function reserves() {
       var _this7 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return !unit.selected && (!_this7.data.unitTypes || _this7.data.unitTypes.includes(unit.type)) && !unit.noDeploy && (unit.cost <= _.money(_this7.shared.faction) || _this7.data.free) && (unit.type !== 'champion' || !_this7.destinationBlockedByKau) && !unit.location;
+        return _.isValidUnit(unit, {
+          notSelected: true,
+          types: _this7.data.unitTypes,
+          deployable: true,
+          noChampion: _this7.destinationBlockedByKau,
+          inReserves: true
+        }) && (unit.cost <= _.money(_this7.shared.faction) || _this7.data.free);
       });
     },
+
+    /**
+     * Is our destination blocked by kau?
+     * @returns {boolean}
+     */
     destinationBlockedByKau: function destinationBlockedByKau() {
       var aliens = this.shared.data.factions['aliens'];
       if (!aliens || this.shared.faction.name === 'aliens') return false;
       if (this.area.name === aliens.kau.location && !aliens.kau.killed) return true;
     },
+
+    /**
+     * Return our selected units
+     * @returns {Unit[]}
+     */
     selected: function selected() {
       var units = this.shared.faction.units.filter(function (unit) {
         return unit.selected;
@@ -9012,44 +9663,83 @@ __webpack_require__.r(__webpack_exports__);
 
       return units;
     },
+
+    /**
+     * Calculate our police payoff cost
+     * @returns {number}
+     */
     policePayoffs: function policePayoffs() {
       return _.policePayoffs(this.shared.faction, this.area) * this.selected.length;
     },
+
+    /**
+     * Calculate our vines cost
+     * @returns {*}
+     */
     vinesCost: function vinesCost() {
       return _.vinesCost(this.shared.faction, this.selected, this.shared.data.factions);
     },
+
+    /**
+     * Calculate our units cost
+     * @returns {number}
+     */
     unitCost: function unitCost() {
-      var cost = 0;
+      // if this deploy is free, return 0
+      if (this.data.free) return 0;
+      return this.selected.reduce(function (cost, unit) {
+        // if this unit is free to redeploy skip it
+        if (unit.redeployFree && unit.location) return cost; // if we are deploying as a ghost skip it
 
-      if (!this.data.free) {
-        this.selected.forEach(function (unit) {
-          if (!(unit.redeployFree && unit.location) && !unit.asGhost) cost += unit.cost;
-        });
-      }
+        if (unit.asGhost) return cost; // otherwise add in this unit's cost
 
-      return cost;
+        return cost += unit.cost;
+      }, 0);
     },
+
+    /**
+     * Calculate out total cost for this deploy
+     * @returns {number}
+     */
     cost: function cost() {
       var baseCost = this.unitCost + this.policePayoffs + this.vinesCost;
       if (baseCost && this.data.reduceCost) baseCost -= this.data.reduceCost;
       if (baseCost < 0) baseCost = 0;
       return baseCost;
     },
+
+    /**
+     * Return prompt data
+     * @returns {null}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Return our destination area object
+     * @returns {[]}
+     */
     toAreas: function toAreas() {
       var _this8 = this;
 
-      var areas = [];
-      this.data.toAreas.forEach(function (areaName) {
-        areas.push(_this8.shared.data.areas[areaName]);
+      return this.data.toAreas.map(function (areaName) {
+        return _this8.shared.data.areas[areaName];
       });
-      return areas;
     },
+
+    /**
+     * Return our current from area
+     * @returns {Area}
+     */
     fromArea: function fromArea() {
       return this.shared.data.areas[this.currentArea];
     },
+
+    /**
+     * Return our current destination object area
+     * @returns {Area}
+     */
     area: function area() {
       return this.shared.data.areas[this.data.toAreas[this.toAreaIndex]];
     }
@@ -9084,6 +9774,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'deploy-xavier',
   data: function data() {
@@ -9094,25 +9788,45 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    // get our xavier unit
     this.xavier = this.shared.faction.units.find(function (unit) {
       return unit.type === "champion";
     });
   },
   methods: {
+    /**
+     * Save our choice
+     */
     save: function save() {
       App.event.emit('sound', 'ui');
       App.event.emit('unselectAreas');
       this.shared.socketEmit('factionStartOfTurnResponse', this.area.name);
     },
-    updateArea: function updateArea(n) {
-      if (n === this.index) return;
-      this.index = n;
+
+    /**
+     * Change our area index
+     * @param index
+     */
+    updateArea: function updateArea(index) {
+      // abort if we select our current area
+      if (index === this.index) return; // set our area
+
+      this.index = index;
     }
   },
   computed: {
+    /**
+     * Return our selected area
+     * @returns {Area}
+     */
     area: function area() {
       return this.areas[this.index];
     },
+
+    /**
+     * Return an array of each of our areas
+     * @returns {unknown[]}
+     */
     areas: function areas() {
       return Object.values(this.shared.data.areas);
     }
@@ -9130,6 +9844,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
 //
 //
 //
@@ -9170,115 +9894,88 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Handle a card click
+     * @param card
+     */
     cardClicked: function cardClicked(card) {
       var _this = this;
 
+      // if we click a card we already selected, unselect it
       if (card.selected) {
         this.$set(card, 'selected', false);
-      } else {
-        if (this.needToSelect === 0) {
-          if (this.data.count > 1) {
-            return;
-          }
+        return;
+      } // if we have more cards to select select this card and return
 
-          this.selected.forEach(function (item) {
-            return _this.$set(item, 'selected', false);
-          });
-        }
 
+      if (this.needToSelect !== 0) {
+        this.$set(card, 'selected', true);
+        return;
+      } // if we can only select one card, and are already full, unselect all other cards first
+      // then select this one
+
+
+      if (this.data.count <= 1) {
+        this.selected.forEach(function (item) {
+          return _this.$set(item, 'selected', false);
+        });
         this.$set(card, 'selected', true);
       }
     },
+
+    /**
+     * Resolve this prompt
+     * @param action
+     */
     resolve: function resolve(action) {
-      var data = {};
-      data.cards = _.map(this.selected, 'id');
-      data = Object.assign({}, this.data, data);
+      var data = {
+        cards: _.map(this.selected, 'id')
+      };
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('discard-card', data);
     }
   },
   computed: {
+    /**
+     * return this prompt data
+     * @returns {null}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Return our prompt title
+     * @returns {string}
+     */
     message: function message() {
       return this.data.count === 1 ? 'Discard a card' : "Discard ".concat(this.data.count, " cards");
     },
+
+    /**
+     * Return an array of our selected cards
+     * @returns {[]}
+     */
     selected: function selected() {
       return this.shared.faction.cards.hand.filter(function (card) {
         return card.selected;
       });
     },
+
+    /**
+     * Do we need to select any more cards?
+     * @returns {number}
+     */
     needToSelect: function needToSelect() {
       return this.data.count - this.selected.length;
     },
+
+    /**
+     * Can we submit our choice?
+     * @returns {boolean}
+     */
     canSubmit: function canSubmit() {
       return this.needToSelect === 0;
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'double-resolve',
-  data: function data() {
-    return {
-      shared: App.state
-    };
-  },
-  methods: {
-    resolve: function resolve(choice) {
-      var data = {
-        doubleResolve: choice
-      };
-      this.shared.respond('double-resolve', data);
-    }
-  },
-  computed: {
-    canActivate: function canActivate() {
-      return this.shared.faction.resources >= 1;
-    },
-    data: function data() {
-      return this.shared.player.prompt.data;
-    },
-    area: function area() {
-      return this.shared.data.areas[this.data.area];
     }
   }
 });
@@ -9319,6 +10016,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'double-resolve',
   data: function data() {
@@ -9327,6 +10025,10 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Resolve prompt
+     * @param choice
+     */
     resolve: function resolve(choice) {
       var data = {
         doubleResolve: choice
@@ -9335,9 +10037,18 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * return prompt data
+     * @returns {null}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Return current area
+     * @returns {Area}
+     */
     area: function area() {
       return this.shared.data.areas[this.data.area];
     }
@@ -9371,6 +10082,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'faction-choice',
   props: ['faction', 'selected', 'selectable', "remainingPlayers", "killersSelected", "expansionsSelected"],
@@ -9386,14 +10098,6 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit('isSelectable', true);
     }
   },
-
-  /*
-  watch : {
-      'faction.blocked' : function( val ){
-          if( val && this.checkIsSelectable() ) this.$emit( 'isSelectable', true );
-      }
-  },
-  */
   methods: {
     checkIsSelectable: function checkIsSelectable() {
       // if the faction is already taken, then it can't be taken
@@ -9416,18 +10120,50 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Return the computed classes for this faction
+     * @returns {object}
+     */
+    classes: function classes() {
+      return {
+        active: this.selected === this.faction.name,
+        taken: !this.isSelectable,
+        killer: this.faction.killer,
+        basic: this.faction.basic
+      };
+    },
+
+    /**
+     * Can we select more killer factions?
+     * @returns {boolean}
+     */
     moreKillersAllowed: function moreKillersAllowed() {
       var allowed = this.playerCount === 5 ? 2 : 1;
       return this.killersSelected < allowed;
     },
+
+    /**
+     * Are more expansion factions allowed?
+     * @returns {boolean}
+     */
     moreExpansionsAllowed: function moreExpansionsAllowed() {
       var allowed = this.playerCount === 5 ? 3 : 2;
       return this.expansionsSelected < allowed;
     },
+
+    /**
+     * Returns the current player count
+     * @returns {number}
+     */
     playerCount: function playerCount() {
       if (!this.shared.data) return 0;
       return Object.keys(this.shared.data.players).length;
     },
+
+    /**
+     * Is the faction selectable?
+     * @returns {boolean}
+     */
     isSelectable: function isSelectable() {
       var selectable = this.checkIsSelectable();
       this.$emit('isSelectable', selectable);
@@ -9459,6 +10195,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'faction-flipper',
   props: ['factions', 'index', 'classes'],
@@ -9468,26 +10209,24 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Return current faction
+     * @returns {Faction}
+     */
     faction: function faction() {
       return this.factions[this.index];
     }
   },
   methods: {
-    prev: function prev() {
-      var index = this.index - 1;
+    /**
+     * increment/decrement faction index
+     * @param increment
+     */
+    flip: function flip(increment) {
+      var index = this.index + increment;
+      if (index < 0) index = this.factions.length - 1; // if we go below 0, flip to the end
 
-      if (index < 0) {
-        index = this.factions.length - 1;
-      }
-
-      this.$emit('update', index);
-    },
-    next: function next() {
-      var index = this.index + 1;
-
-      if (index > this.factions.length - 1) {
-        index = 0;
-      }
+      if (index > this.factions.length - 1) index = 0; // if we go above our max flip to the start
 
       this.$emit('update', index);
     }
@@ -9505,6 +10244,17 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
 //
 //
 //
@@ -9535,12 +10285,26 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Can we submit?
+     * @returns {boolean}
+     */
     canSubmit: function canSubmit() {
       return _.money(this.shared.faction) >= this.cost;
     },
+
+    /**
+     * Calculate our cost
+     * @returns {number}
+     */
     cost: function cost() {
       return this.selectedAreas.length;
     },
+
+    /**
+     * Return areas where we have webbed units with those units
+     * @returns {object}
+     */
     areas: function areas() {
       var _this = this;
 
@@ -9558,21 +10322,42 @@ __webpack_require__.r(__webpack_exports__);
       });
       return areas;
     },
+
+    /**
+     * Return prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     }
   },
   methods: {
+    /**
+     * resolve prompt
+     */
     resolve: function resolve() {
-      var data = {};
-      data.areas = this.selectedAreas;
-      data = Object.assign({}, this.data, data);
+      var data = {
+        areas: this.selectedAreas
+      };
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('free-units', data);
     },
+
+    /**
+     * Handle an area click
+     * @param areaName
+     */
     areaClicked: function areaClicked(areaName) {
-      if (this.selectedAreas.includes(areaName)) this.selectedAreas = this.selectedAreas.filter(function (area) {
-        return area !== areaName;
-      });else this.selectedAreas.push(areaName);
+      // if this area is already selected unselect it
+      if (this.selectedAreas.includes(areaName)) {
+        this.selectedAreas = this.selectedAreas.filter(function (area) {
+          return area !== areaName;
+        });
+        return;
+      } // otherwise select it
+
+
+      this.selectedAreas.push(areaName);
     }
   }
 });
@@ -9588,6 +10373,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
 //
 //
 //
@@ -9651,26 +10446,52 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    resolve: function resolve(option) {
-      var data = {};
-      data.units = _.map(this.selected, 'id');
-      data = Object.assign({}, this.data, data);
+    /**
+     * Resolve prompt
+     */
+    resolve: function resolve() {
+      var data = {
+        units: _.map(this.selected, 'id')
+      };
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('high-noon', data);
     },
+
+    /**
+     * Select a unit
+     * @param unit
+     */
     selectUnit: function selectUnit(unit) {
       this.enemyUnits.forEach(function (unit) {
         return unit.selected = false;
       });
       this.$set(unit, 'selected', true);
     },
+
+    /**
+     * Array group by helper
+     *
+     * @param array
+     * @param prop
+     * @returns {Object}
+     */
     groupBy: function groupBy(array, prop) {
       return _.groupBy(array, prop);
     }
   },
   computed: {
+    /**
+     * get message
+     * @returns {string}
+     */
     buttonMessage: function buttonMessage() {
       return this.selected.length ? "deploy selected units to the ".concat(this.area.name) : "select a unit";
     },
+
+    /**
+     * Return enemy factions
+     * @returns {[]}
+     */
     enemies: function enemies() {
       var _this = this;
 
@@ -9680,6 +10501,11 @@ __webpack_require__.r(__webpack_exports__);
       });
       return enemies;
     },
+
+    /**
+     * Return enemy unit types
+     * @returns {Unit[]}
+     */
     enemyUnits: function enemyUnits() {
       var _this2 = this;
 
@@ -9693,18 +10519,38 @@ __webpack_require__.r(__webpack_exports__);
       });
       return units;
     },
+
+    /**
+     * Return our currently selected enemy
+     * @returns {Faction}
+     */
     enemy: function enemy() {
       return this.shared.data.factions[this.data.enemies[this.index]];
     },
+
+    /**
+     * Return our selected units
+     * @returns {[]}
+     */
     selected: function selected() {
       if (!this.enemySelected) return [];
       return [this.ourSelected, this.enemySelected];
     },
+
+    /**
+     * Return our selected enemy unit
+     * @returns {Unit}
+     */
     enemySelected: function enemySelected() {
       return _.find(this.enemy.units, function (unit) {
         return unit.selected;
       });
     },
+
+    /**
+     * Return our selected unit
+     * @returns {Unit}
+     */
     ourSelected: function ourSelected() {
       var _this3 = this;
 
@@ -9714,9 +10560,19 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
+
+    /**
+     * Return prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Return destination area
+     * @returns {Area}
+     */
     area: function area() {
       return this.shared.data.areas[this.data.area];
     }
@@ -9760,6 +10616,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'loop-action',
   data: function data() {
@@ -9769,16 +10630,37 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Resolve prompt
+     */
     resolve: function resolve() {
       this.shared.respond('loop-action', {
         token: this.token
       });
     },
+
+    /**
+     * Select a replacement token
+     * @param token
+     */
     selectToken: function selectToken(token) {
-      if (this.token && this.token.id === token.id) this.token = null;else this.token = token;
+      var _this$token;
+
+      // if we click a selected token, unselected it
+      if (((_this$token = this.token) === null || _this$token === void 0 ? void 0 : _this$token.id) === token.id) {
+        this.token = null;
+        return;
+      } // otherwise select it
+
+
+      this.token = token;
     }
   },
   computed: {
+    /**
+     * Returns our valid token replacement types
+     * @returns {Token[]}
+     */
     tokens: function tokens() {
       var tokens = [];
       var types = [];
@@ -9790,12 +10672,27 @@ __webpack_require__.r(__webpack_exports__);
       });
       return tokens;
     },
-    canActivate: function canActivate() {
+
+    /**
+     * Can we save this choice
+     * @returns {boolean}
+     */
+    canSave: function canSave() {
       return !!this.token;
     },
+
+    /**
+     * Return prompt data
+     * @returns {null}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Return our area object
+     * @returns {Area}
+     */
     area: function area() {
       if (this.data.token) {
         return this.shared.data.areas[this.data.token.location];
@@ -9815,6 +10712,19 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -9901,36 +10811,79 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Resolve prompt
+     * @param option
+     */
     resolve: function resolve(option) {
-      var data = {};
-
-      if (!option) {
-        data.decline = true;
-      } else {
-        data.toArea = this.area.name;
-        data.units = _.map(this.selected, 'id');
-        data.cost = this.cost;
-      }
-
-      data = Object.assign({}, this.data, data);
+      var data = this.getResolveData(option);
+      data = _objectSpread(_objectSpread({}, data), this.data);
       this.shared.respond('move-action', data);
     },
+
+    /**
+     * Get our resolve data object
+     * @param option
+     * @returns {object}
+     */
+    getResolveData: function getResolveData(option) {
+      // if we declined
+      if (!option) return {
+        decline: true
+      };
+      return {
+        toArea: this.area.name,
+        units: _.map(this.selected, 'id'),
+        cost: this.cost
+      };
+    },
+
+    /**
+     * Unselect a unit
+     * @param unit
+     */
     unselectUnit: function unselectUnit(unit) {
       if (!this.confirm) unit.selected = false;
     },
+
+    /**
+     * Update from area index
+     * @param index
+     */
     updateFromIndex: function updateFromIndex(index) {
       this.fromAreaIndex = index;
     },
+
+    /**
+     * Add a unit from play
+     * @param unit
+     */
     addUnitFromPlay: function addUnitFromPlay(unit) {
+      // if we moved our max units, abort
       if (this.data.moveLimit && this.selected.length >= this.data.moveLimit) return;
       unit = _.find(this.currentFromAreaUnits, function (old) {
         return unit.id === old.id;
       });
       this.$set(unit, 'selected', true);
     },
+
+    /**
+     * Array group by helper
+     *
+     * @param array
+     * @param prop
+     * @returns {Object}
+     */
     groupBy: function groupBy(array, prop) {
       return _.groupBy(array, prop);
     },
+
+    /**
+     * Return our units in the from area
+     *
+     * @param area
+     * @returns {Unit[]}
+     */
     fromAreaUnits: function fromAreaUnits(area) {
       var _this = this;
 
@@ -9940,23 +10893,50 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Get our message
+     * @returns {string}
+     */
     message: function message() {
       return this.confirm ? 'Are you sure you are done moving?' : 'Choose units to move';
     },
+
+    /**
+     * Can we decline this move
+     * @returns {boolean}
+     */
     canDecline: function canDecline() {
-      if (this.data.fromToken) return true;
-      return !this.hasFromAreaUnits || this.shared.faction.resources + this.shared.faction.energy < this.policePayoffs;
+      // we can always decline moves from a token
+      if (this.data.fromToken) return true; // or if we don't have enough money
+
+      return _.money(this.shared.faction) < this.cost;
     },
+
+    /**
+     * Can we save our selection?
+     * @returns {boolean}
+     */
     canSave: function canSave() {
-      var unitsSelectedTest = this.selected.length >= 1;
-      var costTest = this.shared.faction.resources + this.shared.faction.energy >= this.cost;
-      return unitsSelectedTest && costTest;
+      // if we haven't selected any units, then no
+      if (this.selected.length < 1) return false; // otherwise do we have enough money?
+
+      return _.money(this.shared.faction) >= this.cost;
     },
+
+    /**
+     * Is our destination blocked bu Kau?
+     * @returns {boolean}
+     */
     destinationBlockedByKau: function destinationBlockedByKau() {
       var aliens = this.shared.data.factions['aliens'];
       if (!aliens || this.shared.faction.name === 'aliens') return false;
       if (this.area.name === aliens.kau.location && !aliens.kau.killed) return true;
     },
+
+    /**
+     * Return our valid from area objects
+     * @returns {Area[]}
+     */
     fromAreas: function fromAreas() {
       var _this2 = this;
 
@@ -9966,44 +10946,90 @@ __webpack_require__.r(__webpack_exports__);
       });
       return areas;
     },
-    hasFromAreaUnits: function hasFromAreaUnits() {
-      var _this3 = this;
 
-      this.data.fromAreas.forEach(function (area) {
-        if (_this3.fromAreaUnits(area).length > 0) return true;
-      });
-    },
-    currentArea: function currentArea() {
+    /**
+     * Returns our current from area name
+     *
+     * @returns {string}
+     */
+    currentAreaName: function currentAreaName() {
       return this.data.fromAreas[this.fromAreaIndex];
     },
+
+    /**
+     * Returns our current from area object
+     *
+     * @returns {Area}
+     */
     currentFromAreaUnits: function currentFromAreaUnits() {
-      return this.fromAreaUnits(this.currentArea);
+      return this.fromAreaUnits(this.currentAreaName);
     },
+
+    /**
+     * Returns our selected units
+     *
+     * @returns {Unit[]}
+     */
     selected: function selected() {
       return this.shared.faction.units.filter(function (unit) {
         return unit.selected;
       });
     },
+
+    /**
+     * Return the number of police payoffs active in our destination
+     *
+     * @returns {number}
+     */
     policePayoffs: function policePayoffs() {
       return _.policePayoffs(this.shared.faction, this.area) * this.selected.length;
     },
+
+    /**
+     * Return the vines cost to move our selected units
+     *
+     * @returns {number}
+     */
     vinesCost: function vinesCost() {
       return _.vinesCost(this.shared.faction, this.selected, this.shared.data.factions);
     },
+
+    /**
+     * Calculate our move cost
+     * @returns {number}
+     */
     cost: function cost() {
       var baseCost = this.policePayoffs + this.vinesCost;
       if (baseCost && this.data.reduceCost) baseCost -= this.data.reduceCost;
       if (baseCost < 0) baseCost = 0;
       return baseCost;
     },
+
+    /**
+     * return our prompt data
+     *
+     * @returns {null}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * returns our current destination area object
+     *
+     * @returns {Area}
+     */
     area: function area() {
       return this.shared.data.areas[this.data.toArea];
     },
+
+    /**
+     * returns our current from area object
+     *
+     * @returns {Area}
+     */
     fromArea: function fromArea() {
-      return this.shared.data.areas[this.currentArea];
+      return this.shared.data.areas[this.currentAreaName];
     }
   }
 });
@@ -10019,6 +11045,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
 //
 //
 //
@@ -10068,62 +11104,101 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * resolve prompt
+     * @param option
+     */
     resolve: function resolve(option) {
-      var data = {};
-
-      if (!option) {
-        data.decline = true;
-      } else {
-        data.moves = this.selected.map(function (unit) {
-          return {
-            units: [unit.id],
-            toArea: unit.selected
-          };
-        });
-        data.cost = this.cost;
-      }
-
-      data = Object.assign({}, this.data, data);
+      var data = this.setResolutionData(option);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('move-away', data);
     },
+
+    /**
+     * Set our resolution data
+     * @param option
+     * @returns {object}
+     */
+    setResolutionData: function setResolutionData(option) {
+      // if we declined, return declined
+      if (!option) return {
+        decline: true
+      }; // otherwise bundle our moves and our cost
+
+      var result = {
+        cost: this.cost
+      };
+      result.moves = this.selected.map(function (unit) {
+        return {
+          units: [unit.id],
+          toArea: unit.selected
+        };
+      });
+      return result;
+    },
+
+    /**
+     * Update our destination area index
+     * @param index
+     */
     updateToIndex: function updateToIndex(index) {
       this.toAreaIndex = index;
       if (this.data.limit === 1 && this.selected.length) this.moveSelectedToArea();
     },
+
+    /**
+     * Move selected unit to our current destination area
+     */
     moveSelectedToArea: function moveSelectedToArea() {
       var unit = this.selected[0];
       this.$set(unit, 'selected', this.area.name);
     },
+
+    /**
+     * Add a unit to the selected area
+     * @param unit
+     */
     addUnitToArea: function addUnitToArea(unit) {
-      if (this.currentAreaUnits.length || this.data.limit && this.selected.length >= this.data.limit) return;
+      // if we already have moved our max units here, abort
+      if (this.currentAreaUnits.length || this.data.limit && this.selected.length >= this.data.limit) return; // set unit selected area
+
       this.$set(unit, 'selected', this.area.name);
     },
+
+    /**
+     * Remove selected unit from area
+     * @param unit
+     */
     removeUnitFromArea: function removeUnitFromArea(unit) {
       this.$set(unit, 'selected', null);
     }
   },
   computed: {
+    /**
+     * Return our from area object
+     * @returns {Area}
+     */
     fromArea: function fromArea() {
       return this.shared.data.areas[this.data.fromArea];
     },
+
+    /**
+     * Return our destination area object
+     * @returns {Area}
+     */
     area: function area() {
       return this.shared.data.areas[this.data.toAreas[this.toAreaIndex]];
     },
+
+    /**
+     * Return the the units in our from area
+     * @returns {Unit[]}
+     */
     fromAreaUnits: function fromAreaUnits() {
       var _this = this;
 
-      var units = [];
-
-      if (this.data.enemyOnly) {
-        // enemy units
-        Object.values(this.shared.data.factions).forEach(function (faction) {
-          if (faction.name === _this.shared.faction.name) return;
-          units = units.concat(faction.units);
-        });
-      } else {
-        // player units
-        units = this.shared.faction.units;
-      }
+      // get unit pool
+      var units = this.getFromAreaUnitsPool(); // filter pool
 
       return units.filter(function (unit) {
         return _.unitInArea(unit, _this.fromArea, {
@@ -10132,126 +11207,104 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    currentAreaUnits: function currentAreaUnits() {
+
+    /**
+     * Return our potential movable units pool
+     *
+     * @returns {Unit[]}
+     */
+    getFromAreaUnitsPool: function getFromAreaUnitsPool() {
       var _this2 = this;
 
+      // if we aren't limited to enemy units, return our units
+      if (!this.data.enemyOnly) return this.shared.faction.units; // otherwise return all enemy units
+
+      var units = [];
+      Object.values(this.shared.data.factions).forEach(function (faction) {
+        if (faction.name === _this2.shared.faction.name) return; // ignore our faction
+
+        units = units.concat(faction.units);
+      });
+      return units;
+    },
+
+    /**
+     * Return the units in the current from area
+     *
+     * @returns {Unit[]}
+     */
+    currentAreaUnits: function currentAreaUnits() {
+      var _this3 = this;
+
       return this.fromAreaUnits.filter(function (unit) {
-        return unit.selected === _this2.area.name;
+        return unit.selected === _this3.area.name;
       });
     },
+
+    /**
+     * Returns the selected units
+     * @returns {Unit[]}
+     */
     selected: function selected() {
       return this.fromAreaUnits.filter(function (unit) {
         return unit.selected;
       });
     },
+
+    /**
+     * Can we save our choices?
+     * @returns {boolean}
+     */
     canSave: function canSave() {
-      var unitsSelectedTest = this.selected.length >= 1;
-      var costTest = this.shared.faction.resources + this.shared.faction.energy >= this.cost;
-      return unitsSelectedTest && costTest;
+      // if we haven't selected any units, then no
+      if (this.selected.length < 1) return false; // if we have enough money
+
+      return _.money(this.shared.faction) >= this.cost;
     },
+
+    /**
+     * Return area objects for our valid destination areas
+     * @returns {Area[]}
+     */
     toAreas: function toAreas() {
-      var _this3 = this;
+      var _this4 = this;
 
       var areas = [];
       this.data.toAreas.forEach(function (areaName) {
-        areas.push(_this3.shared.data.areas[areaName]);
+        areas.push(_this4.shared.data.areas[areaName]);
       });
       return areas;
     },
+
+    /**
+     * Calculated the cost for this move
+     * @returns {number}
+     */
     cost: function cost() {
-      var _this4 = this;
+      var _this5 = this;
 
-      var cost = 0;
+      var cost = 0; // police payoffs
+
       this.toAreas.forEach(function (area) {
-        var payoffs = _.policePayoffs(_this4.shared.faction, area);
+        var payoffs = _.policePayoffs(_this5.shared.faction, area);
 
-        if (_this4.fromAreaUnits.filter(function (unit) {
+        if (_this5.fromAreaUnits.filter(function (unit) {
           return unit.selected === area.name;
         }).length) {
           cost += payoffs;
         }
-      });
+      }); // vines
+
       cost += _.vinesCost(this.shared.faction, this.selected, this.shared.data.factions);
       return cost;
     },
+
+    /**
+     * Returns prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/NinjaAttack.vue?vue&type=script&lang=js&":
-/*!******************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/NinjaAttack.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'ninja-attack',
-  data: function data() {
-    return {
-      shared: App.state
-    };
-  },
-  computed: {
-    enemyUnits: function enemyUnits() {
-      return _.enemyUnitsInArea(this.shared.faction, this.area, this.shared.data.factions);
-    },
-    message: function message() {
-      return this.shared.filterText('Attack with your units, or attack of xA4x against target basic unit?');
-    },
-    area: function area() {
-      return this.shared.data.areas[this.data.area];
-    },
-    areaUnits: function areaUnits() {
-      var _this = this;
-
-      return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this.area);
-      });
-    },
-    data: function data() {
-      return this.shared.player.prompt.data;
-    }
-  },
-  methods: {
-    resolve: function resolve(action) {
-      var data = {
-        ninjaAttack: action
-      };
-      data = Object.assign({}, this.data, data);
-      this.shared.respond('ninja-attack', data);
     }
   }
 });
@@ -10300,6 +11353,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'place-token',
   data: function data() {
@@ -10311,55 +11365,77 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   watch: {
+    // handle area index change events
     areaIndex: function areaIndex() {
-      if (this.xavier) {
-        if (this.areaIndex === -1) {
-          this.$set(this.xavier, 'isSelected', true);
-        } else {
-          this.$set(this.xavier, 'isSelected', false);
-        }
-      }
-
+      if (this.xavier) this.$set(this.xavier, 'isSelected', this.areaIndex === -1);
       this.shared.event.emit('areaSelected', this.area);
     },
+    // Reset this on each game action
     'shared.data.gameAction': function sharedDataGameAction() {
-      this.reset();
+      this.removeToken();
     }
   },
   mounted: function mounted() {
     var _this = this;
 
+    // init listeners
     this.shared.event.on('tokenClicked', this.tokenClicked);
     this.shared.event.on('areaClicked', this.areaClicked);
-    this.shared.event.on('xavierClicked', this.xavierClicked);
+    this.shared.event.on('xavierClicked', this.xavierClicked); // should we chow xavier
 
     if (this.canXavier) {
       this.shared.showXavier = true;
-    }
+    } // set selected area
+
 
     this.$nextTick(function () {
       _this.shared.event.emit('areaSelected', _this.area);
     });
   },
   computed: {
+    /**
+     * Returns Xavier blackstone if we are the society, or false if we are not
+     * @returns {Unit|false}
+     */
     xavier: function xavier() {
-      if (this.shared.faction.name !== 'society') return;
+      if (this.shared.faction.name !== 'society') return false;
       return this.shared.faction.units.find(function (unit) {
         return unit.type === 'champion';
       });
     },
+
+    /**
+     * Can we place a token on xavier blackstone?
+     * @returns {boolean}
+     */
     canXavier: function canXavier() {
-      if (this.shared.faction.name !== 'society') return;
+      if (!this.xavier) return false; // if xavier doesn't already have a token
+
       return !this.xavier.token;
     },
+
+    /**
+     * Is our ability to save disabled?
+     * @returns {boolean}
+     */
     saveDisabled: function saveDisabled() {
-      if (!this.token || this.shared.faction.resources + this.shared.faction.energy < this.shared.faction.tokenCost) return true;
+      return !this.token || _.money(this.shared.faction) < this.shared.faction.tokenCost;
     },
+
+    /**
+     * Returns this faction's token reserves
+     * @returns {Token[]}
+     */
     reserves: function reserves() {
       return this.shared.faction.tokens.filter(function (token) {
         return !token.location;
       });
     },
+
+    /**
+     * Returns the area we are placing a token in (or Xavier when applicable)
+     * @returns {{name: *, type: string}|*}
+     */
     area: function area() {
       if (this.areaIndex === -1) return {
         name: this.xavier.location,
@@ -10367,80 +11443,114 @@ __webpack_require__.r(__webpack_exports__);
       };
       return this.availableAreas[this.areaIndex];
     },
+
+    /**
+     * Return an array of areas where we can place an action token
+     * @returns {Area[]}
+     */
     availableAreas: function availableAreas() {
-      var areas = [];
-
-      _.forEach(this.shared.data.areas, function (area) {
-        if (area.tokens.length < area.maxTokens) {
-          areas.push(area);
-        }
+      return Object.values(this.shared.data.areas).filter(function (area) {
+        return area.tokens.length < area.maxTokens;
       });
-
-      return areas;
     }
   },
   methods: {
-    reset: function reset() {
-      this.removeToken();
-    },
+    /**
+     * Remove our selected token
+     */
     removeToken: function removeToken() {
+      // reset token
       if (this.token) {
         this.$set(this.token, 'place', null);
         this.token = null;
-      }
+      } // reset xavier token
+
 
       if (this.xavier && this.xavier.placeToken) {
         this.$set(this.xavier, 'placeToken', null);
-      }
+      } // remove token from shared state
+
 
       this.shared.token = null;
     },
+
+    /**
+     * Set our selected token
+     * @param token
+     */
     setToken: function setToken(token) {
+      // set our token, and shared state token
       this.token = token;
+      this.shared.token = this.token; // place token on xavier, if applicable
 
       if (this.area.type === 'xavier') {
         this.placeXavierToken();
-      } else {
-        this.$set(this.token, 'place', this.area.name);
-      }
+        return;
+      } // set token placement
 
-      this.shared.token = this.token;
+
+      this.$set(this.token, 'place', this.area.name);
     },
+
+    /**
+     * Handle token clicks
+     *
+     * @param token
+     */
     tokenClicked: function tokenClicked(token) {
-      if (token.location) return;
+      // if we clicked an already placed token, abort
+      if (token.location) return; // if we click a token we already selected unselect it
 
       if (this.token && this.token.id === token.id) {
         this.removeToken();
-      } else {
-        this.setToken(token);
-      }
+        return;
+      } // otherwise select the token
+
+
+      this.setToken(token);
     },
+
+    /**
+     * Handle clicking on xavier
+     */
     xavierClicked: function xavierClicked() {
-      if (this.xavier.token) return;
-      console.log('xavier clicked');
+      // if xavier already has a token placed on him, do nothing
+      if (this.xavier.token) return; // set area selected
+
       this.areaIndex = -1;
       this.shared.event.emit('areaSelected', {
         name: this.xavier.location
-      });
+      }); // remove xavier's token if we are already placing a token on him
 
       if (this.xavier.placeToken && this.xavier.placeToken.id === this.token.id) {
         this.removeToken();
-      } else if (this.token) {
-        this.placeXavierToken();
-      }
+        return;
+      } // otherwise place our token on xavier
+
+
+      if (this.token) this.placeXavierToken();
     },
+
+    /**
+     * Place a token on xavier
+     */
     placeXavierToken: function placeXavierToken() {
       this.$set(this.xavier, 'placeToken', this.token);
       this.$set(this.token, 'place', 'xavier');
     },
+
+    /**
+     * Handle clicking on an area
+     * @param area
+     */
     areaClicked: function areaClicked(area) {
+      // did we click on a valid area? If not, return
       var index = _.findIndex(this.availableAreas, function (item) {
         return item.name === area.name;
       });
 
       if (index === -1) return;
-      console.log('area clicked');
-      this.areaIndex = index;
+      this.areaIndex = index; // if we have a token selected, place it on our area/xavier
 
       if (this.token) {
         this.$set(this.token, 'place', this.area.name);
@@ -10450,53 +11560,23 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
+
+    /**
+     * Resolve our token placement
+     */
     placeToken: function placeToken() {
       this.shared.respond('place-token', 'place', this.token.place, this.token.id);
       this.shared.showXavier = false;
       this.removeToken();
     },
+
+    /**
+     * Pass on placing tokens
+     */
     passToken: function passToken() {
       this.shared.respond('place-token', 'pass');
       this.shared.showXavier = false;
       this.removeToken();
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTop.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/PlaceTop.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'place-top',
-  data: function data() {
-    return {
-      shared: App.state
-    };
-  },
-  methods: {
-    tokenClicked: function tokenClicked(token) {
-      if (token.location) return;
-      this.shared.token = this.shared.token && this.shared.token.id === token.id ? null : token;
-    }
-  },
-  computed: {
-    reserves: function reserves() {
-      return this.shared.faction.tokens.filter(function (token) {
-        return !token.location;
-      });
     }
   }
 });
@@ -10531,6 +11611,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'player-prompt',
   props: ['classes'],
@@ -10541,11 +11622,18 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Set our classes
+     * @returns {string}
+     */
     setClasses: function setClasses() {
       return "".concat(this.classes, " ").concat(this.closed ? 'closed' : '');
     }
   },
   methods: {
+    /**
+     * Close the player prompt
+     */
     close: function close() {
       this.closed = !this.closed;
       App.event.emit('sound', 'ui');
@@ -10587,6 +11675,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'prevent-erase',
   data: function data() {
@@ -10595,6 +11689,10 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Resolve prompt
+     * @param choice
+     */
     resolve: function resolve(choice) {
       this.shared.respond('prevent-erase', {
         pay: choice
@@ -10602,12 +11700,29 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Can we prevent this token from being erased?
+     *
+     * @returns {boolean}
+     */
     canActivate: function canActivate() {
       return _.money(this.shared.faction) >= 1;
     },
+
+    /**
+     * Returns prompt data
+     *
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Returns our area object
+     *
+     * @returns {object}
+     */
     area: function area() {
       if (this.data.token) {
         return this.shared.data.areas[this.data.token.location];
@@ -10627,6 +11742,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
 //
 //
 //
@@ -10651,18 +11776,24 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * return prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
-    },
-    message: function message() {
-      return this.data.message;
     }
   },
   methods: {
+    /**
+     * Resolve prompt
+     * @param choice
+     */
     resolve: function resolve(choice) {
-      var data = {};
-      data.answer = choice;
-      data = Object.assign({}, this.data, data);
+      var data = _objectSpread({
+        answer: choice
+      }, this.data);
+
       this.shared.respond('question', data);
     }
   }
@@ -10725,6 +11856,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'sacrifice-units',
   data: function data() {
@@ -10734,6 +11874,11 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Resolve prompt
+     *
+     * @param option
+     */
     resolve: function resolve(option) {
       var data = {
         units: []
@@ -10746,26 +11891,50 @@ __webpack_require__.r(__webpack_exports__);
       data = Object.assign({}, this.data, data);
       this.shared.respond('sacrifice-units', data);
     },
+
+    /**
+     * Add a unit from play to our selected sacrifices
+     * @param unit
+     */
     addUnitFromPlay: function addUnitFromPlay(unit) {
       var _this = this;
 
+      // if already selected, toggle to unselected
       if (unit.selected) {
         this.$set(unit, 'selected', false);
-      }
+      } // if we already have enough units, do nothing
 
-      if (this.data.count > 1 && !this.needToSacrifice) return;
+
+      if (this.data.count > 1 && !this.needToSacrifice) return; // if we need more than one unit just select our unit
 
       if (this.data.count > 1) {
         this.$set(unit, 'selected', true);
-      } else {
-        this.currentAreaUnits.forEach(function (item) {
-          return _this.$set(item, 'selected', item.id === unit.id);
-        });
-      }
+        return;
+      } // if we only need to select one unit total, then unselect all other units when selecting this one
+
+
+      this.currentAreaUnits.forEach(function (item) {
+        return _this.$set(item, 'selected', item.id === unit.id);
+      });
     },
+
+    /**
+     * Group array by property helper
+     *
+     * @param array
+     * @param prop
+     * @returns {Object}
+     */
     groupBy: function groupBy(array, prop) {
       return _.groupBy(array, prop);
     },
+
+    /**
+     * Returns this faction's units in the given area
+     *
+     * @param area
+     * @returns {*}
+     */
     areaUnits: function areaUnits(area) {
       var _this2 = this;
 
@@ -10777,15 +11946,36 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Get our button message
+     * @returns {string}
+     */
     buttonMessage: function buttonMessage() {
       return this.canSave ? 'sacrifice selected units' : "choose ".concat(this.needToSacrifice, " more unit").concat(this.needToSacrifice > 1 ? 's' : '');
     },
+
+    /**
+     * How many more units do we need to sacrifice
+     * @returns {number}
+     */
     needToSacrifice: function needToSacrifice() {
       return this.data.count - this.selected.length;
     },
+
+    /**
+     * Can we save our choices?
+     *
+     * @returns {boolean}
+     */
     canSave: function canSave() {
       return this.needToSacrifice === 0;
     },
+
+    /**
+     * Returns the area objects for each of the supplied area names
+     *
+     * @returns {[]}
+     */
     areas: function areas() {
       var _this3 = this;
 
@@ -10795,22 +11985,50 @@ __webpack_require__.r(__webpack_exports__);
       });
       return areas;
     },
-    currentArea: function currentArea() {
+
+    /**
+     * Our current area name
+     * @returns {string}
+     */
+    currentAreaName: function currentAreaName() {
       return this.data.areas[this.areaIndex];
     },
+
+    /**
+     * Returns our faction's units in our currently selected area
+     *
+     * @returns {Unit[]}
+     */
     currentAreaUnits: function currentAreaUnits() {
-      return this.areaUnits(this.currentArea);
+      return this.areaUnits(this.currentAreaName);
     },
+
+    /**
+     * Return the currently selected units
+     *
+     * @returns {Unit[]}
+     */
     selected: function selected() {
       return this.shared.faction.units.filter(function (unit) {
         return unit.selected;
       });
     },
+
+    /**
+     * returns prompt data
+     *
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     },
+
+    /**
+     * Returns the current area object
+     * @returns {*}
+     */
     area: function area() {
-      return this.shared.data.areas[this.currentArea];
+      return this.shared.data.areas[this.currentAreaName];
     }
   }
 });
@@ -10851,6 +12069,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'score-plans',
   data: function data() {
@@ -10861,10 +12081,18 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Toggle if a plan is selected
+     * @param plan
+     */
     toggle: function toggle(plan) {
       if (plan.points === 0) return;
       plan.selected = !plan.selected;
     },
+
+    /**
+     * Resolve score plans prompt
+     */
     resolve: function resolve() {
       var data = {
         faction: this.shared.faction.name,
@@ -10874,11 +12102,20 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * returns an array of selected plans
+     * @returns {[]}
+     */
     selectedPlans: function selectedPlans() {
       return this.data.plans.filter(function (plan) {
         return plan.selected;
       });
     },
+
+    /**
+     * Returns prompt data
+     * @returns {object}
+     */
     data: function data() {
       return this.shared.player.prompt.data;
     }
@@ -11087,19 +12324,40 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Return the number of token slots to display
+     * @returns {number}
+     */
     tokenSlots: function tokenSlots() {
       return Math.max(this.area.tokens.length, this.area.maxTokens);
     }
   },
   methods: {
-    checkHighlight: function checkHighlight(n) {
-      if (!this.highlight || !this.area.tokens[n - 1]) return false;
-      return this.highlight.id === this.area.tokens[n - 1].id;
+    /**
+     * Should we highlight the given token?
+     *
+     * @param token
+     * @returns {boolean}
+     */
+    checkHighlight: function checkHighlight(token) {
+      // if we aren't highlighting anything, or don't have the given token return false
+      if (!this.highlight || !token) return false; // otherwise if our highlight token is the given token return true
+
+      return this.highlight.id === token.id;
     },
-    forcedToken: function forcedToken(n) {
-      var existing = this.area.tokens[n - 1];
-      if (!existing && this.token && (n === 1 || this.area.tokens[n - 2])) return this.token;
+
+    /**
+     * Check if we should force a token in the given position
+     */
+    forcedToken: function forcedToken(token, index) {
+      if (!token && this.token && (index === 1 || this.area.tokens[index - 2])) return this.token;
     },
+
+    /**
+     * Emit token event
+     *
+     * @param token
+     */
     emitToken: function emitToken(token) {
       this.$emit('token', token);
     }
@@ -11130,6 +12388,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'token-set',
   props: ['noEmit', 'tokens', 'title', 'classes', 'selected', 'noBorder'],
@@ -11139,9 +12398,11 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
-    hasTitle: function hasTitle() {
-      if (this.title) return this.title;
-    },
+    /**
+     * Calculate our classes
+     *
+     * @returns {string}
+     */
     thisClasses: function thisClasses() {
       var classes = this.classes;
 
@@ -11153,12 +12414,23 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    /**
+     * Emit token clicked event
+     * @param token
+     */
     tokenClicked: function tokenClicked(token) {
       if (this.noEmit) return;
       this.shared.event.emit('tokenClicked', token);
       this.$emit('tokenClicked', token);
     },
+
+    /**
+     * Return our token class
+     * @param token
+     * @returns {string|false}
+     */
     tokenClass: function tokenClass(token) {
+      // if we have a selected token, but this token isn't the selected token reduce the opacity
       return this.selected && this.selected.id !== token.id ? 'opacity-5' : false;
     }
   }
@@ -11193,6 +12465,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Emit our token event when a token is clicked
+     */
     emitToken: function emitToken() {
       if (this.token) {
         this.$emit('token', this.token);
@@ -11205,15 +12480,17 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     computeClasses: function computeClasses() {
-      var classes = [];
+      var classes = []; // flag this token as unrevealed
 
       if (this.canSeeToken && !this.highlight) {
         classes.push('unrevealed');
-      }
+      } // add area token slot background
+
 
       if (this.area) {
         classes.push("".concat(this.area.name, "-").concat(this.index));
-      }
+      } // is our token selected?
+
 
       if (this.token && this.token.selected || this.forcedtoken && this.forcedtoken.faction || this.highlight) {
         classes.push('selected');
@@ -11221,26 +12498,52 @@ __webpack_require__.r(__webpack_exports__);
 
       return classes.join(' ');
     },
+
+    /**
+     * Can we see the given token
+     *
+     * @returns {boolean}
+     */
     canSeeToken: function canSeeToken() {
+      // if this token is empty, or already revealed do nothing
       if (!this.token || this.token.revealed) return false;
-      if (this.token.faction === this.shared.faction.name || this.shared.faction.tokenSpy.includes(this.token.location) || this.ministerSpy) return true;
+      if (this.token.faction === this.shared.faction.name // if this is our token
+      || this.shared.faction.tokenSpy.includes(this.token.location) // or we can tokenSpy the area
+      || this.ministerSpy // or the minister is letting us spy
+      ) return true;
     },
+
+    /**
+     * Does the minister of developments let us look at this token?
+     * @returns {boolean}
+     */
     ministerSpy: function ministerSpy() {
       var _this = this;
 
-      if (this.shared.faction.name !== 'bureau') return;
-      var ministerInArea = !!this.shared.faction.units.find(function (unit) {
+      if (this.shared.faction.name !== 'bureau') return false; // if the minister isn't in this area return false
+
+      if (!this.shared.faction.units.some(function (unit) {
         return _.unitInArea(unit, _this.area, {
           type: 'champion'
         });
-      });
+      })) {
+        return false;
+      } // get the first unrevealed enemy token in the area
+
 
       var firstUnrevealedEnemy = _.firstUnrevealedToken(this.area, {
         enemy: this.shared.faction.name
-      });
+      }); // is our token the first unrevealed enemy token in this area?
 
-      return ministerInArea && firstUnrevealedEnemy && this.token.id === firstUnrevealedEnemy.id;
+
+      return this.token.id === (firstUnrevealedEnemy === null || firstUnrevealedEnemy === void 0 ? void 0 : firstUnrevealedEnemy.id);
     },
+
+    /**
+     * If we have a token return it's image url, otherwise return false
+     *
+     * @returns {string|false}
+     */
     tokenImage: function tokenImage() {
       var image = false;
       var token;
@@ -11298,29 +12601,53 @@ __webpack_require__.r(__webpack_exports__);
     this.setParentValues();
   },
   methods: {
+    /**
+     * Set initial positions and listeners
+     * @param e
+     */
     onMouseDown: function onMouseDown(e) {
       this.initialX = e.clientX;
       this.initialY = e.clientY;
       this.addEventListeners();
       this.parentEl.style.userSelect = 'none';
     },
+
+    /**
+     * set initial parent values
+     */
     setParentValues: function setParentValues() {
       this.parentX = this.parentEl.scrollWidth;
       this.parentY = this.parentEl.scrollHeight;
     },
+
+    /**
+     * Add mouse event listeners
+     */
     addEventListeners: function addEventListeners() {
       window.addEventListener('mouseup', this.onMouseUp);
       window.addEventListener('mousemove', this.onMouseMove);
     },
+
+    /**
+     * remove mouse event listeners
+     */
     removeEventListeners: function removeEventListeners() {
       window.removeEventListener('mouseup', this.onMouseUp);
       window.removeEventListener('mousemove', this.onMouseMove);
     },
+
+    /**
+     * remove event listeners and parent values on mouse release
+     */
     onMouseUp: function onMouseUp() {
       this.removeEventListeners();
       this.setParentValues();
       this.parentEl.style.removeProperty('user-select');
     },
+
+    /**
+     * Calculate new parent size
+     */
     getNewSize: function getNewSize(parent, offset) {
       var newSize = parent + offset;
 
@@ -11332,6 +12659,11 @@ __webpack_require__.r(__webpack_exports__);
 
       return newSize + 'px';
     },
+
+    /**
+     * Use mouse drag to resize parent element
+     * @param e
+     */
     onMouseMove: function onMouseMove(e) {
       var newSize;
 
@@ -11368,77 +12700,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/DragHandle.vue?vue&type=script&lang=js&":
-/*!************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/DragHandle.vue?vue&type=script&lang=js& ***!
-  \************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'drag-handle',
-  props: ['direction'],
-  data: function data() {
-    return {
-      offsetX: 0,
-      offsetY: 0,
-      initialX: 0,
-      initialY: 0,
-      parentX: 0,
-      parentY: 0,
-      parentEl: null
-    };
-  },
-  mounted: function mounted() {
-    this.parentEl = this.$refs.handle.parentElement;
-  },
-  methods: {
-    onMouseDown: function onMouseDown(e) {
-      this.initialX = e.clientX;
-      this.initialY = e.clientY;
-      this.setParentValues();
-      this.addEventListeners();
-      this.parentEl.style.userSelect = 'none';
-    },
-    setParentValues: function setParentValues() {
-      this.parentY = this.parentEl.offsetTop;
-      this.parentX = this.parentEl.offsetLeft;
-    },
-    addEventListeners: function addEventListeners() {
-      window.addEventListener('mouseup', this.onMouseUp);
-      window.addEventListener('mousemove', this.onMouseMove);
-    },
-    removeEventListeners: function removeEventListeners() {
-      window.removeEventListener('mouseup', this.onMouseUp);
-      window.removeEventListener('mousemove', this.onMouseMove);
-    },
-    onMouseUp: function onMouseUp() {
-      this.removeEventListeners();
-      this.setParentValues();
-      this.parentEl.style.removeProperty('user-select');
-    },
-    onMouseMove: function onMouseMove(e) {
-      this.offsetX = e.clientX - this.initialX;
-      this.offsetY = this.initialY - e.clientY;
-      this.parentEl.style.top = this.parentY - this.offsetY + "px";
-      this.parentEl.style.right = this.parentX - this.offsetX + "px";
-    }
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/HorizontalScroll.vue?vue&type=script&lang=js&":
 /*!******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/HorizontalScroll.vue?vue&type=script&lang=js& ***!
@@ -11459,6 +12720,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'horizontal-scroll',
   props: ['classes', 'buttons'],
@@ -11466,11 +12732,13 @@ __webpack_require__.r(__webpack_exports__);
     return {
       isMounted: false,
       wheelScroll: 100,
-      buttonScrollCards: 3
+      // how many pixels to jump with each scroll
+      buttonScrollCards: 3 // how many cards to jump with each navigation button
+
     };
   },
   mounted: function mounted() {
-    this.isMounted = true;
+    this.isMounted = true; // math math math!
 
     Math.easeInOutQuad = function (t, b, c, d) {
       t /= d / 2;
@@ -11480,13 +12748,31 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    wheel: function wheel(e) {
-      if (e.deltaY > 0) this.$refs.container.scrollLeft += this.wheelScroll;else this.$refs.container.scrollLeft -= this.wheelScroll;
+    /**
+     * Handle wheel event
+     * @param event
+     */
+    wheel: function wheel(event) {
+      if (event.deltaY > 0) this.$refs.container.scrollLeft += this.wheelScroll; // scroll right
+      else this.$refs.container.scrollLeft -= this.wheelScroll; // scroll left
     },
+
+    /**
+     * Scroll from button click
+     * @param sign
+     */
     scroll: function scroll(sign) {
       var buttonScroll = this.$refs.container.firstChild.clientWidth * this.buttonScrollCards;
       this.scrollTo(this.$refs.container, sign * buttonScroll);
     },
+
+    /**
+     * Resolve scroll
+     *
+     * @param element
+     * @param shift
+     * @param duration
+     */
     scrollTo: function scrollTo(element, shift) {
       var duration = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 250;
       var start = element.scrollLeft,
@@ -11496,8 +12782,7 @@ __webpack_require__.r(__webpack_exports__);
 
       var animateScroll = function animateScroll() {
         currentTime += increment;
-        var val = Math.easeInOutQuad(currentTime, start, change, duration);
-        element.scrollLeft = val;
+        element.scrollLeft = Math.easeInOutQuad(currentTime, start, change, duration);
 
         if (currentTime < duration) {
           setTimeout(animateScroll, increment);
@@ -11508,9 +12793,16 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Should we add scroll buttons?
+     *
+     * @returns {string|boolean}
+     */
     addButtons: function addButtons() {
-      if (!this.isMounted) return;
-      return this.buttons && this.$refs.container.scrollWidth > this.$refs.container.clientWidth;
+      // if we aren't mounted, or we don't even want buttons, return
+      if (!this.isMounted || !this.buttons) return; // otherwise only add buttons if our container is overflowing
+
+      return this.$refs.container.scrollWidth > this.$refs.container.clientWidth;
     }
   }
 });
@@ -11535,10 +12827,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'loading-streak',
-  props: ['position'],
-  data: function data() {
-    return {};
-  }
+  props: ['position']
 });
 
 /***/ }),
@@ -11568,13 +12857,27 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    /**
+     * Return the classes we should apply to this unit
+     * @returns {string}
+     */
     classes: function classes() {
-      var classes = [];
-      if (!this.unit.needsToAttack) classes.push('saturate-4 opacity-7');
-      if (this.shared.data.combat && this.shared.data.combat.currentUnit && this.unit.id === this.shared.data.combat.currentUnit) classes.push('selected');
+      var _this$shared$data$com;
+
+      var classes = []; // if we don't need to attack fade this unit
+
+      if (!this.unit.needsToAttack) classes.push('saturate-4 opacity-7'); // if this unit is the currently attacking unit, add selected,
+
+      if ((_this$shared$data$com = this.shared.data.combat) !== null && _this$shared$data$com !== void 0 && _this$shared$data$com.currentUnit && this.unit.id === this.shared.data.combat.currentUnit) classes.push('selected');
       return classes.join(' ');
     },
+
+    /**
+     * Should we hide this unit?
+     * @returns {boolean}
+     */
     hide: function hide() {
+      // if we don't need to attack and we have been killed, then hide this unit
       return !this.unit.needsToAttack && this.unit.killed;
     }
   }
@@ -11615,6 +12918,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-icon',
   props: ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect', 'hidePatsies', 'hitsToAssign'],
@@ -11624,36 +12932,70 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
-    hasForcedToken: function hasForcedToken() {
-      if (this.unit.placeToken) return this.unit.placeToken;
-    },
-    hasRegularToken: function hasRegularToken() {
-      if (this.unit.token) return this.unit.token;
-    },
+    /**
+     * Do we have either a regular token or a forced token
+     * @returns {boolean}
+     */
     hasToken: function hasToken() {
-      return this.hasForcedToken || this.hasRegularToken;
+      return !!(this.unit.placeToken || this.unit.token);
     },
+
+    /**
+     * Is this unit a viewable ghost?
+     * @returns {boolean}
+     */
     viewableGhost: function viewableGhost() {
       return this.unit.ghost && this.shared.faction.ghostDeploy;
     },
-    setClasses: function setClasses() {
-      var classes = [];
-      if (!this.noSelect && (this.selected || this.unit.isSelected && !this.unit.placeToken)) classes.push('selected');
-      if (this.unit.ready) classes.push('ready'); //if( this.viewableGhost ) classes.push( 'is-ghost' );
 
-      if (this.classes) classes.push(this.classes);
-      if (this.unit.type === 'patsy' && this.hidePatsies) classes.push('opacity-6');
+    /**
+     * Set our classes
+     * @returns {string}
+     */
+    setClasses: function setClasses() {
+      var classes = []; // pass any classes passed by our classes prop
+
+      if (this.classes) classes.push(this.classes); // is this unit selected
+
+      if (!this.noSelect && (this.selected || this.unit.isSelected && !this.unit.placeToken)) classes.push('selected'); // is this unit ready
+
+      if (this.unit.ready) classes.push('ready'); // is this unit a viewable ghost
+      //if( this.viewableGhost ) classes.push( 'is-ghost' );
+      // if this is a patsy and we are hiding patsies, reduce the opactiy
+
+      if (this.unit.type === 'patsy' && this.hidePatsies) classes.push('opacity-6'); // join and return our classes
+
       return classes.join(' ');
     },
+
+    /**
+     * Returns the url string for our unit's icon
+     * @returns {string}
+     */
     img: function img() {
-      ///if( this.unit.ghost && !this.shared.faction.ghostDeploy ) return `/images/factions/ghosts/units/ghost.png`;
+      // abandoned version of the ghosts
+      //if( this.unit.ghost && !this.shared.faction.ghostDeploy ) return `/images/factions/ghosts/units/ghost.png`;
       return "/images/factions/".concat(this.unit.faction, "/units/").concat(this.unit.type).concat(this.unit.flipped ? '-flipped' : '', ".png");
     },
+
+    /**
+     * Is this unit selected
+     * @returns {boolean}
+     */
     selected: function selected() {
-      return this.allSelected || this.selectedUnit && this.unit.id === this.selectedUnit.id || this.unit.selected;
+      return this.allSelected // if all units are selected then sure
+      || this.selectedUnit && this.unit.id === this.selectedUnit.id // if this unit id matches a selected unit we were passed via props
+      || this.unit.selected; // or if this unit has the selected prop
     },
+
+    /**
+     * Returns an array of true/false values equal to the number of potential assignable hits
+     * with false values being unassigned hits, and true values being assigned hits
+     *
+     * @returns {boolean[]}
+     */
     hitPips: function hitPips() {
-      var pips = [];
+      var pips = []; // add the hits currently assigned
 
       if (this.unit.hits) {
         for (var i = 0; i < this.unit.hits; i++) {
@@ -11661,7 +13003,8 @@ __webpack_require__.r(__webpack_exports__);
             active: true
           });
         }
-      }
+      } // add empty pips for hits we may still assign
+
 
       if (this.hpLeft) {
         for (var _i = 0; _i < this.hpLeft; _i++) {
@@ -11673,18 +13016,36 @@ __webpack_require__.r(__webpack_exports__);
 
       return pips;
     },
+
+    /**
+     * Returns the units total hit points
+     *
+     * @returns {number}
+     */
     hpTotal: function hpTotal() {
-      if (this.unit.type === 'smoke') return this.hitsToAssign;
-      return this.unit.toughness && !this.unit.flipped || this.unit.type === 'champion' && this.unit.flipped && this.unit.faction === 'vampires' ? 2 : 1;
+      // smoke can be assigned any number of hits from one source
+      if (this.unit.type === 'smoke') return this.hitsToAssign; // hidden units can't be assigned hits
+
+      if (this.unit.hidden) return 0; // units with toughness that have not been flipped yet can take 2 hits
+
+      if (this.unit.toughness && !this.unit.flipped) return 2; // all other units can take 1 hit by default
+
+      return 1;
     },
+
+    /**
+     * Return our remaining number of hit points (Our hit points total minus
+     * the hits we've already been assigned)
+     *
+     * @returns {number}
+     */
     hpLeft: function hpLeft() {
       var _this$unit$hits;
 
       var hits = (_this$unit$hits = this.unit.hits) !== null && _this$unit$hits !== void 0 ? _this$unit$hits : 0;
       return this.hpTotal - hits;
     }
-  },
-  methods: {}
+  }
 });
 
 /***/ }),
@@ -11714,6 +13075,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-row',
   props: ['units', 'classes', 'selectedUnit', 'assigningHits', 'allSelected', 'hidePatsies', 'hitsToAssign'],
@@ -11721,9 +13083,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state
     };
-  },
-  methods: {},
-  computed: {}
+  }
 });
 
 /***/ }),
@@ -11737,6 +13097,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -11770,7 +13133,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
 //
 //
 //
@@ -15182,25 +16544,6 @@ exports.push([module.i, "\n.choose-action__skill-ability {\n    padding: 1rem;\n
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&":
-/*!******************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css& ***!
-  \******************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.choose-action__skill-ability {\n    padding: 1rem;\n    background-color: rgba(0,0,0,.8);\n    color: var(--highlight-color);\n    margin: .5rem auto;\n    font-size: 1.2em;\n    letter-spacing: 1px;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseFactions.vue?vue&type=style&index=0&lang=css&":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseFactions.vue?vue&type=style&index=0&lang=css& ***!
@@ -15308,7 +16651,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n.units-hud__unit.deploy__ghost:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 25%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.has-ghosts .units-hud__unit {\n    height: 8vw;\n}\n.deploy__ghost .unit-hud__unit-image {\n    /*  opacity: .8; */\n}\n.deploy__toggle-ghost {\n    background-color: #192236;\n}\n.deploy__ghost .deploy__toggle-ghost {\n    background-color: var(--faction-ghosts);\n}\n\n", ""]);
+exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n.units-hud__unit.deploy__ghost:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 25%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.has-ghosts .units-hud__unit {\n    height: 8vw;\n}\n.deploy__toggle-ghost {\n    background-color: #192236;\n}\n.deploy__ghost .deploy__toggle-ghost {\n    background-color: var(--faction-ghosts);\n}\n\n", ""]);
 
 // exports
 
@@ -15403,7 +16746,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.player-prompt {\n    background-image: url(\"/images/background-blurred.jpg\");\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: 100% 100%;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    position: absolute;\n    right: 50%;\n    top: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 98%;\n    min-width: 20rem;\n    padding: 0;\n    transition: all .1s;\n}\n.player-prompt__slot-container {\n    max-height: 90vh;\n    width: 100%;\n    overflow: auto;\n    padding: 2rem 0 1rem;\n    /*display: flex;\n    flex-wrap: wrap;\n    justify-content: center;\n    align-items: center;\n     */\n}\n.player-prompt .minimize-toggle {\n    padding: .75rem;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n.player-prompt, .player-prompt .toggle, .player-prompt__container {\n    transition: all .3s;\n}\n.player-prompt__container {\n    overflow: hidden;\n}\n.player-prompt.closed {\n    right: 100%;\n    left: unset;\n    top: 0;\n    transform: translate(0, 0);\n}\n.player-prompt.closed .player-prompt__container {\n}\n.player-prompt.closed .toggle {\n    transform: translate(100%,0);\n}\n\n", ""]);
+exports.push([module.i, "\n.player-prompt {\n    background-image: url(\"/images/background-blurred.jpg\");\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: 100% 100%;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    position: absolute;\n    right: 50%;\n    top: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 98%;\n    min-width: 20rem;\n    padding: 0;\n    transition: all .1s;\n}\n.player-prompt__slot-container {\n    max-height: 90vh;\n    width: 100%;\n    overflow: auto;\n    padding: 2rem 0 1rem;\n}\n.player-prompt .minimize-toggle {\n    padding: .75rem;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n.player-prompt, .player-prompt .toggle, .player-prompt__container {\n    transition: all .3s;\n}\n.player-prompt__container {\n    overflow: hidden;\n}\n.player-prompt.closed {\n    right: 100%;\n    left: unset;\n    top: 0;\n    transform: translate(0, 0);\n}\n.player-prompt.closed .toggle {\n    transform: translate(100%,0);\n}\n\n", ""]);
 
 // exports
 
@@ -15479,7 +16822,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.plans-wrap {\n    max-width: 100%;\n}\n\n", ""]);
+exports.push([module.i, "\n.plans-wrap {\n    max-width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -15547,25 +16890,6 @@ exports.push([module.i, "\n.area-map__token-space {\n    background-repeat: no-r
 /*!*********************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/AdjustHandle.vue?vue&type=style&index=0&lang=css& ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.adjust-handle {\n    color: #843aa3;\n    font-size: 1.3rem;\n}\n.adjust-handle.left {\n    top: 50%;\n    transform: translate(-50%,-50%) rotate( 90deg );\n    left: 0;\n    cursor: col-resize;\n}\n.adjust-handle.right {\n    top: 50%;\n    transform: translate(50%,-50%) rotate( 90deg );\n    right: 0;\n    cursor: col-resize;\n}\n.adjust-handle.top {\n    left: 50%;\n    transform: translate(-50%,-50%);\n    top: 0;\n    cursor: row-resize;\n}\n.adjust-handle.bottom {\n    left: 50%;\n    transform: translate(-50%,-50%);\n    bottom: 0;\n    cursor: row-resize;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/DragHandle.vue?vue&type=style&index=0&lang=css&":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/DragHandle.vue?vue&type=style&index=0&lang=css& ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15650,7 +16974,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.unit-row .units-hud__unit {\n    padding: 3px;\n    width: 6vw;\n    height: 6vw;\n    margin: 0 5px;\n    position: relative;\n}\n.unit-row .units-hud__unit img {\n    z-index: 2;\n    position: relative;\n    outline: 3px solid rgba(0,0,0,.3);\n}\n.unit-row  .units-hud__unit.ready:after {\n    left: 50%;\n    content: \"\";\n    background-image: url(/images/icons/skilled.png);\n    background-size: cover;\n    position: absolute;\n    width: 3vw;\n    height: 3vw;\n    z-index: 5;\n    transform: translate(-50%,-50%);\n    top: 50%;\n}\n.assign-hit__pips {\n}\n.assign-hit__pip {\n    font-size: .8em;\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.assign-hit__pip.active {\n    color: var(--highlight-color);\n}\n.units-hud__unit.is-ghost .unit-hud__unit-image {\n    /* opacity: .8; */\n}\n.ghost-icon__container:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 15%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n\n", ""]);
+exports.push([module.i, "\n.unit-row .units-hud__unit {\n    padding: 3px;\n    width: 6vw;\n    height: 6vw;\n    margin: 0 5px;\n    position: relative;\n}\n.unit-row .units-hud__unit img {\n    z-index: 2;\n    position: relative;\n    outline: 3px solid rgba(0,0,0,.3);\n}\n.unit-row  .units-hud__unit.ready:after {\n    left: 50%;\n    content: \"\";\n    background-image: url(/images/icons/skilled.png);\n    background-size: cover;\n    position: absolute;\n    width: 3vw;\n    height: 3vw;\n    z-index: 5;\n    transform: translate(-50%,-50%);\n    top: 50%;\n}\n.assign-hit__pip {\n    font-size: .8em;\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.assign-hit__pip.active {\n    color: var(--highlight-color);\n}\n.units-hud__unit.is-ghost .unit-hud__unit-image {\n    /* opacity: .8; */\n}\n.ghost-icon__container:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 15%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n\n", ""]);
 
 // exports
 
@@ -56268,36 +57592,6 @@ if(false) {}
 
 /***/ }),
 
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&":
-/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css& ***!
-  \**********************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseAction_old.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseFactions.vue?vue&type=style&index=0&lang=css&":
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseFactions.vue?vue&type=style&index=0&lang=css& ***!
@@ -56847,36 +58141,6 @@ if(false) {}
 
 
 var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./AdjustHandle.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/AdjustHandle.vue?vue&type=style&index=0&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/DragHandle.vue?vue&type=style&index=0&lang=css&":
-/*!***********************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/DragHandle.vue?vue&type=style&index=0&lang=css& ***!
-  \***********************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./DragHandle.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/DragHandle.vue?vue&type=style&index=0&lang=css&");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -62603,7 +63867,7 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _c("div", {}, [
+          _c("div", [
             _c(
               "button",
               {
@@ -63130,206 +64394,6 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0&":
-/*!***************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0& ***!
-  \***************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _vm.hasTopAction
-        ? _c(
-            "div",
-            {
-              staticClass:
-                "choose-action-top p-2 d-flex justify-center align-center"
-            },
-            [
-              _vm.showSkip
-                ? _c(
-                    "button",
-                    { staticClass: "button", on: { click: _vm.setSkipAction } },
-                    [_vm._v("SKIP THIS ACTION")]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.showPass
-                ? _c(
-                    "button",
-                    { staticClass: "button", on: { click: _vm.setPassAction } },
-                    [_vm._v("PASS")]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.showLocked
-                ? _c(
-                    "button",
-                    {
-                      staticClass: "button",
-                      on: { click: _vm.setLockedAction }
-                    },
-                    [_vm._v("DECLARE YOURSELF LOCKED")]
-                  )
-                : _vm._e()
-            ]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.action
-        ? _c("player-prompt", { attrs: { classes: "" } }, [
-            _c("div", { staticClass: "choose-action px-5" }, [
-              _c(
-                "div",
-                {
-                  staticClass:
-                    "width-100 d-flex justify-center flex-column align-center"
-                },
-                [
-                  _c("div", { staticClass: "title" }, [
-                    _vm._v("Confirm Action")
-                  ]),
-                  _vm._v(" "),
-                  _vm.area
-                    ? _c(
-                        "area-flipper",
-                        { attrs: { areas: [_vm.area], index: "0" } },
-                        [
-                          _vm.action.name === "xavier"
-                            ? _c("unit-row", { attrs: { units: [_vm.xavier] } })
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _vm.action.name === "token"
-                            ? _c("token-row", {
-                                attrs: {
-                                  area: _vm.area,
-                                  highlight: _vm.firstToken
-                                }
-                              })
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _vm.action.name === "skill"
-                            ? _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "choose-action__skilled-units center-text"
-                                },
-                                [
-                                  _c("unit-row", {
-                                    attrs: {
-                                      units: _vm.skilledUnitsInArea,
-                                      allSelected: "true"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("div", {
-                                    staticClass:
-                                      "width-100 choose-action__skill-ability",
-                                    domProps: {
-                                      innerHTML: _vm._s(
-                                        this.shared.filterText(this.area.skill)
-                                      )
-                                    }
-                                  })
-                                ],
-                                1
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _vm.action.name === "magick"
-                            ? _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "choose-action__skilled-units center-text"
-                                },
-                                [
-                                  _c("unit-row", {
-                                    attrs: {
-                                      units: _vm.flippedUnitsInArea,
-                                      allSelected: "true"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "width-100 choose-action__skill-ability"
-                                    },
-                                    [
-                                      _vm._v(
-                                        "\n                            Use your magick ability in this area?\n                        "
-                                      )
-                                    ]
-                                  )
-                                ],
-                                1
-                              )
-                            : _vm._e()
-                        ],
-                        1
-                      )
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "d-flex justify-center" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "button button-empty",
-                        on: { click: _vm.clearAction }
-                      },
-                      [
-                        _vm._v(
-                          "\n                        back\n                    "
-                        )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        staticClass: "button pull-center",
-                        attrs: { disabled: _vm.saveDisabled },
-                        on: { click: _vm.saveAction }
-                      },
-                      [
-                        _vm._v(
-                          "\n                        " +
-                            _vm._s(_vm.buttonMessage) +
-                            "\n                    "
-                        )
-                      ]
-                    )
-                  ])
-                ],
-                1
-              )
-            ])
-          ])
-        : _vm._e()
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseArea.vue?vue&type=template&id=2b0c898f&":
 /*!*********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseArea.vue?vue&type=template&id=2b0c898f& ***!
@@ -63383,7 +64447,7 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _c("div", {}, [
+          _c("div", [
             _c(
               "button",
               { staticClass: "button", on: { click: _vm.resolve } },
@@ -63981,88 +65045,6 @@ var render = function() {
           [_vm._v("Save Choices")]
         )
       ])
-    ]),
-    _vm._v("}\n")
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a&":
-/*!********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a& ***!
-  \********************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("player-prompt", [
-    _c("div", { staticClass: "min-prompt-width px-5" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
-        },
-        [
-          _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
-          _vm._v(" "),
-          _c(
-            "area-flipper",
-            { attrs: { areas: [_vm.area], index: "0" } },
-            [
-              _c("token-set", {
-                attrs: {
-                  tokens: [_vm.data.token],
-                  classes: "center-text",
-                  noBorder: "true"
-                }
-              })
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("div", {}, [
-            _c(
-              "button",
-              {
-                staticClass: "button button-empty",
-                on: {
-                  click: function($event) {
-                    return _vm.resolve(false)
-                  }
-                }
-              },
-              [_vm._v("decline")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "button",
-                on: {
-                  click: function($event) {
-                    return _vm.resolve(true)
-                  }
-                }
-              },
-              [_vm._v(_vm._s(_vm.buttonMessage))]
-            )
-          ])
-        ],
-        1
-      )
     ])
   ])
 }
@@ -64236,8 +65218,7 @@ var render = function() {
           [_vm._v(_vm._s(_vm.buttonMessage))]
         )
       ])
-    ]),
-    _vm._v("}\n")
+    ])
   ])
 }
 var staticRenderFns = []
@@ -64513,7 +65494,7 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
-          _c("div", {}, [
+          _c("div", [
             _vm.data.optional
               ? _c(
                   "button",
@@ -64781,7 +65762,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _c("div", {}, [
+          _c("div", [
             _vm.data.optional
               ? _c(
                   "button",
@@ -64879,7 +65860,7 @@ var render = function() {
               })
             : _vm._e(),
           _vm._v(" "),
-          _c("div", {}, [
+          _c("div", [
             _c(
               "button",
               {
@@ -65358,95 +66339,6 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=template&id=2d7b6f18&":
-/*!*****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=template&id=2d7b6f18& ***!
-  \*****************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("player-prompt", { attrs: { classes: "" } }, [
-    _c("div", { staticClass: "choose-action px-5" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
-        },
-        [
-          _c("div", { staticClass: "title" }, [
-            _vm._v("Resolve this skill twice?")
-          ]),
-          _vm._v(" "),
-          _c("area-flipper", { attrs: { areas: [_vm.area], index: 0 } }, [
-            _c("div", {
-              staticClass: "width-100 choose-action__skill-ability center-text",
-              domProps: {
-                innerHTML: _vm._s(this.shared.filterText(this.area.skill))
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", {
-            staticClass: "prompt-question",
-            domProps: {
-              innerHTML: _vm._s(
-                _vm.shared.filterText(
-                  "Pay xRx to resolve this skill a second time?"
-                )
-              )
-            }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "flex-center" }, [
-            _c(
-              "button",
-              {
-                staticClass: "button button-empty",
-                on: {
-                  click: function($event) {
-                    return _vm.resolve(false)
-                  }
-                }
-              },
-              [_vm._v("Decline")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "button",
-                attrs: { disabled: !_vm.canActivate },
-                on: {
-                  click: function($event) {
-                    return _vm.resolve(true)
-                  }
-                }
-              },
-              [_vm._v("Resolve Twice")]
-            )
-          ])
-        ],
-        1
-      )
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/DoubleResolve.vue?vue&type=template&id=553c2b60&":
 /*!************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/DoubleResolve.vue?vue&type=template&id=553c2b60& ***!
@@ -65544,12 +66436,7 @@ var render = function() {
     {
       staticClass:
         "choose-factions__faction pointer d-flex justify-end align-center",
-      class: {
-        active: _vm.selected === _vm.faction.name,
-        taken: !_vm.isSelectable,
-        killer: _vm.faction.killer,
-        basic: _vm.faction.basic
-      },
+      class: _vm.classes,
       on: {
         click: function($event) {
           return _vm.$emit("clicked", _vm.faction.name)
@@ -65608,9 +66495,18 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "px-3 width-100 d-flex justify-center" }, [
     _vm.factions.length > 1
-      ? _c("button", { staticClass: "flipper", on: { click: _vm.prev } }, [
-          _c("i", { staticClass: "icon-left" })
-        ])
+      ? _c(
+          "button",
+          {
+            staticClass: "flipper",
+            on: {
+              click: function($event) {
+                return _vm.flip(-1)
+              }
+            }
+          },
+          [_c("i", { staticClass: "icon-left" })]
+        )
       : _vm._e(),
     _vm._v(" "),
     _c(
@@ -65639,9 +66535,18 @@ var render = function() {
     ),
     _vm._v(" "),
     _vm.factions.length > 1
-      ? _c("button", { staticClass: "flipper", on: { click: _vm.next } }, [
-          _c("i", { staticClass: "icon-right" })
-        ])
+      ? _c(
+          "button",
+          {
+            staticClass: "flipper",
+            on: {
+              click: function($event) {
+                return _vm.flip(+1)
+              }
+            }
+          },
+          [_c("i", { staticClass: "icon-right" })]
+        )
       : _vm._e()
   ])
 }
@@ -65977,7 +66882,7 @@ var render = function() {
               "button",
               {
                 staticClass: "button",
-                attrs: { disabled: !_vm.canActivate },
+                attrs: { disabled: !_vm.canSave },
                 on: { click: _vm.resolve }
               },
               [_vm._v("Swap selected token")]
@@ -66405,92 +67310,6 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/NinjaAttack.vue?vue&type=template&id=cc473092&":
-/*!**********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/NinjaAttack.vue?vue&type=template&id=cc473092& ***!
-  \**********************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("player-prompt", { attrs: { classes: "" } }, [
-    _c("div", { staticClass: "place-token px-5" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
-        },
-        [
-          _c("div", {
-            staticClass: "title",
-            domProps: { innerHTML: _vm._s(_vm.message) }
-          }),
-          _vm._v(" "),
-          _c(
-            "area-flipper",
-            { attrs: { areas: [_vm.area], index: "0" } },
-            [
-              _c("unit-row", { attrs: { units: _vm.areaUnits } }),
-              _vm._v(" "),
-              _c(
-                "div",
-                _vm._l(_vm.enemyUnits, function(set, name) {
-                  return _c("unit-row", { key: name, attrs: { units: set } })
-                }),
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("div", {}, [
-            _c(
-              "button",
-              {
-                staticClass: "button button-empty",
-                on: {
-                  click: function($event) {
-                    return _vm.resolve(false)
-                  }
-                }
-              },
-              [_vm._v("ATTACK WITH UNITS")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "button",
-                on: {
-                  click: function($event) {
-                    return _vm.resolve(true)
-                  }
-                }
-              },
-              [_vm._v("PERFORM NINJA ATTACK")]
-            )
-          ])
-        ],
-        1
-      )
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceToken.vue?vue&type=template&id=0982ef06&":
 /*!*********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/PlaceToken.vue?vue&type=template&id=0982ef06& ***!
@@ -66588,30 +67407,6 @@ var render = function() {
     ],
     1
   )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTop.vue?vue&type=template&id=baa8a64e&":
-/*!*******************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/PlaceTop.vue?vue&type=template&id=baa8a64e& ***!
-  \*******************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div")
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -66796,7 +67591,9 @@ var render = function() {
             "width-100 d-flex justify-center flex-column align-center"
         },
         [
-          _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
+          _c("div", { staticClass: "title" }, [
+            _vm._v(_vm._s(_vm.data.message))
+          ]),
           _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
             _c(
@@ -67300,15 +68097,15 @@ var render = function() {
     {
       staticClass: "area-map__tokens d-flex justify-center width-100 no-select"
     },
-    _vm._l(_vm.tokenSlots, function(n) {
+    _vm._l(_vm.tokenSlots, function(index) {
       return _c("token-slot", {
-        key: _vm.area.name + "-" + n,
+        key: _vm.area.name + "-" + index,
         attrs: {
           area: _vm.area,
-          token: _vm.area.tokens[n - 1],
-          forcedtoken: _vm.forcedToken(n),
-          highlight: _vm.checkHighlight(n),
-          index: n,
+          token: _vm.area.tokens[index - 1],
+          forcedtoken: _vm.forcedToken(_vm.area.tokens[index - 1], index),
+          highlight: _vm.checkHighlight(_vm.area.tokens[index - 1]),
+          index: index,
           effect: _vm.effect
         },
         on: { token: _vm.emitToken }
@@ -67345,7 +68142,7 @@ var render = function() {
         {
           staticClass: "px-2 pos-relative",
           class: _vm.thisClasses,
-          attrs: { "data-title": _vm.hasTitle }
+          attrs: { "data-title": _vm.title }
         },
         _vm._l(_vm.tokens, function(token) {
           return _c(
@@ -67428,35 +68225,6 @@ render._withStripped = true
 /*!******************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/AdjustHandle.vue?vue&type=template&id=4c4981d7& ***!
   \******************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", {
-    ref: "handle",
-    staticClass: "adjust-handle pos-absolute icon-drag_handle",
-    class: _vm.direction,
-    on: { mousedown: _vm.onMouseDown }
-  })
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/DragHandle.vue?vue&type=template&id=d5e75188&":
-/*!****************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/DragHandle.vue?vue&type=template&id=d5e75188& ***!
-  \****************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -67643,10 +68411,7 @@ var render = function() {
         _vm._v(" "),
         _vm.hasToken
           ? _c("token-slot", {
-              attrs: {
-                forcedtoken: _vm.hasForcedToken,
-                token: _vm.hasRegularToken
-              }
+              attrs: { forcedtoken: _vm.unit.placeToken, token: _vm.unit.token }
             })
           : _vm._e(),
         _vm._v(" "),
@@ -83489,13 +84254,11 @@ var map = {
 	"./Prompts/AssassinateUnit.vue": "./resources/js/components/Prompts/AssassinateUnit.vue",
 	"./Prompts/AssignHits.vue": "./resources/js/components/Prompts/AssignHits.vue",
 	"./Prompts/ChooseAction.vue": "./resources/js/components/Prompts/ChooseAction.vue",
-	"./Prompts/ChooseAction_old.vue": "./resources/js/components/Prompts/ChooseAction_old.vue",
 	"./Prompts/ChooseArea.vue": "./resources/js/components/Prompts/ChooseArea.vue",
 	"./Prompts/ChooseCard.vue": "./resources/js/components/Prompts/ChooseCard.vue",
 	"./Prompts/ChooseFactions.vue": "./resources/js/components/Prompts/ChooseFactions.vue",
 	"./Prompts/ChooseMagick.vue": "./resources/js/components/Prompts/ChooseMagick.vue",
 	"./Prompts/ChoosePlayers.vue": "./resources/js/components/Prompts/ChoosePlayers.vue",
-	"./Prompts/ChoosePod.vue": "./resources/js/components/Prompts/ChoosePod.vue",
 	"./Prompts/ChooseSkill.vue": "./resources/js/components/Prompts/ChooseSkill.vue",
 	"./Prompts/ChooseSpy.vue": "./resources/js/components/Prompts/ChooseSpy.vue",
 	"./Prompts/ChooseTarget.vue": "./resources/js/components/Prompts/ChooseTarget.vue",
@@ -83506,7 +84269,6 @@ var map = {
 	"./Prompts/DeployAction.vue": "./resources/js/components/Prompts/DeployAction.vue",
 	"./Prompts/DeployXavier.vue": "./resources/js/components/Prompts/DeployXavier.vue",
 	"./Prompts/DiscardCard.vue": "./resources/js/components/Prompts/DiscardCard.vue",
-	"./Prompts/DoubleResolve-mole.vue": "./resources/js/components/Prompts/DoubleResolve-mole.vue",
 	"./Prompts/DoubleResolve.vue": "./resources/js/components/Prompts/DoubleResolve.vue",
 	"./Prompts/FactionChoice.vue": "./resources/js/components/Prompts/FactionChoice.vue",
 	"./Prompts/FactionFlipper.vue": "./resources/js/components/Prompts/FactionFlipper.vue",
@@ -83515,9 +84277,7 @@ var map = {
 	"./Prompts/LoopAction.vue": "./resources/js/components/Prompts/LoopAction.vue",
 	"./Prompts/MoveAction.vue": "./resources/js/components/Prompts/MoveAction.vue",
 	"./Prompts/MoveAway.vue": "./resources/js/components/Prompts/MoveAway.vue",
-	"./Prompts/NinjaAttack.vue": "./resources/js/components/Prompts/NinjaAttack.vue",
 	"./Prompts/PlaceToken.vue": "./resources/js/components/Prompts/PlaceToken.vue",
-	"./Prompts/PlaceTop.vue": "./resources/js/components/Prompts/PlaceTop.vue",
 	"./Prompts/PlayerPrompt.vue": "./resources/js/components/Prompts/PlayerPrompt.vue",
 	"./Prompts/PreventErase.vue": "./resources/js/components/Prompts/PreventErase.vue",
 	"./Prompts/Question.vue": "./resources/js/components/Prompts/Question.vue",
@@ -83529,7 +84289,6 @@ var map = {
 	"./Tokens/TokenSet.vue": "./resources/js/components/Tokens/TokenSet.vue",
 	"./Tokens/TokenSlot.vue": "./resources/js/components/Tokens/TokenSlot.vue",
 	"./UI/AdjustHandle.vue": "./resources/js/components/UI/AdjustHandle.vue",
-	"./UI/DragHandle.vue": "./resources/js/components/UI/DragHandle.vue",
 	"./UI/HorizontalScroll.vue": "./resources/js/components/UI/HorizontalScroll.vue",
 	"./UI/LoadingStreak.vue": "./resources/js/components/UI/LoadingStreak.vue",
 	"./Units/UnitCombat.vue": "./resources/js/components/Units/UnitCombat.vue",
@@ -89199,93 +89958,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/Prompts/ChooseAction_old.vue":
-/*!**************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseAction_old.vue ***!
-  \**************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChooseAction_old.vue?vue&type=template&id=49707cc0& */ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0&");
-/* harmony import */ var _ChooseAction_old_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChooseAction_old.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ChooseAction_old.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _ChooseAction_old_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Prompts/ChooseAction_old.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseAction_old.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&":
-/*!***********************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css& ***!
-  \***********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseAction_old.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0&":
-/*!*********************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0& ***!
-  \*********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseAction_old.vue?vue&type=template&id=49707cc0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseAction_old.vue?vue&type=template&id=49707cc0&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseAction_old_vue_vue_type_template_id_49707cc0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
 /***/ "./resources/js/components/Prompts/ChooseArea.vue":
 /*!********************************************************!*\
   !*** ./resources/js/components/Prompts/ChooseArea.vue ***!
@@ -89662,75 +90334,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePlayers_vue_vue_type_template_id_6a241620___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePlayers_vue_vue_type_template_id_6a241620___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChoosePod.vue":
-/*!*******************************************************!*\
-  !*** ./resources/js/components/Prompts/ChoosePod.vue ***!
-  \*******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChoosePod.vue?vue&type=template&id=ab793f9a& */ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a&");
-/* harmony import */ var _ChoosePod_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChoosePod.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _ChoosePod_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Prompts/ChoosePod.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js&":
-/*!********************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChoosePod.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a&":
-/*!**************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a& ***!
-  \**************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChoosePod.vue?vue&type=template&id=ab793f9a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChoosePod.vue?vue&type=template&id=ab793f9a&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChoosePod_vue_vue_type_template_id_ab793f9a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -90498,75 +91101,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/Prompts/DoubleResolve-mole.vue":
-/*!****************************************************************!*\
-  !*** ./resources/js/components/Prompts/DoubleResolve-mole.vue ***!
-  \****************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _DoubleResolve_mole_vue_vue_type_template_id_2d7b6f18___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DoubleResolve-mole.vue?vue&type=template&id=2d7b6f18& */ "./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=template&id=2d7b6f18&");
-/* harmony import */ var _DoubleResolve_mole_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DoubleResolve-mole.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _DoubleResolve_mole_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _DoubleResolve_mole_vue_vue_type_template_id_2d7b6f18___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _DoubleResolve_mole_vue_vue_type_template_id_2d7b6f18___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Prompts/DoubleResolve-mole.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DoubleResolve_mole_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./DoubleResolve-mole.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DoubleResolve_mole_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=template&id=2d7b6f18&":
-/*!***********************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=template&id=2d7b6f18& ***!
-  \***********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DoubleResolve_mole_vue_vue_type_template_id_2d7b6f18___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./DoubleResolve-mole.vue?vue&type=template&id=2d7b6f18& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/DoubleResolve-mole.vue?vue&type=template&id=2d7b6f18&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DoubleResolve_mole_vue_vue_type_template_id_2d7b6f18___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DoubleResolve_mole_vue_vue_type_template_id_2d7b6f18___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
 /***/ "./resources/js/components/Prompts/DoubleResolve.vue":
 /*!***********************************************************!*\
   !*** ./resources/js/components/Prompts/DoubleResolve.vue ***!
@@ -91173,75 +91707,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/Prompts/NinjaAttack.vue":
-/*!*********************************************************!*\
-  !*** ./resources/js/components/Prompts/NinjaAttack.vue ***!
-  \*********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _NinjaAttack_vue_vue_type_template_id_cc473092___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NinjaAttack.vue?vue&type=template&id=cc473092& */ "./resources/js/components/Prompts/NinjaAttack.vue?vue&type=template&id=cc473092&");
-/* harmony import */ var _NinjaAttack_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NinjaAttack.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/NinjaAttack.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _NinjaAttack_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _NinjaAttack_vue_vue_type_template_id_cc473092___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _NinjaAttack_vue_vue_type_template_id_cc473092___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Prompts/NinjaAttack.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/NinjaAttack.vue?vue&type=script&lang=js&":
-/*!**********************************************************************************!*\
-  !*** ./resources/js/components/Prompts/NinjaAttack.vue?vue&type=script&lang=js& ***!
-  \**********************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NinjaAttack_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./NinjaAttack.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/NinjaAttack.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NinjaAttack_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/NinjaAttack.vue?vue&type=template&id=cc473092&":
-/*!****************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/NinjaAttack.vue?vue&type=template&id=cc473092& ***!
-  \****************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NinjaAttack_vue_vue_type_template_id_cc473092___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./NinjaAttack.vue?vue&type=template&id=cc473092& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/NinjaAttack.vue?vue&type=template&id=cc473092&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NinjaAttack_vue_vue_type_template_id_cc473092___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NinjaAttack_vue_vue_type_template_id_cc473092___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
 /***/ "./resources/js/components/Prompts/PlaceToken.vue":
 /*!********************************************************!*\
   !*** ./resources/js/components/Prompts/PlaceToken.vue ***!
@@ -91324,75 +91789,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceToken_vue_vue_type_template_id_0982ef06___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceToken_vue_vue_type_template_id_0982ef06___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/PlaceTop.vue":
-/*!******************************************************!*\
-  !*** ./resources/js/components/Prompts/PlaceTop.vue ***!
-  \******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _PlaceTop_vue_vue_type_template_id_baa8a64e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlaceTop.vue?vue&type=template&id=baa8a64e& */ "./resources/js/components/Prompts/PlaceTop.vue?vue&type=template&id=baa8a64e&");
-/* harmony import */ var _PlaceTop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PlaceTop.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/PlaceTop.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _PlaceTop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _PlaceTop_vue_vue_type_template_id_baa8a64e___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _PlaceTop_vue_vue_type_template_id_baa8a64e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Prompts/PlaceTop.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/PlaceTop.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************!*\
-  !*** ./resources/js/components/Prompts/PlaceTop.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./PlaceTop.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTop.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTop_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/PlaceTop.vue?vue&type=template&id=baa8a64e&":
-/*!*************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/PlaceTop.vue?vue&type=template&id=baa8a64e& ***!
-  \*************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTop_vue_vue_type_template_id_baa8a64e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./PlaceTop.vue?vue&type=template&id=baa8a64e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/PlaceTop.vue?vue&type=template&id=baa8a64e&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTop_vue_vue_type_template_id_baa8a64e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlaceTop_vue_vue_type_template_id_baa8a64e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -92314,93 +92710,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdjustHandle_vue_vue_type_template_id_4c4981d7___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdjustHandle_vue_vue_type_template_id_4c4981d7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/UI/DragHandle.vue":
-/*!***************************************************!*\
-  !*** ./resources/js/components/UI/DragHandle.vue ***!
-  \***************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _DragHandle_vue_vue_type_template_id_d5e75188___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DragHandle.vue?vue&type=template&id=d5e75188& */ "./resources/js/components/UI/DragHandle.vue?vue&type=template&id=d5e75188&");
-/* harmony import */ var _DragHandle_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DragHandle.vue?vue&type=script&lang=js& */ "./resources/js/components/UI/DragHandle.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _DragHandle_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DragHandle.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/UI/DragHandle.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _DragHandle_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _DragHandle_vue_vue_type_template_id_d5e75188___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _DragHandle_vue_vue_type_template_id_d5e75188___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/UI/DragHandle.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/UI/DragHandle.vue?vue&type=script&lang=js&":
-/*!****************************************************************************!*\
-  !*** ./resources/js/components/UI/DragHandle.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./DragHandle.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/DragHandle.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/UI/DragHandle.vue?vue&type=style&index=0&lang=css&":
-/*!************************************************************************************!*\
-  !*** ./resources/js/components/UI/DragHandle.vue?vue&type=style&index=0&lang=css& ***!
-  \************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./DragHandle.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/DragHandle.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-
-
-/***/ }),
-
-/***/ "./resources/js/components/UI/DragHandle.vue?vue&type=template&id=d5e75188&":
-/*!**********************************************************************************!*\
-  !*** ./resources/js/components/UI/DragHandle.vue?vue&type=template&id=d5e75188& ***!
-  \**********************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_template_id_d5e75188___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./DragHandle.vue?vue&type=template&id=d5e75188& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/DragHandle.vue?vue&type=template&id=d5e75188&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_template_id_d5e75188___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DragHandle_vue_vue_type_template_id_d5e75188___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -96433,7 +96742,7 @@ var helpers = {
     return (!options.killed || unit.killed) && (!options.notKilled || !unit.killed) && (!options.location || options.location == unit.location) // intentionally coercive to match different falsy values
     && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.onBoard || unit.location) // intentionally coercive to match different falsy values
     && (!options.inReserves || !unit.location) // intentionally coercive to match different falsy values
-    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || options.type === unit.type) && (!options.notType || options.type !== unit.type) && (!options.notChampion || options.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks || unit.attack.length);
+    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.selected || unit.selected) && (!options.notSelected || !unit.selected) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || options.type === unit.type) && (!options.notType || options.type !== unit.type) && (!options.notChampion || options.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks || unit.attack.length);
   },
 
   /**

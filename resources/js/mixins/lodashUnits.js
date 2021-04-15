@@ -20,6 +20,8 @@ let helpers = {
             && ( !options.notBasic || !unit.basic )
             && ( !options.flipped || unit.flipped )
             && ( !options.notFlipped || !unit.flipped )
+            && ( !options.selected || unit.selected )
+            && ( !options.notSelected || !unit.selected )
             && ( !options.skilled || unit.skilled )
             && ( !options.notSkilled || !unit.skilled )
             && ( !options.ready || unit.ready )

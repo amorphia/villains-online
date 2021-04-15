@@ -29,7 +29,13 @@
             this.parentEl = this.$refs.handle.parentElement;
             this.setParentValues();
         },
+
         methods : {
+
+            /**
+             * Set initial positions and listeners
+             * @param e
+             */
             onMouseDown ( e ) {
                 this.initialX = e.clientX;
                 this.initialY = e.clientY;
@@ -37,27 +43,47 @@
                 this.parentEl.style.userSelect = 'none';
             },
 
+
+            /**
+             * set initial parent values
+             */
             setParentValues(){
                 this.parentX = this.parentEl.scrollWidth;
                 this.parentY = this.parentEl.scrollHeight;
             },
 
+
+            /**
+             * Add mouse event listeners
+             */
             addEventListeners(){
                 window.addEventListener('mouseup',  this.onMouseUp );
                 window.addEventListener('mousemove',  this.onMouseMove );
             },
 
+
+            /**
+             * remove mouse event listeners
+             */
             removeEventListeners(){
                 window.removeEventListener('mouseup',  this.onMouseUp );
                 window.removeEventListener('mousemove',  this.onMouseMove );
             },
 
+
+            /**
+             * remove event listeners and parent values on mouse release
+             */
             onMouseUp () {
                 this.removeEventListeners();
                 this.setParentValues();
                 this.parentEl.style.removeProperty('user-select');
             },
 
+
+            /**
+             * Calculate new parent size
+             */
             getNewSize( parent, offset ) {
                 let newSize = parent + offset;
 
@@ -70,6 +96,11 @@
                 return newSize + 'px';
             },
 
+
+            /**
+             * Use mouse drag to resize parent element
+             * @param e
+             */
             onMouseMove ( e ) {
                 let newSize;
 

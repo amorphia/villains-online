@@ -2,9 +2,12 @@
     <player-prompt>
         <div class="min-prompt-width px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
+                <!-- title -->
                 <div class="title">{{ message }}</div>
-                <area-flipper :areas="areas" :index="index" @update="updateArea">
 
+                <!-- area -->
+                <area-flipper :areas="areas" :index="index" @update="updateArea">
+                    <!-- units -->
                     <unit-row v-for="(set, name) in units"
                               :units="set"
                               :key="name"
@@ -13,7 +16,8 @@
 
                 </area-flipper>
 
-                <div class="">
+                <!-- resolve buttons -->
+                <div>
                     <button class="button button-empty" @click="resolve( false )">DECLINE</button>
                     <button class="button" :disabled="!unit" @click="resolve( true )">save</button>
                 </div>
@@ -38,29 +42,54 @@
 
         computed : {
 
-
+            /**
+             * Return an array potential target units to kill
+             * @returns {Unit[]}
+             */
             units(){
                 return _.enemyUnitsInArea( this.shared.faction, this.area, this.shared.data.factions, { basic : true, notHidden : true } );
             },
 
+            /**
+             * Returns title message
+             * @returns {string}
+             */
             message(){
                 return this.data.message ? this.data.message : 'Choose your victim'
             },
 
+
+            /**
+             * Returns our current area object
+             * @returns {Area}
+             */
             area(){
-                return this.shared.data.areas[ this.currentArea ];
+                return this.shared.data.areas[ this.currentAreaName ];
             },
 
-            currentArea(){
+
+            /**
+             * Returns our current area name
+             * @returns {string}
+             */
+            currentAreaName(){
                 return this.data.areas[this.index];
             },
 
+
+            /**
+             * Returns an array of our area objects
+             * @returns {Area[]}
+             */
             areas(){
-                let areas = [];
-                this.data.areas.forEach( areaName => { areas.push( this.shared.data.areas[areaName] )});
-                return areas;
+                return this.data.areas.map( areaName => this.shared.data.areas[areaName] );
             },
 
+
+            /**
+             * Returns our prompt data
+             * @returns {object}
+             */
             data(){
                 return this.shared.player.prompt.data;
             },
@@ -69,26 +98,44 @@
 
         methods : {
 
-            updateArea( n ){
-                if( n === this.index ) return;
-                //this.areaUnits.forEach( unit => this.$set( unit, 'selected', false ) );
-                this.index = n;
+            /**
+             * Update our area index
+             * @param index
+             */
+            updateArea( index ){
+                if( index === this.index ) return;
+                this.index = index;
             },
 
+
+            /**
+             * Resolve this prompt
+             * @param val
+             */
             resolve( val ){
-                let data = {
+                let data = this.getResolveData( val );
+                data = { ...data, ...this.data};
+                this.shared.respond( 'assassinate-unit', data );
+            },
+
+
+            /**
+             * Return our resolve data
+             * @param val
+             */
+            getResolveData( val ){
+                // if we decline return our decline response
+                if( !val ) return {
+                    declines : true,
                     area : this.area.name
                 };
 
-                if( val ){
-                    data.unit = this.unit.id;
-                } else {
-                    data.declines = true;
-                }
-
-                data = Object.assign( {}, this.data, data );
-                this.shared.respond( 'assassinate-unit', data );
-            },
+                // otherwise return our unit data
+                return {
+                    area : this.area.name,
+                    unit : this.unit.id
+                };
+            }
         }
     }
 </script>

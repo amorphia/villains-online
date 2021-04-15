@@ -1,5 +1,6 @@
 <template>
     <div class="unit-row center-text pb-3" :class="classes">
+        <!-- units shown individually in a row -->
         <unit-icon v-for="unit in units"
                    :key="unit.id"
                    :unit="unit"
@@ -32,11 +33,6 @@
                 shared : App.state
             };
         },
-        methods : {
-
-        },
-        computed : {
-        }
     }
 </script>
 

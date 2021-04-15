@@ -11,7 +11,15 @@
     export default {
 
         name: 'token-slot',
-        props: ['area', 'index', 'token', 'forcedtoken', 'highlight', 'effect' ],
+        props: [
+            'area',
+            'index',
+            'token',
+            'forcedtoken',
+            'highlight',
+            'effect'
+        ],
+
         data() {
             return {
                 shared : App.state,
@@ -19,8 +27,11 @@
         },
 
         methods : {
-            emitToken(){
 
+            /**
+             * Emit our token event when a token is clicked
+             */
+            emitToken(){
                 if( this.token ){
                     this.$emit( 'token', this.token );
                 }
@@ -36,44 +47,70 @@
             computeClasses(){
                 let classes = [];
 
+                // flag this token as unrevealed
                 if( this.canSeeToken && !this.highlight ){
                     classes.push( 'unrevealed' );
                 }
 
+                // add area token slot background
                 if( this.area ){
                     classes.push( `${this.area.name}-${this.index}` );
                 }
 
+                // is our token selected?
                 if( ( this.token && this.token.selected )
                     || this.forcedtoken && this.forcedtoken.faction
                     || this.highlight ){
                     classes.push( 'selected' );
                 }
 
-
-
                 return classes.join(' ');
             },
 
+
+            /**
+             * Can we see the given token
+             *
+             * @returns {boolean}
+             */
             canSeeToken(){
+                // if this token is empty, or already revealed do nothing
                 if( ! this.token || this.token.revealed ) return false;
 
-                if( this.token.faction === this.shared.faction.name
-                    || this.shared.faction.tokenSpy.includes( this.token.location )
-                    || this.ministerSpy
+
+                if( this.token.faction === this.shared.faction.name // if this is our token
+                    || this.shared.faction.tokenSpy.includes( this.token.location ) // or we can tokenSpy the area
+                    || this.ministerSpy // or the minister is letting us spy
                 ) return true;
 
             },
 
-            ministerSpy(){
-                if( this.shared.faction.name !== 'bureau' ) return;
 
-                let ministerInArea = !! this.shared.faction.units.find( unit => _.unitInArea( unit, this.area, { type : 'champion' } ) );
+            /**
+             * Does the minister of developments let us look at this token?
+             * @returns {boolean}
+             */
+            ministerSpy(){
+                if( this.shared.faction.name !== 'bureau' ) return false;
+
+                // if the minister isn't in this area return false
+                if( ! this.shared.faction.units.some( unit => _.unitInArea( unit, this.area, { type : 'champion' } ) ) ){
+                    return false;
+                }
+
+                // get the first unrevealed enemy token in the area
                 let firstUnrevealedEnemy = _.firstUnrevealedToken( this.area, { enemy : this.shared.faction.name });
 
-                return ministerInArea && ( firstUnrevealedEnemy && this.token.id === firstUnrevealedEnemy.id );
+                // is our token the first unrevealed enemy token in this area?
+                return this.token.id === firstUnrevealedEnemy?.id;
             },
 
+
+            /**
+             * If we have a token return it's image url, otherwise return false
+             *
+             * @returns {string|false}
+             */
             tokenImage(){
                 let image = false;
                 let token;

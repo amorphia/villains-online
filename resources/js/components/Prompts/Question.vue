@@ -2,7 +2,11 @@
     <player-prompt classes="">
         <div class="choose-action px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
-                <div class="title">{{ message }}</div>
+
+                <!-- title -->
+                <div class="title">{{ data.message }}</div>
+
+                <!-- response buttons -->
                 <div class="flex-center">
                     <button class="button button-empty" @click="resolve( false )">No</button>
                     <button class="button" @click="resolve( true )">Yes</button>
@@ -26,19 +30,22 @@
         },
 
         computed : {
+            /**
+             * return prompt data
+             * @returns {object}
+             */
             data(){
                 return this.shared.player.prompt.data;
-            },
-            message(){
-                return this.data.message;
             },
         },
 
         methods : {
+            /**
+             * Resolve prompt
+             * @param choice
+             */
             resolve( choice ){
-                let data = {};
-                data.answer = choice;
-                data = Object.assign( {}, this.data, data );
+                let data = { answer : choice, ...this.data };
                 this.shared.respond( 'question', data );
             }
         },

@@ -1,6 +1,9 @@
 <template>
+    <!--
+    * Woe be unto ye who stumbles upon this dire sight. I gotta refactor this whole thing into individual action
+    * components, as this prompt has really gotten away from me. I promise, its on my todo list
+    -->
 <div>
-
     <!-- TOP BAR -->
     <div v-if="hasTopAction" class="choose-action-top p-2 d-flex justify-center align-center">
         <button v-if="showSkip" @click="setSkipAction" class="button">SKIP THIS ACTION</button>
@@ -8,13 +11,12 @@
         <button v-if="showLocked" @click="setLockedAction" class="button" >DECLARE YOURSELF LOCKED</button>
     </div>
 
-    <!-- TOP BAR -->
     <player-prompt v-if="action" classes="">
         <div class="choose-action px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
 
+                <!-- title -->
                 <div class="title">Confirm Action</div>
-
 
                 <!-- Skill / Token flipper -->
                 <area-flipper v-if="area"
@@ -114,8 +116,8 @@
                                :selected="wildType"></token-set>
                 </div>
 
+                <!-- buttons -->
                 <div class="d-flex justify-center">
-
                     <button class="button button-empty"
                         @click="clearAction">
                         back
@@ -171,11 +173,14 @@
         },
 
         methods : {
-
+            /**
+             * Set our default action
+             */
             setDefaultAction(){
                 let actionKeys = Object.keys( this.actions );
                 if( actionKeys.length === 1 ){
                     let actionSet = this.actions[actionKeys[0]];
+
                     if( actionKeys[0] === 'pass'
                         || actionKeys[0] === 'locked'
                         || actionKeys[0] === 'skip'
@@ -185,29 +190,45 @@
                 }
             },
 
+
+            /**
+             * Set our action
+             *
+             * @param name
+             * @param param
+             */
             setAction( name, param ){
                 let action = { name : name };
 
+                // if this is an area action set our shared action area
                 if( this.areaActions.includes( name ) ){
                     action.area = param ?? this.actions[name][0];
                 }
 
+                // if this is a token action set our token
                 if( name === 'token' ){
                     action.token = this.firstUnrevealed( action.area );
                 }
 
+                // handle xavier action
                 if( name === 'xavier' ){
                     action.area = this.xavier.location;
                     action.token = this.xavier.token;
                     this.$set( this.xavier, 'placedToken', this.xavier.token );
                 }
 
+                // select the appropriate area
                 if( action.area ) this.shared.event.emit('areaSelected', { name : action.area } );
 
+                // set our action
                 this.action = action;
                 this.shared.action = action;
             },
 
+
+            /**
+             * Clear our action
+             */
             clearAction(){
                 if( this.action.name === 'xavier' ) this.$set( this.xavier, 'placedToken', null );
                 this.action = null;
@@ -215,6 +236,10 @@
                 App.event.emit('unselectAreas' );
             },
 
+
+            /**
+             * Build our action options
+             */
             generateActions(){
                 let actions = {};
 
@@ -252,6 +277,10 @@
                 this.shared.actions = actions;
             },
 
+
+            /**
+             * Save our action
+             */
             saveAction(){
                 let args = [];
 
@@ -274,23 +303,43 @@
                 this.clearAction();
             },
 
+
+            /**
+             * Set pass action
+             */
             setPassAction(){
                 this.setAction( 'pass' );
             },
 
+
+            /**
+             * Set Locked action
+             */
             setLockedAction(){
                 this.setAction( 'locked' );
             },
 
+
+            /**
+             * Set skip action
+             */
             setSkipAction(){
                 this.setAction( 'skip' );
             },
 
+
+            /**
+             * Get the first unrevealed token in the given area
+             */
             firstUnrevealed( area ){
                 if( typeof area === 'string' ) area = this.shared.data.areas[ area ];
                 return _.firstUnrevealedToken( area );
             },
 
+
+            /**
+             * Get the first revealed token in the given area
+             */
             firstRevealedToken( area ){
                 if( typeof area === 'string' ) area = this.shared.data.areas[ area ];
                 return _.firstRevealedToken( area, { player : this.shared.faction.name });
@@ -299,26 +348,34 @@
 
         computed : {
 
+            /**
+             * Does this action use the top bar?
+             * @returns {boolean}
+             */
             hasTopAction(){
                 return this.actions.pass || this.actions.locked || this.actions.skip;
             },
 
-            showPass(){
-                return this.actions.pass;
-            },
 
-            showSkip(){
-                return this.actions.skip;
-            },
+            // should show pass type actions
+            showPass(){ return this.actions.pass },
+            showSkip(){ return this.actions.skip },
+            showLocked(){ return this.actions.locked },
 
-            showLocked(){
-                return this.actions.locked;
-            },
 
+            /**
+             * Returns our current token (if applicable)
+             * @returns {Token|null}
+             */
             currentToken(){
                 return this.action.name === 'token' ? this.firstUnrevealed( this.area ) : null;
             },
 
+
+            /**
+             * Returns our button message
+             * @returns {string}
+             */
             buttonMessage(){
                 let message;
                 switch( this.action.name ){
@@ -357,23 +414,38 @@
             },
 
 
+            /**
+             * Returns our area if any
+             * @returns {Area|null}
+             */
             area(){
                 if( !this.action.area ) return;
                 return this.shared.data.areas[this.action.area];
             },
 
+
+            /**
+             * Returns the token we have chosen to reveal with this action if applicable
+             * @returns {Token|null}
+             */
             firstToken(){
-                if( this.action.name === 'token' ){
-                    return this.firstUnrevealed( this.area );
-                }
+                if( this.action.name === 'token' ) return this.firstUnrevealed( this.area );
             },
 
+
+            /**
+             * Returns the first revealed token in this area for this ambush action, if applicable
+             * @returns {Token|null}
+             */
             firstRevealed(){
-                if( this.action.name === 'ambush' ){
-                    return this.firstRevealedToken( this.area );
-                }
+                if( this.action.name === 'ambush' ) return this.firstRevealedToken( this.area );
             },
 
+
+            /**
+             * Returns an array of the tokens we have remaining to reveal this turn
+             * @returns {Token[]}
+             */
             activeTokens(){
                 return this.shared.faction.tokens.filter(
                     token => token.location
@@ -382,120 +454,192 @@
                 );
             },
 
+
+            /**
+             * Returns xavier blackstone, if we are the society
+             * @returns {Unit|null}
+             */
             xavier(){
                 if( this.shared.faction.name !== 'society' ) return;
                 return this.shared.faction.units.find( unit => unit.type === 'champion' );
             },
 
+
+            /**
+             * Returns Xavier blackstone's area object, if applicable
+             * @returns {Area|null}
+             */
             xavierArea(){
                 if( this.shared.faction.name !== 'society' ) return;
                 return this.shared.data.areas[ this.xavier.location ];
             },
 
+
+            /**
+             * Return Xaviers token, if we can activate it, or null if not applicable
+             * @returns {Token|null}
+             */
             canXavier(){
                 if( this.shared.faction.name !== 'society' ) return;
                 return this.xavier.token;
             },
 
+
+            /**
+             * Returns an array of area names that we can reveal a token in
+             * @returns {string[]}
+             */
             revealableTokens(){
-                let areas = [];
-                _.forEach( this.shared.data.areas, area => {
+                return Object.values( this.shared.data.areas ).reduce( (tokens, area) =>{
                     let firstUnrevealed = this.firstUnrevealed( area );
-                    if( firstUnrevealed && firstUnrevealed.faction === this.shared.faction.name ){
-                        areas.push( area.name );
+                    if( firstUnrevealed?.faction === this.shared.faction.name ){
+                        tokens.push( area.name );
                     }
-                });
-                return areas;
+                    return tokens;
+                }, [] );
             },
 
+
+            /**
+             * Returns an array of area names matching the areas we can ambush
+             * @returns {[]}
+             */
             ambushAreas(){
                 let areas = [];
                 let faction = this.shared.faction;
 
+                // if we can't ambush at all, return the empty array
                 if( !faction.ambushes || faction.ambushes.used >= faction.ambushes.max ) return areas;
 
-                _.forEach( this.shared.data.areas, area => {
+                // check each area to see if we have a revealed token there, and there are two players
+                // with units in that area
+                Object.values( this.shared.data.areas ).forEach( area => {
                     if( ! this.firstRevealedToken( area ) ) return;
                     if( _.factionsWithUnitsInArea( this.shared.data.factions, area ).length < 2 ) return;
-
                     areas.push( area.name );
                 });
 
                 return areas;
             },
 
+
+            /**
+             * Return an array of our skilled units in our selected area
+             * @returns {Unit[]}
+             */
             skilledUnitsInArea(){
                 return this.shared.faction.units.filter( unit => _.unitReadyInArea( unit, this.area ) );
             },
 
+
+            /**
+             * Return an array of our flipped units in our selected area
+             * @returns {Unit[]}
+             */
             flippedUnitsInArea(){
                 return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area, { flipped : true } ));
             },
 
+
+            /**
+             * Return an array of our ghost units in our selected area
+             * @returns {Unit[]}
+             */
             ghostsInArea(){
                 if( !this.shared.faction.ghosts ) return [];
                 return this.shared.faction.ghosts.filter( ghost => ghost.location === this.area.name );
             },
 
+
+            /**
+             * Return an array of area names matching the areas where we can activate the area skill
+             * @returns {[]}
+             */
             useableSkills(){
-                let areas = [];
-
-                _.forEach( this.shared.data.areas, area => {
+                return Object.values( this.shared.data.areas ).reduce( (array, area) =>{
                     if( _.canUseSkill( this.shared.faction, area, this.shared.data.factions ) ){
-                        areas.push( area.name );
+                        array.push( area.name );
                     }
-                });
-
-                return areas;
+                    return array;
+                }, []);
             },
 
+
+            /**
+             * Returns our loop token, if revealed and in play
+             * @returns {Token|null}
+             */
             loopToken(){
-                return this.shared.faction.tokens.find( token => token.type === 'loop' && token.revealed && token.location );
+                return this.shared.faction.tokens.find( token => token.type === 'loop'
+                    && token.revealed
+                    && token.location );
             },
 
+
+            /**
+             * Returns an array of area names matching areas we can play a loop action
+             * @returns {string[]}
+             */
             useableLoop(){
                 let reserves = this.shared.faction.tokens.find( token => !token.location );
                 return this.loopToken && reserves ? [this.loopToken.location] : [];
             },
 
+
+            /**
+             * Returns an array of area names matching the areas where we can take a materialize action
+             * @returns {string[]|Array}
+             */
             useableMaterialize(){
                 if( this.shared.faction.name !== 'ghosts'
                     || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction
                 ) return [];
 
                 let areas = {};
-
                 this.shared.faction.ghosts.forEach( ghost => {
                    areas[ghost.location] = true;
                 });
-
                 return Object.keys( areas );
 
             },
 
+
+            /**
+             * Returns an array of area names matching the areas where we can take a magick action
+             * @returns {string[]|Array}
+             */
             useableMagick(){
-                let areas = [];
+                // if not applicable, return an empty array
                 if( this.shared.faction.name !== 'witches'
                     || this.shared.faction.lastMagickGameAction === this.shared.data.gameAction
-                ) return areas;
+                ) return [];
 
-                _.forEach( this.shared.data.areas, area => {
+
+                return Object.values( this.shared.data.areas ).reduce( (array, area) =>{
                     if( _.canUseMagick( this.shared.faction, area, this.shared.data.factions ) ){
-                        areas.push( area.name );
+                        array.push( area.name );
                     }
-                });
-
-                return areas;
+                    return array;
+                }, []);
             },
 
+
+            /**
+             * Is our ability to save our choice disabled?
+             * @returns {boolean}
+             */
             saveDisabled(){
                 if( !this.action || this.wildTokenNeedsType ) return true;
             },
 
+
+            /**
+             * Does our wild token still need to be assigned a type?
+             * @returns {boolean}
+             */
             wildTokenNeedsType(){
                 return this.firstToken && this.firstToken.name === 'wild' && !this.wildType;
             }
-
         }
     }
 </script>

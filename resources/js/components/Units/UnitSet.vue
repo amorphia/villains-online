@@ -1,13 +1,16 @@
 <template>
     <div v-if="units.length" class="p-3 pos-relative unit-set-block" :class="classes" :data-title="title">
+        <!-- units grouped by count -->
         <div class="units-hud__unit d-inline-block pos-relative"
              v-for="(count, type) in shared.groupByCount( units, 'type' )"
              @click="$emit( 'unitClicked', type )"
              :data-count="count">
+                <!-- image -->
                 <img class="unit-hud__unit-image" :src="`/images/factions/${units[0].faction}/units/${type}.png`">
         </div>
     </div>
 </template>
+
 
 
 <script>

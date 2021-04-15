@@ -3,10 +3,12 @@
         <div class="choose-action overflow-auto px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
 
-
+                <!-- title -->
                 <div class="title mb-4">Choose units to deploy</div>
-                <div class="mt-3 pb-4">
 
+                <!-- from areas -->
+                <div class="mt-3 pb-4">
+                    <!-- reserves -->
                     <area-flipper
                         v-if="fromAreaIndex === -1"
                         :areas="fromAreas"
@@ -17,6 +19,7 @@
                         <unit-set :units="reserves" classes="center-text p-0" noBorder="true" @unitClicked="addUnitFromReserves"></unit-set>
                     </area-flipper>
 
+                    <!-- areas where we can deploy units from -->
                     <area-flipper
                         v-if="fromAreaIndex !== -1"
                         :areas="fromAreas"
@@ -27,23 +30,29 @@
                             <div class="toggle area-map__toggle top-0 left-0">Re-deploy from the {{ fromAreas[fromAreaIndex].name }}</div>
                             <unit-row :units="currentFromAreaUnits" @unit="addUnitFromPlay"></unit-row>
                     </area-flipper>
-
                 </div>
+
+                <!-- destination area -->
                 <area-flipper :areas="toAreas" locked="true" :index="toAreaIndex" @update="updateToIndex" classes="area-header__units">
+
+                    <!-- area zoom -->
                     <div class="toggle area-map__toggle top-0 right-0" @click.stop="shared.event.emit('viewArea', area )"><i class="icon-zoom_in"></i></div>
 
                     <!-- deploy limit pips -->
                     <div class="deploy-limit__pips d-flex justify-center flex-wrap mt-3">
-                        <!-- default deploy limit -->
+
+                        <!-- base deploy limit -->
                         <i v-for="(n, index) in data.deployLimit"
                            class="deploy-limit__pip"
                            :class="index < usedDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
 
+                        <!-- bonus type specific deploy limit -->
                         <i v-if="showBonusPips" v-for="(n, index) in bonusDeployCount"
                            class="deploy-limit__pip commie-pip"
                            :class="index < bonusUnitsInDeploy ? 'icon-circle active' : 'icon-circle-open'"></i>
                     </div>
 
+                    <!-- selected units -->
                     <div class="popout-hud__block p-3 pos-relative"
                          :class="{ 'has-ghosts' : shared.faction.ghostDeploy }"
                          v-for="(units, location) in groupBy( selected, 'location' )"
@@ -58,12 +67,19 @@
                     </div>
                 </area-flipper>
 
+                <!-- Kau blocking area text -->
                 <div v-if="destinationBlockedByKau" class="prompt-question red">Kau is blocking champions from being moved to this area</div>
+
+                <!-- total cost -->
                 <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to deploy these units?` )"></div>
+
+                <!-- vines cost -->
                 <div v-if="vinesCost > 0" class="prompt-question red center-text" v-html="shared.filterText( `Vines cost xC${vinesCost}x` )"></div>
+
+                <!-- police payoff cost -->
                 <div v-if="policePayoffs > 0" class="prompt-question red center-text" v-html="shared.filterText( `Police Payoff cost xC${policePayoffs}x` )"></div>
 
-
+                <!-- submit buttons -->
                 <div class="flex-center">
                     <button class="button button-empty" @click="resolve( false )"
                             v-if="canDecline">decline</button>
@@ -91,12 +107,14 @@
         },
 
         watch : {
+            // unselect all areas when we choose our reserves
             fromAreaIndex(){
                 if( this.fromAreaIndex === -1 ){
                     App.event.emit('unselectAreas' );
                 }
             },
 
+            // when our destination becomes blocked by kau, remove all champions from our selection
             destinationBlockedByKau(){
                 if( !this.destinationBlockedByKau ) return;
 
@@ -107,64 +125,110 @@
         },
 
         mounted(){
-            // if we have nothing to deploy from our reserves
+            // if we have nothing to deploy from our reserves set our fromIndex to 0
             if( this.reserves.length === 0 && this.fromAreas.length > 0 ) this.fromAreaIndex = 0;
 
-            // if we have no units to deploy at all
+            // if we have no units to deploy at all set our from index to -2
             if( this.reserves.length === 0 && this.fromAreas.length === 0 ) this.fromAreaIndex = -2;
         },
 
         methods : {
 
+            /**
+             * Toggle whether to deploy a unit as a ghost
+             * @param unit
+             */
             toggleGhost( unit ){
-                if( unit.asGhost ) this.$set( unit, 'asGhost', false );
-                else this.$set( unit, 'asGhost', true );
-            },
-
-            resolve( option ){
-                let data = {};
-
-                if( !option ){
-                    data.decline = true;
-                } else {
-                    data.toArea = this.area.name;
-                    data.units = this.selected.filter( unit => !unit.asGhost ).map( unit => unit.id );
-                    data.ghosts = this.selected.filter( unit => unit.asGhost ).map( unit => unit.id );
-                    data.cost = this.cost;
+                if( unit.asGhost ){
+                    this.$set( unit, 'asGhost', false );
+                    return;
                 }
 
-                data = Object.assign( {}, this.data, data );
+                this.$set( unit, 'asGhost', true );
+            },
+
+
+            /**
+             * Resolve this prompt
+             * @param option
+             */
+            resolve( option ){
+                let data = this.getResponseData( option );
+                data = { ...data, ...this.data };
                 this.shared.respond( 'deploy-action', data );
             },
 
+
+            /**
+             * Get our response data
+             * @param option
+             * @returns {object}
+             */
+            getResponseData( option ){
+                // if we declined...
+                if( !option ) return { decline : true };
+
+                return {
+                    toArea : this.area.name,
+                    units : this.selected.filter( unit => !unit.asGhost ).map( unit => unit.id ),
+                    ghosts : this.selected.filter( unit => unit.asGhost ).map( unit => unit.id ),
+                    cost : this.cost,
+                }
+            },
+
+
+            /**
+             * Update our destination area index
+             * @param index
+             */
             updateToIndex( index ){
                 this.toAreaIndex = index;
             },
 
+
+            /**
+             * Update our from area index
+             * @param index
+             */
             updateFromIndex( index ){
                 this.fromAreaIndex = index;
             },
 
+
+            /**
+             * Switch to selecting from our reserves
+             */
             switchToReserves(){
-                if( this.fromAreaIndex !== -1 ) {
-                    this.fromAreaIndex = -1;
-                    this.shared.event.emit('unselectAreas' );
-                }
+                // if we are already selecting the reserves, abort
+                if( this.fromAreaIndex === -1 ) return;
+
+                this.fromAreaIndex = -1;
+                this.shared.event.emit('unselectAreas' );
             },
 
+
+            /**
+             * Switch from our reserves, to redeploying from an area
+             */
             switchToRedeploy(){
-                if( this.fromAreaIndex === -1 ){
-                    this.fromAreaIndex = 0;
-                    this.shared.event.emit('areaSelected', this.fromAreas[this.fromAreaIndex] );
-                }
+                // if we are already redeploying, abort
+                if( this.fromAreaIndex !== -1 ) return;
+
+                this.fromAreaIndex = 0;
+                this.shared.event.emit('areaSelected', this.fromAreas[this.fromAreaIndex] );
             },
 
-            canAddUnit( type ){
 
+            /**
+             * Can we add this unit?
+             * @param type
+             * @returns {boolean}
+             */
+            canAddUnit( type ){
                 let usedDeploy = this.selected.length;
                 let deployLimit = this.data.deployLimit;
 
-                // commie bonus patsies
+                // unit type specific bonus deploy
                 if( this.shared.faction.bonusDeploy && this.data.fromToken ){
                     usedDeploy = this.nonBonusUsedDeploy;
                     usedDeploy += this.netBonusUnits > 0 ? this.netBonusUnits : 0;
@@ -174,40 +238,76 @@
                 return usedDeploy < deployLimit;
             },
 
+
+            /**
+             * Add a unit from play
+             * @param unit
+             */
             addUnitFromPlay( unit ){
+                // unselect the unit if it was already selected
                 if( unit.selected ){
                     this.$set( unit, 'selected', false);
                     if( unit.asGhost ) this.$set( unit, 'asGhost', false );
                     return;
                 }
+
+                // if we can't add this unit abort
                 if( ! this.canAddUnit( unit.type ) ) return;
+
+                // get our unit and select it
                 unit = _.find( this.currentFromAreaUnits, old => unit.id === old.id );
                 this.$set( unit, 'selected', true );
+
+                // do our ghost shenanigans
                 if( this.shared.faction.ghostDeploy ) this.$set( unit, 'asGhost', true );
             },
 
 
+            /**
+             * Add a unit from our reserves
+             * @param type
+             */
             addUnitFromReserves( type ){
+                // if we can't add this unit abort
                 if( ! this.canAddUnit( type ) ) return;
+
+                // get our unit and select it
                 let unit = _.find( this.reserves, unit => unit.type === type );
                 this.$set( unit, 'selected', true );
+
+                // do our ghost shenanigans
                 if( this.shared.faction.ghostDeploy && !this.data.free ) this.$set( unit, 'asGhost', true );
             },
 
 
+            /**
+             * Group array by prop helper
+             *
+             * @param array
+             * @param prop
+             * @returns {Object}
+             */
             groupBy( array, prop ){
                 return _.groupBy( array, prop );
             },
 
-            fromAreaUnits( area ){
-                let units = this.shared.faction.units
-                    .filter( unit => ! unit.noDeploy
-                            && _.unitInArea( unit, area )
-                            && unit.cost <= _.money( this.shared.faction )
-                            && (unit.type !== 'champion' || !this.destinationBlockedByKau )
-                            && (! this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
-                    );
 
+            /**
+             * Return from area units
+             * @param area
+             * @returns {Array}
+             */
+            fromAreaUnits( area ){
+                // get our units
+                let units = this.shared.faction.units
+                    .filter( unit => unit.cost <= _.money( this.shared.faction )
+                            && _.unitInArea( unit, area, {
+                                deployable : true,
+                                noChampion : this.destinationBlockedByKau,
+                                types : this.data.unitTypes
+                        }));
+
+                // include any ghosts
                 if( this.shared.faction.ghostDeploy ){
                     let ghosts = this.shared.faction.ghosts.filter( unit => unit.location === area
                             && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
@@ -222,30 +322,59 @@
 
         computed : {
 
+            /**
+             * Return our bonus deploy count
+             * @returns {number}
+             */
             bonusDeployCount(){
                 if( ! this.showBonusPips ) return 0;
                 return this.shared.faction.bonusDeploy.count;
             },
 
+
+            /**
+             * Should we show any bonus pips?
+             * @returns {boolean}
+             */
             showBonusPips() {
                 return this.shared.faction.hasOwnProperty( 'bonusDeploy' ) && this.data.fromToken  && !this.data.noBonusUnits;
             },
 
+
+            /**
+             * Calculate our net bonus units
+             * @returns {number}
+             */
             netBonusUnits() {
                 if( ! this.shared.faction.bonusDeploy || this.data.noBonusUnits ) return 0;
                 return this.bonusUnitsInDeploy - this.shared.faction.bonusDeploy.count;
             },
 
+
+            /**
+             * Count our bonus units being deployed
+             * @returns {number}
+             */
             bonusUnitsInDeploy() {
                 if( !this.shared.faction.bonusDeploy || this.data.noBonusUnits  ) return 0;
                 return this.selected.filter(unit => unit.type === this.shared.faction.bonusDeploy.type ).length;
             },
 
+
+            /**
+             * How much of our base deploy have we used?
+             * @returns {number}
+             */
             nonBonusUsedDeploy(){
                 if( !this.shared.faction.bonusDeploy || this.data.noBonusUnits ) return this.selected.length;
                 return this.selected.filter( unit => unit.type !== this.shared.faction.bonusDeploy.type ).length;
             },
 
+
+            /**
+             * How much of our deploy limit have we used?
+             * @returns {number}
+             */
             usedDeploy(){
                 if( this.shared.faction.bonusDeploy && this.data.fromToken && !this.data.noBonusUnits  ){
                     let usedDeploy = this.nonBonusUsedDeploy;
@@ -256,55 +385,103 @@
                 return this.selected.length;
             },
 
+
+            /**
+             * Can we decline this action?
+             * @returns {boolean}
+             */
             canDecline(){
+                // if this deploy action if from a token, then yes
                 if( this.data.fromToken ) return true;
-                return ( !this.reserves.length && !this.hasFromAreaUnits )
-                    || ( this.shared.faction.resources + this.shared.faction.energy) < this.policePayoffs;
+
+                // if we have no units to deploy, then yes
+                if( !this.reserves.length && !this.hasFromAreaUnits ) return true;
+
+                // if we can't afford to deploy any units then we may decline
+                return _.money( this.shared.faction ) < this.policePayoffs;
             },
 
+
+            /**
+             * Can we save our choices?
+             * @returns {boolean}
+             */
             canSave(){
-                let unitsSelectedTest = this.selected.length >= 1;
-                let costTest = (this.shared.faction.resources + this.shared.faction.energy) >= this.cost;
-                return unitsSelectedTest && costTest;
+                // if we don't have any units selected, then no
+                if( this.selected.length < 1 ) return false;
+
+                // can we afford to deploy this units?
+                return _.money( this.shared.faction ) >= this.cost;
             },
 
+
+            /**
+             * Return our from area objects
+             * @returns {Area[]}
+             */
             fromAreas(){
-                let areas = [];
-                this.data.fromAreas.forEach( areaName => { areas.push( this.shared.data.areas[areaName] )});
-                return areas;
+                return this.data.fromAreas.map( areaName => this.shared.data.areas[areaName] );
             },
 
+
+            /**
+             * Do we have units in our from areas?
+             */
             hasFromAreaUnits(){
-                this.data.fromAreas.forEach( area => {
-                   if( this.fromAreaUnits( area ).length > 0 ) return true;
-                });
+                return this.data.fromAreas.some( area => this.fromAreaUnits( area ).length > 0 );
             },
 
+
+            /**
+             * Return our current area
+             * @returns {Area}
+             */
             currentArea(){
                 return this.data.fromAreas[this.fromAreaIndex];
             },
 
+
+            /**
+             * Return our units in the current from area
+             * @returns {Unit[]}
+             */
             currentFromAreaUnits(){
                 return this.fromAreaUnits( this.currentArea );
             },
 
+
+            /**
+             * Return the deployable units in our reserves
+             * @returns {Unit[]}
+             */
             reserves(){
                 return this.shared.faction.units.filter(
-                    unit => !unit.selected
-                            && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
-                            && !unit.noDeploy
-                            && (unit.cost <= _.money( this.shared.faction ) || this.data.free )
-                            && (unit.type !== 'champion' || !this.destinationBlockedByKau)
-                            && !unit.location
+                    unit => _.isValidUnit( unit, {
+                        notSelected : true,
+                        types : this.data.unitTypes,
+                        deployable: true,
+                        noChampion : this.destinationBlockedByKau,
+                        inReserves : true
+                    }) && ( unit.cost <= _.money( this.shared.faction ) || this.data.free )
                 );
             },
 
+
+            /**
+             * Is our destination blocked by kau?
+             * @returns {boolean}
+             */
             destinationBlockedByKau(){
                 let aliens = this.shared.data.factions['aliens'];
                 if( !aliens || this.shared.faction.name === 'aliens' ) return false;
                 if( this.area.name === aliens.kau.location && !aliens.kau.killed ) return true;
             },
 
+
+            /**
+             * Return our selected units
+             * @returns {Unit[]}
+             */
             selected(){
                 let units = this.shared.faction.units.filter( unit => unit.selected );
 
@@ -315,26 +492,50 @@
                 return units;
             },
 
+
+            /**
+             * Calculate our police payoff cost
+             * @returns {number}
+             */
             policePayoffs(){
                 return _.policePayoffs( this.shared.faction, this.area ) * this.selected.length;
             },
 
+
+            /**
+             * Calculate our vines cost
+             * @returns {*}
+             */
             vinesCost(){
                 return _.vinesCost( this.shared.faction, this.selected, this.shared.data.factions );
             },
 
+
+            /**
+             * Calculate our units cost
+             * @returns {number}
+             */
             unitCost(){
-                let cost = 0;
+                // if this deploy is free, return 0
+                if( this.data.free ) return 0;
 
-                if( !this.data.free ) {
-                    this.selected.forEach( unit => {
-                        if( !(unit.redeployFree && unit.location) && !unit.asGhost ) cost += unit.cost;
-                    });
-                }
+                return this.selected.reduce( (cost, unit) => {
+                    // if this unit is free to redeploy skip it
+                    if( unit.redeployFree && unit.location ) return cost;
 
-                return cost;
+                    // if we are deploying as a ghost skip it
+                    if( unit.asGhost ) return cost;
+
+                    // otherwise add in this unit's cost
+                    return cost += unit.cost;
+                }, 0 );
             },
 
+
+            /**
+             * Calculate out total cost for this deploy
+             * @returns {number}
+             */
             cost(){
                 let baseCost = this.unitCost + this.policePayoffs + this.vinesCost;
                 if( baseCost && this.data.reduceCost ) baseCost -= this.data.reduceCost;
@@ -342,20 +543,38 @@
                 return baseCost;
             },
 
+
+            /**
+             * Return prompt data
+             * @returns {null}
+             */
             data(){
                 return this.shared.player.prompt.data;
             },
 
+
+            /**
+             * Return our destination area object
+             * @returns {[]}
+             */
             toAreas(){
-                let areas = [];
-                this.data.toAreas.forEach( areaName => { areas.push( this.shared.data.areas[areaName] )});
-                return areas;
+                return this.data.toAreas.map( areaName => this.shared.data.areas[areaName] );
             },
 
+
+            /**
+             * Return our current from area
+             * @returns {Area}
+             */
             fromArea(){
                 return this.shared.data.areas[ this.currentArea ];
             },
 
+
+            /**
+             * Return our current destination object area
+             * @returns {Area}
+             */
             area(){
                 return this.shared.data.areas[ this.data.toAreas[this.toAreaIndex] ];
             }
@@ -365,7 +584,6 @@
 
 
 <style>
-
     .deploy-limit__pips {
         margin-top: -.75rem;
     }
@@ -424,9 +642,6 @@
         height: 8vw;
     }
 
-    .deploy__ghost .unit-hud__unit-image {
-        /*  opacity: .8; */
-    }
 
     .deploy__toggle-ghost {
         background-color: #192236;

@@ -1,5 +1,4 @@
 <template>
-    <!-- Your LoginRegister component's template -->
 </template>
 
 
@@ -16,8 +15,4 @@
     }
 </script>
 
-
-<style>
-
-</style>
 

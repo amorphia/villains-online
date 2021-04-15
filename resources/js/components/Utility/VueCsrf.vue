@@ -28,7 +28,6 @@
         mounted() {
 
             if( ! this.shared.csrf ){
-
                 // if the csrf property hasn't been set yet on the shared state init it
                 this.shared.csrf = 'loading...';
 

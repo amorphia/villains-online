@@ -1,11 +1,16 @@
 <template>
     <div class="px-3 width-100 d-flex justify-center">
-        <button v-if="factions.length > 1" class="flipper" @click="prev"><i class="icon-left"></i></button>
+        <!-- left button -->
+        <button v-if="factions.length > 1" class="flipper" @click="flip( -1 )"><i class="icon-left"></i></button>
+
+        <!-- faction -->
         <div class="faction-header p-4 pos-relative" :class="`faction-header-${faction.name} ${classes}`" :style="`background-color: var(--faction-${faction.name})`">
             <div class="faction-flipper__faction-logo units-hud__unit"><img :src="`/images/factions/${faction.name}/icon.jpg`"></div>
             <slot></slot>
         </div>
-        <button v-if="factions.length > 1" class="flipper" @click="next"><i class="icon-right"></i></button>
+
+        <!-- right button -->
+        <button v-if="factions.length > 1" class="flipper" @click="flip( +1 )"><i class="icon-right"></i></button>
     </div>
 </template>
 
@@ -21,33 +26,30 @@
             };
         },
         computed : {
+            /**
+             * Return current faction
+             * @returns {Faction}
+             */
             faction(){
                 return this.factions[this.index];
             }
         },
         methods : {
-            prev(){
-                let index = this.index - 1;
-                if( index < 0 ){
-                    index = this.factions.length - 1;
-                }
-                this.$emit( 'update', index );
-            },
-
-            next(){
-                let index = this.index + 1;
-                if( index > this.factions.length - 1 ){
-                    index = 0;
-                }
+            /**
+             * increment/decrement faction index
+             * @param increment
+             */
+            flip( increment ){
+                let index = this.index + increment;
+                if( index < 0 ) index = this.factions.length - 1; // if we go below 0, flip to the end
+                if( index > this.factions.length - 1 ) index = 0; // if we go above our max flip to the start
                 this.$emit( 'update', index );
             },
         }
     }
 </script>
 
-
 <style>
-
 .faction-header {
     display: flex;
     justify-content: center;

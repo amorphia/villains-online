@@ -2,9 +2,10 @@
     <player-prompt classes="">
             <div class="d-flex justify-center px-5">
 
-                <!-- confirm -->
+                <!-- confirm choices -->
                 <div v-if="mode === 'confirm'" class="d-flex align-center justify-center">
 
+                    <!-- confirm plan -->
                     <div class="p-4" v-if="mustChoosePlan">
                         <div class="title">Discard this plan</div>
                         <div class='plan-block__image-wrap'>
@@ -12,19 +13,22 @@
                         </div>
                     </div>
 
-
+                    <!-- confirm target -->
                     <div class="p-4">
                         <div class="title">Choose this target</div>
                         <div class='plan-block__image-wrap'>
                             <img class="plan-block__image" :src="`/images/cards/${target.file}.jpg`">
                         </div>
                     </div>
-
                 </div>
 
-                <!-- card pickers -->
+                <!-- choose target and plan -->
                 <div v-else class="width-100 center-text">
+
+                    <!-- title -->
                     <div class="title d-inline-block">{{ message }}</div>
+
+                    <!-- card wrap -->
                     <div>
                     <horizontal-scroll classes="choose-target__wrap d-flex pb-3 width-100 plan-block" buttons="true">
 
@@ -56,6 +60,7 @@
 
             </div>
 
+            <!-- buttons -->
             <div class="width-100 d-flex justify-center mt-4">
                 <button v-if="mode === 'cards'"
                         class="button button-empty"
@@ -90,6 +95,7 @@
         },
 
         mounted(){
+            // handle randomly selected targets
             let randomCard = this.shared.faction.cards.hand.find( card => card.randomTarget );
             if( randomCard ){
                 this.target = randomCard;
@@ -97,6 +103,11 @@
         },
 
         methods : {
+
+            /**
+             * Save our choices if in confirm mode, otherwise switch to confirm mode
+             * @returns {string}
+             */
             saveChoices(){
                 if( this.mode !== 'confirm' ) return this.mode = 'confirm';
 
@@ -104,10 +115,20 @@
                 this.shared.socketEmit( 'chooseTargetPlan', this.plan, this.target );
             },
 
+
+            /**
+             * Handle clicking a card
+             *
+             * @param type
+             * @param object
+             */
             itemClicked( type, object ){
+
+                // abort if this wasn't a valid card to click
                 if( (this.shared.faction.randomTarget && type === 'target')
                     || (!this.mustChoosePlan && type === 'plan')
                 ) return App.event.emit( 'sound', 'error' );
+
 
                 // clicking the selected object unselects it
                 if( this[type] && this[type].id === object.id ) return this[type] = null;
@@ -125,16 +146,29 @@
 
         computed : {
 
+            /**
+             * Get our save button text
+             * @returns {string}
+             */
             confirmMessage(){
                 if( this.mode === 'confirm' ) return "FINALIZE CHOICES";
-
                 return "CONFIRM CHOICES";
             },
 
+
+            /**
+             * Do we need to choose a plan?
+             * @returns {boolean}
+             */
             mustChoosePlan(){
                 return this.shared.faction.plans.current.length >= 3;
             },
 
+
+            /**
+             * Get our title message
+             * @returns {string}
+             */
             message(){
                 switch( this.mode ) {
                     case 'plans' : return this.mustChoosePlan ? "Choose a plan to discard" : "You don't need to discard a plan";
@@ -143,6 +177,11 @@
                 }
             },
 
+
+            /**
+             * Can we confirm our choices?
+             * @returns {boolean}
+             */
             canConfirm(){
                 return ( this.plan || !this.mustChoosePlan ) && this.target;
             }

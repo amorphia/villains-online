@@ -1,9 +1,14 @@
 <template>
     <player-prompt classes="">
         <div class="choose-spy overflow-auto px-5">
+
+            <!-- title -->
             <div class="title view-player__title">Choose player to spy on</div>
+
             <div class="d-flex justify-center">
                 <div class="choose-factions__player-container">
+
+                    <!-- faction choices -->
                     <div v-if="player.id !== shared.player.id" v-for="player in shared.orderedPlayers()"
                          class="choose-factions__player pull-center d-flex align-stretch"
                          @click="spy = player.faction"
@@ -21,10 +26,12 @@
                     </div>
                 </div>
             </div>
+
+            <!-- submit button -->
             <div class="width-100 d-flex justify-center">
                 <button class="button" :disabled="!spy" @click="saveSpy">{{ buttonMessage }}</button>
             </div>
-        </div>}
+        </div>
     </player-prompt>
 </template>
 
@@ -42,11 +49,18 @@
         },
 
         computed : {
+            /**
+             * Return button message
+             * @returns {string}
+             */
             buttonMessage(){
                 return this.spy ? `spy on the ${this.spy}` : "choose faction";
             }
         },
         methods : {
+            /**
+             * Save our choice
+             */
             saveSpy(){
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socketEmit( 'factionStartOfTurnResponse', this.spy );

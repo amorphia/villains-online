@@ -2,6 +2,7 @@
 
     <div v-if="shared.player.prompt.name" class="player-prompt z-3" :class="setClasses">
 
+        <!-- close button -->
         <button @click="close" class="toggle minimize-toggle top right">
             <i :class="closed ? 'icon-maximize' : 'icon-minimize'"></i>
             <loading-streak v-if="closed" position="left"></loading-streak>
@@ -28,13 +29,21 @@
                 shared : App.state
             };
         },
+
         computed : {
+            /**
+             * Set our classes
+             * @returns {string}
+             */
             setClasses(){
                 return `${this.classes} ${ this.closed ? 'closed' : '' }`;
             }
         },
 
         methods : {
+            /**
+             * Close the player prompt
+             */
             close(){
                 this.closed = !this.closed;
                 App.event.emit( 'sound', 'ui' );
@@ -68,11 +77,6 @@
         width: 100%;
         overflow: auto;
         padding: 2rem 0 1rem;
-        /*display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-         */
     }
 
     .player-prompt .minimize-toggle {
@@ -98,9 +102,6 @@
         transform: translate(0, 0);
     }
 
-    .player-prompt.closed .player-prompt__container {
-
-    }
 
     .player-prompt.closed .toggle {
         transform: translate(100%,0);

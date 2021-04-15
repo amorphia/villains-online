@@ -1,10 +1,12 @@
 <template>
     <div class="choose-factions d-flex align-stretch height-100">
 
+        <!-- title -->
         <div class="pos-absolute bottom-0 left-0 p-4 highlight">
             <end-game><div class="pointer conclude">conclude game</div></end-game>
         </div>
 
+        <!-- players -->
         <div class="players width-35 height-100 p-5 d-flex flex-center flex-wrap">
             <div class="choose-factions__player-container">
                 <div v-for="(player, index) in shared.orderedPlayers()"
@@ -21,10 +23,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- factions -->
         <div class="factions width-65 height-100 p-5 d-flex align-center">
             <div class="choose-factions__faction-container">
                 <div class="choose-factions__faction-list pb-3">
 
+                    <!-- basic factions -->
                     <div class="choose-factions__basic-factions pr-3">
                         <faction-choice
                             v-for="faction in basicFactions"
@@ -40,6 +45,7 @@
                         ></faction-choice>
                     </div>
 
+                    <!-- expansion factions -->
                     <div class="pr-3">
                         <faction-choice
                             v-for="faction in expansionFactions"
@@ -54,8 +60,9 @@
                             :expansionsSelected="expansionsSelected"
                         ></faction-choice>
                     </div>
-
                 </div>
+
+                <!-- buttons -->
                 <div class="d-flex justify-end" :inivisible="!shared.isActive()">
                     <button :disabled="!canRandom" class="button button-empty"
                             @click="chooseRandomFaction">Random</button>
@@ -65,6 +72,8 @@
                             @click="chooseFaction">Choose</button>
                 </div>
             </div>
+
+            <!-- faction sheet -->
             <div v-if="selectedFaction" class="choose-factions__faction-sheet"
                  :style="`background-image : url('/images/factions/${selectedFaction}/sheet.jpg')`"
                 ></div>
@@ -84,79 +93,165 @@
                 selectedFaction : null,
             };
         },
+
         mounted(){
+            // set our initial faction
             this.selectedFaction = this.basicFactions[0].name;
         },
 
-        watch : {
-
-        },
 
         computed : {
+
+            /**
+             * Return an array of our basic factions
+             * @returns {faction[]}
+             */
             basicFactions(){
-                return Object.values( this.shared.data.factions ).filter( faction => faction.basic ).sort( this.sortFactions );
+                return Object.values( this.shared.data.factions )
+                        .filter( faction => faction.basic )
+                        .sort( this.sortFactions );
             },
 
+
+            /**
+             * Return an array of our expansion factions
+             * @returns {faction[]}
+             */
             expansionFactions(){
-                return Object.values( this.shared.data.factions ).filter( faction => !faction.basic ).sort( this.sortFactions );
+                return Object.values( this.shared.data.factions )
+                        .filter( faction => !faction.basic )
+                        .sort( this.sortFactions );
             },
 
+
+            /**
+             * How many players remain to pick?
+             * @returns {number}
+             */
             remainingPlayers(){
-                return Object.values( this.shared.data.players ).filter( player => !player.faction ).length;
+                return Object.values( this.shared.data.players )
+                    .filter( player => !player.faction )
+                    .length;
             },
 
+
+            /**
+             * How many killer factions have been selected
+             * @returns {number}
+             */
             killersSelected(){
-                return Object.values( this.shared.data.factions ).filter( faction => faction.killer && faction.owner ).length;
+                return Object.values( this.shared.data.factions )
+                    .filter( faction => faction.killer && faction.owner )
+                    .length;
             },
 
+
+            /**
+             * How many expansion factions have been selected
+             * @returns {number}
+             */
             expansionsSelected(){
-                return Object.values( this.shared.data.factions ).filter( faction => !faction.basic && faction.owner ).length;
+                return Object.values( this.shared.data.factions )
+                    .filter( faction => !faction.basic && faction.owner )
+                    .length;
             },
 
+
+            /**
+             * How many experimental factions have been selected
+             * @returns {number}
+             */
             experimentalsSelected(){
-                return Object.values( this.shared.data.factions ).filter( faction => faction.status === 0 && faction.owner ).length;
+                return Object.values( this.shared.data.factions )
+                    .filter( faction => faction.status === 0 && faction.owner )
+                    .length;
             },
 
+
+            /**
+             * Can we select a random faction?
+             * @returns {boolean}
+             */
             canRandom(){
-                return this.shared.isActive() && !! Object.values( this.shared.data.factions ).find( faction => faction.selectable );
+                return this.shared.isActive()
+                    && !! Object.values( this.shared.data.factions ).find( faction => faction.selectable );
             }
 
         },
 
         methods : {
+
+            /**
+             * Sort our factions
+             * @param a
+             * @param b
+             * @returns {number}
+             */
             sortFactions( a ,b ){
+                // selectable first
                 if( a.unselectable ) return 1;
                 if( b.unselectable ) return -1;
+
+                // status second
                 if( a.status > b.status ) return -1;
                 if( a.status < b.status ) return 1;
+
+                // alphabetically third
                 if( a.name > b.name ) return 1;
                 if( a.name < b.name ) return -1;
             },
 
+
+            /**
+             * Return the given player's title text
+             * @param player
+             * @returns {string|*}
+             */
             factionText( player ){
                 if( player.active ) return "Choosing...";
                 else if( player.faction ) return player.faction;
             },
 
+
+            /**
+             * Choose a random faction
+             */
             chooseRandomFaction(){
-                let unselectedFactions = Object.values( this.shared.data.factions ).filter( faction => faction.selectable === true );
+                let unselectedFactions = Object.values( this.shared.data.factions )
+                    .filter( faction => faction.selectable === true );
+
                 this.random = true;
                 this.selectedFaction = _.sample( unselectedFactions ).name;
-
                 this.chooseFaction();
             },
 
+
+            /**
+             * Toggle blocking the given faction from being selected randomly
+             * @param factionName
+             */
             blockFaction( factionName ){
-                let faction = Object.values( this.shared.data.factions ).find( item => item.name === factionName );
+                let faction = Object.values( this.shared.data.factions )
+                    .find( item => item.name === factionName );
+
                 faction.blocked = !faction.blocked;
                 if( !faction.blocked ) faction.selectable = true;
             },
 
+
+            /**
+             * Set a faction's selectability
+             * @param faction
+             * @param val
+             */
             setIsSelectable( faction, val ){
-                console.log( 'isSelectable', faction.name, val );
                 faction.selectable = val;
             },
 
+
+            /**
+             * Save our faction choice
+             */
             chooseFaction(){
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'chooseFaction', this.shared.data.id, this.selectedFaction, this.random );

@@ -2,11 +2,16 @@
     <player-prompt classes="">
         <div class="choose-action px-5">
             <div class="width-100 d-flex justify-center flex-column align-center">
+
+                <!-- title -->
                 <div class="title">Would you like to activate or decline this token?</div>
+
+                <!-- area and tokens -->
                 <area-flipper :areas="[area]" :index="0">
                     <token-row :area="area" :highlight="data.token"></token-row>
                 </area-flipper>
 
+                <!-- select wild type -->
                 <div v-if="data.wildType" class="py-4">
                     <div class="prompt-question center-text">This token will be activated as the following:</div>
                     <token-set :tokens="[{ name: data.wildType, id : 1 }]"
@@ -15,7 +20,10 @@
                     ></token-set>
                 </div>
 
+                <!-- cost -->
                 <div v-if="data.cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${data.cost}x to activate this token?` )"></div>
+
+                <!-- response buttons -->
                 <div class="flex-center">
                     <button class="button button-empty" @click="resolve('decline' )">Decline Token</button>
                     <button class="button"
@@ -41,6 +49,10 @@
         },
 
         methods : {
+            /**
+             * Resolve this prompt
+             * @param choice
+             */
             resolve( choice ){
                 this.shared.respond('activate-decline', choice, this.data.token.id, this.data.wildType );
             }
@@ -48,18 +60,28 @@
 
         computed : {
 
+            /**
+             * Can we activate this token?
+             * @returns {boolean}
+             */
             canActivate(){
-                return (this.shared.faction.resources + this.shared.faction.energy) >= this.data.cost;
+                return _.money( this.shared.faction ) >= this.data.cost;
             },
 
-            canActivateCard(){
 
-            },
-
+            /**
+             * Return our prompt data object
+             * @returns {object}
+             */
             data(){
               return this.shared.player.prompt.data;
             },
 
+
+            /**
+             * Return our area object, if applicable
+             * @returns {Area|null}
+             */
             area(){
                 if( this.data.token ){
                     return this.shared.data.areas[this.data.token.location];

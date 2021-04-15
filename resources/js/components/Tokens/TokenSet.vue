@@ -1,6 +1,7 @@
 <template>
 
-    <div v-if="tokens.length" class="px-2 pos-relative" :class="thisClasses" :data-title="hasTitle">
+    <div v-if="tokens.length" class="px-2 pos-relative" :class="thisClasses" :data-title="title">
+        <!-- display groups of tokens -->
         <div class="tokens-hud__token d-inline-block"
              v-for="token in tokens"
              @click="tokenClicked( token )">
@@ -23,25 +24,43 @@
         },
 
         computed : {
-            hasTitle(){
-                if( this.title ) return this.title;
-            },
+
+            /**
+             * Calculate our classes
+             *
+             * @returns {string}
+             */
             thisClasses(){
                 let classes =  this.classes;
+
                 if( !this.noBorder ){
                     classes += ' popout-hud__block';
                 }
+
                 return classes;
             }
         },
 
         methods : {
+
+            /**
+             * Emit token clicked event
+             * @param token
+             */
             tokenClicked( token ){
                 if( this.noEmit ) return;
                 this.shared.event.emit( 'tokenClicked', token );
                 this.$emit( 'tokenClicked', token );
             },
+
+
+            /**
+             * Return our token class
+             * @param token
+             * @returns {string|false}
+             */
             tokenClass( token ){
+                // if we have a selected token, but this token isn't the selected token reduce the opacity
                 return this.selected && this.selected.id !== token.id ? 'opacity-5' : false;
             }
         }
