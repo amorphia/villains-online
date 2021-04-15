@@ -10,7 +10,7 @@ class Mutants extends Faction {
 
         // triggers
         this.triggers = {
-            "onCleanUp" : "healOozes"
+            "onAfterCombatStep" : "healOozes"
         };
 
         // data
@@ -21,15 +21,13 @@ class Mutants extends Faction {
         this.data.flipableUnits = ['champion'];
 
         // tokens
-        this.tokens['biohazard'] = {
+        this.tokens['biomorph'] = {
             count: 1,
             data: {
                 influence: 1,
                 resource: 1,
                 cost : 0,
-                areaStat : true,
-                description : 'units suffer -2 to their attack rolls against you in this area',
-                req : "Passive token: this token may always be activated"
+                req : "this token must be discarded if no player can sacrifice a unit here"
             }
         };
 
@@ -40,7 +38,7 @@ class Mutants extends Faction {
         this.units['patsy'].count = 5;
 
         this.units['champion'] = {
-            count: 3,
+            count: 6,
             data: {
                 name: "Mother Ooze",
                 toughness : true,
@@ -48,8 +46,8 @@ class Mutants extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 1,
-                attack: [],
-                cost: 1,
+                attack: [5],
+                cost: 2,
                 killed : false,
                 selected : false,
                 hitsAssigned : 0
@@ -80,7 +78,7 @@ class Mutants extends Faction {
         // if we didn't have any wounded oozes, then we are done here
         if( !areasWithHealedOozes.length ) return;
 
-        this.message( `spawn units as their wounded Mother Oozes heal` );
+        this.message( `wounded Mother Oozes heal, splitting off a new mother ooze` );
 
         for( let area of areasWithHealedOozes ){
                 let args = {
@@ -88,6 +86,7 @@ class Mutants extends Faction {
                     faction: this,
                     player: this.playerId,
                     free: true,
+                    unitTypes: ['champion'],
                     deployLimit: 1
                 };
 
@@ -116,23 +115,93 @@ class Mutants extends Faction {
 
 
     /**
-     * Can we activate our Biohazard token?
+     * Can we activate our Biomorph token?
      *
+     * @param token
+     * @param area
      * @returns {boolean}
      */
-    canActivateBiohazard() {
-        // as a matter of fact, we can
-        return true;
+    canActivateBiomorph( token, area ) {
+        // are there any patsies here?
+        return _.factionsWithUnitsInArea( this.game().data.factions, area, { type : 'patsy' } ).length;
     }
 
 
     /**
-     * Handle activating a biohazard token
+     * Handle activating a biomorph token
      *
      * @param args
      */
-    activateBiohazardToken( args ){
+    async activateBiomorphToken( args ){
+
+        // choose our target faction
+        let targetFaction = await this.getBiomorphTargetFaction( args );
+
+        // have that player sacrifice a patsy
+        let response = await targetFaction.prompt( 'sacrifice-units', {
+            count : 1,
+            type : 'patsy',
+            areas : [ args.area.name ]
+        });
+
+        // get the
+        let unit = this.game().objectMap[response.units[0]];
+        if( !unit ){
+            this.message(`failed to morph a patsy`, { class : 'warning' } );
+            return;
+        }
+
+        // kill the chosen unit
+        await this.game().killUnit( unit, this );
+
+        // deploy a mother ooze here
+        let options = {
+            area: args.area,
+            faction: this,
+            player: this.playerId,
+            free : true,
+            fromToken : true,
+            deployLimit: 1,
+            unitTypes: ['champion'],
+        };
+        let deployed = await this.deploy( options );
+
         this.game().advancePlayer();
+    }
+
+
+    /**
+     * Allows the player to choose a faction to biomorph a patsy
+     *
+     * @param args
+     * @returns {Faction}
+     */
+    async getBiomorphTargetFaction( args ){
+        // get the players with patsies in the area
+        let factions = _.factionsWithUnitsInArea( this.game().data.factions, args.area, { type : 'patsy' } );
+
+        // abort if we have no options
+        if( !factions.length ){
+            this.message(`no patsies to morph`, { class : 'warning' } );
+            return;
+        }
+
+        // if we have exactly one option then just return that faction
+        if( factions.length === 1 ){
+            return this.game().factions[ factions[0] ];
+        }
+
+        // prompt our player to choose a faction
+        let response = await this.prompt( 'choose-victim', {
+            areas : [args.area.name],
+            faction: this.name,
+            allowSelf : true,
+            message: 'Choose a player to sacrifice a patsy',
+            targetFactions : factions,
+        });
+
+        // return our chosen faction
+        return this.game().factions[ response.faction ];
     }
 
 

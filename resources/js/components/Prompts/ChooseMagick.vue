@@ -75,7 +75,7 @@
              */
             resolve( action ){
                 let data = this.getResolveData( action );
-                data = { ...data, ...this.data };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'choose-magick', data );
             },
 

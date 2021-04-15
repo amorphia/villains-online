@@ -75,7 +75,7 @@
              */
             resolve(){
                 let data = { units : _.map( this.selected, 'id' ) };
-                data = { ...data, ...this.data };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'high-noon', data );
             },
 

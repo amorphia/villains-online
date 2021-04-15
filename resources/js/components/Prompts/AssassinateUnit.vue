@@ -114,7 +114,7 @@
              */
             resolve( val ){
                 let data = this.getResolveData( val );
-                data = { ...data, ...this.data};
+                data = { ...this.data, ...data };
                 this.shared.respond( 'assassinate-unit', data );
             },
 

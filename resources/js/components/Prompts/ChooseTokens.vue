@@ -126,7 +126,7 @@
             resolve(){
                 let data = {};
                 if( this.selected.length ) data.tokens = _.map( this.selected, 'id' );
-                data = { ...data, ...this.data};
+                data = { ...this.data, ...data, };
 
                 this.shared.respond( 'choose-tokens', data );
             },

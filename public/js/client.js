@@ -6166,7 +6166,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      */
     resolve: function resolve(val) {
       var data = this.getResolveData(val);
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('assassinate-unit', data);
     },
 
@@ -6298,7 +6298,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           hits: unit.hits
         });
       });
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('assign-hits', data);
     },
 
@@ -7286,10 +7286,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * Resolve this prompt
      */
     resolve: function resolve() {
-      var data = _objectSpread({
+      var data = {
         area: this.area.name
-      }, this.data);
-
+      };
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('choose-area', data);
     },
 
@@ -7827,7 +7827,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      */
     resolve: function resolve(action) {
       var data = this.getResolveData(action);
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('choose-magick', data);
     },
 
@@ -8024,7 +8024,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      */
     resolve: function resolve(action) {
       var data = this.getResolveData(action);
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('choose-players', data);
     },
 
@@ -8156,7 +8156,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var data = {
         area: this.area.name
       };
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('choose-skill', data);
     },
 
@@ -8579,7 +8579,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     resolve: function resolve() {
       var data = {};
       if (this.selected.length) data.tokens = _.map(this.selected, 'id');
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('choose-tokens', data);
     },
 
@@ -9184,8 +9184,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var units = {};
 
       _.forEach(this.shared.data.factions, function (faction) {
-        // ignore our own units
-        if (faction.name === _this.data.faction) return; // abort if we can only target certain factions
+        // ignore our own units unless permitted
+        if (faction.name === _this.data.faction && !_this.data.allowSelf) return; // abort if we can only target certain factions
 
         if (_this.data.targetFactions && _this.data.targetFactions.length && !_this.data.targetFactions.includes(faction.name)) return; // get this faction's units and add them to our results
 
@@ -9291,7 +9291,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      */
     resolve: function resolve(val) {
       var data = this.getResolveData(val);
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('choose-victim', data);
     },
 
@@ -9459,10 +9459,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * Resolve this prompt
      */
     resolve: function resolve() {
-      var data = _objectSpread({
+      var data = {
         type: this.type.name
-      }, this.data);
-
+      };
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('choose-wild', data);
     }
   }
@@ -9633,7 +9633,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      */
     resolve: function resolve(option) {
       var data = this.getResponseData(option);
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('deploy-action', data);
     },
 
@@ -10238,7 +10238,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var data = {
         cards: _.map(this.selected, 'id')
       };
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('discard-card', data);
     }
   },
@@ -10646,7 +10646,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var data = {
         areas: this.selectedAreas
       };
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('free-units', data);
     },
 
@@ -10760,7 +10760,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var data = {
         units: _.map(this.selected, 'id')
       };
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('high-noon', data);
     },
 
@@ -11124,7 +11124,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      */
     resolve: function resolve(option) {
       var data = this.getResolveData(option);
-      data = _objectSpread(_objectSpread({}, data), this.data);
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('move-action', data);
     },
 
@@ -12097,10 +12097,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @param choice
      */
     resolve: function resolve(choice) {
-      var data = _objectSpread({
+      var data = {
         answer: choice
-      }, this.data);
-
+      };
+      data = _objectSpread(_objectSpread({}, this.data), data);
       this.shared.respond('question', data);
     }
   }
@@ -12247,7 +12247,8 @@ __webpack_require__.r(__webpack_exports__);
 
       return this.shared.faction.units.filter(function (unit) {
         return _.unitInArea(unit, area, {
-          basic: _this2.data.basicOnly
+          basic: _this2.data.basicOnly,
+          type: _this2.data.type
         });
       });
     }

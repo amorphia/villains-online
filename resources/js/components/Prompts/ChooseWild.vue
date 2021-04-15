@@ -118,7 +118,8 @@
              * Resolve this prompt
              */
             resolve(){
-                let data = { type : this.type.name, ...this.data };
+                let data = { type : this.type.name };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'choose-wild', data );
             },
         }

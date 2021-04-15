@@ -94,7 +94,7 @@
                     if( unit.hits ) data.targets.push({ id : unit.id, hits : unit.hits });
                 });
 
-                data = { ...data, ...this.data };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'assign-hits', data );
             },
 

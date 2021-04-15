@@ -93,7 +93,7 @@
              */
             resolve(){
                 let data = { area : this.area.name };
-                data = { ...data, ...this.data };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'choose-skill', data );
             },
 

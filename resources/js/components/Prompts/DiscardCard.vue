@@ -79,7 +79,7 @@
              */
             resolve( action ){
                 let data = { cards :  _.map( this.selected, 'id' ) };
-                data = { ...data, ...this.data };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'discard-card', data );
             },
 

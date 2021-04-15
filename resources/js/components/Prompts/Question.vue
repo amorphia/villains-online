@@ -45,7 +45,8 @@
              * @param choice
              */
             resolve( choice ){
-                let data = { answer : choice, ...this.data };
+                let data = { answer : choice };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'question', data );
             }
         },

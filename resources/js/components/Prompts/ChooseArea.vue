@@ -135,7 +135,8 @@
              * Resolve this prompt
              */
             resolve(){
-                let data = { area : this.area.name, ...this.data };
+                let data = { area : this.area.name,  };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'choose-area', data );
             },
 

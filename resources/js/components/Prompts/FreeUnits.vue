@@ -90,7 +90,7 @@
              */
             resolve(){
                 let data = { areas : this.selectedAreas };
-                data = { ...data, ...this.data };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'free-units', data );
             },
 

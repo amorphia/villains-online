@@ -100,7 +100,7 @@
              */
             resolve( option ){
                 let data = this.getResolveData( option );
-                data = {...data, ...this.data };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'move-action', data );
             },
 

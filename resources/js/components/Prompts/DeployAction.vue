@@ -154,7 +154,7 @@
              */
             resolve( option ){
                 let data = this.getResponseData( option );
-                data = { ...data, ...this.data };
+                data = { ...this.data, ...data  };
                 this.shared.respond( 'deploy-action', data );
             },
 

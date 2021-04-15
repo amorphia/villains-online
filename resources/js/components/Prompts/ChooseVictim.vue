@@ -66,8 +66,8 @@
                 let units = {};
 
                 _.forEach( this.shared.data.factions, faction => {
-                    // ignore our own units
-                    if( faction.name === this.data.faction ) return;
+                    // ignore our own units unless permitted
+                    if( faction.name === this.data.faction && !this.data.allowSelf ) return;
 
                     // abort if we can only target certain factions
                     if( this.data.targetFactions
@@ -174,7 +174,7 @@
              */
             resolve( val ){
                 let data = this.getResolveData( val );
-                data = { ...data, ...this.data };
+                data = { ...this.data, ...data };
                 this.shared.respond( 'choose-victim', data );
             },
 
