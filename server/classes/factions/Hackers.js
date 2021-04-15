@@ -161,7 +161,7 @@ class Hackers extends Faction {
      */
     canActivateBootUp( token, area ) {
         // do we have any unready killed units in this area?
-        return this.data.units.some( unit => _.unitInArea( unit, area, { killed : true, notReady : true } ));
+        return this.data.units.some( unit => _.unitInArea( unit, area, { notReady : true } ));
     }
 
 
