@@ -50,8 +50,11 @@
              */
             generatePointArray( type ){
                 // build our parent array
-                let array = new Array( 17 );
-                array.fill( [] );
+
+                let array = [];
+                for( let i = 0; i < 17; i++ ){
+                    array.push([]);
+                }
 
                 // for each faction log our points
                 Object.values(this.shared.data.factions ).forEach( faction => {

@@ -4947,8 +4947,12 @@ __webpack_require__.r(__webpack_exports__);
      */
     generatePointArray: function generatePointArray(type) {
       // build our parent array
-      var array = new Array(17);
-      array.fill([]); // for each faction log our points
+      var array = [];
+
+      for (var i = 0; i < 17; i++) {
+        array.push([]);
+      } // for each faction log our points
+
 
       Object.values(this.shared.data.factions).forEach(function (faction) {
         var points = faction[type];
