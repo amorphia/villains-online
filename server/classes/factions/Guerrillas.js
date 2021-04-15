@@ -52,7 +52,7 @@ class Guerrillas extends Faction {
         //this.units['mole'].data.redeployFree = true;
 
         this.units['patsy'].count = 6;
-        this.units['patsy'].data.attack = [8, 8];
+        this.units['patsy'].data.attack = [9, 9];
 
         this.units['champion'] = {
             count: 1,
@@ -61,7 +61,7 @@ class Guerrillas extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 0,
-                attack: [6, 6],
+                attack: [7, 7],
                 cost: 1,
                 killed: false,
                 selected: false,
