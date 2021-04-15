@@ -16,22 +16,18 @@
                 shared : App.state
             };
         },
+
         computed : {
+            /**
+             * Returns the count of areas we have exterminated
+             * @returns {number}
+             */
             focus(){
-                let areasExterminated = 0;
-
-                Object.values( this.shared.data.areas ).forEach( area => {
-                    if( _.areaExterminated( area, this.shared.data.factions ) === this.faction.name ) areasExterminated++;
-                });
-
-                return areasExterminated;
+                return Object.values( this.shared.data.areas ).reduce( (count, area) => {
+                    if( _.areaExterminated( area, this.shared.data.factions ) === this.faction.name ) count++;
+                    return count;
+                }, 0 );
             },
         }
     }
 </script>
-
-
-<style>
-
-</style>
-

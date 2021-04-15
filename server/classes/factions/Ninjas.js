@@ -16,7 +16,6 @@ class Ninjas extends Faction {
 
         //data
         this.data.name = this.name;
-        this.data.focus = 'kill-types-focus';
         this.data.focusDescription = "Kill different unit types";
         this.data.title = "The Clan of the Pale Moon";
         this.data.bladesBonusDice = 0;

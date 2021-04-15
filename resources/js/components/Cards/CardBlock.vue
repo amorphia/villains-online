@@ -1,7 +1,7 @@
 <template>
     <div class="card-block">
-
         <div class="card-block__container d-flex">
+            <!-- card image -->
             <div class='card-block__image-wrap' @click="$emit('clicked', card )" :class="{ selected : card.selected }">
                 <img class="card-block__image" :src="image">
             </div>
@@ -22,6 +22,10 @@
         },
 
         computed : {
+            /**
+             * Returns our card image url
+             * @returns {string}
+             */
             image(){
                 return `/images/cards/${this.card.file}.jpg`;
             }

@@ -24,6 +24,10 @@
                 return this.faction.fusion;
             },
 
+            /**
+             * Return the number of different areas where we have played card tokens
+             * @returns {number}
+             */
             areas(){
                 let areas = [];
                 this.faction.tokens.forEach( token => {
@@ -40,9 +44,4 @@
 
     }
 </script>
-
-
-<style>
-
-</style>
 

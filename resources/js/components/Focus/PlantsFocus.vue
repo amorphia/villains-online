@@ -1,6 +1,6 @@
 <template>
-    <div class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-        areas winning :<span class="highlight ml-2">{{ leading }}</span>
+    <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
+        enemies in your areas: <span class="highlight ml-2">{{ focus }}</span>
     </div>
 </template>
 
@@ -8,7 +8,7 @@
 <script>
     export default {
 
-        name: 'control-focus',
+        name: 'enemy-in-areas-focus',
         props: ['classes', 'faction'],
 
         data() {
@@ -17,20 +17,14 @@
             };
         },
         computed : {
-            leading(){
-                return _.factionWinningAreas(
+            focus(){
+                return _.factionEnemyInAreasCount(
                     this.faction,
                     this.shared.data.factions,
                     this.shared.data.areas,
                     this.shared.areaLeaders
-                ).length;
-            },
+                );
+            }
         }
     }
 </script>
-
-
-<style>
-
-</style>
-

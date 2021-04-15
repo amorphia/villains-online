@@ -1,5 +1,6 @@
 <template>
     <div class="message-box">
+        <!-- capitol token image -->
         <img class="width-75" :src="`/images/tokens/capitol-${message.turn}.png`">
     </div>
 </template>
@@ -18,7 +19,6 @@
     }
 </script>
 
-
 <style>
     .message-box .player-hud__target {
         height: 1.8rem;
@@ -28,4 +28,3 @@
         margin-top: .2em;
     }
 </style>
-

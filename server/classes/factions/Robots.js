@@ -12,7 +12,6 @@ class Robots extends Faction {
         this.data.name = this.name;
         this.data.title = "Rise of the Machines";
         this.data.upgradeAttackBonus = 0;
-        this.data.focus = 'exterminate-focus';
         this.data.focusDescription = "Exterminate areas";
         this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 

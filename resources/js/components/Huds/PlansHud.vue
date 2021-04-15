@@ -1,9 +1,9 @@
 <template>
     <hud-popout :open="open" classes="plans-hud" @close="$emit( 'close')">
         <horizontal-scroll classes="plans-hud__cards height-100" >
+            <!-- plans -->
             <div class="plans-hud__card d-inline-block height-100"
-                 v-for="card in shared.faction.plans.current"
-                 @click="itemClicked( card )">
+                 v-for="card in shared.faction.plans.current">
                 <img class="plans-hud__card-image height-100" :src="`/images/factions/${shared.faction.name}/plans/${card.num}.jpg`">
             </div>
         </horizontal-scroll>
@@ -23,12 +23,6 @@
                 shared : App.state,
             };
         },
-
-
-        methods : {
-            itemClicked( item ) {
-            },
-        }
     }
 </script>
 

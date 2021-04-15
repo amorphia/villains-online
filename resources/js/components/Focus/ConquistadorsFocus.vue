@@ -1,6 +1,6 @@
 <template>
     <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-        skills used :<span class="highlight ml-2">{{ focus }}</span>
+        conquered areas :<span class="highlight ml-2">{{ focus }}</span>
     </div>
 </template>
 
@@ -8,7 +8,7 @@
 <script>
     export default {
 
-        name: 'fusion-focus',
+        name: 'areas-conquered-focus',
         props: ['classes', 'faction'],
 
         data() {
@@ -18,14 +18,8 @@
         },
         computed : {
             focus(){
-                return this.faction.usedSkills.length;
+                return Object.values( this.shared.data.areas ).filter( area => area.conquered ).length;
             }
         }
     }
 </script>
-
-
-<style>
-
-</style>
-

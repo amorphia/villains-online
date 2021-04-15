@@ -1,18 +1,22 @@
 <template>
     <div class="plan-block">
-
         <div class="plan-block__container d-flex">
+            <!-- objective pips -->
             <div class="plan-block__pips">
                 <div v-for="test in plan.objectives" class="plan-block__pip primary-light" :class="{ 'icon-circle' : test.passed, 'icon-circle-open' : !test.passed, 'highlight' : test.scoreable }"></div>
             </div>
+
+            <!-- image -->
             <div class='plan-block__image-wrap' @click="$emit('clicked')" :class="{ selected : plan.selected }">
                 <img class="plan-block__image" :src="image">
             </div>
         </div>
 
+        <!-- points -->
         <div v-if="plan.points" class="center-text mt-2">
             <img class="target-block__ap-icon" :src="`/images/icons/pp-${plan.points}.png`">
         </div>
+        <!-- cant score -->
         <div v-else class="center-text primary-light  mt-2">Cannot Score</div>
 
     </div>
@@ -31,6 +35,10 @@
         },
 
         computed : {
+            /**
+             * Returns our plan card image
+             * @returns {string}
+             */
             image(){
                 return `/images/factions/${this.faction.name}/plans/${this.plan.plan.num}.jpg`;
             }
@@ -71,6 +79,5 @@
         border-radius: 8%/6%;
         margin-bottom: -.75rem;
     }
-
 </style>
 

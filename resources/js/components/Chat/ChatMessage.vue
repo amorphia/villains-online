@@ -1,8 +1,14 @@
 <template>
     <div class="chat__message">
+        <!-- player name -->
         <span v-if="message.player && message.player.data" class="name">{{ message.player.data.name | startCase }}:</span>
+        <!-- faction name -->
         <span v-else-if="message.faction" :class="`faction-${message.faction}`">The {{ message.faction | startCase }}:</span>
+
+        <!-- message test -->
         <span v-if="message.message" :class="message.class || 'info'" v-html="filteredText"></span>
+
+        <!-- component message -->
         <component v-if="message.type" :is="`${message.type}-message`" :message="message"></component>
     </div>
 </template>
@@ -28,16 +34,11 @@
     }
 </script>
 
-
 <style>
-
     .chat__message {
         padding: .5em 0;
         color: var(--primary-light-color);
         font-family: var(--secondary-font);
-    }
-
-    .chat__message .name {
     }
 
     .chat__message .info {

@@ -17,7 +17,6 @@ class Spiders extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Eyes of the Woods";
-        this.data.focus = "web-focus";
         this.data.focusDescription = "Trap enemy units in webs";
         this.data.xchxchDeploy = 1; // how many patsies do we deploy at the start of combat with xchxch?
         this.data.webs = []; // where we store our webbed victims

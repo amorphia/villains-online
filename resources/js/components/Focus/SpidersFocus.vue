@@ -17,7 +17,7 @@
 <script>
     export default {
 
-        name: 'web-focus',
+        name: 'spider-focus',
         props: ['classes', 'faction'],
 
         data() {
@@ -32,9 +32,4 @@
         }
     }
 </script>
-
-
-<style>
-
-</style>
 

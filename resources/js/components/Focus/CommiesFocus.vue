@@ -16,7 +16,12 @@
                 shared : App.state
             };
         },
+
         computed : {
+            /**
+             * Returns an array of the number of influence we have in each area sorted highest to lowest
+             * @returns {number[]}
+             */
             influences(){
                 let influences = [];
                 Object.values( this.shared.data.areas ).forEach( area => {
@@ -29,9 +34,3 @@
         }
     }
 </script>
-
-
-<style>
-
-</style>
-

@@ -461,6 +461,7 @@ let obj = {
         // let each victim assign their hits
         for( let factionName of factions ) {
             let faction = this.game().factions[factionName];
+            console.log( 'assignDeadlyHits', hits );
             promises.push( faction.assignHits( hits, args.area, this, args ) );
         }
 

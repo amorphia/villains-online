@@ -1,9 +1,10 @@
 <template>
-
     <div class="form-group" :class="field.class + ' ' + field.name">
 
+        <!-- label -->
         <label class="form-label d-block" :for="field.name" v-text="labelTitle"></label>
 
+        <!-- input -->
         <select
             class="form-element width-100"
             :name="field.name"
@@ -17,7 +18,6 @@
 
 
 <script>
-
     import InputMixin from "./InputMixin";
 
     export default {
@@ -26,9 +26,4 @@
         mixins: [InputMixin],
     }
 </script>
-
-
-<style>
-
-</style>
 

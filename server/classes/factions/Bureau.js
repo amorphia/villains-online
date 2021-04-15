@@ -16,7 +16,6 @@ class Bureau extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Bureau of Eternity";
-        this.data.focus = 'most-tokens-focus';
         this.data.focusDescription = "Have the most tokens in many areas";
         this.data.bonusDeploy = { type: 'champion', count : 1 };
 

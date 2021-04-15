@@ -15,7 +15,6 @@ class Vampires extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Restless Dead";
-        this.data.focus = 'units-in-enemy-areas-focus';
         this.data.focusDescription = "Have units of specific types in enemy areas";
         this.data.optionalAttack = true; // this faction doesn't need to attack with its units
         this.data.endOfTurnRevive = 0; // how many skeletons to revive at the end of the turn

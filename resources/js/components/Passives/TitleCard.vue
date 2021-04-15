@@ -1,19 +1,20 @@
 <template>
     <div class="title-card">
+        <!-- turn -->
         <div class="title">
             TURN {{ shared.data.turn }}
             <div v-if="data.showDoubleAP" class="prompt-question">TARGETS WORTH 2AP</div>
         </div>
 
+        <!-- title message -->
         <div class="title-card__message">{{ data.message }}</div>
 
-        <div v-if="neutral" class="choose-factions__player pull-center d-flex align-stretch">
-
-                <div class="choose-factions__player-faction width-15 d-flex pr-2">
-                    <img class="choose-spy__champion" :src="`/images/factions/neutral/icon.jpg`" >
-                </div>
-
-            <div class="choose-factions__player-name ellipses p-4">Neutrals control <b>The {{ neutral || startCase }}</b></div>
+        <!-- show neutral area on the first turn -->
+        <div v-if="showNeutral" class="choose-factions__player pull-center d-flex align-stretch">
+            <div class="choose-factions__player-faction width-15 d-flex pr-2">
+                <img class="choose-spy__champion" :src="`/images/factions/neutral/icon.jpg`" >
+            </div>
+            <div class="choose-factions__player-name ellipses p-4">Neutrals control <b>The {{ showNeutral || startCase }}</b></div>
         </div>
 
     </div>
@@ -35,13 +36,26 @@
         },
 
         computed : {
+            /**
+             * return prompt data
+             * @returns {object}
+             */
             data(){
                 return this.shared.player.prompt.data;
             },
 
-            neutral(){
+
+            /**
+             * Should we show the neutral controlling an area?
+             * @returns {string|false}
+             */
+            showNeutral(){
                 if( this.data.type !== 'turn' ) return false;
+
+                // get the neutral area if any
                 let neutralArea = Object.values( this.shared.data.areas ).find( area => area.owner === 'neutral' );
+
+                // return that area's name, or false
                 return neutralArea ? neutralArea.name : false;
             }
 

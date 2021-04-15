@@ -39,6 +39,5 @@
         position: relative;
         top: .1em;
     }
-
 </style>
 

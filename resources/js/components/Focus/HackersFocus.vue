@@ -1,6 +1,6 @@
 <template>
     <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-        areas with most units :<span class="highlight ml-2">{{ focus }}</span>
+        skills used :<span class="highlight ml-2">{{ focus }}</span>
     </div>
 </template>
 
@@ -8,7 +8,7 @@
 <script>
     export default {
 
-        name: 'most-units-areas-focus',
+        name: 'fusion-focus',
         props: ['classes', 'faction'],
 
         data() {
@@ -18,14 +18,8 @@
         },
         computed : {
             focus(){
-                return _.areasMostUnits( this.faction, this.shared.data.factions ).length;
+                return this.faction.usedSkills.length;
             }
         }
     }
 </script>
-
-
-<style>
-
-</style>
-

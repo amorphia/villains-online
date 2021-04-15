@@ -14,7 +14,6 @@ class Hackers extends Faction {
 
         //data
         this.data.name = this.name;
-        this.data.focus = 'skills-focus';
         this.data.focusDescription = "Activate many area skill abilities";
         this.data.hax0red = []; // areas we have used our hax0red ability this game
 

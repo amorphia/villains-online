@@ -1,6 +1,8 @@
 <template>
     <div class="game-hud pos-relative drawer__aside">
+        <!-- handle -->
         <adjust-handle direction="right" max="600" min="125"></adjust-handle>
+
         <div class="width-100 height-100  flex-column d-flex">
             <!-- UI -->
 
@@ -12,7 +14,6 @@
                 </div>
                 <div class="game-phase center-text highlight lowercase">{{ shared.data.phase | startCase }}</div>
             </div>
-
 
             <!-- PLAYER STATS -->
             <div class="player-panel grow-1 shrink-1 width-100 overflow-auto">
@@ -62,19 +63,24 @@
             };
         },
 
-
         methods : {
-
+            /**
+             * Save our game
+             */
             saveGame(){
                 App.event.emit( 'sound', 'ui' );
                 this.shared.socket.emit( 'saveGame', this.shared.data.id );
             },
 
-            turnNumClasses( n ){
-                let output = 'icon-num-' + n;
-                if( this.shared.data.turn === n ){
-                    output += " active";
-                }
+
+            /**
+             * Returns the classes for our turn number
+             * @param index
+             * @returns {string}
+             */
+            turnNumClasses( index ){
+                let output = 'icon-num-' + index;
+                if( this.shared.data.turn === index ) output += " active";
                 return output;
             }
         }
@@ -83,7 +89,6 @@
 
 
 <style>
-
     .deck-count {
         font-family: var(--primary-font);
         position: relative;
@@ -98,9 +103,6 @@
 
     .stat-icon.save-icon {
         font-size: .95em;
-    }
-
-    .rules-link {
     }
 
     .rules-link i {
@@ -156,9 +158,6 @@
     .game-turn {
         background-color: rgba(0,0,0,.25);
         margin-bottom: .5rem;
-    }
-    .game-hud__title {
-
     }
 </style>
 

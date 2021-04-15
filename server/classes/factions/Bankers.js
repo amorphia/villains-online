@@ -16,7 +16,6 @@ class Bankers extends Faction {
         this.data.name = this.name;
         this.data.title = "Omni Financial Group";
         this.data.bonusResources = 2; // how many bonus resources to earn at the start of each turn
-        this.data.focus = 'control-focus';
         this.data.focusDescription = "Control many areas";
 
         // tokens

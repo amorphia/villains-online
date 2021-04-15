@@ -1,10 +1,15 @@
 <template>
     <transition name="up">
         <div v-if="open" class="hud-popout no-select width-100 overflow-hidden" :class="classes" :style="hasHeight">
+            <!-- handle -->
             <adjust-handle v-if="!nohandle" direction="top" min="100" max="500" @newSize="setHeight"></adjust-handle>
+
+            <!-- close button -->
             <button  class="toggle bottom right icon-x z-3"
                      @click="$emit( 'close')"
             ></button>
+
+            <!-- content -->
            <slot></slot>
         </div>
     </transition>
@@ -16,8 +21,8 @@
     export default {
 
         name: 'cards-hud',
-
         props: ['open', 'classes', 'nohandle'],
+
         data() {
             return {
                 shared : App.state,
@@ -26,22 +31,26 @@
         },
 
         computed : {
+            /**
+             * Does this panel have a height set?
+             * @returns {string|null}
+             */
             hasHeight(){
-                if( this.height ){
-                    return `height : ${this.height}`;
-                }
+                if( this.height ) return `height : ${this.height}`;
             },
         },
 
         methods : {
-
+            /**
+             * Set our panel height
+             * @param size
+             */
             setHeight( size ){
                 this.height = size;
             }
         }
     }
 </script>
-
 
 <style>
     .hud-popout {

@@ -10,7 +10,6 @@ class Ghosts extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Lost Legion";
-        this.data.focus = 'control-targets-focus';
         this.data.focusDescription = "Control any player's Targets";
         this.data.ghosts = []; // used to store our ghost units
         this.data.upgradeDeploy = 0;

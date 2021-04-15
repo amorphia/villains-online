@@ -1,5 +1,6 @@
 <template>
     <div class="game-controls width-100 pos-relative no-select">
+        <!-- popout huds -->
         <div class="popouts">
             <cards-hud :open="popout === 'cards'" @close="popout = null"></cards-hud>
             <units-hud :open="popout === 'units'" @close="popout = null"></units-hud>
@@ -7,30 +8,42 @@
             <plans-hud :open="popout === 'plans'" @close="popout = null"></plans-hud>
             <score-hud :open="popout === 'score'" @close="popout = null"></score-hud>
         </div>
+
+        <!-- spacer -->
         <div class="z-negative game-controls__buttons width-100 d-flex p-4" inivisible>
             <div class="d-flex justify-center grow-1">
                 <div class="game-controls__button">buffer</div>
             </div>
         </div>
+
+        <!-- main content -->
         <div  class="game-controls__buttons width-100 pos-absolute bottom-0 left-0 d-flex p-4 justify-between">
 
             <div class="game-controls__faction d-flex align-center" @click="shared.event.emit( 'viewPlayer', shared.player )">
+
+                <!-- faction name -->
                 <div class="player-hud__champion-wrap d-flex grow-0 shrink-0 p-1">
                     <div class="player-hud__champion" :style="`background-image: url('/images/factions/${shared.faction.name}/icon.jpg')`"></div>
                 </div>
+
+                <!-- money -->
                 <div class="game-controls__item">
                     <i class="mr-2 icon-money"></i>{{ shared.faction.energy + shared.faction.resources }}
                     <i v-if="shared.faction.hasOwnProperty('darkEnergy')" class="faction-witches game-controls__darkenergy" title="Dark Energy (may be spent to play action cards)">{{ shared.faction.darkEnergy }}</i>
                 </div>
+
+                <!-- cards -->
                 <div class="game-controls__item">
                     <i class="mr-2 icon-cards"></i>{{ shared.faction.cards.hand.length }}
                 </div>
 
+                <!-- target -->
                 <div class="game-controls__item">
                     <i class="mr-2 icon-target"></i>{{ shared.faction.cards.target.length ?  shared.faction.cards.target[0].target : 'none' }}
                 </div>
             </div>
 
+            <!-- popout hud buttons -->
             <div class="d-flex justify-center width-25">
                 <div v-for="item in popouts"
                      class="game-controls__button game-controls__item" @click="setPopout( item )"
@@ -39,26 +52,33 @@
                 </div>
             </div>
 
-
+            <!-- scores and plan focus -->
             <div class="game-controls__faction d-flex justify-end align-center">
 
-                <component v-if="shared.faction.focus" :is="shared.faction.focus" classes="justify-center" :faction="shared.faction"></component>
+                <!-- plan focus -->
+                <component v-if="hasFocus" :is="hasFocus" classes="justify-center" :faction="shared.faction"></component>
 
                 <div  class="d-flex justify-end align-center" @click="setPopout( 'score' )">
+                    <!-- score popout hud button -->
                     <div class="game-controls__button game-controls__item scoreboard-text"
                          :class="{active : popout === 'score' }">
                         <i :class="`icon-score`"></i>
                     </div>
 
+                    <!-- area points -->
                     <div class="game-controls__item">
                         <i class="mr-2 icon-ap"></i>{{ shared.faction.ap }}
                     </div>
+
+                    <!-- plan points -->
                     <div class="game-controls__item">
                         <i class="mr-2 icon-pp"></i>{{ shared.faction.pp }}
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- active slider -->
         <loading-streak v-if="shared.player.active" position="bottom"></loading-streak>
     </div>
 </template>
@@ -71,7 +91,7 @@
         data() {
             return {
                 shared : App.state,
-                popout : null,
+                popout : null, // our current active popout hud
                 popouts : ['cards', 'units', 'tokens', 'plans']
             };
         },
@@ -81,8 +101,6 @@
             this.shared.event.on( 'viewArea', () => this.popout = null );
         },
 
-        mounted(){
-        },
 
         watch : {
             popout(){
@@ -90,7 +108,22 @@
             }
         },
 
+        computed : {
+            /**
+             * Returns a component name if this faction has a plan focus component, otherwise return false
+             * @returns {string|false}
+             */
+            hasFocus(){
+                let componentName = _.classCase( this.shared.faction.name + "Focus" );
+                return Vue.options.components[ componentName ] ? componentName : false;
+            }
+        },
+
         methods : {
+            /**
+             * Set our popout hud
+             * @param popout
+             */
             setPopout( popout ){
                 this.popout = this.popout === popout ? null : popout;
             },

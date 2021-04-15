@@ -3,23 +3,27 @@
         <div class="overflow-auto px-5">
             <div class="width-100 d-flex justify-center flex-column align-center pb-5">
 
+                <!-- title -->
                 <div class="title mb-4">Attack Results</div>
 
+                <!-- attacks -->
                 <div class="py-3 pt-4 d-flex flex-wrap">
-
                     <div v-for="attack in attacks"
                          class="non-combat-attack highlight d-flex p-5 m-3 align-center"
                          :class="`pip-bg-${attack.area}`">
 
+                        <!-- attacker unit icon -->
                         <unit-icon v-if="attack.unit"
                                    :unit="attack.unit"
                                    noSelect="true"
                                    :classes="`faction-${attack.faction} mr-3 z-2`"></unit-icon>
 
+                        <!-- victim faction icon -->
                         <img class="non-combat-attack__victim"
                              :class="{ 'no-unit' : !attack.unit}"
                              :src="shared.factionIcon( attack.victim )">
 
+                            <!-- attack rolls -->
                             <img v-for="roll in attack.rolls"
                                  class="last-attack__roll z-2"
                                  :class="{'saturate-0' : roll < attack.toHit}"
@@ -45,21 +49,27 @@
 
         computed : {
 
+            /**
+             * Returns our output filtering out any missing attacks
+             * @returns {object[]}
+             */
             attacks(){
                 return this.data.output?.filter( attack => attack );
             },
 
+
+            /**
+             * Returns the prompt data object
+             * @returns {object}
+             */
             data(){
                 return this.shared.player.prompt.data;
             },
-
         }
     }
 </script>
 
-
 <style>
-
     .non-combat-attack {
         border: 1px solid;
         position: relative;

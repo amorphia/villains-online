@@ -1,10 +1,12 @@
 <template>
     <div class="message-box">
+        <!-- card images -->
         <img v-for="card in message.cards"
              class="width-100 message__card pointer"
              @click="shared.card = `/images/cards/${card.file}.jpg`"
              :src="`/images/cards/${card.file}.jpg`">
 
+        <!-- area -->
         <div v-if="message.area" class="center-text width-100">
             <span class="d-block">in the</span>
             <div class="player-hud__target p-2 text-center"

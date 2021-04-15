@@ -12,8 +12,8 @@
                     <area-flipper
                         :areas="[area]"
                         index="0"
-                        classes="area-header__units pt-0"
-                        >
+                        classes="area-header__units pt-0">
+
                         <!-- units -->
                         <unit-row :units="units"
                                   assigningHits="true"
@@ -42,7 +42,7 @@
                 <div class="flex-center">
                     <button class="button"
                             @click="resolve"
-                            :disabled="hitsToAssign > 0 && assignableHits !== 0">{{ buttonMessage }}</button>
+                            :disabled="hitsToAssign > 0 && hitsAssigned">{{ buttonMessage }}</button>
                 </div>
 
             </div>
@@ -215,7 +215,9 @@
              * @returns {number}
              */
             hitsToAssign(){
-                return this.data.hits - this.hitsAssigned - this.gnomeDeflects;
+                let hitsToAssign = this.data.hits - this.hitsAssigned - this.gnomeDeflects;
+                if( hitsToAssign > this.assignableHits ) hitsToAssign = this.assignableHits;
+                return this.assignableHits - this.hitsAssigned === 0 ? 0 : hitsToAssign;
             },
 
 

@@ -1,9 +1,9 @@
 <template>
     <hud-popout :open="open" classes="cards-hud" @close="$emit( 'close')">
         <horizontal-scroll classes="cards-hud__cards height-100" buttons="true">
-            <div class="cards-hud__card d-inline-block height-100"
-                 v-for="card in shared.faction.cards.hand"
-                 @click="itemClicked( card )">
+            <!-- cards -->
+            <div v-for="card in shared.faction.cards.hand"
+                 class="cards-hud__card d-inline-block height-100">
                 <img class="cards-hud__card-image height-100" :src="`/images/cards/${card.file}.jpg`">
             </div>
         </horizontal-scroll>
@@ -12,9 +12,7 @@
 
 
 <script>
-
     export default {
-
         name: 'cards-hud',
 
         props: ['open'],
@@ -23,13 +21,6 @@
                 shared : App.state,
             };
         },
-
-
-        methods : {
-            itemClicked( item ) {
-
-            },
-        }
     }
 </script>
 

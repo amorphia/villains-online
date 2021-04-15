@@ -18,7 +18,12 @@
             };
         },
         computed : {
+            /**
+             * Returns the number of captured enemy tokens we are predicted to have at the end of the turn
+             * @returns {number}
+             */
             focus(){
+                // start with the number we already have
                 let captured = this.faction.captured.current;
 
                 let winning =  _.factionWinningAreas(
@@ -28,6 +33,8 @@
                     this.shared.areaLeaders
                 );
 
+                // for each area we are winning, see if another player currently controls it
+                // if they do, increment our total
                 winning.forEach( areName => {
                     let area = this.shared.data.areas[ areName ];
                     if( area.owner && area.owner !== this.faction.name ) captured++;

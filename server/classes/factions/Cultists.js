@@ -8,7 +8,6 @@ class Cultists extends Faction {
         super(owner, game);
 
         // data
-        this.data.focus = 'kills-focus';
         this.data.maxEnergy = 4;
         this.data.tokenCost = 0; // post to place tokens
         this.data.name = this.name;

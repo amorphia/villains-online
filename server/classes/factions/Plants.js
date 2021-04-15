@@ -16,7 +16,6 @@ class Plants extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Reclamation of Gaia";
-        this.data.focus = 'enemy-in-areas-focus';
         this.data.focusDescription = "Have many enemy units in your areas";
         this.data.maxEnergy = 8;
         this.data.flipableUnits = ['champion'];

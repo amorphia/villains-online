@@ -15,7 +15,6 @@ class Mutants extends Faction {
 
         // data
         this.data.name = this.name;
-        this.data.focus = 'units-focus';
         this.data.focusDescription = "Have many units in play";
         this.data.title = "The Undercity Awakens";
         this.data.upgradeDeploy = 0;

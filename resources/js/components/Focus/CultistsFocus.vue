@@ -1,6 +1,6 @@
 <template>
     <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-        units in play :<span class="highlight ml-2">{{ units }}</span>
+        total kills :<span class="highlight ml-2">{{ kills }}</span>
     </div>
 </template>
 
@@ -17,15 +17,10 @@
             };
         },
         computed : {
-            units(){
-                return _.unitsInPlay( this.faction ).length;
+            kills(){
+                return _.factionKills( this.faction, this.shared.data.factions ).length;
             }
         }
     }
 </script>
-
-
-<style>
-
-</style>
 

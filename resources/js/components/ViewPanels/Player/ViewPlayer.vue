@@ -15,9 +15,11 @@
                 <player-stats :faction="faction"></player-stats>
 
                 <!-- plan focus -->
-                <div class="view-player__title">Plan Focus:</div>
-                <div class="prompt-question p-4">{{ faction.focusDescription }}
-                    <component v-if="faction.focus" :is="faction.focus" :faction="faction"></component>
+                <div v-if="hasFocus">
+                    <div class="view-player__title">Plan Focus:</div>
+                    <div class="prompt-question p-4">{{ faction.focusDescription }}
+                        <component :is="hasFocus" :faction="faction"></component>
+                    </div>
                 </div>
 
                 <!-- player state -->
@@ -61,6 +63,16 @@
             faction(){
                 return this.shared.getPlayerFaction( this.player );
             },
+
+
+            /**
+             * Returns a focus component name if we have one for this faction, or false if we don't
+             * @returns {string|false}
+             */
+            hasFocus(){
+                let componentName = _.classCase( this.faction.name + "Focus" );
+                return Vue.options.components[ componentName ] ? componentName : false;
+            }
         },
 
         watch : {

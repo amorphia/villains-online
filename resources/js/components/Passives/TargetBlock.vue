@@ -1,16 +1,22 @@
 <template>
     <div class="target-block d-flex flex-column align-center">
+
+        <!-- title -->
         <div class="target-block__placer one-line" :class="`faction-${target.placer}`">The {{ target.placer | startCase }} Target:</div>
-            <div class="target-block__card-container">
-                <img class="target-block__card target-block-reveal" :class="{revealed : target.flipped}" :src="image">
+
+        <!-- image -->
+        <div class="target-block__card-container">
+            <img class="target-block__card target-block-reveal" :class="{revealed : target.flipped}" :src="image">
+        </div>
+
+        <!-- owner -->
+        <div class="target-block-reveal mt-4" :class="{revealed : target.flipped}">
+            <div v-if="target.owner" class="center-text">
+                <div class="one-line" :class="`faction-${target.owner}`">Taken by The {{ target.owner | startCase }}</div>
+                <img class="target-block__ap-icon" :src="`/images/icons/ap-1.png`">
             </div>
-            <div class="target-block-reveal mt-4" :class="{revealed : target.flipped}">
-                <div v-if="target.owner" class="center-text">
-                    <div class="one-line" :class="`faction-${target.owner}`">Taken by The {{ target.owner | startCase }}</div>
-                    <img class="target-block__ap-icon" :src="`/images/icons/ap-1.png`">
-                </div>
-                <div v-else class="center-text primary-light">Uncontrolled</div>
-            </div>
+            <div v-else class="center-text primary-light">Uncontrolled</div>
+        </div>
     </div>
 </template>
 
@@ -28,6 +34,7 @@
         },
 
         watch: {
+            // when the target flips over, play a sound
             'target.flipped' : function(){
                 if( this.target.flipped ){
                     this.checkForAPSound();
@@ -36,18 +43,23 @@
         },
 
         computed : {
+            // Return the url for this target's card image
             image(){
                 return `/images/cards/${this.target.file}.jpg`;
             }
         },
 
         methods : {
+
             checkForAPSound() {
-                if (this.target.owner) {
+                // if someone scored points for this play the points sound
+                if ( this.target.owner ) {
                     App.event.emit('sound', 'points');
-                } else {
-                    App.event.emit('sound', 'chirp');
+                    return;
                 }
+
+                // otherwise just play the normal chirp
+                App.event.emit('sound', 'chirp');
             },
         }
     }

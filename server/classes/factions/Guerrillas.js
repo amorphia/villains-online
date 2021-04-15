@@ -17,7 +17,6 @@ class Guerrillas extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The People's Alliance";
-        this.data.focus = 'enemy-kills-focus';
         this.data.focusDescription = "Kill many units in enemy areas";
         this.data.flipableUnits = ['champion'];
 

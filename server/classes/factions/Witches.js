@@ -15,7 +15,6 @@ class Witches extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Witches of Havlocke";
-        this.data.focus = 'rule-focus';
         this.data.focusDescription = "Play many rule cards";
 
         this.data.magickCardsRevealed = 1; // how many cards we reveal when using our magick ability

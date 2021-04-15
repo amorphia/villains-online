@@ -1,10 +1,16 @@
 <template>
     <div class="player-hud d-flex flex-wrap pos-relative overflow-hidden" :class="{'opacity-5' : player.passed}" @click="shared.event.emit( 'viewPlayer', player )">
+
         <loading-streak v-if="player.active" position="left"></loading-streak>
+
         <div class="player-hud__core d-flex flex-wrap width-100 align-center shrink-0">
+
+            <!-- faction icon -->
             <div class="player-hud__champion-wrap d-flex grow-0 shrink-0 p-1">
                 <div class="player-hud__champion" :style="`background-image: url('/images/factions/${faction.name}/icon.jpg')`"></div>
             </div>
+
+            <!-- player name -->
             <div class="player-hud__title grow-1">
                 <div class="player-hud__name width-100 ellipses">
                     <i v-if="shared.isFirstPlayer( player )" class="first-player icon-key"></i>
@@ -12,29 +18,42 @@
                 </div>
                 <div class="player-hud__faction width-100 ellipses">{{ faction.name }}</div>
             </div>
+
+            <!-- player points -->
             <div class="player-hud__scores grow-0 shrink-0">
                 <div class="width-100 d-flex align-center"><i class="icon-ap"></i><span>{{ faction.ap }}</span></div>
                 <div class="width-100 d-flex align-center"><i class="icon-pp"></i><span>{{ faction.pp }}</span></div>
             </div>
         </div>
 
+        <!-- current player prompt -->
         <div v-if="showPromptMessage" class="player-hud__message ellipses shrink-0 game-phase center-text highlight lowercase">{{ player.prompt.name | clearHyphens }}</div>
 
+        <!-- player target -->
         <div v-if="faction.cards.target.length && shared.canSeeTarget( faction )"
              class="player-hud__target p-2 text-center shrink-0"
              :style="`background-image: url('/images/areas/${faction.cards.target[0].target}-slice.jpg')`">
-                {{ faction.cards.target[0].target }}
-            </div>
+            {{ faction.cards.target[0].target }}
+        </div>
 
+        <!-- player resources -->
         <div class="player-hud__pip-content overflow-hidden">
+
+            <!-- money -->
             <div class="player-hud__pip-content__item">
                 <i class="icon-money pip-icon"></i>
                 <span>{{ (faction.energy + faction.resources) }}</span>
                 <i v-if="faction.hasOwnProperty('darkEnergy')"  title="Dark Energy (may be spent to play action cards)" class="faction-witches player-hud__darkenergy">{{ faction.darkEnergy }}</i>
             </div>
+
+            <!-- cards -->
             <div class="player-hud__pip-content__item"><i class="icon-cards pip-icon"></i><span>{{ faction.cards.hand.length }}</span></div>
+
+            <!-- captured markers -->
             <div class="player-hud__pip-content__item "><i class="icon-flag pip-icon"></i><span class="ellipses">{{ faction.captured.current }} / {{ faction.captured.max }}</span></div>
         </div>
+
+        <!-- modifier abilities -->
         <div class="player-hud__stats-row pos-relative width-100 display-flex shrink-1 overflow-hidden flex-wrap">
             <i v-for="stat in stats" class="stat-icon" :class="`icon-${stat.name}`" :title="`${stat.title} - ${stat.description}`"></i>
         </div>
@@ -54,14 +73,29 @@
         },
 
         computed: {
+            /**
+             * Should we show the player's prompt message
+             * @returns {boolean}
+             */
             showPromptMessage(){
-                return this.player.prompt && !( this.player.prompt.data && this.player.prompt.data.passive );
+                return this.player.prompt // does this player have a prompt
+                    && !( this.player.prompt.data && this.player.prompt.data.passive ); // that isn't a passive?
             },
 
+
+            /**
+             * Return this player's faction
+             * @returns {Faction}
+             */
             faction(){
                 return this.shared.getPlayerFaction( this.player );
             },
 
+
+            /**
+             * Returns an array of ability modifiers and their descriptions
+             * @returns {[]}
+             */
             stats(){
                 let areasToShow = [
                     'sewers',
@@ -74,8 +108,10 @@
                 ];
                 let stats = [];
 
+                // add card stats
                 this.faction.cards.active.forEach( card => stats.push({ name : card.class, title : card.name, description : card.description } ));
 
+                // add area stats
                 areasToShow.forEach( area => {
                    if( this.shared.data.areas[area].owner === this.faction.name ){
                        stats.push({ name : area, title : area, description : this.shared.data.areas[area].control  });
@@ -88,9 +124,7 @@
     }
 </script>
 
-
 <style>
-
     .player-hud__stats-row {
         color: var(--highlight-color);
         font-size: .8em;

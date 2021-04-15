@@ -17,6 +17,10 @@
             };
         },
         computed : {
+            /**
+             * Returns the number of units we have killed in enemy areas
+             * @returns {number}
+             */
             kills(){
                 return _.factionKillsInEnemy(
                     this.faction,
@@ -25,6 +29,12 @@
                     this.shared.areaLeaders
                 ).length;
             },
+
+
+            /**
+             * Returns the number of ambushes we have left this turn
+             * @returns {number}
+             */
             ambushes(){
                 return this.faction.ambushes.max - this.faction.ambushes.used;
             }

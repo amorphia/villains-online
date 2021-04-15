@@ -15,7 +15,6 @@ class Vampires extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Czarkovian Aristocrats";
-        this.data.focus = 'kill-areas-focus';
         this.data.focusDescription = "Kill units in many different areas";
         this.data.batMove = 1; // how many bats we can move when revealing a token
 

@@ -11,7 +11,6 @@ class Aliens extends Faction {
         this.data.name = this.name;
         this.data.title = "The Centari Invasion";
         this.data.kau = null; // a reference for kau, so we can access it easier down the line
-        this.data.focus = 'captured-markers-focus';
         this.data.focusDescription = "Capture many enemy markers";
         this.data.teleports = true; // our units cannot be prevented from entering or leaving areas
         this.data.flipableUnits = ['champion'];

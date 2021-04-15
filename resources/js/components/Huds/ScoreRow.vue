@@ -1,5 +1,6 @@
 <template>
     <div class="score-hud__row d-flex" :class="`score-hud__${type}`">
+        <!-- scores -->
         <div v-for="score in scores" class="score-hud__cell">
             <img v-for="faction in score" class="score-hud__faction" :src="shared.factionIcon( faction )">
         </div>
@@ -9,9 +10,9 @@
 
 <script>
     export default {
-
         name: 'score-row',
         props:['scores', 'type'],
+
         data() {
             return {
                 shared : App.state
@@ -22,7 +23,6 @@
 
 
 <style>
-
     .score-hud__row {
         position: absolute;
         width: 89%;

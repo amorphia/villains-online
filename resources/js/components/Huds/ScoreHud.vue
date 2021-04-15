@@ -10,13 +10,10 @@
 
 
 <script>
-
-    import ScoreRow from "./ScoreRow";
     export default {
-
         name: 'score-hud',
-        components: {ScoreRow},
         props: ['open'],
+
         data() {
             return {
                 shared : App.state,
@@ -24,10 +21,19 @@
         },
 
         computed :{
+
+            /**
+             * Returns our area points array
+             * @returns {[]}
+             */
             ap(){
                 return this.generatePointArray( 'ap' );
             },
 
+            /**
+             * Returns our plan points array
+             * @returns {[]}
+             */
             pp(){
                 return this.generatePointArray( 'pp' );
             }
@@ -35,31 +41,28 @@
         },
 
         methods : {
-            generatePointArray( type  ){
-                let arr = [];
+            /**
+             * Generate the nested points arrays for the given points type
+             *
+             * @param type
+             * @returns {[][]} // returns an array of 17 elements representing points 0-16, each of these elements
+             *                 // contains an array of faction names for the factions with that many points
+             */
+            generatePointArray( type ){
+                // build our parent array
+                let array = new Array( 17 );
+                array.fill( [] );
 
-                for( let i = 0; i <= 16; i++ ){
-                    arr.push( [] );
-                }
-
-
-                _.forEach( this.shared.data.factions, faction => {
+                // for each faction log our points
+                Object.values(this.shared.data.factions ).forEach( faction => {
                     let points = faction[type];
                     if( points > 16 ) points = 16;
-                    arr[points].push( faction.name )
+                    array[points].push( faction.name )
                 });
 
-                return arr;
+                return array;
             }
         }
     }
 </script>
-
-
-<style>
-    .score-hud {
-    }
-
-
-</style>
 

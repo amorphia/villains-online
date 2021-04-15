@@ -15,7 +15,6 @@ class Conquistadors extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "Los Conquistadores";
-        this.data.focus = 'areas-conquered-focus';
         this.data.bonusDeploy = {type: 'goon', count: 10};
         this.data.bonusDiceInUnconquered = 0;
         this.data.conqueredAreas = [];
