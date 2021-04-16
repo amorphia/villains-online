@@ -313,7 +313,10 @@
                             && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
                         );
 
-                    units = _.concat( units, ghosts );
+
+                    for( let ghost of ghosts ){
+                        units.push( ghost );
+                    }
                 }
 
                 return units;
