@@ -284,16 +284,21 @@ class Ghosts extends Faction {
             // get scared units from each faction
             let response = this.handleFactionScare( faction, units, area );
             if( response ) promises.push( response );
-
         }
+
         // wait for everyone who needs to to respond
         await Promise.all( promises );
 
+
         // then cycle through the array of selected patsies and bounce them to their owner's reserves
         units.forEach( unit => {
+            console.log( 'unit', unit );
+            console.log( 'unit faction', unit.faction );
             let owner = this.game().factions[ unit.faction ];
+            console.log( owner );
             owner.returnUnitToReserves( unit );
         });
+
 
         // announce what happened to all players
         await this.game().timedPrompt('units-shifted', {
@@ -315,11 +320,13 @@ class Ghosts extends Faction {
      * @param area
      */
     handleFactionScare( faction, units, area ){
+
         // scare doesn't effect the ghosts
         if( faction.name === this.name ) return;
 
         // get the current faction's patsies in this area
         let patsiesInArea = faction.unitsInArea( area, { type : 'patsy' });
+
 
         // if they have none move on
         if( ! patsiesInArea.length ) return;
@@ -327,9 +334,10 @@ class Ghosts extends Faction {
         // check if we can auto select two patsies for this faction
         let patsies = this.autoSelectPatsies( patsiesInArea );
 
+
         // if we have successfully auto selected patsies then add them to the units array and return
-        if( patsies ){
-            units = units.concat( patsies );
+        if( patsies.length ){
+            for( let patsy of patsies ){ units.push( patsy ) }
             return;
         }
 
@@ -355,7 +363,6 @@ class Ghosts extends Faction {
      * @param units
      */
     async handleScareUnitsResponse( player, response, units ){
-        console.log( 'handleScareUnitsResponse' );
 
         // once we get a response push the selected patsies to the units array
         response.units.forEach( unitId => units.push( this.game().objectMap[unitId] ) );
