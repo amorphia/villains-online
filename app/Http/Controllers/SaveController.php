@@ -13,26 +13,29 @@ class SaveController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param string game
      * @return \Illuminate\Http\Response
      */
-    public function store( Request $request, $game )
+    public function store( Request $request, string $game )
     {
-        $game = Game::where( 'uuid', $game )->first();
+        // get our game
+        $game = Game::where( 'uuid', $game )->firstOrFail();
 
-        $game->saves()->create([
-            'type' => $request->type,
-            'active_player' => $request->active,
-            'action' => $request->action,
-            'turn' => $request->turn,
-            'note' => $request->note,
-            'data' => $request->data
-        ]);
+        // validate our data
+        $validated = $request->validate([
+                'type' => ['required', 'string'],
+                'active_player' => ['nullable', 'string'],
+                'action' => ['required','integer'],
+                'turn' => ['required','integer'],
+                'note' => ['nullable', 'string'],
+                'data' => ['required', 'json']
+            ]);
 
-        // delete oldest save if we've hit max saves
-        $saves = $game->saves()->where('type', 'automatic')->orderBy( 'created_at' )->get();
-        if( $saves->count() > config( 'app.max_saves') ){
-            $saves->first()->delete();
-        }
+        // create a save state for it
+        $game->saves()->create( $validated );
+
+        // delete our old save if needed
+        $game->deleteOldSave();
     }
 
 

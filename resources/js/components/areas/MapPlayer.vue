@@ -1,26 +1,32 @@
 <template>
 
-        <div v-if="stats.length > 0" class="map-player__content flex-center m-1" :class="`faction-${name}`">
+        <div v-if="unitStats.length > 0" class="map-player__content flex-center m-1" :class="`faction-${name}`">
+            <!-- player icon -->
             <div class="map-player__icon"><img :src="`/images/factions/${name}/icon.jpg`"></div>
-            <div v-for="stat in stats" class="map-player__stat">
 
-                <span v-if="stat.name !== 'champion'  && stat.val > 0 || stat.val > 1">{{ stat.val }}</span>
+            <!-- units -->
+            <div v-for="unitType in unitStats" class="map-player__stat">
 
-                    <i v-if="stat.name === 'champion'" class="map-player_champion-wrap">
-                        <img class="map-player__champion" :src="`/images/factions/${name}/portrait.png`">
-                        <div v-if="stat.pipped > 0" class="pos-absolute map-player__pips d-flex justify-center width-100" >
-                            <i v-for="n in stat.pipped" class="icon-circle" :class="`faction-${faction.name}`"></i>
-                        </div>
-                    </i>
-                    <i v-else :class="`icon-${stat.name}`" class="pos-relative" :title="stat.description">
-                        <div v-if="stat.pipped > 0" class="pos-absolute map-player__pips d-flex justify-center width-100" >
-                            <i v-for="n in stat.pipped" class="icon-circle" :class="`faction-${faction.name}`"></i>
-                        </div>
-                    </i>
+                <!-- count -->
+                <span>{{ unitType.val }}</span>
 
+                <!--  champion -->
+                <i v-if="unitType.name === 'champion'" class="map-player_champion-wrap">
+                    <img class="map-player__champion" :src="`/images/factions/${name}/portrait.png`">
+                    <div v-if="unitType.pipped > 0" class="pos-absolute map-player__pips d-flex justify-center width-100" >
+                        <i v-for="n in unitType.pipped" class="icon-circle" :class="`faction-${name}`"></i>
+                    </div>
+                </i>
 
-
+                <!-- other units -->
+                <i v-else :class="`icon-${unitType.name}`" class="pos-relative" :title="unitType.description">
+                    <div v-if="unitType.pipped > 0" class="pos-absolute map-player__pips d-flex justify-center width-100" >
+                        <i v-for="n in unitType.pipped" class="icon-circle" :class="`faction-${name}`"></i>
+                    </div>
+                </i>
             </div>
+
+            <!-- status icons -->
             <div v-for="(desc, icon) in statusIcons" class="map-player__stat" :title="desc">
                 <img class="map-player__status" :src="`/images/icons/${icon}.png`">
             </div>
@@ -36,11 +42,16 @@
         data() {
             return {
                 shared : App.state,
+
+                // abilities that have their own icon
                 abilityIcons : [
                     'deadly',
                     'hidden',
                     'charged'
                 ],
+
+                // some status effects should always be pipped, even if the unit isn't flipped over
+                // if a unit has any of the following properties we will always show them pipped
                 alwaysShowPips : [
                     'vampire'
                 ]
@@ -48,79 +59,132 @@
         },
 
         methods : {
+            /**
+             * Should this unit show a pip even if its not flipped?
+             * @param unit
+             * @returns {boolean}
+             */
             unitHasAlwaysShowPip( unit ){
-                let pipped;
+                return this.alwaysShowPips.some( property => unit[property] === true );
+            },
 
-                this.alwaysShowPips.forEach( property => {
-                    if( unit[property] ) pipped = property;
-                });
 
-                return pipped;
+            /**
+             * Create a tally of our standard units in this area
+             * @returns {object} // { unitType : { count : {number}, pipped : {number} }, etc... }
+             */
+            tallyStandardUnits(){
+
+                return this.unitsInArea.reduce( ( units, unit ) => {
+                        // increment our count if this type already exists,
+                        // otherwise add this unit type to our results
+                        if( units[unit.type]  ) units[unit.type].count++;
+                        else units[unit.type] = { count : 1, pipped : 0 };
+
+                        // if the unit is flipped show a pip, or if this unit should always show a pip
+                        if( unit.flipped || this.unitHasAlwaysShowPip( unit ) ) units[ unit.type ].pipped++;
+
+                        return units;
+                    }, {});
+            },
+
+
+            /**
+             * Add our plants to our units tally
+             * @returns {object} // { plants : { count : {number}, pipped : 0 }, etc... }
+             */
+            tallyPlants( units ){
+                if( !this.plantsInArea ) return units;
+
+                // add our plants count
+                units['plant'] = { count : this.plantsInArea, pipped : 0 };
+                return units;
+            },
+
+
+            /**
+             * Add our ghosts to our units tally
+             * @returns {object} // { unitType : { count : {number}, pipped : {number} }, etc... }
+             */
+            tallyGhosts( units ){
+                if( !this.ghostsInArea.length ) return units;
+
+                // add our plants count
+                units['ghost'] = { count : this.ghostsInArea.length, pipped : 0 };
+                return units;
             }
         },
 
         computed: {
+            /**
+             * Return this player's faction name, or neutral if we are showing the neutral faction
+             * @returns {string|*}
+             */
             name(){
                 if( this.neutral ) return 'neutral';
                 return this.faction.name;
             },
 
+
+            /**
+             * Returns a tally of this faction's units and assorted unit like things
+             * @returns {object}
+             */
             units(){
-                if( !this.faction ) return [];
-                let units = {};
+                if( !this.faction ) return {};
 
-                this.faction.units.filter( unit => _.unitInArea( unit, this.area ) ).forEach( unit => {
+                // tally our standard units
+                let units = this.tallyStandardUnits();
 
-                    if( units[ unit.type ] ){
-                        units[ unit.type ].count++;
-                    } else {
-                        units[ unit.type ] = { count : 1, pipped : 0 };
-                    }
+                // add in our plants
+                units = this.tallyPlants( units );
 
-                    if( unit.flipped || this.unitHasAlwaysShowPip( unit ) ) units[ unit.type ].pipped++;
-                });
-
-                // show plants
-                if( this.faction.name === 'plants' && this.faction.plants[this.area.name] ){
-                    for( let i = 0; i < this.faction.plants[this.area.name]; i++ ){
-                        if( units['plant'] ){
-                            units['plant'].count++;
-                        } else {
-                            units['plant'] = { count : 1, pipped : 0 };
-                        }
-                    }
-                }
-
-                // show ghosts
-                if( this.faction.ghostDeploy ){
-                    let areaGhosts = this.faction.ghosts.filter( unit => unit.location === this.area.name );
-
-                    for( let i = 0; i < areaGhosts.length; i++ ){
-                        if( units['ghost'] ){
-                            units['ghost'].count++;
-                        } else {
-                            units['ghost'] = { count : 1, pipped : 0 };
-                        }
-                    }
-                }
+                // add in our ghosts
+                units = this.tallyGhosts( units );
 
                 return units;
             },
 
 
-            kills(){
-                if( !this.faction ) return 0;
-                return _.factionKillCountInArea( this.faction, this.area, this.shared.data.factions );
+            /**
+             * Returns an array of this faction's unit in this area
+             * @returns {Unit[]}
+             */
+            unitsInArea(){
+                return this.faction.units.filter( unit => _.unitInArea( unit, this.area.name ) );
             },
 
 
+            /**
+             * Returns the number of plants this faction has in this area
+             * @returns {number}
+             */
+            plantsInArea(){
+                if( this.faction.name !== 'plants' ) return 0;
+                return this.faction.plants[this.area.name];
+            },
+
+
+            /**
+             * Returns an array of the ghost units this player has in the area
+             * @returns {Unit[]}
+             */
+            ghostsInArea(){
+                if( !this.faction.ghostDeploy ) return [];
+                return this.faction.ghosts.filter( unit => unit.location === this.area.name );
+            },
+
+
+            /**
+             * Generate our unit status effects icon object
+             * @returns {{}}
+             */
             statusIcons(){
                 if( this.neutral ) return {};
 
                 let status = {};
-                let factionUnits = this.faction.units.filter( unit => _.unitInArea( unit, this.area.name ) );
 
-                for( let unit of factionUnits ) {
+                for( let unit of this.unitsInArea ) {
                     // is this unit skilled and ready?
                     if ( _.canUseSkill( this.faction, this.area, this.shared.data.factions ) ) status['skilled'] = 'can activate area skill';
 
@@ -148,24 +212,24 @@
                     this.abilityIcons.forEach( ability => {
                         if( unit[ability] ) status[ability] = `has a ${ability} unit`;
                     });
-
                 }
 
                 return status;
             },
 
-            stats(){
+
+            /**
+             * Build our unit stats array
+             * @returns {object[]}
+             */
+            unitStats(){
                 if( this.neutral ) return [ { name: 'influence', val : 1 }];
 
-                let stats = [];
-
-
+                let unitStats = [];
                 _.forEach( this.units, (unit, type) => {
-                    stats.push({ name : type, val : unit.count, pipped : unit.pipped, description : `${type}s` });
+                    unitStats.push({ name : type, val : unit.count, pipped : unit.pipped, description : `${type}s` });
                 });
-
-
-                return stats;
+                return unitStats;
             }
         }
     }

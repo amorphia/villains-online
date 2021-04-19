@@ -39,12 +39,16 @@
         },
 
         watch : {
+            // open up whenever we have actions
             actions(){
                 this.closed = false;
             }
         },
 
         methods : {
+            /**
+             * Toggle this modal open or closed
+             */
             toggleClose(){
                 this.closed = !this.closed;
                 App.event.emit( 'sound', 'ui' );
@@ -52,14 +56,23 @@
         },
 
         computed: {
+            /**
+             * Returns an array of the actions available to us in this area
+             * @returns {[]}
+             */
             actions(){
-                let actions = [];
-                if( !this.shared.actions ) return actions;
+                if( !this.shared.actions ) return [];
 
-                this.shared.areaActions.forEach( action => {
-                    if( this.shared.actions[action] && this.shared.actions[action].includes( this.area.name ) ) actions.push( action );
+                // grab our area actions
+                let actions = [];
+
+                Object.entries( this.shared.actionTypes ).forEach( ([name, action]) => {
+                    if( !action.areaAction ) return;
+                    if( this.shared.actions[name]?.includes( this.area.name ) ) actions.push( name );
                 });
 
+
+                // add in xavier if needed
                 if( this.shared.actions.xavier === this.area.name ) actions.push( 'xavier' );
 
                 return actions;

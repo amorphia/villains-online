@@ -173,6 +173,10 @@ class Ghosts extends Faction {
      * @param areaName
      */
     async takeMaterializeAction( player, areaName ){
+
+        // show popup
+        this.game().popup( this.playerId, { type: 'materialize', area : areaName, faction : this.name });
+
         let area = this.game().areas[areaName];
 
         // if this game action equals our last materialize action we can't go again

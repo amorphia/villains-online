@@ -20,6 +20,7 @@ class Plants extends Faction {
         this.data.maxEnergy = 8;
         this.data.flipableUnits = ['champion'];
         this.data.additionalUnitIcon = ['plant'];
+        this.data.hasPlants = true;
 
         // used to store additional word tokens before the appropriate upgrade is scored
         this.data.vines = [];

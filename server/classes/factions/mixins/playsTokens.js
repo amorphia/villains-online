@@ -16,7 +16,7 @@ let obj = {
         // reveal this token
         token.revealed = true;
         this.game().message({ message: 'reveal', type : 'reveal-token', faction : this, token : token });
-        this.game().popup( player, { token : token, area : area.name, faction: this.name });
+        this.game().popup( player, { type : 'token', token : token, area : area.name, faction: this.name });
 
         // reveal wild token
         this.revealWildToken( wildType );

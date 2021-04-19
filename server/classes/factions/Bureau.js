@@ -179,6 +179,10 @@ class Bureau extends Faction {
      * @param areaName
      */
     async takeLoopAction( player, areaName ){
+
+        // show popup
+        this.game().popup( this.playerId, { type: 'loop', area : areaName, faction : this.name });
+
         // get our loop token
         let loopToken = this.data.tokens.find( token => token.type === 'loop' );
 

@@ -20,7 +20,7 @@ let obj = {
 
         // display our activation
         this.message( `activate the skill ability of the ${area.name}` );
-        this.game().popup( this.playerId, { skill : true, area : area.name, faction : this.name });
+        this.game().popup( this.playerId, { type: 'skill', area : area.name, faction : this.name });
 
         // handle any pre-skill triggers (that may modify our skill)
         let skillModification = null;

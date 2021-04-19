@@ -2,22 +2,63 @@
 
 return [
 
+    /*
+    |--------------------------------------------------------------------------
+    | Log Lines
+    |--------------------------------------------------------------------------
+    |
+    | How many lines of the game server console.log to
+    | display when viewing with our web panel
+    |
+    */
+    'log_lines_to_display' => 200,
 
-    'log_lines_to_display' => 100,
+    /*
+    |--------------------------------------------------------------------------
+    | Maximum Saves
+    |--------------------------------------------------------------------------
+    |
+    | The maximum number of automatic save states to store per game
+    |
+    */
+    'max_saves' => 15,
 
-    'max_saves' => 10,
-
-    'core_file_folders' => [
+    /*
+    |--------------------------------------------------------------------------
+    | Core Image Folders
+    |--------------------------------------------------------------------------
+    |
+    | The core game image folders to include in the image
+    | pre-loader for every game
+    |
+    */
+    'core_image_folders' => [
         '/images/areas',
         '/images/cards',
         '/images/icons',
         '/images/tokens',
     ],
 
-
+    /*
+    |--------------------------------------------------------------------------
+    | Game Server Url
+    |--------------------------------------------------------------------------
+    |
+    | The location of our game server
+    |
+    */
     'game_server' => env('GAME_SERVER', 'http://localhost:6001' ),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Stats Tracker Url
+    |--------------------------------------------------------------------------
+    |
+    | The location of our external stats tracker
+    |
+    */
     'villains_tracker_url' => env('VILLAINS_TRACKER_URL' ),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

@@ -1,21 +1,21 @@
 <template>
     <div class="area-map-container" :class="`${area.name}-container`">
         <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="shared.event.emit( 'areaClicked', area )">
-        <!-- Absolutes -->
 
+            <!-- Control -->
             <div class="area-map__owner-wrap z-2">
+                <!-- owner -->
                 <img v-if="area.owner"
                      class="area-map__owner-portrait z-2"
                      :src="`/images/factions/${area.owner}/icon.jpg`"
                      :title="`The ${area.owner} control this area`">
 
+                <!-- conquered -->
                 <div v-if="area.conquered"
                      class="area-map__conquered-icon z-1 icon-flag faction-conquistadors"
                      title="The Conquistadors have conquered this area">
                 </div>
             </div>
-            <!-- owner -->
-
 
             <!-- zoom -->
             <div class="toggle area-map__toggle top-0 right-0"
@@ -46,12 +46,14 @@
 
             <!-- graveyard -->
             <div v-if="graveyard || webbed" class="area-map__graveyard">
+                <!-- dead -->
                 <div class="icon-graveyard mb-2"></div>
                 <div v-for="(dead, name) in graveyard"
                      class="area-map__graveyard-count"
                      :class="`faction-${name}`"
                      :title="`the ${name} have ${dead} kills in the ${area.name}`">{{ dead }}</div>
 
+                <!-- webbed -->
                 <div v-if="webbed" class="icon-web mb-2"></div>
                 <div v-if="webbed" class="area-map__graveyard-count"
                      :class="`faction-spiders`"
@@ -63,6 +65,7 @@
                 <div class="influence-marker mb-2">
                     <img src="/images/icons/influence.png">
                 </div>
+                <!-- faction influece -->
                 <div v-for="obj in influence"
                      class="area-map__influence-count"
                      :class="`faction-${obj.faction}`"
@@ -84,7 +87,7 @@
             <!-- area popups -->
             <area-popup :area="area" v-if="!hasActions"></area-popup>
 
-        <!-- Core Content -->
+            <!-- Core Content -->
             <div class="width-100 height-100 area-map__core-content-container">
                     <div class="area-map__core-content width-100 height-100 overflow-auto d-flex align-center justify-center">
                         <div class="d-flex flex-wrap justify-center" style="max-width: 95%">
@@ -95,7 +98,6 @@
                         </div>
                     </div>
             </div>
-
 
 
             <!-- status icons -->
@@ -123,96 +125,235 @@
             };
         },
         mounted(){
+            // area selected listener
             this.shared.event.on( 'areaSelected', area => {
                 if( this.area.name !== area.name ) this.opacity = true;
                 else this.opacity = false;
             });
 
+            // unselect areas listener
             this.shared.event.on( 'unselectAreas', area => this.opacity = false );
         },
 
         methods : {
-
+            /**
+             * Emit a token event
+             * @param token
+             */
             emitToken( token ){
                 this.shared.event.emit( 'tokenClicked', token );
             },
 
+
+            /**
+             * Emit an xavier event
+             */
             emitXavier(){
                 this.shared.event.emit( 'xavierClicked' );
             },
 
+
+            /**
+             * Return the most influence in this area
+             * @param influences
+             * @returns {number}
+             */
             mostInfluence( influences ){
                 let max = _.maxBy(influences, 'influence');
                 return max ? max.influence : 0;
             },
 
+
+            /**
+             * Return the faction name of whomever has the most influence here
+             * @param influences
+             * @returns {boolean}
+             */
             playerWithMostInfluence( influences ){
                 let max = this.mostInfluence( influences );
                 let maxes = influences.filter( item => item.influence === max );
                 return maxes.length === 1 ? maxes[0].faction : false;
+            },
+
+
+            /**
+             * Set the player who is leading in influence in this area to our shared state
+             */
+            setSharedAreaLeader( influences ){
+                let leader = null;
+
+                // set the shared state influence leader for this area
+                if( influences.length ){
+                    let mostInfluence = this.playerWithMostInfluence( influences );
+                    if( mostInfluence ) leader = mostInfluence;
+                    else if( this.area.owner ) leader = this.area.owner;
+                }
+
+                this.shared.areaLeaders[this.area.name] = leader;
+            },
+
+
+            /**
+             * Add the players who have used this area's skill to our stats
+             * return {[]}
+             */
+            getSkillsStats( stats ){
+                Object.values( this.shared.data.factions ).forEach( faction => {
+
+                    // if this faction hans't used this skill, abort
+                    if( !faction.usedSkills.includes( this.area.name ) ) return;
+
+                    // otherwise flag this faction as having used this skill
+                    stats.push({
+                        name : 'skill',
+                        owner : faction.name,
+                        title : 'skill used',
+                        description : `the ${faction.name} have used this area's skill`
+                    });
+
+                });
+
+                return stats;
+            },
+
+
+            /**
+             * Add any targets and faction flags to our stats
+             * @returns {[]}
+             */
+            getTargetStats( stats ){
+
+                Object.values( this.shared.data.factions ).forEach( faction => {
+                    // Hax0red?
+                    if( faction.hax0red?.includes( this.area.name )){
+                        stats.push({
+                            name : 'hax0red',
+                            owner : faction.name,
+                            title : 'hax0red',
+                            description : `the ${faction.name} have hax0red this area`
+                        });
+                    }
+
+                    // smoke?
+                    if( faction.smokeAreas?.includes( this.area.name )){
+                        stats.push({
+                            name : 'smoke',
+                            owner : faction.name,
+                            title : 'smoke',
+                            description : `the ninjas have set off a smoke bomb in this area`
+                        });
+                    }
+
+                    // target?
+                    if( faction.cards.target.length
+                        && this.shared.canSeeTarget( faction )
+                        && faction.cards.target[0].target === this.area.name ){
+                            stats.push({
+                                name : 'target',
+                                owner : faction.name,
+                                title : '+1AP',
+                                description : `the ${faction.name} are targeting this area`
+                            });
+                    }
+                });
+
+                return stats;
             }
+
         },
 
         computed : {
+
+            /**
+             * Does this area have any actions that may be taken here by the active player?
+             * @returns {boolean}
+             */
             hasActions(){
+                // if there are no actions to be taken, then obviously nope
                 if( !this.shared.actions ) return false;
 
-                let hasAction = false;
+                // xavier action
+                if( this.shared.actions.xavier === this.area.name ) return true;
 
-                this.shared.areaActions.forEach( action => {
-                    if( this.shared.actions[action] && this.shared.actions[action].includes( this.area.name ) ) hasAction = true;
-                });
-
-                if( this.shared.actions.xavier === this.area.name ) hasAction = true;
-
-                return hasAction;
+                // check all of our area actions
+                for( let [name, action] of Object.entries( this.shared.actionTypes ) ){
+                    if( !action.areaAction ) continue;
+                    if( this.shared.actions[name]?.includes( this.area.name ) ) return true;
+                }
             },
 
-            killedPlant(){
-                if( !this.shared.data.factions['plants'] ) return;
 
+            /**
+             * Is there a killed plant in this area?
+             * @returns {boolean}
+             */
+            killedPlant(){
+                if( !this.shared.data.factions['plants'] ) return false;
                 return _.factionAreasWithDead( this.shared.data.factions['plants'] ).includes( this.area.name );
             },
 
+
+            /**
+             * Should we show Xavier?
+             * @returns {boolean}
+             */
             showXavier(){
                 return this.shared.showXavier && this.xavier;
             },
 
+
+            /**
+             * Returns xavier blackstone if he is in this area
+             * @returns {Unit|null}
+             */
             xavier(){
                 if( this.shared.faction.name !== 'society' ) return;
                 return this.shared.faction.units.find( unit => unit.type === 'champion' && unit.location === this.area.name );
             },
 
+
+            /**
+             * Returns the token for this area, is any
+             * @returns {Token|null}
+             */
             token(){
                 if( this.shared.token && this.shared.token.place === this.area.name ){
                     return this.shared.token;
                 }
             },
 
+            /**
+             * Tallys the influence in this area and updates our shared state with the current area leader
+             * @returns {[]}
+             */
             influence(){
                 let influences = _.eachInfluenceInArea( this.area, this.shared.data.factions );
-                let leader = null;
 
-                if( influences.length ){
-                    let mostInfluence = this.playerWithMostInfluence( influences );
-
-                    if( mostInfluence ) leader = mostInfluence;
-                    else if( this.area.owner ) leader = this.area.owner;
-                }
-
-                this.shared.areaLeaders[this.area.name] = leader;
+                // set shared leader
+                this.setSharedAreaLeader( influences );
 
                 return influences;
             },
 
+
+            /**
+             * Returns the number of units webbed in this area
+             * @returns {number}
+             */
             webbed(){
                 if( !this.shared.data.factions['spiders'] ) return 0;
                 return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;
             },
 
+
+            /**
+             * Tally each player's kills in this area, or return false if there are no killed units here
+             * @returns {object|false}
+             */
             graveyard(){
                 let dead = {};
-                _.forEach( this.shared.data.factions, faction => {
+
+                Object.values( this.shared.data.factions ).forEach( faction => {
                     let kills = _.factionKillCountInArea( faction, this.area, this.shared.data.factions );
                     if( kills ) dead[faction.name] = kills;
                 });
@@ -220,52 +361,54 @@
                 return Object.keys( dead ).length ? dead : false;
             },
 
+
+            /**
+             * Returns the faction who has exterminated this area, if any
+             * @returns {string|null}
+             */
             exterminated(){
                 return _.areaExterminated( this.area, this.shared.data.factions  );
             },
 
+
+            /**
+             * Returns our class string
+             * @returns {string}
+             */
             computedClasses(){
                 let classes = `area-map-${this.area.name}`;
-
                 if( this.opacity || (this.shared.actions && !this.hasActions ) ){
                     classes += ' opacity-4'
                 }
-
                 return classes;
             },
+
 
             stats(){
                 let stats = [];
 
-                // targets
-                _.forEach( this.shared.data.factions, faction => {
+                // target stats
+                stats = this.getTargetStats( stats );
 
-                    if( faction.name === 'hackers' && faction.hax0red.includes( this.area.name )){
-                        stats.push({ name : 'hax0red', owner : faction.name, title : 'hax0red', description : `the ${faction.name} have hax0red this area` } )
-                    }
-
-                    if( faction.name === 'ninjas' && faction.smokeAreas.includes( this.area.name )){
-                        stats.push({ name : 'smoke', owner : faction.name, title : 'smoke', description : `the ninjas have set off a smoke bomb in this area` } )
-                    }
-
-                    if( faction.cards.target.length && this.shared.canSeeTarget( faction ) && faction.cards.target[0].target === this.area.name ){
-                        stats.push({ name : 'target', owner : faction.name, title : '+1AP', description : `the ${faction.name} are targeting this area` } )
-                    }
-                });
-
-                // skills
-                _.forEach( this.shared.data.factions, faction => {
-                    if( faction.usedSkills.includes( this.area.name ) ){
-                        stats.push({ name : 'skill', owner : faction.name, title : 'skill used', description : `the ${faction.name} have used this area's skill` } )
-                    }
-                });
+                // get used skills
+                stats = this.getSkillsStats( stats );
 
                 // card effects
-                this.area.cards.forEach( card => stats.push({ name : card.class, owner : card.owner, title : card.name, description : card.description } ));
+                this.area.cards.forEach( card => stats.push({
+                    name : card.class,
+                    owner : card.owner,
+                    title : card.name,
+                    description : card.description
+                }));
 
                 // token effects
                 this.area.tokens.forEach( token => {
-                    if( token.areaStat && token.revealed ) stats.push({ name : token.name, owner : token.faction, title : token.name, description : token.description });
+                    if( token.areaStat && token.revealed ) stats.push({
+                        name : token.name,
+                        owner : token.faction,
+                        title : token.name,
+                        description : token.description
+                    });
                 });
 
                 return stats;
@@ -276,12 +419,10 @@
 
 
 <style>
-
     .influence-marker {
         width: 1em;
         height: 1em;
     }
-
 
     .area-map-container {
         width: 33%;
@@ -469,8 +610,6 @@
     .area-map-factory {
         background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);
     }
-
-
 
 </style>
 

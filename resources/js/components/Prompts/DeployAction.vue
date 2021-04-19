@@ -300,7 +300,7 @@
             fromAreaUnits( area ){
                 // get our units
                 let units = this.shared.faction.units
-                    .filter( unit => unit.cost <= _.money( this.shared.faction )
+                    .filter( unit => ( this.data.free || unit.cost <= _.money( this.shared.faction ) )
                             && _.unitInArea( unit, area, {
                                 deployable : true,
                                 noChampion : this.destinationBlockedByKau,
@@ -309,10 +309,10 @@
 
                 // include any ghosts
                 if( this.shared.faction.ghostDeploy ){
+
                     let ghosts = this.shared.faction.ghosts.filter( unit => unit.location === area
                             && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
                         );
-
 
                     for( let ghost of ghosts ){
                         units.push( ghost );

@@ -84,7 +84,7 @@ let obj = {
         }
 
         // display this placement all players
-        this.popup( faction.playerId, { place : true, area : areaName, faction: faction.name });
+        this.popup( faction.playerId, { type: 'place', area : areaName, faction: faction.name });
         this.message({ message: message, faction : faction });
 
         // advance game

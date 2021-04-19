@@ -16,7 +16,7 @@
 
         data() {
             return {
-                shared : App.state
+                shared : App.state,
             };
         },
 
@@ -28,35 +28,47 @@
 
         computed : {
 
+            /**
+             * Returns our action's icon url
+             * @returns {string}
+             */
             icon(){
+                // determine our token url
                 if( this.token ) return `/images/factions/${this.token.faction}/tokens/${this.token.name}.png`;
-                if( this.action === 'skill' ) return `/images/icons/skilled.png`;
-                if( this.action === 'magick' ) return `/images/icons/enchanted.png`;
-                if( this.action === 'loop' ) return `/images/icons/loop.png`;
-                if( this.action === 'ambush' ) return `/images/icons/ambush.png`;
-                if( this.action === 'materialize' ) return `/images/icons/ghost.png`;
+
+                // otherwise return the appropriate static image
+                return this.shared.actionTypes[ this.action ]?.img;
             },
 
+
+            /**
+             * Return Xavier blackstone if he's in this area
+             * @returns {Unit|null}
+             */
             xavier(){
                 if( this.shared.faction.name !== 'society' ) return;
                 return this.shared.faction.units.find( unit => unit.type === 'champion' && unit.location === this.area.name );
             },
 
+
+            /**
+             * Return the first unrevealed token in this area if we have a token action,
+             * or the token on Xavier blackstone for our Xavier action
+             * @returns {Token}
+             */
             token(){
                 if( this.action === 'token' ) return _.firstUnrevealedToken( this.area );
                 if( this.action === 'xavier' ) return this.xavier.token;
             },
 
+
+            /**
+             * Returns the short message for each action
+             * @returns {string}
+             */
             message(){
-                switch( this.action ){
-                    case 'token': return `reveal token`;
-                    case 'skill': return 'use skill';
-                    case 'xavier': return `xavier token`;
-                    case 'magick': return 'use magick';
-                    case 'loop': return 'use loop';
-                    case 'ambush': return 'ambush';
-                    case 'materialize': return 'materialize';
-                }
+                let message =  this.shared.actionTypes[this.action]?.useMessage;
+                return message ? message : '';
             }
         }
     }

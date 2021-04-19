@@ -6668,8 +6668,56 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         id: 4
       }],
       actions: {},
-      areaActions: ['ambush', 'loop', 'skill', 'materialize', 'magick', 'token']
+      actionTypes: {
+        'pass': {
+          buttonMessage: 'Pass for the turn'
+        },
+        'skip': {
+          buttonMessage: 'Skip this action'
+        },
+        locked: {
+          buttonMessage: 'Declare yourself locked'
+        },
+        'token': {
+          useMessage: 'reveal token',
+          areaAction: true
+        },
+        'skill': {
+          img: '/images/icons/skilled.png',
+          useMessage: 'use skill',
+          areaAction: true
+        },
+        'magick': {
+          img: '/images/icons/enchanted.png',
+          useMessage: 'use magick',
+          areaAction: true,
+          buttonMessage: 'Flip your units in this area to use magick'
+        },
+        'loop': {
+          img: '/images/icons/loop.png',
+          useMessage: 'use loop',
+          areaAction: true,
+          buttonMessage: 'Replace your Loop token'
+        },
+        'ambush': {
+          img: '/images/icons/ambush.png',
+          useMessage: 'ambush',
+          areaAction: true
+        },
+        'materialize': {
+          img: '/images/icons/ghost.png',
+          useMessage: 'materialize',
+          areaAction: true
+        },
+        'xavier': {
+          useMessage: 'xavier token',
+          buttonMessage: 'Reveal token on Xavier'
+        }
+      }
     };
+  },
+  created: function created() {
+    this.shared.init('actionTypes', this.actionTypes);
   },
   mounted: function mounted() {
     var _this = this;
@@ -6677,7 +6725,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     App.event.on('actionClicked', function (args) {
       return _this.setAction.apply(_this, _toConsumableArray(args));
     });
-    this.$set(this.shared, 'areaActions', this.areaActions);
     this.generateActions();
     this.setDefaultAction();
   },
@@ -6704,11 +6751,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @param param
      */
     setAction: function setAction(name, param) {
+      var _this$shared$actionTy;
+
       var action = {
         name: name
       }; // if this is an area action set our shared action area
 
-      if (this.areaActions.includes(name)) {
+      if ((_this$shared$actionTy = this.shared.actionTypes[name]) !== null && _this$shared$actionTy !== void 0 && _this$shared$actionTy.areaAction) {
         action.area = param !== null && param !== void 0 ? param : this.actions[name][0];
       } // if this is a token action set our token
 
@@ -6872,51 +6921,27 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @returns {string}
      */
     buttonMessage: function buttonMessage() {
-      var message;
+      var _this$shared$actionTy2;
+
+      // if we don't have a valid action
+      if (this.saveDisabled) return "Choose your action"; // if we have an action with a static message
+
+      var message = (_this$shared$actionTy2 = this.shared.actionTypes[this.action.name]) === null || _this$shared$actionTy2 === void 0 ? void 0 : _this$shared$actionTy2.buttonMessage;
+      if (message) return message; // if we need a dynamic message
 
       switch (this.action.name) {
         case 'skill':
-          message = "Activate the ".concat(this.area.name, " skill ability");
-          break;
+          return "Activate the ".concat(this.area.name, " skill ability");
 
         case 'token':
-          message = "Reveal token in the ".concat(this.area.name);
-          break;
-
-        case 'pass':
-          message = "Pass for the turn";
-          break;
-
-        case 'skip':
-          message = "Skip this action";
-          break;
-
-        case 'locked':
-          message = "Declare yourself locked";
-          break;
-
-        case 'xavier':
-          message = "Reveal token on Xavier";
-          break;
-
-        case 'magick':
-          message = "Use magick in the ".concat(this.area.name);
-          break;
+          return "Reveal token in the ".concat(this.area.name);
 
         case 'materialize':
-          message = "Reveal ghosts in the ".concat(this.area.name);
-          break;
-
-        case 'loop':
-          message = "Replace Loop token";
-          break;
+          return "Reveal ghosts in the ".concat(this.area.name);
 
         case 'ambush':
-          message = "Ambush the ".concat(this.area.name);
-          break;
+          return "Ambush the ".concat(this.area.name);
       }
-
-      return this.saveDisabled ? "Choose your action" : message;
     },
 
     /**
@@ -9788,7 +9813,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       // get our units
       var units = this.shared.faction.units.filter(function (unit) {
-        return unit.cost <= _.money(_this2.shared.faction) && _.unitInArea(unit, area, {
+        return (_this2.data.free || unit.cost <= _.money(_this2.shared.faction)) && _.unitInArea(unit, area, {
           deployable: true,
           noChampion: _this2.destinationBlockedByKau,
           types: _this2.data.unitTypes
@@ -15235,14 +15260,23 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Returns our action's icon url
+     * @returns {string}
+     */
     icon: function icon() {
-      if (this.token) return "/images/factions/".concat(this.token.faction, "/tokens/").concat(this.token.name, ".png");
-      if (this.action === 'skill') return "/images/icons/skilled.png";
-      if (this.action === 'magick') return "/images/icons/enchanted.png";
-      if (this.action === 'loop') return "/images/icons/loop.png";
-      if (this.action === 'ambush') return "/images/icons/ambush.png";
-      if (this.action === 'materialize') return "/images/icons/ghost.png";
+      var _this$shared$actionTy;
+
+      // determine our token url
+      if (this.token) return "/images/factions/".concat(this.token.faction, "/tokens/").concat(this.token.name, ".png"); // otherwise return the appropriate static image
+
+      return (_this$shared$actionTy = this.shared.actionTypes[this.action]) === null || _this$shared$actionTy === void 0 ? void 0 : _this$shared$actionTy.img;
     },
+
+    /**
+     * Return Xavier blackstone if he's in this area
+     * @returns {Unit|null}
+     */
     xavier: function xavier() {
       var _this = this;
 
@@ -15251,33 +15285,26 @@ __webpack_require__.r(__webpack_exports__);
         return unit.type === 'champion' && unit.location === _this.area.name;
       });
     },
+
+    /**
+     * Return the first unrevealed token in this area if we have a token action,
+     * or the token on Xavier blackstone for our Xavier action
+     * @returns {Token}
+     */
     token: function token() {
       if (this.action === 'token') return _.firstUnrevealedToken(this.area);
       if (this.action === 'xavier') return this.xavier.token;
     },
+
+    /**
+     * Returns the short message for each action
+     * @returns {string}
+     */
     message: function message() {
-      switch (this.action) {
-        case 'token':
-          return "reveal token";
+      var _this$shared$actionTy2;
 
-        case 'skill':
-          return 'use skill';
-
-        case 'xavier':
-          return "xavier token";
-
-        case 'magick':
-          return 'use magick';
-
-        case 'loop':
-          return 'use loop';
-
-        case 'ambush':
-          return 'ambush';
-
-        case 'materialize':
-          return 'materialize';
-      }
+      var message = (_this$shared$actionTy2 = this.shared.actionTypes[this.action]) === null || _this$shared$actionTy2 === void 0 ? void 0 : _this$shared$actionTy2.useMessage;
+      return message ? message : '';
     }
   }
 });
@@ -15293,6 +15320,18 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 //
 //
 //
@@ -15330,25 +15369,42 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   watch: {
+    // open up whenever we have actions
     actions: function actions() {
       this.closed = false;
     }
   },
   methods: {
+    /**
+     * Toggle this modal open or closed
+     */
     toggleClose: function toggleClose() {
       this.closed = !this.closed;
       App.event.emit('sound', 'ui');
     }
   },
   computed: {
+    /**
+     * Returns an array of the actions available to us in this area
+     * @returns {[]}
+     */
     actions: function actions() {
       var _this = this;
 
+      if (!this.shared.actions) return []; // grab our area actions
+
       var actions = [];
-      if (!this.shared.actions) return actions;
-      this.shared.areaActions.forEach(function (action) {
-        if (_this.shared.actions[action] && _this.shared.actions[action].includes(_this.area.name)) actions.push(action);
-      });
+      Object.entries(this.shared.actionTypes).forEach(function (_ref) {
+        var _this$shared$actions$;
+
+        var _ref2 = _slicedToArray(_ref, 2),
+            name = _ref2[0],
+            action = _ref2[1];
+
+        if (!action.areaAction) return;
+        if ((_this$shared$actions$ = _this.shared.actions[name]) !== null && _this$shared$actions$ !== void 0 && _this$shared$actions$.includes(_this.area.name)) actions.push(name);
+      }); // add in xavier if needed
+
       if (this.shared.actions.xavier === this.area.name) actions.push('xavier');
       return actions;
     }
@@ -15389,6 +15445,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'area-flipper',
   props: ['areas', 'index', 'classes', 'hasReserves', 'isReserves', 'noZoom', 'locked', 'hidePips'],
@@ -15400,7 +15463,8 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    this.shared.event.on('areaClicked', this.areaClicked);
+    this.shared.event.on('areaClicked', this.areaClicked); // highlight area
+
     this.$nextTick(function () {
       if (_this.useAreaSelect) _this.shared.event.emit('areaSelected', _this.area);
     });
@@ -15414,9 +15478,19 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    /**
+     * Should we apply the area select highlighting?
+     * @returns {boolean}
+     */
     useAreaSelect: function useAreaSelect() {
+      // if we have an area, this isn't locked, and we aren't showing the reserves
       return this.area && !this.locked && this.index !== -1;
     },
+
+    /**
+     * Returns an array of our area names and "reserves" if applicable
+     * @returns {string[]}
+     */
     areaNamesAndReserves: function areaNamesAndReserves() {
       var areas = this.areas.map(function (area) {
         return area.name;
@@ -15424,38 +15498,61 @@ __webpack_require__.r(__webpack_exports__);
       if (this.hasReserves) areas.unshift('reserves');
       return areas;
     },
+
+    /**
+     * Do we have more than one area?
+     * @returns {boolean|string}
+     */
     manyAreas: function manyAreas() {
       return this.areas.length > 1 || this.hasReserves && !this.isReserves || this.isReserves && this.areas.length > 0;
     },
+
+    /**
+     * Returns the currently selected area object, or a dummy object for our reserves
+     * @returns {object}
+     */
     area: function area() {
       if (this.isReserves) return {
         name: 'reserves'
       };
       return this.areas[this.index];
     },
+
+    /**
+     * Return's the currently selected area name
+     * @returns {string}
+     */
     areaName: function areaName() {
       return this.area.name;
     }
   },
   methods: {
+    /**
+     * After a user clicks on an area icon, jump the index to the appropriate area
+     * @param area
+     */
     pipClicked: function pipClicked(area) {
-      var index;
-
-      if (area === 'reserves') {
-        index = -1;
-      } else {
-        index = _.findIndex(this.areas, function (item) {
-          return item.name === area;
-        });
-      }
-
+      var index = area === 'reserves' ? -1 : _.findIndex(this.areas, function (item) {
+        return item.name === area;
+      });
       this.$emit('update', index);
     },
+
+    /**
+     * Get the classes for the given icon pip
+     * @param area
+     * @returns {string}
+     */
     pipClasses: function pipClasses(area) {
       var classes = "pip-bg-".concat(area);
       if (this.area.name === area) classes += ' active';
       return classes;
     },
+
+    /**
+     * Handle an area click to select the given area
+     * @param clicked
+     */
     areaClicked: function areaClicked(clicked) {
       var index = _.findIndex(this.areas, function (area) {
         return area.name === clicked.name;
@@ -15464,19 +15561,20 @@ __webpack_require__.r(__webpack_exports__);
       if (index === -1) return;
       this.$emit('update', index);
     },
-    prev: function prev() {
-      var index = this.index - 1;
+
+    /**
+     * Change our area index
+     * @param increment
+     */
+    switchArea: function switchArea(increment) {
+      var index = this.index + increment; // if we go below index 0...
 
       if (index < 0) {
         if (this.hasReserves && !this.isReserves) {
           index = -1;
         } else index = this.areas.length - 1;
-      }
+      } // if we go above our max index...
 
-      this.$emit('update', index);
-    },
-    next: function next() {
-      var index = this.index + 1;
 
       if (index > this.areas.length - 1) {
         if (this.hasReserves && !this.isReserves) {
@@ -15500,6 +15598,20 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+//
+//
 //
 //
 //
@@ -15624,69 +15736,60 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
+    // area selected listener
     this.shared.event.on('areaSelected', function (area) {
       if (_this.area.name !== area.name) _this.opacity = true;else _this.opacity = false;
-    });
+    }); // unselect areas listener
+
     this.shared.event.on('unselectAreas', function (area) {
       return _this.opacity = false;
     });
   },
   methods: {
+    /**
+     * Emit a token event
+     * @param token
+     */
     emitToken: function emitToken(token) {
       this.shared.event.emit('tokenClicked', token);
     },
+
+    /**
+     * Emit an xavier event
+     */
     emitXavier: function emitXavier() {
       this.shared.event.emit('xavierClicked');
     },
+
+    /**
+     * Return the most influence in this area
+     * @param influences
+     * @returns {number}
+     */
     mostInfluence: function mostInfluence(influences) {
       var max = _.maxBy(influences, 'influence');
 
       return max ? max.influence : 0;
     },
+
+    /**
+     * Return the faction name of whomever has the most influence here
+     * @param influences
+     * @returns {boolean}
+     */
     playerWithMostInfluence: function playerWithMostInfluence(influences) {
       var max = this.mostInfluence(influences);
       var maxes = influences.filter(function (item) {
         return item.influence === max;
       });
       return maxes.length === 1 ? maxes[0].faction : false;
-    }
-  },
-  computed: {
-    hasActions: function hasActions() {
-      var _this2 = this;
+    },
 
-      if (!this.shared.actions) return false;
-      var hasAction = false;
-      this.shared.areaActions.forEach(function (action) {
-        if (_this2.shared.actions[action] && _this2.shared.actions[action].includes(_this2.area.name)) hasAction = true;
-      });
-      if (this.shared.actions.xavier === this.area.name) hasAction = true;
-      return hasAction;
-    },
-    killedPlant: function killedPlant() {
-      if (!this.shared.data.factions['plants']) return;
-      return _.factionAreasWithDead(this.shared.data.factions['plants']).includes(this.area.name);
-    },
-    showXavier: function showXavier() {
-      return this.shared.showXavier && this.xavier;
-    },
-    xavier: function xavier() {
-      var _this3 = this;
-
-      if (this.shared.faction.name !== 'society') return;
-      return this.shared.faction.units.find(function (unit) {
-        return unit.type === 'champion' && unit.location === _this3.area.name;
-      });
-    },
-    token: function token() {
-      if (this.shared.token && this.shared.token.place === this.area.name) {
-        return this.shared.token;
-      }
-    },
-    influence: function influence() {
-      var influences = _.eachInfluenceInArea(this.area, this.shared.data.factions);
-
-      var leader = null;
+    /**
+     * Set the player who is leading in influence in this area to our shared state
+     */
+    setSharedAreaLeader: function setSharedAreaLeader(influences) {
+      var leader = null; // set the shared state influence leader for this area
 
       if (influences.length) {
         var mostInfluence = this.playerWithMostInfluence(influences);
@@ -15694,30 +15797,186 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.shared.areaLeaders[this.area.name] = leader;
+    },
+
+    /**
+     * Add the players who have used this area's skill to our stats
+     * return {[]}
+     */
+    getSkillsStats: function getSkillsStats(stats) {
+      var _this2 = this;
+
+      Object.values(this.shared.data.factions).forEach(function (faction) {
+        // if this faction hans't used this skill, abort
+        if (!faction.usedSkills.includes(_this2.area.name)) return; // otherwise flag this faction as having used this skill
+
+        stats.push({
+          name: 'skill',
+          owner: faction.name,
+          title: 'skill used',
+          description: "the ".concat(faction.name, " have used this area's skill")
+        });
+      });
+      return stats;
+    },
+
+    /**
+     * Add any targets and faction flags to our stats
+     * @returns {[]}
+     */
+    getTargetStats: function getTargetStats(stats) {
+      var _this3 = this;
+
+      Object.values(this.shared.data.factions).forEach(function (faction) {
+        var _faction$hax0red, _faction$smokeAreas;
+
+        // Hax0red?
+        if ((_faction$hax0red = faction.hax0red) !== null && _faction$hax0red !== void 0 && _faction$hax0red.includes(_this3.area.name)) {
+          stats.push({
+            name: 'hax0red',
+            owner: faction.name,
+            title: 'hax0red',
+            description: "the ".concat(faction.name, " have hax0red this area")
+          });
+        } // smoke?
+
+
+        if ((_faction$smokeAreas = faction.smokeAreas) !== null && _faction$smokeAreas !== void 0 && _faction$smokeAreas.includes(_this3.area.name)) {
+          stats.push({
+            name: 'smoke',
+            owner: faction.name,
+            title: 'smoke',
+            description: "the ninjas have set off a smoke bomb in this area"
+          });
+        } // target?
+
+
+        if (faction.cards.target.length && _this3.shared.canSeeTarget(faction) && faction.cards.target[0].target === _this3.area.name) {
+          stats.push({
+            name: 'target',
+            owner: faction.name,
+            title: '+1AP',
+            description: "the ".concat(faction.name, " are targeting this area")
+          });
+        }
+      });
+      return stats;
+    }
+  },
+  computed: {
+    /**
+     * Does this area have any actions that may be taken here by the active player?
+     * @returns {boolean}
+     */
+    hasActions: function hasActions() {
+      // if there are no actions to be taken, then obviously nope
+      if (!this.shared.actions) return false; // xavier action
+
+      if (this.shared.actions.xavier === this.area.name) return true; // check all of our area actions
+
+      for (var _i = 0, _Object$entries = Object.entries(this.shared.actionTypes); _i < _Object$entries.length; _i++) {
+        var _this$shared$actions$;
+
+        var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+            name = _Object$entries$_i[0],
+            action = _Object$entries$_i[1];
+
+        if (!action.areaAction) continue;
+        if ((_this$shared$actions$ = this.shared.actions[name]) !== null && _this$shared$actions$ !== void 0 && _this$shared$actions$.includes(this.area.name)) return true;
+      }
+    },
+
+    /**
+     * Is there a killed plant in this area?
+     * @returns {boolean}
+     */
+    killedPlant: function killedPlant() {
+      if (!this.shared.data.factions['plants']) return false;
+      return _.factionAreasWithDead(this.shared.data.factions['plants']).includes(this.area.name);
+    },
+
+    /**
+     * Should we show Xavier?
+     * @returns {boolean}
+     */
+    showXavier: function showXavier() {
+      return this.shared.showXavier && this.xavier;
+    },
+
+    /**
+     * Returns xavier blackstone if he is in this area
+     * @returns {Unit|null}
+     */
+    xavier: function xavier() {
+      var _this4 = this;
+
+      if (this.shared.faction.name !== 'society') return;
+      return this.shared.faction.units.find(function (unit) {
+        return unit.type === 'champion' && unit.location === _this4.area.name;
+      });
+    },
+
+    /**
+     * Returns the token for this area, is any
+     * @returns {Token|null}
+     */
+    token: function token() {
+      if (this.shared.token && this.shared.token.place === this.area.name) {
+        return this.shared.token;
+      }
+    },
+
+    /**
+     * Tallys the influence in this area and updates our shared state with the current area leader
+     * @returns {[]}
+     */
+    influence: function influence() {
+      var influences = _.eachInfluenceInArea(this.area, this.shared.data.factions); // set shared leader
+
+
+      this.setSharedAreaLeader(influences);
       return influences;
     },
+
+    /**
+     * Returns the number of units webbed in this area
+     * @returns {number}
+     */
     webbed: function webbed() {
       if (!this.shared.data.factions['spiders']) return 0;
       return _.webbedUnits(this.shared.data.factions['spiders'], {
         area: this.area.name
       }).length;
     },
+
+    /**
+     * Tally each player's kills in this area, or return false if there are no killed units here
+     * @returns {object|false}
+     */
     graveyard: function graveyard() {
-      var _this4 = this;
+      var _this5 = this;
 
       var dead = {};
-
-      _.forEach(this.shared.data.factions, function (faction) {
-        var kills = _.factionKillCountInArea(faction, _this4.area, _this4.shared.data.factions);
+      Object.values(this.shared.data.factions).forEach(function (faction) {
+        var kills = _.factionKillCountInArea(faction, _this5.area, _this5.shared.data.factions);
 
         if (kills) dead[faction.name] = kills;
       });
-
       return Object.keys(dead).length ? dead : false;
     },
+
+    /**
+     * Returns the faction who has exterminated this area, if any
+     * @returns {string|null}
+     */
     exterminated: function exterminated() {
       return _.areaExterminated(this.area, this.shared.data.factions);
     },
+
+    /**
+     * Returns our class string
+     * @returns {string}
+     */
     computedClasses: function computedClasses() {
       var classes = "area-map-".concat(this.area.name);
 
@@ -15728,51 +15987,11 @@ __webpack_require__.r(__webpack_exports__);
       return classes;
     },
     stats: function stats() {
-      var _this5 = this;
+      var stats = []; // target stats
 
-      var stats = []; // targets
+      stats = this.getTargetStats(stats); // get used skills
 
-      _.forEach(this.shared.data.factions, function (faction) {
-        if (faction.name === 'hackers' && faction.hax0red.includes(_this5.area.name)) {
-          stats.push({
-            name: 'hax0red',
-            owner: faction.name,
-            title: 'hax0red',
-            description: "the ".concat(faction.name, " have hax0red this area")
-          });
-        }
-
-        if (faction.name === 'ninjas' && faction.smokeAreas.includes(_this5.area.name)) {
-          stats.push({
-            name: 'smoke',
-            owner: faction.name,
-            title: 'smoke',
-            description: "the ninjas have set off a smoke bomb in this area"
-          });
-        }
-
-        if (faction.cards.target.length && _this5.shared.canSeeTarget(faction) && faction.cards.target[0].target === _this5.area.name) {
-          stats.push({
-            name: 'target',
-            owner: faction.name,
-            title: '+1AP',
-            description: "the ".concat(faction.name, " are targeting this area")
-          });
-        }
-      }); // skills
-
-
-      _.forEach(this.shared.data.factions, function (faction) {
-        if (faction.usedSkills.includes(_this5.area.name)) {
-          stats.push({
-            name: 'skill',
-            owner: faction.name,
-            title: 'skill used',
-            description: "the ".concat(faction.name, " have used this area's skill")
-          });
-        }
-      }); // card effects
-
+      stats = this.getSkillsStats(stats); // card effects
 
       this.area.cards.forEach(function (card) {
         return stats.push({
@@ -15824,54 +16043,56 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state,
       popup: null,
+      // the popup to display
       interval: null,
-      seconds: 5
+      // store our interval object
+      seconds: 5 // how long to show our popup
+
     };
   },
   mounted: function mounted() {
+    // set socket listener
     this.shared.socket.on('popup', this.onPopup);
   },
   methods: {
+    /**
+     * Popup an action notification in this area
+     * @param popup
+     */
     onPopup: function onPopup(popup) {
-      if (popup.area !== this.area.name) return;
+      // if this popup isn't for our area, abort
+      if (popup.area !== this.area.name) return; // show our popup for the specified time
+
       this.popup = popup;
       App.event.emit('sound', 'chirp');
       this.interval = setTimeout(this.clearPopup, this.seconds * 1000);
     },
+    // clear this popup
     clearPopup: function clearPopup() {
       this.popup = null;
     }
   },
   computed: {
+    /**
+     * Returns the image url for this popup
+     * @returns {string}
+     */
     image: function image() {
-      if (this.popup.place) {
+      var _this$shared$actionTy;
+
+      // first return any dynamic images
+      // show a face down token when placing a token
+      if (this.popup.type === 'place') {
         return "/images/factions/".concat(this.popup.faction, "/tokens/back.png");
-      }
+      } // reveal this token
 
-      if (this.popup.token) {
-        var token = this.popup.token;
-        return "/images/factions/".concat(token.faction, "/tokens/").concat(token.name, ".png");
-      }
 
-      if (this.popup.skill) {
-        return "/images/icons/skilled.png";
-      }
+      if (this.popup.type === 'token') {
+        return "/images/factions/".concat(this.popup.token.faction, "/tokens/").concat(this.popup.token.name, ".png");
+      } // otherwise return the appropriate static image
 
-      if (this.popup.magick) {
-        return "/images/icons/enchanted.png";
-      }
 
-      if (this.popup.loop) {
-        return "/images/icons/loop.png";
-      }
-
-      if (this.popup.ambush) {
-        return "/images/icons/ambush.png";
-      }
-
-      if (this.popup.materialize) {
-        return "/images/icons/ghost.png";
-      }
+      return (_this$shared$actionTy = this.shared.actionTypes[this.popup.type]) === null || _this$shared$actionTy === void 0 ? void 0 : _this$shared$actionTy.img;
     }
   }
 });
@@ -15904,46 +16125,87 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     units: function units() {
+      // get our standard units
+      var units = this.getStandardUnits(); //  get our plants
+
+      units = this.getPlants(units); // add smoke
+
+      units = this.getSmoke(units); // add ghosts
+
+      units = this.getGhosts(units);
+      return units;
+    }
+  },
+  methods: {
+    /**
+     * Returns an array of this faction's units in the area
+     * @returns {Unit[]}
+     */
+    getStandardUnits: function getStandardUnits() {
       var _this = this;
 
-      var units = this.faction.units.filter(function (unit) {
-        if (_this.skilled) {
-          return _.unitReadyInArea(unit, _this.area);
-        }
+      var options = {};
+      if (this.skilled) options.ready = true; // should we return ready skilled units only?
+      else options.notReady = true; // otherwise only return exhausted units
 
-        return _.unitNotReadyInArea(unit, _this.area);
-      }); // plants
+      return this.faction.units.filter(function (unit) {
+        return _.unitInArea(unit, _this.area, options);
+      });
+    },
 
-      if (!this.skilled && this.faction.name === 'plants' && this.faction.plants[this.area]) {
-        for (var i = 0; i < this.faction.plants[this.area]; i++) {
-          units.push({
-            type: 'plant',
-            faction: 'plants'
-          });
-        }
-      } // ninjas
+    /**
+     * Add this faction's plants to our units array
+     * @returns {Unit[]}
+     */
+    getPlants: function getPlants(units) {
+      var _this$faction$plants;
 
+      // abort conditions
+      if (this.skilled || !((_this$faction$plants = this.faction.plants) !== null && _this$faction$plants !== void 0 && _this$faction$plants[this.area])) return units; // add our plants
 
-      if (!this.skilled && this.faction.name === 'ninjas' && this.faction.smokeAreas.includes(this.area)) {
+      for (var i = 0; i < this.faction.plants[this.area]; i++) {
         units.push({
-          type: 'smoke',
-          faction: 'ninjas'
+          type: 'plant',
+          faction: 'plants'
         });
-      } // ghosts
-
-
-      if (!this.skilled && this.faction.ghostDeploy) {
-        var areaGhosts = this.faction.ghosts.filter(function (ghost) {
-          return ghost.location === _this.area;
-        });
-
-        for (var _i = 0; _i < areaGhosts.length; _i++) {
-          var ghost = areaGhosts[_i];
-          ghost.hideFromEnemies = 'ghost';
-          units.push(ghost);
-        }
       }
 
+      return units;
+    },
+
+    /**
+     * Add this faction's smoke to our units array
+     * @returns {Unit[]}
+     */
+    getSmoke: function getSmoke(units) {
+      var _this$faction$smokeAr;
+
+      // abort conditions
+      if (this.skilled || !((_this$faction$smokeAr = this.faction.smokeAreas) !== null && _this$faction$smokeAr !== void 0 && _this$faction$smokeAr.includes(this.area))) return units; // add smoke
+
+      units.push({
+        type: 'smoke',
+        faction: 'ninjas'
+      });
+      return units;
+    },
+
+    /**
+     * Add this faction's ghosts to our units array
+     * @returns {Unit[]}
+     */
+    getGhosts: function getGhosts(units) {
+      var _this2 = this;
+
+      // fail case
+      if (this.skilled || !this.faction.ghostDeploy) return units; // add our ghosts
+
+      var areaGhosts = this.faction.ghosts.filter(function (ghost) {
+        return _.unitInArea(ghost, _this2.area);
+      }).forEach(function (ghost) {
+        ghost.hideFromEnemies = 'ghost';
+        units.push(ghost);
+      });
       return units;
     }
   }
@@ -15996,116 +16258,174 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'map-player',
   props: ['neutral', 'area', 'faction'],
   data: function data() {
     return {
       shared: App.state,
+      // abilities that have their own icon
       abilityIcons: ['deadly', 'hidden', 'charged'],
+      // some status effects should always be pipped, even if the unit isn't flipped over
+      // if a unit has any of the following properties we will always show them pipped
       alwaysShowPips: ['vampire']
     };
   },
   methods: {
+    /**
+     * Should this unit show a pip even if its not flipped?
+     * @param unit
+     * @returns {boolean}
+     */
     unitHasAlwaysShowPip: function unitHasAlwaysShowPip(unit) {
-      var pipped;
-      this.alwaysShowPips.forEach(function (property) {
-        if (unit[property]) pipped = property;
+      return this.alwaysShowPips.some(function (property) {
+        return unit[property] === true;
       });
-      return pipped;
+    },
+
+    /**
+     * Create a tally of our standard units in this area
+     * @returns {object} // { unitType : { count : {number}, pipped : {number} }, etc... }
+     */
+    tallyStandardUnits: function tallyStandardUnits() {
+      var _this = this;
+
+      return this.unitsInArea.reduce(function (units, unit) {
+        // increment our count if this type already exists,
+        // otherwise add this unit type to our results
+        if (units[unit.type]) units[unit.type].count++;else units[unit.type] = {
+          count: 1,
+          pipped: 0
+        }; // if the unit is flipped show a pip, or if this unit should always show a pip
+
+        if (unit.flipped || _this.unitHasAlwaysShowPip(unit)) units[unit.type].pipped++;
+        return units;
+      }, {});
+    },
+
+    /**
+     * Add our plants to our units tally
+     * @returns {object} // { plants : { count : {number}, pipped : 0 }, etc... }
+     */
+    tallyPlants: function tallyPlants(units) {
+      if (!this.plantsInArea) return units; // add our plants count
+
+      units['plant'] = {
+        count: this.plantsInArea,
+        pipped: 0
+      };
+      return units;
+    },
+
+    /**
+     * Add our ghosts to our units tally
+     * @returns {object} // { unitType : { count : {number}, pipped : {number} }, etc... }
+     */
+    tallyGhosts: function tallyGhosts(units) {
+      if (!this.ghostsInArea.length) return units; // add our plants count
+
+      units['ghost'] = {
+        count: this.ghostsInArea.length,
+        pipped: 0
+      };
+      return units;
     }
   },
   computed: {
+    /**
+     * Return this player's faction name, or neutral if we are showing the neutral faction
+     * @returns {string|*}
+     */
     name: function name() {
       if (this.neutral) return 'neutral';
       return this.faction.name;
     },
+
+    /**
+     * Returns a tally of this faction's units and assorted unit like things
+     * @returns {object}
+     */
     units: function units() {
-      var _this = this;
+      if (!this.faction) return {}; // tally our standard units
 
-      if (!this.faction) return [];
-      var units = {};
-      this.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this.area);
-      }).forEach(function (unit) {
-        if (units[unit.type]) {
-          units[unit.type].count++;
-        } else {
-          units[unit.type] = {
-            count: 1,
-            pipped: 0
-          };
-        }
+      var units = this.tallyStandardUnits(); // add in our plants
 
-        if (unit.flipped || _this.unitHasAlwaysShowPip(unit)) units[unit.type].pipped++;
-      }); // show plants
+      units = this.tallyPlants(units); // add in our ghosts
 
-      if (this.faction.name === 'plants' && this.faction.plants[this.area.name]) {
-        for (var i = 0; i < this.faction.plants[this.area.name]; i++) {
-          if (units['plant']) {
-            units['plant'].count++;
-          } else {
-            units['plant'] = {
-              count: 1,
-              pipped: 0
-            };
-          }
-        }
-      } // show ghosts
-
-
-      if (this.faction.ghostDeploy) {
-        var areaGhosts = this.faction.ghosts.filter(function (unit) {
-          return unit.location === _this.area.name;
-        });
-
-        for (var _i = 0; _i < areaGhosts.length; _i++) {
-          if (units['ghost']) {
-            units['ghost'].count++;
-          } else {
-            units['ghost'] = {
-              count: 1,
-              pipped: 0
-            };
-          }
-        }
-      }
-
+      units = this.tallyGhosts(units);
       return units;
     },
-    kills: function kills() {
-      if (!this.faction) return 0;
-      return _.factionKillCountInArea(this.faction, this.area, this.shared.data.factions);
-    },
-    statusIcons: function statusIcons() {
+
+    /**
+     * Returns an array of this faction's unit in this area
+     * @returns {Unit[]}
+     */
+    unitsInArea: function unitsInArea() {
       var _this2 = this;
+
+      return this.faction.units.filter(function (unit) {
+        return _.unitInArea(unit, _this2.area.name);
+      });
+    },
+
+    /**
+     * Returns the number of plants this faction has in this area
+     * @returns {number}
+     */
+    plantsInArea: function plantsInArea() {
+      if (this.faction.name !== 'plants') return 0;
+      return this.faction.plants[this.area.name];
+    },
+
+    /**
+     * Returns an array of the ghost units this player has in the area
+     * @returns {Unit[]}
+     */
+    ghostsInArea: function ghostsInArea() {
+      var _this3 = this;
+
+      if (!this.faction.ghostDeploy) return [];
+      return this.faction.ghosts.filter(function (unit) {
+        return unit.location === _this3.area.name;
+      });
+    },
+
+    /**
+     * Generate our unit status effects icon object
+     * @returns {{}}
+     */
+    statusIcons: function statusIcons() {
+      var _this4 = this;
 
       if (this.neutral) return {};
       var status = {};
-      var factionUnits = this.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this2.area.name);
-      });
 
-      var _iterator = _createForOfIteratorHelper(factionUnits),
+      var _iterator = _createForOfIteratorHelper(this.unitsInArea),
           _step;
 
       try {
         var _loop = function _loop() {
           var unit = _step.value;
           // is this unit skilled and ready?
-          if (_.canUseSkill(_this2.faction, _this2.area, _this2.shared.data.factions)) status['skilled'] = 'can activate area skill'; // is this unit wounded
+          if (_.canUseSkill(_this4.faction, _this4.area, _this4.shared.data.factions)) status['skilled'] = 'can activate area skill'; // is this unit wounded
 
           if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units'; // does this unit have a faction specific flipped status
 
-          if (!unit.toughness && unit.flipped && _this2.faction.statusIcon) {
-            status[_this2.faction.statusIcon] = _this2.faction.statusDescription;
+          if (!unit.toughness && unit.flipped && _this4.faction.statusIcon) {
+            status[_this4.faction.statusIcon] = _this4.faction.statusDescription;
           } // does this unit have a status effect that we have in our "Always show pip" array?
 
 
-          var unitHasAlwaysShowPip = _this2.unitHasAlwaysShowPip(unit);
+          var unitHasAlwaysShowPip = _this4.unitHasAlwaysShowPip(unit);
 
-          if (unitHasAlwaysShowPip && _this2.faction.statusIcon) {
-            status[_this2.faction.statusIcon] = _this2.faction.statusDescription;
+          if (unitHasAlwaysShowPip && _this4.faction.statusIcon) {
+            status[_this4.faction.statusIcon] = _this4.faction.statusDescription;
           } // does this unit have first strike (each faction has its own color first strike icon)
 
 
@@ -16113,7 +16433,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
           if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him'; // cycle through the basic unit abilities
 
-          _this2.abilityIcons.forEach(function (ability) {
+          _this4.abilityIcons.forEach(function (ability) {
             if (unit[ability]) status[ability] = "has a ".concat(ability, " unit");
           });
         };
@@ -16129,15 +16449,20 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       return status;
     },
-    stats: function stats() {
+
+    /**
+     * Build our unit stats array
+     * @returns {object[]}
+     */
+    unitStats: function unitStats() {
       if (this.neutral) return [{
         name: 'influence',
         val: 1
       }];
-      var stats = [];
+      var unitStats = [];
 
       _.forEach(this.units, function (unit, type) {
-        stats.push({
+        unitStats.push({
           name: type,
           val: unit.count,
           pipped: unit.pipped,
@@ -16145,7 +16470,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         });
       });
 
-      return stats;
+      return unitStats;
     }
   }
 });
@@ -17529,7 +17854,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.influence-marker {\n      width: 1em;\n      height: 1em;\n}\n.area-map-container {\n      width: 33%;\n      height: 33%;\n      padding: .40rem;\n}\n.area-map__core-content-container {\n      padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n      top: 60%;\n}\n.stat-icon {\n      width: 1.5em;\n      height: 1.5em;\n      display: inline-flex;\n      justify-content: center;\n      align-items: center;\n      background-color: rgba(0,0,0,.8);\n      border-radius: .25em;\n      margin: 0 .1em;\n      font-size: 1.2rem;\n}\n.area-map__toggle {\n      display: flex;\n      padding: .45vw;\n      z-index: 3;\n}\n.area-map__owner-wrap {\n      position: absolute;\n      top:0;\n      left:0;\n      transform: translate(-15%,-15%);\n      display: flex;\n}\n.area-map__owner-portrait {\n      width: 2.5rem;\n      height: 2.5rem;\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__conquered-icon {\n      display: flex;\n      align-items: center;\n      background-color: rgb(72 62 0);\n      padding: .25rem;\n      box-shadow: inset 0px 0px 1px rgba(0,0,0,1), inset 0px 0px 2px rgba(0,0,0,1), 0px 0px 4px rgba(0,0,0,1);\n      border: 2px solid;\n}\n.area-map__battle-marker, .area-map__exterminated {\n      width: 2.5rem;\n      height: 2.5rem;\n      position: absolute;\n\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n      bottom:0;\n      left:0;\n      transform: translate(-15%,15%);\n}\n.area-map__graveyard {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      right: 3px;\n      top: 50%;\n}\n.area-map__graveyard .icon-web {\n      color: var(--faction-spiders);\n}\n.area-map__graveyard-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__influence {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      left: 3px;\n      top: 50%;\n}\n.area-map__influence-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__exterminated {\n      bottom: 0;\n      right:0;\n      transform: translate(15%,15%);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.8em;\n      background-color: black;\n}\n.area-map {\n      background-position: center top, center;\n      background-repeat: no-repeat, no-repeat;\n      background-size: 100% 2vw, cover;\n      box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n      border: 2px solid rgba(255,255,255,.3);\n      transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n      background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n      background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n      background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n      background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n      background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n      background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n      background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n      background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n      background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n\n\n", ""]);
+exports.push([module.i, "\n.influence-marker {\n      width: 1em;\n      height: 1em;\n}\n.area-map-container {\n      width: 33%;\n      height: 33%;\n      padding: .40rem;\n}\n.area-map__core-content-container {\n      padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n      top: 60%;\n}\n.stat-icon {\n      width: 1.5em;\n      height: 1.5em;\n      display: inline-flex;\n      justify-content: center;\n      align-items: center;\n      background-color: rgba(0,0,0,.8);\n      border-radius: .25em;\n      margin: 0 .1em;\n      font-size: 1.2rem;\n}\n.area-map__toggle {\n      display: flex;\n      padding: .45vw;\n      z-index: 3;\n}\n.area-map__owner-wrap {\n      position: absolute;\n      top:0;\n      left:0;\n      transform: translate(-15%,-15%);\n      display: flex;\n}\n.area-map__owner-portrait {\n      width: 2.5rem;\n      height: 2.5rem;\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__conquered-icon {\n      display: flex;\n      align-items: center;\n      background-color: rgb(72 62 0);\n      padding: .25rem;\n      box-shadow: inset 0px 0px 1px rgba(0,0,0,1), inset 0px 0px 2px rgba(0,0,0,1), 0px 0px 4px rgba(0,0,0,1);\n      border: 2px solid;\n}\n.area-map__battle-marker, .area-map__exterminated {\n      width: 2.5rem;\n      height: 2.5rem;\n      position: absolute;\n\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n      bottom:0;\n      left:0;\n      transform: translate(-15%,15%);\n}\n.area-map__graveyard {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      right: 3px;\n      top: 50%;\n}\n.area-map__graveyard .icon-web {\n      color: var(--faction-spiders);\n}\n.area-map__graveyard-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__influence {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      left: 3px;\n      top: 50%;\n}\n.area-map__influence-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__exterminated {\n      bottom: 0;\n      right:0;\n      transform: translate(15%,15%);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.8em;\n      background-color: black;\n}\n.area-map {\n      background-position: center top, center;\n      background-repeat: no-repeat, no-repeat;\n      background-size: 100% 2vw, cover;\n      box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n      border: 2px solid rgba(255,255,255,.3);\n      transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n      background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n      background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n      background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n      background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n      background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n      background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n      background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n      background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n      background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n", ""]);
 
 // exports
 
@@ -17548,7 +17873,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.area-map__popup {\n    position: absolute;\n    top: 55%;\n    left: 50%;\n    transform:  scale(1) translate(-50%,-50%);\n    box-shadow: 0 0 .5rem .2rem rgba(0,0,0,.7);\n    border: 1px solid;\n}\n\n", ""]);
+exports.push([module.i, "\n.area-map__popup {\n    position: absolute;\n    top: 55%;\n    left: 50%;\n    transform:  scale(1) translate(-50%,-50%);\n    box-shadow: 0 0 .5rem .2rem rgba(0,0,0,.7);\n    border: 1px solid;\n}\n", ""]);
 
 // exports
 
@@ -70903,9 +71228,18 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "width-100 d-flex justify-center" }, [
       _vm.manyAreas
-        ? _c("button", { staticClass: "flipper", on: { click: _vm.prev } }, [
-            _c("i", { staticClass: "icon-left" })
-          ])
+        ? _c(
+            "button",
+            {
+              staticClass: "flipper",
+              on: {
+                click: function($event) {
+                  return _vm.switchArea(-1)
+                }
+              }
+            },
+            [_c("i", { staticClass: "icon-left" })]
+          )
         : _vm._e(),
       _vm._v(" "),
       _c(
@@ -70942,9 +71276,18 @@ var render = function() {
       ),
       _vm._v(" "),
       _vm.manyAreas
-        ? _c("button", { staticClass: "flipper", on: { click: _vm.next } }, [
-            _c("i", { staticClass: "icon-right" })
-          ])
+        ? _c(
+            "button",
+            {
+              staticClass: "flipper",
+              on: {
+                click: function($event) {
+                  return _vm.switchArea(+1)
+                }
+              }
+            },
+            [_c("i", { staticClass: "icon-right" })]
+          )
         : _vm._e()
     ])
   ])
@@ -71336,7 +71679,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.stats.length > 0
+  return _vm.unitStats.length > 0
     ? _c(
         "div",
         {
@@ -71350,13 +71693,11 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _vm._l(_vm.stats, function(stat) {
+          _vm._l(_vm.unitStats, function(unitType) {
             return _c("div", { staticClass: "map-player__stat" }, [
-              (stat.name !== "champion" && stat.val > 0) || stat.val > 1
-                ? _c("span", [_vm._v(_vm._s(stat.val))])
-                : _vm._e(),
+              _c("span", [_vm._v(_vm._s(unitType.val))]),
               _vm._v(" "),
-              stat.name === "champion"
+              unitType.name === "champion"
                 ? _c("i", { staticClass: "map-player_champion-wrap" }, [
                     _c("img", {
                       staticClass: "map-player__champion",
@@ -71365,17 +71706,17 @@ var render = function() {
                       }
                     }),
                     _vm._v(" "),
-                    stat.pipped > 0
+                    unitType.pipped > 0
                       ? _c(
                           "div",
                           {
                             staticClass:
                               "pos-absolute map-player__pips d-flex justify-center width-100"
                           },
-                          _vm._l(stat.pipped, function(n) {
+                          _vm._l(unitType.pipped, function(n) {
                             return _c("i", {
                               staticClass: "icon-circle",
-                              class: "faction-" + _vm.faction.name
+                              class: "faction-" + _vm.name
                             })
                           }),
                           0
@@ -71386,21 +71727,21 @@ var render = function() {
                     "i",
                     {
                       staticClass: "pos-relative",
-                      class: "icon-" + stat.name,
-                      attrs: { title: stat.description }
+                      class: "icon-" + unitType.name,
+                      attrs: { title: unitType.description }
                     },
                     [
-                      stat.pipped > 0
+                      unitType.pipped > 0
                         ? _c(
                             "div",
                             {
                               staticClass:
                                 "pos-absolute map-player__pips d-flex justify-center width-100"
                             },
-                            _vm._l(stat.pipped, function(n) {
+                            _vm._l(unitType.pipped, function(n) {
                               return _c("i", {
                                 staticClass: "icon-circle",
-                                class: "faction-" + _vm.faction.name
+                                class: "faction-" + _vm.name
                               })
                             }),
                             0
@@ -95361,7 +95702,7 @@ var helpers = {
       return token.type === 'vines' && token.revealed;
     });
 
-    if (faction.name !== 'plants' && _.money(faction) < vines.length) {
+    if (!faction.hasPlants && _.money(faction) < vines.length) {
       return true;
     } // finally is there a trapped like rats played here?
 
@@ -95381,7 +95722,7 @@ var helpers = {
    */
   vinesCost: function vinesCost(faction, units, factions) {
     // if we are the plants, the aliens, or there are no vines in the game return 0
-    if (faction.name === 'plants' || faction.teleports || !factions['plants']) return 0; // find out where each of the vines tokens is located
+    if (faction.hasPlants || faction.teleports || !factions['plants']) return 0; // find out where each of the vines tokens is located
 
     var vinesAreas = {};
     var vines = factions['plants'].tokens // look through the plants tokens
@@ -95899,13 +96240,13 @@ var helpers = {
    * @returns {number}
    */
   plantInfluence: function plantInfluence(faction, area) {
+    var _faction$plants;
+
     // format input
     if (faction.data) faction = faction.data;
-    if (area.data) area = area.data; // only the plants faction has plants
+    if (area.data) area = area.data; // return the number of plants we have in this area
 
-    if (faction.name !== 'plants') return 0; // return the number of plants we have in this area
-
-    return faction.plants[area.name] ? faction.plants[area.name] : 0;
+    return (_faction$plants = faction.plants) !== null && _faction$plants !== void 0 && _faction$plants[area.name] ? faction.plants[area.name] : 0;
   },
 
   /**

@@ -151,7 +151,7 @@ class Witches extends Faction {
     async revealMagickCards( area ){
 
         // show magick popup
-        this.game().popup( this.playerId, { magick : true, area : area.name, faction : this.name });
+        this.game().popup( this.playerId, { type: 'magick', area : area.name, faction : this.name });
 
         // draw our magick cards
         let cards = this.drawMagickCards( area );

@@ -154,20 +154,62 @@
                     { name : 'move', id : 4 },
                 ],
                 actions : {},
-                areaActions:  [
-                    'ambush',
-                    'loop',
-                    'skill',
-                    'materialize',
-                    'magick',
-                    'token',
-                ]
+
+                actionTypes : {
+                    'pass' :{
+                        buttonMessage : 'Pass for the turn',
+                    },
+                    'skip' : {
+                        buttonMessage: 'Skip this action',
+                    },
+                    locked : {
+                        buttonMessage: 'Declare yourself locked',
+                    },
+                    'token' : {
+                        useMessage: 'reveal token',
+                        areaAction : true,
+                    },
+                    'skill' : {
+                        img : '/images/icons/skilled.png',
+                        useMessage: 'use skill',
+                        areaAction : true,
+                    },
+                    'magick' : {
+                        img : '/images/icons/enchanted.png',
+                        useMessage: 'use magick',
+                        areaAction : true,
+                        buttonMessage: 'Flip your units in this area to use magick'
+                    },
+                    'loop' : {
+                        img : '/images/icons/loop.png',
+                        useMessage: 'use loop',
+                        areaAction : true,
+                        buttonMessage: 'Replace your Loop token'
+                    },
+                    'ambush' : {
+                        img : '/images/icons/ambush.png',
+                        useMessage: 'ambush',
+                        areaAction : true,
+                    },
+                    'materialize' : {
+                        img : '/images/icons/ghost.png',
+                        useMessage: 'materialize',
+                        areaAction : true,
+                    },
+                    'xavier' : {
+                        useMessage: 'xavier token',
+                        buttonMessage: 'Reveal token on Xavier'
+                    },
+                },
             };
+        },
+
+        created(){
+            this.shared.init( 'actionTypes', this.actionTypes );
         },
 
         mounted(){
             App.event.on( 'actionClicked', args => this.setAction( ...args ) );
-            this.$set( this.shared, 'areaActions', this.areaActions );
             this.generateActions();
             this.setDefaultAction();
         },
@@ -201,7 +243,7 @@
                 let action = { name : name };
 
                 // if this is an area action set our shared action area
-                if( this.areaActions.includes( name ) ){
+                if( this.shared.actionTypes[name]?.areaAction ){
                     action.area = param ?? this.actions[name][0];
                 }
 
@@ -377,40 +419,20 @@
              * @returns {string}
              */
             buttonMessage(){
-                let message;
+                // if we don't have a valid action
+                if( this.saveDisabled ) return "Choose your action";
+
+                // if we have an action with a static message
+                let message = this.shared.actionTypes[this.action.name]?.buttonMessage;
+                if( message ) return message;
+
+                // if we need a dynamic message
                 switch( this.action.name ){
-                    case 'skill':
-                        message = `Activate the ${this.area.name} skill ability`;
-                        break;
-                    case 'token':
-                        message = `Reveal token in the ${this.area.name}`;
-                        break;
-                    case 'pass':
-                        message = `Pass for the turn`;
-                        break;
-                    case 'skip':
-                        message = `Skip this action`;
-                        break;
-                    case 'locked':
-                        message = `Declare yourself locked`;
-                        break;
-                    case 'xavier':
-                        message = `Reveal token on Xavier`;
-                        break;
-                    case 'magick':
-                        message = `Use magick in the ${this.area.name}`;
-                        break;
-                    case 'materialize':
-                        message = `Reveal ghosts in the ${this.area.name}`;
-                        break;
-                    case 'loop':
-                        message = `Replace Loop token`;
-                        break;
-                    case 'ambush':
-                        message = `Ambush the ${this.area.name}`;
-                        break;
+                    case 'skill': return `Activate the ${this.area.name} skill ability`;
+                    case 'token': return `Reveal token in the ${this.area.name}`;
+                    case 'materialize': return `Reveal ghosts in the ${this.area.name}`;
+                    case 'ambush': return `Ambush the ${this.area.name}`;
                 }
-                return this.saveDisabled ? "Choose your action" : message;
             },
 
 

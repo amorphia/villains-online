@@ -100,11 +100,8 @@ let helpers = {
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
 
-        // only the plants faction has plants
-        if( faction.name !== 'plants' ) return 0;
-
         // return the number of plants we have in this area
-        return faction.plants[area.name] ? faction.plants[area.name] : 0;
+        return faction.plants?.[area.name] ? faction.plants[area.name] : 0;
     },
 
 

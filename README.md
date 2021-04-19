@@ -9,8 +9,11 @@ Villains is a board game for 3-5 players in which players take on the role of a 
 
 Since this site was created to allow my game group to keep playing during the pandemic it assumes the users are already familiar with how to play Villains, and thus doesn't include any sort of tutorials (yet). But you can read the full game rules [here](public/files/villains_full_rules.pdf). 
 
-![](public/images/readme/villains.mp4)
+![](public/images/readme/screenshot_1.png)
 
+![](public/images/readme/screenshot_2.png)
+
+![](public/images/readme/screenshot_3.png)
 
 ## Built With
 * Laravel
@@ -25,6 +28,11 @@ Since this site was created to allow my game group to keep playing during the pa
 * MySQL 8
 * Composer
 * Node
+
+## The Good Stuff
+I'm mostly using laravel for authentication and storing the game's save files in the database. 
+So if you are poking around the repo and want see how the game works all of the interesting stuff is in the /server directory, just a head's up.
+
 
 ## Installation
 

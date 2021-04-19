@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name', 'email', 'password',
     ];
 
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -28,6 +29,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
 
     /**
      * The attributes that should be cast to native types.
@@ -39,38 +41,51 @@ class User extends Authenticatable
     ];
 
 
-    /**
-     *
-     *  Events
-     *
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Events
+    |--------------------------------------------------------------------------
+    */
 
     public static function boot()
     {
         parent::boot();
 
+        // generate a UUID for this user
         self::creating( function ( $model ) {
             $model->uuid = (string) Uuid::generate( 4 );
         });
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+
     /**
-     *
-     * Relationships
-     *
+     * Get the games this player participated in
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function games()
     {
         return $this->belongsToMany( Game::class );
     }
 
-    /**
-     *
-     *
-     *  Methods
-     *
-     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Methods
+    |--------------------------------------------------------------------------
+    */
+
+
+    /**
+     * Get the four most recent games we have participated in
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getSaveGames()
     {
         return $this->games()
@@ -79,8 +94,6 @@ class User extends Authenticatable
             ->take( 4 )
             ->orderByDesc( 'created_at' )
             ->get();
-
-            //->where('concluded', false )
     }
 
 }

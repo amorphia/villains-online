@@ -148,6 +148,10 @@ class Guerrillas extends Faction {
      * @param areaName
      */
     async takeAmbushAction( player, areaName ){
+
+        // show popup
+        this.game().popup( this.playerId, { type: 'ambush', area : areaName, faction : this.name });
+
         let area = this.game().areas[areaName];
 
         try {

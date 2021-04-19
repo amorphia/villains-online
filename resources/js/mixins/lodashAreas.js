@@ -225,7 +225,7 @@ let helpers = {
 
         // if this area is trapped by the plants and we don't have enough money return true
         let vines = area.tokens.filter( token => token.type === 'vines' && token.revealed );
-        if( faction.name !== 'plants' && _.money( faction ) < vines.length ){
+        if( !faction.hasPlants && _.money( faction ) < vines.length ){
             return true;
         }
 
@@ -244,7 +244,7 @@ let helpers = {
      */
     vinesCost( faction, units, factions ){
         // if we are the plants, the aliens, or there are no vines in the game return 0
-        if( faction.name === 'plants' || faction.teleports || ! factions['plants'] ) return 0;
+        if( faction.hasPlants || faction.teleports || ! factions['plants'] ) return 0;
 
         // find out where each of the vines tokens is located
         let vinesAreas = {};
