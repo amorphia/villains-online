@@ -12,7 +12,7 @@
 
             <!-- submit button -->
             <div class="width-100 d-flex justify-center">
-                <button class="button" @click="save">{{ `Deploy Xavier to the ${area.name}` }}</button>
+                <button class="button" @click="resolve">{{ `Deploy Xavier to the ${area.name}` }}</button>
             </div>
         </div>
     </player-prompt>
@@ -38,15 +38,15 @@
         },
 
         methods : {
-            /**
-             * Save our choice
-             */
-            save(){
-                App.event.emit( 'sound', 'ui' );
-                App.event.emit('unselectAreas' );
-                this.shared.socketEmit( 'factionStartOfTurnResponse', this.area.name );
-            },
 
+            /**
+             * Resolve this prompt
+             */
+            resolve(){
+                let data = { area : this.area.name };
+                data = { ...this.data, ...data };
+                this.shared.respond( 'deploy-xavier', data );
+            },
 
             /**
              * Change our area index

@@ -9,6 +9,7 @@ class Mafia extends Faction {
 
         // triggers
         this.triggers = {
+            "onStartOfTurn" : "chooseSpy",
             "onCleanUp" : "resetSpy"
         };
 
@@ -64,32 +65,23 @@ class Mafia extends Faction {
 
 
     /**
-     * Set our start of turn prompt
-     *
-     * @returns {string}
+     * Choose an enemy to spy on their target
      */
-    startOfTurnPrompt() {
-        return this.areas().includes( 'police' ) ? 'choose-target' : 'choose-spy';
-    }
+    async chooseSpy(){
+        // if we control the police we already spy on everyone
+        if( this.areas().includes( 'police' ) ) return;
 
+        return this.game().promise({
+            players: this.playerId,
+            name: 'choose-spy',
+            data: {}
+        }).then( ([player,response]) => {
+            // set our spy faction
+            this.data.spy = response.faction;
+            this.game().updatePlayerData();
+            this.message( `Is spying on the ${response.faction}` );
+        }).catch( error => console.error( error ) );
 
-    /**
-     * Resolve our start of turn prompt
-     *
-     * @param player
-     * @param spyFaction
-     */
-    async resolveStartOfTurn( player, spyFaction ){
-
-        // set our spy faction
-        this.data.spy = spyFaction;
-        this.message( `Is spying on the ${spyFaction}` );
-
-        // set our prompt and advance the game
-        player.setPrompt({ name : 'choose-target' });
-        this.game().data.gameAction++;
-        Server.saveToDB( this.game() );
-        await this.game().pushGameDataToPlayers();
     }
 
 

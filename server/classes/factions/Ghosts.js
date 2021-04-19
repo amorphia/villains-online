@@ -7,6 +7,12 @@ class Ghosts extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // faction event triggers
+        this.triggers = {
+            "onStartOfTurn" : "setRandomTarget",
+        };
+
+
         //data
         this.data.name = this.name;
         this.data.title = "The Lost Legion";
@@ -71,7 +77,7 @@ class Ghosts extends Faction {
      *
      * @returns {string}
      */
-    startOfTurnPrompt() {
+    setRandomTarget() {
         let target, card;
 
         if( this.data.randomTarget ){
@@ -84,7 +90,6 @@ class Ghosts extends Faction {
             card.randomTarget = true;
         }
 
-        return 'choose-target';
     }
 
 

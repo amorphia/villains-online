@@ -1,7 +1,7 @@
 <template>
     <div class="player-hud d-flex flex-wrap pos-relative overflow-hidden" :class="{'opacity-5' : player.passed}" @click="shared.event.emit( 'viewPlayer', player )">
 
-        <loading-streak v-if="player.active" position="left"></loading-streak>
+        <loading-streak v-if="isActive" position="left"></loading-streak>
 
         <div class="player-hud__core d-flex flex-wrap width-100 align-center shrink-0">
 
@@ -73,6 +73,15 @@
         },
 
         computed: {
+
+            /**
+             * Is ths player active?
+             */
+            isActive(){
+                return this.player.prompt.name
+                    && !( this.player.prompt.data && this.player.prompt.data.passive );
+            },
+
             /**
              * Should we show the player's prompt message
              * @returns {boolean}

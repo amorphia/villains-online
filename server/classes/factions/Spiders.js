@@ -10,7 +10,7 @@ class Spiders extends Faction {
         // triggers
         this.triggers = {
             "onFactionKillsUnit" : "webKilledUnit",
-            "onStartOfTurn" : "freeUnitsFromWebs",
+            "onStartOfTurnSerial" : "freeUnitsFromWebs",
             "onBeforeBattle" : "deployXchxchAmbushUnits"
         };
 

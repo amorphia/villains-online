@@ -79,7 +79,7 @@
         </div>
 
         <!-- active slider -->
-        <loading-streak v-if="shared.player.active" position="bottom"></loading-streak>
+        <loading-streak v-if="isActive" position="bottom"></loading-streak>
     </div>
 </template>
 
@@ -109,6 +109,15 @@
         },
 
         computed : {
+
+            /**
+             * Is this player active?
+             */
+            isActive(){
+                return this.shared.player.prompt.name
+                    && !( this.shared.player.prompt.data && this.shared.player.prompt.data.passive );
+            },
+
             /**
              * Returns a component name if this faction has a plan focus component, otherwise return false
              * @returns {string|false}

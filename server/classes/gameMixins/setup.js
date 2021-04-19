@@ -73,7 +73,8 @@ let setup = {
         // push the game data to each player
         await this.pushGameDataToPlayers();
 
-        // if we are loading a post-combat save fire off the end of turn step
+        // if we are loading a turn save fire off the proper step
+        if( saved.saveNote === 'start-of-turn' ) this.handleStartOfTurn();
         if( saved.saveNote === 'post-combat' ) this.resolveEndOfTurnStep();
     },
 

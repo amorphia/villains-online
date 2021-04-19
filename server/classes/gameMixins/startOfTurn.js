@@ -4,9 +4,13 @@ let obj = {
      * Resolve the start of turn step
      */
     async resolveStartOfTurnStep() {
+
         // set phase and state
         this.data.state = "start-of-turn";
         this.data.phase = "plans-and-targets";
+
+        // save a game save state to the DB
+        Server.saveToDB( this, { type:'turn', note: 'start-of-turn' } );
 
         // Show start of turn title card
         let data = {
@@ -23,18 +27,24 @@ let obj = {
             console.error( error );
         }
 
+        this.handleStartOfTurn();
+    },
+
+
+    /**
+     * Handle the core start of turn steps
+     */
+    async handleStartOfTurn(){
+
         // Each faction draws their action cards, resets their energy, and draws their plan cards
-        _.forEach(this.factions, (faction, name) => {
+        Object.values( this.factions ).forEach( faction => {
             faction.drawTurnCards();
             faction.resetEnergy();
             faction.drawPlans();
         });
 
-
-        // Check for start of turn triggers
-        for( let faction of Object.values( this.factions ) ){
-            if( faction.triggers.onStartOfTurn ) await faction[faction.triggers.onStartOfTurn]();
-        }
+        // handle start of turn triggers
+        await this.handleStartOfTurnTriggers();
 
         // set all players as active
         this.setAllPlayersActive();
@@ -42,11 +52,31 @@ let obj = {
         // give each player their start of turn prompt
         this.setStartOfTurnPrompts();
 
-        // save a game save state to the DB
-        Server.saveToDB( this, { type:'turn' } );
-
         // push our game data to each player
         await this.pushGameDataToPlayers();
+    },
+
+
+    /**
+     * Handle our faction start of turn triggers
+     */
+    async handleStartOfTurnTriggers(){
+
+        //  handle parallel triggers
+        let promises = [];
+
+        // Check for start of turn triggers
+        for( let faction of Object.values( this.factions ) ){
+            if( faction.triggers.onStartOfTurn ) promises.push( faction[faction.triggers.onStartOfTurn]() );
+        }
+
+        // wait for serial triggers to resolve
+        await Promise.all( promises );
+
+        // handle serial triggers
+        for( let faction of Object.values( this.factions ) ){
+            if( faction.triggers.onStartOfTurnSerial ) await faction[faction.triggers.onStartOfTurnSerial]();
+        }
     },
 
 
@@ -56,7 +86,7 @@ let obj = {
     setStartOfTurnPrompts(){
         _.forEach( this.players, player => {
             let faction = this.factions[player.data.faction];
-            player.setPrompt( faction.startOfTurnPrompt() );
+            player.setPrompt( 'choose-target' );
         });
     },
 

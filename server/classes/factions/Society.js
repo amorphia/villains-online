@@ -10,6 +10,7 @@ class Society extends Faction {
         // faction event triggers
         this.triggers = {
             "onSetup" : "setupWordTokens",
+            "onStartOfTurn" : "deployXavier",
             "onCleanUp" : "setXavierTokenLocation"
         };
 
@@ -183,39 +184,35 @@ class Society extends Faction {
 
 
     /**
-     * Our start of turn prompt
-     *
-     * @returns {string}
+     * Handle our Xavier deploy start of turn trigger
      */
-    startOfTurnPrompt() {
-        return 'deploy-xavier';
+    async deployXavier(){
+
+        return this.game().promise({
+            players: this.playerId,
+            name: 'deploy-xavier',
+            data: {}
+        }).then( async ([player,response]) => { await this.resolveDeployXavier( response ) })
+          .catch( error => console.error( error ) );
     }
 
 
     /**
-     * Resolve our Xavier deploy
-     *
-     * @param player
-     * @param area
+     * Resolve our Xavier Deploy
+     * @param response
      */
-    async resolveStartOfTurn( player, area ){
+    async resolveDeployXavier( response ){
         let xavier = this.getChampion();
 
         let data = {
             cost : 0,
             units : [xavier.id],
-            toArea : area,
+            toArea : response.area,
             hidePrompt : true
         };
 
-        // deploy Xavier
-        await this.resolveDeploy( player, data );
-
-        // set our new prompt
-        player.setPrompt({ name : 'choose-target' });
-        this.game().data.gameAction++;
-        Server.saveToDB( this.game() );
-        await this.game().pushGameDataToPlayers();
+        await this.resolveDeploy( this.playerId, data );
+        this.game().updatePlayerData();
     }
 
 

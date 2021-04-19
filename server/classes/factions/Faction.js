@@ -112,17 +112,6 @@ class Faction {
         return mods
     }
 
-
-    /**
-     * Return our faction start of turn prompt
-     *
-     * @returns {string}
-     */
-    startOfTurnPrompt() {
-        return 'choose-target';
-    }
-
-
     /**
      * Set a prompt for a player to respond to
      *
@@ -130,7 +119,7 @@ class Faction {
      * @param data
      * @returns {object} // the player's response
      */
-    async prompt( prompt, data ){
+    async prompt( prompt, data = {} ){
         let [player, response] = await this.game().promise({
             players: this.playerId,
             name: prompt,

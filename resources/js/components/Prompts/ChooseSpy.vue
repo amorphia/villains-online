@@ -29,7 +29,7 @@
 
             <!-- submit button -->
             <div class="width-100 d-flex justify-center">
-                <button class="button" :disabled="!spy" @click="saveSpy">{{ buttonMessage }}</button>
+                <button class="button" :disabled="!spy" @click="resolve">{{ buttonMessage }}</button>
             </div>
         </div>
     </player-prompt>
@@ -57,14 +57,16 @@
                 return this.spy ? `spy on the ${this.spy}` : "choose faction";
             }
         },
+
         methods : {
             /**
-             * Save our choice
+             * Resolve this prompt
              */
-            saveSpy(){
-                App.event.emit( 'sound', 'ui' );
-                this.shared.socketEmit( 'factionStartOfTurnResponse', this.spy );
-            }
+            resolve(){
+                let data = { faction : this.spy };
+                data = { ...this.data, ...data };
+                this.shared.respond( 'choose-spy', data );
+            },
         }
     }
 </script>
