@@ -9,6 +9,7 @@ class Plants extends Faction {
 
         // triggered events
         this.triggers = {
+            "onSetup" : "setupVinesTokens",
             "onAfterCombatStep" : "sproutPlants",
             "onCleanUp" : "removePlantsFromUnitMix"
         };
@@ -282,7 +283,7 @@ class Plants extends Faction {
     /**
      * Remove the vines tokens we haven't unlocked yet from our reserves
      */
-    onSetup(){
+    setupVinesTokens(){
         this.setupVariableTokens( 'vines', this.data.vines );
     }
 

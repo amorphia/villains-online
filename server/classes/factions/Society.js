@@ -7,8 +7,9 @@ class Society extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
-        // triggers
+        // faction event triggers
         this.triggers = {
+            "onSetup" : "setupWordTokens",
             "onCleanUp" : "setXavierTokenLocation"
         };
 
@@ -368,7 +369,7 @@ class Society extends Faction {
     /**
      * On setup remove two of our word of command tokens from our reserves
      */
-    onSetup(){
+    setupWordTokens(){
         this.setupVariableTokens( 'word-of-command', this.data.words );
     }
 }

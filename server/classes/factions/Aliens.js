@@ -7,6 +7,11 @@ class Aliens extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
+        // faction event triggers
+        this.triggers = {
+            'onSetup' : 'setKauData'
+        };
+
         //data
         this.data.name = this.name;
         this.data.title = "The Centari Invasion";
@@ -103,7 +108,7 @@ class Aliens extends Faction {
     /**
      * On setup, make a convenience reference to kau
      */
-    onSetup(){
+    setKauData(){
         this.data.kau = this.getChampion();
     }
 }

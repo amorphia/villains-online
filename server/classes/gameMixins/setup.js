@@ -33,9 +33,16 @@ let setup = {
         // and start the first turn
         if( this.allPlayersHaveFactions() ){
             this.generateGame();
-            _.forEach( this.factions, faction => faction.onSetup() );
+            this.handleFactionSetupTriggers();
             this.resolveStartOfTurnStep();
         }
+    },
+
+
+    handleFactionSetupTriggers(){
+        Object.values( this.factions ).forEach( faction => {
+            if( faction.triggers.onSetup ) faction[faction.triggers.onSetup]();
+        });
     },
 
 
@@ -58,7 +65,7 @@ let setup = {
         this.mergeSavedData( saved );
 
         // run each faction's on setup trigger
-        _.forEach( this.factions, faction => faction.onSetup() );
+        this.handleFactionSetupTriggers();
 
         // add each player to this game room
         this.addPlayersToRoom();

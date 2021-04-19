@@ -76,10 +76,6 @@ let obj = {
         this.game().shuffle( this.data.plans.deck );
     },
 
-
-    // abstract
-    onSetup(){}
-
 };
 
 module.exports = obj;
