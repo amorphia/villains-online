@@ -253,9 +253,6 @@
         width: 20em;
     }
 
-    .lobby__players {
-
-    }
 
     .server-offline {
         padding: 2rem;

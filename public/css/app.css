@@ -617,6 +617,10 @@ a {
   color: white;
 }
 
+.light-yellow {
+  color: var(--light-yellow);
+}
+
 .primary-font {
   font-family: var(--primary-font);
 }
@@ -3224,5 +3228,39 @@ body {
   z-index: 0;
   -webkit-animation: selected 2s linear infinite;
           animation: selected 2s linear infinite;
+}
+
+.mobile-warning__wrap {
+  height: 100vh;
+}
+
+.mobile-warning {
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  font-size: 6em;
+  background-color: rgba(17, 7, 19, 0.9);
+  border-radius: 0.2em;
+  border-top: 1px solid rgba(91, 33, 128, 0.56);
+  letter-spacing: 2px;
+  color: var(--highlight-color);
+  box-shadow: 0 0 2px rgba(91, 33, 120, 0.5), 0 4px 5px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-warning i {
+  color: red;
+  font-size: 0.9em;
+  position: relative;
+  top: 3px;
+  margin-right: 0.5rem;
+}
+
+.mobile-warning__title {
+  font-size: 1.5em;
+}
+
+.mobile-warning__text {
+  color: #d9a736;
 }
 

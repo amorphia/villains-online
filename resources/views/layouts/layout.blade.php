@@ -36,12 +36,11 @@
 <div id="app">
 
     <vue-csrf></vue-csrf>
-    <div class="main">
+    @include( 'partials.mobile_warning' )
 
+    <div class="main tablet-up-only">
         @yield( 'content' )
-
     </div>
-
 </div>
 
 @stack('scripts')
