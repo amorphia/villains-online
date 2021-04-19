@@ -21,8 +21,9 @@
                 // data about each of our volume settings
                 volumeScale : {
                     '0' : { icon : 'icon-mute', amp : 0 },
-                    '1' : { icon : 'icon-volume-mid', amp : .4 },
-                    '2' : { icon : 'icon-volume-high', amp : .7 },
+                    '1' : { icon : 'icon-volume-low', amp : .2 },
+                    '2' : { icon : 'icon-volume-mid', amp : .4 },
+                    '3' : { icon : 'icon-volume-high', amp : .7 },
                 },
 
                 // array of available sounds
@@ -89,7 +90,8 @@
                 switch ( this.volume ) {
                     case 0: this.volume = 1; break;
                     case 1: this.volume = 2; break;
-                    case 2: this.volume = 0; break;
+                    case 2: this.volume = 3; break;
+                    case 3: this.volume = 0; break;
                 }
 
                 App.cookie( 'volume', this.volume );

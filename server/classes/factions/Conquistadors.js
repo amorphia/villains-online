@@ -136,7 +136,8 @@ class Conquistadors extends Faction {
             promises.push( this.factionChoosePoxVictim( faction, units, args ) );
         });
 
-        await Promise.all( promises ).catch( error => console.log( error ) );
+        await Promise.all( promises )
+            .catch( error => console.log( error ) );
 
         // if we killed any units, then display the results
         if( units.length ){

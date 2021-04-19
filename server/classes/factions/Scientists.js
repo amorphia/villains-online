@@ -118,8 +118,9 @@ class Scientists extends Faction {
         while( fusing ) {
             args.fusion = true;
             let output = await this.playACard( args );
-            if( output && output.declined ) fusing = false;
-            else {
+            if( output && output.declined ){
+                fusing = false;
+            } else {
                 this.data.fusion++;
             }
         }

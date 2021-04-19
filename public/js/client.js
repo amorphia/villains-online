@@ -4311,10 +4311,14 @@ __webpack_require__.r(__webpack_exports__);
           amp: 0
         },
         '1': {
+          icon: 'icon-volume-low',
+          amp: .2
+        },
+        '2': {
           icon: 'icon-volume-mid',
           amp: .4
         },
-        '2': {
+        '3': {
           icon: 'icon-volume-high',
           amp: .7
         }
@@ -4365,6 +4369,10 @@ __webpack_require__.r(__webpack_exports__);
           break;
 
         case 2:
+          this.volume = 3;
+          break;
+
+        case 3:
           this.volume = 0;
           break;
       }

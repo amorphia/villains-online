@@ -70,8 +70,6 @@ let obj = {
             areaData.push( await area.determineControl() );
         }
 
-        console.log( 'areaData', areaData );
-
         // display the results to all players
         await this.timedPrompt( 'determine-control', { wait : slideSpeed * 9, slideSpeed : slideSpeed, areas : areaData })
             .catch( error => console.error( error ) );

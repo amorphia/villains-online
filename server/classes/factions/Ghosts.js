@@ -296,10 +296,7 @@ class Ghosts extends Faction {
 
         // then cycle through the array of selected patsies and bounce them to their owner's reserves
         units.forEach( unit => {
-            console.log( 'unit', unit );
-            console.log( 'unit faction', unit.faction );
             let owner = this.game().factions[ unit.faction ];
-            console.log( owner );
             owner.returnUnitToReserves( unit );
         });
 

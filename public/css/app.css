@@ -198,6 +198,9 @@
 .icon-volume-mid:before {
     content: "\EA27";
 }
+.icon-volume-low:before {
+    content: "\EA28";
+}
 .icon-mute:before {
     content: "\EA2A";
 }

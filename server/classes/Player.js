@@ -205,11 +205,12 @@ class Player {
      */
     callSocket( method, ...args ){
         let socket = this.socket();
-        if( socket ){
-            socket[method]( ...args );
-        } else {
+        if( !socket ){
             console.log( 'No Socket present' );
+            return;
         }
+
+        socket[method]( ...args );
     }
 }
 
