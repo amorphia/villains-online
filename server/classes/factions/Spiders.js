@@ -18,7 +18,8 @@ class Spiders extends Faction {
         this.data.name = this.name;
         this.data.title = "The Eyes of the Woods";
         this.data.focusDescription = "Trap enemy units in webs";
-        this.data.xchxchDeploy = 1; // how many patsies do we deploy at the start of combat with xchxch?
+        this.data.dropDeploy = 1; // how many spider do we place with our Drop token?
+        this.data.xchxchDeploy = 1; // how many spiders do we place at the start of combat with xchxch?
         this.data.webs = []; // where we store our webbed victims
 
         // tokens
@@ -31,16 +32,31 @@ class Spiders extends Faction {
                 type: 'drop',
                 cost: 0,
                 resource : 1,
-                req : "To avoid discarding this token you must deploy at least one patsy, or start a battle"
+                req : "To avoid discarding this token you must place at least one spider, or start a battle"
             }
         };
 
         // units
         this.units['goon'].count = 3;
-        this.units['mole'].count = 3;
-        this.units['patsy'].count = 10;
-        this.units['patsy'].data.deadly = true;
-        this.units['patsy'].data.attack = [8];
+        this.units['mole'].count = 4;
+        this.units['patsy'].count = 6;
+
+        this.units['spider'] = {
+            count: 8,
+            data: {
+                name: "spider",
+                type: "spider",
+                basic: false,
+                cost: 0,
+                noDeploy: true,
+                influence: 0,
+                attack: [5],
+                deadly : true,
+                killed: false,
+                selected: false,
+                hitsAssigned: 0,
+            }
+        };
 
         this.units['champion'] = {
             count: 1,
@@ -49,7 +65,7 @@ class Spiders extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 2,
-                attack: [4],
+                attack: [5],
                 deadly: true,
                 cost: 2,
                 killed: false,
@@ -61,15 +77,20 @@ class Spiders extends Faction {
 
 
 
-
-
     /**
      * Process faction upgrade
      *
      * @param {number} upgrade
      */
     processUpgrade( upgrade ) {
-        this.data.xchxchDeploy = upgrade + 1;
+        if( upgrade === 1 ){
+            this.data.dropDeploy = 2;
+        }
+
+        if( upgrade === 2 ){
+            this.data.dropDeploy = 2;
+            this.data.xchxchDeploy = 2;
+        }
     }
 
 
@@ -226,12 +247,18 @@ class Spiders extends Faction {
      * @returns {boolean}
      */
     canActivateDrop( token, area ) {
-        // do we have any unkilled patsies?
-        let hasPatsies = this.data.units.some( unit => unit.type === 'patsy' && !unit.killed );
-        // or can we battle?
-        let canBattle = area.canBattle();
-        return hasPatsies || canBattle;
+        return this.hasSpiders() || area.canBattle();
     }
+
+
+    /**
+     * Do we have any spiders in our reserves to place?
+     * @returns {boolean}
+     */
+    hasSpiders(){
+        return this.data.units.some( unit =>  _.unitInReserves( unit, { type : 'spider' } ) );
+    }
+
 
     /**
      * Deploy patsies directly into battle if XchXch is present
@@ -244,19 +271,32 @@ class Spiders extends Faction {
         // is Xchxch here? No? then return
         if( !this.championInArea( battle.area.name ) ) return;
 
-        let options = {
-            area: battle.area,
-            faction: this,
-            player: this.playerId,
-            fromToken : true,
-            deployLimit: this.data.xchxchDeploy,
-            unitTypes: ['patsy'],
-        };
+        // if we have no spiders, abort
+        if( !this.hasSpiders() ){
+            this.message( 'No spiders in reserves to place', { class : 'warning' });
+            return;
+        }
 
-        this.message( `Xchxch calls her brood to the feast` );
+        // poop out spiders
+        await this.resolveSpawnSpiders( battle.area, this.data.xchxchDeploy, `XchXch summons her brood to battle` );
+    }
 
-        // resolve deploy
-        await this.deploy( options );
+
+
+
+    /**
+     * Place a spider unit in the given area
+     *
+     * @param area
+     * @returns {object}
+     */
+    placeSpider( area ){
+        let spider = this.data.units.find( unit => _.unitInReserves( unit, { type : 'spider' } ) );
+
+        if( !spider ) return null;
+
+        spider.location = area.name;
+        return spider;
     }
 
 
@@ -266,25 +306,53 @@ class Spiders extends Faction {
      * @param args
      */
     async activateDropToken( args ) {
+        // poop out spiders
+        let units = await this.resolveSpawnSpiders( args.area, this.data.dropDeploy, `Spiders drop from above in The ${args.area.name}` );
 
-        // deploy up to two patsies here
-        let options = {
-            area: args.area,
-            faction: this,
-            player: this.playerId,
-            fromToken : true,
-            deployLimit: 2,
-            unitTypes: ['patsy'],
-        };
-        let deployed = await this.deploy( options );
+        // if we have no spiders to place, log the error
+        if( !units.length ) this.message( 'No more spiders in reserves to place', { class : 'warning' });
 
-        // if we deployed no units, and can't battle, remove this token
-        if( ( !deployed.units || !deployed.units.length ) && ! args.area.canBattle() ) return this.game().declineToken( this.playerId, args.token, true );
+        // if we placed no spiders, and can't battle, remove this token
+        if( !units.length && ! args.area.canBattle() ) return this.game().declineToken( this.playerId, args.token, true );
 
         // start a battle here
         await this.game().battle( args.area );
 
+        // move along home
         this.game().advancePlayer();
+    }
+
+
+    /**
+     * Spawn spiders in an area
+     * @param area
+     * @param count
+     * @param message
+     * @returns {Unit[]}
+     */
+    async resolveSpawnSpiders( area, count, message ){
+        let units = [];
+
+        // add spiders equal to our dropDeploy count
+        for( let i = 0; i < count; i++ ){
+            let spider = this.placeSpider( area );
+            if( !spider ) continue;
+            units.push( spider );
+        }
+
+        // abort if we didn't deploy any units
+        if( !units.length ) return [];
+
+        // send out the birth announcements
+        this.game().sound( 'hatch' );
+        this.message( message );
+
+        await this.game().timedPrompt('units-shifted', {
+            message : message,
+            units: units
+        }).catch( error => console.error( error ) );
+
+        return units;
     }
 
 
@@ -298,7 +366,7 @@ class Spiders extends Faction {
     factionCombatMods( mods, area ) {
         mods.push({
             type: 'deadly',
-            text: `Patsies and champions are deadly, deadly units attack all enemies can't be modified`
+            text: `spiders and champions are deadly, deadly units attack all enemies can't be modified`
         });
 
         return mods;

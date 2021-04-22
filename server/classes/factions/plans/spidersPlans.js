@@ -6,7 +6,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedTotal', args : [8] },
+                    { test : 'webbedTotal', args : [7] },
                 ],
                 value : 1
             },
@@ -31,7 +31,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedTotal', args : [10] },
+                    { test : 'webbedTotal', args : [9] },
                 ],
                 value : 2
             },
@@ -63,7 +63,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedTotal', args : [7] },
+                    { test : 'webbedFaction', args : [1] },
                 ],
                 value : 1
             },
@@ -108,7 +108,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedTotal', args : [8] },
+                    { test : 'webbedTotal', args : [7] },
                     { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 2
