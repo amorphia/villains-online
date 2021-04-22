@@ -12,7 +12,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [3] },
+                    { test : 'useSkills', args : [4] },
                 ],
                 value : 1
             },
@@ -31,19 +31,19 @@ let obj = [
         objectives : [
             {
                 requirements : [
+                    { test : 'exterminateAreas', args : [1] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'controlTarget', args : [] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [4] },
-                ],
-                value : 1
-            },
-            {
-                requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 1] },
+                    { test : 'useSkills', args : [5] },
                 ],
                 value : 1
             },
@@ -56,7 +56,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'useSkills', args : [5] },
+                    { test : 'useSkills', args : [6] },
                     { test : 'controlTarget', args : [] },
                 ],
                 value : 2
@@ -96,7 +96,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'useSkills', args : [4] },
+                    { test : 'useSkills', args : [5] },
                 ],
                 value : 1
             },
@@ -127,7 +127,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [3] },
+                    { test : 'useSkills', args : [4] },
                 ],
                 value : 1
             },
@@ -146,7 +146,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'useSkills', args : [7] },
+                    { test : 'useSkills', args : [8] },
                 ],
                 value : 3
             },
