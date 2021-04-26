@@ -9,6 +9,10 @@ let obj = {
         this.data.state = "start-of-turn";
         this.data.phase = "plans-and-targets";
 
+        // at the start of the game reverse the player order from what we
+        // had used while picking factions
+        if( this.data.turn === 1 ) this.data.playerOrder.reverse();
+
         // save a game save state to the DB
         Server.saveToDB( this, { type:'turn', note: 'start-of-turn' } );
 

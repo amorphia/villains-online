@@ -95649,7 +95649,7 @@ var helpers = {
       if (area.tokens.some(function (token) {
         return token.faction === faction.name // .. belongs to the given faction
         && (options.revealed === false || token.revealed) // ... and is revealed (or the options allow unrevealed)
-        && (!options.type || token.type === type);
+        && (!options.type || token.type === options.type);
       }) // ...and the options don't care about type, or we have the proper type
       ) {
           count++;
