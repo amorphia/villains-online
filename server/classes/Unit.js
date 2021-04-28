@@ -11,6 +11,10 @@ class Unit {
         this.faction = faction.name;
         this.name = name;
         Object.assign( this, data );
+
+        // if we need to set our units base stats in the case of flipped units
+        // that transform stats, do it here
+        if( faction.shouldSetUnitBaseStats ) faction.setUnitBaseStats( this );
     }
 }
 

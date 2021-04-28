@@ -15,11 +15,6 @@ let obj = {
                 // setup our unit objects
                 let unit = new Unit( this, name, value.data );
                 unit = this.game().newObject( unit, saved );
-
-                // if we need to set our units base stats in the case of flipped units
-                // that transform stats, do it here
-                if( this.shouldSetUnitBaseStats ) this.setUnitBaseStats( unit );
-
                 this.data.units.push( unit );
             }
         });
