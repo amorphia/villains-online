@@ -47,11 +47,6 @@ class BlackstoneEncryption extends Card {
      * @returns {Area}
      */
     async chooseAreaToActivate( areas ){
-        // if we only have one choice, return it
-        if( areas.length === 1 ){
-            return areas[0];
-        }
-
         // ask the player which area to activate
         let response = await this.faction.prompt( 'choose-skill', { areas : areas } );
         return response.area;
