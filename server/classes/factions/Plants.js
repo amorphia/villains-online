@@ -96,7 +96,7 @@ class Plants extends Faction {
                 if( faction.name === this.name ) return;
 
                 // check for a patsy
-                if( faction.typeInArea( "patsy", area ) ){
+                if( faction.typeInArea( "patsy", areaName ) ){
                     factions[ faction.name ] = true;
                 }
             });
