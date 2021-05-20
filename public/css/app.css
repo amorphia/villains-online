@@ -27,6 +27,9 @@
 }
 
 
+.icon-spider:before {
+    content: "\E90F";
+}
 .icon-goon:before {
     content: "\E956";
 }
