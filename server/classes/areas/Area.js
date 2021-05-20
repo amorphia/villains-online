@@ -55,6 +55,14 @@ class Area {
     }
 
 
+
+    getDeployableAdjacentAreas(){
+        //todo I think there's a reason I started this method, but I can't remember why
+        return this.data.adjacent;
+    }
+
+
+
     /**
      * Return each faction's influence here
      *
