@@ -151,7 +151,7 @@
              */
             fromAreaUnits(){
                 // get unit pool
-                let units = this.getFromAreaUnitsPool();
+                let units = this.getFromAreaUnitsPool;
 
                 // filter pool
                 return units.filter( unit => _.unitInArea( unit, this.fromArea, {

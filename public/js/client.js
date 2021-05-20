@@ -11592,7 +11592,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       // get unit pool
-      var units = this.getFromAreaUnitsPool(); // filter pool
+      var units = this.getFromAreaUnitsPool; // filter pool
 
       return units.filter(function (unit) {
         return _.unitInArea(unit, _this.fromArea, {
