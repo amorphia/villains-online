@@ -39,9 +39,6 @@
                     <unit-row :units="reserves"></unit-row>
                 </div>
 
-                <!-- does the selected unit gain the "seeking" ability for this action? -->
-                <div v-if="data.gainsSeeking" class="prompt-question" v-html="shared.filterText( `This attack gains <b>seeking</b> xSEEKx` )"></div>
-
                 <!-- Display the cost of this selection, if any -->
                 <div v-if="cost > 0" class="prompt-question" v-html="shared.filterText( `Pay xC${cost}x to choose these units?` )"></div>
 

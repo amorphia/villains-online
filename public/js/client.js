@@ -8769,9 +8769,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-units',
   data: function data() {
@@ -66092,19 +66089,6 @@ var render = function() {
                 ],
                 1
               )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.data.gainsSeeking
-            ? _c("div", {
-                staticClass: "prompt-question",
-                domProps: {
-                  innerHTML: _vm._s(
-                    _vm.shared.filterText(
-                      "This attack gains <b>seeking</b> xSEEKx"
-                    )
-                  )
-                }
-              })
             : _vm._e(),
           _vm._v(" "),
           _vm.cost > 0
