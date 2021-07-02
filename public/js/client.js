@@ -7100,11 +7100,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @returns {Unit[]}
      */
     ghostsInArea: function ghostsInArea() {
-      var _this6 = this;
+      var _this$action,
+          _this6 = this;
 
-      if (!this.shared.faction.ghosts) return [];
-      return this.shared.faction.ghosts.filter(function (ghost) {
-        return ghost.location === _this6.area.name;
+      if (!this.shared.faction.ghostDeploy || !((_this$action = this.action) !== null && _this$action !== void 0 && _this$action.area)) return [];
+      return this.shared.faction.units.filter(function (unit) {
+        var _this6$action;
+
+        return unit.ghost && unit.location === ((_this6$action = _this6.action) === null || _this6$action === void 0 ? void 0 : _this6$action.area);
       });
     },
 
@@ -7150,10 +7153,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @returns {string[]|Array}
      */
     useableMaterialize: function useableMaterialize() {
-      if (this.shared.faction.name !== 'ghosts' || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction) return [];
+      if (this.shared.faction.name !== 'ghosts') return [];
       var areas = {};
-      this.shared.faction.ghosts.forEach(function (ghost) {
-        areas[ghost.location] = true;
+      this.shared.faction.units.forEach(function (unit) {
+        if (unit.ghost) areas[unit.location] = true;
       });
       return Object.keys(areas);
     },
@@ -8789,33 +8792,12 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.data.policePayoff) cost += _.policePayoffs(this.shared.faction, this.shared.data.areas[this.data.policePayoff]) * this.selected.length; // do we have to pay for vines?
 
-      if (this.data.vines) cost += this.selected.length * this.data.vines; // do we have to pay to materialize ghosts?
-
-      if (this.data.materialize) cost += this.ghostAreaCost; // do we have a cost reduction effect in place?
+      if (this.data.vines) cost += this.selected.length * this.data.vines; // do we have a cost reduction effect in place?
 
       if (this.data.payCost) cost += this.selected.reduce(function (cost, unit) {
         return cost += unit.cost;
       }, 0);
       return cost;
-    },
-
-    /**
-     * Determines if we need to pay 1 when materializing ghosts in 3+ areas
-     *
-     * @returns {number}
-     */
-    ghostAreaCost: function ghostAreaCost() {
-      // if we aren't materializing then just fuggetabout it
-      if (!this.data.materialize) return 0; // cycle through selected units and get a count of the number of different areas
-      // we have selected units in
-
-      var areas = {};
-      this.selected.forEach(function (unit) {
-        areas[unit.location] = true;
-      });
-      areas = Object.keys(areas).length; // if we have selected units in 3+ areas then we have to pay a cost of one, otherwise its free
-
-      return areas >= 3 ? 1 : 0;
     },
 
     /**
@@ -9029,9 +9011,7 @@ __webpack_require__.r(__webpack_exports__);
         // add the ids of the selected units to the data
         data.units = _.map(this.selected, 'id'); // apply any costs
 
-        data.cost = this.cost; // explicitly specify the ghostAreaCost so we can broadcast it in the game log
-
-        data.areaCost = this.ghostAreaCost;
+        data.cost = this.cost;
       } else {
         // if we instead declined then make that explicit
         data.decline = true;
@@ -9063,7 +9043,9 @@ __webpack_require__.r(__webpack_exports__);
       // let's assume we are starting with the faction's unit array
       var factionUnits = faction.units; // but if we are looking for "ghosts only" then let's swap out to the ghosts array
 
-      if (this.data.ghostOnly) factionUnits = faction.ghosts ? faction.ghosts : []; // We need to add webbed units to the collection if we are looking for units that need to attack
+      if (this.data.ghostOnly) factionUnits = factionUnits.filter(function (unit) {
+        return unit.ghost;
+      }); // We need to add webbed units to the collection if we are looking for units that need to attack
       // since units can get moved into the webbed array from their owner's unit array mid-combat
       // but those webbed units may still need to be able to retaliate during combat
 
@@ -9536,12 +9518,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -9846,27 +9822,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           noChampion: _this2.destinationBlockedByKau,
           types: _this2.data.unitTypes
         });
-      }); // include any ghosts
-
-      if (this.shared.faction.ghostDeploy) {
-        var ghosts = this.shared.faction.ghosts.filter(function (unit) {
-          return unit.location === area && (!_this2.data.unitTypes || _this2.data.unitTypes.includes(unit.type));
-        });
-
-        var _iterator = _createForOfIteratorHelper(ghosts),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var ghost = _step.value;
-            units.push(ghost);
+      });
+      /*
+      // include any ghosts
+      if( this.shared.faction.ghostDeploy ){
+           let ghosts = this.shared.faction.ghosts.filter( unit => unit.location === area
+                  && ( !this.data.unitTypes || this.data.unitTypes.includes( unit.type ) )
+              );
+           for( let ghost of ghosts ){
+              units.push( ghost );
           }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
       }
+      */
 
       return units;
     }
@@ -10037,12 +10004,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var units = this.shared.faction.units.filter(function (unit) {
         return unit.selected;
       });
-
-      if (this.shared.faction.ghostDeploy) {
-        units = _.concat(units, this.shared.faction.ghosts.filter(function (unit) {
-          return unit.selected;
-        }));
+      /*
+      if( this.shared.faction.ghostDeploy ){
+          units = _.concat( units, this.shared.faction.ghosts.filter( unit => unit.selected ) );
       }
+      */
 
       return units;
     },
@@ -16167,8 +16133,8 @@ __webpack_require__.r(__webpack_exports__);
       units = this.getPlants(units); // add smoke
 
       units = this.getSmoke(units); // add ghosts
+      //units = this.getGhosts( units );
 
-      units = this.getGhosts(units);
       return units;
     }
   },
@@ -16424,12 +16390,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @returns {Unit[]}
      */
     ghostsInArea: function ghostsInArea() {
-      var _this3 = this;
-
-      if (!this.faction.ghostDeploy) return [];
-      return this.faction.ghosts.filter(function (unit) {
-        return unit.location === _this3.area.name;
-      });
+      return []; //if( !this.faction.ghostDeploy ) return [];
+      //return this.faction.ghosts.filter( unit => unit.location === this.area.name );
     },
 
     /**
@@ -16437,7 +16399,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @returns {{}}
      */
     statusIcons: function statusIcons() {
-      var _this4 = this;
+      var _this3 = this;
 
       if (this.neutral) return {};
       var status = {};
@@ -16449,19 +16411,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         var _loop = function _loop() {
           var unit = _step.value;
           // is this unit skilled and ready?
-          if (_.canUseSkill(_this4.faction, _this4.area, _this4.shared.data.factions)) status['skilled'] = 'can activate area skill'; // is this unit wounded
+          if (_.canUseSkill(_this3.faction, _this3.area, _this3.shared.data.factions)) status['skilled'] = 'can activate area skill'; // is this unit wounded
 
           if (unit.toughness && unit.flipped) status['toughness'] = 'has wounded units'; // does this unit have a faction specific flipped status
 
-          if (!unit.toughness && unit.flipped && _this4.faction.statusIcon) {
-            status[_this4.faction.statusIcon] = _this4.faction.statusDescription;
+          if (!unit.toughness && unit.flipped && _this3.faction.statusIcon) {
+            status[_this3.faction.statusIcon] = _this3.faction.statusDescription;
           } // does this unit have a status effect that we have in our "Always show pip" array?
 
 
-          var unitHasAlwaysShowPip = _this4.unitHasAlwaysShowPip(unit);
+          var unitHasAlwaysShowPip = _this3.unitHasAlwaysShowPip(unit);
 
-          if (unitHasAlwaysShowPip && _this4.faction.statusIcon) {
-            status[_this4.faction.statusIcon] = _this4.faction.statusDescription;
+          if (unitHasAlwaysShowPip && _this3.faction.statusIcon) {
+            status[_this3.faction.statusIcon] = _this3.faction.statusDescription;
           } // does this unit have first strike (each faction has its own color first strike icon)
 
 
@@ -16469,7 +16431,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
           if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him'; // cycle through the basic unit abilities
 
-          _this4.abilityIcons.forEach(function (ability) {
+          _this3.abilityIcons.forEach(function (ability) {
             if (unit[ability]) status[ability] = "has a ".concat(ability, " unit");
           });
         };
@@ -18043,14 +18005,15 @@ function toComment(sourceMap) {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.20';
+  var VERSION = '4.17.21';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
 
   /** Error message constants. */
   var CORE_ERROR_TEXT = 'Unsupported core-js use. Try https://npms.io/search?q=ponyfill.',
-      FUNC_ERROR_TEXT = 'Expected a function';
+      FUNC_ERROR_TEXT = 'Expected a function',
+      INVALID_TEMPL_VAR_ERROR_TEXT = 'Invalid `variable` option passed into `_.template`';
 
   /** Used to stand-in for `undefined` hash values. */
   var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -18183,10 +18146,11 @@ function toComment(sourceMap) {
   var reRegExpChar = /[\\^$.*+?()[\]{}|]/g,
       reHasRegExpChar = RegExp(reRegExpChar.source);
 
-  /** Used to match leading and trailing whitespace. */
-  var reTrim = /^\s+|\s+$/g,
-      reTrimStart = /^\s+/,
-      reTrimEnd = /\s+$/;
+  /** Used to match leading whitespace. */
+  var reTrimStart = /^\s+/;
+
+  /** Used to match a single whitespace character. */
+  var reWhitespace = /\s/;
 
   /** Used to match wrap detail comments. */
   var reWrapComment = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/,
@@ -18195,6 +18159,18 @@ function toComment(sourceMap) {
 
   /** Used to match words composed of alphanumeric characters. */
   var reAsciiWord = /[^\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]+/g;
+
+  /**
+   * Used to validate the `validate` option in `_.template` variable.
+   *
+   * Forbids characters which could potentially change the meaning of the function argument definition:
+   * - "()," (modification of function parameters)
+   * - "=" (default value)
+   * - "[]{}" (destructuring of function parameters)
+   * - "/" (beginning of a comment)
+   * - whitespace
+   */
+  var reForbiddenIdentifierChars = /[()=,{}\[\]\/\s]/;
 
   /** Used to match backslashes in property paths. */
   var reEscapeChar = /\\(\\)?/g;
@@ -19025,6 +19001,19 @@ function toComment(sourceMap) {
   }
 
   /**
+   * The base implementation of `_.trim`.
+   *
+   * @private
+   * @param {string} string The string to trim.
+   * @returns {string} Returns the trimmed string.
+   */
+  function baseTrim(string) {
+    return string
+      ? string.slice(0, trimmedEndIndex(string) + 1).replace(reTrimStart, '')
+      : string;
+  }
+
+  /**
    * The base implementation of `_.unary` without support for storing metadata.
    *
    * @private
@@ -19355,6 +19344,21 @@ function toComment(sourceMap) {
     return hasUnicode(string)
       ? unicodeToArray(string)
       : asciiToArray(string);
+  }
+
+  /**
+   * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
+   * character of `string`.
+   *
+   * @private
+   * @param {string} string The string to inspect.
+   * @returns {number} Returns the index of the last non-whitespace character.
+   */
+  function trimmedEndIndex(string) {
+    var index = string.length;
+
+    while (index-- && reWhitespace.test(string.charAt(index))) {}
+    return index;
   }
 
   /**
@@ -30525,7 +30529,7 @@ function toComment(sourceMap) {
       if (typeof value != 'string') {
         return value === 0 ? value : +value;
       }
-      value = value.replace(reTrim, '');
+      value = baseTrim(value);
       var isBinary = reIsBinary.test(value);
       return (isBinary || reIsOctal.test(value))
         ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
@@ -32897,6 +32901,12 @@ function toComment(sourceMap) {
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
+      // Throw an error if a forbidden character was found in `variable`, to prevent
+      // potential command injection attacks.
+      else if (reForbiddenIdentifierChars.test(variable)) {
+        throw new Error(INVALID_TEMPL_VAR_ERROR_TEXT);
+      }
+
       // Cleanup code by stripping empty strings.
       source = (isEvaluating ? source.replace(reEmptyStringLeading, '') : source)
         .replace(reEmptyStringMiddle, '$1')
@@ -33010,7 +33020,7 @@ function toComment(sourceMap) {
     function trim(string, chars, guard) {
       string = toString(string);
       if (string && (guard || chars === undefined)) {
-        return string.replace(reTrim, '');
+        return baseTrim(string);
       }
       if (!string || !(chars = baseToString(chars))) {
         return string;
@@ -33045,7 +33055,7 @@ function toComment(sourceMap) {
     function trimEnd(string, chars, guard) {
       string = toString(string);
       if (string && (guard || chars === undefined)) {
-        return string.replace(reTrimEnd, '');
+        return string.slice(0, trimmedEndIndex(string) + 1);
       }
       if (!string || !(chars = baseToString(chars))) {
         return string;

@@ -17,12 +17,20 @@ class Ghosts extends Faction {
         this.data.name = this.name;
         this.data.title = "The Lost Legion";
         this.data.focusDescription = "Control any player's Targets";
-        this.data.ghosts = []; // used to store our ghost units
+        //this.data.ghosts = []; // used to store our ghost units
         this.data.upgradeDeploy = 0;
-        this.data.lastMaterializeGameAction = 0;
+        this.data.cardDraw = 4;
+        //this.data.lastMaterializeGameAction = 0;
         this.data.randomTarget = true; // should we choose our target randomly
         this.data.ghostDeploy = true; // do we deploy ghosts
         this.data.scarePatsiesBounced = 2; // how many patsies do we bounce with our scare token
+
+        this.data.flipableUnits = ['goon', 'mole', 'talent', 'champion'];
+
+        // units
+        this.shouldSetUnitBaseStats = {
+            props : ['attack', 'influence', 'skilled']
+        };
 
         // tokens
         this.tokens['scare'] = {
@@ -37,20 +45,19 @@ class Ghosts extends Faction {
         };
 
         // units
-        this.units['goon'].count = 7;
+        this.units['goon'].count = 8;
         this.units['goon'].data.ghost = false;
         this.units['goon'].data.flipped = false;
 
-        this.units['mole'].count = 7;
+        this.units['mole'].count = 8;
         this.units['mole'].data.ghost = false;
         this.units['mole'].data.flipped = false;
 
-        this.units['talent'].count = 5;
+        this.units['talent'].count = 6;
         this.units['talent'].data.ghost = false;
         this.units['talent'].data.flipped = false;
 
-        this.units['patsy'].data.ghost = false;
-        this.units['patsy'].data.flipped = false;
+        delete this.units['patsy'];
 
         this.units['champion'] = {
             count: 1,
@@ -147,12 +154,14 @@ class Ghosts extends Faction {
      * @param unit
      */
     becomeGhost( unit ){
-        // move unit from units array to ghosts array
-        if( !unit.ghost ) _.moveItemById( unit.id, this.data.units, this.data.ghosts );
-
         // flip the appropriate flags
         unit.ghost = true;
         unit.flipped = true;
+
+        // set stats
+        unit.influence = 0;
+        unit.attack = [];
+        if( unit.skilled ) unit.skilled = false;
     }
 
 
@@ -161,14 +170,14 @@ class Ghosts extends Faction {
      *
      * @param unit
      */
-    unGhost( unit ){
-        // move unit from units array to ghosts array
-        if( unit.ghost ) _.moveItemById( unit.id, this.data.ghosts, this.data.units );
-
-        // flip the appropriate flags
+    unflipUnit( unit ) {
         unit.ghost = false;
         unit.flipped = false;
+        unit.attack = [...unit.baseAttack];
+        unit.influence = unit.baseInfluence;
+        if( unit.baseSkilled ) unit.skilled = true;
     }
+
 
 
     /**
@@ -183,13 +192,6 @@ class Ghosts extends Faction {
         this.game().popup( this.playerId, { type: 'materialize', area : areaName, faction : this.name });
 
         let area = this.game().areas[areaName];
-
-        // if this game action equals our last materialize action we can't go again
-        if( this.game().data.gameAction === this.data.lastMaterializeGameAction ){
-            this.message('Too soon to materialize again', { class: 'warning' });
-            this.game().advancePlayer( {}, false  );
-            return;
-        }
 
         // initiate our materialize
         try {
@@ -225,9 +227,6 @@ class Ghosts extends Faction {
         // if we change our mind then back out and unset our last materialize action
         if( response.decline ) return;
 
-        // set the last materialize action counter (to prevent us from doing this twice in a row without taking another action)
-        this.data.lastMaterializeGameAction = this.game().data.gameAction + 1;
-
         // resolve our materialize
         await this.resolveMaterialize( response, area );
     }
@@ -247,7 +246,7 @@ class Ghosts extends Faction {
         // for each unit un-ghost it ad add up its costs
         units.forEach( unit => {
             cost += unit.cost;
-            this.unGhost( unit );
+            this.unflipUnit( unit );
         });
 
         // pay for the units we unghosted

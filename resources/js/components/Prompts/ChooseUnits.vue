@@ -80,33 +80,10 @@
                 // do we have to pay for vines?
                 if( this.data.vines ) cost += this.selected.length * this.data.vines;
 
-                // do we have to pay to materialize ghosts?
-                if( this.data.materialize ) cost += this.ghostAreaCost;
-
                 // do we have a cost reduction effect in place?
                 if( this.data.payCost ) cost += this.selected.reduce( ( cost, unit ) => cost += unit.cost, 0 );
 
                 return cost;
-            },
-
-
-            /**
-             * Determines if we need to pay 1 when materializing ghosts in 3+ areas
-             *
-             * @returns {number}
-             */
-            ghostAreaCost(){
-                // if we aren't materializing then just fuggetabout it
-                if( !this.data.materialize ) return 0;
-
-                // cycle through selected units and get a count of the number of different areas
-                // we have selected units in
-                let areas = {};
-                this.selected.forEach( unit => { areas[ unit.location ] = true;});
-                areas = Object.keys( areas ).length;
-
-                // if we have selected units in 3+ areas then we have to pay a cost of one, otherwise its free
-                return areas >= 3 ? 1 : 0;
             },
 
 
@@ -339,8 +316,6 @@
                     data.units = _.map( this.selected, 'id' );
                     // apply any costs
                     data.cost = this.cost;
-                    // explicitly specify the ghostAreaCost so we can broadcast it in the game log
-                    data.areaCost = this.ghostAreaCost
 
                 } else { // if we instead declined then make that explicit
                     data.decline = true;
@@ -375,7 +350,7 @@
                 let factionUnits = faction.units;
 
                 // but if we are looking for "ghosts only" then let's swap out to the ghosts array
-                if( this.data.ghostOnly )  factionUnits = faction.ghosts ? faction.ghosts : [];
+                if( this.data.ghostOnly )  factionUnits = factionUnits.filter( unit => unit.ghost );
 
                 // We need to add webbed units to the collection if we are looking for units that need to attack
                 // since units can get moved into the webbed array from their owner's unit array mid-combat

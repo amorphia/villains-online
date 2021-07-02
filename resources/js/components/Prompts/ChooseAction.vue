@@ -568,8 +568,8 @@
              * @returns {Unit[]}
              */
             ghostsInArea(){
-                if( !this.shared.faction.ghosts ) return [];
-                return this.shared.faction.ghosts.filter( ghost => ghost.location === this.area.name );
+                if( !this.shared.faction.ghostDeploy || !this.action?.area ) return [];
+                return this.shared.faction.units.filter( unit => unit.ghost && unit.location === this.action?.area );
             },
 
 
@@ -613,13 +613,11 @@
              * @returns {string[]|Array}
              */
             useableMaterialize(){
-                if( this.shared.faction.name !== 'ghosts'
-                    || this.shared.faction.lastMaterializeGameAction === this.shared.data.gameAction
-                ) return [];
+                if( this.shared.faction.name !== 'ghosts') return [];
 
                 let areas = {};
-                this.shared.faction.ghosts.forEach( ghost => {
-                   areas[ghost.location] = true;
+                this.shared.faction.units.forEach( unit => {
+                    if( unit.ghost ) areas[unit.location] = true;
                 });
                 return Object.keys( areas );
 

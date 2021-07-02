@@ -1758,7 +1758,6 @@ a {
 }
 
 .pos-sticky {
-  position: -webkit-sticky;
   position: sticky;
 }
 

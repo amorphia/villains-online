@@ -307,6 +307,7 @@
                                 types : this.data.unitTypes
                         }));
 
+                /*
                 // include any ghosts
                 if( this.shared.faction.ghostDeploy ){
 
@@ -318,6 +319,7 @@
                         units.push( ghost );
                     }
                 }
+                */
 
                 return units;
             },
@@ -488,9 +490,11 @@
             selected(){
                 let units = this.shared.faction.units.filter( unit => unit.selected );
 
+                /*
                 if( this.shared.faction.ghostDeploy ){
                     units = _.concat( units, this.shared.faction.ghosts.filter( unit => unit.selected ) );
                 }
+                */
 
                 return units;
             },

@@ -102,6 +102,10 @@ let obj = {
 
         // check for triggered events belonging to a faction whenever they kill a unit
         if( faction.triggers.onFactionKillsUnit ) await faction[faction.triggers.onFactionKillsUnit]( unit );
+
+        if( unit.flipped ){
+            this.factions[unit.faction].unflipUnit( unit );
+        }
     },
 };
 

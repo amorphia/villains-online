@@ -29,7 +29,7 @@
                 units = this.getSmoke( units );
 
                 // add ghosts
-                units = this.getGhosts( units );
+                //units = this.getGhosts( units );
 
                 return units;
             },
