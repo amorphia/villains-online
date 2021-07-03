@@ -98553,7 +98553,7 @@ var obj = {
     name: 'hackers',
     owner: null,
     blocked: false,
-    status: 1,
+    status: 0,
     selectable: true
   },
   ninjas: {
