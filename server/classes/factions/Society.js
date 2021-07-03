@@ -124,10 +124,8 @@ class Society extends Faction {
 
     /**
      * Clear Xavier's token (triggered when he's killed)
-     *
-     * @param event
      */
-    clearXavierToken( event ){
+    clearXavierToken(){
         let xavier = this.getXavier();
         if( !xavier.token ) return;
 

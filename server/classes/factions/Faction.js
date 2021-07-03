@@ -247,6 +247,10 @@ class Faction {
         unit.location = null;
         if( unit.ready ) unit.ready = false;
         if( unit.flipped ) this.unflipUnit( unit );
+        if( unit.token ){
+            unit.token.location = null;
+            unit.token = null;
+        }
     }
 
 }
