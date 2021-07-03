@@ -9819,7 +9819,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var units = this.shared.faction.units.filter(function (unit) {
         return (_this2.data.free || unit.cost <= _.money(_this2.shared.faction)) && _.unitInArea(unit, area, {
           deployable: true,
-          noChampion: _this2.destinationBlockedByKau,
+          notChampion: _this2.destinationBlockedByKau,
           types: _this2.data.unitTypes
         });
       });
@@ -9980,7 +9980,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           notSelected: true,
           types: _this7.data.unitTypes,
           deployable: true,
-          noChampion: _this7.destinationBlockedByKau,
+          notChampion: _this7.destinationBlockedByKau,
           inReserves: true
         }) && (unit.cost <= _.money(_this7.shared.faction) || _this7.data.free);
       });
@@ -96364,7 +96364,7 @@ var helpers = {
     if (faction.name === 'ghosts' || !factions['ghosts']) return false; // do we have any units with the blockEnemyTokenInfluence ability in this area?
 
     return factions['ghosts'].units.some(function (unit) {
-      return unit.blockEnemyTokenInfluence && _this3.unitInArea(unit, area.name);
+      return unit.blockEnemyTokenInfluence && !unit.flipped && _this3.unitInArea(unit, area.name);
     });
   },
 
@@ -96966,7 +96966,7 @@ var helpers = {
     return (!options.killed || unit.killed) && (!options.notKilled || !unit.killed) && (!options.location || options.location == unit.location) // intentionally coercive to match different falsy values
     && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.onBoard || unit.location) // intentionally coercive to match different falsy values
     && (!options.inReserves || !unit.location) // intentionally coercive to match different falsy values
-    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.selected || unit.selected) && (!options.notSelected || !unit.selected) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || options.type === unit.type) && (!options.notType || options.type !== unit.type) && (!options.notChampion || options.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks || unit.attack.length);
+    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.selected || unit.selected) && (!options.notSelected || !unit.selected) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || unit.type === unit.type) && (!options.notType || unit.type !== unit.type) && (!options.notChampion || unit.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks || unit.attack.length);
   },
 
   /**

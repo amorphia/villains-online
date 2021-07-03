@@ -94,14 +94,20 @@ let obj = {
     async takeSkillAction( player, areaName ){
         let area = this.areas[areaName];
         let faction = player.faction();
+        let advance = true;
+        let exhaustedUnits;
 
         try {
-            await faction.useSkill( area );
+            exhaustedUnits = await faction.useSkill( area );
         } catch( error ){
             console.error( error );
         }
 
-        this.advancePlayer();
+        if( exhaustedUnits && exhaustedUnits.some( event => event.unit.exhaustExtraAction ) ){
+            advance = false;
+        }
+
+        this.advancePlayer( {}, advance );
     },
 
 

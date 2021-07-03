@@ -120,6 +120,8 @@ let mixin = {
         // if we need to filter by adjacent areas do so here
         if( adjacentToArea ) areas = this.filterAreasArrayByAdjacentArea( adjacentToArea, areas );
 
+        if( args.noCeaseFire ) areas = this.filterAreasByCeaseFire( areas );
+
         return areas;
     },
 
@@ -135,6 +137,19 @@ let mixin = {
         return _.intersection( areas, adjacentArea.data.adjacent );
     },
 
+
+    /**
+     * Filter an array of area names to remove any areas where cease fire is active
+     *
+     * @param areas
+     * @returns {array}
+     */
+    filterAreasByCeaseFire( areas ){
+        return areas.filter( area => {
+            let areaObj = this.game().areas[area];
+            return !areaObj.hasCard( 'cease-fire' );
+        });
+    },
 
     /**
      * Returns an array of area names that this faction has units who can attack in

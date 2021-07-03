@@ -94,7 +94,9 @@ class Robots extends Faction {
     async fireBullyGoat( event ){
 
         // get areas with units
-        let areas = this.areasWithEnemyUnits({}, event.unit.location );
+        let areas = this.areasWithEnemyUnits({ noCeaseFire : true }, event.unit.location );
+
+
 
         if( ! areas.length  ){
             this.message( "Bully G.O.A.T couldn't lock on to a target", { class: 'warning' });

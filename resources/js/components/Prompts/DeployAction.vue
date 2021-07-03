@@ -303,7 +303,7 @@
                     .filter( unit => ( this.data.free || unit.cost <= _.money( this.shared.faction ) )
                             && _.unitInArea( unit, area, {
                                 deployable : true,
-                                noChampion : this.destinationBlockedByKau,
+                                notChampion : this.destinationBlockedByKau,
                                 types : this.data.unitTypes
                         }));
 
@@ -465,8 +465,8 @@
                         notSelected : true,
                         types : this.data.unitTypes,
                         deployable: true,
-                        noChampion : this.destinationBlockedByKau,
-                        inReserves : true
+                        notChampion : this.destinationBlockedByKau,
+                        inReserves : true,
                     }) && ( unit.cost <= _.money( this.shared.faction ) || this.data.free )
                 );
             },

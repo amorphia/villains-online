@@ -60,6 +60,7 @@ class Hackers extends Faction {
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
+                exhaustExtraAction : true,
                 onDeploy: 'exhaustEnemyUnitsInArea',
                 onMove: 'exhaustEnemyUnitsInArea',
             }
@@ -81,11 +82,12 @@ class Hackers extends Faction {
      * Allow a player to choose if they want to double resolve this skill ability
      *
      * @param area
+     * @param exhaustedUnits
      */
-    async shouldHax0rArea( area ){
+    async shouldHax0rArea( area, exhaustedUnits ){
 
         // if we have already hax0red this area then we can't do it again
-        if( this.data.hax0red.includes( area.name ) ) return;
+        if( this.data.hax0red.includes( area.name ) || exhaustedUnits.length < 2 ) return;
 
         // ask the player if they want to double resolve this skill
         let response = await this.prompt( 'double-resolve', { count : 1, area : area.name });
@@ -180,7 +182,7 @@ class Hackers extends Faction {
             .forEach( unit => unit.ready = true );
 
         this.message( `Skilled units became ready in The ${args.area.name}` );
-        this.game().advancePlayer();
+        this.game().advancePlayer( {}, false );
     }
 
 }

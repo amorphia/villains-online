@@ -183,7 +183,7 @@ let helpers = {
         if( faction.name === 'ghosts' || !factions['ghosts'] ) return false;
 
         // do we have any units with the blockEnemyTokenInfluence ability in this area?
-        return factions['ghosts'].units.some( unit => unit.blockEnemyTokenInfluence && this.unitInArea( unit, area.name ) );
+        return factions['ghosts'].units.some( unit => unit.blockEnemyTokenInfluence && !unit.flipped && this.unitInArea( unit, area.name ) );
     },
 
 

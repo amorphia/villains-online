@@ -22,14 +22,14 @@ let obj = {
         this.message( `activate the skill ability of the ${area.name}` );
         this.game().popup( this.playerId, { type: 'skill', area : area.name, faction : this.name });
 
+        // use our skilled units to activate this ability
+        let exhaustedUnits = this.useSkilledUnitsToActivateSkill( area );
+
         // handle any pre-skill triggers (that may modify our skill)
         let skillModification = null;
         if( this.triggers.onBeforeSkill ){
-            skillModification = await this[this.triggers.onBeforeSkill]( area );
+            skillModification = await this[this.triggers.onBeforeSkill]( area, exhaustedUnits );
         }
-
-        // use our skilled units to activate this ability
-        let exhaustedUnits = this.useSkilledUnitsToActivateSkill( area );
 
         try {
             // activate this area's skill
@@ -43,6 +43,9 @@ let obj = {
         } catch ( error ) {
             console.error( error );
         }
+
+
+        return exhaustedUnits;
 
     },
 
