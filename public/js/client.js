@@ -9982,7 +9982,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           deployable: true,
           notChampion: _this7.destinationBlockedByKau,
           inReserves: true
-        }) && (unit.cost <= _.money(_this7.shared.faction) || _this7.data.free);
+        }) && (unit.cost <= _.money(_this7.shared.faction) || _this7.data.free || _this7.shared.faction.ghostDeploy);
       });
     },
 
@@ -96966,7 +96966,7 @@ var helpers = {
     return (!options.killed || unit.killed) && (!options.notKilled || !unit.killed) && (!options.location || options.location == unit.location) // intentionally coercive to match different falsy values
     && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.onBoard || unit.location) // intentionally coercive to match different falsy values
     && (!options.inReserves || !unit.location) // intentionally coercive to match different falsy values
-    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.selected || unit.selected) && (!options.notSelected || !unit.selected) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || unit.type === options.type) && (!options.notType || unit.type !== unit.type) && (!options.notChampion || unit.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks || unit.attack.length);
+    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.selected || unit.selected) && (!options.notSelected || !unit.selected) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || unit.type === options.type) && (!options.notType || unit.type !== options.type) && (!options.notChampion || unit.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks || unit.attack.length);
   },
 
   /**

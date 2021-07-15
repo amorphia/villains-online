@@ -467,7 +467,7 @@
                         deployable: true,
                         notChampion : this.destinationBlockedByKau,
                         inReserves : true,
-                    }) && ( unit.cost <= _.money( this.shared.faction ) || this.data.free )
+                    }) && ( unit.cost <= _.money( this.shared.faction ) || this.data.free || this.shared.faction.ghostDeploy )
                 );
             },
 
