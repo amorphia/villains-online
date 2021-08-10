@@ -10,6 +10,7 @@ class Commies extends Faction {
         // data
         this.data.name = this.name;
         this.data.title = "The New Collective";
+        this.data.commisarPatsyAttackValue = 7;
         this.data.risePatsies = 0; // how many bonus patsies to deploy with our ride token
         this.data.bonusDeploy = { type: 'patsy', count : 1 };
         this.data.focusDescription = "Have high influence in areas";
@@ -97,7 +98,7 @@ class Commies extends Faction {
             return;
         }
 
-        await this.nonCombatAttack(8, patsiesInAreaCount, area )
+        await this.nonCombatAttack( this.data.commisarPatsyAttackValue, patsiesInAreaCount, area )
             .catch( error => console.error( error ) );
     }
 
