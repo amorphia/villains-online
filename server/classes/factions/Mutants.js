@@ -33,7 +33,7 @@ class Mutants extends Faction {
 
         // units
         this.units['goon'].count = 6;
-        this.units['mole'].count = 7;
+        this.units['mole'].count = 6;
         this.units['talent'].count = 4;
         this.units['patsy'].count = 6;
 

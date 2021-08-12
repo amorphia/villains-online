@@ -36,8 +36,8 @@ class Swarm extends Faction {
 
         // units
         this.units['patsy'].count = 6;
-        this.units['goon'].count = 3;
-        this.units['mole'].count = 3;
+        this.units['goon'].count = 4;
+        this.units['mole'].count = 4;
 
         this.units['drone'] = {
             count: 16,
