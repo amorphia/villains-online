@@ -74,8 +74,8 @@ let helpers = {
         // gain 2 influence for each rousing speech
         if( cards['rousing-speech'] ) influence += (2 * cards['rousing-speech']);
 
-        // gain 1 influence for each blown cover
-        if( cards['blown-cover'] ) influence += cards['blown-cover'];
+        // gain 2 influence for each blown cover
+        if( cards['blown-cover'] ) influence += (2 * cards['blown-cover']);
 
         // March the streets gives 2 influence in this area for each deploy token we have revealed
         // (unless tokens produce no influence due to the ghost champion)

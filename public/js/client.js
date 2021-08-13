@@ -96253,9 +96253,9 @@ var helpers = {
     var areaScared = this.areaIsScared(faction, factions, area); // is this area scared by the ghosts champion?
     // gain 2 influence for each rousing speech
 
-    if (cards['rousing-speech']) influence += 2 * cards['rousing-speech']; // gain 1 influence for each blown cover
+    if (cards['rousing-speech']) influence += 2 * cards['rousing-speech']; // gain 2 influence for each blown cover
 
-    if (cards['blown-cover']) influence += cards['blown-cover']; // March the streets gives 2 influence in this area for each deploy token we have revealed
+    if (cards['blown-cover']) influence += 2 * cards['blown-cover']; // March the streets gives 2 influence in this area for each deploy token we have revealed
     // (unless tokens produce no influence due to the ghost champion)
 
     if (!areaScared && cards['march-the-streets'] && tokens['deploy']) influence += 2 * cards['march-the-streets'] * tokens['deploy']; // Display of Brilliance gives 2 influence in this area for each card token we have revealed
