@@ -88,7 +88,7 @@ class Society extends Faction {
                 name: "Xavier Blackstone",
                 type: 'champion',
                 basic: false,
-                influence: 1,
+                influence: 3,
                 attack: [],
                 cost: 0,
                 killed: false,
