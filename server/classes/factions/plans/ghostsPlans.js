@@ -51,7 +51,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'controlAnyTarget', args : [2] },
-                    { test : 'enemyMarkers', args : [2] },
+                    { test : 'enemyMarkers', args : [3] },
                 ],
                 value : 3
             },
