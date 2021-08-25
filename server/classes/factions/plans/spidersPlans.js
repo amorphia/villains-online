@@ -6,15 +6,9 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedTotal', args : [7] },
+                    { test : 'killsByPlayer', args : [3,2] },
                 ],
-                value : 1
-            },
-            {
-                requirements : [
-                    { test : 'loseUnits', args : [4] },
-                ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
@@ -31,7 +25,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedTotal', args : [9] },
+                    { test : 'killsByPlayer', args : [2,3] },
                 ],
                 value : 2
             },
@@ -50,7 +44,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedFaction', args : [2] },
+                    { test : 'killsByPlayer', args : [3,3] },
                 ],
                 value : 3
             },
@@ -63,9 +57,9 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedFaction', args : [1] },
+                    { test : 'killsByPlayer', args : [1,3] },
                 ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
@@ -88,16 +82,16 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedFaction', args : [1] },
+                    { test : 'exterminateAreas', args : [1] },
                     { test : 'skilledAtTarget', args : [2] },
                 ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 2] },
+                    { test : 'killsByPlayer', args : [1,3] },
                 ],
-                value : 2
+                value : 1
             },
         ]
     },
@@ -108,7 +102,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedTotal', args : [7] },
+                    { test : 'killsByPlayer', args : [2,2] },
                     { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 2
@@ -128,7 +122,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'webbedTotal', args : [7] },
+                    { test : 'killsByPlayer', args : [2,2] },
                 ],
                 value : 1
             },
@@ -165,7 +159,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'webbedFaction', args : [1] },
+                    { test : 'killsByPlayer', args : [1,3] },
                 ],
                 value : 1
             },

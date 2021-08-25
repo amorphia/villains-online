@@ -1,15 +1,9 @@
 <template>
     <div class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-        faction webbed:
-        <span class="ml-2 mr-4 pl-2">
-            <span v-for="(count, faction) in focus.factions"
-                  class="mx-1"
-                  :class="`faction-${faction}`"
-                  :title="`The ${faction} have ${count} units trapped in webs`">
-                {{ count }}
-            </span>
-        </span>
-        total :<span class="highlight ml-2">{{ focus.total }}</span>
+        <span class="highlight mr-4">Kills:</span>
+        <div v-for="(value, name) of focus" class="d-flex align-center mr-3">
+            <div class="player-hud__champion mr-2" :style="`background-image : url('/images/factions/${name}/icon.jpg');`"></div> : {{value}}
+        </div>
     </div>
 </template>
 
@@ -27,9 +21,15 @@
         },
         computed : {
             focus(){
-                return _.webbedTotals( this.faction, this.shared.data.factions );
+                return _.factionKillsPerEnemy( this.faction, this.shared.data.factions );
             },
         }
     }
 </script>
 
+<style>
+    .plan-focus .player-hud__champion {
+        width: 20px;
+        height: 20px;
+    }
+</style>

@@ -189,6 +189,23 @@
 
 
             /**
+             *  Returns an array of each player that owns at least one selected unit
+             *
+             * @returns {Array}
+             */
+            selectedOwners(){
+                if( !this.selected.length ) return [];
+
+                let owners = {};
+                this.selected.forEach( unit => {
+                    owners[unit.faction] = true;
+                });
+
+                return Object.keys( owners );
+            },
+
+
+            /**
              * Return the full area objects from the game data for each of the area names
              * provided by the "areas" prompt data
              *
@@ -259,7 +276,7 @@
              * Returns the units currently trapped in webs but that still need to attack
              *
              * @returns {Array}
-             */
+
             webbedButNeedsToAttack(){
                 // The only time we  need to do this is when A) the spiders are in the game, and
                 // B) during combat when a webbed unit might still be selectable for a retaliation
@@ -277,7 +294,7 @@
 
                 return units;
             },
-
+             */
 
             /**
              * Returns the currently selected units from the units pool
@@ -352,11 +369,6 @@
                 // but if we are looking for "ghosts only" then let's swap out to the ghosts array
                 if( this.data.ghostOnly )  factionUnits = factionUnits.filter( unit => unit.ghost );
 
-                // We need to add webbed units to the collection if we are looking for units that need to attack
-                // since units can get moved into the webbed array from their owner's unit array mid-combat
-                // but those webbed units may still need to be able to retaliate during combat
-                factionUnits = _.concat( factionUnits, this.webbedButNeedsToAttack );
-
                 return factionUnits;
             },
 
@@ -385,7 +397,7 @@
                     // filter flipped units
                     if( this.data.hasProp && !unit[this.data.hasProp] ) return;
                     // filter has attack value
-                    if( this.data.hasAttack && !unit.attack.length ) return;
+                    if( this.data.hasAttack && ( !unit.attack.length || unit.webbed ) ) return;
                     // filter for unit types
                     if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ) return;
                     // if none of these filters already put the kibosh on things, then return true
@@ -419,7 +431,9 @@
                     // if We only want our units, but this is an enemy unit
                     || ( this.data.playerOnly && unit.faction !== this.shared.faction.name )
                     // if we only want certain unit types and this one does match
-                    || ( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) );
+                    || ( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) )
+                    // if we need to select units from different players and we already have one from this faction
+                    || ( this.data.differentPlayers && !unit.selected && this.selectedOwners.includes( unit.faction ) );
             },
 
 

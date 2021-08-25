@@ -81,14 +81,6 @@
 
                     <div class="view-area__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap">
 
-                        <!-- webs icons -->
-                        <div v-if="webbed" class="d-inline-block unit-row web-row">
-                            <div class="units-hud__unit d-inline-block pos-relative">
-                                <div class="view-area__web-count">{{ webbedCount }}</div>
-                                <img class="unit-hud__unit-image" src="/images/factions/spiders/units/web.png">
-                            </div>
-                        </div>
-
                         <!-- default units -->
                         <area-units v-for="faction in shared.data.factions"
                                     :faction="faction"
@@ -106,15 +98,6 @@
                                     skilled="true"
                                     classes="d-inline">
                         </area-units>
-                    </div>
-                </div>
-
-                <!-- webbed units -->
-                <div v-if="webbed" class="view-area__dead">
-                    <div class="title d-flex align-center view-area__controller"><img class="determine-control__faction-icon" src="/images/factions/spiders/units/web.png">Units Trapped in Webs</div>
-
-                    <div v-for="(units,faction) in webbed" :key="faction" class="view-area__dead-block">
-                    <unit-row :units="units"></unit-row>
                     </div>
                 </div>
 
@@ -184,17 +167,17 @@
             /**
              * Return the number of webbed units here
              * @returns {boolean|number}
-             */
+
             webbedCount(){
                 if( ! this.shared.data.factions['spiders'] ) return false;
                 return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;
             },
-
+             */
 
             /**
              * Returned the webbed units in this area, or false if none
              * @returns {object|false}
-             */
+
             webbed(){
                 if( ! this.shared.data.factions['spiders'] ) return false;
 
@@ -207,7 +190,7 @@
 
                 return Object.keys( webbed ).length ? webbed : false;
             },
-
+             */
 
             /**
              * Do we have a token selected in our shared state that is in this area? If so return it.

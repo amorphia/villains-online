@@ -665,6 +665,22 @@ let mixin = {
 
 
     /**
+     * Returns the number players where we have killed at least x units
+     *
+     * @param killCount
+     * @returns {number}
+     */
+    enemiesWithMinKills( killCount ){
+
+        let kills = _.factionKillsPerEnemy( this, this.game().data.factions );
+
+        return Object.values( kills ).reduce( (factionWithMinKills, factionKills ) => {
+            if( factionKills >= killCount ) factionWithMinKills++;
+            return factionWithMinKills;
+        }, 0 );
+    },
+
+    /**
      *
      * COMBAT
      *

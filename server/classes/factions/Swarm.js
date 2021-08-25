@@ -151,7 +151,7 @@ class Swarm extends Faction {
      */
     canActivateScatter( token, area ) {
         // is this area not trapped, and do we have units other than our champion here?
-        return !area.isTrapped( this ) && this.unitsInArea( area ).filter( unit => unit.type !== 'champion' ).length;
+        return !area.isTrapped( this ) && this.unitsInArea( area, { notWebbed : true } ).filter( unit => unit.type !== 'champion' ).length;
     }
 
 

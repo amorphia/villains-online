@@ -127,7 +127,7 @@ let helpers = {
 
             // cycle through our units
             faction.units.forEach( unit => {
-                if( this.unitInArea( unit, area ) ){ // if this unit is in this area
+                if( this.unitInArea( unit, area ) && !unit.webbed ){ // if this unit is in this area and not webbed
                     influence += unit.influence; // add its influence to our tally
                     // if we have a rise up then our patsies  also produce an influence
                     if( shouldRiseUp && unit.type === 'patsy' ) influence++;

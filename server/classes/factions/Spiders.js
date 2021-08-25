@@ -9,18 +9,15 @@ class Spiders extends Faction {
 
         // triggers
         this.triggers = {
-            "onFactionKillsUnit" : "webKilledUnit",
-            "onStartOfTurnSerial" : "freeUnitsFromWebs",
             "onBeforeBattle" : "deployXchxchAmbushUnits"
         };
 
         //data
         this.data.name = this.name;
         this.data.title = "The Eyes of the Woods";
-        this.data.focusDescription = "Trap enemy units in webs";
+        this.data.focusDescription = "Kill units beloning to many different players";
         this.data.dropDeploy = 1; // how many spider do we place with our Drop token?
         this.data.xchxchDeploy = 1; // how many spiders do we place at the start of combat with xchxch?
-        this.data.webs = []; // where we store our webbed victims
 
         // tokens
         delete this.tokens['battle'];
@@ -33,6 +30,18 @@ class Spiders extends Faction {
                 cost: 0,
                 resource : 1,
                 req : "To avoid discarding this token you must place at least one spider, or start a battle"
+            }
+        };
+
+
+        this.tokens['web'] = {
+            count: 1,
+            data: {
+                influence: 1,
+                type: 'web',
+                cost: 0,
+                resource : 1,
+                req : "To avoid discarding this token you must be able to web at least one enemy basic unit"
             }
         };
 
@@ -95,36 +104,6 @@ class Spiders extends Faction {
 
 
     /**
-     * Web any units killed by this faction
-     *
-     * @param unit
-     */
-    async webKilledUnit( unit ){
-        if( unit.faction === this.name ) return;
-
-        let faction = this.game().factions[ unit.faction ];
-        _.moveItemById( unit.id, faction.data.units, this.data.webs );
-    }
-
-
-    /**
-     * return which factions you currently have at least one unit trapped in webs
-     *
-     * @returns {[]}
-     */
-    factionsInWebs(){
-        let totals = _.webbedTotals( this, this.game().data.factions );
-        let factions = [];
-
-        _.forEach( totals.factions, ( total, faction ) => {
-            if( total ) factions.push( faction );
-        });
-
-        return factions;
-    }
-
-
-    /**
      * Format a string of area names from an array of area names
      *
      * @param areas
@@ -139,103 +118,6 @@ class Spiders extends Faction {
         string = areasClone.join( ', ' ) + string;
 
         return string;
-    }
-
-
-    /**
-     * Free a unit from our webs
-     *
-     * @param unit
-     * @param faction
-     */
-    freeUnit( unit, faction ){
-        _.moveItemById( unit.id, this.data.webs, faction.data.units );
-        faction.returnUnitToReserves( unit );
-    }
-
-
-    /**
-     * Allow other players to free their units from our webs
-     */
-    async freeUnitsFromWebs(){
-        this.game().message({ message : `Units try to escape their webs` });
-
-        let factions = this.factionsInWebs();
-        if( !factions.length ) return this.game().message({ message : 'No units caught in webs', class : 'warning' });
-
-        try {
-            // ask each player if they want to free any units in webs
-            let promises = [];
-            for( let factionName of factions ) {
-                promises.push( this.factionFreeFromWebs( this.game().factions[factionName] ) );
-            }
-
-            // wait for all players to finish
-            await Promise.all( promises );
-
-        } catch( error ){
-            console.error( error );
-        }
-    }
-
-
-    /**
-     * Allow a faction to choose to free units from webs
-     *
-     * @param faction
-     */
-    factionFreeFromWebs( faction ){
-        let player, data;
-
-        return this.game().promise({ players: faction.playerId, name: 'free-units', data : {} })
-            .then( ([player, data]) => this.handleFreeFromWebsResponse( player, data, faction ) );
-    }
-
-
-    /**
-     * Handle the response from our free from webs prompt
-     *
-     * @param player
-     * @param data
-     * @param faction
-     */
-    async handleFreeFromWebsResponse( player, data, faction ){
-        let areas = data.areas;
-
-        // if that player didn't choose an areas, clear their prompt and return
-        if( ! areas.length ) {
-            this.game().message({ faction : faction, message : `units remain trapped in webs` });
-            player.setPrompt({ active : false, updatePlayerData : true });
-            return;
-        }
-
-        // otherwise resolve freeing the units from webs
-        this.resolveFreeFromWebs( faction, areas, player );
-    }
-
-
-    /**
-     * Resolve freeing a factions units from webs
-     *
-     * @param faction
-     * @param areas
-     * @param player
-     */
-    async resolveFreeFromWebs( faction, areas, player ){
-
-        // pay energy equal to the number of areas chosen
-        faction.payCost( areas.length, true );
-
-        // clone our web object, then free the appropriate units
-        let clonedWebs = this.data.webs.slice();
-        clonedWebs.forEach( unit => {
-            if( unit.faction === faction.name && areas.includes( unit.location ) ) this.freeUnit( unit, faction );
-        });
-
-        // alert the other players
-        let areaString = this.areaString( areas );
-        this.game().message({ faction : faction, message : `frees their units in the ${areaString}` });
-        player.setPrompt({ active : false, updatePlayerData : true });
     }
 
 
@@ -282,8 +164,6 @@ class Spiders extends Faction {
     }
 
 
-
-
     /**
      * Place a spider unit in the given area
      *
@@ -320,6 +200,62 @@ class Spiders extends Faction {
 
         // move along home
         this.game().advancePlayer();
+    }
+
+
+    /**
+     * Can we activate our drop token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
+    canActivateWeb( token, area ) {
+        return this.hasEnemyUnitsInArea( area, { basic : true } );
+    }
+
+
+    /**
+     * Resolve our web token
+     *
+     * @param args
+     */
+    async activateWebToken( args ) {
+        let units = await this.chooseWebUnits( args );
+
+        units.forEach( unit => {
+           unit.webbed = true;
+           if( unit.ready ) unit.ready = false;
+        });
+
+        // move along home
+        this.game().advancePlayer();
+    }
+
+
+    /**
+     * Select which enemy units to trap in webs
+     *
+     * @param args
+     * @returns {Array}
+     */
+    async chooseWebUnits( args ){
+
+        let factions = _.factionsWithUnitsInArea( this.game().factions, args.area, {
+            exclude : this.name,
+            basic : true });
+
+        let response = await this.prompt('choose-units', {
+            count : factions.length,
+            areas : [args.area.name],
+            basicOnly : true,
+            enemyOnly : true,
+            differentPlayers : true,
+            message: "Choose one basic unit from each enemy player to web"
+        });
+
+        // return the selected unit objects
+        return response.units.map( unitId => this.game().objectMap[unitId] );
     }
 
 

@@ -90,6 +90,9 @@ let obj = {
     async killUnit( unit, faction ){
         if( typeof faction === 'string' ) faction = this.factions[faction];
 
+        // un-web our unit if needed
+        if( unit.webbed ) delete unit.webbed;
+
         // mark the unit as killed
         unit.killed = faction.name;
 
@@ -103,9 +106,9 @@ let obj = {
         // check for triggered events belonging to a faction whenever they kill a unit
         if( faction.triggers.onFactionKillsUnit ) await faction[faction.triggers.onFactionKillsUnit]( unit );
 
-        if( unit.flipped ){
-            this.factions[unit.faction].unflipUnit( unit );
-        }
+        // unflip our unit if needed
+        if( unit.flipped ) this.factions[unit.faction].unflipUnit( unit );
+
     },
 };
 

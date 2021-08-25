@@ -282,7 +282,7 @@ class Area {
     * @returns {boolean}
     */
     unitIsValid( unit, options ){
-        return _.unitInArea( unit, this ) && ( !options.withAttack || unit.attack.length > 0 );
+        return _.unitInArea( unit, this, options );
     }
 
 

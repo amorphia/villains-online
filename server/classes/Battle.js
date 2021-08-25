@@ -352,7 +352,7 @@ class Battle {
     canAttackThisPhase( unit ){
         // does this unit have an attack value, and does this unit's attack speed match the current strike phase
         // ie. if its currently the first strike phase and the unit has first strike, or the reverse
-        return unit.attack.length &&  !! this.data.isFirstStrikePhase === !! unit.firstStrike;
+        return !unit.webbed && unit.attack.length && !! this.data.isFirstStrikePhase === !! unit.firstStrike;
     }
 
 }

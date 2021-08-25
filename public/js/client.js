@@ -3284,12 +3284,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'spider-focus',
   props: ['classes', 'faction'],
@@ -3300,7 +3294,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     focus: function focus() {
-      return _.webbedTotals(this.faction, this.shared.data.factions);
+      return _.factionKillsPerEnemy(this.faction, this.shared.data.factions);
     }
   }
 });
@@ -8888,6 +8882,20 @@ __webpack_require__.r(__webpack_exports__);
     },
 
     /**
+     *  Returns an array of each player that owns at least one selected unit
+     *
+     * @returns {Array}
+     */
+    selectedOwners: function selectedOwners() {
+      if (!this.selected.length) return [];
+      var owners = {};
+      this.selected.forEach(function (unit) {
+        owners[unit.faction] = true;
+      });
+      return Object.keys(owners);
+    },
+
+    /**
      * Return the full area objects from the game data for each of the area names
      * provided by the "areas" prompt data
      *
@@ -8960,22 +8968,22 @@ __webpack_require__.r(__webpack_exports__);
      * Returns the units currently trapped in webs but that still need to attack
      *
      * @returns {Array}
-     */
-    webbedButNeedsToAttack: function webbedButNeedsToAttack() {
-      var _this4 = this;
-
-      // The only time we  need to do this is when A) the spiders are in the game, and
-      // B) during combat when a webbed unit might still be selectable for a retaliation
-      // attack. So if either of these are not true, then just return an empty array
-      if (!this.shared.data.factions['spiders'] || !this.data.needsToAttack) return []; // otherwise build an array of webbed units that need to attack,
-      // are in the current area, and belong to the current player
-
-      var units = [];
-      units = this.shared.data.factions['spiders'].webs.filter(function (unit) {
-        return unit.faction === _this4.shared.faction.name && unit.location === _this4.area.name && unit.needsToAttack;
-      });
-      return units;
+     webbedButNeedsToAttack(){
+        // The only time we  need to do this is when A) the spiders are in the game, and
+        // B) during combat when a webbed unit might still be selectable for a retaliation
+        // attack. So if either of these are not true, then just return an empty array
+        if( !this.shared.data.factions['spiders'] || !this.data.needsToAttack  ) return [];
+         // otherwise build an array of webbed units that need to attack,
+        // are in the current area, and belong to the current player
+        let units = [];
+        units = this.shared.data.factions['spiders'].webs.filter( unit =>
+                unit.faction === this.shared.faction.name
+                && unit.location === this.area.name
+                && unit.needsToAttack
+            );
+         return units;
     },
+     */
 
     /**
      * Returns the currently selected units from the units pool
@@ -9045,11 +9053,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.data.ghostOnly) factionUnits = factionUnits.filter(function (unit) {
         return unit.ghost;
-      }); // We need to add webbed units to the collection if we are looking for units that need to attack
-      // since units can get moved into the webbed array from their owner's unit array mid-combat
-      // but those webbed units may still need to be able to retaliate during combat
-
-      factionUnits = _.concat(factionUnits, this.webbedButNeedsToAttack);
+      });
       return factionUnits;
     },
 
@@ -9061,27 +9065,27 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {Array}
      */
     filterFactionUnitsByOptions: function filterFactionUnitsByOptions(factionUnits) {
-      var _this5 = this;
+      var _this4 = this;
 
       return factionUnits.filter(function (unit) {
         // filter for units that need to attack
-        if (_this5.data.needsToAttack && !unit.needsToAttack) return; // filter for killed units only
+        if (_this4.data.needsToAttack && !unit.needsToAttack) return; // filter for killed units only
 
-        if (_this5.data.killedOnly && !unit.killed) return; // remove killed units except during combat or if we are specifically looking for killed units
+        if (_this4.data.killedOnly && !unit.killed) return; // remove killed units except during combat or if we are specifically looking for killed units
 
-        if (!_this5.data.needsToAttack && !_this5.data.killedOnly && unit.killed) return; // filter not hidden
+        if (!_this4.data.needsToAttack && !_this4.data.killedOnly && unit.killed) return; // filter not hidden
 
-        if (_this5.data.notHidden && unit.hidden) return; // filter basic units
+        if (_this4.data.notHidden && unit.hidden) return; // filter basic units
 
-        if (_this5.data.basicOnly && !unit.basic) return; // filter flipped units
+        if (_this4.data.basicOnly && !unit.basic) return; // filter flipped units
 
-        if (_this5.data.flippedOnly && !unit.flipped) return; // filter flipped units
+        if (_this4.data.flippedOnly && !unit.flipped) return; // filter flipped units
 
-        if (_this5.data.hasProp && !unit[_this5.data.hasProp]) return; // filter has attack value
+        if (_this4.data.hasProp && !unit[_this4.data.hasProp]) return; // filter has attack value
 
-        if (_this5.data.hasAttack && !unit.attack.length) return; // filter for unit types
+        if (_this4.data.hasAttack && (!unit.attack.length || unit.webbed)) return; // filter for unit types
 
-        if (_this5.data.unitTypes && !_this5.data.unitTypes.includes(unit.type)) return; // if none of these filters already put the kibosh on things, then return true
+        if (_this4.data.unitTypes && !_this4.data.unitTypes.includes(unit.type)) return; // if none of these filters already put the kibosh on things, then return true
 
         return true;
       });
@@ -9106,7 +9110,8 @@ __webpack_require__.r(__webpack_exports__);
       // If we only want enemy units, but this unit is one of ours
       return this.data.enemyOnly && unit.faction === this.shared.faction.name || // if We only want our units, but this is an enemy unit
       this.data.playerOnly && unit.faction !== this.shared.faction.name // if we only want certain unit types and this one does match
-      || this.data.unitTypes && !this.data.unitTypes.includes(unit.type);
+      || this.data.unitTypes && !this.data.unitTypes.includes(unit.type) // if we need to select units from different players and we already have one from this faction
+      || this.data.differentPlayers && !unit.selected && this.selectedOwners.includes(unit.faction);
     },
 
     /**
@@ -9116,7 +9121,7 @@ __webpack_require__.r(__webpack_exports__);
      * @param unit
      */
     unitClicked: function unitClicked(unit) {
-      var _this6 = this;
+      var _this5 = this;
 
       // if this is an invalid unit to select then abort
       if (this.isInvalidUnit(unit)) return; // if this unit is already selected, deselect it and return
@@ -9130,7 +9135,7 @@ __webpack_require__.r(__webpack_exports__);
         // unit will become the one selected unit
 
         this.selected.forEach(function (unit) {
-          return _this6.$set(unit, 'selected', false);
+          return _this5.$set(unit, 'selected', false);
         });
       } // set the clicked unit to selected
 
@@ -11245,7 +11250,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, area) && (unit.type !== 'champion' || !_this.destinationBlockedByKau);
+        return _.unitInArea(unit, area, {
+          notWebbed: true
+        }) && (unit.type !== 'champion' || !_this.destinationBlockedByKau);
       });
     }
   },
@@ -11560,7 +11567,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return units.filter(function (unit) {
         return _.unitInArea(unit, _this.fromArea, {
           basic: _this.data.basicOnly,
-          notChampion: _this.data.noChampion
+          notChampion: _this.data.noChampion,
+          notWebbed: true
         });
       });
     },
@@ -13281,6 +13289,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'unit-icon',
   props: ['unit', 'selectedUnit', 'assigningHits', 'allSelected', 'classes', 'noSelect', 'hidePatsies', 'hitsToAssign'],
@@ -14541,23 +14550,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'view-area',
   data: function data() {
@@ -14604,35 +14596,26 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Return the number of webbed units here
      * @returns {boolean|number}
-     */
-    webbedCount: function webbedCount() {
-      if (!this.shared.data.factions['spiders']) return false;
-      return _.webbedUnits(this.shared.data.factions['spiders'], {
-        area: this.area.name
-      }).length;
+     webbedCount(){
+        if( ! this.shared.data.factions['spiders'] ) return false;
+        return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;
     },
+     */
 
     /**
      * Returned the webbed units in this area, or false if none
      * @returns {object|false}
-     */
-    webbed: function webbed() {
-      var _this2 = this;
-
-      if (!this.shared.data.factions['spiders']) return false;
-      var webbed = {}; // get each faction's webbed units
-
-      _.forEach(this.shared.data.factions, function (faction) {
-        var units = _.webbedUnits(_this2.shared.data.factions['spiders'], {
-          faction: faction.name,
-          area: _this2.area.name
+     webbed(){
+        if( ! this.shared.data.factions['spiders'] ) return false;
+         let webbed = {};
+        // get each faction's webbed units
+        _.forEach( this.shared.data.factions, faction => {
+            let units = _.webbedUnits( this.shared.data.factions['spiders'], { faction : faction.name, area : this.area.name } );
+            if( units.length ) webbed[faction.name] = units;
         });
-
-        if (units.length) webbed[faction.name] = units;
-      });
-
-      return Object.keys(webbed).length ? webbed : false;
+         return Object.keys( webbed ).length ? webbed : false;
     },
+     */
 
     /**
      * Do we have a token selected in our shared state that is in this area? If so return it.
@@ -14665,11 +14648,11 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {string[]}
      */
     usedSkill: function usedSkill() {
-      var _this3 = this;
+      var _this2 = this;
 
       return [];
       return Object.values(this.shared.data.factions).map(function (faction) {
-        if (faction.usedSkills.includes(_this3.area.name)) return faction.name;
+        if (faction.usedSkills.includes(_this2.area.name)) return faction.name;
       }).filter(function (item) {
         return item;
       });
@@ -15721,11 +15704,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'area-map',
   props: ['area', 'classes'],
@@ -15943,13 +15921,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     /**
      * Returns the number of units webbed in this area
      * @returns {number}
-     */
-    webbed: function webbed() {
-      if (!this.shared.data.factions['spiders']) return 0;
-      return _.webbedUnits(this.shared.data.factions['spiders'], {
-        area: this.area.name
-      }).length;
+     webbed(){
+        if( !this.shared.data.factions['spiders'] ) return 0;
+        return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;
     },
+     */
 
     /**
      * Tally each player's kills in this area, or return false if there are no killed units here
@@ -16299,8 +16275,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this = this;
 
       return this.unitsInArea.reduce(function (units, unit) {
-        // increment our count if this type already exists,
+        // if this unit is webbed, count it separately
+        if (unit.webbed) {
+          if (units.web) units.web.count++;else units.web = {
+            count: 1,
+            pipped: 0
+          };
+          return units;
+        } // increment our count if this type already exists,
         // otherwise add this unit type to our results
+
+
         if (units[unit.type]) units[unit.type].count++;else units[unit.type] = {
           count: 1,
           pipped: 0
@@ -16732,6 +16717,25 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.focus-unit-icon {\n    position: relative;\n    top: .1em;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/SpidersFocus.vue?vue&type=style&index=0&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/SpidersFocus.vue?vue&type=style&index=0&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.plan-focus .player-hud__champion {\n    width: 20px;\n    height: 20px;\n}\n", ""]);
 
 // exports
 
@@ -17605,7 +17609,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.unit-row .units-hud__unit {\n    padding: 3px;\n    width: 6vw;\n    height: 6vw;\n    margin: 0 5px;\n    position: relative;\n}\n.unit-row .units-hud__unit img {\n    z-index: 2;\n    position: relative;\n    outline: 3px solid rgba(0,0,0,.3);\n}\n.unit-row  .units-hud__unit.ready:after {\n    left: 50%;\n    content: \"\";\n    background-image: url(/images/icons/skilled.png);\n    background-size: cover;\n    position: absolute;\n    width: 3vw;\n    height: 3vw;\n    z-index: 5;\n    transform: translate(-50%,-50%);\n    top: 50%;\n}\n.assign-hit__pip {\n    font-size: .8em;\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.assign-hit__pip.active {\n    color: var(--highlight-color);\n}\n.units-hud__unit.is-ghost .unit-hud__unit-image {\n    /* opacity: .8; */\n}\n.ghost-icon__container:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 15%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n\n", ""]);
+exports.push([module.i, "\n.unit-row .units-hud__unit {\n    padding: 3px;\n    width: 6vw;\n    height: 6vw;\n    margin: 0 5px;\n    position: relative;\n}\n.unit-row .units-hud__unit img {\n    z-index: 2;\n    position: relative;\n    outline: 3px solid rgba(0,0,0,.3);\n}\n.unit-row  .units-hud__unit.ready:after {\n    left: 50%;\n    content: \"\";\n    background-image: url(/images/icons/skilled.png);\n    background-size: cover;\n    position: absolute;\n    width: 3vw;\n    height: 3vw;\n    z-index: 5;\n    transform: translate(-50%,-50%);\n    top: 50%;\n}\n.assign-hit__pip {\n    font-size: .8em;\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.assign-hit__pip.active {\n    color: var(--highlight-color);\n}\n.units-hud__unit.is-ghost .unit-hud__unit-image {\n    /* opacity: .8; */\n}\n.ghost-icon__container:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 15%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.webbed-icon__container:before {\n    content: \"\";\n    position: absolute;\n    width: 60%;\n    height: 60%;\n    background-image: url(/images/icons/webbed.png);\n    z-index: 3;\n    left: 61%;\n    top: 35%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -50%);\n}\n\n", ""]);
 
 // exports
 
@@ -57521,6 +57525,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/SpidersFocus.vue?vue&type=style&index=0&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/SpidersFocus.vue?vue&type=style&index=0&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./SpidersFocus.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/SpidersFocus.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Forms/VueFile.vue?vue&type=style&index=0&lang=css&":
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Forms/VueFile.vue?vue&type=style&index=0&lang=css& ***!
@@ -61302,31 +61336,22 @@ var render = function() {
       class: _vm.classes
     },
     [
-      _vm._v("\n    faction webbed:\n    "),
-      _c(
-        "span",
-        { staticClass: "ml-2 mr-4 pl-2" },
-        _vm._l(_vm.focus.factions, function(count, faction) {
-          return _c(
-            "span",
-            {
-              staticClass: "mx-1",
-              class: "faction-" + faction,
-              attrs: {
-                title:
-                  "The " + faction + " have " + count + " units trapped in webs"
-              }
-            },
-            [_vm._v("\n            " + _vm._s(count) + "\n        ")]
-          )
-        }),
-        0
-      ),
-      _vm._v("\n    total :"),
-      _c("span", { staticClass: "highlight ml-2" }, [
-        _vm._v(_vm._s(_vm.focus.total))
-      ])
-    ]
+      _c("span", { staticClass: "highlight mr-4" }, [_vm._v("Kills:")]),
+      _vm._v(" "),
+      _vm._l(_vm.focus, function(value, name) {
+        return _c("div", { staticClass: "d-flex align-center mr-3" }, [
+          _c("div", {
+            staticClass: "player-hud__champion mr-2",
+            style:
+              "background-image : url('/images/factions/" +
+              name +
+              "/icon.jpg');"
+          }),
+          _vm._v(" : " + _vm._s(value) + "\n    ")
+        ])
+      })
+    ],
+    2
   )
 }
 var staticRenderFns = []
@@ -68861,6 +68886,10 @@ var render = function() {
           ? _c("div", { staticClass: "ghost-icon__container" })
           : _vm._e(),
         _vm._v(" "),
+        _vm.unit.webbed
+          ? _c("div", { staticClass: "webbed-icon__container" })
+          : _vm._e(),
+        _vm._v(" "),
         _vm.hasToken
           ? _c("token-slot", {
               attrs: { forcedtoken: _vm.unit.placeToken, token: _vm.unit.token }
@@ -70558,48 +70587,13 @@ var render = function() {
                           staticClass:
                             "view-area__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap"
                         },
-                        [
-                          _vm.webbed
-                            ? _c(
-                                "div",
-                                {
-                                  staticClass: "d-inline-block unit-row web-row"
-                                },
-                                [
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "units-hud__unit d-inline-block pos-relative"
-                                    },
-                                    [
-                                      _c(
-                                        "div",
-                                        { staticClass: "view-area__web-count" },
-                                        [_vm._v(_vm._s(_vm.webbedCount))]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("img", {
-                                        staticClass: "unit-hud__unit-image",
-                                        attrs: {
-                                          src:
-                                            "/images/factions/spiders/units/web.png"
-                                        }
-                                      })
-                                    ]
-                                  )
-                                ]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _vm._l(_vm.shared.data.factions, function(faction) {
-                            return _c("area-units", {
-                              key: faction.name,
-                              attrs: { faction: faction, area: _vm.area.name }
-                            })
+                        _vm._l(_vm.shared.data.factions, function(faction) {
+                          return _c("area-units", {
+                            key: faction.name,
+                            attrs: { faction: faction, area: _vm.area.name }
                           })
-                        ],
-                        2
+                        }),
+                        1
                       ),
                       _vm._v(" "),
                       _c(
@@ -70623,44 +70617,6 @@ var render = function() {
                       )
                     ]
                   ),
-                  _vm._v(" "),
-                  _vm.webbed
-                    ? _c(
-                        "div",
-                        { staticClass: "view-area__dead" },
-                        [
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "title d-flex align-center view-area__controller"
-                            },
-                            [
-                              _c("img", {
-                                staticClass: "determine-control__faction-icon",
-                                attrs: {
-                                  src: "/images/factions/spiders/units/web.png"
-                                }
-                              }),
-                              _vm._v("Units Trapped in Webs")
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _vm._l(_vm.webbed, function(units, faction) {
-                            return _c(
-                              "div",
-                              {
-                                key: faction,
-                                staticClass: "view-area__dead-block"
-                              },
-                              [_c("unit-row", { attrs: { units: units } })],
-                              1
-                            )
-                          })
-                        ],
-                        2
-                      )
-                    : _vm._e(),
                   _vm._v(" "),
                   _vm.dead
                     ? _c(
@@ -71438,7 +71394,7 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _vm.graveyard || _vm.webbed
+          _vm.graveyard
             ? _c(
                 "div",
                 { staticClass: "area-map__graveyard" },
@@ -71463,29 +71419,7 @@ var render = function() {
                       },
                       [_vm._v(_vm._s(dead))]
                     )
-                  }),
-                  _vm._v(" "),
-                  _vm.webbed
-                    ? _c("div", { staticClass: "icon-web mb-2" })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.webbed
-                    ? _c(
-                        "div",
-                        {
-                          staticClass: "area-map__graveyard-count",
-                          class: "faction-spiders",
-                          attrs: {
-                            title:
-                              "the spiders have " +
-                              _vm.webbed +
-                              " units trapped in webs in the " +
-                              _vm.area.name
-                          }
-                        },
-                        [_vm._v(_vm._s(_vm.webbed))]
-                      )
-                    : _vm._e()
+                  })
                 ],
                 2
               )
@@ -86900,7 +86834,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SpidersFocus_vue_vue_type_template_id_7bc43c6c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SpidersFocus.vue?vue&type=template&id=7bc43c6c& */ "./resources/js/components/Focus/SpidersFocus.vue?vue&type=template&id=7bc43c6c&");
 /* harmony import */ var _SpidersFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SpidersFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/SpidersFocus.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _SpidersFocus_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SpidersFocus.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Focus/SpidersFocus.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -86908,7 +86844,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _SpidersFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _SpidersFocus_vue_vue_type_template_id_7bc43c6c___WEBPACK_IMPORTED_MODULE_0__["render"],
   _SpidersFocus_vue_vue_type_template_id_7bc43c6c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -86937,6 +86873,22 @@ component.options.__file = "resources/js/components/Focus/SpidersFocus.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SpidersFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./SpidersFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/SpidersFocus.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SpidersFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/SpidersFocus.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/Focus/SpidersFocus.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_SpidersFocus_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./SpidersFocus.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/SpidersFocus.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_SpidersFocus_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_SpidersFocus_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_SpidersFocus_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_SpidersFocus_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
 
 /***/ }),
 
@@ -96305,8 +96257,8 @@ var helpers = {
       // cycle through our units
 
       faction.units.forEach(function (unit) {
-        if (_this2.unitInArea(unit, area)) {
-          // if this unit is in this area
+        if (_this2.unitInArea(unit, area) && !unit.webbed) {
+          // if this unit is in this area and not webbed
           influence += unit.influence; // add its influence to our tally
           // if we have a rise up then our patsies  also produce an influence
 
@@ -96597,6 +96549,25 @@ var helpers = {
       });
     });
     return results;
+  },
+
+  /**
+   * Returns all of the units killed by a given faction
+   *
+   * @param killingFaction
+   * @param factions
+   * @returns {[]}
+   */
+  factionKillsPerEnemy: function factionKillsPerEnemy(killingFaction, factions) {
+    var kills = this.factionKills(killingFaction, factions);
+    var result = {};
+    Object.keys(factions).forEach(function (faction) {
+      if (faction !== killingFaction.name) result[faction] = 0;
+    });
+    kills.forEach(function (unit) {
+      return result[unit.faction]++;
+    });
+    return result;
   },
 
   /**
@@ -96966,7 +96937,7 @@ var helpers = {
     return (!options.killed || unit.killed) && (!options.notKilled || !unit.killed) && (!options.location || options.location == unit.location) // intentionally coercive to match different falsy values
     && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.onBoard || unit.location) // intentionally coercive to match different falsy values
     && (!options.inReserves || !unit.location) // intentionally coercive to match different falsy values
-    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.selected || unit.selected) && (!options.notSelected || !unit.selected) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || unit.type === options.type) && (!options.notType || unit.type !== options.type) && (!options.notChampion || unit.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks || unit.attack.length);
+    && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.selected || unit.selected) && (!options.notSelected || !unit.selected) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || unit.type === options.type) && (!options.notType || unit.type !== options.type) && (!options.notChampion || unit.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.notWebbed || !unit.webbed) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy && !unit.webbed) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks && !options.withAttack || unit.attack.length && !unit.webbed);
   },
 
   /**

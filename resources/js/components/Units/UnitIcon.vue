@@ -6,6 +6,7 @@
 
             <!-- ghost icon container -->
             <div v-if="viewableGhost" class="ghost-icon__container"></div>
+            <div v-if="unit.webbed" class="webbed-icon__container"></div>
 
             <!-- xavier token -->
             <token-slot v-if="hasToken" :forcedtoken="unit.placeToken" :token="unit.token"></token-slot>
@@ -236,6 +237,21 @@
         background-repeat: no-repeat;
         background-size: contain;
         transform: translate(-50%, -70%);
+    }
+
+
+    .webbed-icon__container:before {
+        content: "";
+        position: absolute;
+        width: 60%;
+        height: 60%;
+        background-image: url(/images/icons/webbed.png);
+        z-index: 3;
+        left: 61%;
+        top: 35%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        transform: translate(-50%, -50%);
     }
 
 </style>

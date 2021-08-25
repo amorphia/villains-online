@@ -45,7 +45,7 @@
             </div>
 
             <!-- graveyard -->
-            <div v-if="graveyard || webbed" class="area-map__graveyard">
+            <div v-if="graveyard" class="area-map__graveyard">
                 <!-- dead -->
                 <div class="icon-graveyard mb-2"></div>
                 <div v-for="(dead, name) in graveyard"
@@ -53,11 +53,6 @@
                      :class="`faction-${name}`"
                      :title="`the ${name} have ${dead} kills in the ${area.name}`">{{ dead }}</div>
 
-                <!-- webbed -->
-                <div v-if="webbed" class="icon-web mb-2"></div>
-                <div v-if="webbed" class="area-map__graveyard-count"
-                     :class="`faction-spiders`"
-                     :title="`the spiders have ${webbed} units trapped in webs in the ${area.name}`">{{ webbed }}</div>
             </div>
 
             <!-- influence -->
@@ -339,12 +334,12 @@
             /**
              * Returns the number of units webbed in this area
              * @returns {number}
-             */
+
             webbed(){
                 if( !this.shared.data.factions['spiders'] ) return 0;
                 return _.webbedUnits( this.shared.data.factions['spiders'], { area : this.area.name } ).length;
             },
-
+             */
 
             /**
              * Tally each player's kills in this area, or return false if there are no killed units here

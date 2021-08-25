@@ -156,7 +156,8 @@
                 // filter pool
                 return units.filter( unit => _.unitInArea( unit, this.fromArea, {
                         basic : this.data.basicOnly,
-                        notChampion : this.data.noChampion
+                        notChampion : this.data.noChampion,
+                        notWebbed : true
                     } ));
             },
 

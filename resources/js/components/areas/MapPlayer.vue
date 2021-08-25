@@ -77,6 +77,14 @@
 
                 return this.unitsInArea.reduce( ( units, unit ) => {
 
+                        // if this unit is webbed, count it separately
+                        if( unit.webbed ){
+                            if( units.web  ) units.web.count++;
+                            else units.web = { count : 1, pipped : 0 };
+
+                            return units;
+                        }
+
                         // increment our count if this type already exists,
                         // otherwise add this unit type to our results
                         if( units[unit.type]  ) units[unit.type].count++;

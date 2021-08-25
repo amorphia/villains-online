@@ -31,10 +31,11 @@ let helpers = {
             && ( !options.notChampion || unit.type !== 'champion' )
             && ( !options.types || options.types.includes( unit.type ) )
             && ( !options.hidden || unit.hidden )
+            && ( !options.notWebbed || !unit.webbed )
             && ( !options.notHidden || !unit.hidden )
-            && ( !options.deployable || !unit.noDeploy )
+            && ( !options.deployable || ( !unit.noDeploy && !unit.webbed ) )
             && ( !options.hasProp || unit[options.hasProp] )
-            && ( !options.attacks || unit.attack.length );
+            && ( ( !options.attacks && !options.withAttack ) || ( unit.attack.length && !unit.webbed ) );
     },
 
 

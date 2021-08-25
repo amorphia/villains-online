@@ -1,7 +1,7 @@
 <template>
     <!--
     * Woe be unto ye who stumbles upon this dire sight. I gotta refactor this whole thing into individual action
-    * components, as this prompt has really gotten away from me. I promise, its on my todo list
+    * components, as this prompt has really gotten away from me. I promise, its on my list
     -->
 <div>
     <!-- TOP BAR -->

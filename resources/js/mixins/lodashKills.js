@@ -209,6 +209,25 @@ let helpers = {
 
 
     /**
+     * Returns all of the units killed by a given faction
+     *
+     * @param killingFaction
+     * @param factions
+     * @returns {[]}
+     */
+    factionKillsPerEnemy( killingFaction, factions ){
+        let kills = this.factionKills( killingFaction, factions );
+        let result = {};
+
+        Object.keys( factions ).forEach( faction => {
+            if( faction !== killingFaction.name ) result[faction] = 0
+        });
+        kills.forEach( unit => result[unit.faction]++ );
+
+        return result;
+    },
+
+    /**
      * Returns all of the units killed by a given faction in enemy owned areas, if a set of predictions are provided
      * instead use those predictions to calculate which areas are predicted to be enemy owned at the end of the turn
      *

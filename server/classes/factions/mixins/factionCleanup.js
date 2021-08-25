@@ -5,6 +5,9 @@ let obj = {
      */
     async cleanUp(){
 
+        // reset dead units
+        this.cleanUpWebbed();
+
         // reset our tokens
         this.resetTokens();
 
@@ -83,6 +86,16 @@ let obj = {
     cleanUpKilled(){
         this.data.units.forEach( unit => {
             if( unit.killed ) this.returnUnitToReserves( unit );
+        });
+    },
+
+
+    /**
+     * clean up our webbed units
+     */
+    cleanUpWebbed(){
+        this.data.units.forEach( unit => {
+            if( unit.webbed ) delete unit.webbed;
         });
     }
 
