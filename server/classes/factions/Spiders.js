@@ -35,7 +35,7 @@ class Spiders extends Faction {
 
 
         this.tokens['web'] = {
-            count: 1,
+            count: 2,
             data: {
                 influence: 1,
                 type: 'web',
