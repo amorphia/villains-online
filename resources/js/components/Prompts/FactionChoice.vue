@@ -110,7 +110,7 @@
              * @returns {boolean}
              */
             moreExpansionsAllowed(){
-                let allowed = this.playerCount === 5 ? 3 : 2;
+                let allowed = this.playerCount === 5 ? 4 : 3;
                 return this.expansionsSelected < allowed;
             },
 
