@@ -30,15 +30,12 @@ let obj = {
      * @returns {number}
      */
     checkIfWeQualifyForNewUpgrade( points ){
-        if( this.weQualifyForFirstUpgrade( points ) ) {
-            return 1;
-        }
+        let upgrade = 0;
 
-        if( this.weQualifyForSecondUpgrade( points ) ){
-            return 2;
-        }
+        if( this.weQualifyForFirstUpgrade( points ) ) upgrade = 1;
+        if( this.weQualifyForSecondUpgrade( points ) ) upgrade = 2;
 
-        return 0;
+        return upgrade;
     },
 
 
