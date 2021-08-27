@@ -23,12 +23,13 @@ class Conquistadors extends Faction {
         this.capturedRewards = [
             { ap : 1, cardDraw : 1 },
             { ap : 1, cardDraw : 1 },
-            { ap : 1 },
+            { ap : 1, cardDraw : 1 },
             { ap : 2 },
         ];
 
         // tokens
         this.tokens['move'].count = 2;
+        this.tokens['card'].count = 4;
 
         this.tokens['pox'] = {
             count: 1,
