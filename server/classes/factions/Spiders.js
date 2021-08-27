@@ -37,7 +37,7 @@ class Spiders extends Faction {
         this.tokens['web'] = {
             count: 2,
             data: {
-                influence: 1,
+                influence: 0,
                 type: 'web',
                 cost: 0,
                 resource : 1,
@@ -227,6 +227,9 @@ class Spiders extends Faction {
            unit.webbed = true;
            if( unit.ready ) unit.ready = false;
         });
+
+        // discard this token
+        _.discardToken( args.token, args.area );
 
         // move along home
         this.game().advancePlayer();
