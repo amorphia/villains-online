@@ -10509,7 +10509,7 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {boolean}
      */
     moreExpansionsAllowed: function moreExpansionsAllowed() {
-      var allowed = this.playerCount === 5 ? 3 : 2;
+      var allowed = this.playerCount === 5 ? 4 : 3;
       return this.expansionsSelected < allowed;
     },
 
@@ -98462,7 +98462,7 @@ var obj = {
     name: 'bankers',
     owner: null,
     blocked: false,
-    status: 2,
+    status: 3,
     basic: true,
     selectable: true
   },
@@ -98478,7 +98478,7 @@ var obj = {
     name: 'aliens',
     owner: null,
     blocked: false,
-    status: 2,
+    status: 3,
     basic: true,
     selectable: true
   },
@@ -98517,7 +98517,7 @@ var obj = {
     name: 'society',
     owner: null,
     blocked: false,
-    status: 2,
+    status: 1,
     selectable: true
   },
   hackers: {

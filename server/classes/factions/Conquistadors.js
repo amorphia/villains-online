@@ -12,6 +12,8 @@ class Conquistadors extends Faction {
             "onControlArea" : "conquerArea"
         };
 
+        this.data.maxEnergy = 10;
+
         //data
         this.data.name = this.name;
         this.data.title = "Los Conquistadores";
@@ -86,8 +88,8 @@ class Conquistadors extends Faction {
      * @returns {number}
      */
     resourcesToCollect(){
-        let resources = this.data.conqueredAreas.length;
-        if( this.areas().includes( 'bank' ) ) resources++;
+        let resources = super.resourcesToCollect();
+        resources += this.data.conqueredAreas.length;
         return resources;
     }
 
