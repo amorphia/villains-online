@@ -32,13 +32,13 @@ let obj = [
             {
                 requirements : [
                     { test : 'areasMostTokens', args : [2] },
-                    { test : 'unitInEnemy', args : ['mole', 1] },
+                    { test : 'useSkills', args : [2] },
                 ],
                 value : 2
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [2] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 1
             },
@@ -137,10 +137,17 @@ let obj = [
         name: '7',
         num : 7,
         faction : 'bureau',
+
+
         objectives : [
             {
                 requirements : [
                     { test : 'areasMostTokens', args : [2] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'influenceInAreas', args : [6,1] },
                 ],
                 value : 1

@@ -37,6 +37,7 @@ class Bureau extends Faction {
                 influence: 1,
                 type: 'loop',
                 cost: 0,
+                resource: 1,
                 req : "Passive token: this token may always be activated"
             }
         };

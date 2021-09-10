@@ -67,8 +67,8 @@ class Game {
     // the game data we share with the UI side
     data = {
         // settings
-        maxAP : 12, // how many Area Points a player needs to win
-        maxPP :12, // how many Plan Points a player needs to win
+        maxAP : 13, // how many Area Points a player needs to win
+        maxPP :13, // how many Plan Points a player needs to win
         upgradePoints : [ 4, 8 ], // how many points (on a single track) do players need to unlock their upgrades
         gameType : 'optimized', // our default game mode, basic/optimized/anarchy
 
