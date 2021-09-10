@@ -12,8 +12,6 @@ class Conquistadors extends Faction {
             "onControlArea" : "conquerArea"
         };
 
-        this.data.maxEnergy = 10;
-
         //data
         this.data.name = this.name;
         this.data.title = "Los Conquistadores";
@@ -25,7 +23,7 @@ class Conquistadors extends Faction {
         this.capturedRewards = [
             { ap : 1, cardDraw : 1 },
             { ap : 1, cardDraw : 1 },
-            { ap : 1, cardDraw : 1 },
+            { ap : 1 },
             { ap : 2 },
         ];
 
