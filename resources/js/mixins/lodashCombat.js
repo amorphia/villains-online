@@ -15,7 +15,7 @@ let helpers = {
             if( unit.hidden || ( options.nonPatsy && unit.type === 'patsy' ) ) return;
 
             // units with toughness that have't taken a hit yet can be assigned two hits
-            if( unit.toughness && !unit.flipped ) {
+            if( ( unit.toughness || unit.hasOwnProperty( 'skeleton' ) ) && !unit.flipped ) {
                 assignableHits += 2;
                 return;
             }

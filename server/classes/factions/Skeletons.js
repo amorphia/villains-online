@@ -47,6 +47,7 @@ class Vampires extends Faction {
         this.units['goon'].data.onDamaged = 'checkBecomeSkeleton';
         this.units['goon'].data.flipped = false;
         this.units['goon'].data.skeleton = false;
+        this.units['goon'].data.skeleton = false;
 
         this.units['mole'].count = 3;
         this.units['mole'].data.onDamaged = 'checkBecomeSkeleton';
@@ -213,8 +214,11 @@ class Vampires extends Faction {
      * @returns {string}
      */
     checkBecomeSkeleton( event ){
-        // event.count is the number of hits assigned to this unit
-        if( event.unit.flipped || event.count > 1 ) return;
+
+        // event.hits is the number of hits assigned to this unit
+        if( event.unit.flipped || event.hits > 1 ){
+            return;
+        }
 
         this.becomeSkeleton( event.unit );
         return `transforms ${event.unit.name} into a skeleton`;

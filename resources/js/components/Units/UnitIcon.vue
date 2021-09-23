@@ -155,6 +155,9 @@
                 // smoke can be assigned any number of hits from one source
                 if( this.unit.type === 'smoke' ) return this.hitsToAssign;
 
+                return _.assignableHits( [this.unit] );
+
+                /*
                 // hidden units can't be assigned hits
                 if( this.unit.hidden ) return 0;
 
@@ -163,6 +166,7 @@
 
                 // all other units can take 1 hit by default
                 return 1;
+                */
             },
 
 

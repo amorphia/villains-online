@@ -13391,13 +13391,16 @@ __webpack_require__.r(__webpack_exports__);
      */
     hpTotal: function hpTotal() {
       // smoke can be assigned any number of hits from one source
-      if (this.unit.type === 'smoke') return this.hitsToAssign; // hidden units can't be assigned hits
-
-      if (this.unit.hidden) return 0; // units with toughness that have not been flipped yet can take 2 hits
-
-      if (this.unit.toughness && !this.unit.flipped) return 2; // all other units can take 1 hit by default
-
+      if (this.unit.type === 'smoke') return this.hitsToAssign;
+      return _.assignableHits([this.unit]);
+      /*
+      // hidden units can't be assigned hits
+      if( this.unit.hidden ) return 0;
+       // units with toughness that have not been flipped yet can take 2 hits
+      if( this.unit.toughness && !this.unit.flipped ) return 2;
+       // all other units can take 1 hit by default
       return 1;
+      */
     },
 
     /**
@@ -95784,7 +95787,7 @@ var helpers = {
       // ignore units that can't be assigned hits
       if (unit.hidden || options.nonPatsy && unit.type === 'patsy') return; // units with toughness that have't taken a hit yet can be assigned two hits
 
-      if (unit.toughness && !unit.flipped) {
+      if ((unit.toughness || unit.hasOwnProperty('skeleton')) && !unit.flipped) {
         assignableHits += 2;
         return;
       } // other units can be assigned one hit
@@ -98586,8 +98589,14 @@ var obj = {
     status: 0,
     killer: true,
     selectable: true
-  } //skeletons : { name: 'skeletons', owner : null, blocked : false, status : 0, selectable : false },
-
+  },
+  skeletons: {
+    name: 'skeletons',
+    owner: null,
+    blocked: false,
+    status: 0,
+    selectable: true
+  }
 };
 module.exports = Object.assign({}, obj);
 
