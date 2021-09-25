@@ -1,7 +1,7 @@
 let Faction = require( './Faction' );
 
 
-class Vampires extends Faction {
+class Skeletons extends Faction {
     name = 'skeletons';
 
     constructor(owner, game) {
@@ -9,7 +9,7 @@ class Vampires extends Faction {
 
         // triggers
         this.triggers = {
-            "onCleanup" : "reviveUnits"
+            "onCleanup" : "resetSkeletonUnits"
         };
 
         //data
@@ -25,28 +25,27 @@ class Vampires extends Faction {
         this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         // tokens
-        this.tokens['card'].count = 4;
-        delete this.tokens['deploy'];
+        this.tokens['card'].count = 3;
+        this.tokens['deploy'].count = 2;
 
         this.tokens['lich'] = {
-            count: 2,
+            count: 1,
             data: {
                 influence: 1,
-                type: 'deploy',
+                type: 'lich',
                 cost: 0,
-                req :  "This token must be discarded if you don't deploy, or flip any units"
+                req :  "This token must be discarded if you don't deploy any units or play any cards"
             }
         };
 
         // units
         this.shouldSetUnitBaseStats = {
-            props : ['influence', 'attack', 'skilled']
+            props : ['influence', 'skilled']
         };
 
         this.units['goon'].count = 3;
         this.units['goon'].data.onDamaged = 'checkBecomeSkeleton';
         this.units['goon'].data.flipped = false;
-        this.units['goon'].data.skeleton = false;
         this.units['goon'].data.skeleton = false;
 
         this.units['mole'].count = 3;
@@ -78,10 +77,13 @@ class Vampires extends Faction {
                 killed: false,
                 selected: false,
                 skeleton: false,
+                skilled: true,
+                ready: false,
                 hitsAssigned: 0,
                 onDamaged : 'checkBecomeSkeleton',
-                onDeploy : 'xerZhulEnters',
-                onMove : 'xerZhulEnters'
+                onSkill : 'xerZhulRaiseDead',
+                //onDeploy : 'xerZhulEnters',
+                //onMove : 'xerZhulEnters'
             }
         };
     }
@@ -95,7 +97,7 @@ class Vampires extends Faction {
      * @param {number} upgrade
      */
     processUpgrade( upgrade ) {
-        this.data.endOfTurnRevive = upgrade;
+        this.data.endOfTurnRevive = upgrade * 2;
     }
 
 
@@ -107,8 +109,8 @@ class Vampires extends Faction {
      * @returns {boolean}
      */
     canActivateLich( token, area ) {
-        // can we activate a deploy token, or do we have any units in this area?
-        return this.canActivateDeploy( token, area ) || this.hasUnitsInArea( area );
+        // can we activate a deploy token, or can we activate a card token?
+        return this.canActivateDeploy( token, area ) || this.canActivateCard( token, area );
     }
 
 
@@ -119,20 +121,24 @@ class Vampires extends Faction {
      */
     async activateLichToken( args ) {
 
-        // resolve deploy
-        let output = await this.deploy( args );
+        args.fromToken = true;
 
-        // resolve flip
-        let unitsFlipped = await this.flipUnits( { area :  args.area } );
+        // resolve deploy
+        let deployOutput = await this.deploy({
+            deployLimit : 1,
+            ...args
+        });
+
+        // resolve card
+        let cardOutput = await this.playACard( args );
 
         // check if we did either of these things
-        if( output && output.declined && !unitsFlipped ){
+        if( cardOutput && cardOutput.declined && deployOutput && deployOutput.declined ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
         }
 
         this.game().advancePlayer();
-
     }
 
 
@@ -233,11 +239,10 @@ class Vampires extends Faction {
     becomeSkeleton( unit ) {
         if( !unit.flipped && !unit.killed ) {
             unit.flipped = true;
-            unit.attack = [6];
             unit.influence = 0;
             unit.skeleton = true;
-            if (unit.skilled) unit.skilled = false;
-            if (unit.ready) unit.ready = false;
+            if( unit.skilled ) unit.skilled = false;
+            if( unit.ready ) unit.ready = false;
         }
     }
 
@@ -249,10 +254,40 @@ class Vampires extends Faction {
      */
     unflipUnit( unit ) {
         unit.flipped = false;
-        unit.attack = [...unit.baseAttack];
         unit.skeleton = false;
         unit.influence = unit.baseInfluence;
         if ( unit.baseSkilled ) unit.skilled = true;
+    }
+
+
+    /**
+     * Allow Xer'Zhul to raise the dead when he uses a skill ability
+     *
+     * @param event
+     */
+    async xerZhulRaiseDead( event ){
+
+        let units = await this.reviveUnits({
+            reviveCount : 1,
+            reviveEvent: 'reviveAsSkeletons'
+        });
+
+    }
+
+
+    /**
+     * Revive our units ask skeletons when using xerZhul's revive ability
+     * @param units
+     * @param args
+     * @returns {*}
+     */
+    reviveAsSkeletons( units, args ){
+
+        units.forEach( unit => {
+            this.becomeSkeleton( unit )
+        });
+
+        return units;
     }
 
 
@@ -261,7 +296,7 @@ class Vampires extends Faction {
      *
      * @param toArea
      * @returns {[]}
-     */
+
     getTokenMoveAreas( toArea ){
         let areas = [];
 
@@ -278,7 +313,7 @@ class Vampires extends Faction {
      * Handle XerZhuls enter an area trigger, allowing the player to drag a token to his new area
      *
      * @param event
-     */
+
     async xerZhulEnters( event ){
         let unit = event.unit;
         let area = this.game().areas[unit.location];
@@ -310,7 +345,6 @@ class Vampires extends Faction {
      *
      * @param response
      * @param area
-     */
     resolveTokenMove( response, area ){
         // move token
         let token = this.game().objectMap[ response.tokens[0] ] ;
@@ -329,7 +363,7 @@ class Vampires extends Faction {
     /**
      * Handle our end of turn revival trigger
      */
-    async reviveUnits() {
+    async resetSkeletonUnits() {
         if( !this.data.endOfTurnRevive ) return;
 
         await this.flipUnits({
@@ -337,6 +371,8 @@ class Vampires extends Faction {
             flippedOnly : true
         })
     }
+
+
 
 
     /**
@@ -358,4 +394,4 @@ class Vampires extends Faction {
 }
 
 
-module.exports = Vampires;
+module.exports = Skeletons;

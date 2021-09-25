@@ -266,6 +266,7 @@ Object.assign( Faction.prototype, require( "./mixins/setup" ) );
 Object.assign( Faction.prototype, require( "./mixins/valueMethods" ) );
 Object.assign( Faction.prototype, require( "./mixins/playsTokens" ) );
 Object.assign( Faction.prototype, require( "./mixins/deploysUnits" ) );
+Object.assign( Faction.prototype, require( "./mixins/revivesUnits" ) );
 Object.assign( Faction.prototype, require( "./mixins/playsCards" ) );
 Object.assign( Faction.prototype, require( "./mixins/movesUnits" ) );
 Object.assign( Faction.prototype, require( "./mixins/attacksWithUnits" ) );
