@@ -9625,6 +9625,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'deploy-action',
   data: function data() {
@@ -9653,8 +9654,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   mounted: function mounted() {
     // if we have nothing to deploy from our reserves set our fromIndex to 0
-    if (this.reserves.length === 0 && this.fromAreas.length > 0) this.fromAreaIndex = 0; // if we have no units to deploy at all set our from index to -2
-
+    //if( this.reserves.length === 0 && this.fromAreas.length > 0 ) this.fromAreaIndex = 0;
+    // if we have no units to deploy at all set our from index to -2
     if (this.reserves.length === 0 && this.fromAreas.length === 0) this.fromAreaIndex = -2;
   },
   methods: {
@@ -17289,7 +17290,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n.units-hud__unit.deploy__ghost:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 25%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.has-ghosts .units-hud__unit {\n    height: 8vw;\n}\n.deploy__toggle-ghost {\n    background-color: #192236;\n}\n.deploy__ghost .deploy__toggle-ghost {\n    background-color: var(--faction-ghosts);\n}\n\n", ""]);
+exports.push([module.i, "\n.deploy-limit__pips {\n    margin-top: -.75rem;\n}\n.deploy-limit__pip {\n    display: block;\n    padding: .3em;\n    color: white;\n    text-shadow: 0 1px 2px black, 0 0 2px black, 0 0 2px black;\n}\n.deploy-limit__pip.active {\n    color: var(--highlight-color);\n}\n.deploy-limit__pip.commie-pip, .deploy-limit__pip.commie-pip.active {\n    color: red;\n}\n.area-header__units{\n    text-align: center;\n    min-height: 13.5rem;\n    padding-bottom: 1.5rem;\n}\n.deploy__collection-button {\n    padding: .75rem 1.5rem;\n    background-color: rgba(0,0,0,.5);\n    color: white;\n    margin: 0 .25rem;\n}\n.deploy__collection-button.active {\n    color: var(--highlight-color);\n}\n.choose-action{\n    max-height: 100%;\n}\n.units-hud__unit.deploy__ghost:before {\n    content: \"\";\n    position: absolute;\n    width: 40%;\n    height: 40%;\n    /* background-image: url(/images/icons/ghost.png); */\n    z-index: 3;\n    left: 50%;\n    top: 25%;\n    background-repeat: no-repeat;\n    background-size: contain;\n    transform: translate(-50%, -70%);\n}\n.has-ghosts .units-hud__unit {\n    height: 8vw;\n}\n.deploy__toggle-ghost {\n    background-color: #192236;\n}\n.deploy__ghost .deploy__toggle-ghost {\n    background-color: var(--faction-ghosts);\n}\n.no-valid-reserves {\n    background-color: rgba(0,0,0,.5);\n    padding: 2rem;\n}\n\n", ""]);
 
 // exports
 
@@ -66404,11 +66405,22 @@ var render = function() {
                         areas: _vm.fromAreas,
                         index: _vm.fromAreaIndex,
                         isReserves: "true",
-                        hasReserves: _vm.reserves.length
+                        hasReserves: 1
                       },
                       on: { update: _vm.updateFromIndex }
                     },
                     [
+                      !_vm.reserves.length
+                        ? _c(
+                            "div",
+                            {
+                              staticClass:
+                                "prompt-question center-text no-valid-reserves"
+                            },
+                            [_vm._v("No valid units in reserves")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
                       _c("unit-set", {
                         attrs: {
                           units: _vm.reserves,
@@ -66429,7 +66441,7 @@ var render = function() {
                       attrs: {
                         areas: _vm.fromAreas,
                         index: _vm.fromAreaIndex,
-                        hasReserves: _vm.reserves.length,
+                        hasReserves: 1,
                         classes: "area-header__units pt-0"
                       },
                       on: { update: _vm.updateFromIndex }

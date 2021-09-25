@@ -14,8 +14,9 @@
                         :areas="fromAreas"
                         :index="fromAreaIndex"
                         isReserves="true"
-                        :hasReserves="reserves.length"
+                        :hasReserves="1"
                         @update="updateFromIndex">
+                        <div v-if="!reserves.length" class="prompt-question center-text no-valid-reserves">No valid units in reserves</div>
                         <unit-set :units="reserves" classes="center-text p-0" noBorder="true" @unitClicked="addUnitFromReserves"></unit-set>
                     </area-flipper>
 
@@ -24,7 +25,7 @@
                         v-if="fromAreaIndex !== -1"
                         :areas="fromAreas"
                         :index="fromAreaIndex"
-                        :hasReserves="reserves.length"
+                        :hasReserves="1"
                         classes="area-header__units pt-0"
                         @update="updateFromIndex">
                             <div class="toggle area-map__toggle top-0 left-0">Re-deploy from the {{ fromAreas[fromAreaIndex].name }}</div>
@@ -126,7 +127,7 @@
 
         mounted(){
             // if we have nothing to deploy from our reserves set our fromIndex to 0
-            if( this.reserves.length === 0 && this.fromAreas.length > 0 ) this.fromAreaIndex = 0;
+            //if( this.reserves.length === 0 && this.fromAreas.length > 0 ) this.fromAreaIndex = 0;
 
             // if we have no units to deploy at all set our from index to -2
             if( this.reserves.length === 0 && this.fromAreas.length === 0 ) this.fromAreaIndex = -2;
@@ -656,6 +657,11 @@
 
     .deploy__ghost .deploy__toggle-ghost {
         background-color: var(--faction-ghosts);
+    }
+
+    .no-valid-reserves {
+        background-color: rgba(0,0,0,.5);
+        padding: 2rem;
     }
 
 </style>
