@@ -98510,7 +98510,7 @@ var obj = {
     name: 'loyalists',
     owner: null,
     blocked: false,
-    status: 3,
+    status: 2,
     selectable: true
   },
   swarm: {
@@ -98558,7 +98558,6 @@ var obj = {
     status: 1,
     selectable: true
   },
-  //parasites : { name: 'parasites', owner : null, blocked : false, status : 0, selectable : false },
   conquistadors: {
     name: 'conquistadors',
     owner: null,
@@ -98570,7 +98569,7 @@ var obj = {
     name: 'witches',
     owner: null,
     blocked: false,
-    status: 2,
+    status: 3,
     selectable: true
   },
   bureau: {
@@ -98584,7 +98583,7 @@ var obj = {
     name: 'plants',
     owner: null,
     blocked: false,
-    status: 1,
+    status: 2,
     selectable: true
   },
   ghosts: {

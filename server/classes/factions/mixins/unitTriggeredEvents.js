@@ -6,16 +6,17 @@ let obj = {
      *
      * @param type
      * @param unitsData
+     * @param area
      */
-    async unitTriggeredEvents( type, unitsData ){
+    async unitTriggeredEvents( type, unitsData, area ){
         // wrap our units in an array if its not already
         if( !Array.isArray( unitsData ) ) unitsData = [ unitsData ];
 
         // get the triggered events we need to apply
-        let events = this.getUnitTriggeredEvents( type, unitsData );
+        let events = this.getUnitTriggeredEvents( type, unitsData, area );
 
         // resolve our triggered events
-        if( events.length ) await this.resolveUnitTriggeredEvents( events )
+        if( events.length )await this.resolveUnitTriggeredEvents( events, area )
             .catch( error => console.log( error ) );
 
     },
@@ -27,9 +28,10 @@ let obj = {
      *
      * @param type
      * @param unitsData
+     * @param area
      * @returns {[]}
      */
-    getUnitTriggeredEvents( type, unitsData ){
+    getUnitTriggeredEvents( type, unitsData, area ){
         let events = [];
         let property = 'on' + _.classCase( type );
 
@@ -39,6 +41,7 @@ let obj = {
 
             // otherwise get our event method name and push this object to our events to run array
             data.event = data.unit[property];
+            data.area = area;
             events.push( data );
         });
 

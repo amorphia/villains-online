@@ -52,7 +52,7 @@ class University extends Area {
 
         // set each patsy to skilled
         faction.data.units.forEach( unit => {
-            if( unit.type === 'patsy' ) unit.skilled = true;
+            if( unit.type === 'patsy' && !unit.skeleton ) unit.skilled = true;
         });
     }
 

@@ -112,7 +112,8 @@ class Plants extends Faction {
      * @param event
      */
     async soulLure( event ){
-        let units = [], area = this.game().areas[event.unit.location];
+        let units = [];
+        let area = event.area;
 
         this.message( `The Soul of the Green begins to sing...` );
 

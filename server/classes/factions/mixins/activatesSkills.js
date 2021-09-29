@@ -80,7 +80,7 @@ let obj = {
      */
     async handlePostSkillTriggers( area, exhaustedUnits ){
         // handle any of our exhausted unit's "onSkill" triggered events
-        await this.unitTriggeredEvents( 'skill', exhaustedUnits );
+        await this.unitTriggeredEvents( 'skill', exhaustedUnits, area );
 
         // handle any faction "onAfterSkill" triggered events
         if( this.triggers.onAfterSkill ) await this[this.triggers.onAfterSkill]( area, exhaustedUnits );
