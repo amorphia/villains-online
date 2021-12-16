@@ -98,6 +98,15 @@ let obj = [
         scope : 'local',
     },
     {
+        class : 'designer-plague',
+        file : 'designer-plague-1',
+        name : "Designer Plague",
+        cost : 0,
+        target : 'sewers',
+        type : 'event',
+        scope : 'global'
+    },
+    {
         class : 'display-of-brilliance',
         file : 'display-of-brilliance-1',
         name : "Display of Brilliance",
