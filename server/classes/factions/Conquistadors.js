@@ -197,7 +197,7 @@ class Conquistadors extends Faction {
         await this.game().killUnit( unit, this );
 
         // display the response and set our player prompt
-        this.message( `sacrifices <span class="faction-${faction.name}item">${unit.name}</span>` );
+        this.game().message({ faction : faction, message : `sacrifices <span class="faction-${faction.name}item">${unit.name}</span>` });
         player.setPrompt({ active : false, updatePlayerData : true });
     }
 
