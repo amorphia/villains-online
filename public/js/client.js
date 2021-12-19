@@ -4042,6 +4042,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-lobby',
   data: function data() {
@@ -62262,6 +62268,8 @@ var render = function() {
         "div",
         { staticClass: "d-flex flex-center width-100 height-100 pos-relative" },
         [
+          _vm._m(0),
+          _vm._v(" "),
           _c("view-factions"),
           _vm._v(" "),
           _c(
@@ -62472,7 +62480,24 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "d-block button pos-absolute bottom-0 left-0",
+        attrs: { href: "/files/villains_full_rules.pdf", target: "_blank" }
+      },
+      [
+        _vm._v("\n            view game rules "),
+        _c("i", { staticClass: "icon-launch" })
+      ]
+    )
+  }
+]
 render._withStripped = true
 
 
@@ -62557,7 +62582,7 @@ var render = function() {
                     {
                       staticClass: " width-100 d-block button",
                       attrs: {
-                        href: "/files/villains_v3.1.0.pdf",
+                        href: "/files/villains_full_rules.pdf",
                         target: "_blank"
                       }
                     },

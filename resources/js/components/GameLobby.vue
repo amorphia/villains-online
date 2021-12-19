@@ -7,6 +7,12 @@
         <!-- main content -->
         <div class="d-flex flex-center width-100 height-100 pos-relative">
 
+            <!-- rules -->
+            <a href="/files/villains_full_rules.pdf" target="_blank" class="d-block button pos-absolute bottom-0 left-0">
+                view game rules <i class="icon-launch"></i>
+            </a>
+
+
             <!-- view faction sheets modal -->
             <view-factions></view-factions>
 
