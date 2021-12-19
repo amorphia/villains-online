@@ -16,7 +16,7 @@
 
                     <!-- rules -->
                     <div class="pt-4">
-                        <a href="/files/villains_v3.1.0.pdf" target="_blank" class=" width-100 d-block button">
+                        <a href="/files/villains_full_rules.pdf" target="_blank" class=" width-100 d-block button">
                             view game rules <i class="icon-launch"></i>
                         </a>
                     </div>
