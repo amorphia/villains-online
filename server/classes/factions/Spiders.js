@@ -9,6 +9,7 @@ class Spiders extends Faction {
 
         // triggers
         this.triggers = {
+            "onSetup" : "setupWebsTokens",
             "onBeforeBattle" : "deployXchxchAmbushUnits"
         };
 
@@ -20,10 +21,14 @@ class Spiders extends Faction {
         this.data.xchxchDeploy = 1; // how many spiders do we place at the start of combat with xchxch?
 
         // tokens
+
+        // used to store additional web tokens before the appropriate upgrade is scored
+        this.data.webs = [];
+
         delete this.tokens['battle'];
 
         this.tokens['drop'] = {
-            count: 1,
+            count: 2,
             data: {
                 influence: 1,
                 type: 'drop',
@@ -35,9 +40,9 @@ class Spiders extends Faction {
 
 
         this.tokens['web'] = {
-            count: 2,
+            count: 3,
             data: {
-                influence: 0,
+                influence: 1,
                 type: 'web',
                 cost: 0,
                 resource : 1,
@@ -84,13 +89,24 @@ class Spiders extends Faction {
         };
     }
 
-
+    /**
+     * Remove the vines tokens we haven't unlocked yet from our reserves
+     */
+    setupWebsTokens(){
+        this.setupVariableTokens( 'webs', this.data.webs );
+    }
 
     /**
      * Process faction upgrade
-     *
-     * @param {number} upgrade
      */
+
+    processUpgrade() {
+        // add additional vines tokens to our reserves
+        this.upgradeVariableTokens( this.data.webs );
+    }
+
+
+    /*
     processUpgrade( upgrade ) {
         if( upgrade === 1 ){
             this.data.dropDeploy = 2;
@@ -101,6 +117,7 @@ class Spiders extends Faction {
             this.data.xchxchDeploy = 2;
         }
     }
+    */
 
 
     /**
@@ -229,7 +246,7 @@ class Spiders extends Faction {
         });
 
         // discard this token
-        _.discardToken( args.token, args.area );
+        //_.discardToken( args.token, args.area );
 
         // move along home
         this.game().advancePlayer();
