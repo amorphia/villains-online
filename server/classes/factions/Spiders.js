@@ -93,7 +93,7 @@ class Spiders extends Faction {
      * Remove the vines tokens we haven't unlocked yet from our reserves
      */
     setupWebsTokens(){
-        this.setupVariableTokens( 'webs', this.data.webs );
+        this.setupVariableTokens( 'web', this.data.webs );
     }
 
     /**
