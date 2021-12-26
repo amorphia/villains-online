@@ -182,11 +182,11 @@ class Loyalists extends Faction {
      * @returns {boolean}
      */
     knightable( unit, area ){
-        if( typeof area !== 'string' ) area = area.name;
-        return ! unit.flipped
-               && unit.location === area
-               && unit.basic;
-    }
+        if( area?.name ) area = area.name;
+        return unit.location === area
+                && unit.basic
+                && !unit.flipped;
+   }
 
 
     /**

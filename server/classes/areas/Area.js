@@ -250,7 +250,7 @@ class Area {
         // if we have a cease fire that's a big no
         if( this.hasCard( 'cease-fire' ) ) return false;
 
-        return this.factionsWithUnits().length >= 2 // if we have at least two factions here
+        return this.factionsWithUnits( { canCombat : true }).length >= 2 // if we have at least two factions here
             && this.factionsWithUnits( { withAttack : true  }).length >= 1; // at least one of which has units that can attack
     }
 

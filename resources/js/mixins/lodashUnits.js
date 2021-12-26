@@ -31,6 +31,7 @@ let helpers = {
             && ( !options.notChampion || unit.type !== 'champion' )
             && ( !options.types || options.types.includes( unit.type ) )
             && ( !options.hidden || unit.hidden )
+            && ( !options.canCombat || (!unit.hidden || ( unit.attack.length && !unit.webbed ) ) )
             && ( !options.notWebbed || !unit.webbed )
             && ( !options.notHidden || !unit.hidden )
             && ( !options.deployable || ( !unit.noDeploy && !unit.webbed ) )
