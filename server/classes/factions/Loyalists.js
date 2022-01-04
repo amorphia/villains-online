@@ -29,9 +29,6 @@ class Loyalists extends Faction {
             }
         };
 
-
-
-
         // units
         this.shouldSetUnitBaseStats = {
             basic : true,
