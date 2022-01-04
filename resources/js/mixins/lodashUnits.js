@@ -14,8 +14,8 @@ let helpers = {
             && ( !options.notKilled || !unit.killed )
             && ( !options.location || options.location == unit.location ) // intentionally coercive to match different falsy values
             && ( !options.adjacent || options.adjacent.includes( unit.location ) )
-            && ( !options.onBoard || unit.location ) // intentionally coercive to match different falsy values
-            && ( !options.inReserves || !unit.location ) // intentionally coercive to match different falsy values
+            && ( !options.onBoard || unit.location )
+            && ( !options.inReserves || !unit.location )
             && ( !options.basic || unit.basic )
             && ( !options.notBasic || !unit.basic )
             && ( !options.flipped || unit.flipped )

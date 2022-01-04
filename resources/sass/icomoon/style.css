@@ -51,6 +51,12 @@
 .icon-toughness-solid:before {
     content: "\e95c";
 }
+.icon-bishop:before {
+    content: "\e910";
+}
+.icon-guard:before {
+    content: "\e911";
+}
 .icon-smoke:before {
     content: "\e90e";
 }

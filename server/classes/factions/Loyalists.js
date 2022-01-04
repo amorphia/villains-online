@@ -56,6 +56,42 @@ class Loyalists extends Faction {
             }
         };
 
+        this.units['bishop'] = {
+            count: 1,
+            data: {
+                name: "bishop",
+                type: "bishop",
+                basic: false,
+                cost: 0,
+                noDeploy: true,
+                influence: 0,
+                attack: [],
+                skilled: true,
+                ready: false,
+                killed: false,
+                selected: false,
+                hitsAssigned: 0,
+            }
+        };
+
+        this.units["guard"] = {
+            count: 1,
+            data: {
+                name: "guard",
+                type: "guard",
+                basic: false,
+                cost: 0,
+                noDeploy: true,
+                influence: 0,
+                attack: [2],
+                firstStrike : true,
+                killed: false,
+                selected: false,
+                hitsAssigned: 0,
+            }
+        };
+
+
         this.units['champion'] = {
             count: 1,
             data: {
@@ -75,18 +111,6 @@ class Loyalists extends Faction {
         };
     }
 
-
-    /**
-     * Process faction upgrade
-     *
-     * @param {number} upgrade
-     */
-    processUpgrade( upgrade ) {
-        // for each upgrade add an extra knight to our base of two
-        this.data.knightCount = 2 + upgrade;
-    }
-
-
     /**
      * Handle place servants triggered event with the queen enters an area
      *
@@ -95,8 +119,14 @@ class Loyalists extends Faction {
     placeServants( event ){
         this.data.units.forEach( unit => {
             // all of our non-killed servants move into the queen's area
-           if( unit.type === 'servant' && !unit.killed ) unit.location = event.unit.location;
+           if( this.validEntourageUnit( unit ) && !unit.killed ) unit.location = event.unit.location;
         });
+    }
+
+    validEntourageUnit( unit ){
+        if( unit.type === 'servant' ) return true;
+        if( this.data.upgrade >= 1 && unit.type === 'bishop' ) return true;
+        if( this.data.upgrade >= 2 && unit.type === 'guard' ) return true;
     }
 
 
