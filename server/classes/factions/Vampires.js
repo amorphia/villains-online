@@ -18,6 +18,8 @@ class Vampires extends Faction {
         this.data.focusDescription = "Kill units in many different areas";
         this.data.batMove = 1; // how many bats we can move when revealing a token
 
+        this.data.unitPropAttackBonus = { vampire : 0 };
+
         // icons
         this.data.statusIcon = 'vampires';
         this.data.statusDescription = 'has vampire units';
@@ -64,7 +66,7 @@ class Vampires extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 2,
-                attack: [3,3],
+                attack: [4,4],
                 cost: 2,
                 vampire: true,
                 killed: false,
@@ -85,7 +87,7 @@ class Vampires extends Faction {
      * @param {number} upgrade
      */
     processUpgrade( upgrade ) {
-        this.data.batMove = upgrade + 1;
+        this.data.unitPropAttackBonus.vampire = upgrade;
     }
 
 
@@ -273,7 +275,7 @@ class Vampires extends Faction {
         unit.vampire = true;
 
         // improve attacks by 2
-        unit.attack = unit.baseAttack.map( attack => attack - 2 );
+        // unit.attack = unit.baseAttack.map( attack => attack - 2 );
         let message = `<span class="faction-vampires">${unit.name}</span> becomes a vampire in The ${unit.location}`;
         this.message(message );
 
@@ -287,7 +289,7 @@ class Vampires extends Faction {
     unflipUnit( unit ) {
         unit.flipped = false;
         if( !unit.type === 'champion' ) unit.vampire = false;
-        if( unit.baseAttack ) unit.attack = [...unit.baseAttack];
+        // if( unit.baseAttack ) unit.attack = [...unit.baseAttack];
     }
 
 

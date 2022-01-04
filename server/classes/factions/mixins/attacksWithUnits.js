@@ -343,8 +343,15 @@ let obj = {
         // subtract any attack bonuses set by our args
         if( args.attackBonus ) toHit -= args.attackBonus;
 
-        // if we are attacking with a unit and our faction has an attack bonus, apply it
+        // if we are attacking with a unit and our faction has a global attack bonus, apply it
         if( args.unit && this.data.attackBonus ) toHit -= this.data.attackBonus;
+
+        // if we get a bonus for attacking with a unit having a given prop, apply it here
+        if( args.unit && this.data.unitPropAttackBonus ){
+            for( let prop in this.data.unitPropAttackBonus ) {
+                if (args.unit[prop]) toHit -= this.data.unitPropAttackBonus[prop];
+            }
+        }
 
         // finally if our target faction has a defense bonus apply that here
         let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, { debug : true, unit : args.unit } );
