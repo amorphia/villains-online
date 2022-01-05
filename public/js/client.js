@@ -98800,7 +98800,7 @@ var obj = {
     name: 'loyalists',
     owner: null,
     blocked: false,
-    status: 2,
+    status: 1,
     selectable: true
   },
   swarm: {
@@ -98815,7 +98815,7 @@ var obj = {
     owner: null,
     blocked: false,
     killer: true,
-    status: 2,
+    status: 1,
     selectable: true
   },
   society: {
