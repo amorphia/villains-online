@@ -71,7 +71,8 @@ let obj = {
             fromToken : args.fromToken,
             noBonusUnits : args.noBonusUnits,
             readyUnits : args.readyUnits,
-            reduceCost : args.reduceCost
+            reduceCost : args.reduceCost,
+            transformUnit : args.transformUnit
         };
 
         // have the player select units to deploy
@@ -240,6 +241,12 @@ let obj = {
         if( unit.flipped && ( unit.toughness || !unit.location || unit.skeleton ) ){
             this.unflipUnit( unit );
         }
+
+        console.log( 'delpoy response', response );
+        if( !unit.flipped && response.transformUnit ) {
+            this[response.transformUnit]( unit );
+        }
+
 
         // ready units
         if( response.readyUnits ){

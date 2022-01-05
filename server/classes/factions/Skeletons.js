@@ -82,8 +82,6 @@ class Skeletons extends Faction {
                 hitsAssigned: 0,
                 onDamaged : 'checkBecomeSkeleton',
                 onSkill : 'xerZhulRaiseDead',
-                //onDeploy : 'xerZhulEnters',
-                //onMove : 'xerZhulEnters'
             }
         };
     }
@@ -266,14 +264,61 @@ class Skeletons extends Faction {
      * @param event
      */
     async xerZhulRaiseDead( event ){
+        const areas = this.getAreasWithKilledEnemyUnits();
+        if( !areas.length ){
+            this.message( "No dead for Xer'Zhul to raise", { class : 'warning' } );
+            return;
+        }
 
-        let units = await this.reviveUnits({
-            reviveCount : 1,
-            reviveEvent: 'reviveAsSkeletons'
+        let response = await this.prompt( 'choose-units', {
+            count: 1,
+            areas: areas,
+            killedOnly: true,
+            enemyOnly: true,
+            basicOnly: true,
+            message: "Choose a unit to raise as a skeleton",
         });
+
+        await this.resolveRaiseDead( response );
+    }
+
+    async resolveRaiseDead( response ){
+        let unit = this.game().objectMap[ response.units[0] ];
+
+        let args = {
+            area: unit.location,
+            faction: this,
+            player: this.playerId,
+            free: true,
+            deployLimit: 1,
+            unitTypes: [unit.type],
+            transformUnit: 'becomeSkeleton'
+        };
+
+        // deploy the selected unit
+        let output = await this.deploy( args );
+
+        if( output?.declined ){
+            faction.message( `Doesn't deploy a skeleton to the ${unit.location}` );
+        }
+
 
     }
 
+    /**
+     *
+     *
+     * @returns {*[]}
+     */
+    getAreasWithKilledEnemyUnits(){
+        let areas = [];
+        Object.values( this.game().factions ).forEach( faction => {
+            if( faction.name === this.name ) return;
+            areas = [...areas, ...faction.getAreasWithKilledUnits()];
+        });
+
+        return [...new Set(areas)]
+    }
 
     /**
      * Revive our units ask skeletons when using xerZhul's revive ability
