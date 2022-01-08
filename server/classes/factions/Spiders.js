@@ -9,36 +9,35 @@ class Spiders extends Faction {
 
         // triggers
         this.triggers = {
-            "onSetup" : "setupWebsTokens",
-            "onBeforeBattle" : "deployXchxchAmbushUnits"
+            "onSetup" : "setupDropTokens",
+            //"onBeforeBattle" : "deployXchxchAmbushUnits"
         };
 
         //data
         this.data.name = this.name;
         this.data.title = "The Eyes of the Woods";
         this.data.focusDescription = "Kill units beloning to many different players";
-        this.data.dropDeploy = 1; // how many spider do we place with our Drop token?
+        this.data.dropDeploy = 2; // how many spider do we place with our Drop token?
         this.data.xchxchDeploy = 1; // how many spiders do we place at the start of combat with xchxch?
 
         // tokens
 
         // used to store additional web tokens before the appropriate upgrade is scored
-        this.data.webs = [];
+        this.data.drops = [];
 
         delete this.tokens['battle'];
 
         this.tokens['drop'] = {
-            count: 2,
+            count: 3,
             data: {
                 influence: 1,
                 type: 'drop',
                 cost: 0,
-                resource : 1,
                 req : "To avoid discarding this token you must place at least one spider, or start a battle"
             }
         };
 
-
+        /*
         this.tokens['web'] = {
             count: 3,
             data: {
@@ -49,6 +48,7 @@ class Spiders extends Faction {
                 req : "To avoid discarding this token you must be able to web at least one enemy basic unit"
             }
         };
+        */
 
         // units
         this.units['goon'].count = 3;
@@ -64,7 +64,7 @@ class Spiders extends Faction {
                 cost: 0,
                 noDeploy: true,
                 influence: 0,
-                attack: [5],
+                attack: [6],
                 deadly : true,
                 killed: false,
                 selected: false,
@@ -79,10 +79,13 @@ class Spiders extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 2,
-                attack: [5],
+                attack: [4],
                 deadly: true,
+                flipped: false,
+                toughness: true,
                 cost: 2,
                 killed: false,
+                onDeploy: 'deployXchxchWeb',
                 selected: false,
                 hitsAssigned: 0,
             }
@@ -92,8 +95,8 @@ class Spiders extends Faction {
     /**
      * Remove the vines tokens we haven't unlocked yet from our reserves
      */
-    setupWebsTokens(){
-        this.setupVariableTokens( 'web', this.data.webs );
+    setupDropTokens(){
+        this.setupVariableTokens( 'drop', this.data.drops );
     }
 
     /**
@@ -102,22 +105,8 @@ class Spiders extends Faction {
 
     processUpgrade() {
         // add additional vines tokens to our reserves
-        this.upgradeVariableTokens( this.data.webs );
+        this.upgradeVariableTokens( this.data.drops );
     }
-
-
-    /*
-    processUpgrade( upgrade ) {
-        if( upgrade === 1 ){
-            this.data.dropDeploy = 2;
-        }
-
-        if( upgrade === 2 ){
-            this.data.dropDeploy = 2;
-            this.data.xchxchDeploy = 2;
-        }
-    }
-    */
 
 
     /**
@@ -162,22 +151,22 @@ class Spiders extends Faction {
     /**
      * Deploy patsies directly into battle if XchXch is present
      *
-     * @param battle
+     * @param event
      */
-    async deployXchxchAmbushUnits( battle ){
-        let data, player;
+    async deployXchxchWeb( event ){
+        let area = this.game().areas[ event.unit.location ];
 
-        // is Xchxch here? No? then return
-        if( !this.championInArea( battle.area.name ) ) return;
-
-        // if we have no spiders, abort
-        if( !this.hasSpiders() ){
-            this.message( 'No spiders in reserves to place', { class : 'warning' });
+        if( !this.hasEnemyUnitsInArea( area, { basic : true } ) ){
+            this.message( "No units for XchXch to web", { class : 'warning' } );
             return;
         }
 
-        // poop out spiders
-        await this.resolveSpawnSpiders( battle.area, this.data.xchxchDeploy, `XchXch summons her brood to battle` );
+        let units = await this.chooseWebUnits( area );
+
+        units.forEach( unit => {
+            unit.webbed = true;
+            if( unit.ready ) unit.ready = false;
+        });
     }
 
 
@@ -220,54 +209,22 @@ class Spiders extends Faction {
     }
 
 
-    /**
-     * Can we activate our drop token?
-     *
-     * @param token
-     * @param area
-     * @returns {boolean}
-     */
-    canActivateWeb( token, area ) {
-        return this.hasEnemyUnitsInArea( area, { basic : true } );
-    }
-
-
-    /**
-     * Resolve our web token
-     *
-     * @param args
-     */
-    async activateWebToken( args ) {
-        let units = await this.chooseWebUnits( args );
-
-        units.forEach( unit => {
-           unit.webbed = true;
-           if( unit.ready ) unit.ready = false;
-        });
-
-        // discard this token
-        //_.discardToken( args.token, args.area );
-
-        // move along home
-        this.game().advancePlayer();
-    }
-
 
     /**
      * Select which enemy units to trap in webs
      *
-     * @param args
+     * @param area
      * @returns {Array}
      */
-    async chooseWebUnits( args ){
+    async chooseWebUnits( area ){
 
-        let factions = _.factionsWithUnitsInArea( this.game().factions, args.area, {
+        let factions = _.factionsWithUnitsInArea( this.game().factions, area, {
             exclude : this.name,
             basic : true });
 
         let response = await this.prompt('choose-units', {
             count : factions.length,
-            areas : [args.area.name],
+            areas : [area.name],
             basicOnly : true,
             enemyOnly : true,
             differentPlayers : true,

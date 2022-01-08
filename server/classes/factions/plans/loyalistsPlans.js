@@ -100,7 +100,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlAreasOr', args : [ ['laboratory', 'subway'] ] },
+                    { test : 'controlAreasOr', args : [ ['laboratory', 'university'] ] },
                 ],
                 value : 1
             },
@@ -112,7 +112,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'controlAreasAnd', args : [ ['laboratory', 'subway'] ] },
+                    { test : 'controlAreasAnd', args : [ ['laboratory', 'university'] ] },
                 ],
                 value : 1
             }
@@ -125,7 +125,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlAreasOr', args : [ ['bank', 'sewers'] ] },
+                    { test : 'controlAreasOr', args : [ ['bank', 'subway'] ] },
                 ],
                 value : 1
             },
@@ -137,7 +137,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'controlAreasAnd', args : [ ['bank', 'sewers'] ] },
+                    { test : 'controlAreasAnd', args : [ ['bank', 'subway'] ] },
                 ],
                 value : 1
             }
@@ -150,7 +150,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlAreasOr', args : [ ['police', 'university'] ] },
+                    { test : 'controlAreasOr', args : [ ['police', 'sewers'] ] },
                 ],
                 value : 1
             },
@@ -162,7 +162,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'controlAreasAnd', args : [ ['police', 'university'] ] },
+                    { test : 'controlAreasAnd', args : [ ['police', 'sewers'] ] },
                 ],
                 value : 1
             }
