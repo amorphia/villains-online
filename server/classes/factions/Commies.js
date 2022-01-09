@@ -44,7 +44,7 @@ class Commies extends Faction {
                 skilled: true,
                 ready: false,
                 killed : false,
-                onSkill : 'papovShoot', //papovMove
+                onSkill : 'papovMoveShoot', //papovMove
                 selected : false,
                 hitsAssigned : 0
             }
@@ -86,7 +86,19 @@ class Commies extends Faction {
      *
      * @param event
      */
-    async papovShoot( event ){
+    async papovMoveShoot( event ){
+
+        this.message(`<span class="faction-commies">Commissar Papova</span> calls for reinforcements` );
+
+        await this.move({
+            area: this.game().areas[event.unit.location],
+            toArea : event.unit.location,
+            fromToken: false,
+            moveLimit: 3,
+            farMove: true,
+            player : this.playerId
+        }).catch( error => console.error( error ) );
+
         this.message(`<span class="faction-commies">Commissar Papova</span> inspires her patsies to riot` );
 
         let area = this.game().areas[event.unit.location];
