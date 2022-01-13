@@ -25,8 +25,6 @@ class Spiders extends Faction {
         // used to store additional web tokens before the appropriate upgrade is scored
         this.data.drops = [];
 
-        delete this.tokens['battle'];
-
         this.tokens['drop'] = {
             count: 3,
             data: {
