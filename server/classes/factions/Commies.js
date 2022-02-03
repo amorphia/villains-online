@@ -22,6 +22,7 @@ class Commies extends Faction {
                 influence: 1,
                 cost : 0,
                 areaStat : true,
+                resource : 1,
                 description : 'communist patsies produce +1 influence in this area',
                 req : "Passive token: this token may always be activated"
             }
