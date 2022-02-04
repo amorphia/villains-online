@@ -277,8 +277,12 @@ class Guerrillas extends Faction {
 
         if( response.decline ) return;
 
+        console.log( 'bringUnits response', response );
+
         // bring our units along
         await this.resolveBringUnits( response.units, response.cost, event );
+
+
     }
 
 
@@ -289,7 +293,8 @@ class Guerrillas extends Faction {
      * @param cost
      * @param event
      */
-    async resolveBringUnits( units, cost, event ) {
+    async resolveBringUnits( units, cost, event ){
+
         // pay any costs to move these units
         if( cost ) this.payCost( cost );
 
