@@ -242,6 +242,8 @@ let obj = {
             this.unflipUnit( unit );
         }
 
+
+
         console.log( 'delpoy response', response );
         if( !unit.flipped && response.transformUnit ) {
             this[response.transformUnit]( unit );
@@ -261,6 +263,10 @@ let obj = {
             ghosts.unGhost( unit );
         }
 
+
+        if( unit.vampire && ( !unit.champion ) ){
+            unit.vampire = false;
+        }
         // update area
         unit.location = response.toArea;
     },
