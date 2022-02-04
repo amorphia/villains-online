@@ -264,7 +264,7 @@ class Guerrillas extends Faction {
         let vines = area.data.tokens.filter( token => token.type === 'vines' ).length;
 
         // Let player choose which units to bring, if any
-        let response = this.prompt( 'choose-units', {
+        let response = await this.prompt( 'choose-units', {
             count : 2,
             areas : [event.from],
             playerOnly : true,
