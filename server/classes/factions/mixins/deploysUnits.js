@@ -264,7 +264,7 @@ let obj = {
         }
 
 
-        if( unit.vampire && ( !unit.champion ) ){
+        if( unit.vampire && ( unit.type !== 'champion' ) ){
             unit.vampire = false;
         }
         // update area
