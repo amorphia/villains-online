@@ -194,7 +194,7 @@
         position: relative;
     }
 
-    .unit-row .units-hud__unit img {
+    .units-hud__unit img {
         z-index: 2;
         position: relative;
         outline: 3px solid rgba(0,0,0,.3);

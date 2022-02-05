@@ -10,7 +10,7 @@ class Guerrillas extends Faction {
         // triggers
         this.triggers = {
             "onCleanUp" : "resetAmbushUsedCount",
-            "onStartOfTurn" : "setViperDeployLimit",
+            //"onStartOfTurn" : "setViperDeployLimit",
         };
 
 
@@ -32,7 +32,7 @@ class Guerrillas extends Faction {
         this.tokens['snipers'] = {
             count: 1,
             data: {
-                influence: 1,
+                influence: 2,
                 type: 'snipers',
                 resource: 1,
                 cost: 0,
@@ -61,12 +61,15 @@ class Guerrillas extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 0,
+                warInfluence: 0,
+                peaceInfluence: 2,
                 attack: [7, 7],
+                warAttack: [7, 7],
+                peaceAttack: [],
                 cost: 1,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                toughness: true,
                 flipped: false,
                 onDeploy: 'viperDeploy'
             }
@@ -218,33 +221,11 @@ class Guerrillas extends Faction {
      */
     async viperDeploy( event ){
         // viper is no longer free to our deploy limit
-        this.toggleViperDeployLimit( false );
+        await this.chooseViperSide();
 
         // handle bring units trigger
         await this.bringUnits( event );
     }
-
-
-    /**
-     * Add or remove the free deploy limit on Red Viper
-     *
-     * @param set
-     */
-    toggleViperDeployLimit( set = true ){
-        if( set ) this.data.bonusDeploy = { type: 'champion', count : 1 };
-        else delete this.data.bonusDeploy;
-    }
-
-
-    /**
-     * Handle our end of turn viper deploy limit trigger
-     */
-    setViperDeployLimit(){
-        // if red viper is in our reserves, then she is free to deploy again next turn
-        let viperInReserves = this.data.units.find( unit => unit.type === 'champion' && !unit.location );
-        if( viperInReserves ) this.toggleViperDeployLimit( true );
-    }
-
 
     /**
      * Handle Red Viper's bring units ability
@@ -313,6 +294,29 @@ class Guerrillas extends Faction {
             message : `${units.length === 1 ? 'A Unit sneaks' : 'Units sneak'} to The ${event.unit.location}`,
             units: units
         });
+    }
+
+
+    /**
+     * Choose which side to place Red Viper on
+     */
+    async chooseViperSide(){
+
+        let response = await this.prompt( 'choose-viper-side', {});
+
+        const viper = this.getChampion();
+
+        if( response.side === 'war'){
+            viper.flipped = false;
+            viper.attack = [...viper.warAttack];
+            viper.influence = viper.warInfluence;
+        }
+
+        if( response.side === 'peace'){
+            viper.flipped = true;
+            viper.attack = [...viper.peaceAttack];
+            viper.influence = viper.peaceInfluence;
+        }
     }
 
 
