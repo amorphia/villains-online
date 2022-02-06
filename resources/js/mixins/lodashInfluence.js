@@ -13,7 +13,7 @@ let helpers = {
 
         let influences = [];
         // The neutral get 1 influence in its area
-        if( area.owner === 'neutral' ) influences.push( { faction : 'neutrals', influence : 1 } );
+        if( area.owner === 'neutral' ) influences.push( { faction : 'neutral', influence : 1 } );
 
         Object.values( factions ).forEach( faction =>{
             if( faction.data ) faction = faction.data; //format input

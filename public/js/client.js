@@ -96742,7 +96742,7 @@ var helpers = {
     var influences = []; // The neutral get 1 influence in its area
 
     if (area.owner === 'neutral') influences.push({
-      faction: 'neutrals',
+      faction: 'neutral',
       influence: 1
     });
     Object.values(factions).forEach(function (faction) {
