@@ -183,7 +183,7 @@ class Martyrs extends Faction {
 
     canControlCombat( faction, battle ){
         let battleFaction = battle.data.factions.find( item => item.name === faction.name );
-        return this.hasUnitsInArea( battle.area ) && battleFaction.completedAttacks === 0;
+        return this.hasUnitsInArea( battle.area, { notType : 'patsy' } ) && battleFaction.completedAttacks === 0;
     }
 
 
