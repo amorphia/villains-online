@@ -119,7 +119,7 @@ class Martyrs extends Faction {
         incarnation.killedBy.push( killer.name );
 
         // announce thw death and rebirth of the incarnation of divinity, the cycle begins anew!
-        this.game().sound( 'divinitydeath' );
+        this.game().sound( 'holy' );
         this.game().message({ faction : killer, message: `Have struck down <span class="highlight">The Incarnation of Divinity</span>, but it has been reborn!` });
 
         // return incarnation to our reserves
