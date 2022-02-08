@@ -9,7 +9,7 @@ class Martyrs extends Faction {
 
         // triggers
         this.triggers = {
-            "onCleanUp" : "resetIncarnationKilledBy"
+           // "onCleanUp" : "resetIncarnationKilledBy"
         };
 
         //data
@@ -47,7 +47,7 @@ class Martyrs extends Faction {
                 attack: [],
                 cost: 0,
                 killed: false,
-                killedBy: [],
+                //killedBy: [],
                 selected: false,
                 hitsAssigned: 0,
                 onDeploy: 'incarnationConvert',
@@ -109,21 +109,25 @@ class Martyrs extends Faction {
         let killer = this.game().factions[ event.unit.killed ]; //  who killed the queen
         let incarnation = this.getChampion();
 
+        /*
         // if the same player kills The Incarnation of Divinity twice in a turn it stays dead
         if( incarnation.killedBy.includes( killer.name ) ){
             this.game().message({ faction : killer, message: `Have <span class="highlight">snuffed out</span> the light of divinity for a second time! This time it works` });
             return;
         }
 
+
         // mark this player has killed the incarnation
         incarnation.killedBy.push( killer.name );
 
+        */
+
         // announce thw death and rebirth of the incarnation of divinity, the cycle begins anew!
         this.game().sound( 'holy' );
-        this.game().message({ faction : killer, message: `Have struck down <span class="highlight">The Incarnation of Divinity</span>, but it has been reborn!` });
+        this.game().message({ faction : killer, message: `Have struck down <span class="highlight">The Incarnation of Divinity</span>!` });
 
         // return incarnation to our reserves
-        this.returnUnitToReserves( incarnation );
+        // this.returnUnitToReserves( incarnation );
 
         // steal a card
         await this.resolveIncarnationCardSteal( killer );
