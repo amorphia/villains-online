@@ -157,6 +157,32 @@ let helpers = {
         return this.isValidUnit( unit, options );
     },
 
+    /**
+     * Get all the dead from a faction
+     *
+     * @param faction
+     * @param options
+     * @returns {*}
+     */
+    factionDead( faction, options = {} ){
+        options.killed = true;
+        if( faction.data ) faction = faction.data; //format inputs
+        return faction.units.filter( unit => this.isValidUnit( unit, options ) );
+    },
+
+
+    /**
+     * Get all the dead from a faction
+     *
+     * @param faction
+     * @param options
+     * @returns {*}
+     */
+    factionReserves( faction, options = {} ){
+        options.inReserves = true;
+        if( faction.data ) faction = faction.data; //format inputs
+        return faction.units.filter( unit => this.isValidUnit( unit, options ) );
+    },
 
     /**
      * Is the given unit alive in the given area

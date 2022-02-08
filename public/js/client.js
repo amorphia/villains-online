@@ -2960,6 +2960,44 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MartyrsFocus.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/MartyrsFocus.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['classes', 'faction'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  computed: {
+    dead: function dead() {
+      return _.factionDead(this.faction).length;
+    },
+    reserves: function reserves() {
+      return _.factionReserves(this.faction, {
+        type: 'patsy'
+      }).length;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MutantsFocus.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/MutantsFocus.vue?vue&type=script&lang=js& ***!
@@ -4770,6 +4808,9 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state
     };
+  },
+  mounted: function mounted() {
+    console.log('plans current', this.shared.faction.plans.current);
   }
 });
 
@@ -10527,6 +10568,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {string}
      */
     message: function message() {
+      if (this.data.message) {
+        return this.data.message;
+      }
+
       return this.data.count === 1 ? 'Discard a card' : "Discard ".concat(this.data.count, " cards");
     },
 
@@ -61294,6 +61339,51 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MartyrsFocus.vue?vue&type=template&id=615b3976&":
+/*!*********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/MartyrsFocus.vue?vue&type=template&id=615b3976& ***!
+  \*********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "d-flex plan-focus mr-4 primary-light align-center",
+      class: _vm.classes
+    },
+    [
+      _c("span", [
+        _vm._v("dead units:"),
+        _c("span", { staticClass: "highlight ml-2" }, [
+          _vm._v(_vm._s(_vm.dead))
+        ])
+      ]),
+      _vm._v(" "),
+      _c("span", { staticClass: "ml-3" }, [
+        _vm._v("patsies in reserves :"),
+        _c("span", { staticClass: "highlight ml-2" }, [
+          _vm._v(_vm._s(_vm.reserves))
+        ])
+      ])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MutantsFocus.vue?vue&type=template&id=4ba8e8a2&":
 /*!*********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Focus/MutantsFocus.vue?vue&type=template&id=4ba8e8a2& ***!
@@ -85052,6 +85142,7 @@ var map = {
 	"./Focus/CultistsFocus.vue": "./resources/js/components/Focus/CultistsFocus.vue",
 	"./Focus/GuerrillasFocus.vue": "./resources/js/components/Focus/GuerrillasFocus.vue",
 	"./Focus/HackersFocus.vue": "./resources/js/components/Focus/HackersFocus.vue",
+	"./Focus/MartyrsFocus.vue": "./resources/js/components/Focus/MartyrsFocus.vue",
 	"./Focus/MutantsFocus.vue": "./resources/js/components/Focus/MutantsFocus.vue",
 	"./Focus/NinjasFocus.vue": "./resources/js/components/Focus/NinjasFocus.vue",
 	"./Focus/PlantsFocus.vue": "./resources/js/components/Focus/PlantsFocus.vue",
@@ -86765,6 +86856,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HackersFocus_vue_vue_type_template_id_7df22456___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HackersFocus_vue_vue_type_template_id_7df22456___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/MartyrsFocus.vue":
+/*!********************************************************!*\
+  !*** ./resources/js/components/Focus/MartyrsFocus.vue ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MartyrsFocus_vue_vue_type_template_id_615b3976___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MartyrsFocus.vue?vue&type=template&id=615b3976& */ "./resources/js/components/Focus/MartyrsFocus.vue?vue&type=template&id=615b3976&");
+/* harmony import */ var _MartyrsFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MartyrsFocus.vue?vue&type=script&lang=js& */ "./resources/js/components/Focus/MartyrsFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _MartyrsFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MartyrsFocus_vue_vue_type_template_id_615b3976___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MartyrsFocus_vue_vue_type_template_id_615b3976___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Focus/MartyrsFocus.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/MartyrsFocus.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/Focus/MartyrsFocus.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MartyrsFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./MartyrsFocus.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MartyrsFocus.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MartyrsFocus_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Focus/MartyrsFocus.vue?vue&type=template&id=615b3976&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/Focus/MartyrsFocus.vue?vue&type=template&id=615b3976& ***!
+  \***************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MartyrsFocus_vue_vue_type_template_id_615b3976___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./MartyrsFocus.vue?vue&type=template&id=615b3976& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Focus/MartyrsFocus.vue?vue&type=template&id=615b3976&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MartyrsFocus_vue_vue_type_template_id_615b3976___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MartyrsFocus_vue_vue_type_template_id_615b3976___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -96868,10 +97028,37 @@ var helpers = {
 
           if (shouldRiseUp && unit.type === 'patsy') influence++;
         }
-      });
+      }); // add in any martyr influence if applicable
+
+      influence += this.martyrInfluence(faction, area);
     }
 
     return influence;
+  },
+
+  /**
+   * Get any martyr influence if applicable
+   *
+   * @param faction
+   * @param area
+   * @returns {number}
+   */
+  martyrInfluence: function martyrInfluence(faction, area) {
+    var _this3 = this;
+
+    var influence = 0; // only the martyrs have a martyr token
+
+    if (faction.name !== 'martyrs') return influence; // look for a revealed token named martyr in this area
+
+    if (!area.tokens.some(function (token) {
+      return token.name === 'martyr' && token.revealed;
+    })) return influence; // get our killed units in this area
+
+    var killedUnits = faction.units.filter(function (unit) {
+      return _this3.deadInArea(unit, area);
+    });
+    console.log('killedUnits', area.name, killedUnits);
+    return killedUnits.length;
   },
 
   /**
@@ -96914,13 +97101,13 @@ var helpers = {
    * @returns {boolean}
    */
   areaIsScared: function areaIsScared(faction, factions, area) {
-    var _this3 = this;
+    var _this4 = this;
 
     // only the ghosts enemies are effected by this ability
     if (faction.name === 'ghosts' || !factions['ghosts']) return false; // do we have any units with the blockEnemyTokenInfluence ability in this area?
 
     return factions['ghosts'].units.some(function (unit) {
-      return unit.blockEnemyTokenInfluence && !unit.flipped && _this3.unitInArea(unit, area.name);
+      return unit.blockEnemyTokenInfluence && !unit.flipped && _this4.unitInArea(unit, area.name);
     });
   },
 
@@ -97669,6 +97856,44 @@ var helpers = {
   },
 
   /**
+   * Get all the dead from a faction
+   *
+   * @param faction
+   * @param options
+   * @returns {*}
+   */
+  factionDead: function factionDead(faction) {
+    var _this5 = this;
+
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    options.killed = true;
+    if (faction.data) faction = faction.data; //format inputs
+
+    return faction.units.filter(function (unit) {
+      return _this5.isValidUnit(unit, options);
+    });
+  },
+
+  /**
+   * Get all the dead from a faction
+   *
+   * @param faction
+   * @param options
+   * @returns {*}
+   */
+  factionReserves: function factionReserves(faction) {
+    var _this6 = this;
+
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    options.inReserves = true;
+    if (faction.data) faction = faction.data; //format inputs
+
+    return faction.units.filter(function (unit) {
+      return _this6.isValidUnit(unit, options);
+    });
+  },
+
+  /**
    * Is the given unit alive in the given area
    *
    * @param unit
@@ -97693,7 +97918,7 @@ var helpers = {
    * @param options
    */
   enemyUnitsInArea: function enemyUnitsInArea(faction, area, factions) {
-    var _this5 = this;
+    var _this7 = this;
 
     var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
     if (faction.data) faction = faction.data;
@@ -97701,7 +97926,7 @@ var helpers = {
     Object.values(factions).forEach(function (enemy) {
       if (enemy.name === faction.name) return; // grab this factions units in the given area, and if they have any ass to our results object
 
-      var units = _this5.factionUnitsInArea(enemy, area, options);
+      var units = _this7.factionUnitsInArea(enemy, area, options);
 
       if (units.length) results[enemy.name] = units;
     });
@@ -99190,6 +99415,13 @@ var obj = {
   },
   skeletons: {
     name: 'skeletons',
+    owner: null,
+    blocked: false,
+    status: 0,
+    selectable: true
+  },
+  martyrs: {
+    name: 'martyrs',
     owner: null,
     blocked: false,
     status: 0,

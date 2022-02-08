@@ -23,6 +23,10 @@
                 shared : App.state,
             };
         },
+
+        mounted(){
+            console.log( 'plans current', this.shared.faction.plans.current );
+        }
     }
 </script>
 

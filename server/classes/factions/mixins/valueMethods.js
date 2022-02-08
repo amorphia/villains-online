@@ -465,6 +465,16 @@ let mixin = {
 
 
     /**
+     * Return an array of units in our reserves
+     *
+     * @param options
+     * @returns [units]
+     */
+    unitsInReserves( options = {} ){
+        return this.data.units.filter( unit => _.unitInReserves( unit, options ) );
+    },
+
+    /**
      * Do we have a unit of the given type in the given area?
      *
      * @param type
@@ -605,6 +615,15 @@ let mixin = {
      */
     money(){
         return this.data.resources + this.data.energy;
+    },
+
+    /**
+     * Returns the number of cards in hand
+     *
+     * @returns {number}
+     */
+    cardCount(){
+        return this.data.cards.hand.length;
     },
 
 

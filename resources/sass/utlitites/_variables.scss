@@ -17,6 +17,7 @@
     --off-white : #ADADAD;
     --light-yellow : #ffe000;
 
+    --faction-martyrs: #CADDDC;
     --faction-mafia: #ff6800;
     --faction-mutants: #90c500;
     --faction-scientists: #ffdd0b;
@@ -43,6 +44,7 @@
 }
 
 .faction-neutral{color: white}
+.faction-martyrs {color: var(--faction-martyrs)}
 .faction-mafia {color: var(--faction-mafia)}
 .faction-mutants {color: var(--faction-mutants)}
 .faction-scientists {color: var(--faction-scientists)}

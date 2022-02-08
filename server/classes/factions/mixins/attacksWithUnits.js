@@ -270,6 +270,7 @@ let obj = {
      * @returns {Faction|string}
      */
     async selectEnemyPlayerWithUnitsInArea( area, message, args = {} ){
+        let player, response;
 
         // grab our area instance if needed
         if( typeof area !== 'string' ) area = area.name;
@@ -292,16 +293,22 @@ let obj = {
             return this.game().factions[ targetFactions[0] ];
         }
 
-        // prompt our player to choose a faction
-        let response = await this.prompt( 'choose-victim', {
-            areas : [area],
-            faction: this.name,
-            message: message,
-            optional : args.optional,
-            targetFactions : targetFactions,
-            unitAttack : !!args.unit,
-            attackBonus : args.attackBonus
-        });
+        let controllingFaction = args.controllingFaction ?? this;
+
+        [player, response] = await this.game().promise({
+            players: controllingFaction.playerId,
+            name: 'choose-victim',
+            data : {
+                areas : [area],
+                faction: this.name,
+                message: message,
+                optional : args.optional,
+                targetFactions : targetFactions,
+                unitAttack : !!args.unit,
+                attackBonus : args.attackBonus
+            }
+        }).catch( error => console.error( error ) );
+
 
         // if we decline, return declined
         if( response.declined ){

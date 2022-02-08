@@ -60,6 +60,10 @@ let obj = {
         owner.returnUnitToReserves( original );
 
         // show our work
+        if( options.silent ){
+            return;
+        }
+
         await this.game().timedPrompt('units-shifted', {
             message : options.message,
             units: units.reverse()

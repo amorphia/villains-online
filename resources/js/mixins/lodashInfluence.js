@@ -133,10 +133,38 @@ let helpers = {
                     if( shouldRiseUp && unit.type === 'patsy' ) influence++;
                 }
             });
+
+            // add in any martyr influence if applicable
+            influence += this.martyrInfluence( faction, area );
         }
 
         return influence;
     },
+
+
+    /**
+     * Get any martyr influence if applicable
+     *
+     * @param faction
+     * @param area
+     * @returns {number}
+     */
+    martyrInfluence( faction, area ) {
+        let influence = 0;
+        // only the martyrs have a martyr token
+        if (faction.name !== 'martyrs') return influence;
+
+        // look for a revealed token named martyr in this area
+        if (!area.tokens.some(token => token.name === 'martyr' && token.revealed)) return influence;
+
+        // get our killed units in this area
+        let killedUnits = faction.units.filter( unit => this.deadInArea( unit, area ) );
+
+        console.log('killedUnits', area.name, killedUnits);
+
+        return killedUnits.length;
+    },
+
 
     /**
      * Should the given faction gain the benefits of a rise up token in this area?

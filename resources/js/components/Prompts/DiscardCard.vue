@@ -100,6 +100,10 @@
              * @returns {string}
              */
             message(){
+                if( this.data.message ){
+                    return this.data.message;
+                }
+
                 return this.data.count === 1 ? 'Discard a card' : `Discard ${this.data.count} cards`;
             },
 

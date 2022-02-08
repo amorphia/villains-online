@@ -92,7 +92,6 @@ class Cultists extends Faction {
 
         // get our victim and kill it
         let unit = await this.getBastaSacrificeVictim( targetFaction, area );
-        await this.game().killUnit( unit, this );
 
         // show our work
         message = `sacrifices <span class="faction-${unit.faction}">${unit.name}</span> in the ${event.from}`;
@@ -101,6 +100,8 @@ class Cultists extends Faction {
             message : `Basta claims a soul in the ${event.from}`,
             units: [unit]
         });
+
+        await this.game().killUnit( unit, this );
     }
 
 

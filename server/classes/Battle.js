@@ -152,6 +152,7 @@ class Battle {
             name: faction.name,
             playerId : faction.playerId,
             units: unitsInArea,
+            completedAttacks: 0,
             mods: faction.combatModifiersList( this.area ),
             order : faction.playerOrder()
         });
@@ -220,8 +221,10 @@ class Battle {
         let player, data;
         let gameFaction = this.game().factions[faction.name];
 
+        let controllingFaction = this.doesAnotherFactionControlAttack( gameFaction ) ?? gameFaction;
+
         // lets get our next attacker
-        let unit = await this.chooseNextAttacker( gameFaction );
+        let unit = await this.chooseNextAttacker( gameFaction, controllingFaction );
         if( !unit ) return;
 
         // resolve attack with that unit
@@ -233,34 +236,45 @@ class Battle {
             unit : unit,
             attackBonus : this.options.attackBonus,
             inCombat : true,
+            controllingFaction : controllingFaction,
         };
 
         // attack with the unit
         await gameFaction.attack( attackArgs ).catch( error => console.error( error ) );
+        faction.completedAttacks++;
         unit.needsToAttack = false;
         this.data.currentUnit = null;
     }
 
 
+    doesAnotherFactionControlAttack( gameFaction ){
+        return Object.values( this.game().factions ).find( faction => {
+            return faction.name !== gameFaction.name
+                    && typeof faction.controlsCombat === 'function'
+                    && faction.controlsCombat( gameFaction, this );
+        });
+    }
+
     /**
      * Allow a player to choose their next attacking unit
      *
      * @param gameFaction
+     * @param controllingFaction
      * @returns {Promise<*>}
      */
-    async chooseNextAttacker( gameFaction ){
+    async chooseNextAttacker( gameFaction, controllingFaction ){
         let player, data, unit;
 
         // let player choose their next unit
         [player, data] = await this.game().promise({
-            players: gameFaction.playerId,
+            players: controllingFaction.playerId,
             name: 'choose-units',
             data : {
                 count : 1,
                 areas : [this.area.name],
                 needsToAttack: true,
-                playerOnly : true,
-                canDecline : gameFaction.data.optionalAttack,
+                belongsTo : gameFaction.name,
+                canDecline : controllingFaction.data.optionalAttack,
                 message: "Choose a unit to make an attack",
             }
         }).catch( error => console.error( error ) );
