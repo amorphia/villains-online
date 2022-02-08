@@ -4362,7 +4362,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       },
       // array of available sounds
-      soundBank: ['active', 'basta', 'bats', 'combat', 'chirp', 'coin', 'error', 'explosion', 'hatch', 'hit', 'hit2', 'hit3', 'hypnotize', 'huh', 'points', 'queendeath', 'title', 'wiff', 'woosh', 'ui']
+      soundBank: ['active', 'basta', 'bats', 'combat', 'chirp', 'holy', 'coin', 'error', 'explosion', 'hatch', 'hit', 'hit2', 'hit3', 'hypnotize', 'huh', 'points', 'queendeath', 'title', 'wiff', 'woosh', 'ui']
     };
   },
   mounted: function mounted() {

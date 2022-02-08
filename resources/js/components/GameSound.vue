@@ -33,6 +33,7 @@
                     'bats',
                     'combat',
                     'chirp',
+                    'holy',
                     'coin',
                     'error',
                     'explosion',
