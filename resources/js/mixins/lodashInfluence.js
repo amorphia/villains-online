@@ -157,12 +157,13 @@ let helpers = {
         // look for a revealed token named martyr in this area
         if (!area.tokens.some(token => token.name === 'martyr' && token.revealed)) return influence;
 
-        // get our killed units in this area
-        let killedUnits = faction.units.filter( unit => this.deadInArea( unit, area ) );
+        faction.units.forEach( unit => {
+            if( this.deadInArea( unit, area ) ){ // if this unit is in this area and not webbed
+                influence += unit.influence; // add its influence to our tally
+            }
+        });
 
-        console.log('killedUnits', area.name, killedUnits);
-
-        return killedUnits.length;
+        return influence;
     },
 
 

@@ -26,6 +26,7 @@ class Martyrs extends Faction {
             data: {
                 influence: 1,
                 type: 'martyr',
+                resource: 1,
                 cost: 0,
                 req : "This token may always be activated"
             }

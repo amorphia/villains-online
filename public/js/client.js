@@ -97052,13 +97052,14 @@ var helpers = {
 
     if (!area.tokens.some(function (token) {
       return token.name === 'martyr' && token.revealed;
-    })) return influence; // get our killed units in this area
-
-    var killedUnits = faction.units.filter(function (unit) {
-      return _this3.deadInArea(unit, area);
+    })) return influence;
+    faction.units.forEach(function (unit) {
+      if (_this3.deadInArea(unit, area)) {
+        // if this unit is in this area and not webbed
+        influence += unit.influence; // add its influence to our tally
+      }
     });
-    console.log('killedUnits', area.name, killedUnits);
-    return killedUnits.length;
+    return influence;
   },
 
   /**
