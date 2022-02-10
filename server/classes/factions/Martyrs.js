@@ -205,7 +205,7 @@ class Martyrs extends Faction {
     async activateMartyrToken( args ) {
         // start a battle here
         await this.game().battle( args.area, { attackBonus : this.data.upgrade } );
-        this.game().advancePlayer( {}, false );
+        this.game().advancePlayer();
     }
 
 }
