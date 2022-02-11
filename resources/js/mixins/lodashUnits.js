@@ -27,7 +27,7 @@ let helpers = {
             && ( !options.ready || unit.ready )
             && ( !options.notReady || !unit.ready )
             && ( !options.type || unit.type === options.type )
-            && ( !options.notType || unit.type !== options.type )
+            && ( !options.notType || unit.type !== options.notType )
             && ( !options.notChampion || unit.type !== 'champion' )
             && ( !options.types || options.types.includes( unit.type ) )
             && ( !options.hidden || unit.hidden )

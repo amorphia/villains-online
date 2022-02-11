@@ -24,7 +24,7 @@ class Martyrs extends Faction {
         this.tokens['martyr'] = {
             count: 2,
             data: {
-                influence: 1,
+                influence: 0,
                 type: 'martyr',
                 resource: 1,
                 cost: 0,

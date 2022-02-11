@@ -49,7 +49,7 @@ class Spiders extends Faction {
         */
 
         // units
-        this.units['goon'].count = 3;
+        this.units['goon'].count = 4;
         this.units['mole'].count = 4;
         this.units['patsy'].count = 6;
 

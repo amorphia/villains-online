@@ -48,7 +48,7 @@ class Swarm extends Faction {
                 cost: 0,
                 noDeploy: true,
                 influence: 1,
-                attack: [6],
+                attack: [7],
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
