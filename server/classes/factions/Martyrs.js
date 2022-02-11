@@ -57,6 +57,9 @@ class Martyrs extends Faction {
         };
     }
 
+    processUpgrade(){
+    }
+
     /**
      * Convert patsies when incarnation is deployed
      *
