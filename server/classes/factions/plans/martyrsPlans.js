@@ -133,7 +133,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'loseUnits', args : [6] },
+                    { test : 'loseUnits', args : [5] },
                 ],
                 value : 1
             },
