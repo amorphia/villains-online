@@ -25,7 +25,7 @@ class Aliens extends Faction {
             { ap : 1, cardDraw : 1 },
             { ap : 1, maxEnergy : 1 },
             { ap : 1, cardDraw : 1 },
-            { ap : 1 },
+            { ap : 1, pp : 1 },
             { ap : 1, pp : 1 },
         ];
 
@@ -49,7 +49,7 @@ class Aliens extends Faction {
         // units
         this.units['goon'].count = 3;
         this.units['mole'].count = 8;
-        this.units['patsy'].count = 2;
+        this.units['patsy'].count = 3;
 
         this.units['champion'] = {
             count: 1,

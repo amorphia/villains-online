@@ -27,12 +27,13 @@ class Guerrillas extends Faction {
         };
 
         // tokens
+        this.tokens['deploy'].count = 4;
         delete this.tokens['battle'];
 
         this.tokens['snipers'] = {
             count: 1,
             data: {
-                influence: 2,
+                influence: 1,
                 type: 'snipers',
                 resource: 1,
                 cost: 0,
