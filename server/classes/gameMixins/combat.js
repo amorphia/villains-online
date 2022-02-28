@@ -96,6 +96,9 @@ let obj = {
         // mark the unit as killed
         unit.killed = faction.name;
 
+        // unready killed units
+        if( unit.ready ) unit.ready = false;
+
         // check for any triggered events on the victim unit that triggers when it is killed
         try {
             await faction.unitTriggeredEvents( 'unitKilled', [{ unit : unit }] );

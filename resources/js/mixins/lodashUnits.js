@@ -27,6 +27,7 @@ let helpers = {
             && ( !options.ready || unit.ready )
             && ( !options.notReady || !unit.ready )
             && ( !options.type || unit.type === options.type )
+            && ( !options.typeIn || options.typeIn.includes(unit.type) )
             && ( !options.notType || unit.type !== options.notType )
             && ( !options.notChampion || unit.type !== 'champion' )
             && ( !options.types || options.types.includes( unit.type ) )
@@ -286,8 +287,8 @@ let helpers = {
         let typesInEnemy = {};
 
         faction.units.forEach( unit => {
-            // if this unit isn't in an enemy area, abort
-            if( !enemyAreas.includes( unit.location ) ) return;
+            // if this unit isn't in an enemy area, or is killed abort
+            if( !enemyAreas.includes( unit.location ) || unit.killed ) return;
 
             // otherwise add it to our our type tally
             typesInEnemy[unit.type] = typesInEnemy[unit.type] + 1 || 1;

@@ -384,22 +384,39 @@
                 return factionUnits.filter( unit => {
                     // filter for units that need to attack
                     if( this.data.needsToAttack && !unit.needsToAttack ) return;
+
                     // filter for killed units only
                     if( this.data.killedOnly && !unit.killed ) return;
+
                     // remove killed units except during combat or if we are specifically looking for killed units
                     if( !this.data.needsToAttack && !this.data.killedOnly && unit.killed ) return;
+
                     // filter not hidden
                     if( this.data.notHidden && unit.hidden ) return;
+
                     // filter basic units
                     if( this.data.basicOnly && !unit.basic ) return;
+
                     // filter flipped units
                     if( this.data.flippedOnly && !unit.flipped ) return;
+
                     // filter flipped units
                     if( this.data.hasProp && !unit[this.data.hasProp] ) return;
+
                     // filter has attack value
                     if( this.data.hasAttack && ( !unit.attack.length || unit.webbed ) ) return;
+
                     // filter for unit types
                     if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ) return;
+
+                    // if enemy units must have a specific type, but this unit doesn't have that type
+                    if( this.data.enemyHasTypes && (
+                        unit.faction !== this.shared.faction.name &&
+                        !this.data.enemyHasTypes.includes( unit.type ) )
+                    ){
+                        return;
+                    }
+
                     // if none of these filters already put the kibosh on things, then return true
                     return true;
                 });
@@ -424,16 +441,26 @@
                 if( this.data.belongsTo && faction.name !== this.data.belongsTo ) return true;
             },
 
-
             isInvalidUnit( unit ){
-                    // If we only want enemy units, but this unit is one of ours
-                return ( this.data.enemyOnly && unit.faction === this.shared.faction.name )
-                    // if We only want our units, but this is an enemy unit
-                    || ( this.data.playerOnly && unit.faction !== this.shared.faction.name )
-                    // if we only want certain unit types and this one does match
-                    || ( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) )
-                    // if we need to select units from different players and we already have one from this faction
-                    || ( this.data.differentPlayers && !unit.selected && this.selectedOwners.includes( unit.faction ) );
+                // If we only want enemy units, but this unit is one of ours
+                if( this.data.enemyOnly && unit.faction === this.shared.faction.name ){
+                    return true;
+                }
+
+                // if We only want our units, but this is an enemy unit
+                if( this.data.playerOnly && unit.faction !== this.shared.faction.name ){
+                    return true;
+                }
+
+                // if we only want certain unit types and this one does match
+                if( this.data.unitTypes && !this.data.unitTypes.includes( unit.type ) ){
+                    return true;
+                }
+
+                // if we need to select units from different players and we already have one from this faction
+                if( this.data.differentPlayers && !unit.selected && this.selectedOwners.includes( unit.faction ) ){
+                    return true;
+                }
             },
 
 
@@ -445,7 +472,10 @@
              */
             unitClicked( unit ){
                 // if this is an invalid unit to select then abort
-                if( this.isInvalidUnit( unit ) ) return;
+                if( this.isInvalidUnit( unit ) ) {
+                    console.log('invalid unit selected');
+                    return;
+                }
 
                 // if this unit is already selected, deselect it and return
                 if( unit.selected ) return this.$set( unit, 'selected', false );

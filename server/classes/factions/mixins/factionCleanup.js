@@ -23,9 +23,14 @@ let obj = {
         // reset token spy
         this.data.tokenSpy = [];
 
+        console.log('checking for onCleanup Events' );
+
         // faction specific end of turn shizz
         try {
-            if( this.triggers.onCleanUp ) await this[ this.triggers.onCleanUp ]();
+            if( this.triggers.onCleanUp ){
+                console.log('cleanup event triggered', this.triggers.onCleanUp );
+                await this[ this.triggers.onCleanUp ]();
+            }
         } catch( error ){
             console.error( error );
         }
