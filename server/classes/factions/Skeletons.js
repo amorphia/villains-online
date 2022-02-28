@@ -26,7 +26,7 @@ class Skeletons extends Faction {
 
         // tokens
         delete this.tokens['card'];
-        this.tokens['battle'].count = 3;
+        this.tokens['battle'].count = 2;
 
         this.tokens['lich'] = {
             count: 3,
