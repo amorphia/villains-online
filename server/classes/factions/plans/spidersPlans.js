@@ -6,7 +6,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'killsByPlayer', args : [3,2] },
+                    { test : 'killsByPlayer', args : [2,3] },
                 ],
                 value : 2
             },
