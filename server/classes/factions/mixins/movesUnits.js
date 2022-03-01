@@ -45,7 +45,6 @@ let obj = {
      * @param args
      */
     async move( args ){
-
         // get the areas we can move from
         let fromAreas = this.moveFromAreas( args );
         if( !fromAreas.length ){
@@ -58,7 +57,8 @@ let obj = {
             fromAreas : fromAreas,
             fromToken : args.fromToken,
             moveLimit : args.moveLimit,
-            reduceCost : args.reduceCost
+            reduceCost : args.reduceCost,
+            canDecline : args.canDecline,
         };
 
         // prompt our player to choose units to move

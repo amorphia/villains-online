@@ -11708,7 +11708,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      */
     canDecline: function canDecline() {
       // we can always decline moves from a token
-      if (this.data.fromToken) return true; // or if we don't have enough money
+      if (this.data.fromToken || this.data.canDecline) return true; // or if we don't have enough money
 
       return _.money(this.shared.faction) < this.cost;
     },
