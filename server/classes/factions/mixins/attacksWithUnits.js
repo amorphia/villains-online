@@ -563,7 +563,7 @@ let obj = {
         }
 
         // assign hits to smoke instead?
-        if( this.smokeScreenAttack( response, killer ) ) return;
+        //if( this.smokeScreenAttack( response, killer ) ) return;
 
         // resolve our hit assignment
         return await this.resolveHitAssignment( response, killer, area  );
@@ -575,6 +575,7 @@ let obj = {
      *
      * @param response
      * @param killer
+     * @param area
      * @returns {string|undefined} // we either return undefined, or the string "kills" for reasons I don't quite recall
      */
     async resolveHitAssignment( response, killer, area ){
@@ -584,6 +585,14 @@ let obj = {
         let results = [];
 
         for( let target of response.targets ){
+
+            // if we are are assigning a hit to a smoke token, remove it
+            if(target.id === 'smoke'){
+                let ninjas = this.game().factions['ninjas'];
+                ninjas.clearSmokeFromAreas(area);
+                continue;
+            }
+
             // get our unit object
             let unit = this.game().objectMap[ target.id ];
 
@@ -612,7 +621,7 @@ let obj = {
      * @param data
      * @param killer
      * @returns {boolean}
-     */
+
     smokeScreenAttack( data, killer ){
         // if the target of this attack isn't a smoke token, return
         if( !data.targets[0] || data.targets[0].id !== 'smoke' ) return;
@@ -625,7 +634,7 @@ let obj = {
 
         return true;
     },
-
+    */
 
 };
 

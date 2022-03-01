@@ -153,7 +153,7 @@
              */
             hpTotal(){
                 // smoke can be assigned any number of hits from one source
-                if( this.unit.type === 'smoke' ) return this.hitsToAssign;
+                if( this.unit.type === 'smoke' ) return 1;
 
                 return _.assignableHits( [this.unit] );
 

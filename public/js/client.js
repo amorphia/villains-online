@@ -6343,6 +6343,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         type: 'smoke',
         faction: 'ninjas',
         hits: 0,
+        hitsAssigned: 0,
         location: this.area.name
       });
     }
@@ -6387,18 +6388,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @param hpLeft
      */
     assignHit: function assignHit(unit, hpLeft) {
+      /*
       // assign hits to a smoke token
-      if (unit.type === 'smoke') {
-        if (hpLeft) {
-          this.clearAllHits();
-          this.$set(unit, 'hits', this.data.hits);
-          return;
-        } else {
-          this.$set(unit, 'hits', 0);
-        }
-      } // return if we have no hits to assign
-
-
+      if( unit.type === 'smoke' ){
+          if( hpLeft ){
+              this.clearAllHits();
+              this.$set( unit, 'hits', this.data.hits );
+              return;
+          } else {
+              this.$set( unit, 'hits', 0 );
+          }
+      }
+      */
+      // return if we have no hits to assign
       if (!this.hitsToAssign) {
         if (unit.hits) this.$set(unit, 'hits', unit.hits - 1);
         return;
@@ -13826,7 +13828,7 @@ __webpack_require__.r(__webpack_exports__);
      */
     hpTotal: function hpTotal() {
       // smoke can be assigned any number of hits from one source
-      if (this.unit.type === 'smoke') return this.hitsToAssign;
+      if (this.unit.type === 'smoke') return 1;
       return _.assignableHits([this.unit]);
       /*
       // hidden units can't be assigned hits

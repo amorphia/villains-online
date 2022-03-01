@@ -71,6 +71,7 @@
                     type: 'smoke',
                     faction: 'ninjas',
                     hits : 0,
+                    hitsAssigned: 0,
                     location : this.area.name
                 })
             }
@@ -115,6 +116,7 @@
              */
             assignHit( unit, hpLeft ){
 
+                /*
                 // assign hits to a smoke token
                 if( unit.type === 'smoke' ){
                     if( hpLeft ){
@@ -125,6 +127,7 @@
                         this.$set( unit, 'hits', 0 );
                     }
                 }
+                */
 
                 // return if we have no hits to assign
                 if( !this.hitsToAssign ){

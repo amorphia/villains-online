@@ -250,9 +250,18 @@ class Ninjas extends Faction {
     /**
      * Clear the smoke tokens from all area
      */
-    async clearSmokeFromAreas() {
+    async clearSmokeFromAreas( area = null ) {
         if( !this.data.smokeAreas.length ) return;
 
+        // if we are passed an area remove just that area
+        if( area ){
+            if( area.name ) area = area.name;
+            this.data.smokeAreas = this.data.smokeAreas.filter( item => item !== area );
+            this.message( `smoke clears from the ${area}` );
+            return;
+        }
+
+        // otherwise clear all areas
         this.data.smokeAreas = [];
         this.message( `smoke clears from the city` );
     }
