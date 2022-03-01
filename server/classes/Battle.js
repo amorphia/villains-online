@@ -14,6 +14,7 @@ class Battle {
         completed : false, // has this battle completed
         preCombatEffects : true, // are we in the pre-combat effect step?
         isFirstStrikePhase : false, // are we in the first strike phase?
+        completedAttacks : {} // how many attacks have been made by each faction
     };
 
 
@@ -138,6 +139,8 @@ class Battle {
      * @param faction
      */
     setFactionAttackingUnits( faction ){
+        this.data.completedAttacks[faction.name] = this.data.completedAttacks[faction.name] ?? 0;
+
         // get our units in this area
         let unitsInArea = _.factionUnitsInArea( faction, this.area.name );
         if( !unitsInArea.length ) return;
@@ -152,7 +155,6 @@ class Battle {
             name: faction.name,
             playerId : faction.playerId,
             units: unitsInArea,
-            completedAttacks: 0,
             mods: faction.combatModifiersList( this.area ),
             order : faction.playerOrder()
         });
@@ -241,7 +243,7 @@ class Battle {
 
         // attack with the unit
         await gameFaction.attack( attackArgs ).catch( error => console.error( error ) );
-        faction.completedAttacks++;
+        this.data.completedAttacks[faction.name]++;
         unit.needsToAttack = false;
         this.data.currentUnit = null;
     }
