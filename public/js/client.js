@@ -9576,7 +9576,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         if (_this.data.targetFactions && _this.data.targetFactions.length && !_this.data.targetFactions.includes(faction.name)) return; // get this faction's units and add them to our results
 
         var factionUnits = _.factionUnitsInArea(faction, _this.area.name, {
-          notHidden: true
+          notHidden: !_this.data.allowHidden
         });
 
         if (factionUnits.length) {

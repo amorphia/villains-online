@@ -281,7 +281,7 @@ let obj = {
         // find factions with units in this area
         let targetFactions = _.factionsWithUnitsInArea( this.game().factions, area, {
             exclude : factionsToExclude,
-            notHidden : args.notHidden,
+            notHidden : args.notHidden ?? false,
             basic : args.basic,
             types : args.types
         });
@@ -305,7 +305,8 @@ let obj = {
                 optional : args.optional,
                 targetFactions : targetFactions,
                 unitAttack : !!args.unit,
-                attackBonus : args.attackBonus
+                attackBonus : args.attackBonus,
+                allowHidden : args.allowHidden,
             }
         }).catch( error => console.error( error ) );
 

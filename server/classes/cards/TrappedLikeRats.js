@@ -9,7 +9,7 @@ class TrappedLikeRats extends Card {
 
         let message = 'Choose player to sacrifice a unit';
         // get our target faction
-        let targetFaction = await this.faction.selectEnemyPlayerWithUnitsInArea( this.area, message )
+        let targetFaction = await this.faction.selectEnemyPlayerWithUnitsInArea( this.area, message, { allowHidden : true } )
             .catch( error => console.error( error ) );
 
         // abort if we don't have any targets

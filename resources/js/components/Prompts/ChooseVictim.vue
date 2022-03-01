@@ -75,7 +75,7 @@
                         && !this.data.targetFactions.includes( faction.name ) ) return;
 
                     // get this faction's units and add them to our results
-                    let factionUnits = _.factionUnitsInArea( faction, this.area.name, { notHidden : true } );
+                    let factionUnits = _.factionUnitsInArea( faction, this.area.name, { notHidden : !this.data.allowHidden } );
                     if( factionUnits.length ){
                         units[faction.name] = factionUnits;
 
