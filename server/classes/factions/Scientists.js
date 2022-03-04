@@ -105,6 +105,16 @@ class Scientists extends Faction {
        this.data.fusion = 0;
     }
 
+    /**
+     * Can we activate this card token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
+    canActivateMrFusion( token, area ){
+        return this.canActivateCard( token, area );
+    }
 
     /**
      * Handle activating our Mr. Fusion token

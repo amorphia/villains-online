@@ -102,7 +102,7 @@ let obj = {
      * @returns {*}
      */
     canActivate( token, area ){
-        let tokenMethod = 'canActivate' + _.classCase( token.type );
+        let tokenMethod = 'canActivate' + _.classCase( token.name );
         return this[tokenMethod]( token, area );
     },
 

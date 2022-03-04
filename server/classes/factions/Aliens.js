@@ -82,6 +82,16 @@ class Aliens extends Faction {
         });
     }
 
+    /**
+     * Can we activate this card token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+     */
+    canActivateInvade( token, area ){
+        return this.canActivateDeploy();
+    }
 
     /**
      * Handle our invade token activation
