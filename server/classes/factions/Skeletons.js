@@ -109,6 +109,9 @@ class Skeletons extends Faction {
      */
     canActivateLich( token, area ) {
         // can we activate a deploy token, or can we activate a card token?
+
+        console.log('deadWeCanRaiseByArea', this.deadWeCanRaiseByArea()[area.name]);
+
         return this.deadWeCanRaiseByArea()[area.name] || this.canActivateCard( token, area );
     }
 
@@ -116,6 +119,8 @@ class Skeletons extends Faction {
     deadWeCanRaiseByArea(){
         const unitTypesInReserves = this.unitTypesInReserves();
         const areas = {};
+
+        console.log('unitTypesInReserves', unitTypesInReserves);
 
         Object.values( this.game().factions ).forEach( faction => {
             const options = { killed : true };
@@ -130,7 +135,9 @@ class Skeletons extends Faction {
                         areas[unit.location] = new Set();
                     }
 
+
                     areas[unit.location].add( unit.type );
+                    console.log('areas[unit.location]', areas[unit.location]);
                 }
             })
         });
