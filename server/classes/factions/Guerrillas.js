@@ -67,7 +67,7 @@ class Guerrillas extends Faction {
                 influence: 0,
                 warInfluence: 0,
                 peaceInfluence: 2,
-                cost: 1,
+                cost: 0,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
