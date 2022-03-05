@@ -18,6 +18,7 @@ class Mafia extends Faction {
         this.data.spy = null; // the faction we are spying on
         this.data.title = "La Cosa Nostra";
         this.data.focusDescription = "Infiltrate or control enemy targets";
+        this.data.bonusDeploy = { type: 'champion', count: 1 };
 
         //tokens
         this.tokens['hit-man'] = {
@@ -52,17 +53,6 @@ class Mafia extends Faction {
             }
         };
     }
-
-
-    /**
-     * Process faction upgrade
-     *
-     * @param {number} upgrade
-     */
-    processUpgrade( upgrade ){
-        this.data.bonusDeploy = { type: 'champion', count: 1 };
-    }
-
 
     /**
      * Choose an enemy to spy on their target
@@ -107,12 +97,18 @@ class Mafia extends Faction {
             fixer.ready = true;
         }
 
-        /// if we don't have our second upgrade yet, then we are done
-        if( this.data.upgrade !== 2) return;
+        /// if we don't have our upgrades yet, then we are done
+        if( !this.data.upgrade ) return;
 
         // the fixer makes an attack upon entering the area if we have our second upgrade
         let area = this.game().areas[ fixer.location ];
-        let output = await this.attack( { area : area, attacks : fixer.attack , unit : event.unit, optional : true } ).catch( error => console.error( error ) );
+        let output = await this.attack({
+            area: area,
+            attacks: fixer.attack,
+            unit: event.unit,
+            optional: true,
+            attackBonus: this.data.upgrade === 2 ? 2 : 0,  // if we have our second upgrade add 2 to this attack
+        }).catch( error => console.error( error ) );
 
         if( output ){
             await this.game().timedPrompt('noncombat-attack', { output : [output] } )

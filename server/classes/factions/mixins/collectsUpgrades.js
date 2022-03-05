@@ -15,7 +15,10 @@ let obj = {
 
         // process our upgrade
         this.data.upgrade = upgrade;
-        this.processUpgrade( upgrade );
+        if(this.processUpgrade){
+            this.processUpgrade( upgrade );
+        }
+
         return {
             faction : this.name,
             upgrade: upgrade
