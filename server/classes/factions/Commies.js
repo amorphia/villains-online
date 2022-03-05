@@ -33,6 +33,7 @@ class Commies extends Faction {
         this.units['mole'].count = 4;
         this.units['talent'].count = 2;
         this.units['patsy'].count = 12;
+        this.units['patsy'].data.attack = [9];
         this.units['champion'] = {
             count: 1,
             data: {
@@ -108,14 +109,24 @@ class Commies extends Faction {
         let area = this.game().areas[event.unit.location];
 
         // get the count of patsies we have in this area, and if we have none abort
-        let patsiesInAreaCount = this.unitsInArea( area, { type : 'patsy' } ).length;
-        if( !patsiesInAreaCount ){
+        let patsiesInArea = this.unitsInArea( area, { type : 'patsy' } );
+        if( !patsiesInArea.length ){
             this.message( 'has no patsies to riot', { class : 'warning' } );
             return;
         }
 
-        await this.nonCombatAttack( this.data.commisarPatsyAttackValue, patsiesInAreaCount, area )
-            .catch( error => console.error( error ) );
+        for( let unit of patsiesInArea ){
+            // resolve attack with that unit
+            await this.attack({
+                area : area,
+                attacks : unit.attack,
+                unit : unit,
+                attackBonus: 2,
+            });
+        }
+
+
+       // await this.nonCombatAttack( this.data.commisarPatsyAttackValue, patsiesInAreaCount, area ).catch( error => console.error( error ) );
     }
 
     /**
