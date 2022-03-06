@@ -19,6 +19,7 @@ class Guerrillas extends Faction {
         this.data.title = "The People's Alliance";
         this.data.focusDescription = "Kill many units in enemy areas";
         this.data.flipableUnits = ['champion'];
+        this.data.viperMoveCount = 1;
 
         // tracks the number of ambush actions we have available each turn
         this.data.ambushes = {
@@ -247,14 +248,14 @@ class Guerrillas extends Faction {
 
         // Let player choose which units to bring, if any
         let response = await this.prompt( 'choose-units', {
-            count : 2,
+            count : this.data.viperMoveCount,
             areas : [event.from],
             playerOnly : true,
             canDecline : true,
             optionalMax : true,
             policePayoff : event.unit.location,
             vines: vines,
-            message: `Choose units to move with Red Viper to The ${event.from}`
+            message: `Choose a unit to move with Red Viper to The ${event.from}`
         });
 
         if( response.decline ) return;
