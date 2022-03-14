@@ -12,6 +12,12 @@ class Ghosts extends Faction {
             "onStartOfTurn" : "setRandomTarget",
         };
 
+        this.capturedRewards = [
+            { ap : 1, cardDraw : 1 },
+            { ap : 1, cardDraw : 1 },
+            { ap : 1 },
+            { ap : 2 },
+        ];
 
         //data
         this.data.name = this.name;
@@ -19,7 +25,7 @@ class Ghosts extends Faction {
         this.data.focusDescription = "Control any player's Targets";
         //this.data.ghosts = []; // used to store our ghost units
         this.data.upgradeDeploy = 0;
-        this.data.cardDraw = 4;
+
         //this.data.lastMaterializeGameAction = 0;
         this.data.randomTarget = true; // should we choose our target randomly
         this.data.ghostDeploy = true; // do we deploy ghosts
