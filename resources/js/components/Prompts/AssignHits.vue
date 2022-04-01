@@ -170,7 +170,7 @@
              * @returns {boolean}
              */
             mustAssignToNonPatsy(){
-                return this.data.seeking && this.assignableNonPatsyHits > 0;
+                return this.data.seeking && this.assignableNonPatsyHits > this.hitsAssigned;
             },
 
 
