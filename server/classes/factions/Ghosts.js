@@ -347,7 +347,7 @@ class Ghosts extends Faction {
 
 
         // if we have successfully auto selected patsies then add them to the units array and return
-        if( patsies.length ){
+        if( patsies?.length ){
             for( let patsy of patsies ){ units.push( patsy ) }
             return;
         }
