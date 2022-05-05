@@ -400,6 +400,9 @@
                     // filter flipped units
                     if( this.data.flippedOnly && !unit.flipped ) return;
 
+                    // filter ready units
+                    if( this.data.readyOnly && !unit.ready ) return;
+
                     // filter flipped units
                     if( this.data.hasProp && !unit[this.data.hasProp] ) return;
 

@@ -4,8 +4,9 @@ let obj = {
      * Activate an area's skill ability
      *
      * @param area
+     * @param options
      */
-    async useSkill( area ) {
+    async useSkill( area, options = {} ) {
         // grab our area instance, if needed
         if( typeof area === 'string' ) area = this.game().areas[area];
 
@@ -23,7 +24,7 @@ let obj = {
         this.game().popup( this.playerId, { type: 'skill', area : area.name, faction : this.name });
 
         // use our skilled units to activate this ability
-        let exhaustedUnits = this.useSkilledUnitsToActivateSkill( area );
+        let exhaustedUnits = await this.useSkilledUnitsToActivateSkill( area, options );
 
         // handle any pre-skill triggers (that may modify our skill)
         let skillModification = null;
@@ -55,20 +56,45 @@ let obj = {
      * and return an array of units exhausted this way
      *
      * @param area
+     * @param options
      * @returns {Unit[]}
      */
-    useSkilledUnitsToActivateSkill( area ){
+    async useSkilledUnitsToActivateSkill( area, options ){
         let units = [];
+
+        if( options.noExhaust ) return units;
+
+        let readiedUnits = [];
 
         this.data.units.forEach( unit => {
             if( _.unitReadyInArea( unit, area ) ){
-                units.push({ unit : unit });
-                unit.ready = false;
+                readiedUnits.push(unit);
             }
+        });
+
+        if(readiedUnits.length > 1 && this.data.exhaustSingleUnit){
+
+            // allow the player to select one unit to exhaust
+            let response = await this.prompt( 'choose-units', {
+                count : 1,
+                areas : [area.name],
+                readyOnly: true,
+                playerOnly : true,
+                message: "Choose a unit to exhaust"
+            });
+
+            readiedUnits = [this.game().objectMap[ response.units[0] ]];
+        }
+
+        readiedUnits.forEach( unit => {
+            units.push({ unit : unit });
+            unit.ready = false;
         });
 
         return units;
     },
+
+
 
 
 

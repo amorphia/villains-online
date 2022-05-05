@@ -68,7 +68,9 @@
                 return this.alwaysShowPips.some( property => unit[property] === true );
             },
 
-
+            unitShowPipWhenReady( unit ){
+                return unit.ready && this.faction.showReadyPips;
+            },
             /**
              * Create a tally of our standard units in this area
              * @returns {object} // { unitType : { count : {number}, pipped : {number} }, etc... }
@@ -91,7 +93,10 @@
                         else units[unit.type] = { count : 1, pipped : 0 };
 
                         // if the unit is flipped show a pip, or if this unit should always show a pip
-                        if( unit.flipped || this.unitHasAlwaysShowPip( unit ) ) units[ unit.type ].pipped++;
+                        if( unit.flipped
+                            || this.unitHasAlwaysShowPip( unit )
+                            || this.unitShowPipWhenReady( unit )
+                        ) units[ unit.type ].pipped++;
 
                         return units;
                     }, {});

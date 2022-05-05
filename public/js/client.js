@@ -6438,7 +6438,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {boolean}
      */
     mustAssignToNonPatsy: function mustAssignToNonPatsy() {
-      return this.data.seeking && this.assignableNonPatsyHits > 0;
+      return this.data.seeking && this.assignableNonPatsyHits > this.hitsAssigned;
     },
 
     /**
@@ -9398,7 +9398,9 @@ __webpack_require__.r(__webpack_exports__);
 
         if (_this4.data.basicOnly && !unit.basic) return; // filter flipped units
 
-        if (_this4.data.flippedOnly && !unit.flipped) return; // filter flipped units
+        if (_this4.data.flippedOnly && !unit.flipped) return; // filter ready units
+
+        if (_this4.data.readyOnly && !unit.ready) return; // filter flipped units
 
         if (_this4.data.hasProp && !unit[_this4.data.hasProp]) return; // filter has attack value
 
@@ -16706,6 +16708,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         return unit[property] === true;
       });
     },
+    unitShowPipWhenReady: function unitShowPipWhenReady(unit) {
+      return unit.ready && this.faction.showReadyPips;
+    },
 
     /**
      * Create a tally of our standard units in this area
@@ -16731,7 +16736,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           pipped: 0
         }; // if the unit is flipped show a pip, or if this unit should always show a pip
 
-        if (unit.flipped || _this.unitHasAlwaysShowPip(unit)) units[unit.type].pipped++;
+        if (unit.flipped || _this.unitHasAlwaysShowPip(unit) || _this.unitShowPipWhenReady(unit)) units[unit.type].pipped++;
         return units;
       }, {});
     },
@@ -67836,7 +67841,11 @@ var render = function() {
         },
         [
           _c("div", { staticClass: "title" }, [
-            _vm._v("Resolve this skill twice?")
+            _vm._v(
+              "Resolve this skill twice? You have " +
+                _vm._s(_vm.data.markers) +
+                " hAx0rEd Markers remaining"
+            )
           ]),
           _vm._v(" "),
           _c("area-flipper", { attrs: { areas: [_vm.area], index: 0 } }, [

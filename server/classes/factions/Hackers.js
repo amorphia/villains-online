@@ -17,8 +17,12 @@ class Hackers extends Faction {
         this.data.focusDescription = "Activate many area skill abilities";
         this.data.hax0red = []; // areas we have used our hax0red ability this game
 
+        this.data.showReadyPips = true;
         this.data.title = "The Kaos Klub";
         this.data.baseMaxEnergy = this.data.maxEnergy = 8;
+        this.data.exhaustSingleUnit = true;
+        this.data.hax0redMarkers = 0;
+        this.data.usedHax0redMarkers = 0;
 
         this.capturedRewards = [
             { ap : 1, cardDraw : 1 },
@@ -74,7 +78,7 @@ class Hackers extends Faction {
      * @param {number} upgrade
      */
     processUpgrade( upgrade ){
-        this.data.maxEnergy = this.data.baseMaxEnergy + upgrade;
+        this.data.hax0redMarkers = (upgrade * 2) - this.data.usedHax0redMarkers;
     }
 
 
@@ -86,11 +90,11 @@ class Hackers extends Faction {
      */
     async shouldHax0rArea( area, exhaustedUnits ){
 
-        // if we have already hax0red this area then we can't do it again
-        if( this.data.hax0red.includes( area.name ) || exhaustedUnits.length < 2 ) return;
+        // if we have already hax0red this area, or have no markers then we can't do it again
+        if( this.data.hax0red.includes( area.name ) || this.data.hax0redMarkers < 1 ) return;
 
         // ask the player if they want to double resolve this skill
-        let response = await this.prompt( 'double-resolve', { count : 1, area : area.name });
+        let response = await this.prompt( 'double-resolve', { markers : this.data.hax0redMarkers, area : area.name });
 
 
         // I guess not
@@ -101,6 +105,8 @@ class Hackers extends Faction {
 
         // flag this area
         this.data.hax0red.push( area.name );
+        this.data.hax0redMarkers--;
+        this.data.usedHax0redMarkers++;
         this.message(`The hackers resolve the ${area.name} skill twice` );
         return { doubleResolve : true };
     }
@@ -125,6 +131,19 @@ class Hackers extends Faction {
             units: units
         }).catch( error => console.error( error ) );
 
+        // if we can't activate this skill, abort
+        if(this.data.usedSkills.includes(area.name)){
+            return;
+        }
+
+        // prompt player to decide to move lotus dancer
+        let response = await this.prompt( 'question', {
+            message: `Activate the skill ability of the ${area.name}?`
+        });
+
+        if ( !response.answer ) return this.message( `Zero Day declines to hack the ${area.name}?` );
+
+        this.useSkill( area, { noExhaust: true });
     }
 
 

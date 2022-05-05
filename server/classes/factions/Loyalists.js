@@ -62,7 +62,7 @@ class Loyalists extends Faction {
                 cost: 0,
                 noDeploy: true,
                 influence: 0,
-                attack: [],
+                attack: [5],
                 skilled: true,
                 ready: false,
                 killed: false,

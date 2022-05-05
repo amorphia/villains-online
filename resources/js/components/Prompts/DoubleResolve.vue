@@ -4,7 +4,7 @@
             <div class="width-100 d-flex justify-center flex-column align-center">
 
                 <!-- title -->
-                <div class="title">Resolve this skill twice?</div>
+                <div class="title">Resolve this skill twice? You have {{ data.markers }} hAx0rEd Markers remaining</div>
 
                 <!-- area skill -->
                 <area-flipper :areas="[area]" :index="0">
