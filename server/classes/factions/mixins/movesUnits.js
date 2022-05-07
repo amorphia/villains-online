@@ -181,7 +181,7 @@ let obj = {
         unit.location = response.toArea;
 
         // un-ready units
-        if( unit.ready ) unit.ready = false;
+        if( unit.ready && unit.faction !== 'hackers' ) unit.ready = false;
     },
 
 
