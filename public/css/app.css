@@ -291,8 +291,6 @@
 .icon-bolt:before {
     content: "\E92D";
 }
-@charset "UTF-8";
-
 /* Box sizing rules */
 
 *,
@@ -3231,8 +3229,8 @@ body {
   content: "";
   display: block;
   background: var(--border-bg);
-  width: calc(100% * 1.75);
-  padding-bottom: calc(100% * 1.75);
+  width: 175%;
+  padding-bottom: 175%;
   position: absolute;
   left: 50%;
   top: 50%;
