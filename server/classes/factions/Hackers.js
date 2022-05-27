@@ -63,7 +63,6 @@ class Hackers extends Faction {
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                exhaustExtraAction : true,
                 onDeploy: 'exhaustEnemyUnitsInArea',
                 onMove: 'exhaustEnemyUnitsInArea',
             }
