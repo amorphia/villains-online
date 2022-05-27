@@ -19,7 +19,6 @@ class Hackers extends Faction {
 
         this.data.showReadyPips = true;
         this.data.title = "The Kaos Klub";
-        this.data.baseMaxEnergy = this.data.maxEnergy = 8;
         this.data.exhaustSingleUnit = true;
         this.data.hax0redMarkers = 0;
         this.data.usedHax0redMarkers = 0;
@@ -143,7 +142,7 @@ class Hackers extends Faction {
 
         if ( !response.answer ) return this.message( `Zero Day declines to hack the ${area.name}?` );
 
-        this.useSkill( area, { noExhaust: true });
+        await this.useSkill( area, { noExhaust: true });
     }
 
 
