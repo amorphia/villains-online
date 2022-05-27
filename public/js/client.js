@@ -62002,7 +62002,7 @@ var render = function() {
       _c("span", { staticClass: "highlight mx-2" }, [
         _vm._v(_vm._s(_vm.focus))
       ]),
-      _vm._v("\n    hax0rs:"),
+      _vm._v("\n    hax0r tokens:"),
       _c("span", { staticClass: "highlight ml-2" }, [
         _vm._v(_vm._s(_vm.hax0rs))
       ])
