@@ -31,6 +31,7 @@ class Spiders extends Faction {
                 influence: 1,
                 type: 'drop',
                 cost: 0,
+                resource : 1,
                 req : "To avoid discarding this token you must place at least one spider, or start a battle"
             }
         };
@@ -76,12 +77,12 @@ class Spiders extends Faction {
                 name: "Xchxch",
                 type: 'champion',
                 basic: false,
-                influence: 2,
+                influence: 1,
                 attack: [4],
                 deadly: true,
                 flipped: false,
                 toughness: true,
-                cost: 2,
+                cost: 1,
                 killed: false,
                 onDeploy: 'deployXchxchWeb',
                 onMove: 'deployXchxchWeb',

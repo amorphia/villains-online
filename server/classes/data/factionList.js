@@ -9,8 +9,8 @@ let obj = {
     cultists : { name: 'cultists', owner : null, blocked : false, killer : true, status : 3, basic: true, selectable : true },
     loyalists : { name: 'loyalists', owner : null, blocked : false, status : 1, selectable : true },
     swarm : { name: 'swarm', owner : null, blocked : false, status : 3, selectable : true },
-    vampires : { name: 'vampires', owner : null, blocked : false, killer : true, status : 1, selectable : true },
-    society : { name: 'society', owner : null, blocked : false, status : 1, selectable : true },
+    vampires : { name: 'vampires', owner : null, blocked : false, killer : true, status : 2, selectable : true },
+    society : { name: 'society', owner : null, blocked : false, status : 2, selectable : true },
     hackers : { name: 'hackers', owner : null, blocked : false, status : 0, selectable : true },
     ninjas : { name: 'ninjas', owner : null, blocked : false, killer : true, status : 1, selectable : true },
     guerrillas : { name: 'guerrillas', owner : null, blocked : false, killer : true, status : 1, selectable : true },
@@ -21,7 +21,7 @@ let obj = {
     ghosts : { name: 'ghosts', owner : null, blocked : false, status : 0, selectable : true },
     spiders : { name: 'spiders', owner : null, blocked : false, status : 0, killer : true, selectable : true},
     skeletons : { name: 'skeletons', owner : null, blocked : false, status : 0, selectable : true },
-    martyrs : { name: 'martyrs', owner : null, blocked : false, status : 0, selectable : true },
+    martyrs : { name: 'martyrs', owner : null, blocked : false, status : 1, selectable : true },
 };
 
 module.exports = Object.assign({}, obj );
