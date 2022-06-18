@@ -9,7 +9,7 @@ let obj = {
     cultists : { name: 'cultists', owner : null, blocked : false, killer : true, status : 3, basic: true, selectable : true },
     loyalists : { name: 'loyalists', owner : null, blocked : false, status : 1, selectable : true },
     swarm : { name: 'swarm', owner : null, blocked : false, status : 3, selectable : true },
-    vampires : { name: 'vampires', owner : null, blocked : false, killer : true, status : 2, selectable : true },
+    vampires : { name: 'vampires', owner : null, blocked : false, killer : true, status : 3, selectable : true },
     society : { name: 'society', owner : null, blocked : false, status : 2, selectable : true },
     hackers : { name: 'hackers', owner : null, blocked : false, status : 0, selectable : true },
     ninjas : { name: 'ninjas', owner : null, blocked : false, killer : true, status : 1, selectable : true },
