@@ -55,7 +55,7 @@ class Spiders extends Faction {
         this.units['patsy'].count = 6;
 
         this.units['spider'] = {
-            count: 8,
+            count: 10,
             data: {
                 name: "spider",
                 type: "spider",
