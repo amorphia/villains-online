@@ -2,9 +2,9 @@
     <hud-popout :open="open" nohandle="true" classes="tokens-hud" @close="$emit( 'close' )">
 
         <div class="tokens-hud__tokens-container p-4 center-text">
-            <token-set :tokens="reserves" title="Reserves" noEmit="true"></token-set>
-            <token-set :tokens="unrevealed" title="Unrevealed" noEmit="true"></token-set>
-            <token-set :tokens="activated" title="Activated" noEmit="true"></token-set>
+            <token-set :tokens="reserves" title="Reserves" noEmit="true" direction="top"></token-set>
+            <token-set :tokens="unrevealed" title="Unrevealed" noEmit="true" direction="top"></token-set>
+            <token-set :tokens="activated" title="Activated" noEmit="true" direction="top"></token-set>
         </div>
 
     </hud-popout>
@@ -53,3 +53,10 @@
 
     }
 </script>
+
+<style>
+    .hud-popout.tokens-hud {
+        overflow-x: unset;
+        overflow-y: unset;
+    }
+</style>

@@ -29,6 +29,7 @@ class Society extends Faction {
                 influence: 1,
                 type: 'hypnosis',
                 cost: 0,
+                description: "Replace a unit in this area by paying its unit cost",
                 req : "This token must be discarded if you don't replace a unit"
             }
         };
@@ -42,6 +43,7 @@ class Society extends Faction {
                 type: 'push',
                 cost: 0,
                 resource : 1,
+                description: "Move a basic enemy unit from this area to an adjacent area",
                 req : "This token must be discarded if you don't move a unit"
             }
         };
@@ -54,6 +56,7 @@ class Society extends Faction {
                 influence: 1,
                 type: 'word-of-command',
                 cost: 0,
+                description: "Activate this area's skill ability (if you have not already activated it)",
                 req : "This token must be discarded if you can't activate this area's skill ability"
             }
         };

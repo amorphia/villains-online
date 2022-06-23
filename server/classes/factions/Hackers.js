@@ -39,6 +39,7 @@ class Hackers extends Faction {
                 type: 'boot-up',
                 cost: 0,
                 resource: 1,
+                description: "Ready each of your skilled units in this area, then take another action",
                 req : "This token must be discarded if you can't ready any exhausted units with it"
             }
         };

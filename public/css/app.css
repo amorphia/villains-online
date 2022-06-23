@@ -642,6 +642,10 @@ a {
   color: var(--light-yellow);
 }
 
+.off-white {
+  color: var(--off-white);
+}
+
 .primary-font {
   font-family: var(--primary-font);
 }

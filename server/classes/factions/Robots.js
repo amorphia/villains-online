@@ -29,6 +29,7 @@ class Robots extends Faction {
                 influence: 1,
                 type: 'wild',
                 cost : 0,
+                description: "Treat this token as if it were any basic token when revealing it (once this action is resolved it reverts to being a WILD token)",
                 req : "This token must be discarded if you can't activate the basic token type you select"
             }
         };

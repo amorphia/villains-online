@@ -37,7 +37,7 @@
         </div>
 
         <!-- player resources -->
-        <div class="player-hud__pip-content overflow-hidden">
+        <div class="player-hud__pip-content">
 
             <!-- money -->
             <div class="player-hud__pip-content__item">
@@ -54,7 +54,7 @@
         </div>
 
         <!-- modifier abilities -->
-        <div class="player-hud__stats-row pos-relative width-100 display-flex shrink-1 overflow-hidden flex-wrap">
+        <div class="player-hud__stats-row pos-relative width-100 display-flex shrink-1 flex-wrap">
             <i v-for="stat in stats" class="stat-icon" :class="`icon-${stat.name}`" :title="`${stat.title} - ${stat.description}`"></i>
         </div>
     </div>

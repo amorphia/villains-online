@@ -28,6 +28,7 @@ class Martyrs extends Faction {
                 type: 'martyr',
                 resource: 1,
                 cost: 0,
+                description: "Your killed units still produce influence in this area. Start a battle here if able.",
                 req : "This token may always be activated"
             }
         };

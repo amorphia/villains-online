@@ -29,6 +29,7 @@ class Swarm extends Faction {
                 type: 'scatter',
                 cost: 0,
                 resource: 1,
+                description: "You may move up to one of your non-broodnest units from this area to each adjacent area.",
                 req : "This token must be discarded if you don't move any units"
             }
         };

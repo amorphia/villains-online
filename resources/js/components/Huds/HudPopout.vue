@@ -1,6 +1,6 @@
 <template>
     <transition name="up">
-        <div v-if="open" class="hud-popout no-select width-100 overflow-hidden" :class="classes" :style="hasHeight">
+        <div v-if="open" class="hud-popout no-select width-100" :class="classes" :style="hasHeight">
             <!-- handle -->
             <adjust-handle v-if="!nohandle" direction="top" min="100" max="500" @newSize="setHeight"></adjust-handle>
 

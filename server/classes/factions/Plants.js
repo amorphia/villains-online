@@ -38,6 +38,7 @@ class Plants extends Faction {
                 type: 'vines',
                 cost: 0,
                 areaStat : true,
+                description: "Your opponents must pay {1} to redeploy or move units from this area",
                 req : "Passive token: this token may always be activated"
 
             }

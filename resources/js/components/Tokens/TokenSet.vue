@@ -2,11 +2,15 @@
 
     <div v-if="tokens.length" class="px-2 pos-relative" :class="thisClasses" :data-title="title">
         <!-- display groups of tokens -->
-        <div class="tokens-hud__token d-inline-block"
-             v-for="token in tokens"
-             @click="tokenClicked( token )">
-                <img class="tokens-hud__token-image" :class="tokenClass( token )" :src="`/images/factions/${shared.faction.name}/tokens/${token.name}.png`">
-        </div>
+        <token-set-item
+            v-for="token in tokens"
+            :token="token"
+            :key="token.id"
+            @token-clicked="tokenClicked"
+            :selected="selected"
+            :noEmit="noEmit"
+            :direction="direction"
+        />
     </div>
 
 </template>
@@ -16,7 +20,7 @@
     export default {
 
         name: 'token-set',
-        props: [ 'noEmit', 'tokens', 'title', 'classes', 'selected', 'noBorder' ],
+        props: [ 'noEmit', 'tokens', 'title', 'classes', 'selected', 'noBorder', 'direction' ],
         data() {
             return {
                 shared : App.state
@@ -49,20 +53,9 @@
              */
             tokenClicked( token ){
                 if( this.noEmit ) return;
-                this.shared.event.emit( 'tokenClicked', token );
                 this.$emit( 'tokenClicked', token );
             },
 
-
-            /**
-             * Return our token class
-             * @param token
-             * @returns {string|false}
-             */
-            tokenClass( token ){
-                // if we have a selected token, but this token isn't the selected token reduce the opacity
-                return this.selected && this.selected.id !== token.id ? 'opacity-5' : false;
-            }
         }
     }
 </script>

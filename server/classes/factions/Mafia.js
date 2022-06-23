@@ -27,6 +27,7 @@ class Mafia extends Faction {
                 influence: 1,
                 resource: 1,
                 cost : 0,
+                description: "Deal a hit to a basic enemy unit of your choice in this area",
                 req : "This token must be discarded if you have no targets to assign a hit to"
             }
         };

@@ -24,6 +24,8 @@
 
             <!-- CONTROLS -->
             <div class="control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap">
+                <turn-timer />
+
 
                 <!-- SOUND CONTROL -->
                 <game-sound></game-sound>
@@ -36,15 +38,16 @@
                     <span class="deck-count">{{ shared.data.deckCount }}</span>
                 </div>
 
+                <!-- GAME CHEAT SHEETS BUTTON -->
+                <div class="d-inline stat-icon highlight pointer" @click="shared.openCheatSheets = !shared.openCheatSheets">
+                    <i class='icon-ask' title="view player aid cards"></i>
+                </div>
+
                 <!-- GAME OPTIONS BUTTON -->
                 <div class="d-inline stat-icon highlight pointer" @click="shared.openSettings = !shared.openSettings">
                     <i class='icon-plans' title="open game settings"></i>
                 </div>
 
-                <!-- GAME CHEAT SHEETS BUTTON -->
-                <div class="d-inline stat-icon highlight pointer" @click="shared.openCheatSheets = !shared.openCheatSheets">
-                    <i class='icon-ask' title="view player aid cards"></i>
-                </div>
             </div>
         </div>
 

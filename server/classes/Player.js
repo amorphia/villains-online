@@ -111,7 +111,7 @@ class Player {
      *
      * @param {object|string} prompt
      */
-    async setPrompt( prompt ){
+    async setPrompt( prompt= {} ){
         // build our prompt object if needed
         if( typeof prompt === 'string' ){
             prompt = { name : prompt };
@@ -120,6 +120,7 @@ class Player {
         // add name and data to our prompt
         this.data.prompt.name = prompt.name ?? null;
         this.data.prompt.data = prompt.data ?? null;
+        this.data.prompt.timestamp = prompt.active !== false ? Date.now() : null;
 
         // should this player be set to active? Defaults to true
         this.data.active = prompt.active ?? true;

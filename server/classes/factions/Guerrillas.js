@@ -38,6 +38,7 @@ class Guerrillas extends Faction {
                 type: 'snipers',
                 resource: 1,
                 cost: 0,
+                description: "If you have a unit in this area, make an attack of {1} in an adjacent area",
                 req : "This token must be discarded if you cannot make an attack with it"
             }
         };

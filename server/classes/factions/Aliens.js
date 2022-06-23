@@ -40,6 +40,7 @@ class Aliens extends Faction {
                 type : 'deploy',
                 noLimit : true,
                 cost : 0,
+                description: "Treat as a basic DEPLOY token in every way, except you have no deploy limit for this action.",
                 req : "This token must be discarded if you don't deploy at least one unit"
             }
         };

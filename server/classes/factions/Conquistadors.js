@@ -38,7 +38,7 @@ class Conquistadors extends Faction {
                 type: 'pox',
                 cost: 0,
                 resource: 1,
-                description: 'after the combat step each player must sacrifice a unit in this area for each killed unit they have here',
+                description: 'Each opponent must sacrifice a basic unit in this area',
                 req : "this token must be discarded if it fails to kill any units"
             }
         };

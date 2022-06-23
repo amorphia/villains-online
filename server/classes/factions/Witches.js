@@ -35,6 +35,7 @@ class Witches extends Faction {
                 type: 'brew',
                 cost: 0,
                 resource : 1,
+                description: "Flip your other revealed tokens in this area face-down.",
                 req : "This token must be discarded if you don't flip down any other tokens"
             }
         };

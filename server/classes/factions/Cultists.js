@@ -19,6 +19,7 @@ class Cultists extends Faction {
         this.tokens['nothing'] = {
             count: 4,
             data: {
+                description: "This token does nothing except bluff the opponent, discarded when revealed",
                 req : "This token must always be discarded"
             }
         };

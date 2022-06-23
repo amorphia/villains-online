@@ -326,6 +326,8 @@ class Game {
         // if we are given a callback, use that callback. otherwise set the callback to the listener name
         args.callback = args.callback ?? args.name;
 
+
+
         // get the players for this listener
         let players = this.getListenPlayers( args.players );
 

@@ -27,6 +27,7 @@ class Mutants extends Faction {
                 influence: 1,
                 resource: 1,
                 cost : 0,
+                description: "Target player sacrifices a patsy in this area (you may choose yourself), if they do you may deploy a Mother Ooze to this area without paying its deploy cost.",
                 req : "this token must be discarded if no player can sacrifice a unit here"
             }
         };

@@ -1,8 +1,12 @@
 <template>
-    <div class="area-map__token-space ratio-square"
+    <div class="area-map__token-space ratio-square pos-relative"
          :class="computeClasses"
-         @click="emitToken">
+         @click.left="emitToken"
+         @click.right.prevent="showTooltip"
+    >
         <img v-if="tokenImage" class="area-map__token" :src="tokenImage">
+
+        <tool-tip :id="tokenId" :title="tokenTitle" :content="tokenContent" :footnote="tokenFootnote" ref="tooltip" />
     </div>
 </template>
 
@@ -27,6 +31,11 @@
         },
 
         methods : {
+
+            showTooltip(){
+                if( !this.token || (!this.token.revealed && !this.canSeeToken) ) return;
+                this.$refs.tooltip.open();
+            },
 
             /**
              * Emit our token event when a token is clicked
@@ -125,7 +134,23 @@
                 }
 
                 return image ? `/images/factions/${token.faction}/tokens/${image}.png` : false;
-            }
+            },
+
+            tokenId(){
+                return this.token ? this.token.id : null;
+            },
+
+            tokenTitle(){
+                return this.token ? this.token.name + ' token' : null;
+            },
+
+            tokenContent(){
+                return this.token ? this.token.description : null;
+            },
+
+            tokenFootnote(){
+                return this.token?.resource ? "refunded: gain 1 resource when you reveal this token" : null;
+            },
         }
     }
 </script>

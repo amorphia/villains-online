@@ -31,6 +31,7 @@ class Scientists extends Faction {
                 type : 'card',
                 noLimit : true,
                 cost : 0,
+                description: "Treat as a basic CARD token in every way, except you may play any number of action cards upon activation",
                 req : "This token must be discarded if you don't play at least one card"
             }
         };

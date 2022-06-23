@@ -279,7 +279,7 @@
 <style>
 
     .place-token-top {
-        overflow: hidden;
+        /* overflow: hidden; */
         transition: all .5s;
     }
 

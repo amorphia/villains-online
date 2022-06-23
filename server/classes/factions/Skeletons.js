@@ -34,6 +34,7 @@ class Skeletons extends Faction {
                 influence: 1,
                 type: 'card',
                 cost: 0,
+                description: "Treat as a basic CARD token in every way except you may also raise a unit in this area (take these actions in any order)",
                 req :  "This token must be discarded if you don't deploy any units or play any cards"
             }
         };

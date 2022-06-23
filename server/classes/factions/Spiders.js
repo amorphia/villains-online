@@ -32,6 +32,7 @@ class Spiders extends Faction {
                 type: 'drop',
                 cost: 0,
                 resource : 1,
+                description: "Place two spiders in this area from your reserves, then start a battle here if able",
                 req : "To avoid discarding this token you must place at least one spider, or start a battle"
             }
         };

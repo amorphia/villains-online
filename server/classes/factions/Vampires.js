@@ -33,6 +33,7 @@ class Vampires extends Faction {
                 influence: 1,
                 type: 'feast',
                 cost: 0,
+                description: "In each area where you have one or more revealed DEPLOY tokens, make an attack with one of your units",
                 req : "This token must be discarded if you can't make at least one attack"
             }
         };

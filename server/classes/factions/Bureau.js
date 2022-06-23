@@ -38,6 +38,7 @@ class Bureau extends Faction {
                 type: 'loop',
                 cost: 0,
                 resource: 1,
+                description: "Once this token has been activated, you may replace it with a (face down) token from your reserves as an action.",
                 req : "Passive token: this token may always be activated"
             }
         };
