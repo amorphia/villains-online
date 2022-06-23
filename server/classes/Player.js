@@ -14,6 +14,7 @@ class Player {
         active : false, // {boolean} is the game waiting for a response from this player?
         faction : null, // {string} this player's faction name
         gameId : null, // {string} game ID of the player's current game
+        admin: 0, // {int} The Player's admin status
 
         // when the player is active this object holds player's current UI prompt and its associated data
         prompt : {
@@ -24,9 +25,10 @@ class Player {
     };
 
 
-    constructor( socket, {name, id} ) {
+    constructor( socket, {name, id, admin} ) {
         this.socketId = socket.id;
         this.data.name = name;
+        this.data.admin = admin;
         this.id = this.data.id = id;
         this.joinRoom('lobby' );
     }
@@ -55,8 +57,20 @@ class Player {
         // join the lobby and get the open game, if any
         this.joinRoom( 'lobby' );
         Server.sendSocketOpenGame( this.socket() );
+
     }
 
+    async spectatorLeaveCurrentGame(){
+        // reset game related data
+        this.gameId = null;
+        this.data.gameId = null;
+
+        // tell the game UI to clear out the current game
+        // join the lobby and get the open game, if any
+        this.joinRoom( 'lobby' );
+        this.callSocket( 'emit', 'clearGame' );
+        Server.sendSocketOpenGame( this.socket() );
+    }
 
     /**
      * Set the player prompt and add a listener for the response

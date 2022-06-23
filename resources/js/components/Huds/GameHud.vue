@@ -36,16 +36,15 @@
                     <span class="deck-count">{{ shared.data.deckCount }}</span>
                 </div>
 
-                <!-- MANUAL SAVE -->
-                <div v-if="shared.admin" class="d-inline stat-icon highlight pointer save-icon" @click="saveGame">
-                    <i class='icon-save' ></i>
-                </div>
-
                 <!-- GAME OPTIONS BUTTON -->
                 <div class="d-inline stat-icon highlight pointer" @click="shared.openSettings = !shared.openSettings">
-                    <i class='icon-plans'></i>
+                    <i class='icon-plans' title="open game settings"></i>
                 </div>
 
+                <!-- GAME CHEAT SHEETS BUTTON -->
+                <div class="d-inline stat-icon highlight pointer" @click="shared.openCheatSheets = !shared.openCheatSheets">
+                    <i class='icon-ask' title="view player aid cards"></i>
+                </div>
             </div>
         </div>
 

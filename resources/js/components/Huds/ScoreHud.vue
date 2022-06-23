@@ -1,7 +1,7 @@
 <template>
     <hud-popout :open="open" classes="score-hud" nohandle="true" @close="$emit( 'close')">
         <div classes="score-hud__board-container" >
-            <img class="score-board" src="/images/score-board.jpg">
+            <img class="score-board" :src="scoreBoardImage">
             <score-row :scores="ap" type="ap"></score-row>
             <score-row :scores="pp" type="pp"></score-row>
         </div>
@@ -36,6 +36,10 @@
              */
             pp(){
                 return this.generatePointArray( 'pp' );
+            },
+
+            scoreBoardImage(){
+                return this.shared.data?.gameType === "basic" ? "/images/score-board-basic.jpg" : "/images/score-board.jpg";
             }
 
         },

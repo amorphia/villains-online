@@ -1,5 +1,5 @@
 <template>
-    <div class="d-inline stat-icon mute-button" :class="{active : this.volume}" @click="toggleVolume">
+    <div class="d-inline stat-icon mute-button" title="change sound setting" :class="{active : this.volume}" @click="toggleVolume">
         <i :class="soundIcon" ></i>
     </div>
 </template>

@@ -50,6 +50,10 @@ class Server {
             // load last game
             socket.on( 'loadGame', game => { this.loadGame( game ) } );
 
+            socket.on( 'watchGame', gameId => { this.watchGame( socket, gameId ) } );
+
+            socket.on( 'stopWatchingGame', gameId =>{ this.stopWatchingGame( socket, gameId ) } );
+
             // conclude a finished (or not) game
             socket.on( 'concludeGame', track => { this.concludeGame( socket, track ) } );
 
@@ -161,6 +165,23 @@ class Server {
         }
     }
 
+    getActiveGames(){
+        const games = [];
+
+        Object.keys(this.games)
+            .filter( gameId => this.games[gameId].started)
+            .forEach( gameId => {
+                const game = this.games[gameId];
+                games.push({
+                    id: gameId,
+                    created: game.created,
+                    players: Object.values(game.players).map(player => player.data.name),
+                });
+            })
+
+        console.log("GetActiveGames", games);
+        return games;
+    }
 
     /**
      * Save a new game instance in the database
@@ -225,6 +246,14 @@ class Server {
         let player = this.getPlayer( socket );
         game.data.creator = player.id;
 
+        // if the player creating the game is not an admin, gameType defaults to basic
+
+        console.log("player", player);
+
+        if(!player.data.admin){
+            game.data.gameType = "basic";
+        }
+
         // push the game data to the lobby
         this.message( 'lobby', { message: 'created game', player : player });
         this.io.to('lobby').emit( 'openGame', game.data );
@@ -262,6 +291,8 @@ class Server {
 
         this.db.conclude( gameId );
         delete this.games[gameId];
+
+        this.io.to('lobby').emit( 'activeGames', this.getActiveGames() );
     }
 
 
@@ -436,7 +467,11 @@ class Server {
      * @param socket
      */
     sendSocketOpenGame( socket ) {
-        if ( socket ) socket.emit( 'openGame', this.getOpenGameData() );
+        if ( socket ){
+            console.log("Sending socket Open and Active Game data");
+            socket.emit( 'openGame', this.getOpenGameData() );
+            socket.emit( 'activeGames', this.getActiveGames() );
+        }
     }
 
 
@@ -465,11 +500,26 @@ class Server {
             return;
         }
 
-        // otherwise if this player is not in a game send that player the game waiting to begin, if any
-        this.sendSocketOpenGame( socket );
+        // check if this player is currently in a game, if so add them back into that game
+        gameId = this.searchGamesForSpectator( player );
+        if( gameId ) {
+            this.games[gameId].addSpectator( player );
+            return;
+        }
 
+        this.sendSocketOpenGame( socket );
     }
 
+
+    async watchGame( socket, gameId ){
+        let player = this.players[this.playerSocketMap[ socket.id ]];
+        this.games[gameId].addSpectator( player );
+    }
+
+    async stopWatchingGame( socket, gameId ){
+        let player = this.players[this.playerSocketMap[ socket.id ]];
+        this.games[gameId].removeSpectator( player );
+    }
 
     /**
      * Update the lobby population by either adding or removing the supplied player
@@ -499,6 +549,14 @@ class Server {
     searchGamesForPlayer( player ){
         for( let gameId in this.games ){
             if( this.games[gameId].hasPlayer( player.data.id ) ){
+                return gameId;
+            }
+        }
+    }
+
+    searchGamesForSpectator( player ){
+        for( let gameId in this.games ){
+            if( this.games[gameId].hasSpectator( player.data.id ) ){
                 return gameId;
             }
         }

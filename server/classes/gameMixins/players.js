@@ -10,6 +10,10 @@ let mixin = {
         return !!this.players[playerId];
     },
 
+    hasSpectator( playerId ){
+        return !!this.spectators[playerId];
+    },
+
 
     /**
      * Add a player to our game
@@ -43,20 +47,62 @@ let mixin = {
     },
 
 
+    async addSpectator( player ){
+        if( !player ) return;
+
+        console.log("adding spectator", player);
+
+        // add the player's ID to our socket and set the player data
+        this.addPlayerIdToSpectatorSocketMap( player.socketId, player.id );
+        this.addPlayerDataToSpectators( player );
+
+        // set our game ID the player's gameID prop
+        player.gameId = player.data.gameId = this.id;
+
+        // if this game state is not loading have this player join our game room
+        // and push our game data to each player
+        if( this.data.state !== 'loading' ) {
+            player.joinRoom( this.data.id );
+            await this.pushGameDataToPlayers( player );
+        }
+    },
+
+
     /**
      * Remove a player from this game
      *
      * @param player
+     * @param booted
      */
-    removePlayer( player ){
-        this.deleteSocketId( player.socketId );
-        delete this.players[ player.id ];
-        delete this.data.players[ player.id ];
+    removePlayer( player, booted = null ){
+        const leaver = booted ?? player;
+
+        if(booted){
+            Server.message( 'lobby', { message: `removed ${booted.name} from game`, player : player });
+        }
+
+        this.deleteSocketId( leaver.socketId );
+        delete this.players[ leaver.id ];
+        delete this.data.players[ leaver.id ];
 
         Server.io.to( 'lobby' ).emit( 'openGame', this.data );
     },
 
+    removeSpectator( player, booted = null ){
+        const leaver = booted ?? player;
 
+        if(booted){
+            Server.message( 'lobby', { message: `removed ${booted.name} from game`, player : player });
+        }
+
+        this.deleteSpectatorSocketId( leaver.socketId );
+        delete this.spectators[ leaver.id ];
+        delete this.data.spectators[ leaver.id ];
+        Server.saveToDB( this );
+        player.spectatorLeaveCurrentGame();
+
+        //Server.io.to( 'lobby' ).emit( 'openGame', this.data );
+    },
 
     /**
      * Set the properties of all players to the values provided
@@ -229,6 +275,7 @@ let mixin = {
      */
     clearAllPrompts(){
         Object.values( this.players ).forEach( player => player.setPrompt({ active : false }) );
+        Object.values( this.spectators ).forEach( spectator => spectator.setPrompt({ active : false }) );
     },
 
 
@@ -283,6 +330,27 @@ let mixin = {
         this.data.players[ player.id ] = player.data;
     },
 
+    /**
+     * Add the given player data into our players object
+     *
+     * @param player
+     */
+    addPlayerDataToSpectators( player ){
+        // if our player object already has an entry for the given player, update our player object properties
+        // with the old data, except the socketID property, as that changes each time the player connects/disconnects
+        if( this.spectators[ player.id ] ) {
+            let oldPlayer = this.spectators[player.id];
+            for (let prop in oldPlayer) {
+                if (prop !== 'socketId') {
+                    player[prop] = oldPlayer[prop];
+                }
+            }
+        }
+
+        this.spectators[ player.id ] = player;
+        this.data.spectators[ player.id ] = player.data;
+    },
+
 
     /**
      * Add player ID to our socketmap
@@ -294,6 +362,15 @@ let mixin = {
         this.socketMap[socketId] = playerId;
     },
 
+    /**
+     * Add player ID to our socketmap
+     *
+     * @param socketId
+     * @param playerId
+     */
+    addPlayerIdToSpectatorSocketMap( socketId, playerId ){ // map a socket id to a player id
+        this.spectatorSocketMap[socketId] = playerId;
+    },
 
     /**
      * Use a player ID to return a matching socketID
@@ -312,6 +389,16 @@ let mixin = {
         return socketID;
     },
 
+    getSocketIdBySpectatorId( playerId ){
+        let socketID = null;
+        _.forEach( this.spectatorSocketMap, (player, socket) => {
+            if( player === playerId ){
+                socketID = socket;
+            }
+        });
+
+        return socketID;
+    },
 
     /**
      * Return a Player instance matching a given player ID
@@ -324,6 +411,10 @@ let mixin = {
         return Server.getPlayer( socket );
     },
 
+    getSpectatorById( playerId ){
+        let socket = this.getSocketIdBySpectatorId( playerId );
+        return Server.getPlayer( socket );
+    },
 
     /**
      * Delete a socketID from our socketmap
@@ -335,6 +426,10 @@ let mixin = {
         delete this.socketMap[socketId];
     },
 
+    deleteSpectatorSocketId( socketId ){
+        // remove a socket id/player id mapping
+        delete this.spectatorSocketMap[socketId];
+    },
 
     /**
      * Returns a player's faction instance
@@ -361,9 +456,10 @@ let mixin = {
      * Alias method for removePlayer
      *
      * @param player
+     * @param booted // if we kick out another player, that player is stored here
      */
-    leaveGame( player ){
-        this.removePlayer( player );
+    leaveGame( player, booted = null ){
+        this.removePlayer( player, booted );
     },
 
 

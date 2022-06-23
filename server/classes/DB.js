@@ -72,7 +72,7 @@ class DB {
      * @param {boolean} incomplete
      */
     track( game, scores, incomplete ) {
-        if( !game || !game.id || !this.trackerHost ) return;
+        if( !game?.id || game.data.gameType === "basic" || !this.trackerHost ) return;
 
         let data = this.getGameData( game, scores, incomplete );
 

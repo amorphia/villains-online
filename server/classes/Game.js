@@ -7,11 +7,13 @@ class Game {
      * Settings
      */
     defaultSlideSpeed = 5; // how long in seconds to show passive slide prompts by default
+    fastModeSlideSpeed = 100; //.5;
     titleCardTimer = 3; // how long in seconds to show phase title cards
     godMode = true; // should we enter god mode (extra cards, and energy for factions) when running in the dev environment?
     doubleTargetsFourthTurn = false; // should we double target values on turn 4?
     playerTimeoutLength = 10; // how long to wait for a player to reconnect before checking for them again, in seconds
     maxPlayerTimeouts = 50; // how many timeout checks (in seconds above) to make before giving up
+
 
     /**
      * Internals
@@ -23,6 +25,7 @@ class Game {
         'leaveGame',
         'startGame',
         'joinGame',
+        'spectateGame',
         'chooseFaction',
         'chooseTargetPlan',
         'factionStartOfTurnResponse',
@@ -42,6 +45,7 @@ class Game {
     listening = {}; // map of current event listeners
     id; // game ID
     socketMap = {}; // map of player sockets
+    spectatorSocketMap = {}; // map of spectator sockets
     objectMap = {}; // map of game components
     created; // created timestamp
     combat = null; // if we are resolving combat, that combat instance is stored here
@@ -49,6 +53,8 @@ class Game {
     players = {}; // object containing our player objects
     cards = {}; // object containing our active card instances
     areas = {}; // object containing our area objects
+    spectators = {} // object containing our spectator player objects
+    started = false;
 
     // the action card decks
     deck = {
@@ -90,6 +96,7 @@ class Game {
         factions : {}, // reference to our factions object
         areaIndex : 0, // used when working through each area in area order
         areas : {}, // reference to our areas object
+        spectators: {}, // referencer to ours spectators object
 
         // each of the areas in order
         areaOrder : [
@@ -184,6 +191,15 @@ class Game {
             });
         });
 
+        // set each player to the given prompt
+        _.forEach( this.spectators, spectator => {
+            spectator.setPrompt({
+                name : prompt,
+                data : data,
+                active : false,
+            });
+        });
+
         // push the updated data to all players
         await this.pushGameDataToPlayers();
 
@@ -207,7 +223,7 @@ class Game {
         if( !isNaN( data.wait ) ) return data.wait;
 
         // if we are in fast mode, return 1 second
-        if( this.fastMode ) return .5;
+        if( this.fastMode ) return this.fastModeSlideSpeed;
 
         // if this is the units-shifted prompt and we have a lot of units return 10 seconds
         if( prompt === 'units-shifted' && data.units.length > 4 ) return 10;
@@ -596,6 +612,7 @@ class Game {
 
         // have each player leave the game
         _.forEach( this.players, player => player.leaveCurrentGame() );
+        _.forEach( this.spectators, player => player.spectatorLeaveCurrentGame() );
 
         // delete the game from the server
         Server.deleteGame( socket, this.id );

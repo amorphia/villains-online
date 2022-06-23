@@ -43,23 +43,23 @@ class Skeletons extends Faction {
             props : ['influence', 'skilled']
         };
 
-        this.units['goon'].count = 6;
+        this.units['goon'].count = 4;
         this.units['goon'].data.onDamaged = 'checkBecomeSkeleton';
         this.units['goon'].data.flipped = false;
         this.units['goon'].data.skeleton = false;
 
-        this.units['mole'].count = 6;
+        this.units['mole'].count = 4;
         this.units['mole'].data.onDamaged = 'checkBecomeSkeleton';
         this.units['mole'].data.flipped = false;
         this.units['mole'].data.skeleton = false;
 
-        this.units['talent'].count = 4;
+        this.units['talent'].count = 3;
         this.units['talent'].data.onDamaged = 'checkBecomeSkeleton';
         this.units['talent'].data.flipped = false;
         this.units['talent'].data.skeleton = false;
 
 
-        this.units['patsy'].count = 3;
+        this.units['patsy'].count = 2;
         this.units['patsy'].data.onDamaged = 'checkBecomeSkeleton';
         this.units['patsy'].data.flipped = false;
         this.units['patsy'].data.skeleton = false;

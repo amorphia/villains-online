@@ -75,11 +75,11 @@
              */
             canSeeToken(){
                 // if this token is empty, or already revealed do nothing
-                if( ! this.token || this.token.revealed ) return false;
+                if( ! this.token || this.token.revealed || !this.shared.faction.name ) return false;
 
 
-                if( this.token.faction === this.shared.faction.name // if this is our token
-                    || this.shared.faction.tokenSpy.includes( this.token.location ) // or we can tokenSpy the area
+                if( this.token.faction === this.shared.faction?.name // if this is our token
+                    || this.shared.faction?.tokenSpy.includes( this.token.location ) // or we can tokenSpy the area
                     || this.ministerSpy // or the minister is letting us spy
                 ) return true;
 
@@ -91,7 +91,7 @@
              * @returns {boolean}
              */
             ministerSpy(){
-                if( this.shared.faction.name !== 'bureau' ) return false;
+                if( this.shared.faction?.name !== 'bureau' ) return false;
 
                 // if the minister isn't in this area return false
                 if( ! this.shared.faction.units.some( unit => _.unitInArea( unit, this.area, { type : 'champion' } ) ) ){

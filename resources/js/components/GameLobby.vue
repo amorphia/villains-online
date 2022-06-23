@@ -1,6 +1,7 @@
 <template>
     <div class="d-flex flex-center height-100 pos-relative">
 
+
         <!-- saved games -->
         <saved-games></saved-games>
 
@@ -8,7 +9,11 @@
         <div class="d-flex flex-center width-100 height-100 pos-relative">
 
             <!-- rules -->
-            <a href="/files/villains_full_rules.pdf" target="_blank" class="d-block button pos-absolute bottom-0 left-0">
+            <a href="/files/villains_v4.2_web.pdf" target="_blank" class="d-block button pos-absolute bottom-0 left-0">
+                view game rules <i class="icon-launch"></i>
+            </a>
+
+            <a href="/files/villains_v4.2_web.pdf" target="_blank" class="d-block button pos-absolute bottom-0 left-0">
                 view game rules <i class="icon-launch"></i>
             </a>
 
@@ -47,13 +52,20 @@
                 <div class="open-game__players-title text-uppercase">Players</div>
 
                 <div class="open-game__players">
-                    <div v-for="player in shared.game.players">{{ player.name | startCase }}</div>
+                    <div v-for="player in shared.game.players" class="d-flex justify-center align-center">
+                        <span>{{ player.name | startCase }}</span>
+                        <i
+                            v-if="gameCreator && player.id !== shared.id"
+                            @click="removePlayer(player)"
+                            class="icon-x pointer pl-2 choose-factions__block pos-relative"
+                        ></i>
+                    </div>
                     <div v-if="Object.keys(shared.game.players).length === 0" class="open-game__empty">No Players</div>
                 </div>
 
                 <!-- game type -->
-                <div class="game-setup__type d-flex justify-center">
-                    <div v-if="shared.game.gameType === type || shared.game.creator === shared.id" v-for="type in gameTypes"
+                <div v-if="shared.admin" class="game-setup__type d-flex justify-center">
+                    <div v-if="shared.game.gameType === type || gameCreator" v-for="type in gameTypes"
                          class="game-setup__type-option"
                          :class="{ active : shared.game.gameType === type }"
                          @click="setGameType( type )"
@@ -62,7 +74,7 @@
 
 
                 <!-- game options -->
-                <div v-if="shared.game.creator === shared.id" class="game-setup__options d-flex justify-center my-2">
+                <div v-if="shared.admin && gameCreator" class="game-setup__options d-flex justify-center my-2">
                     <div v-for="(val, option) in options"
                          class="game-setup__option py-2 px-3"
                          :class="{ active : val }"
@@ -122,6 +134,10 @@
         },
 
         computed : {
+
+            gameCreator(){
+                return this.shared.game.creator === this.shared.id
+            },
 
             /**
              * returns the number of players currently in the game
@@ -184,6 +200,10 @@
                 this.shared.event.emit( 'viewFactions' );
             },
 
+            removePlayer(player){
+                App.event.emit( 'sound', 'ui' );
+                this.shared.socket.emit( 'leaveGame', this.shared.game.id, player );
+            },
 
             /**
              * Sets the currently open game type
@@ -192,7 +212,7 @@
              */
             setGameType( type ){
                 // only the game's creator can change the type
-                if( this.shared.game.creator !== this.shared.id ) return App.event.emit( 'sound', 'error' );
+                if( !gameCreator ) return App.event.emit( 'sound', 'error' );
 
                 // set game type
                 App.event.emit( 'sound', 'ui' );

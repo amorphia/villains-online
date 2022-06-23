@@ -64,7 +64,8 @@
 
                 this.shared.socket.emit( 'newPlayer', {
                     name : App.user.name,
-                    id : App.user.uuid
+                    id : App.user.uuid,
+                    admin: App.user.admin,
                 });
             },
 
@@ -85,8 +86,14 @@
                 });
 
                 // listen for open games
-                this.shared.socket.on( 'openGame', (game ) => {
+                this.shared.socket.on( 'openGame', game => {
                     this.$set( this.shared, 'game', game );
+                });
+
+                // listen for active games
+                this.shared.socket.on( 'activeGames', games => {
+                    console.log("activeGames", games);
+                    this.$set( this.shared, 'activeGames', games );
                 });
 
                 // listen for saved games

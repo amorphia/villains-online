@@ -27,6 +27,36 @@
 }
 
 
+.icon-ask:before {
+    content: "\E912";
+}
+.icon-save:before {
+    content: "\E962";
+}
+.icon-volume-high:before {
+    content: "\EA26";
+}
+.icon-volume-mid:before {
+    content: "\EA27";
+}
+.icon-volume-low:before {
+    content: "\EA28";
+}
+.icon-mute:before {
+    content: "\EA2A";
+}
+.icon-checkbox-checked:before {
+    content: "\EA52";
+}
+.icon-checkbox-unchecked:before {
+    content: "\EA53";
+}
+.icon-tokens:before {
+    content: "\EA54";
+}
+.icon-x:before {
+    content: "\E92E";
+}
 .icon-spider:before {
     content: "\E90F";
 }
@@ -197,27 +227,6 @@
 }
 .icon-units:before {
     content: "\E93A";
-}
-.icon-save:before {
-    content: "\E962";
-}
-.icon-volume-high:before {
-    content: "\EA26";
-}
-.icon-volume-mid:before {
-    content: "\EA27";
-}
-.icon-volume-low:before {
-    content: "\EA28";
-}
-.icon-mute:before {
-    content: "\EA2A";
-}
-.icon-checkbox-checked:before {
-    content: "\EA52";
-}
-.icon-checkbox-unchecked:before {
-    content: "\EA53";
 }
 .icon-tokens:before {
     content: "\EA54";
@@ -1767,6 +1776,7 @@ a {
 }
 
 .pos-sticky {
+  position: -webkit-sticky;
   position: sticky;
 }
 
@@ -2067,7 +2077,6 @@ a {
 
 .no-hyphen {
   -webkit-hyphens: none;
-      -ms-hyphens: none;
           hyphens: none;
 }
 
@@ -2290,7 +2299,6 @@ a {
 .no-select {
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
 }
 
@@ -2552,10 +2560,6 @@ a {
 }
 
 .landing .form-element::-moz-placeholder, .landing .form-control::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.65);
-}
-
-.landing .form-element:-ms-input-placeholder, .landing .form-control:-ms-input-placeholder {
   color: rgba(255, 255, 255, 0.65);
 }
 
@@ -2919,7 +2923,6 @@ a {
 .villains-online * {
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
 }
 
@@ -2972,13 +2975,12 @@ body {
   text-transform: uppercase;
   background-color: var(--primary-color);
   color: white;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
   border-radius: 3px;
   font-size: 1.5rem;
   cursor: pointer;
   letter-spacing: 2px;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
-  transition: color 0.3s;
   white-space: nowrap;
 }
 
@@ -2997,6 +2999,22 @@ body {
 
 .button.active {
   color: var(--highlight-color);
+}
+
+.button.small {
+  padding: 0.5rem;
+  margin: 0.4rem 0.25rem;
+  line-height: 1.25;
+  text-transform: uppercase;
+  background-color: var(--primary-color);
+  color: white;
+  transition: all 0.2s;
+  border-radius: 3px;
+  font-size: 1rem;
+  cursor: pointer;
+  letter-spacing: 2px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
 }
 
 .drawer__main {
@@ -3083,8 +3101,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 10px;
+  height: 10px;
 }
 
 /* Track */

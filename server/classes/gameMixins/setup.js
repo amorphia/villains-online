@@ -57,6 +57,7 @@ let setup = {
 
         // update the game's player sockets to make sure they match the player's current socket IDs
         this.updatePlayerSockets( saved );
+        this.updateSpectatorSockets( saved );
 
         // build the game world
         this.generateGame( saved );
@@ -69,6 +70,7 @@ let setup = {
 
         // add each player to this game room
         this.addPlayersToRoom();
+        this.addSpectatorsToRoom();
 
         // push the game data to each player
         await this.pushGameDataToPlayers();
@@ -96,6 +98,16 @@ let setup = {
         delete saved.data.socketMap;
     },
 
+    updateSpectatorSockets( saved ){
+        _.forEach( saved.spectators, (player, id) =>{
+            if( Server.players[id] ){
+                player.socketId = Server.players[id].socketId;
+                this.addSpectator( Server.players[id] );
+            }
+        });
+
+        delete saved.data.socketMap;
+    },
 
 
     /**
@@ -168,6 +180,12 @@ let setup = {
         // set game options
         Object.assign( this.data, options );
 
+        // play to 12 points in basic mode
+        if(this.data.gameType === "basic"){
+            this.data.maxAP = 12;
+            this.data.maxPP = 12;
+        }
+
         // create a new save game model in the DB
         Server.saveNewGame( this );
 
@@ -200,6 +218,8 @@ let setup = {
         this.buildActionDeck( saved );
         this.buildAreas( saved );
         this.buildFactions( saved );
+        this.started = true;
+        Server.io.to('lobby').emit( 'activeGames', Server.getActiveGames() );
     },
 
 
@@ -326,6 +346,12 @@ let setup = {
         });
     },
 
+    addSpectatorsToRoom(){
+        let room = this.data.id;
+        _.forEach( this.spectators, ( player, id ) =>{
+            player.joinRoom( room );
+        });
+    },
 
     /**
      * Shuffle the player order and set the active player by the newly shuffled order

@@ -6,6 +6,7 @@ window.App.state = {
     lobbyPlayers : {}, // players in the lobby
     savedGames : [], // store our saved games
     openSettings : false, // should the settings panel be open?
+    openCheatSheets : false, // should the cheat sheets panel be open?
     player : null, // store our current player
     faction : null, // store our current faction
     actions : null, // store our available actions
@@ -206,7 +207,8 @@ window.App.state = {
      * @returns {object} // faction data
      */
     getPlayerFaction( player ) {
-        return Object.values( this.data.factions ).find( faction => faction.owner === player.id );
+        let faction = Object.values( this.data.factions ).find( faction => faction.owner === player.id )
+        return  faction ? faction : {};
     },
 
 
@@ -272,7 +274,16 @@ window.App.state = {
      * @returns {object}
      */
     getPlayer(){
-        return this.data?.players[this.id];
+        let player = this.data?.players[this.id];
+        if(player) return player;
+
+        let spectator = this.data?.spectators[this.id];
+        if(spectator){
+            spectator.isSpectator = true;
+            return spectator;
+        }
+
+        return {};
     },
 
 

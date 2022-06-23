@@ -8,17 +8,18 @@
 
         <!-- player take action prompt -->
         <transition name="open">
-            <component v-if="shared.player.prompt.name" :is="shared.player.prompt.name"></component>
+            <component v-if="shared.player.prompt && shared.player.prompt.name" :is="shared.player.prompt.name"></component>
         </transition>
 
         <!-- core components -->
-        <view-combat></view-combat>
-        <view-area></view-area>
-        <view-player></view-player>
-        <view-card></view-card>
-        <view-discards></view-discards>
-        <game-settings></game-settings>
-        <game-map></game-map>
+        <view-combat />
+        <view-area />
+        <view-player />
+        <view-card />
+        <view-discards />
+        <game-settings />
+        <cheat-sheets />
+        <game-map />
     </div>
 </template>
 

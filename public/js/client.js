@@ -2178,6 +2178,132 @@ module.exports = JSON.parse("{\"_from\":\"axios@0.21.4\",\"_id\":\"axios@0.21.4\
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGame.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ActiveGame.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var dayjs = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
+
+var localizedFormat = __webpack_require__(/*! dayjs/plugin/localizedFormat */ "./node_modules/dayjs/plugin/localizedFormat.js");
+
+dayjs.extend(localizedFormat);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'active-game',
+  props: ['game', 'open', 'index'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  methods: {
+    /**
+     * Load our game
+     */
+    loadGame: function loadGame() {
+      App.event.emit('sound', 'ui');
+      this.shared.socket.emit('watchGame', this.game.id);
+    }
+  },
+  computed: {
+    created: function created() {
+      return dayjs(this.game.created).format("lll");
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGames.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ActiveGames.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'active-games',
+  data: function data() {
+    return {
+      shared: App.state,
+      open: -1
+    };
+  },
+  methods: {
+    /**
+     * Open the saved game at index x
+     *
+     * @param index
+     */
+    openSave: function openSave(index) {
+      // if this save is already open toggle it closed
+      if (this.open === index) {
+        this.open = -1;
+        return;
+      } // otherwise open the given index
+
+
+      this.open = index;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Cards/CardBlock.vue?vue&type=script&lang=js&":
 /*!**************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Cards/CardBlock.vue?vue&type=script&lang=js& ***!
@@ -2620,6 +2746,56 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state
     };
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CheatSheets.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CheatSheets.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'cheat-sheets',
+  data: function data() {
+    return {
+      shared: App.state,
+      mode: "general"
+    };
+  },
+  computed: {
+    image: function image() {
+      return this.mode === 'general' ? "images/cheat-sheets-general.jpg" : "images/cheat-sheets-areas.jpg";
+    }
   }
 });
 
@@ -4143,6 +4319,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-core',
   data: function data() {
@@ -4155,6 +4335,12 @@ __webpack_require__.r(__webpack_exports__);
     this.shared.player = this.shared.getPlayer(); // set our faction data
 
     this.shared.faction = this.shared.getFaction();
+  },
+  methods: {
+    stopWatching: function stopWatching() {
+      App.event.emit('sound', 'ui');
+      this.shared.socket.emit('stopWatchingGame', this.shared.data.id);
+    }
   },
   watch: {
     /**
@@ -4180,6 +4366,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -4322,6 +4509,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-lobby',
   data: function data() {
@@ -4342,6 +4541,10 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    gameCreator: function gameCreator() {
+      return this.shared.game.creator === this.shared.id;
+    },
+
     /**
      * returns the number of players currently in the game
      * returns {number}
@@ -4400,6 +4603,10 @@ __webpack_require__.r(__webpack_exports__);
     openFactions: function openFactions() {
       this.shared.event.emit('viewFactions');
     },
+    removePlayer: function removePlayer(player) {
+      App.event.emit('sound', 'ui');
+      this.shared.socket.emit('leaveGame', this.shared.game.id, player);
+    },
 
     /**
      * Sets the currently open game type
@@ -4408,7 +4615,7 @@ __webpack_require__.r(__webpack_exports__);
      */
     setGameType: function setGameType(type) {
       // only the game's creator can change the type
-      if (this.shared.game.creator !== this.shared.id) return App.event.emit('sound', 'error'); // set game type
+      if (!gameCreator) return App.event.emit('sound', 'error'); // set game type
 
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('setGameType', this.shared.game.id, type);
@@ -4497,6 +4704,12 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4924,7 +5137,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-hud',
   data: function data() {
@@ -5234,6 +5446,11 @@ __webpack_require__.r(__webpack_exports__);
      */
     pp: function pp() {
       return this.generatePointArray('pp');
+    },
+    scoreBoardImage: function scoreBoardImage() {
+      var _this$shared$data;
+
+      return ((_this$shared$data = this.shared.data) === null || _this$shared$data === void 0 ? void 0 : _this$shared$data.gameType) === "basic" ? "/images/score-board-basic.jpg" : "/images/score-board.jpg";
     }
   },
   methods: {
@@ -6353,9 +6570,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -6503,9 +6720,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -6803,7 +7020,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -7487,9 +7704,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -7653,9 +7870,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -8203,9 +8420,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -8286,9 +8503,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -8453,9 +8670,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -8521,9 +8738,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -8662,9 +8879,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -8790,9 +9007,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -9066,9 +9283,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -9736,9 +9953,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -9963,9 +10180,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -10053,9 +10270,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -10193,9 +10410,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -10782,9 +10999,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -10877,9 +11094,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -11281,9 +11498,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -11410,9 +11627,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -11749,9 +11966,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -12084,9 +12301,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -12782,9 +12999,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -13284,6 +13501,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'saved-games',
   data: function data() {
@@ -13546,10 +13766,12 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {boolean}
      */
     canSeeToken: function canSeeToken() {
+      var _this$shared$faction, _this$shared$faction2;
+
       // if this token is empty, or already revealed do nothing
-      if (!this.token || this.token.revealed) return false;
-      if (this.token.faction === this.shared.faction.name // if this is our token
-      || this.shared.faction.tokenSpy.includes(this.token.location) // or we can tokenSpy the area
+      if (!this.token || this.token.revealed || !this.shared.faction.name) return false;
+      if (this.token.faction === ((_this$shared$faction = this.shared.faction) === null || _this$shared$faction === void 0 ? void 0 : _this$shared$faction.name) // if this is our token
+      || (_this$shared$faction2 = this.shared.faction) !== null && _this$shared$faction2 !== void 0 && _this$shared$faction2.tokenSpy.includes(this.token.location) // or we can tokenSpy the area
       || this.ministerSpy // or the minister is letting us spy
       ) return true;
     },
@@ -13559,9 +13781,10 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {boolean}
      */
     ministerSpy: function ministerSpy() {
-      var _this = this;
+      var _this$shared$faction3,
+          _this = this;
 
-      if (this.shared.faction.name !== 'bureau') return false; // if the minister isn't in this area return false
+      if (((_this$shared$faction3 = this.shared.faction) === null || _this$shared$faction3 === void 0 ? void 0 : _this$shared$faction3.name) !== 'bureau') return false; // if the minister isn't in this area return false
 
       if (!this.shared.faction.units.some(function (unit) {
         return _.unitInArea(unit, _this.area, {
@@ -15740,7 +15963,8 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.init('socket', socket);
       this.shared.socket.emit('newPlayer', {
         name: App.user.name,
-        id: App.user.uuid
+        id: App.user.uuid,
+        admin: App.user.admin
       });
     },
 
@@ -15765,6 +15989,12 @@ __webpack_require__.r(__webpack_exports__);
 
       this.shared.socket.on('openGame', function (game) {
         _this3.$set(_this3.shared, 'game', game);
+      }); // listen for active games
+
+      this.shared.socket.on('activeGames', function (games) {
+        console.log("activeGames", games);
+
+        _this3.$set(_this3.shared, 'activeGames', games);
       }); // listen for saved games
 
       this.shared.socket.on('savedGame', function (game) {
@@ -15991,7 +16221,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -16269,7 +16499,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -16878,7 +17108,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
@@ -17176,6 +17406,25 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGame.vue?vue&type=style&index=0&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ActiveGame.vue?vue&type=style&index=0&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.active-game__id {\n    color: rgba(255,255,255,.75);\n    font-size: .7rem;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Cards/CardBlock.vue?vue&type=style&index=0&lang=css&":
 /*!*********************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Cards/CardBlock.vue?vue&type=style&index=0&lang=css& ***!
@@ -17321,7 +17570,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.chat {\n    width: 12rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.chat__window {\n    width: 100%;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: right;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    overflow: auto;\n}\n", ""]);
+exports.push([module.i, "\n.chat {\n    width: 12rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n            user-select: none;\n}\n.chat__window {\n    width: 100%;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: right;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    overflow: auto;\n}\n", ""]);
 
 // exports
 
@@ -17341,6 +17590,25 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.message-box .player-hud__target {\n    height: 1.8rem;\n    line-height: 1.4rem;\n    font-size: 1.5em;\n    color: white;\n    margin-top: .2em;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CheatSheets.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CheatSheets.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.cheat-sheet__option {\n    margin: 0 5px;\n    padding: 2px 10px;\n    border: solid 1px;\n}\n.cheat-sheet__option.active {\n    color: gold;\n}\n", ""]);
 
 // exports
 
@@ -17587,7 +17855,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n", ""]);
+exports.push([module.i, "\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n            user-select: none;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n", ""]);
 
 // exports
 
@@ -18723,6 +18991,28 @@ function toComment(sourceMap) {
 	return '/*# ' + data + ' */';
 }
 
+
+/***/ }),
+
+/***/ "./node_modules/dayjs/dayjs.min.js":
+/*!*****************************************!*\
+  !*** ./node_modules/dayjs/dayjs.min.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+!function(t,e){ true?module.exports=e():undefined}(this,(function(){"use strict";var t=1e3,e=6e4,n=36e5,r="millisecond",i="second",s="minute",u="hour",a="day",o="week",f="month",h="quarter",c="year",d="date",$="Invalid Date",l=/^(\d{4})[-/]?(\d{1,2})?[-/]?(\d{0,2})[Tt\s]*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?[.:]?(\d+)?$/,y=/\[([^\]]+)]|Y{1,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g,M={name:"en",weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_")},m=function(t,e,n){var r=String(t);return!r||r.length>=e?t:""+Array(e+1-r.length).join(n)+t},g={s:m,z:function(t){var e=-t.utcOffset(),n=Math.abs(e),r=Math.floor(n/60),i=n%60;return(e<=0?"+":"-")+m(r,2,"0")+":"+m(i,2,"0")},m:function t(e,n){if(e.date()<n.date())return-t(n,e);var r=12*(n.year()-e.year())+(n.month()-e.month()),i=e.clone().add(r,f),s=n-i<0,u=e.clone().add(r+(s?-1:1),f);return+(-(r+(n-i)/(s?i-u:u-i))||0)},a:function(t){return t<0?Math.ceil(t)||0:Math.floor(t)},p:function(t){return{M:f,y:c,w:o,d:a,D:d,h:u,m:s,s:i,ms:r,Q:h}[t]||String(t||"").toLowerCase().replace(/s$/,"")},u:function(t){return void 0===t}},v="en",D={};D[v]=M;var p=function(t){return t instanceof _},S=function t(e,n,r){var i;if(!e)return v;if("string"==typeof e){var s=e.toLowerCase();D[s]&&(i=s),n&&(D[s]=n,i=s);var u=e.split("-");if(!i&&u.length>1)return t(u[0])}else{var a=e.name;D[a]=e,i=a}return!r&&i&&(v=i),i||!r&&v},w=function(t,e){if(p(t))return t.clone();var n="object"==typeof e?e:{};return n.date=t,n.args=arguments,new _(n)},O=g;O.l=S,O.i=p,O.w=function(t,e){return w(t,{locale:e.$L,utc:e.$u,x:e.$x,$offset:e.$offset})};var _=function(){function M(t){this.$L=S(t.locale,null,!0),this.parse(t)}var m=M.prototype;return m.parse=function(t){this.$d=function(t){var e=t.date,n=t.utc;if(null===e)return new Date(NaN);if(O.u(e))return new Date;if(e instanceof Date)return new Date(e);if("string"==typeof e&&!/Z$/i.test(e)){var r=e.match(l);if(r){var i=r[2]-1||0,s=(r[7]||"0").substring(0,3);return n?new Date(Date.UTC(r[1],i,r[3]||1,r[4]||0,r[5]||0,r[6]||0,s)):new Date(r[1],i,r[3]||1,r[4]||0,r[5]||0,r[6]||0,s)}}return new Date(e)}(t),this.$x=t.x||{},this.init()},m.init=function(){var t=this.$d;this.$y=t.getFullYear(),this.$M=t.getMonth(),this.$D=t.getDate(),this.$W=t.getDay(),this.$H=t.getHours(),this.$m=t.getMinutes(),this.$s=t.getSeconds(),this.$ms=t.getMilliseconds()},m.$utils=function(){return O},m.isValid=function(){return!(this.$d.toString()===$)},m.isSame=function(t,e){var n=w(t);return this.startOf(e)<=n&&n<=this.endOf(e)},m.isAfter=function(t,e){return w(t)<this.startOf(e)},m.isBefore=function(t,e){return this.endOf(e)<w(t)},m.$g=function(t,e,n){return O.u(t)?this[e]:this.set(n,t)},m.unix=function(){return Math.floor(this.valueOf()/1e3)},m.valueOf=function(){return this.$d.getTime()},m.startOf=function(t,e){var n=this,r=!!O.u(e)||e,h=O.p(t),$=function(t,e){var i=O.w(n.$u?Date.UTC(n.$y,e,t):new Date(n.$y,e,t),n);return r?i:i.endOf(a)},l=function(t,e){return O.w(n.toDate()[t].apply(n.toDate("s"),(r?[0,0,0,0]:[23,59,59,999]).slice(e)),n)},y=this.$W,M=this.$M,m=this.$D,g="set"+(this.$u?"UTC":"");switch(h){case c:return r?$(1,0):$(31,11);case f:return r?$(1,M):$(0,M+1);case o:var v=this.$locale().weekStart||0,D=(y<v?y+7:y)-v;return $(r?m-D:m+(6-D),M);case a:case d:return l(g+"Hours",0);case u:return l(g+"Minutes",1);case s:return l(g+"Seconds",2);case i:return l(g+"Milliseconds",3);default:return this.clone()}},m.endOf=function(t){return this.startOf(t,!1)},m.$set=function(t,e){var n,o=O.p(t),h="set"+(this.$u?"UTC":""),$=(n={},n[a]=h+"Date",n[d]=h+"Date",n[f]=h+"Month",n[c]=h+"FullYear",n[u]=h+"Hours",n[s]=h+"Minutes",n[i]=h+"Seconds",n[r]=h+"Milliseconds",n)[o],l=o===a?this.$D+(e-this.$W):e;if(o===f||o===c){var y=this.clone().set(d,1);y.$d[$](l),y.init(),this.$d=y.set(d,Math.min(this.$D,y.daysInMonth())).$d}else $&&this.$d[$](l);return this.init(),this},m.set=function(t,e){return this.clone().$set(t,e)},m.get=function(t){return this[O.p(t)]()},m.add=function(r,h){var d,$=this;r=Number(r);var l=O.p(h),y=function(t){var e=w($);return O.w(e.date(e.date()+Math.round(t*r)),$)};if(l===f)return this.set(f,this.$M+r);if(l===c)return this.set(c,this.$y+r);if(l===a)return y(1);if(l===o)return y(7);var M=(d={},d[s]=e,d[u]=n,d[i]=t,d)[l]||1,m=this.$d.getTime()+r*M;return O.w(m,this)},m.subtract=function(t,e){return this.add(-1*t,e)},m.format=function(t){var e=this,n=this.$locale();if(!this.isValid())return n.invalidDate||$;var r=t||"YYYY-MM-DDTHH:mm:ssZ",i=O.z(this),s=this.$H,u=this.$m,a=this.$M,o=n.weekdays,f=n.months,h=function(t,n,i,s){return t&&(t[n]||t(e,r))||i[n].slice(0,s)},c=function(t){return O.s(s%12||12,t,"0")},d=n.meridiem||function(t,e,n){var r=t<12?"AM":"PM";return n?r.toLowerCase():r},l={YY:String(this.$y).slice(-2),YYYY:this.$y,M:a+1,MM:O.s(a+1,2,"0"),MMM:h(n.monthsShort,a,f,3),MMMM:h(f,a),D:this.$D,DD:O.s(this.$D,2,"0"),d:String(this.$W),dd:h(n.weekdaysMin,this.$W,o,2),ddd:h(n.weekdaysShort,this.$W,o,3),dddd:o[this.$W],H:String(s),HH:O.s(s,2,"0"),h:c(1),hh:c(2),a:d(s,u,!0),A:d(s,u,!1),m:String(u),mm:O.s(u,2,"0"),s:String(this.$s),ss:O.s(this.$s,2,"0"),SSS:O.s(this.$ms,3,"0"),Z:i};return r.replace(y,(function(t,e){return e||l[t]||i.replace(":","")}))},m.utcOffset=function(){return 15*-Math.round(this.$d.getTimezoneOffset()/15)},m.diff=function(r,d,$){var l,y=O.p(d),M=w(r),m=(M.utcOffset()-this.utcOffset())*e,g=this-M,v=O.m(this,M);return v=(l={},l[c]=v/12,l[f]=v,l[h]=v/3,l[o]=(g-m)/6048e5,l[a]=(g-m)/864e5,l[u]=g/n,l[s]=g/e,l[i]=g/t,l)[y]||g,$?v:O.a(v)},m.daysInMonth=function(){return this.endOf(f).$D},m.$locale=function(){return D[this.$L]},m.locale=function(t,e){if(!t)return this.$L;var n=this.clone(),r=S(t,e,!0);return r&&(n.$L=r),n},m.clone=function(){return O.w(this.$d,this)},m.toDate=function(){return new Date(this.valueOf())},m.toJSON=function(){return this.isValid()?this.toISOString():null},m.toISOString=function(){return this.$d.toISOString()},m.toString=function(){return this.$d.toUTCString()},M}(),T=_.prototype;return w.prototype=T,[["$ms",r],["$s",i],["$m",s],["$H",u],["$W",a],["$M",f],["$y",c],["$D",d]].forEach((function(t){T[t[1]]=function(e){return this.$g(e,t[0],t[1])}})),w.extend=function(t,e){return t.$i||(t(e,_,w),t.$i=!0),w},w.locale=S,w.isDayjs=p,w.unix=function(t){return w(1e3*t)},w.en=D[v],w.Ls=D,w.p={},w}));
+
+/***/ }),
+
+/***/ "./node_modules/dayjs/plugin/localizedFormat.js":
+/*!******************************************************!*\
+  !*** ./node_modules/dayjs/plugin/localizedFormat.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+!function(e,t){ true?module.exports=t():undefined}(this,(function(){"use strict";var e={LTS:"h:mm:ss A",LT:"h:mm A",L:"MM/DD/YYYY",LL:"MMMM D, YYYY",LLL:"MMMM D, YYYY h:mm A",LLLL:"dddd, MMMM D, YYYY h:mm A"};return function(t,o,n){var r=o.prototype,i=r.format;n.en.formats=e,r.format=function(t){void 0===t&&(t="YYYY-MM-DDTHH:mm:ssZ");var o=this.$locale().formats,n=function(t,o){return t.replace(/(\[[^\]]+])|(LTS?|l{1,4}|L{1,4})/g,(function(t,n,r){var i=r&&r.toUpperCase();return n||o[r]||e[r]||o[i].replace(/(\[[^\]]+])|(MMMM|MM|DD|dddd)/g,(function(e,t,o){return t||o.slice(1)}))}))}(t,void 0===o?{}:o);return i.call(this,n)}}}));
 
 /***/ }),
 
@@ -58059,6 +58349,36 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGame.vue?vue&type=style&index=0&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ActiveGame.vue?vue&type=style&index=0&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./ActiveGame.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGame.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Cards/CardBlock.vue?vue&type=style&index=0&lang=css&":
 /*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Cards/CardBlock.vue?vue&type=style&index=0&lang=css& ***!
@@ -58322,6 +58642,36 @@ options.transform = transform
 options.insertInto = undefined;
 
 var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CheatSheets.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CheatSheets.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./CheatSheets.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CheatSheets.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -60953,6 +61303,131 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGame.vue?vue&type=template&id=c237a67a&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ActiveGame.vue?vue&type=template&id=c237a67a& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "save-game pos-relative overflow-hidden",
+      on: {
+        click: function ($event) {
+          return _vm.$emit("open", _vm.index)
+        },
+      },
+    },
+    [
+      _c("div", { staticClass: "save-game__date" }, [
+        _vm._v(_vm._s(_vm.created)),
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "save-game__saves", class: { open: _vm.open } },
+        [
+          _c(
+            "div",
+            { staticClass: "save-game__players" },
+            _vm._l(_vm.game.players, function (player) {
+              return _c(
+                "span",
+                { staticClass: "save-game__player ellipses capitalize mr-2" },
+                [_vm._v("\n                " + _vm._s(player) + "\n        ")]
+              )
+            }),
+            0
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "active-game__button button small mt-3 width-100",
+              on: {
+                click: function ($event) {
+                  $event.preventDefault()
+                  return _vm.loadGame.apply(null, arguments)
+                },
+              },
+            },
+            [_vm._v("watch")]
+          ),
+        ]
+      ),
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGames.vue?vue&type=template&id=414d0cc0&":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ActiveGames.vue?vue&type=template&id=414d0cc0& ***!
+  \**************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm.shared.activeGames && _vm.shared.activeGames.length
+    ? _c("div", {}, [
+        _c(
+          "div",
+          { staticClass: "highlight secondary-font center-text pb-4" },
+          [_vm._v("active games")]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass:
+              "width-100 height-100  flex-column d-flex pb-5 overflow-auto",
+          },
+          [
+            _c(
+              "div",
+              _vm._l(_vm.shared.activeGames, function (game, index) {
+                return _c("active-game", {
+                  key: game.id,
+                  attrs: { open: _vm.open === index, index: index, game: game },
+                  on: { open: _vm.openSave },
+                })
+              }),
+              1
+            ),
+          ]
+        ),
+      ])
+    : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Cards/CardBlock.vue?vue&type=template&id=4e1bcb76&":
 /*!******************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Cards/CardBlock.vue?vue&type=template&id=4e1bcb76& ***!
@@ -60964,7 +61439,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -60976,19 +61451,19 @@ var render = function() {
           staticClass: "card-block__image-wrap",
           class: { selected: _vm.card.selected },
           on: {
-            click: function($event) {
+            click: function ($event) {
               return _vm.$emit("clicked", _vm.card)
-            }
-          }
+            },
+          },
         },
         [
           _c("img", {
             staticClass: "card-block__image",
-            attrs: { src: _vm.image }
-          })
+            attrs: { src: _vm.image },
+          }),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -61009,7 +61484,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61018,7 +61493,7 @@ var render = function() {
       ? _c("div", { staticClass: "d-flex align-center justify-center" }, [
           _vm.cards.length > 1
             ? _c("button", { staticClass: "toggle", on: { click: _vm.prev } }, [
-                _c("i", { staticClass: "icon-left" })
+                _c("i", { staticClass: "icon-left" }),
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -61028,7 +61503,7 @@ var render = function() {
             [
               _vm.title
                 ? _c("div", { staticClass: "title view-player__title" }, [
-                    _vm._v(_vm._s(_vm.title))
+                    _vm._v(_vm._s(_vm.title)),
                   ])
                 : _vm._e(),
               _vm._v(" "),
@@ -61036,14 +61511,14 @@ var render = function() {
                 "transition-group",
                 {
                   staticClass: "card-picker__card-wrap",
-                  attrs: { tag: "div", name: _vm.transition }
+                  attrs: { tag: "div", name: _vm.transition },
                 },
-                _vm._l(_vm.cards, function(card, n) {
+                _vm._l(_vm.cards, function (card, n) {
                   return _vm.index == n
                     ? _c("div", {
                         key: card.id,
                         staticClass: "card-picker__card",
-                        style: _vm.source(card)
+                        style: _vm.source(card),
                       })
                     : _vm._e()
                 }),
@@ -61054,32 +61529,32 @@ var render = function() {
                 "div",
                 {
                   staticClass:
-                    "card-picker__pips d-flex justify-center flex-wrap mt-3"
+                    "card-picker__pips d-flex justify-center flex-wrap mt-3",
                 },
-                _vm._l(_vm.cards, function(card, n) {
+                _vm._l(_vm.cards, function (card, n) {
                   return _c("i", {
                     staticClass: "card-picker__pip",
                     class:
                       n === _vm.index
                         ? "icon-circle active"
-                        : "icon-circle-open"
+                        : "icon-circle-open",
                   })
                 }),
                 0
-              )
+              ),
             ],
             1
           ),
           _vm._v(" "),
           _vm.cards.length > 1
             ? _c("button", { staticClass: "toggle", on: { click: _vm.next } }, [
-                _c("i", { staticClass: "icon-right" })
+                _c("i", { staticClass: "icon-right" }),
               ])
-            : _vm._e()
+            : _vm._e(),
         ])
       : _c("div", { staticClass: "view-player__empty" }, [
-          _vm._v("\n        Nothing to choose from\n    ")
-        ])
+          _vm._v("\n        Nothing to choose from\n    "),
+        ]),
   ])
 }
 var staticRenderFns = []
@@ -61100,7 +61575,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61109,14 +61584,14 @@ var render = function() {
       _c(
         "div",
         { staticClass: "plan-block__pips" },
-        _vm._l(_vm.plan.objectives, function(test) {
+        _vm._l(_vm.plan.objectives, function (test) {
           return _c("div", {
             staticClass: "plan-block__pip primary-light",
             class: {
               "icon-circle": test.passed,
               "icon-circle-open": !test.passed,
-              highlight: test.scoreable
-            }
+              highlight: test.scoreable,
+            },
           })
         }),
         0
@@ -61128,30 +61603,30 @@ var render = function() {
           staticClass: "plan-block__image-wrap",
           class: { selected: _vm.plan.selected },
           on: {
-            click: function($event) {
+            click: function ($event) {
               return _vm.$emit("clicked")
-            }
-          }
+            },
+          },
         },
         [
           _c("img", {
             staticClass: "plan-block__image",
-            attrs: { src: _vm.image }
-          })
+            attrs: { src: _vm.image },
+          }),
         ]
-      )
+      ),
     ]),
     _vm._v(" "),
     _vm.plan.points
       ? _c("div", { staticClass: "center-text mt-2" }, [
           _c("img", {
             staticClass: "target-block__ap-icon",
-            attrs: { src: "/images/icons/pp-" + _vm.plan.points + ".png" }
-          })
+            attrs: { src: "/images/icons/pp-" + _vm.plan.points + ".png" },
+          }),
         ])
       : _c("div", { staticClass: "center-text primary-light  mt-2" }, [
-          _vm._v("Cannot Score")
-        ])
+          _vm._v("Cannot Score"),
+        ]),
   ])
 }
 var staticRenderFns = []
@@ -61172,7 +61647,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61180,7 +61655,7 @@ var render = function() {
     _c("div", { staticClass: "center-text width-100 white" }, [
       _vm.message.unit
         ? _c("span", { class: "faction-" + _vm.message.unit.faction }, [
-            _vm._v(_vm._s(_vm.message.unit.name) + " ")
+            _vm._v(_vm._s(_vm.message.unit.name) + " "),
           ])
         : _vm._e(),
       _vm._v(" "),
@@ -61192,22 +61667,22 @@ var render = function() {
           " at "
       ),
       _c("span", { class: "faction-" + _vm.message.victim }, [
-        _vm._v("the " + _vm._s(_vm.message.victim))
+        _vm._v("the " + _vm._s(_vm.message.victim)),
       ]),
       _vm._v(" needing "),
       _c("span", { staticClass: "highlight" }, [
-        _vm._v(_vm._s(_vm.message.toHit))
+        _vm._v(_vm._s(_vm.message.toHit)),
       ]),
       _vm._v(":\n\n        "),
       _vm._v(" "),
       _c(
         "div",
         { staticClass: "width-100 flex-center flex-wrap my-3" },
-        _vm._l(_vm.message.rolls, function(roll) {
+        _vm._l(_vm.message.rolls, function (roll) {
           return _c("img", {
             staticClass: "message__roll",
             class: { "saturate-0": _vm.rollMiss(roll) },
-            attrs: { src: "/images/icons/attack-" + roll + ".png" }
+            attrs: { src: "/images/icons/attack-" + roll + ".png" },
           })
         }),
         0
@@ -61215,10 +61690,10 @@ var render = function() {
       _vm._v(" "),
       _vm._v("\n        scoring "),
       _c("span", { staticClass: "highlight" }, [
-        _vm._v(_vm._s(_vm.message.hits))
+        _vm._v(_vm._s(_vm.message.hits)),
       ]),
-      _vm._v(" " + _vm._s(_vm.message.hits === 1 ? "hit" : "hits") + "\n    ")
-    ])
+      _vm._v(" " + _vm._s(_vm.message.hits === 1 ? "hit" : "hits") + "\n    "),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -61239,15 +61714,15 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "message-box" }, [
     _c("img", {
       staticClass: "width-75",
-      attrs: { src: "/images/tokens/capitol-" + _vm.message.turn + ".png" }
-    })
+      attrs: { src: "/images/tokens/capitol-" + _vm.message.turn + ".png" },
+    }),
   ])
 }
 var staticRenderFns = []
@@ -61268,7 +61743,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61276,15 +61751,15 @@ var render = function() {
     "div",
     { staticClass: "message-box" },
     [
-      _vm._l(_vm.message.cards, function(card) {
+      _vm._l(_vm.message.cards, function (card) {
         return _c("img", {
           staticClass: "width-100 message__card pointer",
           attrs: { src: "/images/cards/" + card.file + ".jpg" },
           on: {
-            click: function($event) {
+            click: function ($event) {
               _vm.shared.card = "/images/cards/" + card.file + ".jpg"
-            }
-          }
+            },
+          },
         })
       }),
       _vm._v(" "),
@@ -61299,18 +61774,18 @@ var render = function() {
                 style:
                   "background-image: url(/images/areas/" +
                   _vm.message.area.name +
-                  "-slice.jpg)"
+                  "-slice.jpg)",
               },
               [
                 _vm._v(
                   "\n            " +
                     _vm._s(_vm.message.area.name) +
                     "\n        "
-                )
+                ),
               ]
-            )
+            ),
           ])
-        : _vm._e()
+        : _vm._e(),
     ],
     2
   )
@@ -61333,7 +61808,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61345,29 +61820,29 @@ var render = function() {
         ? _c("span", { staticClass: "name" }, [
             _vm._v(
               _vm._s(_vm._f("startCase")(_vm.message.player.data.name)) + ":"
-            )
+            ),
           ])
         : _vm.message.faction
         ? _c("span", { class: "faction-" + _vm.message.faction }, [
             _vm._v(
               "The " + _vm._s(_vm._f("startCase")(_vm.message.faction)) + ":"
-            )
+            ),
           ])
         : _vm._e(),
       _vm._v(" "),
       _vm.message.message
         ? _c("span", {
             class: _vm.message.class || "info",
-            domProps: { innerHTML: _vm._s(_vm.filteredText) }
+            domProps: { innerHTML: _vm._s(_vm.filteredText) },
           })
         : _vm._e(),
       _vm._v(" "),
       _vm.message.type
         ? _c(_vm.message.type + "-message", {
             tag: "component",
-            attrs: { message: _vm.message }
+            attrs: { message: _vm.message },
           })
-        : _vm._e()
+        : _vm._e(),
     ],
     1
   )
@@ -61390,7 +61865,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61399,20 +61874,20 @@ var render = function() {
     { staticClass: "chat d-flex pos-relative drawer__aside" },
     [
       _c("adjust-handle", {
-        attrs: { direction: "left", max: "600", min: "100" }
+        attrs: { direction: "left", max: "600", min: "100" },
       }),
       _vm._v(" "),
       _c(
         "div",
         { staticClass: "chat__window p-4 height-100" },
-        _vm._l(_vm.shared.messages, function(message) {
+        _vm._l(_vm.shared.messages, function (message) {
           return _c("chat-message", {
             key: message.timestamp,
-            attrs: { message: message }
+            attrs: { message: message },
           })
         }),
         1
-      )
+      ),
     ],
     1
   )
@@ -61435,7 +61910,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61448,8 +61923,8 @@ var render = function() {
           _vm.message.token.faction +
           "/tokens/" +
           _vm.message.token.name +
-          ".png"
-      }
+          ".png",
+      },
     }),
     _vm._v(" "),
     _c("span", { staticClass: "d-block" }, [_vm._v("in the")]),
@@ -61461,10 +61936,92 @@ var render = function() {
         style:
           "background-image: url(/images/areas/" +
           _vm.message.token.location +
-          "-slice.jpg)"
+          "-slice.jpg)",
       },
       [_vm._v("\n            " + _vm._s(_vm.message.token.location) + "\n    ")]
-    )
+    ),
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CheatSheets.vue?vue&type=template&id=022e75e8&":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CheatSheets.vue?vue&type=template&id=022e75e8& ***!
+  \**************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("transition", { attrs: { name: "fade" } }, [
+    _vm.shared.openCheatSheets
+      ? _c("div", { staticClass: "player-prompt view-card z-8 width-70" }, [
+          _c(
+            "button",
+            {
+              staticClass: "toggle minimize-toggle top right",
+              on: {
+                click: function ($event) {
+                  _vm.shared.openCheatSheets = false
+                },
+              },
+            },
+            [_c("i", { staticClass: "icon-x" })]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "player-prompt__slot-container" }, [
+            _c("div", { staticClass: "d-flex justify-center mb-3" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "cheat-sheet__option",
+                  class: { active: _vm.mode === "general" },
+                  on: {
+                    click: function ($event) {
+                      _vm.mode = "general"
+                    },
+                  },
+                },
+                [_vm._v("general")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "cheat-sheet__option",
+                  class: { active: _vm.mode === "areas" },
+                  on: {
+                    click: function ($event) {
+                      _vm.mode = "areas"
+                    },
+                  },
+                },
+                [_vm._v("areas")]
+              ),
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "px-5 pb-5 d-flex flex-column align-stretch center-text",
+              },
+              [_c("img", { attrs: { src: _vm.image } })]
+            ),
+          ]),
+        ])
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -61485,7 +62042,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61514,7 +62071,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61525,13 +62082,13 @@ var render = function() {
       _c("td", { staticClass: "faction-score__name" }, [
         _c("img", {
           staticClass: "combat-faction_icon",
-          attrs: { src: _vm.shared.factionIcon(_vm.score.faction) }
+          attrs: { src: _vm.shared.factionIcon(_vm.score.faction) },
         }),
         _vm._v(
           "\n        The " +
             _vm._s(_vm._f("startCase")(_vm.score.faction)) +
             "\n    "
-        )
+        ),
       ]),
       _vm._v(" "),
       _c("td", { staticClass: "faction-score__victory" }, [
@@ -61539,31 +62096,31 @@ var render = function() {
           staticClass: "faction-score__victory-icon",
           class: _vm.score.hasVictory
             ? "icon-checkbox-checked"
-            : "icon-checkbox-unchecked"
-        })
+            : "icon-checkbox-unchecked",
+        }),
       ]),
       _vm._v(" "),
       _c("td", { staticClass: "faction-score__total" }, [
-        _vm._v(_vm._s(_vm.score.total))
+        _vm._v(_vm._s(_vm.score.total)),
       ]),
       _vm._v(" "),
       _c("td", { staticClass: "faction-score__ap" }, [
-        _vm._v(_vm._s(_vm.score.ap))
+        _vm._v(_vm._s(_vm.score.ap)),
       ]),
       _vm._v(" "),
       _c("td", { staticClass: "faction-score__pp" }, [
-        _vm._v(_vm._s(_vm.score.pp))
+        _vm._v(_vm._s(_vm.score.pp)),
       ]),
       _vm._v(" "),
       _c("td", {
         staticClass: "faction-score__token",
-        domProps: { innerHTML: _vm._s(_vm.capitol) }
+        domProps: { innerHTML: _vm._s(_vm.capitol) },
       }),
       _vm._v(" "),
       _c("td", {
         staticClass: "faction-score__rolls",
-        domProps: { textContent: _vm._s(_vm.rollAvg) }
-      })
+        domProps: { textContent: _vm._s(_vm.rollAvg) },
+      }),
     ]
   )
 }
@@ -61585,7 +62142,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61599,7 +62156,7 @@ var render = function() {
             "\n            Victory for The " +
               _vm._s(_vm._f("startCase")(_vm.winner)) +
               "!\n        "
-          )
+          ),
         ]),
         _vm._v(" "),
         _c(
@@ -61608,46 +62165,46 @@ var render = function() {
           [
             _c("tr", [
               _c("th", { staticClass: "faction-score__name-header" }, [
-                _vm._v("faction name")
+                _vm._v("faction name"),
               ]),
               _vm._v(" "),
               _c("th", { staticClass: "faction-score__victory-header" }, [
-                _vm._v("objective")
+                _vm._v("objective"),
               ]),
               _vm._v(" "),
               _c("th", { staticClass: "faction-score__total-header" }, [
-                _vm._v("total points")
+                _vm._v("total points"),
               ]),
               _vm._v(" "),
               _c("th", { staticClass: "faction-score__ap-header" }, [
                 _c("img", {
                   staticClass: "icon-image",
-                  attrs: { src: "/images/icons/ap.png" }
-                })
+                  attrs: { src: "/images/icons/ap.png" },
+                }),
               ]),
               _vm._v(" "),
               _c("th", { staticClass: "faction-score__pp-header" }, [
                 _c("img", {
                   staticClass: "icon-image",
-                  attrs: { src: "/images/icons/pp.png" }
-                })
+                  attrs: { src: "/images/icons/pp.png" },
+                }),
               ]),
               _vm._v(" "),
               _c("th", { staticClass: "faction-score__token-header" }, [
-                _vm._v("capitol token")
+                _vm._v("capitol token"),
               ]),
               _vm._v(" "),
               _c("th", { staticClass: "faction-score__rolls-header" }, [
-                _vm._v("AVG roll")
-              ])
+                _vm._v("AVG roll"),
+              ]),
             ]),
             _vm._v(" "),
-            _vm._l(_vm.scores, function(score, index) {
+            _vm._l(_vm.scores, function (score, index) {
               return _c("faction-score", {
                 key: score.faction,
-                attrs: { score: score, winner: index === 0 }
+                attrs: { score: score, winner: index === 0 },
               })
-            })
+            }),
           ],
           2
         ),
@@ -61655,36 +62212,36 @@ var render = function() {
         _c(
           "div",
           { staticClass: "rolls-table d-flex width-50 pull-center my-5 p-3" },
-          _vm._l(_vm.rolls, function(count, roll) {
+          _vm._l(_vm.rolls, function (count, roll) {
             return _c(
               "div",
               {
                 staticClass:
                   "rolls-table__column d-flex flex-column width-10 align-center",
-                attrs: { hidden: !roll }
+                attrs: { hidden: !roll },
               },
               [
                 _c("div", { staticClass: "rolls-table__roll-header" }, [
-                  _vm._v(_vm._s(roll))
+                  _vm._v(_vm._s(roll)),
                 ]),
                 _vm._v(" "),
                 _c(
                   "div",
                   {
                     staticClass:
-                      "rolls-table__bar-container p-3 d-flex align-end"
+                      "rolls-table__bar-container p-3 d-flex align-end",
                   },
                   [
                     _c("span", {
                       staticClass: "rolls-table__bar width-100 d-block",
-                      style: { height: _vm.barHeight(count) }
-                    })
+                      style: { height: _vm.barHeight(count) },
+                    }),
                   ]
                 ),
                 _vm._v(" "),
                 _c("div", { staticClass: "rolls-table__bar-count highlight" }, [
-                  _vm._v(_vm._s(count))
-                ])
+                  _vm._v(_vm._s(count)),
+                ]),
               ]
             )
           }),
@@ -61696,11 +62253,11 @@ var render = function() {
             "div",
             { staticClass: "button d-inline-block final-score__conclude" },
             [_vm._v("Conclude Game")]
-          )
-        ])
+          ),
+        ]),
       ],
       1
-    )
+    ),
   ])
 }
 var staticRenderFns = []
@@ -61721,7 +62278,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61729,15 +62286,17 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    current : "),
       _c("span", { staticClass: "highlight ml-2 mr-4" }, [
-        _vm._v(_vm._s(_vm.faction.captured.current))
+        _vm._v(_vm._s(_vm.faction.captured.current)),
       ]),
       _vm._v("\n    predicted :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.focus)),
+      ]),
     ]
   )
 }
@@ -61759,7 +62318,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61767,11 +62326,13 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    areas winning :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.focus)),
+      ]),
     ]
   )
 }
@@ -61793,7 +62354,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61801,17 +62362,19 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _c("span", { staticClass: "mr-4" }, [
         _vm._v("skips :"),
         _c("span", { staticClass: "highlight ml-2" }, [
-          _vm._v(_vm._s(_vm.skips))
-        ])
+          _vm._v(_vm._s(_vm.skips)),
+        ]),
       ]),
       _vm._v("\n    most tokens :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.focus)),
+      ]),
     ]
   )
 }
@@ -61833,7 +62396,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61841,23 +62404,23 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    highest influence areas:"),
       _c("span", { staticClass: "ml-2" }, [
         _c("span", { staticClass: "highlight" }, [
-          _vm._v(_vm._s(_vm.influences[0]))
+          _vm._v(_vm._s(_vm.influences[0])),
         ]),
         _vm._v(" / "),
         _c("span", { staticClass: "highlight" }, [
-          _vm._v(_vm._s(_vm.influences[1]))
+          _vm._v(_vm._s(_vm.influences[1])),
         ]),
         _vm._v(" / "),
         _c("span", { staticClass: "highlight" }, [
-          _vm._v(_vm._s(_vm.influences[2]))
-        ])
-      ])
+          _vm._v(_vm._s(_vm.influences[2])),
+        ]),
+      ]),
     ]
   )
 }
@@ -61879,7 +62442,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61887,11 +62450,13 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    conquered areas :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.focus)),
+      ]),
     ]
   )
 }
@@ -61913,7 +62478,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61921,11 +62486,13 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    total kills :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.kills))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.kills)),
+      ]),
     ]
   )
 }
@@ -61947,7 +62514,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61955,17 +62522,19 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _c("span", { staticClass: "mr-4" }, [
         _vm._v("ambushes :"),
         _c("span", { staticClass: "highlight ml-2" }, [
-          _vm._v(_vm._s(_vm.ambushes))
-        ])
+          _vm._v(_vm._s(_vm.ambushes)),
+        ]),
       ]),
       _vm._v(" kills in enemy areas :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.kills))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.kills)),
+      ]),
     ]
   )
 }
@@ -61987,7 +62556,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -61995,17 +62564,17 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    skills used :"),
       _c("span", { staticClass: "highlight mx-2" }, [
-        _vm._v(_vm._s(_vm.focus))
+        _vm._v(_vm._s(_vm.focus)),
       ]),
       _vm._v("\n    hax0r tokens:"),
       _c("span", { staticClass: "highlight ml-2" }, [
-        _vm._v(_vm._s(_vm.hax0rs))
-      ])
+        _vm._v(_vm._s(_vm.hax0rs)),
+      ]),
     ]
   )
 }
@@ -62027,7 +62596,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62035,22 +62604,22 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _c("span", [
         _vm._v("dead units:"),
         _c("span", { staticClass: "highlight ml-2" }, [
-          _vm._v(_vm._s(_vm.dead))
-        ])
+          _vm._v(_vm._s(_vm.dead)),
+        ]),
       ]),
       _vm._v(" "),
       _c("span", { staticClass: "ml-3" }, [
         _vm._v("patsies in reserves :"),
         _c("span", { staticClass: "highlight ml-2" }, [
-          _vm._v(_vm._s(_vm.reserves))
-        ])
-      ])
+          _vm._v(_vm._s(_vm.reserves)),
+        ]),
+      ]),
     ]
   )
 }
@@ -62072,7 +62641,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62080,11 +62649,13 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    units in play :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.units))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.units)),
+      ]),
     ]
   )
 }
@@ -62106,7 +62677,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62114,14 +62685,14 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _c("div", { staticClass: "mr-3" }, [
         _vm._v("types killed :"),
         _c("span", { staticClass: "highlight ml-2" }, [
-          _vm._v(_vm._s(_vm.totalTypesKilled))
-        ])
+          _vm._v(_vm._s(_vm.totalTypesKilled)),
+        ]),
       ]),
       _vm._v(" "),
       _c(
@@ -62130,8 +62701,8 @@ var render = function() {
         [
           _vm._v("mt :"),
           _c("span", { staticClass: "highlight ml-2" }, [
-            _vm._v(_vm._s(_vm.moleTalent))
-          ])
+            _vm._v(_vm._s(_vm.moleTalent)),
+          ]),
         ]
       ),
       _vm._v(" "),
@@ -62141,10 +62712,10 @@ var render = function() {
         [
           _vm._v("gc :"),
           _c("span", { staticClass: "highlight ml-2" }, [
-            _vm._v(_vm._s(_vm.goonChampion))
-          ])
+            _vm._v(_vm._s(_vm.goonChampion)),
+          ]),
         ]
-      )
+      ),
     ]
   )
 }
@@ -62166,7 +62737,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62174,11 +62745,13 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    enemies in your areas: "),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.focus)),
+      ]),
     ]
   )
 }
@@ -62200,7 +62773,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62208,11 +62781,13 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    areas exterminated :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.focus)),
+      ]),
     ]
   )
 }
@@ -62234,7 +62809,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62242,21 +62817,21 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    fusion :"),
       _c("span", { staticClass: "highlight ml-2 mr-4" }, [
-        _vm._v(_vm._s(_vm.focus))
+        _vm._v(_vm._s(_vm.focus)),
       ]),
       _vm._v("\n    card areas :"),
       _c("span", { staticClass: "highlight ml-2 mr-4" }, [
-        _vm._v(_vm._s(_vm.areas))
+        _vm._v(_vm._s(_vm.areas)),
       ]),
       _vm._v("\n    in hand :"),
       _c("span", { staticClass: "highlight ml-2" }, [
-        _vm._v(_vm._s(_vm.faction.cards.hand.length))
-      ])
+        _vm._v(_vm._s(_vm.faction.cards.hand.length)),
+      ]),
     ]
   )
 }
@@ -62278,7 +62853,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62286,25 +62861,25 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    units in enemy\n    "),
       Object.keys(_vm.focus).length
         ? _c(
             "span",
-            _vm._l(_vm.focus, function(count, type) {
+            _vm._l(_vm.focus, function (count, type) {
               return _c("span", { staticClass: "highlight ml-2" }, [
                 _c("span", {
                   staticClass: "highlight focus-unit-icon",
-                  class: "icon-" + (type !== "champion" ? type : "flag")
+                  class: "icon-" + (type !== "champion" ? type : "flag"),
                 }),
-                _vm._v(_vm._s(count))
+                _vm._v(_vm._s(count)),
               ])
             }),
             0
           )
-        : _c("span", { staticClass: "ml-2 highlight" }, [_vm._v("none")])
+        : _c("span", { staticClass: "ml-2 highlight" }, [_vm._v("none")]),
     ]
   )
 }
@@ -62326,7 +62901,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62334,11 +62909,13 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    areas with tokens :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.focus)),
+      ]),
     ]
   )
 }
@@ -62360,7 +62937,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62368,23 +62945,23 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _c("span", { staticClass: "highlight mr-4" }, [_vm._v("Kills:")]),
       _vm._v(" "),
-      _vm._l(_vm.focus, function(value, name) {
+      _vm._l(_vm.focus, function (value, name) {
         return _c("div", { staticClass: "d-flex align-center mr-3" }, [
           _c("div", {
             staticClass: "player-hud__champion mr-2",
             style:
               "background-image : url('/images/factions/" +
               name +
-              "/icon.jpg');"
+              "/icon.jpg');",
           }),
-          _vm._v(" : " + _vm._s(value) + "\n    ")
+          _vm._v(" : " + _vm._s(value) + "\n    "),
         ])
-      })
+      }),
     ],
     2
   )
@@ -62407,7 +62984,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62415,11 +62992,13 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    areas with units :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.focus)),
+      ]),
     ]
   )
 }
@@ -62441,7 +63020,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62449,11 +63028,13 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    areas with kills :"),
-      _c("span", { staticClass: "highlight ml-2" }, [_vm._v(_vm._s(_vm.focus))])
+      _c("span", { staticClass: "highlight ml-2" }, [
+        _vm._v(_vm._s(_vm.focus)),
+      ]),
     ]
   )
 }
@@ -62475,7 +63056,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62483,21 +63064,21 @@ var render = function() {
     "div",
     {
       staticClass: "d-flex plan-focus mr-4 primary-light align-center",
-      class: _vm.classes
+      class: _vm.classes,
     },
     [
       _vm._v("\n    total :"),
       _c("span", { staticClass: "highlight ml-2 mr-3" }, [
-        _vm._v(_vm._s(_vm.rules.total))
+        _vm._v(_vm._s(_vm.rules.total)),
       ]),
       _vm._v("\n    areas :"),
       _c("span", { staticClass: "highlight ml-2 mr-3" }, [
-        _vm._v(_vm._s(_vm.rules.areas))
+        _vm._v(_vm._s(_vm.rules.areas)),
       ]),
       _vm._v("\n    same area :"),
       _c("span", { staticClass: "highlight ml-2 mr-3" }, [
-        _vm._v(_vm._s(_vm.rules.stack))
-      ])
+        _vm._v(_vm._s(_vm.rules.stack)),
+      ]),
     ]
   )
 }
@@ -62519,7 +63100,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62527,13 +63108,13 @@ var render = function() {
     "div",
     {
       staticClass: "form-group d-flex align-baseline",
-      class: _vm.field.class + " " + _vm.field.name
+      class: _vm.field.class + " " + _vm.field.name,
     },
     [
       _c("div", {
         staticClass: "form-label d-block",
         attrs: { for: _vm.field.name },
-        domProps: { textContent: _vm._s(_vm.labelTitle) }
+        domProps: { textContent: _vm._s(_vm.labelTitle) },
       }),
       _vm._v(" "),
       _c("input", {
@@ -62542,8 +63123,8 @@ var render = function() {
             name: "model",
             rawName: "v-model",
             value: _vm.data.value,
-            expression: "data.value"
-          }
+            expression: "data.value",
+          },
         ],
         staticClass: "form-element d-none form-checkbox",
         class: { error: _vm.errors.has(_vm.field.name) },
@@ -62551,13 +63132,13 @@ var render = function() {
         domProps: {
           checked: Array.isArray(_vm.data.value)
             ? _vm._i(_vm.data.value, null) > -1
-            : _vm.data.value
+            : _vm.data.value,
         },
         on: {
-          input: function($event) {
+          input: function ($event) {
             return _vm.errors.clear(_vm.field.name)
           },
-          change: function($event) {
+          change: function ($event) {
             var $$a = _vm.data.value,
               $$el = $event.target,
               $$c = $$el.checked ? true : false
@@ -62577,19 +63158,19 @@ var render = function() {
             } else {
               _vm.$set(_vm.data, "value", $$c)
             }
-          }
-        }
+          },
+        },
       }),
       _vm._v(" "),
       _c("label", {
         staticClass: "form-label icon-checkbox",
-        attrs: { for: _vm.field.name }
+        attrs: { for: _vm.field.name },
       }),
       _vm._v(" "),
       _c("span", {
         staticClass: "form-error",
-        domProps: { textContent: _vm._s(_vm.errors.get(_vm.field.name)) }
-      })
+        domProps: { textContent: _vm._s(_vm.errors.get(_vm.field.name)) },
+      }),
     ]
   )
 }
@@ -62611,7 +63192,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62619,13 +63200,13 @@ var render = function() {
     "div",
     {
       staticClass: "form-group",
-      class: _vm.field.class + " " + _vm.field.name
+      class: _vm.field.class + " " + _vm.field.name,
     },
     [
       _vm.field.label
         ? _c("div", {
             staticClass: "form-label d-block",
-            domProps: { textContent: _vm._s(_vm.labelTitle) }
+            domProps: { textContent: _vm._s(_vm.labelTitle) },
           })
         : _vm._e(),
       _vm._v(" "),
@@ -62635,21 +63216,21 @@ var render = function() {
           staticClass:
             "d-block form-file__label form-element secondary uppercase center-text bold pointer",
           class: { error: _vm.errors.has(_vm.field.name) },
-          attrs: { for: _vm.field.name }
+          attrs: { for: _vm.field.name },
         },
         [
           !_vm.data.value
             ? _c("div", [
                 _c("i", { staticClass: "icon-upload mr-3" }),
-                _vm._v(" UPLOAD A FILE")
+                _vm._v(" UPLOAD A FILE"),
               ])
             : _vm._e(),
           _vm._v(" "),
           _vm.data.value
             ? _c("p", {
-                domProps: { textContent: _vm._s(_vm.data.value.name) }
+                domProps: { textContent: _vm._s(_vm.data.value.name) },
               })
-            : _vm._e()
+            : _vm._e(),
         ]
       ),
       _vm._v(" "),
@@ -62661,15 +63242,15 @@ var render = function() {
           accept: _vm.field.accept,
           name: _vm.field.name,
           type: "file",
-          id: _vm.field.name
+          id: _vm.field.name,
         },
-        on: { change: _vm.fileChange }
+        on: { change: _vm.fileChange },
       }),
       _vm._v(" "),
       _c("span", {
         staticClass: "form-error",
-        domProps: { textContent: _vm._s(_vm.errors.get(_vm.field.name)) }
-      })
+        domProps: { textContent: _vm._s(_vm.errors.get(_vm.field.name)) },
+      }),
     ]
   )
 }
@@ -62691,7 +63272,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62702,14 +63283,14 @@ var render = function() {
           class: _vm.classes,
           attrs: { enctype: _vm.hasFile },
           on: {
-            submit: function($event) {
+            submit: function ($event) {
               $event.preventDefault()
               return _vm.onSubmit.apply(null, arguments)
-            }
-          }
+            },
+          },
         },
         [
-          _vm._l(_vm.schema, function(field) {
+          _vm._l(_vm.schema, function (field) {
             return [
               _c(
                 field.type ? "vue-" + field.type : "vue-input",
@@ -62719,16 +63300,16 @@ var render = function() {
                     field: field,
                     errors: _vm.form.errors,
                     sending: _vm.sending,
-                    data: _vm.form[field.name]
+                    data: _vm.form[field.name],
                   },
                   on: {
-                    "update:data": function($event) {
+                    "update:data": function ($event) {
                       return _vm.$set(_vm.form, field.name, $event)
-                    }
-                  }
+                    },
+                  },
                 },
                 [_vm._v('\n            class="field.class"\n        ')]
-              )
+              ),
             ]
           }),
           _vm._v(" "),
@@ -62737,9 +63318,9 @@ var render = function() {
               staticClass:
                 "form-submit form-element uppercase bg-hover-light button bg-side white secondary uppercase",
               class: _vm.submitclass,
-              attrs: { type: "submit", value: "submit" }
-            })
-          ])
+              attrs: { type: "submit", value: "submit" },
+            }),
+          ]),
         ],
         2
       )
@@ -62763,7 +63344,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62773,19 +63354,19 @@ var render = function() {
         name: "model",
         rawName: "v-model",
         value: _vm.data.value,
-        expression: "data.value"
-      }
+        expression: "data.value",
+      },
     ],
     attrs: { type: "hidden", name: _vm.field.name },
     domProps: { value: _vm.data.value },
     on: {
-      input: function($event) {
+      input: function ($event) {
         if ($event.target.composing) {
           return
         }
         _vm.$set(_vm.data, "value", $event.target.value)
-      }
-    }
+      },
+    },
   })
 }
 var staticRenderFns = []
@@ -62806,7 +63387,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62814,13 +63395,13 @@ var render = function() {
     "div",
     {
       staticClass: "form-group",
-      class: _vm.field.class + " " + _vm.field.name
+      class: _vm.field.class + " " + _vm.field.name,
     },
     [
       _c("label", {
         staticClass: "form-label d-block",
         attrs: { for: _vm.field.name },
-        domProps: { textContent: _vm._s(_vm.labelTitle) }
+        domProps: { textContent: _vm._s(_vm.labelTitle) },
       }),
       _vm._v(" "),
       _c("input", {
@@ -62829,8 +63410,8 @@ var render = function() {
             name: "model",
             rawName: "v-model",
             value: _vm.data.value,
-            expression: "data.value"
-          }
+            expression: "data.value",
+          },
         ],
         staticClass: "form-element width-100",
         class: _vm.classes,
@@ -62838,28 +63419,28 @@ var render = function() {
           type: "text",
           name: _vm.field.name,
           placeholder: _vm.field.placeholder,
-          required: !_vm.field.optional
+          required: !_vm.field.optional,
         },
         domProps: { value: _vm.data.value },
         on: {
           input: [
-            function($event) {
+            function ($event) {
               if ($event.target.composing) {
                 return
               }
               _vm.$set(_vm.data, "value", $event.target.value)
             },
-            function($event) {
+            function ($event) {
               return _vm.errors.clear(_vm.field.name)
-            }
-          ]
-        }
+            },
+          ],
+        },
       }),
       _vm._v(" "),
       _c("span", {
         staticClass: "form-error",
-        domProps: { textContent: _vm._s(_vm.errors.get(_vm.field.name)) }
-      })
+        domProps: { textContent: _vm._s(_vm.errors.get(_vm.field.name)) },
+      }),
     ]
   )
 }
@@ -62881,7 +63462,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62889,13 +63470,13 @@ var render = function() {
     "div",
     {
       staticClass: "form-group",
-      class: _vm.field.class + " " + _vm.field.name
+      class: _vm.field.class + " " + _vm.field.name,
     },
     [
       _c("label", {
         staticClass: "form-label d-block",
         attrs: { for: _vm.field.name },
-        domProps: { textContent: _vm._s(_vm.labelTitle) }
+        domProps: { textContent: _vm._s(_vm.labelTitle) },
       }),
       _vm._v(" "),
       _c(
@@ -62906,18 +63487,18 @@ var render = function() {
               name: "model",
               rawName: "v-model",
               value: _vm.data.value,
-              expression: "data.value"
-            }
+              expression: "data.value",
+            },
           ],
           staticClass: "form-element width-100",
           attrs: { name: _vm.field.name },
           on: {
-            change: function($event) {
+            change: function ($event) {
               var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
+                .call($event.target.options, function (o) {
                   return o.selected
                 })
-                .map(function(o) {
+                .map(function (o) {
                   var val = "_value" in o ? o._value : o.value
                   return val
                 })
@@ -62926,16 +63507,16 @@ var render = function() {
                 "value",
                 $event.target.multiple ? $$selectedVal : $$selectedVal[0]
               )
-            }
-          }
+            },
+          },
         },
-        _vm._l(_vm.field.options, function(option) {
+        _vm._l(_vm.field.options, function (option) {
           return _c("option", { domProps: { value: option.value } }, [
-            _vm._v(_vm._s(option.text))
+            _vm._v(_vm._s(option.text)),
           ])
         }),
         0
-      )
+      ),
     ]
   )
 }
@@ -62957,7 +63538,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -62965,13 +63546,13 @@ var render = function() {
     "div",
     {
       staticClass: "form-group",
-      class: _vm.field.class + " " + _vm.field.name
+      class: _vm.field.class + " " + _vm.field.name,
     },
     [
       _c("label", {
         staticClass: "form-label d-block",
         attrs: { for: _vm.field.name },
-        domProps: { textContent: _vm._s(_vm.labelTitle) }
+        domProps: { textContent: _vm._s(_vm.labelTitle) },
       }),
       _vm._v(" "),
       _c("textarea", {
@@ -62980,8 +63561,8 @@ var render = function() {
             name: "model",
             rawName: "v-model",
             value: _vm.data.value,
-            expression: "data.value"
-          }
+            expression: "data.value",
+          },
         ],
         staticClass: "form-element width-100",
         class: _vm.classes,
@@ -62989,28 +63570,28 @@ var render = function() {
           name: _vm.field.name,
           required: !_vm.field.optional,
           rows: _vm.field.rows ? _vm.field.rows : 10,
-          placeholder: _vm.field.placeholder
+          placeholder: _vm.field.placeholder,
         },
         domProps: { value: _vm.data.value },
         on: {
           input: [
-            function($event) {
+            function ($event) {
               if ($event.target.composing) {
                 return
               }
               _vm.$set(_vm.data, "value", $event.target.value)
             },
-            function($event) {
+            function ($event) {
               return _vm.errors.clear(_vm.field.name)
-            }
-          ]
-        }
+            },
+          ],
+        },
       }),
       _vm._v(" "),
       _c("span", {
         staticClass: "form-error",
-        domProps: { textContent: _vm._s(_vm.errors.get(_vm.field.name)) }
-      })
+        domProps: { textContent: _vm._s(_vm.errors.get(_vm.field.name)) },
+      }),
     ]
   )
 }
@@ -63032,7 +63613,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -63040,7 +63621,7 @@ var render = function() {
     "div",
     {
       staticClass:
-        "game-core width-100 height-100 d-flex align-stretch pos-relative"
+        "game-core width-100 height-100 d-flex align-stretch pos-relative",
     },
     [_c("game-hud"), _vm._v(" "), _c("game-core")],
     1
@@ -63064,7 +63645,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -63072,9 +63653,21 @@ var render = function() {
     "div",
     {
       staticClass:
-        "main-content height-100 drawer__main pos-relative d-flex flex-column align-stretch"
+        "main-content height-100 drawer__main pos-relative d-flex flex-column align-stretch",
     },
-    [_c("game-display"), _vm._v(" "), _c("game-controls")],
+    [
+      _c("game-display"),
+      _vm._v(" "),
+      _vm.shared.player && !_vm.shared.player.isSpectator
+        ? _c("game-controls")
+        : _c("div", { staticClass: "d-flex justify-center" }, [
+            _c(
+              "button",
+              { staticClass: "button", on: { click: _vm.stopWatching } },
+              [_vm._v("STOP WATCHING")]
+            ),
+          ]),
+    ],
     1
   )
 }
@@ -63096,7 +63689,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -63104,13 +63697,13 @@ var render = function() {
     "div",
     {
       staticClass:
-        "width-100 pos-relative z-0 overflow-auto game-display game-display-height"
+        "width-100 pos-relative z-0 overflow-auto game-display game-display-height",
     },
     [
       _vm.shared.socket.disconnected
         ? _c("div", { staticClass: "pos-absolute top-0 z-5 server-offline" }, [
             _c("i", { staticClass: "icon-kill" }),
-            _vm._v("SERVER OFFLINE\n    ")
+            _vm._v("SERVER OFFLINE\n    "),
           ])
         : _vm._e(),
       _vm._v(" "),
@@ -63118,9 +63711,9 @@ var render = function() {
         "transition",
         { attrs: { name: "open" } },
         [
-          _vm.shared.player.prompt.name
+          _vm.shared.player.prompt && _vm.shared.player.prompt.name
             ? _c(_vm.shared.player.prompt.name, { tag: "component" })
-            : _vm._e()
+            : _vm._e(),
         ],
         1
       ),
@@ -63137,7 +63730,9 @@ var render = function() {
       _vm._v(" "),
       _c("game-settings"),
       _vm._v(" "),
-      _c("game-map")
+      _c("cheat-sheets"),
+      _vm._v(" "),
+      _c("game-map"),
     ],
     1
   )
@@ -63160,7 +63755,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -63176,13 +63771,15 @@ var render = function() {
         [
           _vm._m(0),
           _vm._v(" "),
+          _vm._m(1),
+          _vm._v(" "),
           _c("view-factions"),
           _vm._v(" "),
           _c(
             "div",
             {
               staticClass:
-                "d-flex justify-between width-100 pos-absolute top-0 left-0 right-0 px-4 pt-2"
+                "d-flex justify-between width-100 pos-absolute top-0 left-0 right-0 px-4 pt-2",
             },
             [
               _c(
@@ -63190,7 +63787,7 @@ var render = function() {
                 {
                   staticClass:
                     "lobby__action-link pointer grow-0 shrink-0 pr-4",
-                  on: { click: _vm.openFactions }
+                  on: { click: _vm.openFactions },
                 },
                 [_vm._v("view factions")]
               ),
@@ -63199,11 +63796,11 @@ var render = function() {
                 "div",
                 {
                   staticClass:
-                    "d-flex justify-center grow-1 shrink-1 lobby__players"
+                    "d-flex justify-center grow-1 shrink-1 lobby__players",
                 },
-                _vm._l(_vm.shared.lobbyPlayers, function(player) {
+                _vm._l(_vm.shared.lobbyPlayers, function (player) {
                   return _c("div", { staticClass: "m-3" }, [
-                    _vm._v(_vm._s(player))
+                    _vm._v(_vm._s(player)),
                   ])
                 }),
                 0
@@ -63214,10 +63811,10 @@ var render = function() {
                 {
                   staticClass:
                     "lobby__action-link grow-0 shrink-0 pl-4 right-text",
-                  attrs: { href: "/logout" }
+                  attrs: { href: "/logout" },
                 },
                 [_vm._v("logout")]
-              )
+              ),
             ]
           ),
           _vm._v(" "),
@@ -63227,18 +63824,18 @@ var render = function() {
                   "div",
                   {
                     staticClass:
-                      "d-flex align-center open-game__id text-uppercase justify-between"
+                      "d-flex align-center open-game__id text-uppercase justify-between",
                   },
                   [
                     _c("div", [
                       _vm._v("Game Id "),
-                      _c("span", [_vm._v(_vm._s(_vm.shared.game.id))])
+                      _c("span", [_vm._v(_vm._s(_vm.shared.game.id))]),
                     ]),
                     _vm._v(" "),
                     _c("div", {
                       staticClass: "icon-x open-game__delete pointer",
-                      on: { click: _vm.deleteGame }
-                    })
+                      on: { click: _vm.deleteGame },
+                    }),
                   ]
                 ),
                 _vm._v(" "),
@@ -63252,74 +63849,94 @@ var render = function() {
                   "div",
                   { staticClass: "open-game__players" },
                   [
-                    _vm._l(_vm.shared.game.players, function(player) {
-                      return _c("div", [
-                        _vm._v(_vm._s(_vm._f("startCase")(player.name)))
-                      ])
+                    _vm._l(_vm.shared.game.players, function (player) {
+                      return _c(
+                        "div",
+                        { staticClass: "d-flex justify-center align-center" },
+                        [
+                          _c("span", [
+                            _vm._v(_vm._s(_vm._f("startCase")(player.name))),
+                          ]),
+                          _vm._v(" "),
+                          _vm.gameCreator && player.id !== _vm.shared.id
+                            ? _c("i", {
+                                staticClass:
+                                  "icon-x pointer pl-2 choose-factions__block pos-relative",
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.removePlayer(player)
+                                  },
+                                },
+                              })
+                            : _vm._e(),
+                        ]
+                      )
                     }),
                     _vm._v(" "),
                     Object.keys(_vm.shared.game.players).length === 0
                       ? _c("div", { staticClass: "open-game__empty" }, [
-                          _vm._v("No Players")
+                          _vm._v("No Players"),
                         ])
-                      : _vm._e()
+                      : _vm._e(),
                   ],
                   2
                 ),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "game-setup__type d-flex justify-center" },
-                  _vm._l(_vm.gameTypes, function(type) {
-                    return _vm.shared.game.gameType === type ||
-                      _vm.shared.game.creator === _vm.shared.id
-                      ? _c(
-                          "div",
-                          {
-                            staticClass: "game-setup__type-option",
-                            class: {
-                              active: _vm.shared.game.gameType === type
-                            },
-                            on: {
-                              click: function($event) {
-                                return _vm.setGameType(type)
-                              }
-                            }
-                          },
-                          [_vm._v(_vm._s(type))]
-                        )
-                      : _vm._e()
-                  }),
-                  0
-                ),
+                _vm.shared.admin
+                  ? _c(
+                      "div",
+                      { staticClass: "game-setup__type d-flex justify-center" },
+                      _vm._l(_vm.gameTypes, function (type) {
+                        return _vm.shared.game.gameType === type ||
+                          _vm.gameCreator
+                          ? _c(
+                              "div",
+                              {
+                                staticClass: "game-setup__type-option",
+                                class: {
+                                  active: _vm.shared.game.gameType === type,
+                                },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.setGameType(type)
+                                  },
+                                },
+                              },
+                              [_vm._v(_vm._s(type))]
+                            )
+                          : _vm._e()
+                      }),
+                      0
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
-                _vm.shared.game.creator === _vm.shared.id
+                _vm.shared.admin && _vm.gameCreator
                   ? _c(
                       "div",
                       {
                         staticClass:
-                          "game-setup__options d-flex justify-center my-2"
+                          "game-setup__options d-flex justify-center my-2",
                       },
-                      _vm._l(_vm.options, function(val, option) {
+                      _vm._l(_vm.options, function (val, option) {
                         return _c(
                           "div",
                           {
                             staticClass: "game-setup__option py-2 px-3",
                             class: { active: val },
                             on: {
-                              click: function($event) {
+                              click: function ($event) {
                                 _vm.options[option] = !_vm.options[option]
-                              }
-                            }
+                              },
+                            },
                           },
                           [
                             _c("i", {
                               staticClass: "mr-2 game-setup__option-checkbox",
                               class: val
                                 ? "icon-checkbox-checked"
-                                : "icon-checkbox-unchecked"
+                                : "icon-checkbox-unchecked",
                             }),
-                            _vm._v(_vm._s(_vm.alphaCaps(option)))
+                            _vm._v(_vm._s(_vm.alphaCaps(option))),
                           ]
                         )
                       }),
@@ -63334,7 +63951,7 @@ var render = function() {
                         {
                           staticClass: "button wide px-6",
                           attrs: { disabled: !_vm.canJoin },
-                          on: { click: _vm.joinGame }
+                          on: { click: _vm.joinGame },
                         },
                         [_vm._v("JOIN")]
                       )
@@ -63345,7 +63962,7 @@ var render = function() {
                         "button",
                         {
                           staticClass: "button wide px-6 button-empty",
-                          on: { click: _vm.leaveGame }
+                          on: { click: _vm.leaveGame },
                         },
                         [_vm._v("LEAVE")]
                       )
@@ -63357,37 +63974,37 @@ var render = function() {
                         {
                           staticClass: "button wide px-6",
                           attrs: { disabled: !_vm.canStart },
-                          on: { click: _vm.startGame }
+                          on: { click: _vm.startGame },
                         },
                         [_vm._v("START")]
                       )
-                    : _vm._e()
-                ])
+                    : _vm._e(),
+                ]),
               ])
             : _c("div", [
                 _vm.shared.socket.disconnected
                   ? _c("div", { staticClass: "server-offline" }, [
                       _c("i", { staticClass: "icon-kill" }),
-                      _vm._v("SERVER OFFLINE\n            ")
+                      _vm._v("SERVER OFFLINE\n            "),
                     ])
                   : _c(
                       "button",
                       {
                         staticClass: "button new-game-button",
-                        on: { click: _vm.newGame }
+                        on: { click: _vm.newGame },
                       },
                       [_vm._v("Create New Game")]
-                    )
-              ])
+                    ),
+              ]),
         ],
         1
-      )
+      ),
     ],
     1
   )
 }
 var staticRenderFns = [
-  function() {
+  function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
@@ -63395,14 +64012,30 @@ var staticRenderFns = [
       "a",
       {
         staticClass: "d-block button pos-absolute bottom-0 left-0",
-        attrs: { href: "/files/villains_full_rules.pdf", target: "_blank" }
+        attrs: { href: "/files/villains_v4.2_web.pdf", target: "_blank" },
       },
       [
         _vm._v("\n            view game rules "),
-        _c("i", { staticClass: "icon-launch" })
+        _c("i", { staticClass: "icon-launch" }),
       ]
     )
-  }
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "d-block button pos-absolute bottom-0 left-0",
+        attrs: { href: "/files/villains_v4.2_web.pdf", target: "_blank" },
+      },
+      [
+        _vm._v("\n            view game rules "),
+        _c("i", { staticClass: "icon-launch" }),
+      ]
+    )
+  },
 ]
 render._withStripped = true
 
@@ -63421,14 +64054,14 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
     "div",
     { staticClass: "game-map p-2 pr-0 game-display-height pos-relative z-0" },
-    _vm._l(_vm.shared.data.areas, function(area) {
+    _vm._l(_vm.shared.data.areas, function (area) {
       return _c("area-map", { key: area.name, attrs: { area: area } })
     }),
     1
@@ -63452,7 +64085,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -63464,10 +64097,10 @@ var render = function() {
             {
               staticClass: "toggle minimize-toggle top right",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   _vm.shared.openSettings = false
-                }
-              }
+                },
+              },
             },
             [_c("i", { staticClass: "icon-x" })]
           ),
@@ -63477,7 +64110,7 @@ var render = function() {
               "div",
               {
                 staticClass:
-                  "px-5 pb-5 d-flex flex-column align-stretch center-text"
+                  "px-5 pb-5 d-flex flex-column align-stretch center-text",
               },
               [
                 _c("div", { staticClass: "title" }, [_vm._v("Game Options")]),
@@ -63488,15 +64121,32 @@ var render = function() {
                     {
                       staticClass: " width-100 d-block button",
                       attrs: {
-                        href: "/files/villains_full_rules.pdf",
-                        target: "_blank"
-                      }
+                        href: "/files/villains_v4.2_web.pdf",
+                        target: "_blank",
+                      },
                     },
                     [
                       _vm._v("\n                        view game rules "),
-                      _c("i", { staticClass: "icon-launch" })
+                      _c("i", { staticClass: "icon-launch" }),
                     ]
-                  )
+                  ),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "pt-3" }, [
+                  _c(
+                    "a",
+                    {
+                      staticClass: " width-100 d-block button",
+                      attrs: {
+                        href: "/files/villains_visitors_guide_v4.2_web.pdf",
+                        target: "_blank",
+                      },
+                    },
+                    [
+                      _vm._v("\n                        view visitor's guide "),
+                      _c("i", { staticClass: "icon-launch" }),
+                    ]
+                  ),
                 ]),
                 _vm._v(" "),
                 _c(
@@ -63508,8 +64158,8 @@ var render = function() {
                         "button",
                         { staticClass: "conclude button width-100 d-block" },
                         [_vm._v("go to final scoring")]
-                      )
-                    ])
+                      ),
+                    ]),
                   ],
                   1
                 ),
@@ -63523,16 +64173,16 @@ var render = function() {
                         "button",
                         { staticClass: "conclude button width-100 d-block" },
                         [_vm._v("terminate game")]
-                      )
-                    ])
+                      ),
+                    ]),
                   ],
                   1
-                )
+                ),
               ]
-            )
-          ])
+            ),
+          ]),
         ])
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -63553,7 +64203,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -63562,7 +64212,8 @@ var render = function() {
     {
       staticClass: "d-inline stat-icon mute-button",
       class: { active: this.volume },
-      on: { click: _vm.toggleVolume }
+      attrs: { title: "change sound setting" },
+      on: { click: _vm.toggleVolume },
     },
     [_c("i", { class: _vm.soundIcon })]
   )
@@ -63585,7 +64236,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -63594,29 +64245,29 @@ var render = function() {
     {
       attrs: { open: _vm.open, classes: "cards-hud" },
       on: {
-        close: function($event) {
+        close: function ($event) {
           return _vm.$emit("close")
-        }
-      }
+        },
+      },
     },
     [
       _c(
         "horizontal-scroll",
         { attrs: { classes: "cards-hud__cards height-100", buttons: "true" } },
-        _vm._l(_vm.shared.faction.cards.hand, function(card) {
+        _vm._l(_vm.shared.faction.cards.hand, function (card) {
           return _c(
             "div",
             { staticClass: "cards-hud__card d-inline-block height-100" },
             [
               _c("img", {
                 staticClass: "cards-hud__card-image height-100",
-                attrs: { src: "/images/cards/" + card.file + ".jpg" }
-              })
+                attrs: { src: "/images/cards/" + card.file + ".jpg" },
+              }),
             ]
           )
         }),
         0
-      )
+      ),
     ],
     1
   )
@@ -63639,7 +64290,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -63654,47 +64305,47 @@ var render = function() {
           _c("cards-hud", {
             attrs: { open: _vm.popout === "cards" },
             on: {
-              close: function($event) {
+              close: function ($event) {
                 _vm.popout = null
-              }
-            }
+              },
+            },
           }),
           _vm._v(" "),
           _c("units-hud", {
             attrs: { open: _vm.popout === "units" },
             on: {
-              close: function($event) {
+              close: function ($event) {
                 _vm.popout = null
-              }
-            }
+              },
+            },
           }),
           _vm._v(" "),
           _c("tokens-hud", {
             attrs: { open: _vm.popout === "tokens" },
             on: {
-              close: function($event) {
+              close: function ($event) {
                 _vm.popout = null
-              }
-            }
+              },
+            },
           }),
           _vm._v(" "),
           _c("plans-hud", {
             attrs: { open: _vm.popout === "plans" },
             on: {
-              close: function($event) {
+              close: function ($event) {
                 _vm.popout = null
-              }
-            }
+              },
+            },
           }),
           _vm._v(" "),
           _c("score-hud", {
             attrs: { open: _vm.popout === "score" },
             on: {
-              close: function($event) {
+              close: function ($event) {
                 _vm.popout = null
-              }
-            }
-          })
+              },
+            },
+          }),
         ],
         1
       ),
@@ -63705,7 +64356,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "game-controls__buttons width-100 pos-absolute bottom-0 left-0 d-flex p-4 justify-between"
+            "game-controls__buttons width-100 pos-absolute bottom-0 left-0 d-flex p-4 justify-between",
         },
         [
           _c(
@@ -63713,17 +64364,17 @@ var render = function() {
             {
               staticClass: "game-controls__faction d-flex align-center",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   return _vm.shared.event.emit("viewPlayer", _vm.shared.player)
-                }
-              }
+                },
+              },
             },
             [
               _c(
                 "div",
                 {
                   staticClass:
-                    "player-hud__champion-wrap d-flex grow-0 shrink-0 p-1"
+                    "player-hud__champion-wrap d-flex grow-0 shrink-0 p-1",
                 },
                 [
                   _c("div", {
@@ -63731,8 +64382,8 @@ var render = function() {
                     style:
                       "background-image: url('/images/factions/" +
                       _vm.shared.faction.name +
-                      "/icon.jpg')"
-                  })
+                      "/icon.jpg')",
+                  }),
                 ]
               ),
               _vm._v(" "),
@@ -63751,12 +64402,12 @@ var render = function() {
                           "faction-witches game-controls__darkenergy",
                         attrs: {
                           title:
-                            "Dark Energy (may be spent to play action cards)"
-                        }
+                            "Dark Energy (may be spent to play action cards)",
+                        },
                       },
                       [_vm._v(_vm._s(_vm.shared.faction.darkEnergy))]
                     )
-                  : _vm._e()
+                  : _vm._e(),
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "game-controls__item" }, [
@@ -63764,7 +64415,7 @@ var render = function() {
                 _vm._v(
                   _vm._s(_vm.shared.faction.cards.hand.length) +
                     "\n            "
-                )
+                ),
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "game-controls__item" }, [
@@ -63775,29 +64426,29 @@ var render = function() {
                       ? _vm.shared.faction.cards.target[0].target
                       : "none"
                   ) + "\n            "
-                )
-              ])
+                ),
+              ]),
             ]
           ),
           _vm._v(" "),
           _c(
             "div",
             { staticClass: "d-flex justify-center width-25" },
-            _vm._l(_vm.popouts, function(item) {
+            _vm._l(_vm.popouts, function (item) {
               return _c(
                 "div",
                 {
                   staticClass: "game-controls__button game-controls__item",
                   class: { active: _vm.popout === item },
                   on: {
-                    click: function($event) {
+                    click: function ($event) {
                       return _vm.setPopout(item)
-                    }
-                  }
+                    },
+                  },
                 },
                 [
                   _c("i", { staticClass: "mr-2", class: "icon-" + item }),
-                  _vm._v(_vm._s(item) + "\n            ")
+                  _vm._v(_vm._s(item) + "\n            "),
                 ]
               )
             }),
@@ -63808,7 +64459,7 @@ var render = function() {
             "div",
             {
               staticClass:
-                "game-controls__faction d-flex justify-end align-center"
+                "game-controls__faction d-flex justify-end align-center",
             },
             [
               _vm.hasFocus
@@ -63816,8 +64467,8 @@ var render = function() {
                     tag: "component",
                     attrs: {
                       classes: "justify-center",
-                      faction: _vm.shared.faction
-                    }
+                      faction: _vm.shared.faction,
+                    },
                   })
                 : _vm._e(),
               _vm._v(" "),
@@ -63826,10 +64477,10 @@ var render = function() {
                 {
                   staticClass: "d-flex justify-end align-center",
                   on: {
-                    click: function($event) {
+                    click: function ($event) {
                       return _vm.setPopout("score")
-                    }
-                  }
+                    },
+                  },
                 },
                 [
                   _c(
@@ -63837,37 +64488,41 @@ var render = function() {
                     {
                       staticClass:
                         "game-controls__button game-controls__item scoreboard-text",
-                      class: { active: _vm.popout === "score" }
+                      class: { active: _vm.popout === "score" },
                     },
                     [_c("i", { class: "icon-score" })]
                   ),
                   _vm._v(" "),
                   _c("div", { staticClass: "game-controls__item" }, [
                     _c("i", { staticClass: "mr-2 icon-ap" }),
-                    _vm._v(_vm._s(_vm.shared.faction.ap) + "\n                ")
+                    _vm._v(
+                      _vm._s(_vm.shared.faction.ap) + "\n                "
+                    ),
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "game-controls__item" }, [
                     _c("i", { staticClass: "mr-2 icon-pp" }),
-                    _vm._v(_vm._s(_vm.shared.faction.pp) + "\n                ")
-                  ])
+                    _vm._v(
+                      _vm._s(_vm.shared.faction.pp) + "\n                "
+                    ),
+                  ]),
                 ]
-              )
+              ),
             ],
             1
-          )
+          ),
         ]
       ),
       _vm._v(" "),
       _vm.isActive
         ? _c("loading-streak", { attrs: { position: "bottom" } })
-        : _vm._e()
+        : _vm._e(),
     ],
     1
   )
 }
 var staticRenderFns = [
-  function() {
+  function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
@@ -63875,17 +64530,17 @@ var staticRenderFns = [
       "div",
       {
         staticClass: "z-negative game-controls__buttons width-100 d-flex p-4",
-        attrs: { inivisible: "" }
+        attrs: { inivisible: "" },
       },
       [
         _c("div", { staticClass: "d-flex justify-center grow-1" }, [
           _c("div", { staticClass: "game-controls__button" }, [
-            _vm._v("buffer")
-          ])
-        ])
+            _vm._v("buffer"),
+          ]),
+        ]),
       ]
     )
-  }
+  },
 ]
 render._withStripped = true
 
@@ -63904,7 +64559,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -63913,7 +64568,7 @@ var render = function() {
     { staticClass: "game-hud pos-relative drawer__aside" },
     [
       _c("adjust-handle", {
-        attrs: { direction: "right", max: "600", min: "125" }
+        attrs: { direction: "right", max: "600", min: "125" },
       }),
       _vm._v(" "),
       _c("div", { staticClass: "width-100 height-100  flex-column d-flex" }, [
@@ -63924,12 +64579,12 @@ var render = function() {
             [
               _c("span", { staticClass: "px-2" }, [_vm._v("turn")]),
               _vm._v(" "),
-              _vm._l(4, function(n) {
+              _vm._l(4, function (n) {
                 return _c("div", {
                   staticClass: "turn-count__number",
-                  class: _vm.turnNumClasses(n)
+                  class: _vm.turnNumClasses(n),
                 })
-              })
+              }),
             ],
             2
           ),
@@ -63938,18 +64593,18 @@ var render = function() {
             "div",
             { staticClass: "game-phase center-text highlight lowercase" },
             [_vm._v(_vm._s(_vm._f("startCase")(_vm.shared.data.phase)))]
-          )
+          ),
         ]),
         _vm._v(" "),
         _c(
           "div",
           {
-            staticClass: "player-panel grow-1 shrink-1 width-100 overflow-auto"
+            staticClass: "player-panel grow-1 shrink-1 width-100 overflow-auto",
           },
-          _vm._l(_vm.shared.orderedPlayers(), function(player) {
+          _vm._l(_vm.shared.orderedPlayers(), function (player) {
             return _c("player-hud", {
               key: player.id,
-              attrs: { player: player }
+              attrs: { player: player },
             })
           }),
           1
@@ -63959,7 +64614,7 @@ var render = function() {
           "div",
           {
             staticClass:
-              "control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap"
+              "control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap",
           },
           [
             _c("game-sound"),
@@ -63970,48 +64625,59 @@ var render = function() {
                 staticClass: "d-inline stat-icon highlight pointer deck-icon",
                 attrs: { title: "view discard pile" },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     _vm.shared.viewDiscard = !_vm.shared.viewDiscard
-                  }
-                }
+                  },
+                },
               },
               [
                 _c("i", { staticClass: "icon-card" }),
                 _vm._v(" "),
                 _c("span", { staticClass: "deck-count" }, [
-                  _vm._v(_vm._s(_vm.shared.data.deckCount))
-                ])
+                  _vm._v(_vm._s(_vm.shared.data.deckCount)),
+                ]),
               ]
             ),
-            _vm._v(" "),
-            _vm.shared.admin
-              ? _c(
-                  "div",
-                  {
-                    staticClass:
-                      "d-inline stat-icon highlight pointer save-icon",
-                    on: { click: _vm.saveGame }
-                  },
-                  [_c("i", { staticClass: "icon-save" })]
-                )
-              : _vm._e(),
             _vm._v(" "),
             _c(
               "div",
               {
                 staticClass: "d-inline stat-icon highlight pointer",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     _vm.shared.openSettings = !_vm.shared.openSettings
-                  }
-                }
+                  },
+                },
               },
-              [_c("i", { staticClass: "icon-plans" })]
-            )
+              [
+                _c("i", {
+                  staticClass: "icon-plans",
+                  attrs: { title: "open game settings" },
+                }),
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "d-inline stat-icon highlight pointer",
+                on: {
+                  click: function ($event) {
+                    _vm.shared.openCheatSheets = !_vm.shared.openCheatSheets
+                  },
+                },
+              },
+              [
+                _c("i", {
+                  staticClass: "icon-ask",
+                  attrs: { title: "view player aid cards" },
+                }),
+              ]
+            ),
           ],
           1
-        )
-      ])
+        ),
+      ]),
     ],
     1
   )
@@ -64034,7 +64700,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64045,30 +64711,30 @@ var render = function() {
           {
             staticClass: "hud-popout no-select width-100 overflow-hidden",
             class: _vm.classes,
-            style: _vm.hasHeight
+            style: _vm.hasHeight,
           },
           [
             !_vm.nohandle
               ? _c("adjust-handle", {
                   attrs: { direction: "top", min: "100", max: "500" },
-                  on: { newSize: _vm.setHeight }
+                  on: { newSize: _vm.setHeight },
                 })
               : _vm._e(),
             _vm._v(" "),
             _c("button", {
               staticClass: "toggle bottom right icon-x z-3",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   return _vm.$emit("close")
-                }
-              }
+                },
+              },
             }),
             _vm._v(" "),
-            _vm._t("default")
+            _vm._t("default"),
           ],
           2
         )
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -64089,7 +64755,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64098,16 +64764,16 @@ var render = function() {
     {
       attrs: { open: _vm.open, classes: "plans-hud" },
       on: {
-        close: function($event) {
+        close: function ($event) {
           return _vm.$emit("close")
-        }
-      }
+        },
+      },
     },
     [
       _c(
         "horizontal-scroll",
         { attrs: { classes: "plans-hud__cards height-100" } },
-        _vm._l(_vm.shared.faction.plans.current, function(card) {
+        _vm._l(_vm.shared.faction.plans.current, function (card) {
           return _c(
             "div",
             { staticClass: "plans-hud__card d-inline-block height-100" },
@@ -64120,14 +64786,14 @@ var render = function() {
                     _vm.shared.faction.name +
                     "/plans/" +
                     card.num +
-                    ".jpg"
-                }
-              })
+                    ".jpg",
+                },
+              }),
             ]
           )
         }),
         0
-      )
+      ),
     ],
     1
   )
@@ -64150,7 +64816,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64160,10 +64826,10 @@ var render = function() {
       staticClass: "player-hud d-flex flex-wrap pos-relative overflow-hidden",
       class: { "opacity-5": _vm.player.passed },
       on: {
-        click: function($event) {
+        click: function ($event) {
           return _vm.shared.event.emit("viewPlayer", _vm.player)
-        }
-      }
+        },
+      },
     },
     [
       _vm.isActive
@@ -64174,14 +64840,14 @@ var render = function() {
         "div",
         {
           staticClass:
-            "player-hud__core d-flex flex-wrap width-100 align-center shrink-0"
+            "player-hud__core d-flex flex-wrap width-100 align-center shrink-0",
         },
         [
           _c(
             "div",
             {
               staticClass:
-                "player-hud__champion-wrap d-flex grow-0 shrink-0 p-1"
+                "player-hud__champion-wrap d-flex grow-0 shrink-0 p-1",
             },
             [
               _c("div", {
@@ -64189,8 +64855,8 @@ var render = function() {
                 style:
                   "background-image: url('/images/factions/" +
                   _vm.faction.name +
-                  "/icon.jpg')"
-              })
+                  "/icon.jpg')",
+              }),
             ]
           ),
           _vm._v(" "),
@@ -64203,27 +64869,27 @@ var render = function() {
                 "\n                " +
                   _vm._s(_vm._f("startCase")(_vm.player.name)) +
                   "\n            "
-              )
+              ),
             ]),
             _vm._v(" "),
             _c(
               "div",
               { staticClass: "player-hud__faction width-100 ellipses" },
               [_vm._v(_vm._s(_vm.faction.name))]
-            )
+            ),
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "player-hud__scores grow-0 shrink-0" }, [
             _c("div", { staticClass: "width-100 d-flex align-center" }, [
               _c("i", { staticClass: "icon-ap" }),
-              _c("span", [_vm._v(_vm._s(_vm.faction.ap))])
+              _c("span", [_vm._v(_vm._s(_vm.faction.ap))]),
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "width-100 d-flex align-center" }, [
               _c("i", { staticClass: "icon-pp" }),
-              _c("span", [_vm._v(_vm._s(_vm.faction.pp))])
-            ])
-          ])
+              _c("span", [_vm._v(_vm._s(_vm.faction.pp))]),
+            ]),
+          ]),
         ]
       ),
       _vm._v(" "),
@@ -64232,7 +64898,7 @@ var render = function() {
             "div",
             {
               staticClass:
-                "player-hud__message ellipses shrink-0 game-phase center-text highlight lowercase"
+                "player-hud__message ellipses shrink-0 game-phase center-text highlight lowercase",
             },
             [_vm._v(_vm._s(_vm._f("clearHyphens")(_vm.player.prompt.name)))]
           )
@@ -64246,14 +64912,14 @@ var render = function() {
               style:
                 "background-image: url('/images/areas/" +
                 _vm.faction.cards.target[0].target +
-                "-slice.jpg')"
+                "-slice.jpg')",
             },
             [
               _vm._v(
                 "\n        " +
                   _vm._s(_vm.faction.cards.target[0].target) +
                   "\n    "
-              )
+              ),
             ]
           )
         : _vm._e(),
@@ -64263,7 +64929,7 @@ var render = function() {
           _c("i", { staticClass: "icon-money pip-icon" }),
           _vm._v(" "),
           _c("span", [
-            _vm._v(_vm._s(_vm.faction.energy + _vm.faction.resources))
+            _vm._v(_vm._s(_vm.faction.energy + _vm.faction.resources)),
           ]),
           _vm._v(" "),
           _vm.faction.hasOwnProperty("darkEnergy")
@@ -64272,17 +64938,17 @@ var render = function() {
                 {
                   staticClass: "faction-witches player-hud__darkenergy",
                   attrs: {
-                    title: "Dark Energy (may be spent to play action cards)"
-                  }
+                    title: "Dark Energy (may be spent to play action cards)",
+                  },
                 },
                 [_vm._v(_vm._s(_vm.faction.darkEnergy))]
               )
-            : _vm._e()
+            : _vm._e(),
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "player-hud__pip-content__item" }, [
           _c("i", { staticClass: "icon-cards pip-icon" }),
-          _c("span", [_vm._v(_vm._s(_vm.faction.cards.hand.length))])
+          _c("span", [_vm._v(_vm._s(_vm.faction.cards.hand.length))]),
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "player-hud__pip-content__item " }, [
@@ -64292,26 +64958,26 @@ var render = function() {
               _vm._s(_vm.faction.captured.current) +
                 " / " +
                 _vm._s(_vm.faction.captured.max)
-            )
-          ])
-        ])
+            ),
+          ]),
+        ]),
       ]),
       _vm._v(" "),
       _c(
         "div",
         {
           staticClass:
-            "player-hud__stats-row pos-relative width-100 display-flex shrink-1 overflow-hidden flex-wrap"
+            "player-hud__stats-row pos-relative width-100 display-flex shrink-1 overflow-hidden flex-wrap",
         },
-        _vm._l(_vm.stats, function(stat) {
+        _vm._l(_vm.stats, function (stat) {
           return _c("i", {
             staticClass: "stat-icon",
             class: "icon-" + stat.name,
-            attrs: { title: stat.title + " - " + stat.description }
+            attrs: { title: stat.title + " - " + stat.description },
           })
         }),
         0
-      )
+      ),
     ],
     1
   )
@@ -64334,7 +65000,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64343,10 +65009,10 @@ var render = function() {
     {
       attrs: { open: _vm.open, classes: "score-hud", nohandle: "true" },
       on: {
-        close: function($event) {
+        close: function ($event) {
           return _vm.$emit("close")
-        }
-      }
+        },
+      },
     },
     [
       _c(
@@ -64355,15 +65021,15 @@ var render = function() {
         [
           _c("img", {
             staticClass: "score-board",
-            attrs: { src: "/images/score-board.jpg" }
+            attrs: { src: _vm.scoreBoardImage },
           }),
           _vm._v(" "),
           _c("score-row", { attrs: { scores: _vm.ap, type: "ap" } }),
           _vm._v(" "),
-          _c("score-row", { attrs: { scores: _vm.pp, type: "pp" } })
+          _c("score-row", { attrs: { scores: _vm.pp, type: "pp" } }),
         ],
         1
-      )
+      ),
     ]
   )
 }
@@ -64385,21 +65051,21 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
     "div",
     { staticClass: "score-hud__row d-flex", class: "score-hud__" + _vm.type },
-    _vm._l(_vm.scores, function(score) {
+    _vm._l(_vm.scores, function (score) {
       return _c(
         "div",
         { staticClass: "score-hud__cell" },
-        _vm._l(score, function(faction) {
+        _vm._l(score, function (faction) {
           return _c("img", {
             staticClass: "score-hud__faction",
-            attrs: { src: _vm.shared.factionIcon(faction) }
+            attrs: { src: _vm.shared.factionIcon(faction) },
           })
         }),
         0
@@ -64426,7 +65092,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64435,10 +65101,10 @@ var render = function() {
     {
       attrs: { open: _vm.open, nohandle: "true", classes: "tokens-hud" },
       on: {
-        close: function($event) {
+        close: function ($event) {
           return _vm.$emit("close")
-        }
-      }
+        },
+      },
     },
     [
       _c(
@@ -64446,23 +65112,27 @@ var render = function() {
         { staticClass: "tokens-hud__tokens-container p-4 center-text" },
         [
           _c("token-set", {
-            attrs: { tokens: _vm.reserves, title: "Reserves", noEmit: "true" }
+            attrs: { tokens: _vm.reserves, title: "Reserves", noEmit: "true" },
           }),
           _vm._v(" "),
           _c("token-set", {
             attrs: {
               tokens: _vm.unrevealed,
               title: "Unrevealed",
-              noEmit: "true"
-            }
+              noEmit: "true",
+            },
           }),
           _vm._v(" "),
           _c("token-set", {
-            attrs: { tokens: _vm.activated, title: "Activated", noEmit: "true" }
-          })
+            attrs: {
+              tokens: _vm.activated,
+              title: "Activated",
+              noEmit: "true",
+            },
+          }),
         ],
         1
-      )
+      ),
     ]
   )
 }
@@ -64484,7 +65154,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64493,10 +65163,10 @@ var render = function() {
     {
       attrs: { open: _vm.open, nohandle: "true", classes: "units-hud" },
       on: {
-        close: function($event) {
+        close: function ($event) {
           return _vm.$emit("close")
-        }
-      }
+        },
+      },
     },
     [
       _c(
@@ -64504,36 +65174,36 @@ var render = function() {
         {
           attrs: {
             classes:
-              "units-hud__tokens-container p-4 center-text d-flex justify-center"
-          }
+              "units-hud__tokens-container p-4 center-text d-flex justify-center",
+          },
         },
         [
           _c("unit-set", {
             attrs: {
               units: _vm.reserves,
               title: "Reserves [" + _vm.reserves.length + "]",
-              classes: "border"
-            }
+              classes: "border",
+            },
           }),
           _vm._v(" "),
           _c("unit-set", {
             attrs: {
               units: _vm.deployed,
               title: "Deployed [" + _vm.deployed.length + "]",
-              classes: "border"
-            }
+              classes: "border",
+            },
           }),
           _vm._v(" "),
           _c("unit-set", {
             attrs: {
               units: _vm.killed,
               title: "Killed [" + _vm.killed.length + "]",
-              classes: "border"
-            }
-          })
+              classes: "border",
+            },
+          }),
         ],
         1
-      )
+      ),
     ],
     1
   )
@@ -64556,7 +65226,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64567,21 +65237,21 @@ var render = function() {
       _c(
         "transition-group",
         { attrs: { name: "slide", tag: "ul" } },
-        _vm._l(_vm.queue, function(note) {
+        _vm._l(_vm.queue, function (note) {
           return _c("li", {
             key: note.id,
             staticClass: "notify-item",
             class: note.class,
             domProps: { textContent: _vm._s(note.message) },
             on: {
-              click: function($event) {
+              click: function ($event) {
                 return _vm.removeNote(note)
-              }
-            }
+              },
+            },
           })
         }),
         0
-      )
+      ),
     ],
     1
   )
@@ -64604,7 +65274,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64614,17 +65284,17 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title flex-center" }, [
             _vm.currentOwner
               ? _c("img", {
                   staticClass: "determine-control__faction-icon",
-                  attrs: { src: _vm.shared.factionIcon(_vm.currentOwner) }
+                  attrs: { src: _vm.shared.factionIcon(_vm.currentOwner) },
                 })
               : _vm._e(),
-            _vm._v(_vm._s(_vm.message))
+            _vm._v(_vm._s(_vm.message)),
           ]),
           _vm._v(" "),
           _vm.currentAreaData.capture
@@ -64632,7 +65302,7 @@ var render = function() {
                 "div",
                 {
                   staticClass:
-                    "d-flex align-center primary-light determine-control__capture-container"
+                    "d-flex align-center primary-light determine-control__capture-container",
                 },
                 [
                   _vm._v(
@@ -64646,9 +65316,9 @@ var render = function() {
                       src:
                         "/images/icons/ap-" +
                         _vm.currentAreaData.capture.ap +
-                        ".png"
-                    }
-                  })
+                        ".png",
+                    },
+                  }),
                 ]
               )
             : _vm._e(),
@@ -64658,7 +65328,7 @@ var render = function() {
                 "div",
                 {
                   staticClass:
-                    "d-flex align-center primary-light determine-control__capture-container"
+                    "d-flex align-center primary-light determine-control__capture-container",
                 },
                 [
                   _vm._v(
@@ -64672,9 +65342,9 @@ var render = function() {
                       src:
                         "/images/icons/ap-" +
                         _vm.currentAreaData.capitolToken.ap +
-                        ".png"
-                    }
-                  })
+                        ".png",
+                    },
+                  }),
                 ]
               )
             : _vm._e(),
@@ -64689,38 +65359,38 @@ var render = function() {
                   attrs: {
                     areas: [_vm.currentAreaData],
                     index: "0",
-                    noZoom: "true"
-                  }
+                    noZoom: "true",
+                  },
                 },
                 [
                   _c(
                     "div",
                     {
                       staticClass:
-                        "d-flex flex-column justify-center align-center pb-4"
+                        "d-flex flex-column justify-center align-center pb-4",
                     },
                     [
                       _c(
                         "div",
                         { staticClass: "determine-control__area-influence" },
                         [
-                          _vm._l(_vm.currentAreaInfluences, function(faction) {
+                          _vm._l(_vm.currentAreaInfluences, function (faction) {
                             return _c(
                               "div",
                               {
                                 staticClass:
-                                  "determine-control__faction-influence"
+                                  "determine-control__faction-influence",
                               },
                               [
                                 _c("img", {
                                   staticClass: "determine-control__small-icon",
-                                  attrs: { src: "/images/icons/influence.png" }
+                                  attrs: { src: "/images/icons/influence.png" },
                                 }),
                                 _vm._v(" "),
                                 _c(
                                   "div",
                                   {
-                                    staticClass: "determine-control__influence"
+                                    staticClass: "determine-control__influence",
                                   },
                                   [_vm._v(_vm._s(faction.influence))]
                                 ),
@@ -64728,9 +65398,11 @@ var render = function() {
                                 _c("img", {
                                   staticClass: "determine-control__small-icon",
                                   attrs: {
-                                    src: _vm.shared.factionIcon(faction.faction)
-                                  }
-                                })
+                                    src: _vm.shared.factionIcon(
+                                      faction.faction
+                                    ),
+                                  },
+                                }),
                               ]
                             )
                           }),
@@ -64740,37 +65412,37 @@ var render = function() {
                                 "div",
                                 {
                                   staticClass:
-                                    "determine-control__faction-influence"
+                                    "determine-control__faction-influence",
                                 },
                                 [
                                   _c(
                                     "span",
                                     {
                                       staticClass:
-                                        "determine-control__no-influence"
+                                        "determine-control__no-influence",
                                     },
                                     [
                                       _vm._v(
                                         "No factions with influence in this area"
-                                      )
+                                      ),
                                     ]
-                                  )
+                                  ),
                                 ]
                               )
-                            : _vm._e()
+                            : _vm._e(),
                         ],
                         2
-                      )
+                      ),
                     ]
-                  )
+                  ),
                 ]
-              )
+              ),
             ],
             1
-          )
+          ),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -64791,7 +65463,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64801,7 +65473,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center pb-5"
+            "width-100 d-flex justify-center flex-column align-center pb-5",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [_vm._v("Attack Results")]),
@@ -64809,13 +65481,13 @@ var render = function() {
           _c(
             "div",
             { staticClass: "py-3 pt-4 d-flex flex-wrap" },
-            _vm._l(_vm.attacks, function(attack) {
+            _vm._l(_vm.attacks, function (attack) {
               return _c(
                 "div",
                 {
                   staticClass:
                     "non-combat-attack highlight d-flex p-5 m-3 align-center",
-                  class: "pip-bg-" + attack.area
+                  class: "pip-bg-" + attack.area,
                 },
                 [
                   attack.unit
@@ -64823,33 +65495,33 @@ var render = function() {
                         attrs: {
                           unit: attack.unit,
                           noSelect: "true",
-                          classes: "faction-" + attack.faction + " mr-3 z-2"
-                        }
+                          classes: "faction-" + attack.faction + " mr-3 z-2",
+                        },
                       })
                     : _vm._e(),
                   _vm._v(" "),
                   _c("img", {
                     staticClass: "non-combat-attack__victim",
                     class: { "no-unit": !attack.unit },
-                    attrs: { src: _vm.shared.factionIcon(attack.victim) }
+                    attrs: { src: _vm.shared.factionIcon(attack.victim) },
                   }),
                   _vm._v(" "),
-                  _vm._l(attack.rolls, function(roll) {
+                  _vm._l(attack.rolls, function (roll) {
                     return _c("img", {
                       staticClass: "last-attack__roll z-2",
                       class: { "saturate-0": roll < attack.toHit },
-                      attrs: { src: "/images/icons/attack-" + roll + ".png" }
+                      attrs: { src: "/images/icons/attack-" + roll + ".png" },
                     })
-                  })
+                  }),
                 ],
                 2
               )
             }),
             0
-          )
+          ),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -64870,7 +65542,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64879,13 +65551,13 @@ var render = function() {
       _c("div", { staticClass: "title flex-center " }, [
         _c("img", {
           staticClass: "determine-control__faction-icon",
-          attrs: { src: _vm.shared.factionIcon(_vm.currentFactionName) }
+          attrs: { src: _vm.shared.factionIcon(_vm.currentFactionName) },
         }),
         _vm._v(
           "\n            plans scored by The " +
             _vm._s(_vm._f("startCase")(_vm.currentFactionName)) +
             "\n        "
-        )
+        ),
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "width-100 d-flex justify-center mt-4" }, [
@@ -64893,14 +65565,14 @@ var render = function() {
           ? _c(
               "div",
               { staticClass: "d-flex" },
-              _vm._l(_vm.currentScoredPlans, function(plan) {
+              _vm._l(_vm.currentScoredPlans, function (plan) {
                 return _c("plan-block", {
                   key: plan.plan.id,
                   attrs: {
                     scorablePips: "true",
                     plan: plan,
-                    faction: _vm.currentFaction
-                  }
+                    faction: _vm.currentFaction,
+                  },
                 })
               }),
               1
@@ -64910,10 +65582,10 @@ var render = function() {
                 "\n                The " +
                   _vm._s(_vm._f("startCase")(_vm.currentFactionName)) +
                   " did not score any plans\n            "
-              )
-            ])
-      ])
-    ])
+              ),
+            ]),
+      ]),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -64934,28 +65606,28 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("player-prompt", { attrs: { classes: "width-100" } }, [
     _c("div", { staticClass: "px-5 center-text" }, [
       _c("div", { staticClass: "title d-inline-block" }, [
-        _vm._v("Score Targets Step")
+        _vm._v("Score Targets Step"),
       ]),
       _vm._v(" "),
       _c(
         "div",
         { staticClass: "score-targets d-flex justify-center align-start" },
-        _vm._l(_vm.data.targets, function(target) {
+        _vm._l(_vm.data.targets, function (target) {
           return _c("target-block", {
             key: target.placer,
-            attrs: { target: target }
+            attrs: { target: target },
           })
         }),
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -64976,7 +65648,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -64985,18 +65657,18 @@ var render = function() {
       "div",
       { staticClass: "place-token px-5" },
       [
-        _vm._l(_vm.data.upgrades, function(upgrade) {
+        _vm._l(_vm.data.upgrades, function (upgrade) {
           return _c("div", { staticClass: "p-3" }, [
             _c("div", { staticClass: "title flex-center " }, [
               _c("img", {
                 staticClass: "determine-control__faction-icon",
-                attrs: { src: _vm.shared.factionIcon(upgrade.faction) }
+                attrs: { src: _vm.shared.factionIcon(upgrade.faction) },
               }),
               _vm._v(
                 "\n                upgrade scored by The " +
                   _vm._s(_vm._f("startCase")(upgrade.faction)) +
                   "\n            "
-              )
+              ),
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "width-100 d-flex justify-center mt-4" }, [
@@ -65009,22 +65681,22 @@ var render = function() {
                       upgrade.faction +
                       "/upgrade-" +
                       upgrade.upgrade +
-                      ".jpg"
-                  }
-                })
-              ])
-            ])
+                      ".jpg",
+                  },
+                }),
+              ]),
+            ]),
           ])
         }),
         _vm._v(" "),
         _c("div", { staticClass: "center-text" }, [
           _c("button", { staticClass: "button", on: { click: _vm.resolve } }, [
-            _vm._v("Done")
-          ])
-        ])
+            _vm._v("Done"),
+          ]),
+        ]),
       ],
       2
-    )
+    ),
   ])
 }
 var staticRenderFns = []
@@ -65045,7 +65717,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -65057,12 +65729,12 @@ var render = function() {
         "div",
         {
           staticClass: "target-block__placer one-line",
-          class: "faction-" + _vm.target.placer
+          class: "faction-" + _vm.target.placer,
         },
         [
           _vm._v(
             "The " + _vm._s(_vm._f("startCase")(_vm.target.placer)) + " Target:"
-          )
+          ),
         ]
       ),
       _vm._v(" "),
@@ -65070,15 +65742,15 @@ var render = function() {
         _c("img", {
           staticClass: "target-block__card target-block-reveal",
           class: { revealed: _vm.target.flipped },
-          attrs: { src: _vm.image }
-        })
+          attrs: { src: _vm.image },
+        }),
       ]),
       _vm._v(" "),
       _c(
         "div",
         {
           staticClass: "target-block-reveal mt-4",
-          class: { revealed: _vm.target.flipped }
+          class: { revealed: _vm.target.flipped },
         },
         [
           _vm.target.owner
@@ -65087,26 +65759,26 @@ var render = function() {
                   "div",
                   {
                     staticClass: "one-line",
-                    class: "faction-" + _vm.target.owner
+                    class: "faction-" + _vm.target.owner,
                   },
                   [
                     _vm._v(
                       "Taken by The " +
                         _vm._s(_vm._f("startCase")(_vm.target.owner))
-                    )
+                    ),
                   ]
                 ),
                 _vm._v(" "),
                 _c("img", {
                   staticClass: "target-block__ap-icon",
-                  attrs: { src: "/images/icons/ap-1.png" }
-                })
+                  attrs: { src: "/images/icons/ap-1.png" },
+                }),
               ])
             : _c("div", { staticClass: "center-text primary-light" }, [
-                _vm._v("Uncontrolled")
-              ])
+                _vm._v("Uncontrolled"),
+              ]),
         ]
-      )
+      ),
     ]
   )
 }
@@ -65128,7 +65800,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -65137,13 +65809,13 @@ var render = function() {
       _vm._v("\n        TURN " + _vm._s(_vm.shared.data.turn) + "\n        "),
       _vm.data.showDoubleAP
         ? _c("div", { staticClass: "prompt-question" }, [
-            _vm._v("TARGETS WORTH 2AP")
+            _vm._v("TARGETS WORTH 2AP"),
           ])
-        : _vm._e()
+        : _vm._e(),
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "title-card__message" }, [
-      _vm._v(_vm._s(_vm.data.message))
+      _vm._v(_vm._s(_vm.data.message)),
     ]),
     _vm._v(" "),
     _vm.showNeutral
@@ -65151,20 +65823,20 @@ var render = function() {
           "div",
           {
             staticClass:
-              "choose-factions__player pull-center d-flex align-stretch"
+              "choose-factions__player pull-center d-flex align-stretch",
           },
           [
             _c(
               "div",
               {
                 staticClass:
-                  "choose-factions__player-faction width-15 d-flex pr-2"
+                  "choose-factions__player-faction width-15 d-flex pr-2",
               },
               [
                 _c("img", {
                   staticClass: "choose-spy__champion",
-                  attrs: { src: "/images/factions/neutral/icon.jpg" }
-                })
+                  attrs: { src: "/images/factions/neutral/icon.jpg" },
+                }),
               ]
             ),
             _vm._v(" "),
@@ -65174,13 +65846,13 @@ var render = function() {
               [
                 _vm._v("Neutrals control "),
                 _c("b", [
-                  _vm._v("The " + _vm._s(_vm.showNeutral || _vm.startCase))
-                ])
+                  _vm._v("The " + _vm._s(_vm.showNeutral || _vm.startCase)),
+                ]),
               ]
-            )
+            ),
           ]
         )
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -65201,7 +65873,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -65211,14 +65883,14 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center pb-5"
+            "width-100 d-flex justify-center flex-column align-center pb-5",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
-            _vm._v(_vm._s(_vm.data.message))
+            _vm._v(_vm._s(_vm.data.message)),
           ]),
           _vm._v(" "),
-          _vm._l(_vm.areas, function(set) {
+          _vm._l(_vm.areas, function (set) {
             return _c(
               "div",
               { staticClass: "py-3" },
@@ -65230,20 +65902,20 @@ var render = function() {
                       areas: [_vm.shared.data.areas[set.area]],
                       locked: "true",
                       index: "0",
-                      classes: "area-header__units"
-                    }
+                      classes: "area-header__units",
+                    },
                   },
                   [_c("unit-row", { attrs: { units: set.units } })],
                   1
-                )
+                ),
               ],
               1
             )
-          })
+          }),
         ],
         2
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -65264,7 +65936,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -65274,11 +65946,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [
-            _vm._v("Would you like to activate or decline this token?")
+            _vm._v("Would you like to activate or decline this token?"),
           ]),
           _vm._v(" "),
           _c(
@@ -65286,8 +65958,8 @@ var render = function() {
             { attrs: { areas: [_vm.area], index: 0 } },
             [
               _c("token-row", {
-                attrs: { area: _vm.area, highlight: _vm.data.token }
-              })
+                attrs: { area: _vm.area, highlight: _vm.data.token },
+              }),
             ],
             1
           ),
@@ -65298,16 +65970,16 @@ var render = function() {
                 { staticClass: "py-4" },
                 [
                   _c("div", { staticClass: "prompt-question center-text" }, [
-                    _vm._v("This token will be activated as the following:")
+                    _vm._v("This token will be activated as the following:"),
                   ]),
                   _vm._v(" "),
                   _c("token-set", {
                     attrs: {
                       tokens: [{ name: _vm.data.wildType, id: 1 }],
                       classes: "center-text",
-                      noBorder: "true"
-                    }
-                  })
+                      noBorder: "true",
+                    },
+                  }),
                 ],
                 1
               )
@@ -65321,8 +65993,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Pay xC" + _vm.data.cost + "x to activate this token?"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -65332,10 +66004,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve("decline")
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("Decline Token")]
             ),
@@ -65346,18 +66018,18 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: !_vm.canActivate },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve("activate")
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("Activate Token")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -65378,7 +66050,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -65388,7 +66060,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
@@ -65397,17 +66069,17 @@ var render = function() {
             "area-flipper",
             {
               attrs: { areas: _vm.areas, index: _vm.index },
-              on: { update: _vm.updateArea }
+              on: { update: _vm.updateArea },
             },
-            _vm._l(_vm.units, function(set, name) {
+            _vm._l(_vm.units, function (set, name) {
               return _c("unit-row", {
                 key: name,
                 attrs: { units: set, selectedUnit: _vm.unit },
                 on: {
-                  unit: function(u) {
+                  unit: function (u) {
                     return (_vm.unit = u)
-                  }
-                }
+                  },
+                },
               })
             }),
             1
@@ -65419,10 +66091,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(false)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("DECLINE")]
             ),
@@ -65433,18 +66105,18 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: !_vm.unit },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("save")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -65465,7 +66137,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -65475,7 +66147,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
@@ -65484,7 +66156,7 @@ var render = function() {
                 _vm._s(_vm.data.hits) +
                 " " +
                 _vm._s(_vm.data.hits === 1 ? "hit" : "hits")
-            )
+            ),
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "prompt-question" }, [
@@ -65493,7 +66165,7 @@ var render = function() {
                 _vm._s(_vm.hitsToAssign) +
                 " more " +
                 _vm._s(_vm.hitsToAssign === 1 ? "hit" : "hits")
-            )
+            ),
           ]),
           _vm._v(" "),
           _c(
@@ -65506,8 +66178,8 @@ var render = function() {
                   attrs: {
                     areas: [_vm.area],
                     index: "0",
-                    classes: "area-header__units pt-0"
-                  }
+                    classes: "area-header__units pt-0",
+                  },
                 },
                 [
                   _c("unit-row", {
@@ -65515,13 +66187,13 @@ var render = function() {
                       units: _vm.units,
                       assigningHits: "true",
                       hidePatsies: _vm.mustAssignToNonPatsy,
-                      hitsToAssign: _vm.data.hits
+                      hitsToAssign: _vm.data.hits,
                     },
-                    on: { unit: _vm.assignHit }
-                  })
+                    on: { unit: _vm.assignHit },
+                  }),
                 ],
                 1
-              )
+              ),
             ],
             1
           ),
@@ -65539,14 +66211,14 @@ var render = function() {
                       staticClass: "icon-minimize pr-2",
                       attrs: { disabled: _vm.gnomeDeflects === 0 },
                       on: {
-                        click: function($event) {
+                        click: function ($event) {
                           _vm.gnomeDeflects--
-                        }
-                      }
+                        },
+                      },
                     }),
                     _vm._v(" "),
                     _c("span", { staticClass: "highlight mr-3" }, [
-                      _vm._v(_vm._s(_vm.gnomeDeflects))
+                      _vm._v(_vm._s(_vm.gnomeDeflects)),
                     ]),
                     _vm._v(" hits cancelled "),
                     _vm.cost
@@ -65555,8 +66227,8 @@ var render = function() {
                           domProps: {
                             innerHTML: _vm._s(
                               _vm.shared.filterText("xC" + _vm.cost + "x")
-                            )
-                          }
+                            ),
+                          },
                         })
                       : _vm._e(),
                     _vm._v(" "),
@@ -65564,13 +66236,13 @@ var render = function() {
                       staticClass: "icon-maximize ml-2",
                       attrs: { disabled: !_vm.canDeflect },
                       on: {
-                        click: function($event) {
+                        click: function ($event) {
                           _vm.gnomeDeflects++
-                        }
-                      }
-                    })
+                        },
+                      },
+                    }),
                   ]
-                )
+                ),
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -65582,8 +66254,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Seeking xSEEKx: Hits must be assigned to a non-patsy unit if possible"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -65593,14 +66265,14 @@ var render = function() {
               {
                 staticClass: "button",
                 attrs: { disabled: _vm.hitsToAssign > 0 && _vm.hitsAssigned },
-                on: { click: _vm.resolve }
+                on: { click: _vm.resolve },
               },
               [_vm._v(_vm._s(_vm.buttonMessage))]
-            )
-          ])
+            ),
+          ]),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -65621,7 +66293,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -65633,7 +66305,7 @@ var render = function() {
             "div",
             {
               staticClass:
-                "choose-action-top p-2 d-flex justify-center align-center"
+                "choose-action-top p-2 d-flex justify-center align-center",
             },
             [
               _vm.showSkip
@@ -65657,11 +66329,11 @@ var render = function() {
                     "button",
                     {
                       staticClass: "button",
-                      on: { click: _vm.setLockedAction }
+                      on: { click: _vm.setLockedAction },
                     },
                     [_vm._v("DECLARE YOURSELF LOCKED")]
                   )
-                : _vm._e()
+                : _vm._e(),
             ]
           )
         : _vm._e(),
@@ -65673,11 +66345,11 @@ var render = function() {
                 "div",
                 {
                   staticClass:
-                    "width-100 d-flex justify-center flex-column align-center"
+                    "width-100 d-flex justify-center flex-column align-center",
                 },
                 [
                   _c("div", { staticClass: "title" }, [
-                    _vm._v("Confirm Action")
+                    _vm._v("Confirm Action"),
                   ]),
                   _vm._v(" "),
                   _vm.area
@@ -65693,8 +66365,8 @@ var render = function() {
                             ? _c("token-row", {
                                 attrs: {
                                   area: _vm.area,
-                                  highlight: _vm.firstToken
-                                }
+                                  highlight: _vm.firstToken,
+                                },
                               })
                             : _vm._e(),
                           _vm._v(" "),
@@ -65704,21 +66376,21 @@ var render = function() {
                                 {},
                                 [
                                   _c("token-row", {
-                                    attrs: { area: _vm.area }
+                                    attrs: { area: _vm.area },
                                   }),
                                   _vm._v(" "),
                                   _c(
                                     "div",
                                     {
                                       staticClass:
-                                        "width-100 choose-action__skill-ability center-text"
+                                        "width-100 choose-action__skill-ability center-text",
                                     },
                                     [
                                       _vm._v(
                                         "\n                            Discard a token here to start a battle?\n                        "
-                                      )
+                                      ),
                                     ]
-                                  )
+                                  ),
                                 ],
                                 1
                               )
@@ -65729,14 +66401,14 @@ var render = function() {
                                 "div",
                                 {
                                   staticClass:
-                                    "choose-action__skilled-units center-text"
+                                    "choose-action__skilled-units center-text",
                                 },
                                 [
                                   _c("unit-row", {
                                     attrs: {
                                       units: _vm.skilledUnitsInArea,
-                                      allSelected: "true"
-                                    }
+                                      allSelected: "true",
+                                    },
                                   }),
                                   _vm._v(" "),
                                   _c("div", {
@@ -65745,9 +66417,9 @@ var render = function() {
                                     domProps: {
                                       innerHTML: _vm._s(
                                         this.shared.filterText(this.area.skill)
-                                      )
-                                    }
-                                  })
+                                      ),
+                                    },
+                                  }),
                                 ],
                                 1
                               )
@@ -65758,28 +66430,28 @@ var render = function() {
                                 "div",
                                 {
                                   staticClass:
-                                    "choose-action__skilled-units center-text"
+                                    "choose-action__skilled-units center-text",
                                 },
                                 [
                                   _c("unit-row", {
                                     attrs: {
                                       units: _vm.flippedUnitsInArea,
-                                      allSelected: "true"
-                                    }
+                                      allSelected: "true",
+                                    },
                                   }),
                                   _vm._v(" "),
                                   _c(
                                     "div",
                                     {
                                       staticClass:
-                                        "width-100 choose-action__skill-ability"
+                                        "width-100 choose-action__skill-ability",
                                     },
                                     [
                                       _vm._v(
                                         "\n                            Use your magick ability in this area?\n                        "
-                                      )
+                                      ),
                                     ]
-                                  )
+                                  ),
                                 ],
                                 1
                               )
@@ -65790,25 +66462,25 @@ var render = function() {
                                 "div",
                                 {
                                   staticClass:
-                                    "choose-action__skilled-units center-text"
+                                    "choose-action__skilled-units center-text",
                                 },
                                 [
                                   _c("unit-row", {
-                                    attrs: { units: _vm.ghostsInArea }
+                                    attrs: { units: _vm.ghostsInArea },
                                   }),
                                   _vm._v(" "),
                                   _c(
                                     "div",
                                     {
                                       staticClass:
-                                        "width-100 choose-action__skill-ability"
+                                        "width-100 choose-action__skill-ability",
                                     },
                                     [
                                       _vm._v(
                                         "\n                            Reveal ghosts in this area?\n                        "
-                                      )
+                                      ),
                                     ]
-                                  )
+                                  ),
                                 ],
                                 1
                               )
@@ -65819,32 +66491,32 @@ var render = function() {
                                 "div",
                                 {
                                   staticClass:
-                                    "choose-action__skilled-units center-text"
+                                    "choose-action__skilled-units center-text",
                                 },
                                 [
                                   _c("token-row", {
                                     attrs: {
                                       area: _vm.area,
-                                      highlight: _vm.loopToken
-                                    }
+                                      highlight: _vm.loopToken,
+                                    },
                                   }),
                                   _vm._v(" "),
                                   _c(
                                     "div",
                                     {
                                       staticClass:
-                                        "width-100 choose-action__skill-ability"
+                                        "width-100 choose-action__skill-ability",
                                     },
                                     [
                                       _vm._v(
                                         "\n                            Replace Loop token with a face down token from your reserves?\n                        "
-                                      )
+                                      ),
                                     ]
-                                  )
+                                  ),
                                 ],
                                 1
                               )
-                            : _vm._e()
+                            : _vm._e(),
                         ],
                         1
                       )
@@ -65869,7 +66541,7 @@ var render = function() {
                             [
                               _vm._v(
                                 "Choose type for your wild token to be revealed as"
-                              )
+                              ),
                             ]
                           ),
                           _vm._v(" "),
@@ -65878,14 +66550,14 @@ var render = function() {
                               tokens: _vm.wildTokens,
                               classes: "center-text",
                               noBorder: "true",
-                              selected: _vm.wildType
+                              selected: _vm.wildType,
                             },
                             on: {
-                              tokenClicked: function(t) {
+                              tokenClicked: function (t) {
                                 return (_vm.wildType = t)
-                              }
-                            }
-                          })
+                              },
+                            },
+                          }),
                         ],
                         1
                       )
@@ -65896,12 +66568,12 @@ var render = function() {
                       "button",
                       {
                         staticClass: "button button-empty",
-                        on: { click: _vm.clearAction }
+                        on: { click: _vm.clearAction },
                       },
                       [
                         _vm._v(
                           "\n                        back\n                    "
-                        )
+                        ),
                       ]
                     ),
                     _vm._v(" "),
@@ -65910,23 +66582,23 @@ var render = function() {
                       {
                         staticClass: "button pull-center",
                         attrs: { disabled: _vm.saveDisabled },
-                        on: { click: _vm.saveAction }
+                        on: { click: _vm.saveAction },
                       },
                       [
                         _vm._v(
                           "\n                        " +
                             _vm._s(_vm.buttonMessage) +
                             "\n                    "
-                        )
+                        ),
                       ]
-                    )
-                  ])
+                    ),
+                  ]),
                 ],
                 1
-              )
-            ])
+              ),
+            ]),
           ])
-        : _vm._e()
+        : _vm._e(),
     ],
     1
   )
@@ -65949,7 +66621,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -65959,34 +66631,34 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", {
             staticClass: "title",
-            domProps: { innerHTML: _vm._s(_vm.shared.filterText(_vm.message)) }
+            domProps: { innerHTML: _vm._s(_vm.shared.filterText(_vm.message)) },
           }),
           _vm._v(" "),
           _c(
             "area-flipper",
             {
               attrs: { areas: _vm.areas, index: _vm.index },
-              on: { update: _vm.updateArea }
+              on: { update: _vm.updateArea },
             },
             [
               _vm.data.show === "units"
                 ? _c(
                     "div",
                     {},
-                    _vm._l(_vm.units, function(set, name) {
+                    _vm._l(_vm.units, function (set, name) {
                       return _c("unit-row", {
                         key: name,
-                        attrs: { units: set }
+                        attrs: { units: set },
                       })
                     }),
                     1
                   )
-                : _c("token-row", { attrs: { area: _vm.area } })
+                : _c("token-row", { attrs: { area: _vm.area } }),
             ],
             1
           ),
@@ -65996,12 +66668,12 @@ var render = function() {
               "button",
               { staticClass: "button", on: { click: _vm.resolve } },
               [_vm._v(_vm._s(_vm.buttonMessage))]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -66022,7 +66694,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -66032,17 +66704,17 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
-            _vm._v("Choose a basic unit type")
+            _vm._v("Choose a basic unit type"),
           ]),
           _vm._v(" "),
           _c(
             "div",
             { staticClass: "mt-3 pb-4" },
-            _vm._l(_vm.units, function(unit) {
+            _vm._l(_vm.units, function (unit) {
               return _c(
                 "div",
                 {
@@ -66050,16 +66722,16 @@ var render = function() {
                     "units-hud__unit d-inline-block pos-relative overflow-hidden",
                   class: { selected: unit.type === _vm.type },
                   on: {
-                    click: function($event) {
+                    click: function ($event) {
                       return _vm.selectUnit(unit)
-                    }
-                  }
+                    },
+                  },
                 },
                 [
                   _c("img", {
                     staticClass: "unit-hud__unit-image z-1 pos-relative",
-                    attrs: { src: "/images/units/" + unit.type + ".png" }
-                  })
+                    attrs: { src: "/images/units/" + unit.type + ".png" },
+                  }),
                 ]
               )
             }),
@@ -66072,14 +66744,14 @@ var render = function() {
               {
                 staticClass: "button",
                 attrs: { disabled: !_vm.type },
-                on: { click: _vm.resolve }
+                on: { click: _vm.resolve },
               },
               [_vm._v(_vm._s(_vm.buttonMessage))]
-            )
-          ])
+            ),
+          ]),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -66100,7 +66772,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -66110,11 +66782,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
-            _vm._v(_vm._s(_vm.message))
+            _vm._v(_vm._s(_vm.message)),
           ]),
           _vm._v(" "),
           _c(
@@ -66126,11 +66798,11 @@ var render = function() {
                 {
                   staticClass: "toggle area-map__toggle top-0 right-0",
                   on: {
-                    click: function($event) {
+                    click: function ($event) {
                       $event.stopPropagation()
                       return _vm.shared.event.emit("viewArea", _vm.area)
-                    }
-                  }
+                    },
+                  },
                 },
                 [_c("i", { staticClass: "icon-zoom_in" })]
               ),
@@ -66142,7 +66814,7 @@ var render = function() {
                     [
                       _vm._v(
                         "Fusion Count " + _vm._s(_vm.shared.faction.fusion)
-                      )
+                      ),
                     ]
                   )
                 : _vm._e(),
@@ -66150,11 +66822,11 @@ var render = function() {
               _c("card-picker", {
                 attrs: { cards: _vm.cards, type: "card" },
                 on: {
-                  updated: function(n) {
+                  updated: function (n) {
                     return (_vm.index = n)
-                  }
-                }
-              })
+                  },
+                },
+              }),
             ],
             1
           ),
@@ -66167,8 +66839,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Pay xC" + _vm.cost + "x to play this card?"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -66178,10 +66850,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(false)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v(_vm._s(_vm.declineMessage))]
             ),
@@ -66192,18 +66864,18 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: _vm.canSave !== true },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v(_vm._s(_vm.saveMessage))]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -66224,7 +66896,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -66238,9 +66910,9 @@ var render = function() {
         [
           _c("end-game", [
             _c("div", { staticClass: "pointer conclude" }, [
-              _vm._v("conclude game")
-            ])
-          ])
+              _vm._v("conclude game"),
+            ]),
+          ]),
         ],
         1
       ),
@@ -66249,31 +66921,31 @@ var render = function() {
         "div",
         {
           staticClass:
-            "players width-35 height-100 p-5 d-flex flex-center flex-wrap"
+            "players width-35 height-100 p-5 d-flex flex-center flex-wrap",
         },
         [
           _c(
             "div",
             { staticClass: "choose-factions__player-container" },
-            _vm._l(_vm.shared.orderedPlayers(), function(player, index) {
+            _vm._l(_vm.shared.orderedPlayers(), function (player, index) {
               return _c(
                 "div",
                 {
                   staticClass:
                     "choose-factions__player pull-center d-flex align-stretch",
-                  class: { active: player.active }
+                  class: { active: player.active },
                 },
                 [
                   _c("div", {
                     staticClass: "choose-factions__player-index width-10 p-4",
-                    domProps: { textContent: _vm._s(index + 1) }
+                    domProps: { textContent: _vm._s(index + 1) },
                   }),
                   _vm._v(" "),
                   _c(
                     "div",
                     {
                       staticClass:
-                        "choose-factions__player-name ellipses width-50 p-4"
+                        "choose-factions__player-name ellipses width-50 p-4",
                     },
                     [_vm._v(_vm._s(_vm._f("startCase")(player.name)))]
                   ),
@@ -66282,21 +66954,21 @@ var render = function() {
                     "div",
                     {
                       staticClass:
-                        "choose-factions__player-faction width-40 pos-relative"
+                        "choose-factions__player-faction width-40 pos-relative",
                     },
                     [
                       _vm._m(0, true),
                       _vm._v(" "),
                       _c("div", { staticClass: "p-4 choose-factions__text" }, [
-                        _vm._v(_vm._s(_vm.factionText(player)))
-                      ])
+                        _vm._v(_vm._s(_vm.factionText(player))),
+                      ]),
                     ]
-                  )
+                  ),
                 ]
               )
             }),
             0
-          )
+          ),
         ]
       ),
       _vm._v(" "),
@@ -66309,7 +66981,7 @@ var render = function() {
               _c(
                 "div",
                 { staticClass: "choose-factions__basic-factions pr-3" },
-                _vm._l(_vm.basicFactions, function(faction) {
+                _vm._l(_vm.basicFactions, function (faction) {
                   return _c("faction-choice", {
                     key: faction.name,
                     attrs: {
@@ -66317,17 +66989,17 @@ var render = function() {
                       selected: _vm.selectedFaction,
                       remainingPlayers: _vm.remainingPlayers,
                       killersSelected: _vm.killersSelected,
-                      expansionsSelected: _vm.expansionsSelected
+                      expansionsSelected: _vm.expansionsSelected,
                     },
                     on: {
-                      clicked: function(e) {
+                      clicked: function (e) {
                         return (_vm.selectedFaction = e)
                       },
                       blocked: _vm.blockFaction,
-                      isSelectable: function(e) {
+                      isSelectable: function (e) {
                         return _vm.setIsSelectable(faction, e)
-                      }
-                    }
+                      },
+                    },
                   })
                 }),
                 1
@@ -66336,7 +67008,7 @@ var render = function() {
               _c(
                 "div",
                 { staticClass: "pr-3" },
-                _vm._l(_vm.expansionFactions, function(faction) {
+                _vm._l(_vm.expansionFactions, function (faction) {
                   return _c("faction-choice", {
                     key: faction.name,
                     attrs: {
@@ -66344,28 +67016,28 @@ var render = function() {
                       selected: _vm.selectedFaction,
                       remainingPlayers: _vm.remainingPlayers,
                       killersSelected: _vm.killersSelected,
-                      expansionsSelected: _vm.expansionsSelected
+                      expansionsSelected: _vm.expansionsSelected,
                     },
                     on: {
-                      clicked: function(e) {
+                      clicked: function (e) {
                         return (_vm.selectedFaction = e)
                       },
                       blocked: _vm.blockFaction,
-                      isSelectable: function(e) {
+                      isSelectable: function (e) {
                         return _vm.setIsSelectable(faction, e)
-                      }
-                    }
+                      },
+                    },
                   })
                 }),
                 1
-              )
+              ),
             ]),
             _vm._v(" "),
             _c(
               "div",
               {
                 staticClass: "d-flex justify-end",
-                attrs: { inivisible: !_vm.shared.isActive() }
+                attrs: { inivisible: !_vm.shared.isActive() },
               },
               [
                 _c(
@@ -66373,7 +67045,7 @@ var render = function() {
                   {
                     staticClass: "button button-empty",
                     attrs: { disabled: !_vm.canRandom },
-                    on: { click: _vm.chooseRandomFaction }
+                    on: { click: _vm.chooseRandomFaction },
                   },
                   [_vm._v("Random")]
                 ),
@@ -66386,14 +67058,14 @@ var render = function() {
                       disabled:
                         !_vm.selectedFaction ||
                         !_vm.shared.data.factions[_vm.selectedFaction]
-                          .selectable
+                          .selectable,
                     },
-                    on: { click: _vm.chooseFaction }
+                    on: { click: _vm.chooseFaction },
                   },
                   [_vm._v("Choose")]
-                )
+                ),
               ]
-            )
+            ),
           ]),
           _vm._v(" "),
           _vm.selectedFaction
@@ -66402,23 +67074,23 @@ var render = function() {
                 style:
                   "background-image : url('/images/factions/" +
                   _vm.selectedFaction +
-                  "/sheet.jpg')"
+                  "/sheet.jpg')",
               })
-            : _vm._e()
+            : _vm._e(),
         ]
-      )
+      ),
     ]
   )
 }
 var staticRenderFns = [
-  function() {
+  function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "loader-bar" }, [
-      _c("div", { staticClass: "loader-bar__streak" })
+      _c("div", { staticClass: "loader-bar__streak" }),
     ])
-  }
+  },
 ]
 render._withStripped = true
 
@@ -66437,7 +67109,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -66447,28 +67119,28 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [
-            _vm._v("Choose an action to take with your Lich token")
+            _vm._v("Choose an action to take with your Lich token"),
           ]),
           _vm._v(" "),
           _vm.data.actions.includes("raise")
             ? _c("div", { staticClass: "mb-4" }, [
                 _c("div", { staticClass: "prompt-question center-text" }, [
-                  _vm._v("Raiseable Unit Types")
+                  _vm._v("Raiseable Unit Types"),
                 ]),
                 _vm._v(" "),
                 _c(
                   "div",
                   { staticClass: "flex flex-center" },
-                  _vm._l(_vm.data.unitTypes, function(type) {
+                  _vm._l(_vm.data.unitTypes, function (type) {
                     return _c(
                       "div",
                       {
                         staticClass:
-                          "units-hud__unit d-inline-block pos-relative overflow-hidden"
+                          "units-hud__unit d-inline-block pos-relative overflow-hidden",
                       },
                       [
                         _c("img", {
@@ -66477,14 +67149,14 @@ var render = function() {
                             src:
                               "/images/factions/skeletons/units/" +
                               type +
-                              "-flipped.png"
-                          }
-                        })
+                              "-flipped.png",
+                          },
+                        }),
                       ]
                     )
                   }),
                   0
-                )
+                ),
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -66494,10 +67166,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve("decline")
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("decline")]
             ),
@@ -66508,10 +67180,10 @@ var render = function() {
                   {
                     staticClass: "button",
                     on: {
-                      click: function($event) {
+                      click: function ($event) {
                         return _vm.resolve("card")
-                      }
-                    }
+                      },
+                    },
                   },
                   [_vm._v("Play a card")]
                 )
@@ -66523,18 +67195,18 @@ var render = function() {
                   {
                     staticClass: "button",
                     on: {
-                      click: function($event) {
+                      click: function ($event) {
                         return _vm.resolve("raise")
-                      }
-                    }
+                      },
+                    },
                   },
                   [_vm._v("Raise a unit")]
                 )
-              : _vm._e()
-          ])
+              : _vm._e(),
+          ]),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -66555,7 +67227,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -66568,7 +67240,7 @@ var render = function() {
               _vm._s(_vm.data.area) +
               " " +
               _vm._s(_vm.data.free ? "for free" : "")
-          )
+          ),
         ]),
         _vm._v(" "),
         _c(
@@ -66580,10 +67252,10 @@ var render = function() {
                 attrs: {
                   classes:
                     "choose-target__wrap d-flex pb-3 width-100 plan-block",
-                  buttons: "true"
-                }
+                  buttons: "true",
+                },
               },
-              _vm._l(_vm.data.cards, function(card) {
+              _vm._l(_vm.data.cards, function (card) {
                 return _c(
                   "div",
                   { staticClass: "d-flex pb-3 width-100 justify-center" },
@@ -66594,30 +67266,30 @@ var render = function() {
                         staticClass: "plan-block__image-wrap",
                         class: {
                           selected: card.selected,
-                          "opacity-5": card.type !== "rule"
+                          "opacity-5": card.type !== "rule",
                         },
                         on: {
-                          click: function($event) {
+                          click: function ($event) {
                             return _vm.cardClicked(card)
-                          }
-                        }
+                          },
+                        },
                       },
                       [
                         _c("img", {
                           staticClass: "plan-block__image",
-                          attrs: { src: "/images/cards/" + card.file + ".jpg" }
-                        })
+                          attrs: { src: "/images/cards/" + card.file + ".jpg" },
+                        }),
                       ]
-                    )
+                    ),
                   ]
                 )
               }),
               0
-            )
+            ),
           ],
           1
-        )
-      ])
+        ),
+      ]),
     ]),
     _vm._v(" "),
     this.cost
@@ -66628,8 +67300,8 @@ var render = function() {
               _vm.shared.filterText(
                 "Pay xC" + _vm.cost + "x to play this card?"
               )
-            )
-          }
+            ),
+          },
         })
       : _vm._e(),
     _vm._v(" "),
@@ -66639,10 +67311,10 @@ var render = function() {
         {
           staticClass: "button button-empty",
           on: {
-            click: function($event) {
+            click: function ($event) {
               return _vm.resolve(false)
-            }
-          }
+            },
+          },
         },
         [_vm._v("decline")]
       ),
@@ -66653,14 +67325,14 @@ var render = function() {
           staticClass: "button",
           attrs: { disabled: !this.selected.length },
           on: {
-            click: function($event) {
+            click: function ($event) {
               return _vm.resolve(true)
-            }
-          }
+            },
+          },
         },
         [_vm._v("Submit")]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -66681,7 +67353,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -66691,11 +67363,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [
-            _vm._v(_vm._s(_vm.data.message))
+            _vm._v(_vm._s(_vm.data.message)),
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
@@ -66704,10 +67376,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(false)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("No")]
             ),
@@ -66717,17 +67389,17 @@ var render = function() {
               {
                 staticClass: "button",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("Yes")]
-            )
-          ])
+            ),
+          ]),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -66748,21 +67420,21 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("player-prompt", { attrs: { classes: "" } }, [
     _c("div", { staticClass: "choose-spy overflow-auto px-5" }, [
       _c("div", { staticClass: "title view-player__title" }, [
-        _vm._v(_vm._s(_vm.message))
+        _vm._v(_vm._s(_vm.message)),
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "d-flex justify-center" }, [
         _c(
           "div",
           { staticClass: "choose-factions__player-container" },
-          _vm._l(_vm.data.factions, function(faction) {
+          _vm._l(_vm.data.factions, function (faction) {
             return _c(
               "div",
               {
@@ -66770,25 +67442,25 @@ var render = function() {
                   "choose-factions__player pull-center d-flex align-stretch",
                 class: { active: _vm.selected.includes(faction) },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.playerClicked(faction)
-                  }
-                }
+                  },
+                },
               },
               [
                 _c(
                   "div",
                   {
                     staticClass:
-                      "choose-factions__player-faction width-15 d-flex pr-2"
+                      "choose-factions__player-faction width-15 d-flex pr-2",
                   },
                   [
                     _c("img", {
                       staticClass: "choose-spy__champion",
                       attrs: {
-                        src: "/images/factions/" + faction + "/icon.jpg"
-                      }
-                    })
+                        src: "/images/factions/" + faction + "/icon.jpg",
+                      },
+                    }),
                   ]
                 ),
                 _vm._v(" "),
@@ -66796,7 +67468,7 @@ var render = function() {
                   "div",
                   {
                     staticClass:
-                      "choose-factions__player-name ellipses width-60 p-4"
+                      "choose-factions__player-name ellipses width-60 p-4",
                   },
                   [_vm._v(_vm._s(_vm._f("startCase")(faction)))]
                 ),
@@ -66805,21 +67477,21 @@ var render = function() {
                   "div",
                   {
                     staticClass:
-                      "choose-spy__checkbox width-25 choose-factions__player-faction d-flex align-center justify-center"
+                      "choose-spy__checkbox width-25 choose-factions__player-faction d-flex align-center justify-center",
                   },
                   [
                     _c("i", {
                       class: _vm.selected.includes(faction)
                         ? "icon-checkbox-checked"
-                        : "icon-checkbox-unchecked"
-                    })
+                        : "icon-checkbox-unchecked",
+                    }),
                   ]
-                )
+                ),
               ]
             )
           }),
           0
-        )
+        ),
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "width-100 d-flex justify-center" }, [
@@ -66829,10 +67501,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(false)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("Decline")]
             )
@@ -66844,15 +67516,15 @@ var render = function() {
             staticClass: "button",
             attrs: { disabled: !_vm.canSubmit },
             on: {
-              click: function($event) {
+              click: function ($event) {
                 return _vm.resolve(true)
-              }
-            }
+              },
+            },
           },
           [_vm._v("Save Choices")]
-        )
-      ])
-    ])
+        ),
+      ]),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -66873,7 +67545,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -66883,7 +67555,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
@@ -66892,16 +67564,16 @@ var render = function() {
             "area-flipper",
             {
               attrs: { areas: _vm.areas, index: _vm.index },
-              on: { update: _vm.updateArea }
+              on: { update: _vm.updateArea },
             },
             [
               _c("div", {
                 staticClass:
                   "width-100 choose-action__skill-ability center-text",
                 domProps: {
-                  innerHTML: _vm._s(this.shared.filterText(this.area.skill))
-                }
-              })
+                  innerHTML: _vm._s(this.shared.filterText(this.area.skill)),
+                },
+              }),
             ]
           ),
           _vm._v(" "),
@@ -66910,12 +67582,12 @@ var render = function() {
               "button",
               { staticClass: "button", on: { click: _vm.resolve } },
               [_vm._v(_vm._s(_vm.buttonMessage))]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -66936,21 +67608,21 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("player-prompt", { attrs: { classes: "" } }, [
     _c("div", { staticClass: "choose-spy overflow-auto px-5" }, [
       _c("div", { staticClass: "title view-player__title" }, [
-        _vm._v("Choose player to spy on")
+        _vm._v("Choose player to spy on"),
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "d-flex justify-center" }, [
         _c(
           "div",
           { staticClass: "choose-factions__player-container" },
-          _vm._l(_vm.shared.orderedPlayers(), function(player) {
+          _vm._l(_vm.shared.orderedPlayers(), function (player) {
             return player.id !== _vm.shared.player.id
               ? _c(
                   "div",
@@ -66959,26 +67631,28 @@ var render = function() {
                       "choose-factions__player pull-center d-flex align-stretch",
                     class: { active: player.faction == _vm.spy },
                     on: {
-                      click: function($event) {
+                      click: function ($event) {
                         _vm.spy = player.faction
-                      }
-                    }
+                      },
+                    },
                   },
                   [
                     _c(
                       "div",
                       {
                         staticClass:
-                          "choose-factions__player-faction width-15 d-flex pr-2"
+                          "choose-factions__player-faction width-15 d-flex pr-2",
                       },
                       [
                         _c("img", {
                           staticClass: "choose-spy__champion",
                           attrs: {
                             src:
-                              "/images/factions/" + player.faction + "/icon.jpg"
-                          }
-                        })
+                              "/images/factions/" +
+                              player.faction +
+                              "/icon.jpg",
+                          },
+                        }),
                       ]
                     ),
                     _vm._v(" "),
@@ -66986,7 +67660,7 @@ var render = function() {
                       "div",
                       {
                         staticClass:
-                          "choose-factions__player-name ellipses width-60 p-4"
+                          "choose-factions__player-name ellipses width-60 p-4",
                       },
                       [_vm._v(_vm._s(_vm._f("startCase")(player.name)))]
                     ),
@@ -66995,23 +67669,23 @@ var render = function() {
                       "div",
                       {
                         staticClass:
-                          "choose-spy__checkbox width-25 choose-factions__player-faction d-flex align-center justify-center"
+                          "choose-spy__checkbox width-25 choose-factions__player-faction d-flex align-center justify-center",
                       },
                       [
                         _c("i", {
                           class:
                             player.faction == _vm.spy
                               ? "icon-checkbox-checked"
-                              : "icon-checkbox-unchecked"
-                        })
+                              : "icon-checkbox-unchecked",
+                        }),
                       ]
-                    )
+                    ),
                   ]
                 )
               : _vm._e()
           }),
           0
-        )
+        ),
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "width-100 d-flex justify-center" }, [
@@ -67020,12 +67694,12 @@ var render = function() {
           {
             staticClass: "button",
             attrs: { disabled: !_vm.spy },
-            on: { click: _vm.resolve }
+            on: { click: _vm.resolve },
           },
           [_vm._v(_vm._s(_vm.buttonMessage))]
-        )
-      ])
-    ])
+        ),
+      ]),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -67046,7 +67720,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -67057,7 +67731,7 @@ var render = function() {
             _vm.mustChoosePlan
               ? _c("div", { staticClass: "p-4" }, [
                   _c("div", { staticClass: "title" }, [
-                    _vm._v("Discard this plan")
+                    _vm._v("Discard this plan"),
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "plan-block__image-wrap" }, [
@@ -67069,29 +67743,29 @@ var render = function() {
                           _vm.shared.faction.name +
                           "/plans/" +
                           _vm.plan.num +
-                          ".jpg"
-                      }
-                    })
-                  ])
+                          ".jpg",
+                      },
+                    }),
+                  ]),
                 ])
               : _vm._e(),
             _vm._v(" "),
             _c("div", { staticClass: "p-4" }, [
               _c("div", { staticClass: "title" }, [
-                _vm._v("Choose this target")
+                _vm._v("Choose this target"),
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "plan-block__image-wrap" }, [
                 _c("img", {
                   staticClass: "plan-block__image",
-                  attrs: { src: "/images/cards/" + _vm.target.file + ".jpg" }
-                })
-              ])
-            ])
+                  attrs: { src: "/images/cards/" + _vm.target.file + ".jpg" },
+                }),
+              ]),
+            ]),
           ])
         : _c("div", { staticClass: "width-100 center-text" }, [
             _c("div", { staticClass: "title d-inline-block" }, [
-              _vm._v(_vm._s(_vm.message))
+              _vm._v(_vm._s(_vm.message)),
             ]),
             _vm._v(" "),
             _c(
@@ -67103,11 +67777,11 @@ var render = function() {
                     attrs: {
                       classes:
                         "choose-target__wrap d-flex pb-3 width-100 plan-block",
-                      buttons: "true"
-                    }
+                      buttons: "true",
+                    },
                   },
                   [
-                    _vm._l(_vm.shared.faction.plans.current, function(object) {
+                    _vm._l(_vm.shared.faction.plans.current, function (object) {
                       return _vm.mode === "plans"
                         ? _c("div", { staticClass: "d-flex pb-3 width-100" }, [
                             _c(
@@ -67116,13 +67790,13 @@ var render = function() {
                                 staticClass: "plan-block__image-wrap",
                                 class: {
                                   selected:
-                                    _vm.plan && _vm.plan.id === object.id
+                                    _vm.plan && _vm.plan.id === object.id,
                                 },
                                 on: {
-                                  click: function($event) {
+                                  click: function ($event) {
                                     return _vm.itemClicked("plan", object)
-                                  }
-                                }
+                                  },
+                                },
                               },
                               [
                                 _c("img", {
@@ -67133,16 +67807,16 @@ var render = function() {
                                       _vm.shared.faction.name +
                                       "/plans/" +
                                       object.num +
-                                      ".jpg"
-                                  }
-                                })
+                                      ".jpg",
+                                  },
+                                }),
                               ]
-                            )
+                            ),
                           ])
                         : _vm._e()
                     }),
                     _vm._v(" "),
-                    _vm._l(_vm.shared.faction.cards.hand, function(object) {
+                    _vm._l(_vm.shared.faction.cards.hand, function (object) {
                       return _vm.mode === "cards"
                         ? _c("div", { staticClass: "d-flex pb-3 width-100" }, [
                             _c(
@@ -67151,33 +67825,34 @@ var render = function() {
                                 staticClass: "plan-block__image-wrap",
                                 class: {
                                   selected:
-                                    _vm.target && _vm.target.id === object.id
+                                    _vm.target && _vm.target.id === object.id,
                                 },
                                 on: {
-                                  click: function($event) {
+                                  click: function ($event) {
                                     return _vm.itemClicked("target", object)
-                                  }
-                                }
+                                  },
+                                },
                               },
                               [
                                 _c("img", {
                                   staticClass: "plan-block__image",
                                   attrs: {
-                                    src: "/images/cards/" + object.file + ".jpg"
-                                  }
-                                })
+                                    src:
+                                      "/images/cards/" + object.file + ".jpg",
+                                  },
+                                }),
                               ]
-                            )
+                            ),
                           ])
                         : _vm._e()
-                    })
+                    }),
                   ],
                   2
-                )
+                ),
               ],
               1
-            )
-          ])
+            ),
+          ]),
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "width-100 d-flex justify-center mt-4" }, [
@@ -67187,10 +67862,10 @@ var render = function() {
             {
               staticClass: "button button-empty",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   _vm.mode = "plans"
-                }
-              }
+                },
+              },
             },
             [_vm._v("VIEW PLANS")]
           )
@@ -67202,10 +67877,10 @@ var render = function() {
             {
               staticClass: "button",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   _vm.mode = "cards"
-                }
-              }
+                },
+              },
             },
             [_vm._v("VIEW TARGETS")]
           )
@@ -67217,10 +67892,10 @@ var render = function() {
             {
               staticClass: "button button-empty",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   _vm.mode = "cards"
-                }
-              }
+                },
+              },
             },
             [_vm._v("BACK")]
           )
@@ -67231,11 +67906,11 @@ var render = function() {
         {
           staticClass: "button",
           attrs: { disabled: !_vm.canConfirm },
-          on: { click: _vm.saveChoices }
+          on: { click: _vm.saveChoices },
         },
         [_vm._v(_vm._s(_vm.confirmMessage))]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -67256,7 +67931,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -67266,7 +67941,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
@@ -67276,7 +67951,7 @@ var render = function() {
                 "area-flipper",
                 {
                   attrs: { areas: _vm.areas, index: _vm.index },
-                  on: { update: _vm.updateArea }
+                  on: { update: _vm.updateArea },
                 },
                 [
                   _c(
@@ -67288,14 +67963,14 @@ var render = function() {
                           _vm._s(_vm.selected.length) +
                           " / " +
                           _vm._s(_vm.data.count)
-                      )
+                      ),
                     ]
                   ),
                   _vm._v(" "),
                   _c("token-row", {
                     attrs: { area: _vm.area, effect: "selecting" },
-                    on: { token: _vm.tokenClicked }
-                  })
+                    on: { token: _vm.tokenClicked },
+                  }),
                 ],
                 1
               )
@@ -67307,7 +67982,7 @@ var render = function() {
                   "button",
                   {
                     staticClass: "button button-empty",
-                    on: { click: _vm.resolve }
+                    on: { click: _vm.resolve },
                   },
                   [_vm._v("DECLINE")]
                 )
@@ -67318,15 +67993,15 @@ var render = function() {
               {
                 staticClass: "button",
                 attrs: { disabled: !_vm.canSubmit },
-                on: { click: _vm.resolve }
+                on: { click: _vm.resolve },
               },
               [_vm._v("SAVE")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -67347,7 +68022,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -67357,12 +68032,12 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", {
             staticClass: "title",
-            domProps: { innerHTML: _vm._s(_vm.shared.filterText(_vm.message)) }
+            domProps: { innerHTML: _vm._s(_vm.shared.filterText(_vm.message)) },
           }),
           _vm._v(" "),
           _vm.areas.length
@@ -67370,7 +68045,7 @@ var render = function() {
                 "area-flipper",
                 {
                   attrs: { areas: _vm.areas, index: _vm.index },
-                  on: { update: _vm.updateArea }
+                  on: { update: _vm.updateArea },
                 },
                 [
                   !_vm.data.hideMax
@@ -67383,29 +68058,29 @@ var render = function() {
                               _vm._s(_vm.selected.length) +
                               " / " +
                               _vm._s(_vm.data.count)
-                          )
+                          ),
                         ]
                       )
                     : _vm._e(),
                   _vm._v(" "),
                   _c("unit-row", {
                     attrs: { units: _vm.areaUnits },
-                    on: { unit: _vm.unitClicked }
+                    on: { unit: _vm.unitClicked },
                   }),
                   _vm._v(" "),
                   _vm.data.showEnemyUnits
                     ? _c(
                         "div",
                         { staticClass: "opacity-7" },
-                        _vm._l(_vm.enemyUnits, function(set, name) {
+                        _vm._l(_vm.enemyUnits, function (set, name) {
                           return _c("unit-row", {
                             key: name,
-                            attrs: { units: set }
+                            attrs: { units: set },
                           })
                         }),
                         1
                       )
-                    : _vm._e()
+                    : _vm._e(),
                 ],
                 1
               )
@@ -67415,13 +68090,13 @@ var render = function() {
             ? _c(
                 "div",
                 { staticClass: "d-flex justify-center flex-wrap mt-3" },
-                _vm._l(_vm.data.count, function(n, index) {
+                _vm._l(_vm.data.count, function (n, index) {
                   return _c("i", {
                     staticClass: "deploy-limit__pip",
                     class:
                       index < _vm.selected.length
                         ? "icon-circle active"
-                        : "icon-circle-open"
+                        : "icon-circle-open",
                   })
                 }),
                 0
@@ -67434,10 +68109,10 @@ var render = function() {
                 { staticClass: "mt-3" },
                 [
                   _c("div", { staticClass: "prompt-question center-text" }, [
-                    _vm._v("The Parasites can infect these unit types")
+                    _vm._v("The Parasites can infect these unit types"),
                   ]),
                   _vm._v(" "),
-                  _c("unit-row", { attrs: { units: _vm.reserves } })
+                  _c("unit-row", { attrs: { units: _vm.reserves } }),
                 ],
                 1
               )
@@ -67451,8 +68126,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Pay xC" + _vm.cost + "x to choose these units?"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -67463,10 +68138,10 @@ var render = function() {
                   {
                     staticClass: "button button-empty",
                     on: {
-                      click: function($event) {
+                      click: function ($event) {
                         return _vm.resolve(false)
-                      }
-                    }
+                      },
+                    },
                   },
                   [_vm._v("DECLINE")]
                 )
@@ -67478,18 +68153,18 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: !_vm.canSubmit },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("FINALIZE CHOICE")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -67510,7 +68185,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -67520,25 +68195,25 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", {
             staticClass: "title",
-            domProps: { innerHTML: _vm._s(_vm.message) }
+            domProps: { innerHTML: _vm._s(_vm.message) },
           }),
           _vm._v(" "),
           _c(
             "area-flipper",
             {
               attrs: { areas: _vm.areas, index: _vm.index },
-              on: { update: _vm.updateArea }
+              on: { update: _vm.updateArea },
             },
-            _vm._l(_vm.units, function(set, name) {
+            _vm._l(_vm.units, function (set, name) {
               return _c("unit-row", {
                 key: name,
                 attrs: { units: set, classes: _vm.shouldSetOpacity(name) },
-                on: { unit: _vm.selectFaction }
+                on: { unit: _vm.selectFaction },
               })
             }),
             1
@@ -67552,7 +68227,7 @@ var render = function() {
                     _vm._s(_vm.attackMod) +
                     " to their rolls against the " +
                     _vm._s(_vm.faction)
-                )
+                ),
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -67563,10 +68238,10 @@ var render = function() {
                   {
                     staticClass: "button button-empty",
                     on: {
-                      click: function($event) {
+                      click: function ($event) {
                         return _vm.resolve(false)
-                      }
-                    }
+                      },
+                    },
                   },
                   [_vm._v("DECLINE")]
                 )
@@ -67578,18 +68253,18 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: !_vm.faction },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("SELECT VICTIM")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -67610,7 +68285,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -67620,11 +68295,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [
-            _vm._v("Which side to set Red Viper?")
+            _vm._v("Which side to set Red Viper?"),
           ]),
           _vm._v(" "),
           _c(
@@ -67633,13 +68308,13 @@ var render = function() {
             [
               _c("unit-icon", {
                 attrs: { unit: _vm.war },
-                on: { unit: _vm.setChoice }
+                on: { unit: _vm.setChoice },
               }),
               _vm._v(" "),
               _c("unit-icon", {
                 attrs: { unit: _vm.peace },
-                on: { unit: _vm.setChoice }
-              })
+                on: { unit: _vm.setChoice },
+              }),
             ],
             1
           ),
@@ -67650,16 +68325,16 @@ var render = function() {
               staticClass: "button",
               attrs: { disabled: !_vm.choice },
               on: {
-                click: function($event) {
+                click: function ($event) {
                   return _vm.resolve()
-                }
-              }
+                },
+              },
             },
             [_vm._v("Save")]
-          )
+          ),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -67680,7 +68355,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -67690,7 +68365,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
@@ -67704,9 +68379,9 @@ var render = function() {
                   tokens: _vm.tokens,
                   classes: "center-text",
                   noBorder: "true",
-                  selected: this.wildType
-                }
-              })
+                  selected: this.wildType,
+                },
+              }),
             ],
             1
           ),
@@ -67719,8 +68394,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Pay xC" + _vm.cost + "x to activate as a move?"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -67730,15 +68405,15 @@ var render = function() {
               {
                 staticClass: "button",
                 attrs: { disabled: _vm.disabled },
-                on: { click: _vm.resolve }
+                on: { click: _vm.resolve },
               },
               [_vm._v(_vm._s(_vm.buttonMessage))]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -67759,7 +68434,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -67769,11 +68444,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
-            _vm._v("Choose units to deploy")
+            _vm._v("Choose units to deploy"),
           ]),
           _vm._v(" "),
           _c(
@@ -67788,9 +68463,9 @@ var render = function() {
                         areas: _vm.fromAreas,
                         index: _vm.fromAreaIndex,
                         isReserves: "true",
-                        hasReserves: 1
+                        hasReserves: 1,
                       },
-                      on: { update: _vm.updateFromIndex }
+                      on: { update: _vm.updateFromIndex },
                     },
                     [
                       !_vm.reserves.length
@@ -67798,7 +68473,7 @@ var render = function() {
                             "div",
                             {
                               staticClass:
-                                "prompt-question center-text no-valid-reserves"
+                                "prompt-question center-text no-valid-reserves",
                             },
                             [_vm._v("No valid units in reserves")]
                           )
@@ -67808,10 +68483,10 @@ var render = function() {
                         attrs: {
                           units: _vm.reserves,
                           classes: "center-text p-0",
-                          noBorder: "true"
+                          noBorder: "true",
                         },
-                        on: { unitClicked: _vm.addUnitFromReserves }
-                      })
+                        on: { unitClicked: _vm.addUnitFromReserves },
+                      }),
                     ],
                     1
                   )
@@ -67825,9 +68500,9 @@ var render = function() {
                         areas: _vm.fromAreas,
                         index: _vm.fromAreaIndex,
                         hasReserves: 1,
-                        classes: "area-header__units pt-0"
+                        classes: "area-header__units pt-0",
                       },
-                      on: { update: _vm.updateFromIndex }
+                      on: { update: _vm.updateFromIndex },
                     },
                     [
                       _c(
@@ -67837,18 +68512,18 @@ var render = function() {
                           _vm._v(
                             "Re-deploy from the " +
                               _vm._s(_vm.fromAreas[_vm.fromAreaIndex].name)
-                          )
+                          ),
                         ]
                       ),
                       _vm._v(" "),
                       _c("unit-row", {
                         attrs: { units: _vm.currentFromAreaUnits },
-                        on: { unit: _vm.addUnitFromPlay }
-                      })
+                        on: { unit: _vm.addUnitFromPlay },
+                      }),
                     ],
                     1
                   )
-                : _vm._e()
+                : _vm._e(),
             ],
             1
           ),
@@ -67860,9 +68535,9 @@ var render = function() {
                 areas: _vm.toAreas,
                 locked: "true",
                 index: _vm.toAreaIndex,
-                classes: "area-header__units"
+                classes: "area-header__units",
               },
-              on: { update: _vm.updateToIndex }
+              on: { update: _vm.updateToIndex },
             },
             [
               _c(
@@ -67870,11 +68545,11 @@ var render = function() {
                 {
                   staticClass: "toggle area-map__toggle top-0 right-0",
                   on: {
-                    click: function($event) {
+                    click: function ($event) {
                       $event.stopPropagation()
                       return _vm.shared.event.emit("viewArea", _vm.area)
-                    }
-                  }
+                    },
+                  },
                 },
                 [_c("i", { staticClass: "icon-zoom_in" })]
               ),
@@ -67883,98 +68558,102 @@ var render = function() {
                 "div",
                 {
                   staticClass:
-                    "deploy-limit__pips d-flex justify-center flex-wrap mt-3"
+                    "deploy-limit__pips d-flex justify-center flex-wrap mt-3",
                 },
                 [
-                  _vm._l(_vm.data.deployLimit, function(n, index) {
+                  _vm._l(_vm.data.deployLimit, function (n, index) {
                     return _c("i", {
                       staticClass: "deploy-limit__pip",
                       class:
                         index < _vm.usedDeploy
                           ? "icon-circle active"
-                          : "icon-circle-open"
+                          : "icon-circle-open",
                     })
                   }),
                   _vm._v(" "),
-                  _vm._l(_vm.bonusDeployCount, function(n, index) {
+                  _vm._l(_vm.bonusDeployCount, function (n, index) {
                     return _vm.showBonusPips
                       ? _c("i", {
                           staticClass: "deploy-limit__pip commie-pip",
                           class:
                             index < _vm.bonusUnitsInDeploy
                               ? "icon-circle active"
-                              : "icon-circle-open"
+                              : "icon-circle-open",
                         })
                       : _vm._e()
-                  })
+                  }),
                 ],
                 2
               ),
               _vm._v(" "),
-              _vm._l(_vm.groupBy(_vm.selected, "location"), function(
-                units,
-                location
-              ) {
-                return _c(
-                  "div",
-                  {
-                    staticClass: "popout-hud__block p-3 pos-relative",
-                    class: { "has-ghosts": _vm.shared.faction.ghostDeploy },
-                    attrs: {
-                      "data-count": location !== "null" ? location : "reserves"
-                    }
-                  },
-                  _vm._l(units, function(unit) {
-                    return _c(
-                      "div",
-                      {
-                        staticClass:
-                          "units-hud__unit d-inline-block pos-relative",
-                        class: { deploy__ghost: unit.asGhost }
+              _vm._l(
+                _vm.groupBy(_vm.selected, "location"),
+                function (units, location) {
+                  return _c(
+                    "div",
+                    {
+                      staticClass: "popout-hud__block p-3 pos-relative",
+                      class: { "has-ghosts": _vm.shared.faction.ghostDeploy },
+                      attrs: {
+                        "data-count":
+                          location !== "null" ? location : "reserves",
                       },
-                      [
-                        _c("img", {
-                          staticClass: "unit-hud__unit-image",
-                          attrs: {
-                            src:
-                              "/images/factions/" +
-                              unit.faction +
-                              "/units/" +
-                              unit.type +
-                              (unit.flipped || unit.asGhost ? "-flipped" : "") +
-                              ".png"
-                          },
-                          on: {
-                            click: function($event) {
-                              unit.selected = false
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _vm.shared.faction.ghostDeploy
-                          ? _c(
-                              "div",
-                              {
-                                staticClass: "pointer deploy__toggle-ghost",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.toggleGhost(unit)
-                                  }
-                                }
+                    },
+                    _vm._l(units, function (unit) {
+                      return _c(
+                        "div",
+                        {
+                          staticClass:
+                            "units-hud__unit d-inline-block pos-relative",
+                          class: { deploy__ghost: unit.asGhost },
+                        },
+                        [
+                          _c("img", {
+                            staticClass: "unit-hud__unit-image",
+                            attrs: {
+                              src:
+                                "/images/factions/" +
+                                unit.faction +
+                                "/units/" +
+                                unit.type +
+                                (unit.flipped || unit.asGhost
+                                  ? "-flipped"
+                                  : "") +
+                                ".png",
+                            },
+                            on: {
+                              click: function ($event) {
+                                unit.selected = false
                               },
-                              [
-                                _vm._v(
-                                  _vm._s(!unit.asGhost ? "non-" : "") + "ghost"
-                                )
-                              ]
-                            )
-                          : _vm._e()
-                      ]
-                    )
-                  }),
-                  0
-                )
-              })
+                            },
+                          }),
+                          _vm._v(" "),
+                          _vm.shared.faction.ghostDeploy
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass: "pointer deploy__toggle-ghost",
+                                  on: {
+                                    click: function ($event) {
+                                      return _vm.toggleGhost(unit)
+                                    },
+                                  },
+                                },
+                                [
+                                  _vm._v(
+                                    _vm._s(!unit.asGhost ? "non-" : "") +
+                                      "ghost"
+                                  ),
+                                ]
+                              )
+                            : _vm._e(),
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                }
+              ),
             ],
             2
           ),
@@ -67983,7 +68662,7 @@ var render = function() {
             ? _c("div", { staticClass: "prompt-question red" }, [
                 _vm._v(
                   "Kau is blocking champions from being moved to this area"
-                )
+                ),
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -67995,8 +68674,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Pay xC" + _vm.cost + "x to deploy these units?"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -68006,8 +68685,8 @@ var render = function() {
                 domProps: {
                   innerHTML: _vm._s(
                     _vm.shared.filterText("Vines cost xC" + _vm.vinesCost + "x")
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -68019,8 +68698,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Police Payoff cost xC" + _vm.policePayoffs + "x"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -68031,10 +68710,10 @@ var render = function() {
                   {
                     staticClass: "button button-empty",
                     on: {
-                      click: function($event) {
+                      click: function ($event) {
                         return _vm.resolve(false)
-                      }
-                    }
+                      },
+                    },
                   },
                   [_vm._v("decline")]
                 )
@@ -68046,18 +68725,18 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: !_vm.canSave },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("deploy selected units")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -68078,7 +68757,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -68090,7 +68769,7 @@ var render = function() {
         _c(
           "div",
           {
-            staticClass: "title view-player__title d-inline-block pull-center"
+            staticClass: "title view-player__title d-inline-block pull-center",
           },
           [_vm._v("Choose area to deploy Xavier Blackstone")]
         ),
@@ -68099,24 +68778,24 @@ var render = function() {
           "area-flipper",
           {
             attrs: { areas: _vm.areas, index: _vm.index },
-            on: { update: _vm.updateArea }
+            on: { update: _vm.updateArea },
           },
           [
             _vm.xavier
               ? _c("unit-row", { attrs: { units: [_vm.xavier] } })
-              : _vm._e()
+              : _vm._e(),
           ],
           1
         ),
         _vm._v(" "),
         _c("div", { staticClass: "width-100 d-flex justify-center" }, [
           _c("button", { staticClass: "button", on: { click: _vm.resolve } }, [
-            _vm._v(_vm._s("Deploy Xavier to the " + _vm.area.name))
-          ])
-        ])
+            _vm._v(_vm._s("Deploy Xavier to the " + _vm.area.name)),
+          ]),
+        ]),
       ],
       1
-    )
+    ),
   ])
 }
 var staticRenderFns = []
@@ -68137,7 +68816,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -68145,7 +68824,7 @@ var render = function() {
     _c("div", { staticClass: "d-flex justify-center px-5" }, [
       _c("div", { staticClass: "width-100 center-text" }, [
         _c("div", { staticClass: "title d-inline-block" }, [
-          _vm._v(_vm._s(_vm.message))
+          _vm._v(_vm._s(_vm.message)),
         ]),
         _vm._v(" "),
         _c(
@@ -68157,10 +68836,10 @@ var render = function() {
                 attrs: {
                   classes:
                     "choose-target__wrap d-flex pb-3 width-100 plan-block",
-                  buttons: "true"
-                }
+                  buttons: "true",
+                },
               },
-              _vm._l(_vm.shared.faction.cards.hand, function(card) {
+              _vm._l(_vm.shared.faction.cards.hand, function (card) {
                 return _c(
                   "div",
                   { staticClass: "d-flex pb-3 width-100 justify-center" },
@@ -68171,27 +68850,27 @@ var render = function() {
                         staticClass: "plan-block__image-wrap",
                         class: { selected: card.selected },
                         on: {
-                          click: function($event) {
+                          click: function ($event) {
                             return _vm.cardClicked(card)
-                          }
-                        }
+                          },
+                        },
                       },
                       [
                         _c("img", {
                           staticClass: "plan-block__image",
-                          attrs: { src: "/images/cards/" + card.file + ".jpg" }
-                        })
+                          attrs: { src: "/images/cards/" + card.file + ".jpg" },
+                        }),
                       ]
-                    )
+                    ),
                   ]
                 )
               }),
               0
-            )
+            ),
           ],
           1
-        )
-      ])
+        ),
+      ]),
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "width-100 d-flex justify-center" }, [
@@ -68200,11 +68879,11 @@ var render = function() {
         {
           staticClass: "button",
           attrs: { disabled: !_vm.canSubmit },
-          on: { click: _vm.resolve }
+          on: { click: _vm.resolve },
         },
         [_vm._v("Discard selected cards")]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -68225,7 +68904,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -68235,7 +68914,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [
@@ -68243,16 +68922,16 @@ var render = function() {
               "Resolve this skill twice? You have " +
                 _vm._s(_vm.data.markers) +
                 " hAx0rEd Markers remaining"
-            )
+            ),
           ]),
           _vm._v(" "),
           _c("area-flipper", { attrs: { areas: [_vm.area], index: 0 } }, [
             _c("div", {
               staticClass: "width-100 choose-action__skill-ability center-text",
               domProps: {
-                innerHTML: _vm._s(this.shared.filterText(this.area.skill))
-              }
-            })
+                innerHTML: _vm._s(this.shared.filterText(this.area.skill)),
+              },
+            }),
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
@@ -68261,10 +68940,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(false)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("Decline")]
             ),
@@ -68274,18 +68953,18 @@ var render = function() {
               {
                 staticClass: "button",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("Resolve Twice")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -68306,7 +68985,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -68317,22 +68996,24 @@ var render = function() {
         "choose-factions__faction pointer d-flex justify-end align-center",
       class: _vm.classes,
       on: {
-        click: function($event) {
+        click: function ($event) {
           return _vm.$emit("clicked", _vm.faction.name)
-        }
-      }
+        },
+      },
     },
     [
       _vm._v("\n    " + _vm._s(_vm.faction.name)),
       _c("span", {
         staticClass: "choose-factions__status pl-3",
-        class: "choose-factions__status-" + _vm.faction.status
+        class: "choose-factions__status-" + _vm.faction.status,
       }),
       _vm._v(" "),
       _c("span", {
         staticClass: "choose-factions__circle pl-1",
         class:
-          _vm.faction.name === _vm.selected ? "icon-circle" : "icon-circle-open"
+          _vm.faction.name === _vm.selected
+            ? "icon-circle"
+            : "icon-circle-open",
       }),
       _vm._v(" "),
       _vm.shared.isActive()
@@ -68340,13 +69021,13 @@ var render = function() {
             staticClass: "icon-x pl-1 choose-factions__block",
             class: { active: _vm.faction.blocked },
             on: {
-              click: function($event) {
+              click: function ($event) {
                 $event.stopPropagation()
                 return _vm.$emit("blocked", _vm.faction.name)
-              }
-            }
+              },
+            },
           })
-        : _vm._e()
+        : _vm._e(),
     ]
   )
 }
@@ -68368,7 +69049,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -68379,10 +69060,10 @@ var render = function() {
           {
             staticClass: "flipper",
             on: {
-              click: function($event) {
+              click: function ($event) {
                 return _vm.flip(-1)
-              }
-            }
+              },
+            },
           },
           [_c("i", { staticClass: "icon-left" })]
         )
@@ -68393,7 +69074,7 @@ var render = function() {
       {
         staticClass: "faction-header p-4 pos-relative",
         class: "faction-header-" + _vm.faction.name + " " + _vm.classes,
-        style: "background-color: var(--faction-" + _vm.faction.name + ")"
+        style: "background-color: var(--faction-" + _vm.faction.name + ")",
       },
       [
         _c(
@@ -68402,13 +69083,13 @@ var render = function() {
           [
             _c("img", {
               attrs: {
-                src: "/images/factions/" + _vm.faction.name + "/icon.jpg"
-              }
-            })
+                src: "/images/factions/" + _vm.faction.name + "/icon.jpg",
+              },
+            }),
           ]
         ),
         _vm._v(" "),
-        _vm._t("default")
+        _vm._t("default"),
       ],
       2
     ),
@@ -68419,14 +69100,14 @@ var render = function() {
           {
             staticClass: "flipper",
             on: {
-              click: function($event) {
+              click: function ($event) {
                 return _vm.flip(+1)
-              }
-            }
+              },
+            },
           },
           [_c("i", { staticClass: "icon-right" })]
         )
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -68447,7 +69128,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -68457,26 +69138,26 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [_vm._v("Free units from webs")]),
           _vm._v(" "),
-          _vm._l(_vm.areas, function(val, key) {
+          _vm._l(_vm.areas, function (val, key) {
             return _c(
               "area-flipper",
               {
                 key: key,
                 attrs: { areas: [val.area], index: 0 },
-                on: { areaClicked: _vm.areaClicked }
+                on: { areaClicked: _vm.areaClicked },
               },
               [
                 _c("unit-row", {
                   attrs: {
                     units: val.units,
-                    allSelected: _vm.selectedAreas.includes(key)
-                  }
-                })
+                    allSelected: _vm.selectedAreas.includes(key),
+                  },
+                }),
               ],
               1
             )
@@ -68490,8 +69171,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Pay xC" + _vm.cost + "x to free these units?"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -68501,15 +69182,15 @@ var render = function() {
               {
                 staticClass: "button",
                 attrs: { disabled: !_vm.canSubmit },
-                on: { click: _vm.resolve }
+                on: { click: _vm.resolve },
               },
               [_vm._v("Save Choices")]
-            )
-          ])
+            ),
+          ]),
         ],
         2
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -68530,7 +69211,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -68540,11 +69221,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
-            _vm._v("Choose a unit from enemy reinforcements")
+            _vm._v("Choose a unit from enemy reinforcements"),
           ]),
           _vm._v(" "),
           _c(
@@ -68557,25 +69238,25 @@ var render = function() {
                   attrs: {
                     factions: _vm.enemies,
                     index: _vm.index,
-                    classes: ""
+                    classes: "",
                   },
                   on: {
-                    update: function(update) {
+                    update: function (update) {
                       return (_vm.index = update)
-                    }
-                  }
+                    },
+                  },
                 },
-                _vm._l(_vm.enemyUnits, function(unit) {
+                _vm._l(_vm.enemyUnits, function (unit) {
                   return _c(
                     "div",
                     {
                       staticClass:
                         "units-hud__unit d-inline-block pos-relative",
                       on: {
-                        click: function($event) {
+                        click: function ($event) {
                           return _vm.selectUnit(unit)
-                        }
-                      }
+                        },
+                      },
                     },
                     [
                       _c("img", {
@@ -68588,19 +69269,19 @@ var render = function() {
                             "/units/" +
                             unit.type +
                             (unit.flipped ? "-flipped" : "") +
-                            ".png"
+                            ".png",
                         },
                         on: {
-                          click: function($event) {
+                          click: function ($event) {
                             unit.selected = true
-                          }
-                        }
-                      })
+                          },
+                        },
+                      }),
                     ]
                   )
                 }),
                 0
-              )
+              ),
             ],
             1
           ),
@@ -68611,8 +69292,8 @@ var render = function() {
               attrs: {
                 areas: [_vm.area],
                 index: 0,
-                classes: "area-header__units"
-              }
+                classes: "area-header__units",
+              },
             },
             [
               _c(
@@ -68620,53 +69301,53 @@ var render = function() {
                 {
                   staticClass: "toggle area-map__toggle top-0 right-0",
                   on: {
-                    click: function($event) {
+                    click: function ($event) {
                       $event.stopPropagation()
                       return _vm.shared.event.emit("viewArea", _vm.area)
-                    }
-                  }
+                    },
+                  },
                 },
                 [_c("i", { staticClass: "icon-zoom_in" })]
               ),
               _vm._v(" "),
-              _vm._l(_vm.groupBy(_vm.selected, "faction"), function(
-                units,
-                location
-              ) {
-                return _c(
-                  "div",
-                  { staticClass: "popout-hud__block p-3 pos-relative" },
-                  _vm._l(units, function(unit) {
-                    return _c(
-                      "div",
-                      {
-                        staticClass:
-                          "units-hud__unit d-inline-block pos-relative"
-                      },
-                      [
-                        _c("img", {
-                          staticClass: "unit-hud__unit-image",
-                          attrs: {
-                            src:
-                              "/images/factions/" +
-                              unit.faction +
-                              "/units/" +
-                              unit.type +
-                              (unit.flipped ? "-flipped" : "") +
-                              ".png"
-                          },
-                          on: {
-                            click: function($event) {
-                              unit.selected = false
-                            }
-                          }
-                        })
-                      ]
-                    )
-                  }),
-                  0
-                )
-              })
+              _vm._l(
+                _vm.groupBy(_vm.selected, "faction"),
+                function (units, location) {
+                  return _c(
+                    "div",
+                    { staticClass: "popout-hud__block p-3 pos-relative" },
+                    _vm._l(units, function (unit) {
+                      return _c(
+                        "div",
+                        {
+                          staticClass:
+                            "units-hud__unit d-inline-block pos-relative",
+                        },
+                        [
+                          _c("img", {
+                            staticClass: "unit-hud__unit-image",
+                            attrs: {
+                              src:
+                                "/images/factions/" +
+                                unit.faction +
+                                "/units/" +
+                                unit.type +
+                                (unit.flipped ? "-flipped" : "") +
+                                ".png",
+                            },
+                            on: {
+                              click: function ($event) {
+                                unit.selected = false
+                              },
+                            },
+                          }),
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                }
+              ),
             ],
             2
           ),
@@ -68678,18 +69359,18 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: !_vm.selected.length },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v(_vm._s(_vm.buttonMessage))]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -68710,7 +69391,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -68720,13 +69401,13 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [
             _vm._v(
               "Choose a token from your reserves to replace your Loop token"
-            )
+            ),
           ]),
           _vm._v(" "),
           _c(
@@ -68734,8 +69415,8 @@ var render = function() {
             { attrs: { areas: [_vm.area], index: 0 } },
             [
               _c("token-row", {
-                attrs: { area: _vm.area, highlight: _vm.data.token }
-              })
+                attrs: { area: _vm.area, highlight: _vm.data.token },
+              }),
             ],
             1
           ),
@@ -68748,10 +69429,10 @@ var render = function() {
                 attrs: {
                   tokens: _vm.tokens,
                   title: "Reserves",
-                  selected: _vm.token
+                  selected: _vm.token,
                 },
-                on: { tokenClicked: _vm.selectToken }
-              })
+                on: { tokenClicked: _vm.selectToken },
+              }),
             ],
             1
           ),
@@ -68762,15 +69443,15 @@ var render = function() {
               {
                 staticClass: "button",
                 attrs: { disabled: !_vm.canSave },
-                on: { click: _vm.resolve }
+                on: { click: _vm.resolve },
               },
               [_vm._v("Swap selected token")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -68791,7 +69472,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -68801,11 +69482,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
-            _vm._v(_vm._s(_vm.message))
+            _vm._v(_vm._s(_vm.message)),
           ]),
           _vm._v(" "),
           !_vm.confirm
@@ -68819,9 +69500,9 @@ var render = function() {
                       attrs: {
                         areas: _vm.fromAreas,
                         index: _vm.fromAreaIndex,
-                        classes: "area-header__units pt-0"
+                        classes: "area-header__units pt-0",
                       },
-                      on: { update: _vm.updateFromIndex }
+                      on: { update: _vm.updateFromIndex },
                     },
                     [
                       _c(
@@ -68831,17 +69512,17 @@ var render = function() {
                           _vm._v(
                             "Move from the " +
                               _vm._s(_vm.fromAreas[_vm.fromAreaIndex].name)
-                          )
+                          ),
                         ]
                       ),
                       _vm._v(" "),
                       _c("unit-row", {
                         attrs: { units: _vm.currentFromAreaUnits },
-                        on: { unit: _vm.addUnitFromPlay }
-                      })
+                        on: { unit: _vm.addUnitFromPlay },
+                      }),
                     ],
                     1
-                  )
+                  ),
                 ],
                 1
               )
@@ -68854,8 +69535,8 @@ var render = function() {
                 areas: [_vm.area],
                 locked: "true",
                 index: 0,
-                classes: "area-header__units"
-              }
+                classes: "area-header__units",
+              },
             },
             [
               _c(
@@ -68863,11 +69544,11 @@ var render = function() {
                 {
                   staticClass: "toggle area-map__toggle top-0 right-0",
                   on: {
-                    click: function($event) {
+                    click: function ($event) {
                       $event.stopPropagation()
                       return _vm.shared.event.emit("viewArea", _vm.area)
-                    }
-                  }
+                    },
+                  },
                 },
                 [_c("i", { staticClass: "icon-zoom_in" })]
               ),
@@ -68877,62 +69558,62 @@ var render = function() {
                     "div",
                     {
                       staticClass:
-                        "deploy-limit__pips d-flex justify-center flex-wrap mt-3"
+                        "deploy-limit__pips d-flex justify-center flex-wrap mt-3",
                     },
-                    _vm._l(_vm.data.moveLimit, function(n, index) {
+                    _vm._l(_vm.data.moveLimit, function (n, index) {
                       return _c("i", {
                         staticClass: "deploy-limit__pip",
                         class:
                           index < _vm.selected.length
                             ? "icon-circle active"
-                            : "icon-circle-open"
+                            : "icon-circle-open",
                       })
                     }),
                     0
                   )
                 : _vm._e(),
               _vm._v(" "),
-              _vm._l(_vm.groupBy(_vm.selected, "location"), function(
-                units,
-                location
-              ) {
-                return _c(
-                  "div",
-                  {
-                    staticClass: "popout-hud__block p-3 pos-relative",
-                    attrs: { "data-count": location }
-                  },
-                  _vm._l(units, function(unit) {
-                    return _c(
-                      "div",
-                      {
-                        staticClass:
-                          "units-hud__unit d-inline-block pos-relative"
-                      },
-                      [
-                        _c("img", {
-                          staticClass: "unit-hud__unit-image",
-                          attrs: {
-                            src:
-                              "/images/factions/" +
-                              unit.faction +
-                              "/units/" +
-                              unit.type +
-                              (unit.flipped ? "-flipped" : "") +
-                              ".png"
-                          },
-                          on: {
-                            click: function($event) {
-                              return _vm.unselectUnit(unit)
-                            }
-                          }
-                        })
-                      ]
-                    )
-                  }),
-                  0
-                )
-              })
+              _vm._l(
+                _vm.groupBy(_vm.selected, "location"),
+                function (units, location) {
+                  return _c(
+                    "div",
+                    {
+                      staticClass: "popout-hud__block p-3 pos-relative",
+                      attrs: { "data-count": location },
+                    },
+                    _vm._l(units, function (unit) {
+                      return _c(
+                        "div",
+                        {
+                          staticClass:
+                            "units-hud__unit d-inline-block pos-relative",
+                        },
+                        [
+                          _c("img", {
+                            staticClass: "unit-hud__unit-image",
+                            attrs: {
+                              src:
+                                "/images/factions/" +
+                                unit.faction +
+                                "/units/" +
+                                unit.type +
+                                (unit.flipped ? "-flipped" : "") +
+                                ".png",
+                            },
+                            on: {
+                              click: function ($event) {
+                                return _vm.unselectUnit(unit)
+                              },
+                            },
+                          }),
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                }
+              ),
             ],
             2
           ),
@@ -68941,7 +69622,7 @@ var render = function() {
             ? _c("div", { staticClass: "prompt-question red" }, [
                 _vm._v(
                   "Kau is blocking champions from being moved to this area"
-                )
+                ),
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -68953,8 +69634,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Pay xC" + _vm.cost + "x to move these units?"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -68968,8 +69649,8 @@ var render = function() {
                           _vm.shared.filterText(
                             "Vines cost xC" + _vm.vinesCost + "x"
                           )
-                        )
-                      }
+                        ),
+                      },
                     })
                   : _vm._e(),
                 _vm._v(" "),
@@ -68981,10 +69662,10 @@ var render = function() {
                           _vm.shared.filterText(
                             "Police Payoff cost xC" + _vm.policePayoffs + "x"
                           )
-                        )
-                      }
+                        ),
+                      },
                     })
-                  : _vm._e()
+                  : _vm._e(),
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -68996,10 +69677,10 @@ var render = function() {
                     {
                       staticClass: "button button-empty",
                       on: {
-                        click: function($event) {
+                        click: function ($event) {
                           _vm.confirm = false
-                        }
-                      }
+                        },
+                      },
                     },
                     [_vm._v("back")]
                   ),
@@ -69010,13 +69691,13 @@ var render = function() {
                       staticClass: "button",
                       attrs: { disabled: _vm.canSave !== true },
                       on: {
-                        click: function($event) {
+                        click: function ($event) {
                           return _vm.resolve(true)
-                        }
-                      }
+                        },
+                      },
                     },
                     [_vm._v("finalize move")]
-                  )
+                  ),
                 ])
               : _c("div", [
                   _vm.canDecline
@@ -69025,10 +69706,10 @@ var render = function() {
                         {
                           staticClass: "button button-empty",
                           on: {
-                            click: function($event) {
+                            click: function ($event) {
                               return _vm.resolve(false)
-                            }
-                          }
+                            },
+                          },
                         },
                         [_vm._v("decline move")]
                       )
@@ -69040,19 +69721,19 @@ var render = function() {
                       staticClass: "button",
                       attrs: { disabled: _vm.canSave !== true },
                       on: {
-                        click: function($event) {
+                        click: function ($event) {
                           _vm.confirm = true
-                        }
-                      }
+                        },
+                      },
                     },
                     [_vm._v("confirm move")]
-                  )
-                ])
-          ])
+                  ),
+                ]),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -69073,7 +69754,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -69083,11 +69764,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
-            _vm._v(_vm._s(_vm.data.message))
+            _vm._v(_vm._s(_vm.data.message)),
           ]),
           _vm._v(" "),
           _c(
@@ -69101,17 +69782,17 @@ var render = function() {
                     areas: [_vm.fromArea],
                     locked: "true",
                     index: "0",
-                    classes: "area-header__units pt-0"
-                  }
+                    classes: "area-header__units pt-0",
+                  },
                 },
                 [
                   _c("unit-row", {
                     attrs: { units: _vm.fromAreaUnits },
-                    on: { unit: _vm.addUnitToArea }
-                  })
+                    on: { unit: _vm.addUnitToArea },
+                  }),
                 ],
                 1
-              )
+              ),
             ],
             1
           ),
@@ -69122,15 +69803,15 @@ var render = function() {
               attrs: {
                 areas: _vm.toAreas,
                 index: _vm.toAreaIndex,
-                classes: "area-header__units"
+                classes: "area-header__units",
               },
-              on: { update: _vm.updateToIndex }
+              on: { update: _vm.updateToIndex },
             },
             [
               _c("unit-row", {
                 attrs: { units: _vm.currentAreaUnits },
-                on: { unit: _vm.removeUnitFromArea }
-              })
+                on: { unit: _vm.removeUnitFromArea },
+              }),
             ],
             1
           ),
@@ -69143,8 +69824,8 @@ var render = function() {
                     _vm.shared.filterText(
                       "Pay xC" + _vm.cost + "x to move these units?"
                     )
-                  )
-                }
+                  ),
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -69154,10 +69835,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(false)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("decline")]
             ),
@@ -69168,18 +69849,18 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: !_vm.canSave },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("move selected units")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -69200,7 +69881,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -69212,7 +69893,7 @@ var render = function() {
         ? _c("player-prompt", { attrs: { classes: "" } }, [
             _c("div", { staticClass: "px-5" }, [
               _c("div", { staticClass: "title" }, [
-                _vm._v("Are you sure you want to pass?")
+                _vm._v("Are you sure you want to pass?"),
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "flex-center" }, [
@@ -69221,10 +69902,10 @@ var render = function() {
                   {
                     staticClass: "button button-empty",
                     on: {
-                      click: function($event) {
+                      click: function ($event) {
                         _vm.confirmingPass = false
-                      }
-                    }
+                      },
+                    },
                   },
                   [_vm._v("no")]
                 ),
@@ -69233,9 +69914,9 @@ var render = function() {
                   "button",
                   { staticClass: "button", on: { click: _vm.passToken } },
                   [_vm._v("Yes Pass")]
-                )
-              ])
-            ])
+                ),
+              ]),
+            ]),
           ])
         : _vm._e(),
       _vm._v(" "),
@@ -69244,10 +69925,10 @@ var render = function() {
         {
           staticClass: "button button-empty place-token__button right-text",
           on: {
-            click: function($event) {
+            click: function ($event) {
               _vm.confirmingPass = true
-            }
-          }
+            },
+          },
         },
         [_vm._v("PASS")]
       ),
@@ -69261,15 +69942,15 @@ var render = function() {
               tokens: _vm.reserves,
               classes: "one-line",
               selected: _vm.token,
-              noBorder: "true"
-            }
+              noBorder: "true",
+            },
           }),
           _vm._v(" "),
           _vm.token && _vm.token.req
             ? _c("div", { staticClass: "place-token-req prompt-question" }, [
-                _vm._v(_vm._s(_vm.token.req))
+                _vm._v(_vm._s(_vm.token.req)),
               ])
-            : _vm._e()
+            : _vm._e(),
         ],
         1
       ),
@@ -69279,10 +69960,10 @@ var render = function() {
         {
           staticClass: "button place-token__button",
           attrs: { disabled: _vm.saveDisabled },
-          on: { click: _vm.placeToken }
+          on: { click: _vm.placeToken },
         },
         [_vm._v("place token")]
-      )
+      ),
     ],
     1
   )
@@ -69305,7 +69986,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -69315,7 +69996,7 @@ var render = function() {
           "button",
           {
             staticClass: "toggle minimize-toggle top right",
-            on: { click: _vm.close }
+            on: { click: _vm.close },
           },
           [
             _c("i", { class: _vm.closed ? "icon-maximize" : "icon-minimize" }),
@@ -69334,7 +70015,7 @@ var render = function() {
             _vm._v(" "),
             _vm.closed
               ? _c("loading-streak", { attrs: { position: "bottom" } })
-              : _vm._e()
+              : _vm._e(),
           ],
           1
         ),
@@ -69344,7 +70025,7 @@ var render = function() {
           { staticClass: "player-prompt__slot-container" },
           [_vm._t("default")],
           2
-        )
+        ),
       ])
     : _vm._e()
 }
@@ -69366,7 +70047,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -69376,11 +70057,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [
-            _vm._v("Prevent the past from being erased?")
+            _vm._v("Prevent the past from being erased?"),
           ]),
           _vm._v(" "),
           _c(
@@ -69388,8 +70069,8 @@ var render = function() {
             { attrs: { areas: [_vm.area], index: 0 } },
             [
               _c("token-row", {
-                attrs: { area: _vm.area, highlight: _vm.data.token }
-              })
+                attrs: { area: _vm.area, highlight: _vm.data.token },
+              }),
             ],
             1
           ),
@@ -69401,8 +70082,8 @@ var render = function() {
                 _vm.shared.filterText(
                   "Pay xC1x to prevent this token from being discarded?"
                 )
-              )
-            }
+              ),
+            },
           }),
           _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
@@ -69411,10 +70092,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(false)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("Discard Token")]
             ),
@@ -69425,18 +70106,18 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: !_vm.canActivate },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("Pay to keep token")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -69457,7 +70138,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -69467,11 +70148,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title" }, [
-            _vm._v(_vm._s(_vm.data.message))
+            _vm._v(_vm._s(_vm.data.message)),
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "flex-center" }, [
@@ -69480,10 +70161,10 @@ var render = function() {
               {
                 staticClass: "button button-empty",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(false)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("No")]
             ),
@@ -69493,17 +70174,17 @@ var render = function() {
               {
                 staticClass: "button",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v("Yes")]
-            )
-          ])
+            ),
+          ]),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -69524,7 +70205,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -69534,11 +70215,11 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [
-            _vm._v("Sacrifice " + _vm._s(_vm.data.count) + " units")
+            _vm._v("Sacrifice " + _vm._s(_vm.data.count) + " units"),
           ]),
           _vm._v(" "),
           _c(
@@ -69551,22 +70232,22 @@ var render = function() {
                   attrs: {
                     areas: _vm.areas,
                     index: _vm.areaIndex,
-                    classes: "area-header__units pt-0"
+                    classes: "area-header__units pt-0",
                   },
                   on: {
-                    update: function(update) {
+                    update: function (update) {
                       return (_vm.areaIndex = update)
-                    }
-                  }
+                    },
+                  },
                 },
                 [
                   _c("unit-row", {
                     attrs: { units: _vm.currentAreaUnits },
-                    on: { unit: _vm.addUnitFromPlay }
-                  })
+                    on: { unit: _vm.addUnitFromPlay },
+                  }),
                 ],
                 1
-              )
+              ),
             ],
             1
           ),
@@ -69574,46 +70255,47 @@ var render = function() {
           _c(
             "div",
             { staticClass: "sacrifice-units__container p-4" },
-            _vm._l(_vm.groupBy(_vm.selected, "location"), function(
-              units,
-              location
-            ) {
-              return _c(
-                "div",
-                {
-                  staticClass: "popout-hud__block p-3 pos-relative",
-                  attrs: { "data-count": location }
-                },
-                _vm._l(units, function(unit) {
-                  return _c(
-                    "div",
-                    {
-                      staticClass: "units-hud__unit d-inline-block pos-relative"
-                    },
-                    [
-                      _c("img", {
-                        staticClass: "unit-hud__unit-image",
-                        attrs: {
-                          src:
-                            "/images/factions/" +
-                            unit.faction +
-                            "/units/" +
-                            unit.type +
-                            (unit.flipped ? "-flipped" : "") +
-                            ".png"
-                        },
-                        on: {
-                          click: function($event) {
-                            unit.selected = false
-                          }
-                        }
-                      })
-                    ]
-                  )
-                }),
-                0
-              )
-            }),
+            _vm._l(
+              _vm.groupBy(_vm.selected, "location"),
+              function (units, location) {
+                return _c(
+                  "div",
+                  {
+                    staticClass: "popout-hud__block p-3 pos-relative",
+                    attrs: { "data-count": location },
+                  },
+                  _vm._l(units, function (unit) {
+                    return _c(
+                      "div",
+                      {
+                        staticClass:
+                          "units-hud__unit d-inline-block pos-relative",
+                      },
+                      [
+                        _c("img", {
+                          staticClass: "unit-hud__unit-image",
+                          attrs: {
+                            src:
+                              "/images/factions/" +
+                              unit.faction +
+                              "/units/" +
+                              unit.type +
+                              (unit.flipped ? "-flipped" : "") +
+                              ".png",
+                          },
+                          on: {
+                            click: function ($event) {
+                              unit.selected = false
+                            },
+                          },
+                        }),
+                      ]
+                    )
+                  }),
+                  0
+                )
+              }
+            ),
             0
           ),
           _vm._v(" "),
@@ -69623,7 +70305,7 @@ var render = function() {
                   "Choose " +
                     _vm._s(_vm.needToSacrifice) +
                     " units to sacrifice"
-                )
+                ),
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -69634,10 +70316,10 @@ var render = function() {
                   {
                     staticClass: "button button-empty",
                     on: {
-                      click: function($event) {
+                      click: function ($event) {
                         return _vm.resolve(false)
-                      }
-                    }
+                      },
+                    },
                   },
                   [_vm._v("decline")]
                 )
@@ -69649,17 +70331,17 @@ var render = function() {
                 staticClass: "button",
                 attrs: { disabled: _vm.canSave !== true },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.resolve(true)
-                  }
-                }
+                  },
+                },
               },
               [_vm._v(_vm._s(_vm.buttonMessage))]
-            )
-          ])
+            ),
+          ]),
         ]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -69680,7 +70362,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -69690,7 +70372,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "width-100 d-flex justify-center flex-column align-center"
+            "width-100 d-flex justify-center flex-column align-center",
         },
         [
           _c("div", { staticClass: "title mb-4" }, [_vm._v("Score Plans")]),
@@ -69698,16 +70380,16 @@ var render = function() {
           _c(
             "horizontal-scroll",
             { attrs: { classes: "plans-wrap d-flex pb-3 width-100" } },
-            _vm._l(_vm.data.plans, function(plan) {
+            _vm._l(_vm.data.plans, function (plan) {
               return _vm.mode === "plans"
                 ? _c("plan-block", {
                     key: plan.plan.id,
                     attrs: { faction: _vm.shared.faction, plan: plan },
                     on: {
-                      clicked: function($event) {
+                      clicked: function ($event) {
                         return _vm.toggle(plan)
-                      }
-                    }
+                      },
+                    },
                   })
                 : _vm._e()
             }),
@@ -69719,12 +70401,12 @@ var render = function() {
               "button",
               { staticClass: "button", on: { click: _vm.resolve } },
               [_vm._v("confirm scored plans")]
-            )
-          ])
+            ),
+          ]),
         ],
         1
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -69745,7 +70427,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -69755,25 +70437,25 @@ var render = function() {
       staticClass: "save-game pos-relative overflow-hidden",
       class: { disabled: !_vm.canLoad },
       on: {
-        click: function($event) {
+        click: function ($event) {
           return _vm.$emit("open", _vm.index)
-        }
-      }
+        },
+      },
     },
     [
       _c("div", { staticClass: "save-game__date" }, [
-        _vm._v(_vm._s(_vm.save["created_at"]))
+        _vm._v(_vm._s(_vm.save["created_at"])),
       ]),
       _vm._v(" "),
       _c(
         "div",
         { staticClass: "save-game__players" },
-        _vm._l(_vm.save.players, function(player, index) {
+        _vm._l(_vm.save.players, function (player, index) {
           return _c(
             "span",
             {
               staticClass: "save-game__player ellipses capitalize mr-2",
-              class: { missing: !_vm.shared.lobbyPlayers[player.uuid] }
+              class: { missing: !_vm.shared.lobbyPlayers[player.uuid] },
             },
             [_vm._v("\n                " + _vm._s(player.name) + "\n        ")]
           )
@@ -69791,19 +70473,19 @@ var render = function() {
                 { staticClass: "save-game__type-block" },
                 [
                   _c("div", { staticClass: "save-game__type" }, [
-                    _vm._v("manual save")
+                    _vm._v("manual save"),
                   ]),
                   _vm._v(" "),
-                  _vm._l(_vm.save.manuals, function(item) {
+                  _vm._l(_vm.save.manuals, function (item) {
                     return _c(
                       "div",
                       {
                         staticClass: "save-game__save",
                         on: {
-                          click: function($event) {
+                          click: function ($event) {
                             return _vm.loadGame(item.id)
-                          }
-                        }
+                          },
+                        },
                       },
                       [
                         _vm._v(
@@ -69811,10 +70493,10 @@ var render = function() {
                             _vm._s(item.action) +
                             " - " +
                             _vm._s(item.active_player)
-                        )
+                        ),
                       ]
                     )
-                  })
+                  }),
                 ],
                 2
               )
@@ -69826,19 +70508,19 @@ var render = function() {
                 { staticClass: "save-game__type-block" },
                 [
                   _c("div", { staticClass: "save-game__type" }, [
-                    _vm._v("player actions")
+                    _vm._v("player actions"),
                   ]),
                   _vm._v(" "),
-                  _vm._l(_vm.save.automatics, function(item) {
+                  _vm._l(_vm.save.automatics, function (item) {
                     return _c(
                       "div",
                       {
                         staticClass: "save-game__save",
                         on: {
-                          click: function($event) {
+                          click: function ($event) {
                             return _vm.loadGame(item.id)
-                          }
-                        }
+                          },
+                        },
                       },
                       [
                         _vm._v(
@@ -69846,10 +70528,10 @@ var render = function() {
                             _vm._s(item.action) +
                             " - " +
                             _vm._s(item.active_player)
-                        )
+                        ),
                       ]
                     )
-                  })
+                  }),
                 ],
                 2
               )
@@ -69861,19 +70543,19 @@ var render = function() {
                 { staticClass: "save-game__type-block" },
                 [
                   _c("div", { staticClass: "save-game__type" }, [
-                    _vm._v("start of turn")
+                    _vm._v("start of turn"),
                   ]),
                   _vm._v(" "),
-                  _vm._l(_vm.save.turns, function(item) {
+                  _vm._l(_vm.save.turns, function (item) {
                     return _c(
                       "div",
                       {
                         staticClass: "save-game__save",
                         on: {
-                          click: function($event) {
+                          click: function ($event) {
                             return _vm.loadGame(item.id)
-                          }
-                        }
+                          },
+                        },
                       },
                       [
                         _vm._v(
@@ -69883,16 +70565,16 @@ var render = function() {
                             _vm._s(item.created_at) +
                             " " +
                             _vm._s(item.note)
-                        )
+                        ),
                       ]
                     )
-                  })
+                  }),
                 ],
                 2
               )
-            : _vm._e()
+            : _vm._e(),
         ]
-      )
+      ),
     ]
   )
 }
@@ -69914,7 +70596,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -69922,31 +70604,34 @@ var render = function() {
     "div",
     { staticClass: "saved-games game-hud drawer__aside height-100 pt-4 z-4" },
     [
+      _c("active-games"),
+      _vm._v(" "),
       _c("div", { staticClass: "highlight secondary-font center-text pb-4" }, [
-        _vm._v("saved games")
+        _vm._v("saved games"),
       ]),
       _vm._v(" "),
       _c(
         "div",
         {
           staticClass:
-            "width-100 height-100  flex-column d-flex pb-5 overflow-auto"
+            "width-100 height-100  flex-column d-flex pb-5 overflow-auto",
         },
         [
           _c(
             "div",
-            _vm._l(_vm.shared.savedGames, function(save, index) {
+            _vm._l(_vm.shared.savedGames, function (save, index) {
               return _c("save-game", {
                 key: save.id,
                 attrs: { open: _vm.open === index, index: index, save: save },
-                on: { open: _vm.openSave }
+                on: { open: _vm.openSave },
               })
             }),
             1
-          )
+          ),
         ]
-      )
-    ]
+      ),
+    ],
+    1
   )
 }
 var staticRenderFns = []
@@ -69967,16 +70652,16 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
     "div",
     {
-      staticClass: "area-map__tokens d-flex justify-center width-100 no-select"
+      staticClass: "area-map__tokens d-flex justify-center width-100 no-select",
     },
-    _vm._l(_vm.tokenSlots, function(index) {
+    _vm._l(_vm.tokenSlots, function (index) {
       return _c("token-slot", {
         key: _vm.area.name + "-" + index,
         attrs: {
@@ -69985,9 +70670,9 @@ var render = function() {
           forcedtoken: _vm.forcedToken(_vm.area.tokens[index - 1], index),
           highlight: _vm.checkHighlight(_vm.area.tokens[index - 1]),
           index: index,
-          effect: _vm.effect
+          effect: _vm.effect,
         },
-        on: { token: _vm.emitToken }
+        on: { token: _vm.emitToken },
       })
     }),
     1
@@ -70011,7 +70696,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70021,18 +70706,18 @@ var render = function() {
         {
           staticClass: "px-2 pos-relative",
           class: _vm.thisClasses,
-          attrs: { "data-title": _vm.title }
+          attrs: { "data-title": _vm.title },
         },
-        _vm._l(_vm.tokens, function(token) {
+        _vm._l(_vm.tokens, function (token) {
           return _c(
             "div",
             {
               staticClass: "tokens-hud__token d-inline-block",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   return _vm.tokenClicked(token)
-                }
-              }
+                },
+              },
             },
             [
               _c("img", {
@@ -70044,9 +70729,9 @@ var render = function() {
                     _vm.shared.faction.name +
                     "/tokens/" +
                     token.name +
-                    ".png"
-                }
-              })
+                    ".png",
+                },
+              }),
             ]
           )
         }),
@@ -70072,7 +70757,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70081,15 +70766,15 @@ var render = function() {
     {
       staticClass: "area-map__token-space ratio-square",
       class: _vm.computeClasses,
-      on: { click: _vm.emitToken }
+      on: { click: _vm.emitToken },
     },
     [
       _vm.tokenImage
         ? _c("img", {
             staticClass: "area-map__token",
-            attrs: { src: _vm.tokenImage }
+            attrs: { src: _vm.tokenImage },
           })
-        : _vm._e()
+        : _vm._e(),
     ]
   )
 }
@@ -70111,7 +70796,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70119,7 +70804,7 @@ var render = function() {
     ref: "handle",
     staticClass: "adjust-handle pos-absolute icon-drag_handle",
     class: _vm.direction,
-    on: { mousedown: _vm.onMouseDown }
+    on: { mousedown: _vm.onMouseDown },
   })
 }
 var staticRenderFns = []
@@ -70140,7 +70825,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70154,10 +70839,10 @@ var render = function() {
             {
               staticClass: "flipper",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   return _vm.scroll(-1)
-                }
-              }
+                },
+              },
             },
             [_c("i", { staticClass: "icon-left" })]
           )
@@ -70169,7 +70854,7 @@ var render = function() {
           ref: "container",
           staticClass: "width-100 horizontal-scroll",
           class: _vm.classes,
-          on: { wheel: _vm.wheel }
+          on: { wheel: _vm.wheel },
         },
         [_vm._t("default")],
         2
@@ -70181,14 +70866,14 @@ var render = function() {
             {
               staticClass: "flipper",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   return _vm.scroll(1)
-                }
-              }
+                },
+              },
             },
             [_c("i", { staticClass: "icon-right" })]
           )
-        : _vm._e()
+        : _vm._e(),
     ]
   )
 }
@@ -70210,12 +70895,12 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "loader-bar", class: _vm.position }, [
-    _c("div", { staticClass: "loader-bar__streak" })
+    _c("div", { staticClass: "loader-bar__streak" }),
   ])
 }
 var staticRenderFns = []
@@ -70236,7 +70921,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70267,7 +70952,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70278,10 +70963,10 @@ var render = function() {
         staticClass: "units-hud__unit d-inline-block pos-relative",
         class: _vm.setClasses,
         on: {
-          click: function($event) {
+          click: function ($event) {
             return _vm.$emit("unit", _vm.unit, _vm.hpLeft)
-          }
-        }
+          },
+        },
       },
       [
         _vm.viewableGhost
@@ -70294,14 +70979,17 @@ var render = function() {
         _vm._v(" "),
         _vm.hasToken
           ? _c("token-slot", {
-              attrs: { forcedtoken: _vm.unit.placeToken, token: _vm.unit.token }
+              attrs: {
+                forcedtoken: _vm.unit.placeToken,
+                token: _vm.unit.token,
+              },
             })
           : _vm._e(),
         _vm._v(" "),
         _c("img", {
           staticClass: "unit-hud__unit-image",
-          attrs: { src: _vm.img }
-        })
+          attrs: { src: _vm.img },
+        }),
       ],
       1
     ),
@@ -70310,10 +70998,10 @@ var render = function() {
       ? _c(
           "div",
           { staticClass: "assign-hit__pips d-flex justify-center flex-wrap" },
-          _vm._l(_vm.hitPips, function(pip) {
+          _vm._l(_vm.hitPips, function (pip) {
             return _c("i", {
               staticClass: "assign-hit__pip",
-              class: pip.active ? "icon-circle active" : "icon-circle-open"
+              class: pip.active ? "icon-circle active" : "icon-circle-open",
             })
           }),
           0
@@ -70322,9 +71010,9 @@ var render = function() {
     _vm._v(" "),
     _vm.unit.killed
       ? _c("div", { staticClass: "unit-killed pos-absolute top-0" }, [
-          _c("i", { staticClass: "icon-kill" })
+          _c("i", { staticClass: "icon-kill" }),
         ])
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -70345,14 +71033,14 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
     "div",
     { staticClass: "unit-row center-text pb-3", class: _vm.classes },
-    _vm._l(_vm.units, function(unit) {
+    _vm._l(_vm.units, function (unit) {
       return _c("unit-icon", {
         key: unit.id,
         attrs: {
@@ -70361,13 +71049,13 @@ var render = function() {
           assigningHits: _vm.assigningHits,
           hitsToAssign: _vm.hitsToAssign,
           allSelected: _vm.allSelected,
-          hidePatsies: _vm.hidePatsies
+          hidePatsies: _vm.hidePatsies,
         },
         on: {
-          unit: function(u, hp) {
+          unit: function (u, hp) {
             return _vm.$emit("unit", u, hp)
-          }
-        }
+          },
+        },
       })
     }),
     1
@@ -70391,7 +71079,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70401,38 +71089,38 @@ var render = function() {
         {
           staticClass: "p-3 pos-relative unit-set-block",
           class: _vm.classes,
-          attrs: { "data-title": _vm.title }
+          attrs: { "data-title": _vm.title },
         },
-        _vm._l(_vm.shared.groupByCount(_vm.units, "type"), function(
-          count,
-          type
-        ) {
-          return _c(
-            "div",
-            {
-              staticClass: "units-hud__unit d-inline-block pos-relative",
-              attrs: { "data-count": count },
-              on: {
-                click: function($event) {
-                  return _vm.$emit("unitClicked", type)
-                }
-              }
-            },
-            [
-              _c("img", {
-                staticClass: "unit-hud__unit-image",
-                attrs: {
-                  src:
-                    "/images/factions/" +
-                    _vm.units[0].faction +
-                    "/units/" +
-                    type +
-                    ".png"
-                }
-              })
-            ]
-          )
-        }),
+        _vm._l(
+          _vm.shared.groupByCount(_vm.units, "type"),
+          function (count, type) {
+            return _c(
+              "div",
+              {
+                staticClass: "units-hud__unit d-inline-block pos-relative",
+                attrs: { "data-count": count },
+                on: {
+                  click: function ($event) {
+                    return _vm.$emit("unitClicked", type)
+                  },
+                },
+              },
+              [
+                _c("img", {
+                  staticClass: "unit-hud__unit-image",
+                  attrs: {
+                    src:
+                      "/images/factions/" +
+                      _vm.units[0].faction +
+                      "/units/" +
+                      type +
+                      ".png",
+                  },
+                }),
+              ]
+            )
+          }
+        ),
         0
       )
     : _vm._e()
@@ -70455,7 +71143,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70479,7 +71167,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70493,20 +71181,20 @@ var render = function() {
               name: "model",
               rawName: "v-model",
               value: _vm.shared.csrf,
-              expression: "shared.csrf"
-            }
+              expression: "shared.csrf",
+            },
           ],
           attrs: { type: "hidden", name: "_token" },
           domProps: { value: _vm.shared.csrf },
           on: {
-            input: function($event) {
+            input: function ($event) {
               if ($event.target.composing) {
                 return
               }
               _vm.$set(_vm.shared, "csrf", $event.target.value)
-            }
-          }
-        })
+            },
+          },
+        }),
       ])
     : _vm._e()
 }
@@ -70528,7 +71216,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70538,16 +71226,16 @@ var render = function() {
           "div",
           {
             staticClass:
-              "view-discard pos-absolute width-100 height-100 p-5 overflow-auto z-3 top-0"
+              "view-discard pos-absolute width-100 height-100 p-5 overflow-auto z-3 top-0",
           },
           [
             _c("button", {
               staticClass: "toggle fixed top right icon-x",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   _vm.shared.viewDiscard = false
-                }
-              }
+                },
+              },
             }),
             _vm._v(" "),
             _c("div", { staticClass: "title" }, [
@@ -70557,7 +71245,7 @@ var render = function() {
                   " (" +
                   _vm._s(_vm.shuffleMessage) +
                   ")"
-              )
+              ),
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "spacer mt-4" }, [_vm._v(" ")]),
@@ -70568,26 +71256,26 @@ var render = function() {
               ? _c(
                   "div",
                   { staticClass: "d-flex flex-wrap justify-center pt-4" },
-                  _vm._l(_vm.sortedDiscard, function(card) {
+                  _vm._l(_vm.sortedDiscard, function (card) {
                     return _c("img", {
                       staticClass: "view-discard__card",
                       attrs: { src: "/images/cards/" + card.file + ".jpg" },
                       on: {
-                        click: function($event) {
+                        click: function ($event) {
                           _vm.shared.card =
                             "/images/cards/" + card.file + ".jpg"
-                        }
-                      }
+                        },
+                      },
                     })
                   }),
                   0
                 )
               : _c("div", { staticClass: "view-player__empty" }, [
-                  _vm._v("Discard Pile Empty")
-                ])
+                  _vm._v("Discard Pile Empty"),
+                ]),
           ]
         )
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -70608,7 +71296,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70620,26 +71308,26 @@ var render = function() {
         _c("div", { staticClass: "combat-faction__name mr-3" }, [
           _c("img", {
             staticClass: "combat-faction_icon",
-            attrs: { src: _vm.shared.factionIcon(_vm.faction.name) }
+            attrs: { src: _vm.shared.factionIcon(_vm.faction.name) },
           }),
           _vm._v(
             "\n            The " +
               _vm._s(_vm._f("startCase")(_vm.faction.name)) +
               "\n        "
-          )
+          ),
         ]),
         _vm._v(" "),
         _c(
           "div",
           { staticClass: "combat-faction__pips d-flex flex-wrap mt-2" },
-          _vm._l(_vm.unitPips, function(pip) {
+          _vm._l(_vm.unitPips, function (pip) {
             return _c("i", {
               staticClass: "combat-faction__pip",
-              class: pip ? "icon-circle active" : "icon-circle-open"
+              class: pip ? "icon-circle active" : "icon-circle-open",
             })
           }),
           0
-        )
+        ),
       ]),
       _vm._v(" "),
       _vm.faction.mods.length
@@ -70647,17 +71335,19 @@ var render = function() {
             "div",
             {
               staticClass:
-                "combat-faction__mods bg-shadow-2 p-3 mt-2 accent-font"
+                "combat-faction__mods bg-shadow-2 p-3 mt-2 accent-font",
             },
-            _vm._l(_vm.faction.mods, function(mod) {
+            _vm._l(_vm.faction.mods, function (mod) {
               return _c("div", {
                 staticClass: "combat-faction__mod mb-2",
-                domProps: { innerHTML: _vm._s(_vm.shared.filterText(mod.text)) }
+                domProps: {
+                  innerHTML: _vm._s(_vm.shared.filterText(mod.text)),
+                },
               })
             }),
             0
           )
-        : _vm._e()
+        : _vm._e(),
     ]
   )
 }
@@ -70679,7 +71369,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70689,14 +71379,14 @@ var render = function() {
         {
           staticClass:
             "last-attack center-text pos-absolute-center d-flex flex-wrap align-center justify-center",
-          class: _vm.widthClass
+          class: _vm.widthClass,
         },
         [
           _c("div", { staticClass: "width-100 uppercase" }, [
             _vm._v("last attack "),
             _c("span", { staticClass: "last-attack__needs" }, [
-              _vm._v("needing " + _vm._s(_vm.attack.toHit))
-            ])
+              _vm._v("needing " + _vm._s(_vm.attack.toHit)),
+            ]),
           ]),
           _vm._v(" "),
           _vm.unit
@@ -70704,40 +71394,40 @@ var render = function() {
                 attrs: {
                   unit: _vm.unit,
                   noSelect: "true",
-                  classes: "faction-" + _vm.attack.faction + " mr-3"
-                }
+                  classes: "faction-" + _vm.attack.faction + " mr-3",
+                },
               })
             : _c(
                 "div",
                 {
                   staticClass: "units-hud__unit d-inline-block pos-relative",
-                  class: "faction-" + _vm.attack.faction
+                  class: "faction-" + _vm.attack.faction,
                 },
                 [
                   _c("img", {
                     staticClass: "unit-hud__unit-image",
-                    attrs: { src: _vm.shared.factionIcon(_vm.attack.faction) }
-                  })
+                    attrs: { src: _vm.shared.factionIcon(_vm.attack.faction) },
+                  }),
                 ]
               ),
           _vm._v(" "),
           _c("img", {
             staticClass: "last-attack__victim",
-            attrs: { src: _vm.victimImage }
+            attrs: { src: _vm.victimImage },
           }),
           _vm._v(" "),
           _c(
             "div",
             { staticClass: "d-flex" },
-            _vm._l(_vm.attack.rolls, function(roll) {
+            _vm._l(_vm.attack.rolls, function (roll) {
               return _c("img", {
                 staticClass: "last-attack__roll",
                 class: { "saturate-0": roll < _vm.attack.toHit },
-                attrs: { src: "/images/icons/attack-" + roll + ".png" }
+                attrs: { src: "/images/icons/attack-" + roll + ".png" },
               })
             }),
             0
-          )
+          ),
         ],
         1
       )
@@ -70761,7 +71451,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70770,69 +71460,45 @@ var render = function() {
     { staticClass: "view-player__side width-45 height-100 pt-4 pl-3 pb-6" },
     [
       _c("div", { staticClass: "view-player__title" }, [
-        _vm._v("Faction Sheet:")
+        _vm._v("Faction Sheet:"),
       ]),
       _vm._v(" "),
       _c("img", {
         staticClass: "my-5",
-        attrs: { src: "/images/factions/" + _vm.faction.name + "/sheet.jpg" }
+        attrs: { src: "/images/factions/" + _vm.faction.name + "/sheet.jpg" },
       }),
       _vm._v(" "),
       _c("div", { staticClass: "view-player__title mt-5" }, [
-        _vm._v("Unit Mix:")
+        _vm._v("Unit Mix:"),
       ]),
       _vm._v(" "),
       _c(
         "div",
         {
           staticClass:
-            "view-player__units d-flex mb-4 justify-center align-start"
+            "view-player__units d-flex mb-4 justify-center align-start",
         },
-        _vm._l(_vm.shared.groupByCount(_vm.faction.units, "type"), function(
-          count,
-          type
-        ) {
-          return _c(
-            "div",
-            {
-              staticClass:
-                "view-player__token-wrap p-2 pos-relative d-flex flex-column"
-            },
-            [
-              _c(
-                "div",
-                { staticClass: "width-100 pos-relative ratio-square" },
-                [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "view-player__unit",
-                      attrs: { "data-count": count }
-                    },
-                    [
-                      _c("img", {
-                        staticClass: "view-player__unit-image",
-                        attrs: {
-                          src:
-                            "/images/factions/" +
-                            _vm.faction.name +
-                            "/units/" +
-                            type +
-                            ".png"
-                        }
-                      })
-                    ]
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _vm.faction.flipableUnits &&
-              _vm.faction.flipableUnits.includes(type)
-                ? _c(
-                    "div",
-                    { staticClass: "width-100 pos-relative ratio-square" },
-                    [
-                      _c("div", { staticClass: "view-player__unit" }, [
+        _vm._l(
+          _vm.shared.groupByCount(_vm.faction.units, "type"),
+          function (count, type) {
+            return _c(
+              "div",
+              {
+                staticClass:
+                  "view-player__token-wrap p-2 pos-relative d-flex flex-column",
+              },
+              [
+                _c(
+                  "div",
+                  { staticClass: "width-100 pos-relative ratio-square" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "view-player__unit",
+                        attrs: { "data-count": count },
+                      },
+                      [
                         _c("img", {
                           staticClass: "view-player__unit-image",
                           attrs: {
@@ -70841,67 +71507,95 @@ var render = function() {
                               _vm.faction.name +
                               "/units/" +
                               type +
-                              "-flipped.png"
-                          }
-                        })
-                      ])
-                    ]
-                  )
-                : _vm._e()
-            ]
-          )
-        }),
+                              ".png",
+                          },
+                        }),
+                      ]
+                    ),
+                  ]
+                ),
+                _vm._v(" "),
+                _vm.faction.flipableUnits &&
+                _vm.faction.flipableUnits.includes(type)
+                  ? _c(
+                      "div",
+                      { staticClass: "width-100 pos-relative ratio-square" },
+                      [
+                        _c("div", { staticClass: "view-player__unit" }, [
+                          _c("img", {
+                            staticClass: "view-player__unit-image",
+                            attrs: {
+                              src:
+                                "/images/factions/" +
+                                _vm.faction.name +
+                                "/units/" +
+                                type +
+                                "-flipped.png",
+                            },
+                          }),
+                        ]),
+                      ]
+                    )
+                  : _vm._e(),
+              ]
+            )
+          }
+        ),
         0
       ),
       _vm._v(" "),
       _c("div", { staticClass: "view-player__title mt-5" }, [
-        _vm._v("Token Mix:")
+        _vm._v("Token Mix:"),
       ]),
       _vm._v(" "),
       _c(
         "div",
         { staticClass: "view-player__tokens d-flex mb-4 justify-center" },
-        _vm._l(_vm.shared.groupByCount(_vm.faction.tokens, "name"), function(
-          count,
-          type
-        ) {
-          return _c(
-            "div",
-            {
-              staticClass:
-                "view-player__token-wrap p-2 ratio-square pos-relative"
-            },
-            [
-              _c("div", { staticClass: "width-100 pos-relative height-100" }, [
+        _vm._l(
+          _vm.shared.groupByCount(_vm.faction.tokens, "name"),
+          function (count, type) {
+            return _c(
+              "div",
+              {
+                staticClass:
+                  "view-player__token-wrap p-2 ratio-square pos-relative",
+              },
+              [
                 _c(
                   "div",
-                  {
-                    staticClass: "view-player__token",
-                    attrs: { "data-count": count }
-                  },
+                  { staticClass: "width-100 pos-relative height-100" },
                   [
-                    _c("img", {
-                      staticClass: "view-player__token",
-                      attrs: {
-                        src:
-                          "/images/factions/" +
-                          _vm.faction.name +
-                          "/tokens/" +
-                          type +
-                          ".png"
-                      }
-                    })
+                    _c(
+                      "div",
+                      {
+                        staticClass: "view-player__token",
+                        attrs: { "data-count": count },
+                      },
+                      [
+                        _c("img", {
+                          staticClass: "view-player__token",
+                          attrs: {
+                            src:
+                              "/images/factions/" +
+                              _vm.faction.name +
+                              "/tokens/" +
+                              type +
+                              ".png",
+                          },
+                        }),
+                      ]
+                    ),
                   ]
-                )
-              ])
-            ]
-          )
-        }),
+                ),
+              ]
+            )
+          }
+        ),
         0
       ),
       _vm._v(" "),
       _c("div", { staticClass: "view-player__title mt-5" }, [
-        _vm._v("Upgrades:")
+        _vm._v("Upgrades:"),
       ]),
       _vm._v(" "),
       _c(
@@ -70912,19 +71606,19 @@ var render = function() {
             _c("img", {
               staticClass: "view-player__upgrade-card-image",
               attrs: {
-                src: "/images/factions/" + _vm.faction.name + "/upgrade-1.jpg"
-              }
-            })
+                src: "/images/factions/" + _vm.faction.name + "/upgrade-1.jpg",
+              },
+            }),
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "view-player__upgrade-card width-50 p-3" }, [
             _c("img", {
               staticClass: "view-player__upgrade-card-image",
               attrs: {
-                src: "/images/factions/" + _vm.faction.name + "/upgrade-2.jpg"
-              }
-            })
-          ])
+                src: "/images/factions/" + _vm.faction.name + "/upgrade-2.jpg",
+              },
+            }),
+          ]),
         ]
       ),
       _vm._v(" "),
@@ -70933,7 +71627,7 @@ var render = function() {
       _c(
         "div",
         { staticClass: "view-player__upgrades d-flex flex-wrap" },
-        _vm._l(8, function(index) {
+        _vm._l(8, function (index) {
           return _c("div", { staticClass: "width-50 p-3" }, [
             _c("img", {
               staticClass: "width-100 radius-1",
@@ -70943,13 +71637,13 @@ var render = function() {
                   _vm.faction.name +
                   "/plans/" +
                   index +
-                  ".jpg"
-              }
-            })
+                  ".jpg",
+              },
+            }),
           ])
         }),
         0
-      )
+      ),
     ]
   )
 }
@@ -70971,7 +71665,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -70987,36 +71681,36 @@ var render = function() {
             "div",
             {
               staticClass:
-                "bribe-box pos-absolute top-0 right-0 d-flex align-baseline"
+                "bribe-box pos-absolute top-0 right-0 d-flex align-baseline",
             },
             [
               _c("i", {
                 staticClass: "icon-minimize pr-2",
                 attrs: { disabled: _vm.bribe === 0 },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     _vm.bribe--
-                  }
-                }
+                  },
+                },
               }),
               _vm._v(" "),
               _c("img", {
                 staticClass: "icon-image ml-3",
-                attrs: { src: "/images/icons/resource.png" }
+                attrs: { src: "/images/icons/resource.png" },
               }),
               _vm._v(" "),
               _c("div", { staticClass: "ml-2 current-bribe mr-3" }, [
-                _vm._v(_vm._s(_vm.bribe))
+                _vm._v(_vm._s(_vm.bribe)),
               ]),
               _vm._v(" "),
               _c("i", {
                 staticClass: "icon-maximize",
                 attrs: { disabled: _vm.bribe >= _vm.shared.faction.resources },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     _vm.bribe++
-                  }
-                }
+                  },
+                },
               }),
               _vm._v(" "),
               _c(
@@ -71024,14 +71718,14 @@ var render = function() {
                 {
                   staticClass: "pointer ml-3",
                   attrs: { disabled: _vm.bribe === 0 },
-                  on: { click: _vm.sendBribe }
+                  on: { click: _vm.sendBribe },
                 },
                 [_vm._v("SEND BRIBE")]
-              )
+              ),
             ]
           )
-        : _vm._e()
-    ])
+        : _vm._e(),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -71052,29 +71746,29 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { staticClass: "view-player__title" }, [
-      _vm._v("Completed Plans:")
+      _vm._v("Completed Plans:"),
     ]),
     _vm._v(" "),
     _vm.completedPlans
       ? _c(
           "div",
           { staticClass: "view-player__completed-plans py-4" },
-          _vm._l(_vm.completedPlans, function(plans, turn) {
+          _vm._l(_vm.completedPlans, function (plans, turn) {
             return _c("div", { staticClass: "completed-plan__block" }, [
               _c("div", { staticClass: "prompt-question center-text" }, [
-                _vm._v("TURN " + _vm._s(turn))
+                _vm._v("TURN " + _vm._s(turn)),
               ]),
               _vm._v(" "),
               _c(
                 "div",
                 { staticClass: "d-flex flex-wrap" },
-                _vm._l(plans, function(plan) {
+                _vm._l(plans, function (plan) {
                   return _c(
                     "div",
                     { staticClass: "plan-block__container d-flex my-3" },
@@ -71082,14 +71776,14 @@ var render = function() {
                       _c(
                         "div",
                         { staticClass: "plan-block__pips" },
-                        _vm._l(plan.objectives, function(test) {
+                        _vm._l(plan.objectives, function (test) {
                           return _c("div", {
                             staticClass: "plan-block__pip primary-light",
                             class: {
                               "icon-circle": test.passed,
                               "icon-circle-open": !test.passed,
-                              highlight: test.scoreable
-                            }
+                              highlight: test.scoreable,
+                            },
                           })
                         }),
                         0
@@ -71102,8 +71796,8 @@ var render = function() {
                           _c("img", {
                             staticClass: "completed-plans__points",
                             attrs: {
-                              src: "/images/icons/pp-" + plan.points + ".png"
-                            }
+                              src: "/images/icons/pp-" + plan.points + ".png",
+                            },
                           }),
                           _vm._v(" "),
                           _c("img", {
@@ -71114,23 +71808,23 @@ var render = function() {
                                 _vm.faction.name +
                                 "/plans/" +
                                 plan.num +
-                                ".jpg"
-                            }
-                          })
+                                ".jpg",
+                            },
+                          }),
                         ]
-                      )
+                      ),
                     ]
                   )
                 }),
                 0
-              )
+              ),
             ])
           }),
           0
         )
       : _c("div", { staticClass: "view-player__empty" }, [
-          _vm._v("No Completed Plans")
-        ])
+          _vm._v("No Completed Plans"),
+        ]),
   ])
 }
 var staticRenderFns = []
@@ -71151,7 +71845,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -71159,7 +71853,7 @@ var render = function() {
     _vm.target
       ? _c("div", [
           _c("div", { staticClass: "view-player__title" }, [
-            _vm._v("Current Target:")
+            _vm._v("Current Target:"),
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "view-player__active-cards" }, [
@@ -71167,12 +71861,12 @@ var render = function() {
               staticClass: "view-player__card pointer",
               attrs: { src: "/images/cards/" + _vm.target.file + ".jpg" },
               on: {
-                click: function($event) {
+                click: function ($event) {
                   _vm.shared.card = "/images/cards/" + _vm.target.file + ".jpg"
-                }
-              }
-            })
-          ])
+                },
+              },
+            }),
+          ]),
         ])
       : _vm._e(),
     _vm._v(" "),
@@ -71182,62 +71876,62 @@ var render = function() {
       ? _c(
           "div",
           { staticClass: "view-player__active-cards" },
-          _vm._l(_vm.faction.cards.active, function(card) {
+          _vm._l(_vm.faction.cards.active, function (card) {
             return _c("img", {
               staticClass: "view-player__card pointer",
               attrs: { src: "/images/cards/" + card.file + ".jpg" },
               on: {
-                click: function($event) {
+                click: function ($event) {
                   _vm.shared.card = "/images/cards/" + card.file + ".jpg"
-                }
-              }
+                },
+              },
             })
           }),
           0
         )
       : _c("div", { staticClass: "view-player__empty" }, [
-          _vm._v("No Active Cards")
+          _vm._v("No Active Cards"),
         ]),
     _vm._v(" "),
     _c("div", { staticClass: "view-player__title" }, [
-      _vm._v("Areas Controlled:")
+      _vm._v("Areas Controlled:"),
     ]),
     _vm._v(" "),
     _vm.areas.length
       ? _c(
           "div",
           { staticClass: "view-player__areas" },
-          _vm._l(_vm.areas, function(area) {
+          _vm._l(_vm.areas, function (area) {
             return _c("div", { staticClass: "view-player__areas" }, [
               _c("div", { staticClass: "view-player__areas-name" }, [
-                _vm._v(_vm._s(area.name))
+                _vm._v(_vm._s(area.name)),
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "view-player__areas-control" }, [
-                _vm._v(_vm._s(area.control))
-              ])
+                _vm._v(_vm._s(area.control)),
+              ]),
             ])
           }),
           0
         )
       : _c("div", { staticClass: "view-player__empty" }, [
-          _vm._v("No Areas Controlled")
+          _vm._v("No Areas Controlled"),
         ]),
     _vm._v(" "),
     _c("div", { staticClass: "view-player__title" }, [
-      _vm._v("Unrevealed Tokens:")
+      _vm._v("Unrevealed Tokens:"),
     ]),
     _vm._v(" "),
     _vm.unrevealedTokens
       ? _c(
           "div",
           { staticClass: "view-player__tokens d-flex justify-center" },
-          _vm._l(_vm.unrevealedTokens, function(count, type) {
+          _vm._l(_vm.unrevealedTokens, function (count, type) {
             return _c(
               "div",
               {
                 staticClass:
-                  "view-player__token-wrap p-2 ratio-square pos-relative"
+                  "view-player__token-wrap p-2 ratio-square pos-relative",
               },
               [
                 _c(
@@ -71248,7 +71942,7 @@ var render = function() {
                       "div",
                       {
                         staticClass: "view-player__token",
-                        attrs: { "data-count": count }
+                        attrs: { "data-count": count },
                       },
                       [
                         _c("img", {
@@ -71259,24 +71953,24 @@ var render = function() {
                               _vm.faction.name +
                               "/tokens/" +
                               type +
-                              ".png"
-                          }
-                        })
+                              ".png",
+                          },
+                        }),
                       ]
-                    )
+                    ),
                   ]
-                )
+                ),
               ]
             )
           }),
           0
         )
       : _c("div", { staticClass: "view-player__empty" }, [
-          _vm._v("No Unrevealed Tokens")
+          _vm._v("No Unrevealed Tokens"),
         ]),
     _vm._v(" "),
     _c("div", { staticClass: "view-player__title" }, [
-      _vm._v("Current Upgrade:")
+      _vm._v("Current Upgrade:"),
     ]),
     _vm._v(" "),
     _vm.faction.upgrade
@@ -71293,46 +71987,46 @@ var render = function() {
                     _vm.faction.name +
                     "/upgrade-" +
                     _vm.faction.upgrade +
-                    ".jpg"
-                }
-              })
+                    ".jpg",
+                },
+              }),
             ]
-          )
+          ),
         ])
       : _c("div", { staticClass: "view-player__empty" }, [
-          _vm._v("No Upgrade")
+          _vm._v("No Upgrade"),
         ]),
     _vm._v(" "),
     _c("div", { staticClass: "view-player__title" }, [
-      _vm._v("Areas Skills Used:")
+      _vm._v("Areas Skills Used:"),
     ]),
     _vm._v(" "),
     _vm.faction.usedSkills.length
       ? _c(
           "div",
           { staticClass: "view-player__areas" },
-          _vm._l(_vm.faction.usedSkills, function(area) {
+          _vm._l(_vm.faction.usedSkills, function (area) {
             return _c("div", { staticClass: "view-player__areas" }, [
               _c("div", { staticClass: "view-player__areas-name" }, [
-                _vm._v(_vm._s(area))
-              ])
+                _vm._v(_vm._s(area)),
+              ]),
             ])
           }),
           0
         )
       : _c("div", { staticClass: "view-player__empty" }, [
-          _vm._v("No Skills Used")
+          _vm._v("No Skills Used"),
         ]),
     _vm._v(" "),
     _c("div", { staticClass: "view-player__title" }, [
-      _vm._v("Capitol Tokens:")
+      _vm._v("Capitol Tokens:"),
     ]),
     _vm._v(" "),
     _vm.faction.capitolTokens.length
       ? _c(
           "div",
           { staticClass: "view-player__capitol-tokens d-flex justify-center" },
-          _vm._l(_vm.faction.capitolTokens, function(token) {
+          _vm._l(_vm.faction.capitolTokens, function (token) {
             return _c(
               "div",
               { staticClass: "view-player__capitol-token center-text p-3" },
@@ -71340,22 +72034,22 @@ var render = function() {
                 _c("img", {
                   staticClass: "view-player__capitol-token__image",
                   attrs: {
-                    src: "/images/tokens/capitol-" + token.turn + ".png"
-                  }
+                    src: "/images/tokens/capitol-" + token.turn + ".png",
+                  },
                 }),
                 _vm._v(" "),
                 _c(
                   "div",
                   { staticClass: "view-player__capitol-token__value" },
                   [_vm._v(_vm._s(token.ap) + " AP")]
-                )
+                ),
               ]
             )
           }),
           0
         )
       : _c("div", { staticClass: "view-player__empty" }, [
-          _vm._v("No Capitol Tokens")
+          _vm._v("No Capitol Tokens"),
         ]),
     _vm._v(" "),
     _c("div", { staticClass: "view-player__title" }, [_vm._v("Killed Units:")]),
@@ -71364,17 +72058,17 @@ var render = function() {
       ? _c(
           "div",
           { staticClass: "d-flex justify-center p-4" },
-          _vm._l(_vm.killedUnits, function(units, area) {
+          _vm._l(_vm.killedUnits, function (units, area) {
             return _c("unit-set", {
               key: area,
-              attrs: { units: units, title: area, classes: "border" }
+              attrs: { units: units, title: area, classes: "border" },
             })
           }),
           1
         )
       : _c("div", { staticClass: "view-player__empty" }, [
-          _vm._v("No Killed Units")
-        ])
+          _vm._v("No Killed Units"),
+        ]),
   ])
 }
 var staticRenderFns = []
@@ -71395,7 +72089,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -71407,7 +72101,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "view-player__AP view-player__title width-50 d-flex align-center"
+            "view-player__AP view-player__title width-50 d-flex align-center",
         },
         [
           _c("i", { staticClass: "icon-ap mr-3" }),
@@ -71415,7 +72109,7 @@ var render = function() {
           _c("span", [_vm._v(_vm._s(_vm.faction.ap))]),
           _vm._v(" "),
           _c("span", { staticClass: "note" }, [
-            _vm._v("/ " + _vm._s(_vm.shared.data.maxAP))
+            _vm._v("/ " + _vm._s(_vm.shared.data.maxAP)),
           ]),
           _vm._v(" "),
           _vm.shared.admin
@@ -71423,10 +72117,10 @@ var render = function() {
                 staticClass: "icon-minimize pr-2",
                 attrs: { disabled: _vm.faction.ap === 0 },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.setPoints("ap", -1)
-                  }
-                }
+                  },
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -71434,12 +72128,12 @@ var render = function() {
             ? _c("i", {
                 staticClass: "icon-maximize pr-2",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.setPoints("ap", 1)
-                  }
-                }
+                  },
+                },
               })
-            : _vm._e()
+            : _vm._e(),
         ]
       ),
       _vm._v(" "),
@@ -71447,7 +72141,7 @@ var render = function() {
         "div",
         {
           staticClass:
-            "view-player__PP view-player__title width-50 d-flex align-center"
+            "view-player__PP view-player__title width-50 d-flex align-center",
         },
         [
           _c("i", { staticClass: "icon-pp mr-3" }),
@@ -71455,7 +72149,7 @@ var render = function() {
           _c("span", [_vm._v(_vm._s(_vm.faction.pp))]),
           _vm._v(" "),
           _c("span", { staticClass: "note" }, [
-            _vm._v("/ " + _vm._s(_vm.shared.data.maxPP))
+            _vm._v("/ " + _vm._s(_vm.shared.data.maxPP)),
           ]),
           _vm._v(" "),
           _vm.shared.admin
@@ -71463,10 +72157,10 @@ var render = function() {
                 staticClass: "icon-minimize pr-2",
                 attrs: { disabled: _vm.faction.pp === 0 },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.setPoints("pp", -1)
-                  }
-                }
+                  },
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -71474,12 +72168,12 @@ var render = function() {
             ? _c("i", {
                 staticClass: "icon-maximize pr-2",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.setPoints("pp", 1)
-                  }
-                }
+                  },
+                },
               })
-            : _vm._e()
+            : _vm._e(),
         ]
       ),
       _vm._v(" "),
@@ -71491,7 +72185,7 @@ var render = function() {
           _c("span", [_vm._v(_vm._s(_vm.faction.energy))]),
           _vm._v(" "),
           _c("span", { staticClass: "note" }, [
-            _vm._v("/ " + _vm._s(_vm.faction.maxEnergy))
+            _vm._v("/ " + _vm._s(_vm.faction.maxEnergy)),
           ]),
           _vm._v(" "),
           _vm.shared.admin
@@ -71499,10 +72193,10 @@ var render = function() {
                 staticClass: "icon-minimize pr-2",
                 attrs: { disabled: _vm.faction.energy === 0 },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.setPoints("energy", -1)
-                  }
-                }
+                  },
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -71510,12 +72204,12 @@ var render = function() {
             ? _c("i", {
                 staticClass: "icon-maximize pr-2",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.setPoints("energy", 1)
-                  }
-                }
+                  },
+                },
               })
-            : _vm._e()
+            : _vm._e(),
         ]
       ),
       _vm._v(" "),
@@ -71531,10 +72225,10 @@ var render = function() {
                 staticClass: "icon-minimize pr-2",
                 attrs: { disabled: _vm.faction.resources === 0 },
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.setPoints("resources", -1)
-                  }
-                }
+                  },
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -71542,12 +72236,12 @@ var render = function() {
             ? _c("i", {
                 staticClass: "icon-maximize pr-2",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     return _vm.setPoints("resources", 1)
-                  }
-                }
+                  },
+                },
               })
-            : _vm._e()
+            : _vm._e(),
         ]
       ),
       _vm._v(" "),
@@ -71557,8 +72251,8 @@ var render = function() {
         [
           _vm._v(" Upgrade: "),
           _c("span", [
-            _vm._v(_vm._s(_vm.faction.upgrade ? _vm.faction.upgrade : "none"))
-          ])
+            _vm._v(_vm._s(_vm.faction.upgrade ? _vm.faction.upgrade : "none")),
+          ]),
         ]
       ),
       _vm._v(" "),
@@ -71570,8 +72264,8 @@ var render = function() {
           _c("span", [_vm._v(_vm._s(_vm.faction.cards.hand.length))]),
           _vm._v(" "),
           _c("span", { staticClass: "note" }, [
-            _vm._v("/ +" + _vm._s(_vm.faction.cardDraw))
-          ])
+            _vm._v("/ +" + _vm._s(_vm.faction.cardDraw)),
+          ]),
         ]
       ),
       _vm._v(" "),
@@ -71580,29 +72274,29 @@ var render = function() {
         { staticClass: "view-player__deploy view-player__title width-50" },
         [
           _vm._v("Deploy Limit: "),
-          _c("span", [_vm._v(_vm._s(_vm.faction.deployLimit))])
+          _c("span", [_vm._v(_vm._s(_vm.faction.deployLimit))]),
         ]
       ),
       _vm._v(" "),
       _c(
         "div",
         {
-          staticClass: "view-player__defense-bonus view-player__title width-50"
+          staticClass: "view-player__defense-bonus view-player__title width-50",
         },
         [
           _vm._v("Defense Bonus: "),
-          _c("span", [_vm._v("+" + _vm._s(_vm.defenseBonus))])
+          _c("span", [_vm._v("+" + _vm._s(_vm.defenseBonus))]),
         ]
       ),
       _vm._v(" "),
       _c(
         "div",
         {
-          staticClass: "view-player__attack-bonus view-player__title width-50"
+          staticClass: "view-player__attack-bonus view-player__title width-50",
         },
         [
           _vm._v("Attack Bonus: "),
-          _c("span", [_vm._v("+" + _vm._s(_vm.faction.attackBonus))])
+          _c("span", [_vm._v("+" + _vm._s(_vm.faction.attackBonus))]),
         ]
       ),
       _vm._v(" "),
@@ -71611,7 +72305,7 @@ var render = function() {
         { staticClass: "view-player__bonus-dice view-player__title width-50" },
         [
           _vm._v("Bonus Attack Dice: "),
-          _c("span", [_vm._v("+" + _vm._s(_vm.faction.bonusDice))])
+          _c("span", [_vm._v("+" + _vm._s(_vm.faction.bonusDice))]),
         ]
       ),
       _vm._v(" "),
@@ -71625,10 +72319,10 @@ var render = function() {
               _vm._s(_vm.faction.captured.current) +
                 " / " +
                 _vm._s(_vm.faction.captured.max)
-            )
-          ])
+            ),
+          ]),
         ]
-      )
+      ),
     ]
   )
 }
@@ -71650,7 +72344,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -71660,22 +72354,23 @@ var render = function() {
           "div",
           {
             staticClass:
-              "view-player pos-absolute width-100 height-100 top-0 p-5 d-flex align-stretch overflow-auto z-5"
+              "view-player pos-absolute width-100 height-100 top-0 p-5 d-flex align-stretch overflow-auto z-5",
           },
           [
             _c("button", {
               staticClass: "toggle fixed top right icon-x",
-              on: { click: _vm.closeViewPlayer }
+              on: { click: _vm.closeViewPlayer },
             }),
             _vm._v(" "),
             _c(
               "div",
               {
-                staticClass: "view-player__main-content width-55 pt-4 pr-5 pb-6"
+                staticClass:
+                  "view-player__main-content width-55 pt-4 pr-5 pb-6",
               },
               [
                 _c("player-bribe", {
-                  attrs: { player: _vm.player, faction: _vm.faction }
+                  attrs: { player: _vm.player, faction: _vm.faction },
                 }),
                 _vm._v(" "),
                 _c("player-stats", { attrs: { faction: _vm.faction } }),
@@ -71683,7 +72378,7 @@ var render = function() {
                 _vm.hasFocus
                   ? _c("div", [
                       _c("div", { staticClass: "view-player__title" }, [
-                        _vm._v("Plan Focus:")
+                        _vm._v("Plan Focus:"),
                       ]),
                       _vm._v(" "),
                       _c(
@@ -71696,26 +72391,26 @@ var render = function() {
                           ),
                           _c(_vm.hasFocus, {
                             tag: "component",
-                            attrs: { faction: _vm.faction }
-                          })
+                            attrs: { faction: _vm.faction },
+                          }),
                         ],
                         1
-                      )
+                      ),
                     ])
                   : _vm._e(),
                 _vm._v(" "),
                 _c("player-state", { attrs: { faction: _vm.faction } }),
                 _vm._v(" "),
-                _c("player-plans", { attrs: { faction: _vm.faction } })
+                _c("player-plans", { attrs: { faction: _vm.faction } }),
               ],
               1
             ),
             _vm._v(" "),
-            _c("faction-components", { attrs: { faction: _vm.faction } })
+            _c("faction-components", { attrs: { faction: _vm.faction } }),
           ],
           1
         )
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -71736,7 +72431,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -71746,19 +72441,20 @@ var render = function() {
           "div",
           {
             staticClass:
-              "view-area pos-absolute width-100 height-100 p-5 top-0 overflow-auto z-4"
+              "view-area pos-absolute width-100 height-100 p-5 top-0 overflow-auto z-4",
           },
           [
             _c("button", {
               staticClass: "toggle fixed top right icon-x",
-              on: { click: _vm.closeViewArea }
+              on: { click: _vm.closeViewArea },
             }),
             _vm._v(" "),
             _c("div", { staticClass: "d-flex align-stretch" }, [
               _c(
                 "div",
                 {
-                  staticClass: "view-area__main-content width-40 pt-4 pr-5 pb-6"
+                  staticClass:
+                    "view-area__main-content width-40 pt-4 pr-5 pb-6",
                 },
                 [
                   _vm.area.owner
@@ -71766,20 +72462,20 @@ var render = function() {
                         "div",
                         {
                           staticClass:
-                            "title d-flex align-center view-area__controller"
+                            "title d-flex align-center view-area__controller",
                         },
                         [
                           _c("img", {
                             staticClass: "determine-control__faction-icon",
                             attrs: {
-                              src: _vm.shared.factionIcon(_vm.area.owner)
-                            }
+                              src: _vm.shared.factionIcon(_vm.area.owner),
+                            },
                           }),
                           _vm._v(
                             "\n                    Controlled by The " +
                               _vm._s(_vm._f("startCase")(_vm.area.owner)) +
                               "\n                "
-                          )
+                          ),
                         ]
                       )
                     : _vm._e(),
@@ -71789,64 +72485,66 @@ var render = function() {
                         "div",
                         {
                           staticClass:
-                            "title d-flex align-center view-area__controller"
+                            "title d-flex align-center view-area__controller",
                         },
                         [
                           _c("img", {
                             staticClass: "determine-control__faction-icon",
                             attrs: {
-                              src: _vm.shared.factionIcon(_vm.exterminated)
-                            }
+                              src: _vm.shared.factionIcon(_vm.exterminated),
+                            },
                           }),
                           _vm._v(
                             "\n                    Exterminated by The " +
                               _vm._s(_vm._f("startCase")(_vm.exterminated)) +
                               "\n                "
-                          )
+                          ),
                         ]
                       )
                     : _vm._e(),
                   _vm._v(" "),
                   _c("div", { staticClass: "view-player__title" }, [
-                    _vm._v("Control Ability")
+                    _vm._v("Control Ability"),
                   ]),
                   _vm._v(" "),
                   _c("div", {
                     staticClass: "p-3 primary-light",
                     domProps: {
-                      innerHTML: _vm._s(_vm.shared.filterText(_vm.area.control))
-                    }
+                      innerHTML: _vm._s(
+                        _vm.shared.filterText(_vm.area.control)
+                      ),
+                    },
                   }),
                   _vm._v(" "),
                   _c("div", { staticClass: "view-player__title" }, [
-                    _vm._v("Skill Ability")
+                    _vm._v("Skill Ability"),
                   ]),
                   _vm._v(" "),
                   _c("div", {
                     staticClass: "p-3 primary-light",
                     domProps: {
-                      innerHTML: _vm._s(_vm.shared.filterText(_vm.area.skill))
-                    }
+                      innerHTML: _vm._s(_vm.shared.filterText(_vm.area.skill)),
+                    },
                   }),
                   _vm._v(" "),
                   _c("div", { staticClass: "view-player__title" }, [
-                    _vm._v("Influence")
+                    _vm._v("Influence"),
                   ]),
                   _vm._v(" "),
                   _c(
                     "div",
                     { staticClass: "view-area__influence-container" },
-                    _vm._l(_vm.influences, function(influence) {
+                    _vm._l(_vm.influences, function (influence) {
                       return _c(
                         "div",
                         {
-                          staticClass: "d-flex view-area__influence player-hud"
+                          staticClass: "d-flex view-area__influence player-hud",
                         },
                         [
                           _c("div", { staticClass: "influence-marker mb-2" }, [
                             _c("img", {
-                              attrs: { src: "/images/icons/influence.png" }
-                            })
+                              attrs: { src: "/images/icons/influence.png" },
+                            }),
                           ]),
                           _vm._v(" "),
                           _c(
@@ -71861,23 +72559,23 @@ var render = function() {
                                       ? "*"
                                       : ""
                                   )
-                              )
+                              ),
                             ]
                           ),
                           _vm._v(" "),
                           _c("img", {
                             staticClass: "determine-control__faction-icon",
                             attrs: {
-                              src: _vm.shared.factionIcon(influence.faction)
-                            }
+                              src: _vm.shared.factionIcon(influence.faction),
+                            },
                           }),
                           _vm._v(" "),
                           _c("span", [
                             _vm._v(
                               "The " +
                                 _vm._s(_vm._f("startCase")(influence.faction))
-                            )
-                          ])
+                            ),
+                          ]),
                         ]
                       )
                     }),
@@ -71885,14 +72583,14 @@ var render = function() {
                   ),
                   _vm._v(" "),
                   _c("div", { staticClass: "view-player__title" }, [
-                    _vm._v("Active Cards:")
+                    _vm._v("Active Cards:"),
                   ]),
                   _vm._v(" "),
                   _vm.area.cards.length
                     ? _c(
                         "div",
                         { staticClass: "view-player__active-cards pt-4" },
-                        _vm._l(_vm.area.cards, function(card) {
+                        _vm._l(_vm.area.cards, function (card) {
                           return _c(
                             "div",
                             { staticClass: "pos-relative view-player__card" },
@@ -71900,53 +72598,53 @@ var render = function() {
                               _c("img", {
                                 staticClass: "z-1 view-player__card pointer",
                                 attrs: {
-                                  src: "/images/cards/" + card.file + ".jpg"
+                                  src: "/images/cards/" + card.file + ".jpg",
                                 },
                                 on: {
-                                  click: function($event) {
+                                  click: function ($event) {
                                     _vm.shared.card =
                                       "/images/cards/" + card.file + ".jpg"
-                                  }
-                                }
+                                  },
+                                },
                               }),
                               _vm._v(" "),
                               _c("img", {
                                 staticClass:
                                   "pos-absolute bottom-0 z-2 card-faction-icon",
                                 attrs: {
-                                  src: _vm.shared.factionIcon(card.owner)
-                                }
-                              })
+                                  src: _vm.shared.factionIcon(card.owner),
+                                },
+                              }),
                             ]
                           )
                         }),
                         0
                       )
                     : _c("div", { staticClass: "view-player__empty" }, [
-                        _vm._v("No Active Cards")
+                        _vm._v("No Active Cards"),
                       ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "view-player__title" }, [
-                    _vm._v("Used Skill Ability:")
+                    _vm._v("Used Skill Ability:"),
                   ]),
                   _vm._v(" "),
                   _vm.usedSkill.length
                     ? _c(
                         "div",
                         { staticClass: "view-player__areas" },
-                        _vm._l(_vm.usedSkill, function(faction) {
+                        _vm._l(_vm.usedSkill, function (faction) {
                           return _c("div", { staticClass: "highlight p-3" }, [
                             _c("img", {
                               staticClass: "determine-control__faction-icon",
-                              attrs: { src: _vm.shared.factionIcon(faction) }
-                            })
+                              attrs: { src: _vm.shared.factionIcon(faction) },
+                            }),
                           ])
                         }),
                         0
                       )
                     : _c("div", { staticClass: "view-player__empty" }, [
-                        _vm._v("No factions have used this skill ability")
-                      ])
+                        _vm._v("No factions have used this skill ability"),
+                      ]),
                 ]
               ),
               _vm._v(" "),
@@ -71954,45 +72652,45 @@ var render = function() {
                 "div",
                 {
                   staticClass:
-                    "view-player__main-content width-60 pt-6 pr-5 pb-3 h-100"
+                    "view-player__main-content width-60 pt-6 pr-5 pb-3 h-100",
                 },
                 [
                   _c(
                     "div",
                     {
                       staticClass: "p-0 width-100 view-area__area pos-relative",
-                      class: "area-" + _vm.area.name
+                      class: "area-" + _vm.area.name,
                     },
                     [
                       _c(
                         "div",
                         {
                           staticClass:
-                            "view-area__tokens pos-absolute width-100 z-2"
+                            "view-area__tokens pos-absolute width-100 z-2",
                         },
                         [
                           _c("token-row", {
-                            attrs: { area: _vm.area, token: _vm.token }
-                          })
+                            attrs: { area: _vm.area, token: _vm.token },
+                          }),
                         ],
                         1
                       ),
                       _vm._v(" "),
                       _c("div", {
                         staticClass:
-                          "view-area__header area-zoom__header p-4 pos-relative grow-0 shrink-0"
+                          "view-area__header area-zoom__header p-4 pos-relative grow-0 shrink-0",
                       }),
                       _vm._v(" "),
                       _c(
                         "div",
                         {
                           staticClass:
-                            "view-area__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap"
+                            "view-area__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap",
                         },
-                        _vm._l(_vm.shared.data.factions, function(faction) {
+                        _vm._l(_vm.shared.data.factions, function (faction) {
                           return _c("area-units", {
                             key: faction.name,
-                            attrs: { faction: faction, area: _vm.area.name }
+                            attrs: { faction: faction, area: _vm.area.name },
                           })
                         }),
                         1
@@ -72002,21 +72700,21 @@ var render = function() {
                         "div",
                         {
                           staticClass:
-                            "view-area__footer area-zoom__footer p-4 pos-relative grow-0 shrink-0 center-text overflow-auto"
+                            "view-area__footer area-zoom__footer p-4 pos-relative grow-0 shrink-0 center-text overflow-auto",
                         },
-                        _vm._l(_vm.shared.data.factions, function(faction) {
+                        _vm._l(_vm.shared.data.factions, function (faction) {
                           return _c("area-units", {
                             key: faction.name,
                             attrs: {
                               faction: faction,
                               area: _vm.area.name,
                               skilled: "true",
-                              classes: "d-inline"
-                            }
+                              classes: "d-inline",
+                            },
                           })
                         }),
                         1
-                      )
+                      ),
                     ]
                   ),
                   _vm._v(" "),
@@ -72024,46 +72722,46 @@ var render = function() {
                     ? _c(
                         "div",
                         { staticClass: "view-area__dead" },
-                        _vm._l(_vm.dead, function(units, faction) {
+                        _vm._l(_vm.dead, function (units, faction) {
                           return _c(
                             "div",
                             {
                               key: faction,
-                              staticClass: "view-area__dead-block"
+                              staticClass: "view-area__dead-block",
                             },
                             [
                               _c(
                                 "div",
                                 {
                                   staticClass:
-                                    "title d-flex align-center view-area__controller"
+                                    "title d-flex align-center view-area__controller",
                                 },
                                 [
                                   _c("img", {
                                     staticClass:
                                       "determine-control__faction-icon",
                                     attrs: {
-                                      src: _vm.shared.factionIcon(faction)
-                                    }
+                                      src: _vm.shared.factionIcon(faction),
+                                    },
                                   }),
-                                  _vm._v(" " + _vm._s(faction) + " Kills")
+                                  _vm._v(" " + _vm._s(faction) + " Kills"),
                                 ]
                               ),
                               _vm._v(" "),
-                              _c("unit-row", { attrs: { units: units } })
+                              _c("unit-row", { attrs: { units: units } }),
                             ],
                             1
                           )
                         }),
                         0
                       )
-                    : _vm._e()
+                    : _vm._e(),
                 ]
-              )
-            ])
+              ),
+            ]),
           ]
         )
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -72084,7 +72782,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -72096,10 +72794,10 @@ var render = function() {
             {
               staticClass: "toggle minimize-toggle top right",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   _vm.shared.card = null
-                }
-              }
+                },
+              },
             },
             [_c("i", { staticClass: "icon-x" })]
           ),
@@ -72107,11 +72805,11 @@ var render = function() {
           _c("div", { staticClass: "player-prompt__slot-container" }, [
             _c("img", {
               staticClass: "view-card__card",
-              attrs: { src: _vm.shared.card }
-            })
-          ])
+              attrs: { src: _vm.shared.card },
+            }),
+          ]),
         ])
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -72132,7 +72830,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -72143,7 +72841,7 @@ var render = function() {
           {
             staticClass:
               "view-combat pos-absolute width-100 height-100 top-0 z-4",
-            class: { closed: !_vm.open }
+            class: { closed: !_vm.open },
           },
           [
             _c(
@@ -72151,15 +72849,15 @@ var render = function() {
               {
                 staticClass: "toggle minimize-toggle top right",
                 on: {
-                  click: function($event) {
+                  click: function ($event) {
                     _vm.open = !_vm.open
-                  }
-                }
+                  },
+                },
               },
               [
                 _c("i", {
-                  class: !_vm.open ? "icon-maximize" : "icon-minimize"
-                })
+                  class: !_vm.open ? "icon-maximize" : "icon-minimize",
+                }),
               ]
             ),
             _vm._v(" "),
@@ -72172,11 +72870,11 @@ var render = function() {
                     "div",
                     {
                       staticClass:
-                        "view-area__main-content width-35 pt-2 pr-5 pb-6"
+                        "view-area__main-content width-35 pt-2 pr-5 pb-6",
                     },
                     [
                       _c("div", { staticClass: "title" }, [
-                        _vm._v(_vm._s(_vm.combat.title))
+                        _vm._v(_vm._s(_vm.combat.title)),
                       ]),
                       _vm._v(" "),
                       _vm.combat.attackBonus
@@ -72188,7 +72886,7 @@ var render = function() {
                                 "All units gain +" +
                                   _vm._s(_vm.combat.attackBonus) +
                                   " to their attacks"
-                              )
+                              ),
                             ]
                           )
                         : _vm._e(),
@@ -72196,14 +72894,14 @@ var render = function() {
                       _c(
                         "div",
                         { staticClass: "faction-list" },
-                        _vm._l(_vm.factions, function(faction) {
+                        _vm._l(_vm.factions, function (faction) {
                           return _c("combat-faction", {
                             key: faction.name,
-                            attrs: { faction: faction, combat: _vm.combat }
+                            attrs: { faction: faction, combat: _vm.combat },
                           })
                         }),
                         1
-                      )
+                      ),
                     ]
                   ),
                   _vm._v(" "),
@@ -72211,7 +72909,7 @@ var render = function() {
                     "div",
                     {
                       staticClass:
-                        "view-player__main-content width-65 pt-2 pr-5 pb-3 h-100"
+                        "view-player__main-content width-65 pt-2 pr-5 pb-3 h-100",
                     },
                     [
                       _c(
@@ -72219,7 +72917,7 @@ var render = function() {
                         {
                           staticClass:
                             "p-0 width-100 view-area__area pos-relative",
-                          class: "area-" + _vm.area.name
+                          class: "area-" + _vm.area.name,
                         },
                         [
                           _c(
@@ -72228,14 +72926,14 @@ var render = function() {
                               staticClass:
                                 "toggle area-map__toggle top-0 right-0",
                               on: {
-                                click: function($event) {
+                                click: function ($event) {
                                   $event.stopPropagation()
                                   return _vm.shared.event.emit(
                                     "viewArea",
                                     _vm.area
                                   )
-                                }
-                              }
+                                },
+                              },
                             },
                             [_c("i", { staticClass: "icon-zoom_in" })]
                           ),
@@ -72244,12 +72942,12 @@ var render = function() {
                             "div",
                             {
                               staticClass:
-                                "view-combat__header area-zoom__header p-4 pos-relative grow-0 shrink-0"
+                                "view-combat__header area-zoom__header p-4 pos-relative grow-0 shrink-0",
                             },
                             [
                               _c("last-attack", {
-                                attrs: { attack: _vm.combat.lastAttack }
-                              })
+                                attrs: { attack: _vm.combat.lastAttack },
+                              }),
                             ],
                             1
                           ),
@@ -72258,19 +72956,19 @@ var render = function() {
                             "div",
                             {
                               staticClass:
-                                "view-combat__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap"
+                                "view-combat__body area-zoom__body p-4 pos-relative grow-1 flex-center flex-column flex-wrap",
                             },
-                            _vm._l(_vm.factions, function(faction) {
+                            _vm._l(_vm.factions, function (faction) {
                               return _c(
                                 "div",
                                 {
-                                  staticClass: "unit-row flex-center flex-wrap"
+                                  staticClass: "unit-row flex-center flex-wrap",
                                 },
                                 [
-                                  _vm._l(faction.units, function(unit) {
+                                  _vm._l(faction.units, function (unit) {
                                     return _c("unit-combat", {
                                       key: unit.id,
-                                      attrs: { unit: unit }
+                                      attrs: { unit: unit },
                                     })
                                   }),
                                   _vm._v(" "),
@@ -72280,27 +72978,27 @@ var render = function() {
                                           unit: {
                                             type: "smoke",
                                             faction: "ninjas",
-                                            name: "smoke"
-                                          }
-                                        }
+                                            name: "smoke",
+                                          },
+                                        },
                                       })
-                                    : _vm._e()
+                                    : _vm._e(),
                                 ],
                                 2
                               )
                             }),
                             0
-                          )
+                          ),
                         ]
-                      )
+                      ),
                     ]
-                  )
-                ])
+                  ),
+                ]),
               ]
-            )
+            ),
           ]
         )
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -72321,7 +73019,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -72331,23 +73029,23 @@ var render = function() {
           "div",
           {
             staticClass:
-              "view-player pos-absolute width-100 height-100 top-0 p-5 d-flex align-stretch overflow-auto z-5"
+              "view-player pos-absolute width-100 height-100 top-0 p-5 d-flex align-stretch overflow-auto z-5",
           },
           [
             _c("button", {
               staticClass: "toggle fixed top right icon-x",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   _vm.open = false
-                }
-              }
+                },
+              },
             }),
             _vm._v(" "),
             _c(
               "div",
               {
                 staticClass:
-                  "factions width-100 height-100 p-5 d-flex align-center"
+                  "factions width-100 height-100 p-5 d-flex align-center",
               },
               [
                 _c(
@@ -72361,26 +73059,26 @@ var render = function() {
                         _c(
                           "div",
                           {
-                            staticClass: "choose-factions__basic-factions pr-3"
+                            staticClass: "choose-factions__basic-factions pr-3",
                           },
-                          _vm._l(_vm.factions, function(faction) {
+                          _vm._l(_vm.factions, function (faction) {
                             return _c("faction-choice", {
                               key: faction.name,
                               attrs: {
                                 faction: faction,
-                                selected: _vm.selectedFaction
+                                selected: _vm.selectedFaction,
                               },
                               on: {
-                                clicked: function(e) {
+                                clicked: function (e) {
                                   return (_vm.selectedFaction = e)
-                                }
-                              }
+                                },
+                              },
                             })
                           }),
                           1
-                        )
+                        ),
                       ]
-                    )
+                    ),
                   ]
                 ),
                 _vm._v(" "),
@@ -72390,14 +73088,14 @@ var render = function() {
                       style:
                         "background-image : url('/images/factions/" +
                         _vm.selectedFaction +
-                        "/sheet.jpg')"
+                        "/sheet.jpg')",
                     })
-                  : _vm._e()
+                  : _vm._e(),
               ]
-            )
+            ),
           ]
         )
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -72418,7 +73116,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -72426,21 +73124,21 @@ var render = function() {
     "div",
     {
       staticClass:
-        "villains-online d-flex align-stretch main-container pos-relative"
+        "villains-online d-flex align-stretch main-container pos-relative",
     },
     [
       _c(
         "div",
         {
           staticClass: "main-content height-100 drawer__main",
-          class: { "drawer--closed": _vm.chatClosed }
+          class: { "drawer--closed": _vm.chatClosed },
         },
         [
           !_vm.shared.data
             ? _c("game-lobby")
             : _vm.shared.data.state === "choose-factions"
             ? _c("choose-factions")
-            : _c("game-container")
+            : _c("game-container"),
         ],
         1
       ),
@@ -72448,11 +73146,11 @@ var render = function() {
       _c("chat-window", {
         attrs: { closed: _vm.chatClosed },
         on: {
-          toggleChat: function($event) {
+          toggleChat: function ($event) {
             _vm.chatClosed = !_vm.chatClosed
-          }
-        }
-      })
+          },
+        },
+      }),
     ],
     1
   )
@@ -72475,7 +73173,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -72483,16 +73181,16 @@ var render = function() {
     "div",
     {
       staticClass: "area-action center-text highlight pointer",
-      on: { click: _vm.emitAction }
+      on: { click: _vm.emitAction },
     },
     [
       _c("div", { staticClass: "area-action__image" }, [
-        _vm.icon ? _c("img", { attrs: { src: _vm.icon } }) : _vm._e()
+        _vm.icon ? _c("img", { attrs: { src: _vm.icon } }) : _vm._e(),
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "area-action__text" }, [
-        _vm._v(_vm._s(_vm.message))
-      ])
+        _vm._v(_vm._s(_vm.message)),
+      ]),
     ]
   )
 }
@@ -72514,7 +73212,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -72525,18 +73223,18 @@ var render = function() {
           {
             staticClass:
               "area-map__actions d-flex justify-center align-stretch z-7",
-            class: { closed: _vm.closed }
+            class: { closed: _vm.closed },
           },
           [
             _c(
               "button",
               {
                 staticClass: "toggle minimize-toggle top right",
-                on: { click: _vm.toggleClose }
+                on: { click: _vm.toggleClose },
               },
               [
                 _c("i", {
-                  class: _vm.closed ? "icon-maximize" : "icon-minimize"
+                  class: _vm.closed ? "icon-maximize" : "icon-minimize",
                 }),
                 _vm._v(" "),
                 _vm.closed
@@ -72553,7 +73251,7 @@ var render = function() {
                 _vm._v(" "),
                 _vm.closed
                   ? _c("loading-streak", { attrs: { position: "bottom" } })
-                  : _vm._e()
+                  : _vm._e(),
               ],
               1
             ),
@@ -72561,17 +73259,17 @@ var render = function() {
             _c(
               "div",
               { staticClass: "area-map__actions-content " },
-              _vm._l(_vm.actions, function(action) {
+              _vm._l(_vm.actions, function (action) {
                 return _c("area-action", {
                   key: action,
-                  attrs: { action: action, area: _vm.area }
+                  attrs: { action: action, area: _vm.area },
                 })
               }),
               1
-            )
+            ),
           ]
         )
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -72592,7 +73290,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -72601,16 +73299,16 @@ var render = function() {
       ? _c(
           "div",
           { staticClass: "area-flipper__pips" },
-          _vm._l(_vm.areaNamesAndReserves, function(area, index) {
+          _vm._l(_vm.areaNamesAndReserves, function (area, index) {
             return _c("div", {
               staticClass: "area-flipper__pip",
               class: _vm.pipClasses(area),
               attrs: { title: "switch to the " + area },
               on: {
-                click: function($event) {
+                click: function ($event) {
                   return _vm.pipClicked(area)
-                }
-              }
+                },
+              },
             })
           }),
           0
@@ -72624,10 +73322,10 @@ var render = function() {
             {
               staticClass: "flipper",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   return _vm.switchArea(-1)
-                }
-              }
+                },
+              },
             },
             [_c("i", { staticClass: "icon-left" })]
           )
@@ -72639,10 +73337,10 @@ var render = function() {
           staticClass: "area-header p-4 pb-1 pos-relative",
           class: "area-header-" + _vm.areaName + " " + _vm.classes,
           on: {
-            click: function($event) {
+            click: function ($event) {
               return _vm.$emit("areaClicked", _vm.areaName)
-            }
-          }
+            },
+          },
         },
         [
           _vm._t("default"),
@@ -72653,15 +73351,15 @@ var render = function() {
                 {
                   staticClass: "toggle area-map__toggle top-0 right-0",
                   on: {
-                    click: function($event) {
+                    click: function ($event) {
                       $event.stopPropagation()
                       return _vm.shared.event.emit("viewArea", _vm.area)
-                    }
-                  }
+                    },
+                  },
                 },
                 [_c("i", { staticClass: "icon-zoom_in" })]
               )
-            : _vm._e()
+            : _vm._e(),
         ],
         2
       ),
@@ -72672,15 +73370,15 @@ var render = function() {
             {
               staticClass: "flipper",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   return _vm.switchArea(+1)
-                }
-              }
+                },
+              },
             },
             [_c("i", { staticClass: "icon-right" })]
           )
-        : _vm._e()
-    ])
+        : _vm._e(),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -72701,7 +73399,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -72715,10 +73413,10 @@ var render = function() {
           staticClass: "area-map pos-relative width-100 height-100",
           class: _vm.computedClasses,
           on: {
-            click: function($event) {
+            click: function ($event) {
               return _vm.shared.event.emit("areaClicked", _vm.area)
-            }
-          }
+            },
+          },
         },
         [
           _c("div", { staticClass: "area-map__owner-wrap z-2" }, [
@@ -72727,8 +73425,8 @@ var render = function() {
                   staticClass: "area-map__owner-portrait z-2",
                   attrs: {
                     src: "/images/factions/" + _vm.area.owner + "/icon.jpg",
-                    title: "The " + _vm.area.owner + " control this area"
-                  }
+                    title: "The " + _vm.area.owner + " control this area",
+                  },
                 })
               : _vm._e(),
             _vm._v(" "),
@@ -72736,9 +73434,11 @@ var render = function() {
               ? _c("div", {
                   staticClass:
                     "area-map__conquered-icon z-1 icon-flag faction-conquistadors",
-                  attrs: { title: "The Conquistadors have conquered this area" }
+                  attrs: {
+                    title: "The Conquistadors have conquered this area",
+                  },
                 })
-              : _vm._e()
+              : _vm._e(),
           ]),
           _vm._v(" "),
           _c(
@@ -72746,11 +73446,11 @@ var render = function() {
             {
               staticClass: "toggle area-map__toggle top-0 right-0",
               on: {
-                click: function($event) {
+                click: function ($event) {
                   $event.stopPropagation()
                   return _vm.shared.event.emit("viewArea", _vm.area)
-                }
-              }
+                },
+              },
             },
             [_c("i", { staticClass: "icon-zoom_in" })]
           ),
@@ -72760,8 +73460,8 @@ var render = function() {
                 staticClass: "area-map__battle-marker z-2",
                 attrs: {
                   src: "/images/icons/battle.png",
-                  title: "A battle will take place here during the combat step"
-                }
+                  title: "A battle will take place here during the combat step",
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -72779,8 +73479,8 @@ var render = function() {
                     "The " +
                     _vm.exterminated +
                     " have exterminated the " +
-                    _vm.area.name
-                }
+                    _vm.area.name,
+                },
               })
             : _vm._e(),
           _vm._v(" "),
@@ -72790,8 +73490,8 @@ var render = function() {
             [
               _c("token-row", {
                 attrs: { area: _vm.area, token: _vm.token },
-                on: { token: _vm.emitToken }
-              })
+                on: { token: _vm.emitToken },
+              }),
             ],
             1
           ),
@@ -72803,7 +73503,7 @@ var render = function() {
                 [
                   _c("div", { staticClass: "icon-graveyard mb-2" }),
                   _vm._v(" "),
-                  _vm._l(_vm.graveyard, function(dead, name) {
+                  _vm._l(_vm.graveyard, function (dead, name) {
                     return _c(
                       "div",
                       {
@@ -72816,12 +73516,12 @@ var render = function() {
                             " have " +
                             dead +
                             " kills in the " +
-                            _vm.area.name
-                        }
+                            _vm.area.name,
+                        },
                       },
                       [_vm._v(_vm._s(dead))]
                     )
-                  })
+                  }),
                 ],
                 2
               )
@@ -72834,7 +73534,7 @@ var render = function() {
                 [
                   _vm._m(0),
                   _vm._v(" "),
-                  _vm._l(_vm.influence, function(obj) {
+                  _vm._l(_vm.influence, function (obj) {
                     return _c(
                       "div",
                       {
@@ -72847,8 +73547,8 @@ var render = function() {
                             " have " +
                             obj.influence +
                             " influence in the " +
-                            _vm.area.name
-                        }
+                            _vm.area.name,
+                        },
                       },
                       [
                         _vm._v(
@@ -72861,10 +73561,10 @@ var render = function() {
                                 : ""
                             ) +
                             "\n            "
-                        )
+                        ),
                       ]
                     )
-                  })
+                  }),
                 ],
                 2
               )
@@ -72876,11 +73576,11 @@ var render = function() {
                 {
                   staticClass: "pos-absolute-center area-map__xavier z-6",
                   on: {
-                    click: function($event) {
+                    click: function ($event) {
                       $event.stopPropagation()
                       return _vm.emitXavier.apply(null, arguments)
-                    }
-                  }
+                    },
+                  },
                 },
                 [_c("unit-row", { attrs: { units: [_vm.xavier] } })],
                 1
@@ -72897,32 +73597,32 @@ var render = function() {
             "div",
             {
               staticClass:
-                "width-100 height-100 area-map__core-content-container"
+                "width-100 height-100 area-map__core-content-container",
             },
             [
               _c(
                 "div",
                 {
                   staticClass:
-                    "area-map__core-content width-100 height-100 overflow-auto d-flex align-center justify-center"
+                    "area-map__core-content width-100 height-100 overflow-auto d-flex align-center justify-center",
                 },
                 [
                   _c(
                     "div",
                     {
                       staticClass: "d-flex flex-wrap justify-center",
-                      staticStyle: { "max-width": "95%" }
+                      staticStyle: { "max-width": "95%" },
                     },
-                    _vm._l(_vm.shared.data.factions, function(faction) {
+                    _vm._l(_vm.shared.data.factions, function (faction) {
                       return _c("map-player", {
                         key: faction.name,
-                        attrs: { faction: faction, area: _vm.area }
+                        attrs: { faction: faction, area: _vm.area },
                       })
                     }),
                     1
-                  )
+                  ),
                 ]
-              )
+              ),
             ]
           ),
           _vm._v(" "),
@@ -72930,9 +73630,9 @@ var render = function() {
             "div",
             {
               staticClass:
-                "area-map__stats-row pos-absolute bottom-0 width-100 flex-center shrink-0"
+                "area-map__stats-row pos-absolute bottom-0 width-100 flex-center shrink-0",
             },
-            _vm._l(_vm.stats, function(stat) {
+            _vm._l(_vm.stats, function (stat) {
               return _c("i", {
                 staticClass: "stat-icon",
                 class: "icon-" + stat.name + " faction-" + stat.owner,
@@ -72943,27 +73643,27 @@ var render = function() {
                     stat.description +
                     " - [" +
                     stat.owner +
-                    "]"
-                }
+                    "]",
+                },
               })
             }),
             0
-          )
+          ),
         ],
         1
-      )
+      ),
     ]
   )
 }
 var staticRenderFns = [
-  function() {
+  function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "influence-marker mb-2" }, [
-      _c("img", { attrs: { src: "/images/icons/influence.png" } })
+      _c("img", { attrs: { src: "/images/icons/influence.png" } }),
     ])
-  }
+  },
 ]
 render._withStripped = true
 
@@ -72982,7 +73682,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -72991,10 +73691,10 @@ var render = function() {
       ? _c("div", { staticClass: "area-map__popup area-action z-8" }, [
           _c("img", {
             staticClass: "area-map__popup-image",
-            attrs: { src: _vm.image }
-          })
+            attrs: { src: _vm.image },
+          }),
         ])
-      : _vm._e()
+      : _vm._e(),
   ])
 }
 var staticRenderFns = []
@@ -73015,7 +73715,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -73044,7 +73744,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -73053,16 +73753,16 @@ var render = function() {
         "div",
         {
           staticClass: "map-player__content flex-center m-1",
-          class: "faction-" + _vm.name
+          class: "faction-" + _vm.name,
         },
         [
           _c("div", { staticClass: "map-player__icon" }, [
             _c("img", {
-              attrs: { src: "/images/factions/" + _vm.name + "/icon.jpg" }
-            })
+              attrs: { src: "/images/factions/" + _vm.name + "/icon.jpg" },
+            }),
           ]),
           _vm._v(" "),
-          _vm._l(_vm.unitStats, function(unitType) {
+          _vm._l(_vm.unitStats, function (unitType) {
             return _c("div", { staticClass: "map-player__stat" }, [
               _c("span", [_vm._v(_vm._s(unitType.val))]),
               _vm._v(" "),
@@ -73071,8 +73771,8 @@ var render = function() {
                     _c("img", {
                       staticClass: "map-player__champion",
                       attrs: {
-                        src: "/images/factions/" + _vm.name + "/portrait.png"
-                      }
+                        src: "/images/factions/" + _vm.name + "/portrait.png",
+                      },
                     }),
                     _vm._v(" "),
                     unitType.pipped > 0
@@ -73080,24 +73780,24 @@ var render = function() {
                           "div",
                           {
                             staticClass:
-                              "pos-absolute map-player__pips d-flex justify-center width-100"
+                              "pos-absolute map-player__pips d-flex justify-center width-100",
                           },
-                          _vm._l(unitType.pipped, function(n) {
+                          _vm._l(unitType.pipped, function (n) {
                             return _c("i", {
                               staticClass: "icon-circle",
-                              class: "faction-" + _vm.name
+                              class: "faction-" + _vm.name,
                             })
                           }),
                           0
                         )
-                      : _vm._e()
+                      : _vm._e(),
                   ])
                 : _c(
                     "i",
                     {
                       staticClass: "pos-relative",
                       class: "icon-" + unitType.name,
-                      attrs: { title: unitType.description }
+                      attrs: { title: unitType.description },
                     },
                     [
                       unitType.pipped > 0
@@ -73105,34 +73805,34 @@ var render = function() {
                             "div",
                             {
                               staticClass:
-                                "pos-absolute map-player__pips d-flex justify-center width-100"
+                                "pos-absolute map-player__pips d-flex justify-center width-100",
                             },
-                            _vm._l(unitType.pipped, function(n) {
+                            _vm._l(unitType.pipped, function (n) {
                               return _c("i", {
                                 staticClass: "icon-circle",
-                                class: "faction-" + _vm.name
+                                class: "faction-" + _vm.name,
                               })
                             }),
                             0
                           )
-                        : _vm._e()
+                        : _vm._e(),
                     ]
-                  )
+                  ),
             ])
           }),
           _vm._v(" "),
-          _vm._l(_vm.statusIcons, function(desc, icon) {
+          _vm._l(_vm.statusIcons, function (desc, icon) {
             return _c(
               "div",
               { staticClass: "map-player__stat", attrs: { title: desc } },
               [
                 _c("img", {
                   staticClass: "map-player__status",
-                  attrs: { src: "/images/icons/" + icon + ".png" }
-                })
+                  attrs: { src: "/images/icons/" + icon + ".png" },
+                }),
               ]
             )
-          })
+          }),
         ],
         2
       )
@@ -73156,7 +73856,7 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
+var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -73167,10 +73867,10 @@ var render = function() {
         {
           staticClass: "button button-empty",
           on: {
-            click: function($event) {
+            click: function ($event) {
               return _vm.submit(false)
-            }
-          }
+            },
+          },
         },
         [_vm._v("NO")]
       ),
@@ -73180,14 +73880,14 @@ var render = function() {
         {
           staticClass: "button",
           on: {
-            click: function($event) {
+            click: function ($event) {
               return _vm.submit(true)
-            }
-          }
+            },
+          },
         },
         [_vm._v("YES")]
-      )
-    ])
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []
@@ -86037,6 +86737,8 @@ var VueApp = new Vue({
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
+	"./ActiveGame.vue": "./resources/js/components/ActiveGame.vue",
+	"./ActiveGames.vue": "./resources/js/components/ActiveGames.vue",
 	"./Cards/CardBlock.vue": "./resources/js/components/Cards/CardBlock.vue",
 	"./Cards/CardPicker.vue": "./resources/js/components/Cards/CardPicker.vue",
 	"./Cards/PlanBlock.vue": "./resources/js/components/Cards/PlanBlock.vue",
@@ -86046,6 +86748,7 @@ var map = {
 	"./Chat/ChatMessage.vue": "./resources/js/components/Chat/ChatMessage.vue",
 	"./Chat/ChatWindow.vue": "./resources/js/components/Chat/ChatWindow.vue",
 	"./Chat/RevealTokenMessage.vue": "./resources/js/components/Chat/RevealTokenMessage.vue",
+	"./CheatSheets.vue": "./resources/js/components/CheatSheets.vue",
 	"./EndGame.vue": "./resources/js/components/EndGame.vue",
 	"./FactionScore.vue": "./resources/js/components/FactionScore.vue",
 	"./FinalScores.vue": "./resources/js/components/FinalScores.vue",
@@ -86197,6 +86900,162 @@ webpackContext.keys = function webpackContextKeys() {
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
 webpackContext.id = "./resources/js/components sync recursive \\.vue$/";
+
+/***/ }),
+
+/***/ "./resources/js/components/ActiveGame.vue":
+/*!************************************************!*\
+  !*** ./resources/js/components/ActiveGame.vue ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ActiveGame_vue_vue_type_template_id_c237a67a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ActiveGame.vue?vue&type=template&id=c237a67a& */ "./resources/js/components/ActiveGame.vue?vue&type=template&id=c237a67a&");
+/* harmony import */ var _ActiveGame_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ActiveGame.vue?vue&type=script&lang=js& */ "./resources/js/components/ActiveGame.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ActiveGame_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ActiveGame.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/ActiveGame.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _ActiveGame_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ActiveGame_vue_vue_type_template_id_c237a67a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ActiveGame_vue_vue_type_template_id_c237a67a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ActiveGame.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ActiveGame.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/ActiveGame.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ActiveGame.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGame.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ActiveGame.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/ActiveGame.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./ActiveGame.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGame.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ActiveGame.vue?vue&type=template&id=c237a67a&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/ActiveGame.vue?vue&type=template&id=c237a67a& ***!
+  \*******************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_template_id_c237a67a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ActiveGame.vue?vue&type=template&id=c237a67a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGame.vue?vue&type=template&id=c237a67a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_template_id_c237a67a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGame_vue_vue_type_template_id_c237a67a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ActiveGames.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/ActiveGames.vue ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ActiveGames_vue_vue_type_template_id_414d0cc0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ActiveGames.vue?vue&type=template&id=414d0cc0& */ "./resources/js/components/ActiveGames.vue?vue&type=template&id=414d0cc0&");
+/* harmony import */ var _ActiveGames_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ActiveGames.vue?vue&type=script&lang=js& */ "./resources/js/components/ActiveGames.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ActiveGames_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ActiveGames_vue_vue_type_template_id_414d0cc0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ActiveGames_vue_vue_type_template_id_414d0cc0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ActiveGames.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ActiveGames.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/ActiveGames.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGames_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ActiveGames.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGames.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGames_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ActiveGames.vue?vue&type=template&id=414d0cc0&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/ActiveGames.vue?vue&type=template&id=414d0cc0& ***!
+  \********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGames_vue_vue_type_template_id_414d0cc0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ActiveGames.vue?vue&type=template&id=414d0cc0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveGames.vue?vue&type=template&id=414d0cc0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGames_vue_vue_type_template_id_414d0cc0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveGames_vue_vue_type_template_id_414d0cc0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
@@ -86978,6 +87837,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RevealTokenMessage_vue_vue_type_template_id_24a1a6d7___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RevealTokenMessage_vue_vue_type_template_id_24a1a6d7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/CheatSheets.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/CheatSheets.vue ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CheatSheets_vue_vue_type_template_id_022e75e8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CheatSheets.vue?vue&type=template&id=022e75e8& */ "./resources/js/components/CheatSheets.vue?vue&type=template&id=022e75e8&");
+/* harmony import */ var _CheatSheets_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CheatSheets.vue?vue&type=script&lang=js& */ "./resources/js/components/CheatSheets.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _CheatSheets_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CheatSheets.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/CheatSheets.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _CheatSheets_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CheatSheets_vue_vue_type_template_id_022e75e8___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CheatSheets_vue_vue_type_template_id_022e75e8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/CheatSheets.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/CheatSheets.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/CheatSheets.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CheatSheets.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CheatSheets.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/CheatSheets.vue?vue&type=style&index=0&lang=css&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/CheatSheets.vue?vue&type=style&index=0&lang=css& ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./CheatSheets.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CheatSheets.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
+
+/***/ }),
+
+/***/ "./resources/js/components/CheatSheets.vue?vue&type=template&id=022e75e8&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/CheatSheets.vue?vue&type=template&id=022e75e8& ***!
+  \********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_template_id_022e75e8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CheatSheets.vue?vue&type=template&id=022e75e8& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CheatSheets.vue?vue&type=template&id=022e75e8&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_template_id_022e75e8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CheatSheets_vue_vue_type_template_id_022e75e8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -97305,7 +98251,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -97453,8 +98399,8 @@ var helpers = {
         && (!options.type || token.type === options.type);
       }) // ...and the options don't care about type, or we have the proper type
       ) {
-          count++;
-        } // increment the count
+        count++;
+      } // increment the count
 
     });
     return count;
@@ -97706,7 +98652,7 @@ module.exports = helpers;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
@@ -97824,7 +98770,7 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -99130,7 +100076,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 window.App.ajax = new ( /*#__PURE__*/function () {
   function _class() {
@@ -99139,7 +100085,7 @@ window.App.ajax = new ( /*#__PURE__*/function () {
 
   _createClass(_class, [{
     key: "post",
-
+    value:
     /**
      * Make a POST request
      *
@@ -99148,7 +100094,7 @@ window.App.ajax = new ( /*#__PURE__*/function () {
      * @param message
      * @returns {Promise}
      */
-    value: function post(url, data, message) {
+    function post(url, data, message) {
       return this.axios('post', url, data, message);
     }
     /**
@@ -99280,7 +100226,7 @@ window.App.ajax = new ( /*#__PURE__*/function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
@@ -99290,7 +100236,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 window.App._cookieHandler = new ( /*#__PURE__*/function () {
   function _class() {
@@ -99524,7 +100470,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 /**
  * Shared event handler, which is really just a wrapper around a Vue instance
@@ -99594,13 +100540,13 @@ Vue.filter('clearHyphens', function (value) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Form; });
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 var Errors = /*#__PURE__*/function () {
   /**
@@ -99857,7 +100803,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
@@ -99867,7 +100813,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 window.App.preloader = new ( /*#__PURE__*/function () {
   function _class() {
@@ -100004,6 +100950,8 @@ window.App.state = {
   // store our saved games
   openSettings: false,
   // should the settings panel be open?
+  openCheatSheets: false,
+  // should the cheat sheets panel be open?
   player: null,
   // store our current player
   faction: null,
@@ -100226,9 +101174,10 @@ window.App.state = {
    * @returns {object} // faction data
    */
   getPlayerFaction: function getPlayerFaction(player) {
-    return Object.values(this.data.factions).find(function (faction) {
+    var faction = Object.values(this.data.factions).find(function (faction) {
       return faction.owner === player.id;
     });
+    return faction ? faction : {};
   },
 
   /**
@@ -100290,9 +101239,18 @@ window.App.state = {
    * @returns {object}
    */
   getPlayer: function getPlayer() {
-    var _this$data;
+    var _this$data, _this$data2;
 
-    return (_this$data = this.data) === null || _this$data === void 0 ? void 0 : _this$data.players[this.id];
+    var player = (_this$data = this.data) === null || _this$data === void 0 ? void 0 : _this$data.players[this.id];
+    if (player) return player;
+    var spectator = (_this$data2 = this.data) === null || _this$data2 === void 0 ? void 0 : _this$data2.spectators[this.id];
+
+    if (spectator) {
+      spectator.isSpectator = true;
+      return spectator;
+    }
+
+    return {};
   },
 
   /**
@@ -100389,7 +101347,7 @@ var obj = {
     name: 'commies',
     owner: null,
     blocked: false,
-    status: 3,
+    status: 2,
     basic: true,
     selectable: true
   },
@@ -100429,14 +101387,14 @@ var obj = {
     owner: null,
     blocked: false,
     killer: true,
-    status: 1,
+    status: 3,
     selectable: true
   },
   society: {
     name: 'society',
     owner: null,
     blocked: false,
-    status: 1,
+    status: 2,
     selectable: true
   },
   hackers: {
@@ -100516,7 +101474,7 @@ var obj = {
     name: 'martyrs',
     owner: null,
     blocked: false,
-    status: 0,
+    status: 1,
     selectable: true
   }
 };
