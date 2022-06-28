@@ -6,7 +6,7 @@
             v-for="token in tokens"
             :token="token"
             :key="token.id"
-            @token-clicked="tokenClicked"
+            @tokenClicked="tokenClicked"
             :selected="selected"
             :noEmit="noEmit"
             :direction="direction"

@@ -222,18 +222,26 @@
 
             /**
              * Can we add this unit?
-             * @param type
+             * @param unit
              * @returns {boolean}
              */
-            canAddUnit( type ){
+            canAddUnit( unit ){
                 let usedDeploy = this.selected.length;
                 let deployLimit = this.data.deployLimit;
+                let bonusDeploy = this.shared.faction.bonusDeploy;
 
                 // unit type specific bonus deploy
-                if( this.shared.faction.bonusDeploy && this.data.fromToken ){
+                if( bonusDeploy && this.data.fromToken ){
                     usedDeploy = this.nonBonusUsedDeploy;
                     usedDeploy += this.netBonusUnits > 0 ? this.netBonusUnits : 0;
-                    if( this.netBonusUnits < 0 && type === this.shared.faction.bonusDeploy.type ) deployLimit++;
+
+                    if( this.netBonusUnits < 0 && bonusDeploy.type && unit.type === bonusDeploy.type ) {
+                            deployLimit++;
+                    }
+
+                    if( this.netBonusUnits < 0 && bonusDeploy.inPlay && unit.location ) {
+                        deployLimit++;
+                    }
                 }
 
                 return usedDeploy < deployLimit;
@@ -253,7 +261,7 @@
                 }
 
                 // if we can't add this unit abort
-                if( ! this.canAddUnit( unit.type ) ) return;
+                if( ! this.canAddUnit( unit ) ) return;
 
                 // get our unit and select it
                 unit = _.find( this.currentFromAreaUnits, old => unit.id === old.id );
@@ -270,7 +278,7 @@
              */
             addUnitFromReserves( type ){
                 // if we can't add this unit abort
-                if( ! this.canAddUnit( type ) ) return;
+                if( ! this.canAddUnit( { type: type } ) ) return;
 
                 // get our unit and select it
                 let unit = _.find( this.reserves, unit => unit.type === type );
@@ -363,7 +371,16 @@
              */
             bonusUnitsInDeploy() {
                 if( !this.shared.faction.bonusDeploy || this.data.noBonusUnits  ) return 0;
-                return this.selected.filter(unit => unit.type === this.shared.faction.bonusDeploy.type ).length;
+
+                // bonus by type
+                if(this.shared.faction.bonusDeploy.type){
+                    return this.selected.filter(unit => unit.type === this.shared.faction.bonusDeploy.type ).length;
+                }
+
+                // bonus in play
+                if(this.shared.faction.bonusDeploy.inPlay){
+                    return this.selected.filter(unit => unit.location ).length;
+                }
             },
 
 
@@ -372,8 +389,19 @@
              * @returns {number}
              */
             nonBonusUsedDeploy(){
-                if( !this.shared.faction.bonusDeploy || this.data.noBonusUnits ) return this.selected.length;
-                return this.selected.filter( unit => unit.type !== this.shared.faction.bonusDeploy.type ).length;
+                const bonusDeploy = this.shared.faction.bonusDeploy;
+
+                if( !bonusDeploy || this.data.noBonusUnits ) return this.selected.length;
+
+                // bonus by type
+                if(bonusDeploy.type) {
+                    return this.selected.filter(unit => unit.type !== bonusDeploy.type).length;
+                }
+
+                // bonus in play
+                if(bonusDeploy.inPlay){
+                    return this.selected.filter(unit => !unit.location ).length;
+                }
             },
 
 

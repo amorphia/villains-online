@@ -28,14 +28,14 @@
                     </div>
 
                     <!-- final scoring -->
-                    <div class="pt-3">
+                    <div v-if="shared.admin" class="pt-3">
                         <end-game :track="true">
                             <button  class="conclude button width-100 d-block">go to final scoring</button>
                         </end-game>
                     </div>
 
                     <!-- terminate game -->
-                    <div class="pt-3">
+                    <div v-if="shared.admin" class="pt-3">
                         <end-game>
                             <button class="conclude button width-100 d-block">terminate game</button>
                         </end-game>

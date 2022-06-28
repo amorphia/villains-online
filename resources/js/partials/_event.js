@@ -9,12 +9,12 @@ window.App.event = new class {
     }
 
     emit( event, data = null ){
-        if( this.debug ) console.log( 'emit', event );
+        if( this.debug ) console.log( `${event} emitted` );
         this._vue.$emit( event, data );
     }
 
     on( event, callback ){
-        if( this.debug ) console.log( 'on', event );
+        if( this.debug ) console.log( `on ${event} registered` );
         this._vue.$on( event, callback );
     }
 

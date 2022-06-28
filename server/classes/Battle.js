@@ -311,6 +311,13 @@ class Battle {
         }
     }
 
+    addUnitToCombat( unit ){
+        if( unit.attack.length ) unit.needsToAttack = true;
+        for( let faction of Object.values( this.data.factions ) ){
+            if( faction.name !== unit.faction ) continue;
+            faction.units.push( unit );
+        }
+    }
 
     /**
      *

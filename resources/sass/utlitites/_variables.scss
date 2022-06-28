@@ -41,6 +41,7 @@
     --faction-ghosts: #4a9ed8;
     --faction-spiders: #ae7688;
     --faction-skeletons: #b2a366;
+    --faction-bikers: #6D4C84;
 }
 
 .faction-neutral{color: white}
@@ -68,6 +69,7 @@
 .faction-ghosts {color: var(--faction-ghosts)}
 .faction-spiders {color: var(--faction-spiders)}
 .faction-skeletons {color: var(--faction-skeletons)}
+.faction-bikers {color: var(--faction-bikers)}
 
 .primary { color: var(--primary-color) }
 .primary-light { color: var(--primary-light-color) }

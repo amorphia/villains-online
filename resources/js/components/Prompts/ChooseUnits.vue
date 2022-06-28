@@ -45,6 +45,7 @@
                 <!-- submission buttons -->
                 <div>
                     <button v-if="data.canDecline" class="button button-empty" @click="resolve( false )">DECLINE</button>
+                    <button v-if="data.canPayInstead" class="button button-empty" @click="resolve( false, { pay: data.canPayInstead } )" v-html="shared.filterText(`PAY xC${data.canPayInstead}x INSTEAD`)"></button>
                     <button class="button" @click="resolve( true )" :disabled="!canSubmit">FINALIZE CHOICE</button>
                 </div>
 
@@ -323,12 +324,14 @@
              * Submit or decline our choices for this prompt
              *
              * @param unitsSelected
+             * @param options
              */
-            resolve( unitsSelected ){
+            resolve( unitsSelected, options = {}){
                 let data = {};
 
-                if( unitsSelected ){ // if we selected units process our choices
-
+                if(options.pay){ // if we are paying instead
+                    data.pay = options.pay
+                } else if( unitsSelected ){ // if we selected units process our choices\
                     // add the ids of the selected units to the data
                     data.units = _.map( this.selected, 'id' );
                     // apply any costs
@@ -396,6 +399,9 @@
 
                     // filter basic units
                     if( this.data.basicOnly && !unit.basic ) return;
+
+                    // filter unreplaceable units
+                    if( this.data.canBeReplaced && unit.noReplace ) return;
 
                     // filter flipped units
                     if( this.data.flippedOnly && !unit.flipped ) return;

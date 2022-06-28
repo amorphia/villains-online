@@ -11,7 +11,7 @@
 .z-9 { z-index: 9 }
 .z-negative { z-index: -1 }
 
-
+.tooltip { cursor: help; position: relative }
 
 // ratios
 $ratios : (
@@ -267,7 +267,11 @@ $sizes: (
 .height-15 { height: 15% }
 
 /* Mouse */
+.cursor-help { cursor: help }
 .pointer { cursor: pointer }
+
+.cursor-default { cursor: default }
+
 .no-click { pointer-events: none }
 .no-select { user-select: none };
 

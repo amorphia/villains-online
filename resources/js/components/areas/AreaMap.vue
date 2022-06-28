@@ -3,12 +3,20 @@
         <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="shared.event.emit( 'areaClicked', area )">
 
             <!-- Control -->
-            <div class="area-map__owner-wrap z-2">
+            <div class="area-map__owner-wrap z-2 cursor-help">
                 <!-- owner -->
                 <img v-if="area.owner"
+                     @click.right.prevent="() => {
+                         $refs.controllerTooltip.open();
+                         shared.event.emit( 'areaClicked', area );
+                     }"
                      class="area-map__owner-portrait z-2"
                      :src="`/images/factions/${area.owner}/icon.jpg`"
                      :title="`The ${area.owner} control this area`">
+
+                <tool-tip v-if="area.owner" direction="right-bottom" :title="`controlled by The ${area.owner}`" ref="controllerTooltip">
+                    <div v-html="shared.filterText(`The ${this.area.owner} gain xIx in this area and have: <span class='highlight'>${shared.filterText(this.area.control)}</span>`)"></div>
+                </tool-tip>
 
                 <!-- conquered -->
                 <div v-if="area.conquered"
@@ -24,16 +32,37 @@
             </div>
 
             <!-- battle marker -->
-            <img v-if="area.battle"
-                 class="area-map__battle-marker z-2"
-                 src="/images/icons/battle.png"
-                 title="A battle will take place here during the combat step">
+            <div v-if="area.battle" class="tooltip area-map__battle-marker-container">
+                <img
+                     @click.right.prevent="() => {
+                         $refs.battleTooltip.open();
+                         shared.event.emit( 'areaClicked', area );
+                     }"
+                     class="width-100 height-100 area-map__battle-marker"
+                     src="/images/icons/battle.png"
+                     title="A battle will take place here during the combat step">
+                    <tool-tip title="Battle Marker" ref="battleTooltip" direction="right-top">
+                        <div>Combat will take place in this area after all players finish taking their actions.</div>
+                        <div class="highlight">Battle markers are placed when there are as many tokens in an area as number of players</div>
+                    </tool-tip>
+            </div>
+
 
             <!-- exterminate -->
             <i v-if="exterminated"
-               class="area-map__exterminated icon-exterminate z-2"
+               @click.right.prevent="() => {
+                         $refs.exterminateTooltip.open();
+                         shared.event.emit( 'areaClicked', area );
+               }"
+               class="area-map__exterminated icon-exterminate z-2 cursor-help"
                :style="`color: var(--faction-${exterminated}); border-color: var(--faction-${exterminated})`"
-               :title="`The ${exterminated} have exterminated the ${area.name}`"></i>
+               :title="`The ${exterminated} have exterminated the ${area.name}`">
+                    <tool-tip title="exterminated" direction="left-top" ref="exterminateTooltip">
+                        <div class="center-text" :class="`faction-${exterminated}`">({{ exterminated }})</div>
+                        <div>The {{ exterminated }} have exterminated the {{ area.name }}</div>
+                        <div class="highlight">An area is exterminated by a player if that player is the only one with units there, and they have killed at least one unit there</div>
+                    </tool-tip>
+            </i>
 
             <!-- tokens -->
             <div class="width-100 shrink-0 pos-absolute top-0">
@@ -45,7 +74,9 @@
             </div>
 
             <!-- graveyard -->
-            <div v-if="graveyard" class="area-map__graveyard">
+            <div v-if="graveyard" class="area-map__graveyard cursor-help"
+                 @click.right.prevent="() => $refs.killsTooltip.open()"
+            >
                 <!-- dead -->
                 <div class="icon-graveyard mb-2"></div>
                 <div v-for="(dead, name) in graveyard"
@@ -53,10 +84,18 @@
                      :class="`faction-${name}`"
                      :title="`the ${name} have ${dead} kills in the ${area.name}`">{{ dead }}</div>
 
+                <!-- kills tooltip -->
+                <tool-tip ref="killsTooltip" title="faction kills" direction="left">
+                    <div style="display: grid;">
+                        <div v-for="(dead, name) in graveyard" v-html="`The <span class='uppercase faction-${name}'>${name}</span> have ${dead} kill${dead > 1 ? 's' : ''}`"></div>
+                    </div>
+                </tool-tip>
             </div>
 
             <!-- influence -->
-            <div v-if="influence.length" class="area-map__influence">
+            <div v-if="influence.length" class="area-map__influence cursor-help"
+                @click.right.prevent="() => $refs.influenceTooltip.open()"
+            >
                 <div class="influence-marker mb-2">
                     <img src="/images/icons/influence.png">
                 </div>
@@ -68,6 +107,13 @@
                     {{ obj.influence }}
                     {{ obj.faction === 'plants' && killedPlant ? '*' : '' }}
                 </div>
+
+                <!-- influence tooltip -->
+                <tool-tip ref="influenceTooltip" title="influence count" direction="right">
+                    <div style="display: grid;">
+                        <div v-for="faction in influence" v-html="influenceTooltipText(faction)"></div>
+                    </div>
+                </tool-tip>
             </div>
 
             <!-- Xavier -->
@@ -97,10 +143,7 @@
 
             <!-- status icons -->
             <div class="area-map__stats-row pos-absolute bottom-0 width-100 flex-center shrink-0">
-                <i v-for="stat in stats"
-                   class="stat-icon"
-                   :class="`icon-${stat.name} faction-${stat.owner}`"
-                   :title="`${stat.title}: ${stat.description} - [${stat.owner}]`"></i>
+                <stat-icon v-for="stat in stats" :stat="stat" :area="area" />
             </div>
         </div>
     </div>
@@ -109,7 +152,6 @@
 
 <script>
     export default {
-
         name: 'area-map',
         props: ['area', 'classes'],
 
@@ -131,6 +173,19 @@
         },
 
         methods : {
+            openStatTooltip(index){
+                const ref = `statTooltip-${index}`;
+                this.$refs[ref].open();
+            },
+
+            influenceTooltipText(faction){
+                let text = `The <span class='faction-${faction.faction} uppercase'>${faction.faction}</span> have <span class="highlight bold mr-1">${faction.influence}</span>`;
+
+                if( faction.faction === 'plants' && this.killedPlant ) text += '*';
+
+                return this.shared.filterText(text + 'xIx');
+            },
+
             /**
              * Emit a token event
              * @param token
@@ -246,8 +301,8 @@
                             stats.push({
                                 name : 'target',
                                 owner : faction.name,
-                                title : '+1AP',
-                                description : `the ${faction.name} are targeting this area`
+                                title : 'target',
+                                description : `The ${faction.name} are targeting this area, whomever controls this area at the end of the turn gains +1 AP`
                             });
                     }
                 });
@@ -284,7 +339,7 @@
              */
             killedPlant(){
                 if( !this.shared.data.factions['plants'] ) return false;
-                return _.factionAreasWithDead( this.shared.data.factions['plants'] ).includes( this.area.name );
+                return _.factionAreasWithDead( this.shared.data.factions['plants'], { basic: true } ).includes( this.area.name );
             },
 
 
@@ -475,19 +530,26 @@
         border: 2px solid;
     }
 
-  .area-map__battle-marker, .area-map__exterminated {
+  .area-map__exterminated {
         width: 2.5rem;
         height: 2.5rem;
         position: absolute;
-
+        z-index: 1000;
         border: 2px solid rgba(255,255,255,1);
         outline: 3px solid rgba(0,0,0,.5);
     }
 
     .area-map__battle-marker {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .area-map__battle-marker-container {
+        position: absolute;
         bottom:0;
         left:0;
         transform: translate(-15%,15%);
+        z-index: 1000;
     }
 
 
@@ -504,6 +566,7 @@
         position: absolute;
         right: 3px;
         top: 50%;
+        z-index: 1000;
     }
 
     .area-map__graveyard .icon-web {
@@ -528,6 +591,7 @@
         position: absolute;
         left: 3px;
         top: 50%;
+        z-index: 1000;
     }
 
     .area-map__influence-count {
@@ -552,7 +616,7 @@
         background-size: 100% 2vw, cover;
         box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);
         border: 2px solid rgba(255,255,255,.3);
-        transition: opacity .3s;
+        transition: opacity .1s;
     }
 
     .church-container { order: 1; }

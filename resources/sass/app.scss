@@ -201,8 +201,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
 }
 
 /* Track */
@@ -356,6 +356,14 @@ body {
     }
 }
 
+.selected.selected-circle {
+    overflow: visible;
+
+    &::before {
+        width: 100%;
+        padding-bottom: 100%;
+    }
+}
 
 .mobile-warning__wrap {
     height: 100vh;

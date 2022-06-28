@@ -42,6 +42,8 @@ window.App.state = {
         'xCAP2x': '<img class="icon-image ml-3" src="/images/tokens/capitol-2-points.png">',
         'xCAP3x': '<img class="icon-image ml-3" src="/images/tokens/capitol-3-points.png">',
         'xCAP4x': '<img class="icon-image ml-3" src="/images/tokens/capitol-4-points.png">',
+        'xAPx': '<img class="icon-image ml-3" src="/images/icons/ap.png">',
+        'xPPx': '<img class="icon-image ml-3" src="/images/icons/pp.png">',
         'xAP1x': '<img class="icon-image ml-3" src="/images/icons/ap-1.png">',
         'xAP2x': '<img class="icon-image ml-3" src="/images/icons/ap-2.png">',
         'xAP3x': '<img class="icon-image ml-3" src="/images/icons/ap-3.png">',

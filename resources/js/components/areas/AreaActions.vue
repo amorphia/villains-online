@@ -114,7 +114,6 @@
         background-position: center;
         max-height: 100%;
         max-width: 100%;
-        overflow: hidden;
         opacity: 1;
         transition: all .1s;
         border: 1px solid #ffffff;

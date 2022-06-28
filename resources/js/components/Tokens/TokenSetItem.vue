@@ -1,16 +1,17 @@
 <template>
-    <div class="tokens-hud__token d-inline-block pos-relative" @click.left="tokenClicked" @click.right.prevent="$refs.tooltip.open()">
+    <div class="tokens-hud__token d-inline-block tooltip selected-circle"
+            @click.left="tokenClicked"
+            @click.right.prevent="$refs.tooltip.open()"
+    >
         <img class="tokens-hud__token-image"
              :class="tokenClass"
              :src="`/images/factions/${shared.faction.name}/tokens/${this.token.name}.png`">
 
-        <tool-tip
-            :id="token.id"
-            :title="token.name"
-            :content="token.description"
-            :footnote="tokenFootnote"
+        <token-tooltip
             :direction="direction"
-            ref="tooltip" />
+            :token="token"
+            ref="tooltip">
+        </token-tooltip>
     </div>
 
 
@@ -33,7 +34,7 @@
              */
             tokenClicked(){
                 if( this.noEmit ) return;
-                this.shared.event.emit( 'tokenClicked', this.token );
+                App.event.emit( 'tokenClicked', this.token );
                 this.$emit( 'tokenClicked', this.token );
             },
         },

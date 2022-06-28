@@ -45,7 +45,7 @@
                     <div>Game Id <span>{{ shared.game.id }}</span></div>
 
                     <!-- delete game -->
-                    <div class="icon-x open-game__delete pointer" @click="deleteGame"></div>
+                    <div v-if="shared.admin" class="icon-x open-game__delete pointer" @click="deleteGame"></div>
                 </div>
 
                 <!-- players -->
@@ -87,7 +87,7 @@
                 <div class="open-game__buttons center-text">
                     <button v-if="!joinedGame" :disabled="!canJoin" class="button wide px-6" @click="joinGame">JOIN</button>
                     <button v-if="joinedGame" class="button wide px-6 button-empty" @click="leaveGame">LEAVE</button>
-                    <button v-if="joinedGame" :disabled="!canStart" class="button wide px-6" @click="startGame">START</button>
+                    <button v-if="joinedGame && shared.admin" :disabled="!canStart" class="button wide px-6" @click="startGame">START</button>
                 </div>
             </div>
 
@@ -100,7 +100,9 @@
                 </div>
 
                 <!-- new game button -->
-                <button v-else @click="newGame" class="button new-game-button">Create New Game</button>
+                <button v-else-if="shared.admin" @click="newGame" class="button new-game-button">Create New Game</button>
+
+                <div v-else class="server-offline">WAITING FOR GAME</div>
             </div>
         </div>
     </div>
@@ -212,7 +214,7 @@
              */
             setGameType( type ){
                 // only the game's creator can change the type
-                if( !gameCreator ) return App.event.emit( 'sound', 'error' );
+                if( !this.gameCreator ) return App.event.emit( 'sound', 'error' );
 
                 // set game type
                 App.event.emit( 'sound', 'ui' );

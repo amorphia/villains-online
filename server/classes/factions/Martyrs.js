@@ -70,7 +70,7 @@ class Martyrs extends Faction {
     async incarnationConvert( event ){
         let area = this.game().areas[ event.unit.location ];
         let reservePatsyCount = this.unitsInReserves({ type: 'patsy' });
-        let enemyPatsies = this.enemyUnitsInArea( area, { type : 'patsy' } );
+        let enemyPatsies = this.enemyUnitsInArea( area, { type : 'patsy', canBeReplaced: true } );
 
         let maxConversion = _.min([
             reservePatsyCount.length,
@@ -87,6 +87,7 @@ class Martyrs extends Faction {
             unitTypes : ['patsy'],
             enemyOnly : true,
             differentPlayers : true,
+            canBeReplaced: true,
             message: "Choose one patsy from each enemy player to convert"
         });
 

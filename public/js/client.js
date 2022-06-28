@@ -4521,6 +4521,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-lobby',
   data: function data() {
@@ -4615,7 +4617,7 @@ __webpack_require__.r(__webpack_exports__);
      */
     setGameType: function setGameType(type) {
       // only the game's creator can change the type
-      if (!gameCreator) return App.event.emit('sound', 'error'); // set game type
+      if (!this.gameCreator) return App.event.emit('sound', 'error'); // set game type
 
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('setGameType', this.shared.game.id, type);
@@ -8329,6 +8331,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-factions',
   data: function data() {
@@ -9251,6 +9254,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-target',
   data: function data() {
@@ -9310,6 +9315,18 @@ __webpack_require__.r(__webpack_exports__);
     confirmMessage: function confirmMessage() {
       if (this.mode === 'confirm') return "FINALIZE CHOICES";
       return "CONFIRM CHOICES";
+    },
+    instructions: function instructions() {
+      switch (this.mode) {
+        case 'plans':
+          return this.shared.filterText("Completing plan objectives will earn you xPPx");
+
+        case 'cards':
+          return this.shared.filterText("Controlling the area shown at the top of the selected card will be worth xAP1x");
+
+        case 'confirm':
+          return null;
+      }
     },
 
     /**
@@ -9613,6 +9630,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-units',
   data: function data() {
@@ -9857,12 +9875,17 @@ __webpack_require__.r(__webpack_exports__);
      * Submit or decline our choices for this prompt
      *
      * @param unitsSelected
+     * @param options
      */
     resolve: function resolve(unitsSelected) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var data = {};
 
-      if (unitsSelected) {
-        // if we selected units process our choices
+      if (options.pay) {
+        // if we are paying instead
+        data.pay = options.pay;
+      } else if (unitsSelected) {
+        // if we selected units process our choices\
         // add the ids of the selected units to the data
         data.units = _.map(this.selected, 'id'); // apply any costs
 
@@ -9924,7 +9947,9 @@ __webpack_require__.r(__webpack_exports__);
 
         if (_this4.data.notHidden && unit.hidden) return; // filter basic units
 
-        if (_this4.data.basicOnly && !unit.basic) return; // filter flipped units
+        if (_this4.data.basicOnly && !unit.basic) return; // filter unreplaceable units
+
+        if (_this4.data.canBeReplaced && unit.noReplace) return; // filter flipped units
 
         if (_this4.data.flippedOnly && !unit.flipped) return; // filter ready units
 
@@ -10336,146 +10361,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseWild.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseWild.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'choose-wild',
-  data: function data() {
-    return {
-      shared: App.state,
-      tokens: [{
-        name: 'deploy',
-        id: 1
-      }, {
-        name: 'card',
-        id: 2
-      }, {
-        name: 'battle',
-        id: 3
-      }, {
-        name: 'move',
-        id: 4
-      }],
-      type: null
-    };
-  },
-  mounted: function mounted() {
-    this.shared.event.on('tokenClicked', this.selectToken);
-  },
-  computed: {
-    /**
-     * Get our button message
-     * @returns {string}
-     */
-    buttonMessage: function buttonMessage() {
-      return this.type ? "activate as a ".concat(this.type.name, " token") : 'Choose Basic Token';
-    },
-
-    /**
-     * Is submitting disabled?
-     * @returns {boolean}
-     */
-    disabled: function disabled() {
-      return !this.type || this.shared.faction.resources + this.shared.faction.energy < this.cost;
-    },
-
-    /**
-     * What is our token cost?
-     * @returns {number}
-     */
-    cost: function cost() {
-      return this.type && this.type.name === 'move' ? 2 : 0;
-    },
-
-    /**
-     * get our title message
-     * @returns {string}
-     */
-    message: function message() {
-      return this.data.message ? this.data.message : 'Choose how to activate your wild token';
-    },
-
-    /**
-     * Return our token area object
-     * @returns {Area}
-     */
-    area: function area() {
-      return this.shared.data.areas[this.data.area];
-    },
-
-    /**
-     * Return our prompt data
-     * @returns {object}
-     */
-    data: function data() {
-      return this.shared.player.prompt.data;
-    }
-  },
-  methods: {
-    /**
-     * Select a token
-     * @param token
-     */
-    selectToken: function selectToken(token) {
-      this.type = token;
-    },
-
-    /**
-     * Resolve this prompt
-     */
-    resolve: function resolve() {
-      var data = {
-        type: this.type.name
-      };
-      data = _objectSpread(_objectSpread({}, this.data), data);
-      this.shared.respond('choose-wild', data);
-    }
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/DeployAction.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/DeployAction.vue?vue&type=script&lang=js& ***!
@@ -10708,17 +10593,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     /**
      * Can we add this unit?
-     * @param type
+     * @param unit
      * @returns {boolean}
      */
-    canAddUnit: function canAddUnit(type) {
+    canAddUnit: function canAddUnit(unit) {
       var usedDeploy = this.selected.length;
-      var deployLimit = this.data.deployLimit; // unit type specific bonus deploy
+      var deployLimit = this.data.deployLimit;
+      var bonusDeploy = this.shared.faction.bonusDeploy; // unit type specific bonus deploy
 
-      if (this.shared.faction.bonusDeploy && this.data.fromToken) {
+      if (bonusDeploy && this.data.fromToken) {
         usedDeploy = this.nonBonusUsedDeploy;
         usedDeploy += this.netBonusUnits > 0 ? this.netBonusUnits : 0;
-        if (this.netBonusUnits < 0 && type === this.shared.faction.bonusDeploy.type) deployLimit++;
+
+        if (this.netBonusUnits < 0 && bonusDeploy.type && unit.type === bonusDeploy.type) {
+          deployLimit++;
+        }
+
+        if (this.netBonusUnits < 0 && bonusDeploy.inPlay && unit.location) {
+          deployLimit++;
+        }
       }
 
       return usedDeploy < deployLimit;
@@ -10737,7 +10630,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       } // if we can't add this unit abort
 
 
-      if (!this.canAddUnit(unit.type)) return; // get our unit and select it
+      if (!this.canAddUnit(unit)) return; // get our unit and select it
 
       unit = _.find(this.currentFromAreaUnits, function (old) {
         return unit.id === old.id;
@@ -10753,7 +10646,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      */
     addUnitFromReserves: function addUnitFromReserves(type) {
       // if we can't add this unit abort
-      if (!this.canAddUnit(type)) return; // get our unit and select it
+      if (!this.canAddUnit({
+        type: type
+      })) return; // get our unit and select it
 
       var unit = _.find(this.reserves, function (unit) {
         return unit.type === type;
@@ -10840,10 +10735,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     bonusUnitsInDeploy: function bonusUnitsInDeploy() {
       var _this3 = this;
 
-      if (!this.shared.faction.bonusDeploy || this.data.noBonusUnits) return 0;
-      return this.selected.filter(function (unit) {
-        return unit.type === _this3.shared.faction.bonusDeploy.type;
-      }).length;
+      if (!this.shared.faction.bonusDeploy || this.data.noBonusUnits) return 0; // bonus by type
+
+      if (this.shared.faction.bonusDeploy.type) {
+        return this.selected.filter(function (unit) {
+          return unit.type === _this3.shared.faction.bonusDeploy.type;
+        }).length;
+      } // bonus in play
+
+
+      if (this.shared.faction.bonusDeploy.inPlay) {
+        return this.selected.filter(function (unit) {
+          return unit.location;
+        }).length;
+      }
     },
 
     /**
@@ -10851,12 +10756,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {number}
      */
     nonBonusUsedDeploy: function nonBonusUsedDeploy() {
-      var _this4 = this;
+      var bonusDeploy = this.shared.faction.bonusDeploy;
+      if (!bonusDeploy || this.data.noBonusUnits) return this.selected.length; // bonus by type
 
-      if (!this.shared.faction.bonusDeploy || this.data.noBonusUnits) return this.selected.length;
-      return this.selected.filter(function (unit) {
-        return unit.type !== _this4.shared.faction.bonusDeploy.type;
-      }).length;
+      if (bonusDeploy.type) {
+        return this.selected.filter(function (unit) {
+          return unit.type !== bonusDeploy.type;
+        }).length;
+      } // bonus in play
+
+
+      if (bonusDeploy.inPlay) {
+        return this.selected.filter(function (unit) {
+          return !unit.location;
+        }).length;
+      }
     },
 
     /**
@@ -10902,10 +10816,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {Area[]}
      */
     fromAreas: function fromAreas() {
-      var _this5 = this;
+      var _this4 = this;
 
       return this.data.fromAreas.map(function (areaName) {
-        return _this5.shared.data.areas[areaName];
+        return _this4.shared.data.areas[areaName];
       });
     },
 
@@ -10913,10 +10827,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * Do we have units in our from areas?
      */
     hasFromAreaUnits: function hasFromAreaUnits() {
-      var _this6 = this;
+      var _this5 = this;
 
       return this.data.fromAreas.some(function (area) {
-        return _this6.fromAreaUnits(area).length > 0;
+        return _this5.fromAreaUnits(area).length > 0;
       });
     },
 
@@ -10941,16 +10855,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {Unit[]}
      */
     reserves: function reserves() {
-      var _this7 = this;
+      var _this6 = this;
 
       return this.shared.faction.units.filter(function (unit) {
         return _.isValidUnit(unit, {
           notSelected: true,
-          types: _this7.data.unitTypes,
+          types: _this6.data.unitTypes,
           deployable: true,
-          notChampion: _this7.destinationBlockedByKau,
+          notChampion: _this6.destinationBlockedByKau,
           inReserves: true
-        }) && (unit.cost <= _.money(_this7.shared.faction) || _this7.data.free || _this7.shared.faction.ghostDeploy);
+        }) && (unit.cost <= _.money(_this6.shared.faction) || _this6.data.free || _this6.shared.faction.ghostDeploy);
       });
     },
 
@@ -11038,10 +10952,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {[]}
      */
     toAreas: function toAreas() {
-      var _this8 = this;
+      var _this7 = this;
 
       return this.data.toAreas.map(function (areaName) {
-        return _this8.shared.data.areas[areaName];
+        return _this7.shared.data.areas[areaName];
       });
     },
 
@@ -11467,8 +11381,8 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {boolean}
      */
     moreKillersAllowed: function moreKillersAllowed() {
-      var allowed = this.playerCount === 5 ? 2 : 1;
-      return this.killersSelected < allowed;
+      //let allowed = this.playerCount === 5 ? 2 : 1;
+      return this.killersSelected < 1;
     },
 
     /**
@@ -13795,6 +13709,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['token', 'noEmit', 'selected', 'direction'],
   data: function data() {
@@ -13808,7 +13723,7 @@ __webpack_require__.r(__webpack_exports__);
      */
     tokenClicked: function tokenClicked() {
       if (this.noEmit) return;
-      this.shared.event.emit('tokenClicked', this.token);
+      App.event.emit('tokenClicked', this.token);
       this.$emit('tokenClicked', this.token);
     }
   },
@@ -13865,7 +13780,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     showTooltip: function showTooltip() {
-      if (!this.token || !this.token.revealed && !this.canSeeToken) return;
+      this.shared.event.emit('areaClicked', this.area);
       this.$refs.tooltip.open();
     },
 
@@ -13883,11 +13798,20 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   computed: {
+    tooltipDirection: function tooltipDirection() {
+      if (this.index === 1) return "bottom-right";
+      if (this.index >= 5) return "bottom-left";
+      return "bottom";
+    },
     computeClasses: function computeClasses() {
       var classes = []; // flag this token as unrevealed
 
       if (this.canSeeToken && !this.highlight) {
         classes.push('unrevealed');
+      }
+
+      if (this.token) {
+        classes.push('tooltip');
       } // add area token slot background
 
 
@@ -13917,6 +13841,7 @@ __webpack_require__.r(__webpack_exports__);
       || (_this$shared$faction2 = this.shared.faction) !== null && _this$shared$faction2 !== void 0 && _this$shared$faction2.tokenSpy.includes(this.token.location) // or we can tokenSpy the area
       || this.ministerSpy // or the minister is letting us spy
       ) return true;
+      return false;
     },
 
     /**
@@ -13965,20 +13890,141 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return image ? "/images/factions/".concat(token.faction, "/tokens/").concat(image, ".png") : false;
-    },
-    tokenId: function tokenId() {
-      return this.token ? this.token.id : null;
-    },
-    tokenTitle: function tokenTitle() {
-      return this.token ? this.token.name + ' token' : null;
-    },
-    tokenContent: function tokenContent() {
-      return this.token ? this.token.description : null;
-    },
-    tokenFootnote: function tokenFootnote() {
-      var _this$token;
+    }
+  }
+});
 
-      return (_this$token = this.token) !== null && _this$token !== void 0 && _this$token.resource ? "refunded: gain 1 resource when you reveal this token" : null;
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    direction: {
+      type: String,
+      "default": "bottom"
+    },
+    token: {
+      type: Object
+    },
+    canSeeToken: {
+      type: Boolean,
+      "default": true
+    }
+  },
+  data: function data() {
+    return {
+      shared: App.state,
+      show: false
+    };
+  },
+  mounted: function mounted() {},
+  methods: {
+    open: function open() {
+      this.$refs.tooltip.open();
+    }
+  },
+  computed: {
+    title: function title() {
+      var _this$token, _this$token2;
+
+      if (!this.canSeeToken && !this.token.revealed) return "unrevealed token";
+
+      var title = _.startCase((_this$token = this.token) === null || _this$token === void 0 ? void 0 : _this$token.name);
+
+      if (!((_this$token2 = this.token) !== null && _this$token2 !== void 0 && _this$token2.revealed)) title += " (unrevealed)";
+      return title;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/ToolTip.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Tooltips/ToolTip.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'tool-tip',
+  props: {
+    direction: {
+      type: String,
+      "default": "bottom"
+    },
+    title: {
+      type: String
+    }
+  },
+  data: function data() {
+    return {
+      shared: App.state,
+      show: false
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    App.event.on('closeTooltips', function () {
+      _this.show = false;
+    });
+  },
+  methods: {
+    open: function open() {
+      App.event.emit('closeTooltips');
+      this.show = true;
+    }
+  },
+  computed: {
+    computedClass: function computedClass() {
+      return "tooltip--".concat(this.direction);
     }
   }
 });
@@ -14249,81 +14295,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'loading-streak',
   props: ['position']
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/ToolTip.vue?vue&type=script&lang=js&":
-/*!*********************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/ToolTip.vue?vue&type=script&lang=js& ***!
-  \*********************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    direction: {
-      type: String,
-      "default": "bottom"
-    },
-    title: {
-      type: String
-    },
-    content: {
-      type: String
-    },
-    id: {
-      "default": null
-    },
-    footnote: {
-      type: String
-    }
-  },
-  data: function data() {
-    return {
-      show: false
-    };
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    console.log("tooltip mounted");
-    App.event.on('tooltip', function (id) {
-      console.log('tooltip event received');
-
-      _this.close(id);
-    });
-  },
-  methods: {
-    open: function open() {
-      this.show = true;
-      App.event.emit('tooltip', this.id);
-    },
-    close: function close(id) {
-      console.log("detected tooltip close", id, this.id);
-      if (this.id && id === this.id) return;
-      this.show = false;
-    }
-  },
-  computed: {
-    computedClass: function computedClass() {
-      return "tooltip--".concat(this.direction);
-    }
-  }
 });
 
 /***/ }),
@@ -16289,11 +16260,13 @@ __webpack_require__.r(__webpack_exports__);
      * and regenerate those properties
      */
     watchSharedGame: function watchSharedGame() {
-      if (this.shared.playerIndex === null) {
+      var _this$shared, _this$shared2;
+
+      if (((_this$shared = this.shared) === null || _this$shared === void 0 ? void 0 : _this$shared.playerIndex) === null) {
         this.setPlayerIndex();
       }
 
-      if (this.shared.factionName === null) {
+      if (((_this$shared2 = this.shared) === null || _this$shared2 === void 0 ? void 0 : _this$shared2.factionName) === null) {
         this.setPlayerFactionName();
       }
     },
@@ -16371,6 +16344,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'area-action',
   props: ['area', 'action'],
@@ -16430,6 +16424,22 @@ __webpack_require__.r(__webpack_exports__);
 
       var message = (_this$shared$actionTy2 = this.shared.actionTypes[this.action]) === null || _this$shared$actionTy2 === void 0 ? void 0 : _this$shared$actionTy2.useMessage;
       return message ? message : '';
+    },
+    tooltipMessage: function tooltipMessage() {
+      if (this.token) return "Reval ".concat(this.token.name, " token");
+      if (this.action === 'skill') return "Activate Area skill";
+      if (this.action === 'magick') return "Cast Magick Spell";
+      if (this.action === 'loop') return "Exploit Time Loop";
+      if (this.action === 'ambush') return "Launch an Ambush";
+      if (this.action === 'materialize') return "Materialize Ghosts";
+    },
+    tooltipContent: function tooltipContent() {
+      if (this.action === 'skill') return "Exhaust your readied units in this area to activate this area's skill ability: <span class=\"highlight\">".concat(this.shared.filterText(this.area.skill), "</span>");
+      if (this.action === 'magick') return "Flip your enchanted units in this area face-up to use the witches' magick ability, then take another action.";
+      if (this.action === 'loop') return "Replace your Loop token with a token from your reserves placed face-down.";
+      if (this.action === 'ambush') return "Discard one of your revealed tokens in this area to start a battle here.";
+      if (this.action === 'materialize') return "Flip any of your Ghost units in this area face-up by paying their unit cost, then take another action.";
+      return "Default text, if you see this something didn't work right.";
     }
   }
 });
@@ -16844,6 +16854,49 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'area-map',
   props: ['area', 'classes'],
@@ -16866,6 +16919,16 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     });
   },
   methods: {
+    openStatTooltip: function openStatTooltip(index) {
+      var ref = "statTooltip-".concat(index);
+      this.$refs[ref].open();
+    },
+    influenceTooltipText: function influenceTooltipText(faction) {
+      var text = "The <span class='faction-".concat(faction.faction, " uppercase'>").concat(faction.faction, "</span> have <span class=\"highlight bold mr-1\">").concat(faction.influence, "</span>");
+      if (faction.faction === 'plants' && this.killedPlant) text += '*';
+      return this.shared.filterText(text + 'xIx');
+    },
+
     /**
      * Emit a token event
      * @param token
@@ -16975,8 +17038,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
           stats.push({
             name: 'target',
             owner: faction.name,
-            title: '+1AP',
-            description: "the ".concat(faction.name, " are targeting this area")
+            title: 'target',
+            description: "The ".concat(faction.name, " are targeting this area, whomever controls this area at the end of the turn gains +1 AP")
           });
         }
       });
@@ -17012,7 +17075,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
      */
     killedPlant: function killedPlant() {
       if (!this.shared.data.factions['plants']) return false;
-      return _.factionAreasWithDead(this.shared.data.factions['plants']).includes(this.area.name);
+      return _.factionAreasWithDead(this.shared.data.factions['plants'], {
+        basic: true
+      }).includes(this.area.name);
     },
 
     /**
@@ -17599,6 +17664,46 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return unitStats;
     }
   }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/areas/StatIcon.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/areas/StatIcon.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "stat-icon",
+  props: ['stat', 'area'],
+  data: function data() {
+    return {
+      shared: App.state
+    };
+  },
+  methods: {},
+  computed: {}
 });
 
 /***/ }),
@@ -18816,6 +18921,25 @@ exports.push([module.i, "\n.area-map__token-space {\n    background-repeat: no-r
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Tooltips/ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.tooltip[data-v-0f65bdef] {\n    padding: 1rem;\n    background-color: #0e0e0e;\n    color: white;\n    border-radius: .5rem;\n    width: 15rem;\n    z-index: 100000;\n}\n.tooltip[data-v-0f65bdef]::after {\n    content: \"\";\n    position: absolute;\n    border-width: 10px;\n    border-style: solid;\n}\n.tooltip--bottom[data-v-0f65bdef] {\n    top: calc(100% + 5px);\n    left: 50%;\n    transform: translateX(-50%);\n}\n.tooltip--bottom[data-v-0f65bdef]::after {\n    bottom: 100%;\n    left: 50%;\n    transform: translateX(-50%);\n    border-color: transparent transparent black transparent;\n}\n.tooltip--top[data-v-0f65bdef] {\n    top: -5px;\n    left: 50%;\n    transform: translate(-50%, -100%);\n}\n.tooltip--top[data-v-0f65bdef]::after {\n    top: 100%;\n    left: 50%;\n    transform: translateX(-50%);\n    border-color: black transparent transparent transparent;\n}\n.tooltip--right[data-v-0f65bdef] {\n    left: calc(100% + 5px);\n    top: 50%;\n    transform: translate(0, -50%);\n}\n.tooltip--right[data-v-0f65bdef]::after {\n    top: 50%;\n    right: 100%;\n    transform: translateY(-50%);\n    border-color: transparent black transparent transparent;\n}\n.tooltip--right-top[data-v-0f65bdef] {\n    left: calc(100% + 5px);\n    bottom: 10px;\n    transform: translate(0, 0);\n}\n.tooltip--right-top[data-v-0f65bdef]::after {\n    bottom: 10px;\n    right: 100%;\n    transform: translateY(0%);\n    border-color: transparent black transparent transparent;\n}\n.tooltip--left-top[data-v-0f65bdef] {\n    right: calc(100% + 5px);\n    bottom: 10px;\n    transform: translate(0, 0);\n}\n.tooltip--left-top[data-v-0f65bdef]::after {\n    bottom: 10px;\n    left: 100%;\n    transform: translateY(0%);\n    border-color: transparent transparent transparent black;\n}\n.tooltip--bottom-right[data-v-0f65bdef] {\n    top: calc(100% + 5px);\n    left: 5px;\n    transform: translateX(0%);\n}\n.tooltip--bottom-right[data-v-0f65bdef]::after {\n    bottom: 100%;\n    left: 15px;\n    transform: translateX(0%);\n    border-color: transparent transparent black transparent;\n}\n.tooltip--right-bottom[data-v-0f65bdef] {\n    left: calc(100% + 5px);\n    top: 10px;\n    transform: translate(0, 0);\n}\n.tooltip--right-bottom[data-v-0f65bdef]::after {\n    top: 10px;\n    right: 100%;\n    transform: translateY(0%);\n    border-color: transparent black transparent transparent;\n}\n.tooltip--bottom-left[data-v-0f65bdef] {\n    top: calc(100% + 5px);\n    right: 5px;\n    transform: translateX(0%);\n}\n.tooltip--bottom-left[data-v-0f65bdef]::after {\n    bottom: 100%;\n    right: 15px;\n    transform: translateX(0%);\n    border-color: transparent transparent black transparent;\n}\n.tooltip--left[data-v-0f65bdef] {\n    left: 5px;\n    top: 50%;\n    transform: translate(-100%, -50%);\n}\n.tooltip--left[data-v-0f65bdef]::after {\n    top: 50%;\n    left: 100%;\n    transform: translateY(-50%);\n    border-color: transparent transparent transparent black;\n}\n.tooltip__close[data-v-0f65bdef] {\n    top: 10px;\n    right: 10px;\n    font-size: .7rem;\n    color: rgba(255,255,255,.6);\n}\n.tooltip__title[data-v-0f65bdef] {\n    white-space: nowrap;\n    font-size: .8rem;\n    letter-spacing: 1px;\n    margin-bottom: .3rem;\n}\n.tooltip__footnote[data-v-0f65bdef] {\n    text-align: left;\n    white-space: normal;\n    font-size: 1rem;\n}\n.tooltip__content[data-v-0f65bdef] {\n    white-space: normal;\n    text-align: left;\n    font-size: 1rem;\n    display: grid;\n    gap: .3rem;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/AdjustHandle.vue?vue&type=style&index=0&lang=css&":
 /*!*********************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/AdjustHandle.vue?vue&type=style&index=0&lang=css& ***!
@@ -18867,25 +18991,6 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.loader-bar.top {\n    top: 0;\n}\n.loader-bar.bottom {\n    bottom: 0;\n}\n.loader-bar.right {\n    right: 0;\n    left: unset;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css&":
-/*!****************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css& ***!
-  \****************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.tooltip[data-v-2b915fd3] {\n    padding: 1em;\n    background-color: #0e0e0e;\n    color: white;\n    border-radius: .5rem;\n    width: 15rem;\n    z-index: 100;\n}\n.tooltip--bottom[data-v-2b915fd3] {\n    top: calc(100% + 5px);\n    left: 50%;\n    transform: translateX(-50%);\n}\n.tooltip--top[data-v-2b915fd3] {\n    top: -5px;\n    left: 50%;\n    transform: translate(-50%, -100%);\n}\n.tooltip--right[data-v-2b915fd3] {\n}\n.tooltip--left[data-v-2b915fd3] {\n}\n.tooltip__close[data-v-2b915fd3] {\n    top: 5px;\n    right: 5px;\n    font-size: .7rem;\n    color: rgba(255,255,255,.6);\n}\n.tooltip__title[data-v-2b915fd3] {\n    white-space: nowrap;\n    font-size: .8rem;\n    letter-spacing: 1px;\n}\n.tooltip__footnote[data-v-2b915fd3] {\n    text-align: left;\n    white-space: normal;\n    font-size: 1rem;\n}\n.tooltip__content[data-v-2b915fd3] {\n    white-space: normal;\n    text-align: left;\n    font-size: 1rem;\n    padding: 5px 0;\n}\n", ""]);
 
 // exports
 
@@ -19037,7 +19142,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.icon-image {\n    height: 1.4em;\n    margin: 0 .1em;\n    position: relative;\n    top: .3em;\n}\n.view-player {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n}\n.view-player__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__token-wrap, .view-player__unit-wrap {\n    width: 6vw;\n}\n.view-player__token, .view-player__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__upgrade-card-image{\n     border: 3px solid rgba(0,0,0,.2);\n     border-radius: 5%/8%;\n}\n.view-player__token {\n    border-radius: 50%;\n}\n.view-player__title {\n    letter-spacing: 1px;\n    margin-bottom: .5em;\n    border-bottom: 1px solid;\n    border-left: 1px solid;\n    font-size: 1.2em;\n    text-transform: uppercase;\n    padding: .2em .5em;\n    margin-top: .5em;\n    white-space: nowrap;\n    font-family: var(--secondary-font);\n    border-color: #e953cd;\n    font-weight: 200;\n}\n.view-player__title span {\n    font-family: var(--primary-font);\n    color: var(--highlight-color);\n    font-size: 1.3em;\n}\n.view-player__title span.note {\n    color: var(--off-white);\n    font-size: .85em;\n}\n.view-player__core-stats .view-player__title {\n    margin: 0;\n}\n.view-player__empty {\n    padding: 1vw;\n    font-size: 1.3em;\n    text-align: center;\n    color: var(--primary-light-color);\n}\n.view-player .icon-ap,  .view-player .icon-pp {\n    width: 2.3rem;\n    position: relative;\n    height: 2.3rem;\n    display: inline-block;\n}\n.view-player .icon-ap:before, .view-player .icon-pp:before {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    position: absolute;\n    bottom: 0;\n}\n.view-player__areas {\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--highlight-color);\n    text-align: center;\n    text-transform: capitalize;\n}\n.view-player__card {\n    width: 11.5rem;\n    border-radius: 11%/8%;\n    border: 2px solid rgba(0,0,0,.2);\n    margin: 0 .2rem;\n}\n.view-player__areas-control {\n    font-size: 0.7em;\n    color: var(--primary-light-color);\n    letter-spacing: 1px;\n}\n.view-player__capitol-token__image {\n    width: 5.5rem;\n    border-radius: 50%;\n    border: 3px solid rgba(0,0,0,.3);\n}\n.completed-plans__points {\n    position: absolute;\n    bottom: .5rem;\n    z-index: 4;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 4rem;\n}\n\n", ""]);
+exports.push([module.i, "\n.icon-image {\n    height: 1.2em;\n    margin: 0 .1em;\n    position: relative;\n    top: .3em;\n}\n.view-player {\n    background-image : url('/images/factory-background.jpg');\n    background-position: center;\n    background-size: cover;\n    z-index: 3;\n}\n.view-player__unit-image {\n    width: 100%;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__token-wrap, .view-player__unit-wrap {\n    width: 6vw;\n}\n.view-player__token, .view-player__unit {\n    position: absolute;\n    width: 100%;\n    height: 100%;\n    max-width: 6vw;\n    max-height: 6vw;\n    top: 0;\n    left: 0;\n    border: 1.5px solid rgba(0,0,0,.1);\n}\n.view-player__upgrade-card-image{\n     border: 3px solid rgba(0,0,0,.2);\n     border-radius: 5%/8%;\n}\n.view-player__token {\n    border-radius: 50%;\n}\n.view-player__title {\n    letter-spacing: 1px;\n    margin-bottom: .5em;\n    border-bottom: 1px solid;\n    border-left: 1px solid;\n    font-size: 1.2em;\n    text-transform: uppercase;\n    padding: .2em .5em;\n    margin-top: .5em;\n    white-space: nowrap;\n    font-family: var(--secondary-font);\n    border-color: #e953cd;\n    font-weight: 200;\n}\n.view-player__title span {\n    font-family: var(--primary-font);\n    color: var(--highlight-color);\n    font-size: 1.3em;\n}\n.view-player__title span.note {\n    color: var(--off-white);\n    font-size: .85em;\n}\n.view-player__core-stats .view-player__title {\n    margin: 0;\n}\n.view-player__empty {\n    padding: 1vw;\n    font-size: 1.3em;\n    text-align: center;\n    color: var(--primary-light-color);\n}\n.view-player .icon-ap,  .view-player .icon-pp {\n    width: 2.3rem;\n    position: relative;\n    height: 2.3rem;\n    display: inline-block;\n}\n.view-player .icon-ap:before, .view-player .icon-pp:before {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    position: absolute;\n    bottom: 0;\n}\n.view-player__areas {\n    padding: 1vw;\n    font-size: 1.3em;\n    color: var(--highlight-color);\n    text-align: center;\n    text-transform: capitalize;\n}\n.view-player__card {\n    width: 11.5rem;\n    border-radius: 11%/8%;\n    border: 2px solid rgba(0,0,0,.2);\n    margin: 0 .2rem;\n}\n.view-player__areas-control {\n    font-size: 0.7em;\n    color: var(--primary-light-color);\n    letter-spacing: 1px;\n}\n.view-player__capitol-token__image {\n    width: 5.5rem;\n    border-radius: 50%;\n    border: 3px solid rgba(0,0,0,.3);\n}\n.completed-plans__points {\n    position: absolute;\n    bottom: .5rem;\n    z-index: 4;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 4rem;\n}\n\n", ""]);
 
 // exports
 
@@ -19132,7 +19237,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.area-map__actions {\n    top: 55%;\n    transition: all .1s;\n    position: absolute;\n    right: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 95%;\n}\n.area-map__actions .toggle {\n    transform: translateX(100%);\n    padding: .5rem;\n    height: 2em;\n}\n.area-map__actions.closed {\n    right: 100%;\n    left: unset;\n    top: 0;\n    transform: translate(0, 0);\n}\n.area-map__actions-content {\n    display: flex;\n    padding: .5rem;\n    background-image: url(/images/background-blurred.jpg);\n    background-size: cover;\n    background-position: center;\n    max-height: 100%;\n    max-width: 100%;\n    overflow: hidden;\n    opacity: 1;\n    transition: all .1s;\n    border: 1px solid #ffffff;\n    box-shadow: 0 0 10px 4px rgba(0,0,0,1);\n}\n.area-map__actions.closed .area-map__actions-content {\n    max-height: 0;\n    max-width: 0;\n    opacity: 0;\n}\n\n", ""]);
+exports.push([module.i, "\n.area-map__actions {\n    top: 55%;\n    transition: all .1s;\n    position: absolute;\n    right: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 95%;\n}\n.area-map__actions .toggle {\n    transform: translateX(100%);\n    padding: .5rem;\n    height: 2em;\n}\n.area-map__actions.closed {\n    right: 100%;\n    left: unset;\n    top: 0;\n    transform: translate(0, 0);\n}\n.area-map__actions-content {\n    display: flex;\n    padding: .5rem;\n    background-image: url(/images/background-blurred.jpg);\n    background-size: cover;\n    background-position: center;\n    max-height: 100%;\n    max-width: 100%;\n    opacity: 1;\n    transition: all .1s;\n    border: 1px solid #ffffff;\n    box-shadow: 0 0 10px 4px rgba(0,0,0,1);\n}\n.area-map__actions.closed .area-map__actions-content {\n    max-height: 0;\n    max-width: 0;\n    opacity: 0;\n}\n\n", ""]);
 
 // exports
 
@@ -19170,7 +19275,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.influence-marker {\n      width: 1em;\n      height: 1em;\n}\n.area-map-container {\n      width: 33%;\n      height: 33%;\n      padding: .40rem;\n}\n.area-map__core-content-container {\n      padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n      top: 60%;\n}\n.stat-icon {\n      width: 1.5em;\n      height: 1.5em;\n      display: inline-flex;\n      justify-content: center;\n      align-items: center;\n      background-color: rgba(0,0,0,.8);\n      border-radius: .25em;\n      margin: 0 .1em;\n      font-size: 1.2rem;\n}\n.area-map__toggle {\n      display: flex;\n      padding: .45vw;\n      z-index: 3;\n}\n.area-map__owner-wrap {\n      position: absolute;\n      top:0;\n      left:0;\n      transform: translate(-15%,-15%);\n      display: flex;\n}\n.area-map__owner-portrait {\n      width: 2.5rem;\n      height: 2.5rem;\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__conquered-icon {\n      display: flex;\n      align-items: center;\n      background-color: rgb(72 62 0);\n      padding: .25rem;\n      box-shadow: inset 0px 0px 1px rgba(0,0,0,1), inset 0px 0px 2px rgba(0,0,0,1), 0px 0px 4px rgba(0,0,0,1);\n      border: 2px solid;\n}\n.area-map__battle-marker, .area-map__exterminated {\n      width: 2.5rem;\n      height: 2.5rem;\n      position: absolute;\n\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n      bottom:0;\n      left:0;\n      transform: translate(-15%,15%);\n}\n.area-map__graveyard {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      right: 3px;\n      top: 50%;\n}\n.area-map__graveyard .icon-web {\n      color: var(--faction-spiders);\n}\n.area-map__graveyard-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__influence {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      left: 3px;\n      top: 50%;\n}\n.area-map__influence-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__exterminated {\n      bottom: 0;\n      right:0;\n      transform: translate(15%,15%);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.8em;\n      background-color: black;\n}\n.area-map {\n      background-position: center top, center;\n      background-repeat: no-repeat, no-repeat;\n      background-size: 100% 2vw, cover;\n      box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n      border: 2px solid rgba(255,255,255,.3);\n      transition: opacity .3s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n      background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n      background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n      background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n      background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n      background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n      background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n      background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n      background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n      background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n", ""]);
+exports.push([module.i, "\n.influence-marker {\n      width: 1em;\n      height: 1em;\n}\n.area-map-container {\n      width: 33%;\n      height: 33%;\n      padding: .40rem;\n}\n.area-map__core-content-container {\n      padding: 3.5em .75em 2em;\n}\n.area-map__xavier {\n      top: 60%;\n}\n.stat-icon {\n      width: 1.5em;\n      height: 1.5em;\n      display: inline-flex;\n      justify-content: center;\n      align-items: center;\n      background-color: rgba(0,0,0,.8);\n      border-radius: .25em;\n      margin: 0 .1em;\n      font-size: 1.2rem;\n}\n.area-map__toggle {\n      display: flex;\n      padding: .45vw;\n      z-index: 3;\n}\n.area-map__owner-wrap {\n      position: absolute;\n      top:0;\n      left:0;\n      transform: translate(-15%,-15%);\n      display: flex;\n}\n.area-map__owner-portrait {\n      width: 2.5rem;\n      height: 2.5rem;\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__conquered-icon {\n      display: flex;\n      align-items: center;\n      background-color: rgb(72 62 0);\n      padding: .25rem;\n      box-shadow: inset 0px 0px 1px rgba(0,0,0,1), inset 0px 0px 2px rgba(0,0,0,1), 0px 0px 4px rgba(0,0,0,1);\n      border: 2px solid;\n}\n.area-map__exterminated {\n      width: 2.5rem;\n      height: 2.5rem;\n      position: absolute;\n      z-index: 1000;\n      border: 2px solid rgba(255,255,255,1);\n      outline: 3px solid rgba(0,0,0,.5);\n}\n.area-map__battle-marker {\n      width: 2.5rem;\n      height: 2.5rem;\n}\n.area-map__battle-marker-container {\n      position: absolute;\n      bottom:0;\n      left:0;\n      transform: translate(-15%,15%);\n      z-index: 1000;\n}\n.area-map__graveyard {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      right: 3px;\n      top: 50%;\n      z-index: 1000;\n}\n.area-map__graveyard .icon-web {\n      color: var(--faction-spiders);\n}\n.area-map__graveyard-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__influence {\n      background-color: rgba(0,0,0,.8);\n      padding: .25em;\n      align-items: center;\n      justify-content: center;\n      color: var(--highlight-color);\n      border-radius: .2em;\n      transform: translateY(-50%);\n      display: flex;\n      flex-direction: column;\n      position: absolute;\n      left: 3px;\n      top: 50%;\n      z-index: 1000;\n}\n.area-map__influence-count {\n      text-align: center;\n      font-weight: 700;\n}\n.area-map__exterminated {\n      bottom: 0;\n      right:0;\n      transform: translate(15%,15%);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: 1.8em;\n      background-color: black;\n}\n.area-map {\n      background-position: center top, center;\n      background-repeat: no-repeat, no-repeat;\n      background-size: 100% 2vw, cover;\n      box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);\n      border: 2px solid rgba(255,255,255,.3);\n      transition: opacity .1s;\n}\n.church-container { order: 1;\n}\n.area-map-church {\n      background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);\n}\n.sewers-container { order: 2;\n}\n.area-map-sewers {\n      background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);\n}\n.police-container { order: 3;\n}\n.area-map-police {\n      background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);\n}\n.subway-container { order: 4;\n}\n.area-map-subway {\n      background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);\n}\n.capitol-container { order: 5;\n}\n.area-map-capitol {\n      background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);\n}\n.laboratory-container { order: 6;\n}\n.area-map-laboratory {\n      background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);\n}\n.university-container { order: 7;\n}\n.area-map-university {\n      background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);\n}\n.bank-container { order: 8;\n}\n.area-map-bank {\n      background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);\n}\n.factory-container { order: 9;\n}\n.area-map-factory {\n      background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);\n}\n\n", ""]);
 
 // exports
 
@@ -60517,6 +60622,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Tooltips/ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/AdjustHandle.vue?vue&type=style&index=0&lang=css&":
 /*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/AdjustHandle.vue?vue&type=style&index=0&lang=css& ***!
@@ -60586,36 +60721,6 @@ if(false) {}
 
 
 var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./LoadingStreak.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/LoadingStreak.vue?vue&type=style&index=0&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css&":
-/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css& ***!
-  \********************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css&");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -64260,10 +64365,12 @@ var render = function () {
                       _c("span", [_vm._v(_vm._s(_vm.shared.game.id))]),
                     ]),
                     _vm._v(" "),
-                    _c("div", {
-                      staticClass: "icon-x open-game__delete pointer",
-                      on: { click: _vm.deleteGame },
-                    }),
+                    _vm.shared.admin
+                      ? _c("div", {
+                          staticClass: "icon-x open-game__delete pointer",
+                          on: { click: _vm.deleteGame },
+                        })
+                      : _vm._e(),
                   ]
                 ),
                 _vm._v(" "),
@@ -64396,7 +64503,7 @@ var render = function () {
                       )
                     : _vm._e(),
                   _vm._v(" "),
-                  _vm.joinedGame
+                  _vm.joinedGame && _vm.shared.admin
                     ? _c(
                         "button",
                         {
@@ -64415,14 +64522,18 @@ var render = function () {
                       _c("i", { staticClass: "icon-kill" }),
                       _vm._v("SERVER OFFLINE\n            "),
                     ])
-                  : _c(
+                  : _vm.shared.admin
+                  ? _c(
                       "button",
                       {
                         staticClass: "button new-game-button",
                         on: { click: _vm.newGame },
                       },
                       [_vm._v("Create New Game")]
-                    ),
+                    )
+                  : _c("div", { staticClass: "server-offline" }, [
+                      _vm._v("WAITING FOR GAME"),
+                    ]),
               ]),
         ],
         1
@@ -64577,35 +64688,43 @@ var render = function () {
                   ),
                 ]),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "pt-3" },
-                  [
-                    _c("end-game", { attrs: { track: true } }, [
-                      _c(
-                        "button",
-                        { staticClass: "conclude button width-100 d-block" },
-                        [_vm._v("go to final scoring")]
-                      ),
-                    ]),
-                  ],
-                  1
-                ),
+                _vm.shared.admin
+                  ? _c(
+                      "div",
+                      { staticClass: "pt-3" },
+                      [
+                        _c("end-game", { attrs: { track: true } }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "conclude button width-100 d-block",
+                            },
+                            [_vm._v("go to final scoring")]
+                          ),
+                        ]),
+                      ],
+                      1
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "pt-3" },
-                  [
-                    _c("end-game", [
-                      _c(
-                        "button",
-                        { staticClass: "conclude button width-100 d-block" },
-                        [_vm._v("terminate game")]
-                      ),
-                    ]),
-                  ],
-                  1
-                ),
+                _vm.shared.admin
+                  ? _c(
+                      "div",
+                      { staticClass: "pt-3" },
+                      [
+                        _c("end-game", [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "conclude button width-100 d-block",
+                            },
+                            [_vm._v("terminate game")]
+                          ),
+                        ]),
+                      ],
+                      1
+                    )
+                  : _vm._e(),
               ]
             ),
           ]),
@@ -65354,7 +65473,7 @@ var render = function () {
           )
         : _vm._e(),
       _vm._v(" "),
-      _c("div", { staticClass: "player-hud__pip-content" }, [
+      _c("div", { staticClass: "player-hud__pip-content overflow-hidden" }, [
         _c("div", { staticClass: "player-hud__pip-content__item" }, [
           _c("i", { staticClass: "icon-money pip-icon" }),
           _vm._v(" "),
@@ -65397,7 +65516,7 @@ var render = function () {
         "div",
         {
           staticClass:
-            "player-hud__stats-row pos-relative width-100 display-flex shrink-1 flex-wrap",
+            "player-hud__stats-row pos-relative width-100 display-flex shrink-1 overflow-hidden flex-wrap",
         },
         _vm._l(_vm.stats, function (stat) {
           return _c("i", {
@@ -67439,6 +67558,39 @@ var render = function () {
             }),
             0
           ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "d-flex justify-end",
+              attrs: { inivisible: !_vm.shared.isActive() },
+            },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "button button-empty",
+                  attrs: { disabled: !_vm.canRandom },
+                  on: { click: _vm.chooseRandomFaction },
+                },
+                [_vm._v("Random")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "button",
+                  attrs: {
+                    disabled:
+                      !_vm.selectedFaction ||
+                      !_vm.shared.data.factions[_vm.selectedFaction].selectable,
+                  },
+                  on: { click: _vm.chooseFaction },
+                },
+                [_vm._v("Choose")]
+              ),
+            ]
+          ),
         ]
       ),
       _vm._v(" "),
@@ -67447,92 +67599,64 @@ var render = function () {
         { staticClass: "factions width-65 height-100 p-5 d-flex align-center" },
         [
           _c("div", { staticClass: "choose-factions__faction-container" }, [
-            _c("div", { staticClass: "choose-factions__faction-list pb-3" }, [
-              _c(
-                "div",
-                { staticClass: "choose-factions__basic-factions pr-3" },
-                _vm._l(_vm.basicFactions, function (faction) {
-                  return _c("faction-choice", {
-                    key: faction.name,
-                    attrs: {
-                      faction: faction,
-                      selected: _vm.selectedFaction,
-                      remainingPlayers: _vm.remainingPlayers,
-                      killersSelected: _vm.killersSelected,
-                      expansionsSelected: _vm.expansionsSelected,
-                    },
-                    on: {
-                      clicked: function (e) {
-                        return (_vm.selectedFaction = e)
-                      },
-                      blocked: _vm.blockFaction,
-                      isSelectable: function (e) {
-                        return _vm.setIsSelectable(faction, e)
-                      },
-                    },
-                  })
-                }),
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "pr-3" },
-                _vm._l(_vm.expansionFactions, function (faction) {
-                  return _c("faction-choice", {
-                    key: faction.name,
-                    attrs: {
-                      faction: faction,
-                      selected: _vm.selectedFaction,
-                      remainingPlayers: _vm.remainingPlayers,
-                      killersSelected: _vm.killersSelected,
-                      expansionsSelected: _vm.expansionsSelected,
-                    },
-                    on: {
-                      clicked: function (e) {
-                        return (_vm.selectedFaction = e)
-                      },
-                      blocked: _vm.blockFaction,
-                      isSelectable: function (e) {
-                        return _vm.setIsSelectable(faction, e)
-                      },
-                    },
-                  })
-                }),
-                1
-              ),
-            ]),
-            _vm._v(" "),
             _c(
               "div",
               {
-                staticClass: "d-flex justify-end",
-                attrs: { inivisible: !_vm.shared.isActive() },
+                staticClass: "choose-factions__faction-list pb-3 overflow-auto",
               },
               [
                 _c(
-                  "button",
-                  {
-                    staticClass: "button button-empty",
-                    attrs: { disabled: !_vm.canRandom },
-                    on: { click: _vm.chooseRandomFaction },
-                  },
-                  [_vm._v("Random")]
+                  "div",
+                  { staticClass: "choose-factions__basic-factions pr-3" },
+                  _vm._l(_vm.basicFactions, function (faction) {
+                    return _c("faction-choice", {
+                      key: faction.name,
+                      attrs: {
+                        faction: faction,
+                        selected: _vm.selectedFaction,
+                        remainingPlayers: _vm.remainingPlayers,
+                        killersSelected: _vm.killersSelected,
+                        expansionsSelected: _vm.expansionsSelected,
+                      },
+                      on: {
+                        clicked: function (e) {
+                          return (_vm.selectedFaction = e)
+                        },
+                        blocked: _vm.blockFaction,
+                        isSelectable: function (e) {
+                          return _vm.setIsSelectable(faction, e)
+                        },
+                      },
+                    })
+                  }),
+                  1
                 ),
                 _vm._v(" "),
                 _c(
-                  "button",
-                  {
-                    staticClass: "button",
-                    attrs: {
-                      disabled:
-                        !_vm.selectedFaction ||
-                        !_vm.shared.data.factions[_vm.selectedFaction]
-                          .selectable,
-                    },
-                    on: { click: _vm.chooseFaction },
-                  },
-                  [_vm._v("Choose")]
+                  "div",
+                  { staticClass: "pr-3" },
+                  _vm._l(_vm.expansionFactions, function (faction) {
+                    return _c("faction-choice", {
+                      key: faction.name,
+                      attrs: {
+                        faction: faction,
+                        selected: _vm.selectedFaction,
+                        remainingPlayers: _vm.remainingPlayers,
+                        killersSelected: _vm.killersSelected,
+                        expansionsSelected: _vm.expansionsSelected,
+                      },
+                      on: {
+                        clicked: function (e) {
+                          return (_vm.selectedFaction = e)
+                        },
+                        blocked: _vm.blockFaction,
+                        isSelectable: function (e) {
+                          return _vm.setIsSelectable(faction, e)
+                        },
+                      },
+                    })
+                  }),
+                  1
                 ),
               ]
             ),
@@ -68238,6 +68362,13 @@ var render = function () {
               _vm._v(_vm._s(_vm.message)),
             ]),
             _vm._v(" "),
+            _vm.instructions
+              ? _c("div", {
+                  staticClass: "prompt-question center-text",
+                  domProps: { innerHTML: _vm._s(_vm.instructions) },
+                })
+              : _vm._e(),
+            _vm._v(" "),
             _c(
               "div",
               [
@@ -68617,6 +68748,24 @@ var render = function () {
                 )
               : _vm._e(),
             _vm._v(" "),
+            _vm.data.canPayInstead
+              ? _c("button", {
+                  staticClass: "button button-empty",
+                  domProps: {
+                    innerHTML: _vm._s(
+                      _vm.shared.filterText(
+                        "PAY xC" + _vm.data.canPayInstead + "x INSTEAD"
+                      )
+                    ),
+                  },
+                  on: {
+                    click: function ($event) {
+                      return _vm.resolve(false, { pay: _vm.data.canPayInstead })
+                    },
+                  },
+                })
+              : _vm._e(),
+            _vm._v(" "),
             _c(
               "button",
               {
@@ -68803,85 +68952,6 @@ var render = function () {
             [_vm._v("Save")]
           ),
         ]
-      ),
-    ]),
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseWild.vue?vue&type=template&id=486a824c&":
-/*!*********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Prompts/ChooseWild.vue?vue&type=template&id=486a824c& ***!
-  \*********************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function () {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("player-prompt", [
-    _c("div", { staticClass: "min-prompt-width px-5" }, [
-      _c(
-        "div",
-        {
-          staticClass:
-            "width-100 d-flex justify-center flex-column align-center",
-        },
-        [
-          _c("div", { staticClass: "title" }, [_vm._v(_vm._s(_vm.message))]),
-          _vm._v(" "),
-          _c(
-            "area-flipper",
-            { attrs: { areas: [_vm.area], index: "0" } },
-            [
-              _c("token-set", {
-                attrs: {
-                  tokens: _vm.tokens,
-                  classes: "center-text",
-                  noBorder: "true",
-                  selected: this.wildType,
-                },
-              }),
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _vm.cost
-            ? _c("div", {
-                staticClass: "prompt-question",
-                domProps: {
-                  innerHTML: _vm._s(
-                    _vm.shared.filterText(
-                      "Pay xC" + _vm.cost + "x to activate as a move?"
-                    )
-                  ),
-                },
-              })
-            : _vm._e(),
-          _vm._v(" "),
-          _c("div", [
-            _c(
-              "button",
-              {
-                staticClass: "button",
-                attrs: { disabled: _vm.disabled },
-                on: { click: _vm.resolve },
-              },
-              [_vm._v(_vm._s(_vm.buttonMessage))]
-            ),
-          ]),
-        ],
-        1
       ),
     ]),
   ])
@@ -71187,7 +71257,7 @@ var render = function () {
               noEmit: _vm.noEmit,
               direction: _vm.direction,
             },
-            on: { "token-clicked": _vm.tokenClicked },
+            on: { tokenClicked: _vm.tokenClicked },
           })
         }),
         1
@@ -71219,7 +71289,7 @@ var render = function () {
   return _c(
     "div",
     {
-      staticClass: "tokens-hud__token d-inline-block pos-relative",
+      staticClass: "tokens-hud__token d-inline-block tooltip selected-circle",
       on: {
         click: function ($event) {
           if (
@@ -71256,15 +71326,9 @@ var render = function () {
         },
       }),
       _vm._v(" "),
-      _c("tool-tip", {
+      _c("token-tooltip", {
         ref: "tooltip",
-        attrs: {
-          id: _vm.token.id,
-          title: _vm.token.name,
-          content: _vm.token.description,
-          footnote: _vm.tokenFootnote,
-          direction: _vm.direction,
-        },
+        attrs: { direction: _vm.direction, token: _vm.token },
       }),
     ],
     1
@@ -71295,7 +71359,8 @@ var render = function () {
   return _c(
     "div",
     {
-      staticClass: "area-map__token-space ratio-square pos-relative",
+      staticClass:
+        "area-map__token-space ratio-square pos-relative selected-circle",
       class: _vm.computeClasses,
       on: {
         click: function ($event) {
@@ -71327,18 +71392,190 @@ var render = function () {
           })
         : _vm._e(),
       _vm._v(" "),
-      _c("tool-tip", {
+      _c("token-tooltip", {
         ref: "tooltip",
         attrs: {
-          id: _vm.tokenId,
-          title: _vm.tokenTitle,
-          content: _vm.tokenContent,
-          footnote: _vm.tokenFootnote,
+          token: _vm.token,
+          canSeeToken: _vm.canSeeToken,
+          direction: _vm.tooltipDirection,
         },
       }),
     ],
     1
   )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=template&id=3b98e624&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=template&id=3b98e624&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm.token
+    ? _c(
+        "tool-tip",
+        {
+          ref: "tooltip",
+          attrs: { title: _vm.title, direction: _vm.direction },
+        },
+        [
+          _vm.canSeeToken || _vm.token.revealed
+            ? [
+                _c(
+                  "div",
+                  {
+                    staticClass: "center-text",
+                    class: "faction-" + _vm.token.faction,
+                  },
+                  [_vm._v("(" + _vm._s(_vm.token.faction) + ")")]
+                ),
+                _vm._v(" "),
+                _c("div", [
+                  _vm._v(
+                    "\n            " +
+                      _vm._s(_vm.token.description) +
+                      "\n        "
+                  ),
+                ]),
+                _vm._v(" "),
+                _vm.token.resource
+                  ? _c("div", { staticClass: "highlight" }, [
+                      _c("em", [_vm._v("Refunded")]),
+                      _vm._v(": "),
+                      _c("span", {
+                        domProps: {
+                          innerHTML: _vm._s(
+                            _vm.shared.filterText(
+                              "this token grants its owner one xRx when revealed"
+                            )
+                          ),
+                        },
+                      }),
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.token.cost
+                  ? _c("div", {
+                      staticClass: "highlight",
+                      domProps: {
+                        innerHTML: _vm._s(
+                          _vm.shared.filterText(
+                            "This token costs xC" +
+                              _vm.token.cost +
+                              "x to activate"
+                          )
+                        ),
+                      },
+                    })
+                  : _vm._e(),
+              ]
+            : [
+                _c(
+                  "div",
+                  {
+                    staticClass: "center-text",
+                    class: "faction-" + _vm.token.faction,
+                  },
+                  [_vm._v("(" + _vm._s(_vm.token.faction) + ")")]
+                ),
+                _vm._v(
+                  "\n        An unrevealed token belonging to the " +
+                    _vm._s(_vm._f("startCase")(_vm.token.faction)) +
+                    "\n    "
+                ),
+              ],
+        ],
+        2
+      )
+    : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/ToolTip.vue?vue&type=template&id=0f65bdef&scoped=true&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Tooltips/ToolTip.vue?vue&type=template&id=0f65bdef&scoped=true& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("transition", { attrs: { name: "fade" } }, [
+    _vm.show
+      ? _c(
+          "div",
+          {
+            staticClass: "tooltip pos-absolute cursor-default",
+            class: _vm.computedClass,
+            on: {
+              click: function ($event) {
+                $event.stopPropagation()
+                return function () {
+                  return null
+                }.apply(null, arguments)
+              },
+            },
+          },
+          [
+            _c("i", {
+              staticClass: "tooltip__close pointer pos-absolute icon-x w",
+              on: {
+                click: function ($event) {
+                  $event.stopPropagation()
+                  _vm.show = false
+                },
+              },
+            }),
+            _vm._v(" "),
+            _vm.title
+              ? _c(
+                  "div",
+                  {
+                    staticClass:
+                      "center-text uppercase secondary-font tooltip__title",
+                  },
+                  [_vm._v("\n            " + _vm._s(_vm.title) + "\n        ")]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "width-100 tooltip__content off-white accent-font",
+              },
+              [_vm._t("default")],
+              2
+            ),
+          ]
+        )
+      : _vm._e(),
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -71464,74 +71701,6 @@ var render = function () {
   return _c("div", { staticClass: "loader-bar", class: _vm.position }, [
     _c("div", { staticClass: "loader-bar__streak" }),
   ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/ToolTip.vue?vue&type=template&id=2b915fd3&scoped=true&":
-/*!*************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UI/ToolTip.vue?vue&type=template&id=2b915fd3&scoped=true& ***!
-  \*************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function () {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _vm.show
-    ? _c(
-        "div",
-        { staticClass: "tooltip pos-absolute", class: _vm.computedClass },
-        [
-          _c("i", {
-            staticClass: "tooltip__close pointer pos-absolute icon-x w",
-            on: {
-              click: function ($event) {
-                _vm.show = false
-              },
-            },
-          }),
-          _vm._v(" "),
-          _vm.title
-            ? _c(
-                "div",
-                {
-                  staticClass:
-                    "center-text uppercase secondary-font tooltip__title",
-                },
-                [_vm._v(_vm._s(_vm.title))]
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("div", { staticClass: "width-100" }, [
-            _vm.content
-              ? _c(
-                  "div",
-                  { staticClass: "accent-font off-white tooltip__content" },
-                  [_vm._v(_vm._s(_vm.content))]
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.footnote
-              ? _c(
-                  "div",
-                  { staticClass: "accent-font tooltip__footnote highlight" },
-                  [_vm._v(_vm._s(_vm.footnote))]
-                )
-              : _vm._e(),
-          ]),
-        ]
-      )
-    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -73755,6 +73924,11 @@ var render = function () {
     {
       staticClass:
         "villains-online d-flex align-stretch main-container pos-relative",
+      on: {
+        click: function ($event) {
+          return _vm.shared.event.emit("closeTooltips")
+        },
+      },
     },
     [
       _c(
@@ -73810,13 +73984,92 @@ var render = function () {
   return _c(
     "div",
     {
-      staticClass: "area-action center-text highlight pointer",
-      on: { click: _vm.emitAction },
+      staticClass: "area-action center-text highlight tooltip",
+      on: {
+        click: function ($event) {
+          if (
+            !$event.type.indexOf("key") &&
+            _vm._k($event.keyCode, "left", 37, $event.key, [
+              "Left",
+              "ArrowLeft",
+            ])
+          ) {
+            return null
+          }
+          if ("button" in $event && $event.button !== 0) {
+            return null
+          }
+          return _vm.emitAction.apply(null, arguments)
+        },
+        contextmenu: function ($event) {
+          $event.preventDefault()
+          return function () {
+            return _vm.$refs.tooltip.open()
+          }.apply(null, arguments)
+        },
+      },
     },
     [
-      _c("div", { staticClass: "area-action__image" }, [
-        _vm.icon ? _c("img", { attrs: { src: _vm.icon } }) : _vm._e(),
-      ]),
+      _c(
+        "div",
+        { staticClass: "area-action__image" },
+        [
+          _vm.icon ? _c("img", { attrs: { src: _vm.icon } }) : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "tool-tip",
+            { ref: "tooltip", attrs: { title: _vm.tooltipMessage } },
+            [
+              _vm.token
+                ? [
+                    _c("div", [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(_vm.token.description) +
+                          "\n                "
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _vm.token.resource
+                      ? _c("div", { staticClass: "highlight" }, [
+                          _c("em", [_vm._v("Refunded")]),
+                          _vm._v(": "),
+                          _c("span", {
+                            domProps: {
+                              innerHTML: _vm._s(
+                                _vm.shared.filterText(
+                                  "this token grants its owner one xRx when revealed"
+                                )
+                              ),
+                            },
+                          }),
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.token.cost
+                      ? _c("div", {
+                          staticClass: "highlight",
+                          domProps: {
+                            innerHTML: _vm._s(
+                              _vm.shared.filterText(
+                                "This token costs xC" +
+                                  _vm.token.cost +
+                                  "x to activate"
+                              )
+                            ),
+                          },
+                        })
+                      : _vm._e(),
+                  ]
+                : _c("div", {
+                    domProps: { innerHTML: _vm._s(_vm.tooltipContent) },
+                  }),
+            ],
+            2
+          ),
+        ],
+        1
+      ),
       _vm._v(" "),
       _c("div", { staticClass: "area-action__text" }, [
         _vm._v(_vm._s(_vm.message)),
@@ -74049,27 +74302,69 @@ var render = function () {
           },
         },
         [
-          _c("div", { staticClass: "area-map__owner-wrap z-2" }, [
-            _vm.area.owner
-              ? _c("img", {
-                  staticClass: "area-map__owner-portrait z-2",
-                  attrs: {
-                    src: "/images/factions/" + _vm.area.owner + "/icon.jpg",
-                    title: "The " + _vm.area.owner + " control this area",
-                  },
-                })
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.area.conquered
-              ? _c("div", {
-                  staticClass:
-                    "area-map__conquered-icon z-1 icon-flag faction-conquistadors",
-                  attrs: {
-                    title: "The Conquistadors have conquered this area",
-                  },
-                })
-              : _vm._e(),
-          ]),
+          _c(
+            "div",
+            { staticClass: "area-map__owner-wrap z-2 cursor-help" },
+            [
+              _vm.area.owner
+                ? _c("img", {
+                    staticClass: "area-map__owner-portrait z-2",
+                    attrs: {
+                      src: "/images/factions/" + _vm.area.owner + "/icon.jpg",
+                      title: "The " + _vm.area.owner + " control this area",
+                    },
+                    on: {
+                      contextmenu: function ($event) {
+                        $event.preventDefault()
+                        return function () {
+                          _vm.$refs.controllerTooltip.open()
+                          _vm.shared.event.emit("areaClicked", _vm.area)
+                        }.apply(null, arguments)
+                      },
+                    },
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.area.owner
+                ? _c(
+                    "tool-tip",
+                    {
+                      ref: "controllerTooltip",
+                      attrs: {
+                        direction: "right-bottom",
+                        title: "controlled by The " + _vm.area.owner,
+                      },
+                    },
+                    [
+                      _c("div", {
+                        domProps: {
+                          innerHTML: _vm._s(
+                            _vm.shared.filterText(
+                              "The " +
+                                this.area.owner +
+                                " gain xIx in this area and have: <span class='highlight'>" +
+                                _vm.shared.filterText(this.area.control) +
+                                "</span>"
+                            )
+                          ),
+                        },
+                      }),
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.area.conquered
+                ? _c("div", {
+                    staticClass:
+                      "area-map__conquered-icon z-1 icon-flag faction-conquistadors",
+                    attrs: {
+                      title: "The Conquistadors have conquered this area",
+                    },
+                  })
+                : _vm._e(),
+            ],
+            1
+          ),
           _vm._v(" "),
           _c(
             "div",
@@ -74086,32 +74381,118 @@ var render = function () {
           ),
           _vm._v(" "),
           _vm.area.battle
-            ? _c("img", {
-                staticClass: "area-map__battle-marker z-2",
-                attrs: {
-                  src: "/images/icons/battle.png",
-                  title: "A battle will take place here during the combat step",
-                },
-              })
+            ? _c(
+                "div",
+                { staticClass: "tooltip area-map__battle-marker-container" },
+                [
+                  _c("img", {
+                    staticClass: "width-100 height-100 area-map__battle-marker",
+                    attrs: {
+                      src: "/images/icons/battle.png",
+                      title:
+                        "A battle will take place here during the combat step",
+                    },
+                    on: {
+                      contextmenu: function ($event) {
+                        $event.preventDefault()
+                        return function () {
+                          _vm.$refs.battleTooltip.open()
+                          _vm.shared.event.emit("areaClicked", _vm.area)
+                        }.apply(null, arguments)
+                      },
+                    },
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "tool-tip",
+                    {
+                      ref: "battleTooltip",
+                      attrs: { title: "Battle Marker", direction: "right-top" },
+                    },
+                    [
+                      _c("div", [
+                        _vm._v(
+                          "Combat will take place in this area after all players finish taking their actions."
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "highlight" }, [
+                        _vm._v(
+                          "Battle markers are placed when there are as many tokens in an area as number of players"
+                        ),
+                      ]),
+                    ]
+                  ),
+                ],
+                1
+              )
             : _vm._e(),
           _vm._v(" "),
           _vm.exterminated
-            ? _c("i", {
-                staticClass: "area-map__exterminated icon-exterminate z-2",
-                style:
-                  "color: var(--faction-" +
-                  _vm.exterminated +
-                  "); border-color: var(--faction-" +
-                  _vm.exterminated +
-                  ")",
-                attrs: {
-                  title:
-                    "The " +
+            ? _c(
+                "i",
+                {
+                  staticClass:
+                    "area-map__exterminated icon-exterminate z-2 cursor-help",
+                  style:
+                    "color: var(--faction-" +
                     _vm.exterminated +
-                    " have exterminated the " +
-                    _vm.area.name,
+                    "); border-color: var(--faction-" +
+                    _vm.exterminated +
+                    ")",
+                  attrs: {
+                    title:
+                      "The " +
+                      _vm.exterminated +
+                      " have exterminated the " +
+                      _vm.area.name,
+                  },
+                  on: {
+                    contextmenu: function ($event) {
+                      $event.preventDefault()
+                      return function () {
+                        _vm.$refs.exterminateTooltip.open()
+                        _vm.shared.event.emit("areaClicked", _vm.area)
+                      }.apply(null, arguments)
+                    },
+                  },
                 },
-              })
+                [
+                  _c(
+                    "tool-tip",
+                    {
+                      ref: "exterminateTooltip",
+                      attrs: { title: "exterminated", direction: "left-top" },
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "center-text",
+                          class: "faction-" + _vm.exterminated,
+                        },
+                        [_vm._v("(" + _vm._s(_vm.exterminated) + ")")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", [
+                        _vm._v(
+                          "The " +
+                            _vm._s(_vm.exterminated) +
+                            " have exterminated the " +
+                            _vm._s(_vm.area.name)
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "highlight" }, [
+                        _vm._v(
+                          "An area is exterminated by a player if that player is the only one with units there, and they have killed at least one unit there"
+                        ),
+                      ]),
+                    ]
+                  ),
+                ],
+                1
+              )
             : _vm._e(),
           _vm._v(" "),
           _c(
@@ -74129,7 +74510,17 @@ var render = function () {
           _vm.graveyard
             ? _c(
                 "div",
-                { staticClass: "area-map__graveyard" },
+                {
+                  staticClass: "area-map__graveyard cursor-help",
+                  on: {
+                    contextmenu: function ($event) {
+                      $event.preventDefault()
+                      return function () {
+                        return _vm.$refs.killsTooltip.open()
+                      }.apply(null, arguments)
+                    },
+                  },
+                },
                 [
                   _c("div", { staticClass: "icon-graveyard mb-2" }),
                   _vm._v(" "),
@@ -74152,6 +74543,37 @@ var render = function () {
                       [_vm._v(_vm._s(dead))]
                     )
                   }),
+                  _vm._v(" "),
+                  _c(
+                    "tool-tip",
+                    {
+                      ref: "killsTooltip",
+                      attrs: { title: "faction kills", direction: "left" },
+                    },
+                    [
+                      _c(
+                        "div",
+                        { staticStyle: { display: "grid" } },
+                        _vm._l(_vm.graveyard, function (dead, name) {
+                          return _c("div", {
+                            domProps: {
+                              innerHTML: _vm._s(
+                                "The <span class='uppercase faction-" +
+                                  name +
+                                  "'>" +
+                                  name +
+                                  "</span> have " +
+                                  dead +
+                                  " kill" +
+                                  (dead > 1 ? "s" : "")
+                              ),
+                            },
+                          })
+                        }),
+                        0
+                      ),
+                    ]
+                  ),
                 ],
                 2
               )
@@ -74160,7 +74582,17 @@ var render = function () {
           _vm.influence.length
             ? _c(
                 "div",
-                { staticClass: "area-map__influence" },
+                {
+                  staticClass: "area-map__influence cursor-help",
+                  on: {
+                    contextmenu: function ($event) {
+                      $event.preventDefault()
+                      return function () {
+                        return _vm.$refs.influenceTooltip.open()
+                      }.apply(null, arguments)
+                    },
+                  },
+                },
                 [
                   _vm._m(0),
                   _vm._v(" "),
@@ -74195,6 +74627,30 @@ var render = function () {
                       ]
                     )
                   }),
+                  _vm._v(" "),
+                  _c(
+                    "tool-tip",
+                    {
+                      ref: "influenceTooltip",
+                      attrs: { title: "influence count", direction: "right" },
+                    },
+                    [
+                      _c(
+                        "div",
+                        { staticStyle: { display: "grid" } },
+                        _vm._l(_vm.influence, function (faction) {
+                          return _c("div", {
+                            domProps: {
+                              innerHTML: _vm._s(
+                                _vm.influenceTooltipText(faction)
+                              ),
+                            },
+                          })
+                        }),
+                        0
+                      ),
+                    ]
+                  ),
                 ],
                 2
               )
@@ -74263,21 +74719,9 @@ var render = function () {
                 "area-map__stats-row pos-absolute bottom-0 width-100 flex-center shrink-0",
             },
             _vm._l(_vm.stats, function (stat) {
-              return _c("i", {
-                staticClass: "stat-icon",
-                class: "icon-" + stat.name + " faction-" + stat.owner,
-                attrs: {
-                  title:
-                    stat.title +
-                    ": " +
-                    stat.description +
-                    " - [" +
-                    stat.owner +
-                    "]",
-                },
-              })
+              return _c("stat-icon", { attrs: { stat: stat, area: _vm.area } })
             }),
-            0
+            1
           ),
         ],
         1
@@ -74467,6 +74911,70 @@ var render = function () {
         2
       )
     : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/areas/StatIcon.vue?vue&type=template&id=0fd368fe&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/areas/StatIcon.vue?vue&type=template&id=0fd368fe& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "i",
+    {
+      staticClass: "stat-icon tooltip",
+      class: "icon-" + _vm.stat.name + " faction-" + _vm.stat.owner,
+      attrs: {
+        title:
+          _vm.stat.title +
+          ": " +
+          _vm.stat.description +
+          " - [" +
+          _vm.stat.owner +
+          "]",
+      },
+      on: {
+        contextmenu: function ($event) {
+          $event.preventDefault()
+          return function () {
+            _vm.$refs.tooltip.open()
+            _vm.shared.event.emit("areaClicked", _vm.area)
+          }.apply(null, arguments)
+        },
+      },
+    },
+    [
+      _c(
+        "tool-tip",
+        { ref: "tooltip", attrs: { direction: "top", title: _vm.stat.title } },
+        [
+          _c(
+            "div",
+            { staticClass: "center-text", class: "faction-" + _vm.stat.owner },
+            [_vm._v("(" + _vm._s(_vm.stat.owner) + ")")]
+          ),
+          _vm._v(" "),
+          _c("div", [_vm._v(_vm._s(_vm.stat.description))]),
+        ]
+      ),
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -87456,7 +87964,6 @@ var map = {
 	"./Prompts/ChooseUnits.vue": "./resources/js/components/Prompts/ChooseUnits.vue",
 	"./Prompts/ChooseVictim.vue": "./resources/js/components/Prompts/ChooseVictim.vue",
 	"./Prompts/ChooseViperSide.vue": "./resources/js/components/Prompts/ChooseViperSide.vue",
-	"./Prompts/ChooseWild.vue": "./resources/js/components/Prompts/ChooseWild.vue",
 	"./Prompts/DeployAction.vue": "./resources/js/components/Prompts/DeployAction.vue",
 	"./Prompts/DeployXavier.vue": "./resources/js/components/Prompts/DeployXavier.vue",
 	"./Prompts/DiscardCard.vue": "./resources/js/components/Prompts/DiscardCard.vue",
@@ -87480,10 +87987,11 @@ var map = {
 	"./Tokens/TokenSet.vue": "./resources/js/components/Tokens/TokenSet.vue",
 	"./Tokens/TokenSetItem.vue": "./resources/js/components/Tokens/TokenSetItem.vue",
 	"./Tokens/TokenSlot.vue": "./resources/js/components/Tokens/TokenSlot.vue",
+	"./Tooltips/TokenTooltip.vue": "./resources/js/components/Tooltips/TokenTooltip.vue",
+	"./Tooltips/ToolTip.vue": "./resources/js/components/Tooltips/ToolTip.vue",
 	"./UI/AdjustHandle.vue": "./resources/js/components/UI/AdjustHandle.vue",
 	"./UI/HorizontalScroll.vue": "./resources/js/components/UI/HorizontalScroll.vue",
 	"./UI/LoadingStreak.vue": "./resources/js/components/UI/LoadingStreak.vue",
-	"./UI/ToolTip.vue": "./resources/js/components/UI/ToolTip.vue",
 	"./Units/UnitCombat.vue": "./resources/js/components/Units/UnitCombat.vue",
 	"./Units/UnitIcon.vue": "./resources/js/components/Units/UnitIcon.vue",
 	"./Units/UnitRow.vue": "./resources/js/components/Units/UnitRow.vue",
@@ -87511,6 +88019,7 @@ var map = {
 	"./areas/AreaPopup.vue": "./resources/js/components/areas/AreaPopup.vue",
 	"./areas/AreaUnits.vue": "./resources/js/components/areas/AreaUnits.vue",
 	"./areas/MapPlayer.vue": "./resources/js/components/areas/MapPlayer.vue",
+	"./areas/StatIcon.vue": "./resources/js/components/areas/StatIcon.vue",
 	"./yesNo.vue": "./resources/js/components/yesNo.vue"
 };
 
@@ -94522,75 +95031,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/Prompts/ChooseWild.vue":
-/*!********************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseWild.vue ***!
-  \********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ChooseWild_vue_vue_type_template_id_486a824c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChooseWild.vue?vue&type=template&id=486a824c& */ "./resources/js/components/Prompts/ChooseWild.vue?vue&type=template&id=486a824c&");
-/* harmony import */ var _ChooseWild_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChooseWild.vue?vue&type=script&lang=js& */ "./resources/js/components/Prompts/ChooseWild.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _ChooseWild_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ChooseWild_vue_vue_type_template_id_486a824c___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ChooseWild_vue_vue_type_template_id_486a824c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Prompts/ChooseWild.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChooseWild.vue?vue&type=script&lang=js&":
-/*!*********************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseWild.vue?vue&type=script&lang=js& ***!
-  \*********************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseWild_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseWild.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseWild.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseWild_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Prompts/ChooseWild.vue?vue&type=template&id=486a824c&":
-/*!***************************************************************************************!*\
-  !*** ./resources/js/components/Prompts/ChooseWild.vue?vue&type=template&id=486a824c& ***!
-  \***************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseWild_vue_vue_type_template_id_486a824c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ChooseWild.vue?vue&type=template&id=486a824c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Prompts/ChooseWild.vue?vue&type=template&id=486a824c&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseWild_vue_vue_type_template_id_486a824c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ChooseWild_vue_vue_type_template_id_486a824c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
 /***/ "./resources/js/components/Prompts/DeployAction.vue":
 /*!**********************************************************!*\
   !*** ./resources/js/components/Prompts/DeployAction.vue ***!
@@ -96430,6 +96870,162 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Tooltips/TokenTooltip.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/Tooltips/TokenTooltip.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TokenTooltip_vue_vue_type_template_id_3b98e624_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TokenTooltip.vue?vue&type=template&id=3b98e624&scoped=true& */ "./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=template&id=3b98e624&scoped=true&");
+/* harmony import */ var _TokenTooltip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TokenTooltip.vue?vue&type=script&lang=js& */ "./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TokenTooltip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TokenTooltip_vue_vue_type_template_id_3b98e624_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TokenTooltip_vue_vue_type_template_id_3b98e624_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "3b98e624",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Tooltips/TokenTooltip.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TokenTooltip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./TokenTooltip.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TokenTooltip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=template&id=3b98e624&scoped=true&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=template&id=3b98e624&scoped=true& ***!
+  \******************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TokenTooltip_vue_vue_type_template_id_3b98e624_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./TokenTooltip.vue?vue&type=template&id=3b98e624&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/TokenTooltip.vue?vue&type=template&id=3b98e624&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TokenTooltip_vue_vue_type_template_id_3b98e624_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TokenTooltip_vue_vue_type_template_id_3b98e624_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Tooltips/ToolTip.vue":
+/*!******************************************************!*\
+  !*** ./resources/js/components/Tooltips/ToolTip.vue ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ToolTip_vue_vue_type_template_id_0f65bdef_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ToolTip.vue?vue&type=template&id=0f65bdef&scoped=true& */ "./resources/js/components/Tooltips/ToolTip.vue?vue&type=template&id=0f65bdef&scoped=true&");
+/* harmony import */ var _ToolTip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ToolTip.vue?vue&type=script&lang=js& */ "./resources/js/components/Tooltips/ToolTip.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ToolTip_vue_vue_type_style_index_0_id_0f65bdef_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css& */ "./resources/js/components/Tooltips/ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _ToolTip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ToolTip_vue_vue_type_template_id_0f65bdef_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ToolTip_vue_vue_type_template_id_0f65bdef_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "0f65bdef",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Tooltips/ToolTip.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Tooltips/ToolTip.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/Tooltips/ToolTip.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ToolTip.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/ToolTip.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Tooltips/ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css&":
+/*!***************************************************************************************************************!*\
+  !*** ./resources/js/components/Tooltips/ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css& ***!
+  \***************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_0f65bdef_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/ToolTip.vue?vue&type=style&index=0&id=0f65bdef&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_0f65bdef_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_0f65bdef_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_0f65bdef_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_0f65bdef_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Tooltips/ToolTip.vue?vue&type=template&id=0f65bdef&scoped=true&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/Tooltips/ToolTip.vue?vue&type=template&id=0f65bdef&scoped=true& ***!
+  \*************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_template_id_0f65bdef_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ToolTip.vue?vue&type=template&id=0f65bdef&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Tooltips/ToolTip.vue?vue&type=template&id=0f65bdef&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_template_id_0f65bdef_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_template_id_0f65bdef_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/UI/AdjustHandle.vue":
 /*!*****************************************************!*\
   !*** ./resources/js/components/UI/AdjustHandle.vue ***!
@@ -96686,93 +97282,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LoadingStreak_vue_vue_type_template_id_1b72f24a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LoadingStreak_vue_vue_type_template_id_1b72f24a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/UI/ToolTip.vue":
-/*!************************************************!*\
-  !*** ./resources/js/components/UI/ToolTip.vue ***!
-  \************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ToolTip_vue_vue_type_template_id_2b915fd3_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ToolTip.vue?vue&type=template&id=2b915fd3&scoped=true& */ "./resources/js/components/UI/ToolTip.vue?vue&type=template&id=2b915fd3&scoped=true&");
-/* harmony import */ var _ToolTip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ToolTip.vue?vue&type=script&lang=js& */ "./resources/js/components/UI/ToolTip.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _ToolTip_vue_vue_type_style_index_0_id_2b915fd3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css& */ "./resources/js/components/UI/ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _ToolTip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ToolTip_vue_vue_type_template_id_2b915fd3_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ToolTip_vue_vue_type_template_id_2b915fd3_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  "2b915fd3",
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/UI/ToolTip.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/UI/ToolTip.vue?vue&type=script&lang=js&":
-/*!*************************************************************************!*\
-  !*** ./resources/js/components/UI/ToolTip.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ToolTip.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/ToolTip.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/UI/ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css&":
-/*!*********************************************************************************************************!*\
-  !*** ./resources/js/components/UI/ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css& ***!
-  \*********************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_2b915fd3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/ToolTip.vue?vue&type=style&index=0&id=2b915fd3&scoped=true&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_2b915fd3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_2b915fd3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_2b915fd3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_style_index_0_id_2b915fd3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-
-
-/***/ }),
-
-/***/ "./resources/js/components/UI/ToolTip.vue?vue&type=template&id=2b915fd3&scoped=true&":
-/*!*******************************************************************************************!*\
-  !*** ./resources/js/components/UI/ToolTip.vue?vue&type=template&id=2b915fd3&scoped=true& ***!
-  \*******************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_template_id_2b915fd3_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ToolTip.vue?vue&type=template&id=2b915fd3&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UI/ToolTip.vue?vue&type=template&id=2b915fd3&scoped=true&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_template_id_2b915fd3_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ToolTip_vue_vue_type_template_id_2b915fd3_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -98947,6 +99456,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/areas/StatIcon.vue":
+/*!****************************************************!*\
+  !*** ./resources/js/components/areas/StatIcon.vue ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _StatIcon_vue_vue_type_template_id_0fd368fe___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./StatIcon.vue?vue&type=template&id=0fd368fe& */ "./resources/js/components/areas/StatIcon.vue?vue&type=template&id=0fd368fe&");
+/* harmony import */ var _StatIcon_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./StatIcon.vue?vue&type=script&lang=js& */ "./resources/js/components/areas/StatIcon.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _StatIcon_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _StatIcon_vue_vue_type_template_id_0fd368fe___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _StatIcon_vue_vue_type_template_id_0fd368fe___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/areas/StatIcon.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/areas/StatIcon.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/areas/StatIcon.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_StatIcon_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./StatIcon.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/areas/StatIcon.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_StatIcon_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/areas/StatIcon.vue?vue&type=template&id=0fd368fe&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/areas/StatIcon.vue?vue&type=template&id=0fd368fe& ***!
+  \***********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StatIcon_vue_vue_type_template_id_0fd368fe___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./StatIcon.vue?vue&type=template&id=0fd368fe& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/areas/StatIcon.vue?vue&type=template&id=0fd368fe&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StatIcon_vue_vue_type_template_id_0fd368fe___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StatIcon_vue_vue_type_template_id_0fd368fe___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/yesNo.vue":
 /*!*******************************************!*\
   !*** ./resources/js/components/yesNo.vue ***!
@@ -100676,7 +101254,7 @@ var helpers = {
     if (options.location && typeof options.location !== 'string') options.location = options.location.name; // format input
 
     return (!options.killed || unit.killed) && (!options.notKilled || !unit.killed) && (!options.location || options.location == unit.location) // intentionally coercive to match different falsy values
-    && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.onBoard || unit.location) && (!options.inReserves || !unit.location) && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.selected || unit.selected) && (!options.notSelected || !unit.selected) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || unit.type === options.type) && (!options.typeIn || options.typeIn.includes(unit.type)) && (!options.notType || unit.type !== options.notType) && (!options.notChampion || unit.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.canCombat || !unit.hidden || unit.attack.length && !unit.webbed) && (!options.notWebbed || !unit.webbed) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy && !unit.webbed) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks && !options.withAttack || unit.attack.length && !unit.webbed);
+    && (!options.adjacent || options.adjacent.includes(unit.location)) && (!options.onBoard || unit.location) && (!options.inReserves || !unit.location) && (!options.basic || unit.basic) && (!options.notBasic || !unit.basic) && (!options.flipped || unit.flipped) && (!options.notFlipped || !unit.flipped) && (!options.selected || unit.selected) && (!options.notSelected || !unit.selected) && (!options.canBeReplaced || !unit.noReplace) && (!options.skilled || unit.skilled) && (!options.notSkilled || !unit.skilled) && (!options.ready || unit.ready) && (!options.notReady || !unit.ready) && (!options.type || unit.type === options.type) && (!options.typeIn || options.typeIn.includes(unit.type)) && (!options.notType || unit.type !== options.notType) && (!options.notChampion || unit.type !== 'champion') && (!options.types || options.types.includes(unit.type)) && (!options.hidden || unit.hidden) && (!options.canCombat || !unit.hidden || unit.attack.length && !unit.webbed) && (!options.notWebbed || !unit.webbed) && (!options.notHidden || !unit.hidden) && (!options.deployable || !unit.noDeploy && !unit.webbed) && (!options.hasProp || unit[options.hasProp]) && (!options.attacks && !options.withAttack || unit.attack.length && !unit.webbed);
   },
 
   /**
@@ -101399,14 +101977,14 @@ window.App.event = new ( /*#__PURE__*/function () {
     key: "emit",
     value: function emit(event) {
       var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      if (this.debug) console.log('emit', event);
+      if (this.debug) console.log("".concat(event, " emitted"));
 
       this._vue.$emit(event, data);
     }
   }, {
     key: "on",
     value: function on(event, callback) {
-      if (this.debug) console.log('on', event);
+      if (this.debug) console.log("on ".concat(event, " registered"));
 
       this._vue.$on(event, callback);
     }
@@ -101910,6 +102488,8 @@ window.App.state = {
     'xCAP2x': '<img class="icon-image ml-3" src="/images/tokens/capitol-2-points.png">',
     'xCAP3x': '<img class="icon-image ml-3" src="/images/tokens/capitol-3-points.png">',
     'xCAP4x': '<img class="icon-image ml-3" src="/images/tokens/capitol-4-points.png">',
+    'xAPx': '<img class="icon-image ml-3" src="/images/icons/ap.png">',
+    'xPPx': '<img class="icon-image ml-3" src="/images/icons/pp.png">',
     'xAP1x': '<img class="icon-image ml-3" src="/images/icons/ap-1.png">',
     'xAP2x': '<img class="icon-image ml-3" src="/images/icons/ap-2.png">',
     'xAP3x': '<img class="icon-image ml-3" src="/images/icons/ap-3.png">',
@@ -102387,6 +102967,13 @@ var obj = {
     owner: null,
     blocked: false,
     status: 1,
+    selectable: true
+  },
+  bikers: {
+    name: 'bikers',
+    owner: null,
+    blocked: false,
+    status: 0,
     selectable: true
   }
 };

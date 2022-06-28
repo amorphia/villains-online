@@ -277,7 +277,7 @@ class Society extends Faction {
         // the types we have in our reserves
         let reservesTypes = this.unitTypesInReserves( true );
         // the types our opponents have in this area
-        let enemyTypes = this.enemyUnitTypesInArea( area, { basic : true } );
+        let enemyTypes = this.enemyUnitTypesInArea( area, { basic : true, canBeReplaced: true } );
         // whatever types are on both arrays are hypnotizable
         return _.intersection( reservesTypes, enemyTypes );
     }
@@ -299,6 +299,7 @@ class Society extends Faction {
             enemyOnly : true,
             payCost: true,
             canDecline : true,
+            canBeReplaced: true,
             message: "Choose a unit to hypnotize"
         });
 

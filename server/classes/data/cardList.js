@@ -16,7 +16,7 @@ let obj = [
         target : 'subway',
         type : 'rule',
         scope : 'global',
-        description : 'you may play an additional action card with each CARD token'
+        description : 'You may play an additional action card with each CARD token'
     },
     {
         class : 'benevolent-ai',
@@ -26,7 +26,7 @@ let obj = [
         target : 'church',
         type : 'rule',
         scope : 'global',
-        description : 'you may play an additional action card with each CARD token'
+        description : 'You may play an additional action card with each CARD token'
     },
     {
         class : 'blackstone-encryption',
@@ -54,7 +54,7 @@ let obj = [
         target : 'university',
         type : 'rule',
         scope : 'local',
-        description : 'your gain +1 influence in this area'
+        description : 'You gain +2 influence in this area'
     },
     {
         class : 'blown-cover',
@@ -64,7 +64,7 @@ let obj = [
         target : 'bank',
         type : 'rule',
         scope : 'local',
-        description : 'your gain +1 influence in this area'
+        description : 'You gain +2 influence in this area'
     },
     {
         class : 'cease-fire',
@@ -75,7 +75,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'units may not attack in this area'
+        description : 'Units may not attack in this area'
     },
     {
         class : 'cease-fire',
@@ -86,7 +86,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'units may not attack in this area'
+        description : 'Units may not attack in this area'
     },
     {
         class : 'chicago-airlift',
@@ -115,7 +115,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'your card tokens produce +2 influence in this area'
+        description : 'Your card tokens produce +2 influence in this area'
     },
     {
         class : 'display-of-brilliance',
@@ -126,7 +126,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'your card tokens produce +2 influence in this area'
+        description : 'Your card tokens produce +2 influence in this area'
     },
     {
         class : 'fish-in-a-barrel',
@@ -369,7 +369,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'enemy units cost 1 more to deploy or move into this area'
+        description : 'Enemy units cost 1 more to deploy or move into this area'
     },
     {
         class : 'police-payoff',
@@ -380,7 +380,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'enemy units cost 1 more to deploy or move into this area'
+        description : 'Enemy units cost 1 more to deploy or move into this area'
     },
     {
         class : 'public-backlash',
@@ -428,7 +428,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'you gain +2 influence in this area'
+        description : 'You gain +2 influence in this area'
     },
     {
         class : 'rousing-speech',
@@ -439,7 +439,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'your gain +2 influence in this area'
+        description : 'You gain +2 influence in this area'
     },
     {
         class : 'rousing-speech',
@@ -450,7 +450,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'your gain +2 influence in this area'
+        description : 'You gain +2 influence in this area'
     },
     {
         class : 'rousing-speech',
@@ -461,7 +461,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'your gain +2 influence in this area'
+        description : 'You gain +2 influence in this area'
     },
     {
         class : 'shakedown',
@@ -526,7 +526,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'units produce no influence in this area'
+        description : 'Units produce no influence in this area'
     },
     {
         class : 'stand-down',
@@ -537,7 +537,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'units produce no influence in this area'
+        description : 'Units produce no influence in this area'
     },
     {
         class : 'stroke-of-genius',
@@ -603,7 +603,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'units may not be deployed or moved into this area, no player may control this area, you have exterminated this area'
+        description : 'No player may control this area, you have exterminated this area'
     },
     {
         class : 'to-the-death',
@@ -622,7 +622,7 @@ let obj = [
         target : 'university',
         type : 'rule',
         scope : 'global',
-        description : 'your units gain +1 to their attack rolls'
+        description : 'Your units gain +1 to their attack rolls'
     },
     {
         class : 'total-war',
@@ -632,7 +632,7 @@ let obj = [
         target : 'bank',
         type : 'rule',
         scope : 'global',
-        description : 'your units gain +1 to their attack rolls'
+        description : 'Your units gain +1 to their attack rolls'
     },
     {
         class : 'trapped-like-rats',
@@ -643,7 +643,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'units may not leave this area'
+        description : 'Units may not leave this area'
     },
     {
         class : 'trapped-like-rats',
@@ -654,7 +654,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'units may not leave this area'
+        description : 'Units may not leave this area'
     },
     {
         class : 'trapped-like-rats',
@@ -665,7 +665,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'units may not leave this area'
+        description : 'Units may not leave this area'
     },
     {
         class : 'trapped-like-rats',
@@ -676,7 +676,7 @@ let obj = [
         type : 'rule',
         scope : 'local',
         owner : null,
-        description : 'units may not leave this area'
+        description : 'Units may not leave this area'
     },
     {
         class : 'windfall',

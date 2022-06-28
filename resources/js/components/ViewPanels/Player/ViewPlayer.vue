@@ -116,7 +116,7 @@
 <style>
 
     .icon-image {
-        height: 1.4em;
+        height: 1.2em;
         margin: 0 .1em;
         position: relative;
         top: .3em;

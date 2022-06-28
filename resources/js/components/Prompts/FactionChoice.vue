@@ -100,8 +100,8 @@
              * @returns {boolean}
              */
             moreKillersAllowed(){
-                let allowed = this.playerCount === 5 ? 2 : 1;
-                return this.killersSelected < allowed;
+                //let allowed = this.playerCount === 5 ? 2 : 1;
+                return this.killersSelected < 1;
             },
 
 

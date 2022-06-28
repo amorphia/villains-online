@@ -7,7 +7,7 @@ class Game {
      * Settings
      */
     defaultSlideSpeed = 5; // how long in seconds to show passive slide prompts by default
-    fastModeSlideSpeed = 100; //.5;
+    fastModeSlideSpeed = .5;
     titleCardTimer = 3; // how long in seconds to show phase title cards
     godMode = true; // should we enter god mode (extra cards, and energy for factions) when running in the dev environment?
     doubleTargetsFourthTurn = false; // should we double target values on turn 4?

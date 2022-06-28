@@ -520,6 +520,7 @@ a {
   --faction-ghosts: #4a9ed8;
   --faction-spiders: #ae7688;
   --faction-skeletons: #b2a366;
+  --faction-bikers: #6D4C84;
 }
 
 .faction-neutral {
@@ -620,6 +621,10 @@ a {
 
 .faction-skeletons {
   color: var(--faction-skeletons);
+}
+
+.faction-bikers {
+  color: var(--faction-bikers);
 }
 
 .primary {
@@ -1046,6 +1051,11 @@ a {
 
 .z-negative {
   z-index: -1;
+}
+
+.tooltip {
+  cursor: help;
+  position: relative;
 }
 
 .ratio-square {
@@ -2292,8 +2302,16 @@ a {
 
 /* Mouse */
 
+.cursor-help {
+  cursor: help;
+}
+
 .pointer {
   cursor: pointer;
+}
+
+.cursor-default {
+  cursor: default;
 }
 
 .no-click {
@@ -3105,8 +3123,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 /* Track */
@@ -3261,6 +3279,15 @@ body {
   z-index: 0;
   -webkit-animation: selected 2s linear infinite;
           animation: selected 2s linear infinite;
+}
+
+.selected.selected-circle {
+  overflow: visible;
+}
+
+.selected.selected-circle::before {
+  width: 100%;
+  padding-bottom: 100%;
 }
 
 .mobile-warning__wrap {

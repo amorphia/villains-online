@@ -28,6 +28,8 @@
                     <!-- title -->
                     <div class="title d-inline-block">{{ message }}</div>
 
+                    <div v-if="instructions" class="prompt-question center-text" v-html="instructions"></div>
+
                     <!-- card wrap -->
                     <div>
                     <horizontal-scroll classes="choose-target__wrap d-flex pb-3 width-100 plan-block" buttons="true">
@@ -155,6 +157,14 @@
                 return "CONFIRM CHOICES";
             },
 
+
+            instructions(){
+                switch( this.mode ) {
+                    case 'plans' : return this.shared.filterText("Completing plan objectives will earn you xPPx");
+                    case 'cards' : return  this.shared.filterText("Controlling the area shown at the top of the selected card will be worth xAP1x");
+                    case 'confirm' : return null;
+                }
+            },
 
             /**
              * Do we need to choose a plan?

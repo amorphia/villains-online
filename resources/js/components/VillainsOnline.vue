@@ -1,5 +1,5 @@
 <template>
-    <div class="villains-online d-flex align-stretch main-container pos-relative">
+    <div class="villains-online d-flex align-stretch main-container pos-relative" @click="shared.event.emit('closeTooltips')">
         <div class="main-content height-100 drawer__main" :class="{'drawer--closed' : chatClosed}">
             <!-- core game display -->
             <game-lobby v-if="!shared.data"></game-lobby>
@@ -166,11 +166,11 @@
              * and regenerate those properties
              */
             watchSharedGame(){
-                if( this.shared.playerIndex === null ){
+                if( this.shared?.playerIndex === null ){
                     this.setPlayerIndex()
                 }
 
-                if( this.shared.factionName === null ){
+                if( this.shared?.factionName === null ){
                     this.setPlayerFactionName()
                 }
             },
