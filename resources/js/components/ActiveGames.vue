@@ -1,6 +1,6 @@
 <template>
 
-    <div v-if="shared.activeGames && shared.activeGames.length" class="">
+    <div  v-if="shared.activeGames && shared.activeGames.length">
         <!-- title -->
         <div class="highlight secondary-font center-text pb-4">active games</div>
 
@@ -15,8 +15,11 @@
                            @open="openSave">
                 </active-game>
             </div>
+
         </div>
     </div>
+
+    <div v-else class="no-active-games">NO ACTIVE GAMES</div>
 
 </template>
 
@@ -56,3 +59,17 @@
     }
 </script>
 
+<style scoped>
+    .no-active-games {
+        padding: 1rem;
+        text-align: center;
+        font-size: .75em;
+        background-color: rgba(17, 7, 19, 0.9);
+        border-radius: 0.2em;
+        border-top: 1px solid rgba(91, 33, 128, 0.56);
+        letter-spacing: 2px;
+        color: var(--highlight-color);
+        box-shadow: 0 0 2px rgb(91 33 120 / 50%), 0 4px 5px rgb(0 0 0 / 20%);
+        margin: .5rem;
+    }
+</style>

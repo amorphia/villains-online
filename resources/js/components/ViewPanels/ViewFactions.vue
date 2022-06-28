@@ -10,7 +10,7 @@
 
                 <!-- factions list -->
                 <div class="choose-factions__faction-container">
-                    <div class="choose-factions__faction-list pb-3">
+                    <div class="choose-factions__faction-list pb-3 pr-3 overflow-auto">
 
                         <div class="choose-factions__basic-factions pr-3">
                             <faction-choice

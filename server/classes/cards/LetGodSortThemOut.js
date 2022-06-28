@@ -14,7 +14,9 @@ class LetGodSortThemOut extends Card {
             promises.push( this.factionSacrificeUnits( faction, units ) );
         });
 
-        await Promise.all( promises );
+        let responses = await Promise.all( promises );
+
+        await this.resolveResponses( responses, units );
 
         // display the results
         if( units.length ){
@@ -33,7 +35,7 @@ class LetGodSortThemOut extends Card {
      * @param units
      * @returns {Promise<void>}
      */
-    factionSacrificeUnits( faction, units ){
+    async factionSacrificeUnits( faction, units ){
 
         // get how many units we need to sacrifice, if we don't have any to sacrifice return
         let unitsToSacrifice = this.getUnitsToSacrificeCount( faction );
@@ -41,15 +43,21 @@ class LetGodSortThemOut extends Card {
 
         let areas = this.getSacrificeAreas( faction );
 
-        return this.game.promise({
+        let [player, response] = await this.game.promise({
             players: faction.playerId,
             name: 'sacrifice-units',
             data : {
                 count : unitsToSacrifice,
                 areas : areas
-            }})
-            .then( async ([player, response]) => await this.resolveFactionSacrificeUnits( player, response, units, faction ) );
+            }});
 
+        this.game.updatePlayerData();
+
+        return {
+            player,
+            faction,
+            units : response.units,
+        }
     }
 
 
@@ -80,6 +88,11 @@ class LetGodSortThemOut extends Card {
         return Object.keys( areas );
     }
 
+    async resolveResponses( responses, units ){
+        for( let response of responses ) {
+            await this.resolveFactionSacrificeUnits( response, units );
+        }
+    }
 
     /**
      * Resolve a factions's sacrifices
@@ -89,11 +102,12 @@ class LetGodSortThemOut extends Card {
      * @param units
      * @param faction
      */
-    async resolveFactionSacrificeUnits( player, response, units, faction ){
+    async resolveFactionSacrificeUnits( response, units ){
         // clear our prompt
-        player.setPrompt({ active : false, updatePlayerData : true });
+        response.player.setPrompt({ active : false, updatePlayerData : true });
 
         let unitNames = [];
+
         // cycle through our units
         for( let unitId of response.units ){
             // get the unit object
@@ -107,8 +121,8 @@ class LetGodSortThemOut extends Card {
         }
 
         // log the results
-        let message = `sacrifices <span class="faction-${faction.name}item">${unitNames.join(', ')}</span>`;
-        faction.message( message );
+        let message = `sacrifices <span class="faction-${response.faction.name}item">${unitNames.join(', ')}</span>`;
+        response.faction.message( message );
     }
 
 }

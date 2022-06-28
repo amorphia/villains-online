@@ -37,7 +37,7 @@
         <!-- factions -->
         <div class="factions width-65 height-100 p-5 d-flex align-center">
             <div class="choose-factions__faction-container">
-                <div class="choose-factions__faction-list pb-3 overflow-auto">
+                <div class="choose-factions__faction-list pb-3 pr-3 overflow-auto">
 
                     <!-- basic factions -->
                     <div class="choose-factions__basic-factions pr-3">
@@ -56,7 +56,7 @@
                     </div>
 
                     <!-- expansion factions -->
-                    <div class="pr-3">
+                    <div class="choose-factions__expansion-factions pr-3">
                         <faction-choice
                             v-for="faction in expansionFactions"
                             @clicked="e => selectedFaction = e"
@@ -278,6 +278,10 @@
 
 
     .choose-factions__basic-factions {
+        border-right: 2px solid #ffa70080;
+    }
+
+    .choose-factions__expansion-factions {
         border-right: 2px dotted #ffa70080;
     }
 
@@ -292,6 +296,10 @@
     .choose-factions__status-1 { background-color: #ff8800; }
     .choose-factions__status-2 { background-color: #a7cc00; }
     .choose-factions__status-3 { background-color: green; }
+
+    .choose-factions__faction-list {
+        max-height: 95vh;
+    }
 
 </style>
 
