@@ -12,7 +12,7 @@ class Bikers extends Faction {
         this.data.bonusDeploy = { inPlay: true, count : 2 };
         this.data.title = "Hell's Blade Cycle Club";
         this.data.focusDescription = "Most units in areas";
-        this.data.upgrade = 2;
+        this.data.upgrade = 0;
 
         // tokens
         this.tokens['bully'] = {
