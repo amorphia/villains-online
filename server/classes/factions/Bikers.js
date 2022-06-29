@@ -13,6 +13,7 @@ class Bikers extends Faction {
         this.data.title = "Hell's Blade Cycle Club";
         this.data.focusDescription = "Most units in areas";
         this.data.upgrade = 0;
+        this.data.redployFree = true;
 
         // tokens
         this.tokens['bully'] = {

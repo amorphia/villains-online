@@ -309,7 +309,7 @@
             fromAreaUnits( area ){
                 // get our units
                 let units = this.shared.faction.units
-                    .filter( unit => ( this.data.free || unit.cost <= _.money( this.shared.faction ) )
+                    .filter( unit => ( this.data.free || unit.cost <= _.money( this.shared.faction ) || unit.redeployFree )
                             && _.unitInArea( unit, area, {
                                 deployable : true,
                                 notChampion : this.destinationBlockedByKau,

@@ -10683,7 +10683,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       // get our units
       var units = this.shared.faction.units.filter(function (unit) {
-        return (_this2.data.free || unit.cost <= _.money(_this2.shared.faction)) && _.unitInArea(unit, area, {
+        return (_this2.data.free || unit.cost <= _.money(_this2.shared.faction) || unit.redeployFree) && _.unitInArea(unit, area, {
           deployable: true,
           notChampion: _this2.destinationBlockedByKau,
           types: _this2.data.unitTypes
@@ -16393,7 +16393,7 @@ __webpack_require__.r(__webpack_exports__);
       // determine our token url
       if (this.token) return "/images/factions/".concat(this.token.faction, "/tokens/").concat(this.token.name, ".png"); // otherwise return the appropriate static image
 
-      return (_this$shared$actionTy = this.shared.actionTypes[this.action]) === null || _this$shared$actionTy === void 0 ? void 0 : _this$shared$actionTy.img;
+      return this.shared.actionTypes ? (_this$shared$actionTy = this.shared.actionTypes[this.action]) === null || _this$shared$actionTy === void 0 ? void 0 : _this$shared$actionTy.img : null;
     },
 
     /**

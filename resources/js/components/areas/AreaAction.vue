@@ -58,7 +58,7 @@
                 if( this.token ) return `/images/factions/${this.token.faction}/tokens/${this.token.name}.png`;
 
                 // otherwise return the appropriate static image
-                return this.shared.actionTypes[ this.action ]?.img;
+                return this.shared.actionTypes ? this.shared.actionTypes[ this.action ]?.img : null;
             },
 
 
