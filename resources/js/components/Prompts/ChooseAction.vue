@@ -144,68 +144,17 @@
 
         data() {
             return {
-                shared : App.state,
-                action : null,
-                wildType : null,
-                wildTokens : [
-                    { name : 'deploy', id : 1 },
-                    { name : 'card', id : 2 },
-                    { name : 'battle', id : 3 },
-                    { name : 'move', id : 4 },
+                shared: App.state,
+                action: null,
+                wildType: null,
+                wildTokens: [
+                    {name: 'deploy', id: 1},
+                    {name: 'card', id: 2},
+                    {name: 'battle', id: 3},
+                    {name: 'move', id: 4},
                 ],
-                actions : {},
-
-                actionTypes : {
-                    'pass' :{
-                        buttonMessage : 'Pass for the turn',
-                    },
-                    'skip' : {
-                        buttonMessage: 'Skip this action',
-                    },
-                    locked : {
-                        buttonMessage: 'Declare yourself locked',
-                    },
-                    'token' : {
-                        useMessage: 'reveal token',
-                        areaAction : true,
-                    },
-                    'skill' : {
-                        img : '/images/icons/skilled.png',
-                        useMessage: 'use skill',
-                        areaAction : true,
-                    },
-                    'magick' : {
-                        img : '/images/icons/enchanted.png',
-                        useMessage: 'use magick',
-                        areaAction : true,
-                        buttonMessage: 'Flip your units in this area to use magick'
-                    },
-                    'loop' : {
-                        img : '/images/icons/loop.png',
-                        useMessage: 'use loop',
-                        areaAction : true,
-                        buttonMessage: 'Replace your Loop token'
-                    },
-                    'ambush' : {
-                        img : '/images/icons/ambush.png',
-                        useMessage: 'ambush',
-                        areaAction : true,
-                    },
-                    'materialize' : {
-                        img : '/images/icons/ghost.png',
-                        useMessage: 'materialize',
-                        areaAction : true,
-                    },
-                    'xavier' : {
-                        useMessage: 'xavier token',
-                        buttonMessage: 'Reveal token on Xavier'
-                    },
-                },
-            };
-        },
-
-        created(){
-            this.shared.init( 'actionTypes', this.actionTypes );
+                actions: {},
+            }
         },
 
         mounted(){

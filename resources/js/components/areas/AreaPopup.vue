@@ -70,7 +70,7 @@
                 }
 
                 // otherwise return the appropriate static image
-                return this.shared.actionTypes[this.popup.type]?.img;
+                return this.shared.actionTypes ? this.shared.actionTypes[this.popup.type]?.img : null;
             }
         }
     }

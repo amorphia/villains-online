@@ -7265,57 +7265,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         name: 'move',
         id: 4
       }],
-      actions: {},
-      actionTypes: {
-        'pass': {
-          buttonMessage: 'Pass for the turn'
-        },
-        'skip': {
-          buttonMessage: 'Skip this action'
-        },
-        locked: {
-          buttonMessage: 'Declare yourself locked'
-        },
-        'token': {
-          useMessage: 'reveal token',
-          areaAction: true
-        },
-        'skill': {
-          img: '/images/icons/skilled.png',
-          useMessage: 'use skill',
-          areaAction: true
-        },
-        'magick': {
-          img: '/images/icons/enchanted.png',
-          useMessage: 'use magick',
-          areaAction: true,
-          buttonMessage: 'Flip your units in this area to use magick'
-        },
-        'loop': {
-          img: '/images/icons/loop.png',
-          useMessage: 'use loop',
-          areaAction: true,
-          buttonMessage: 'Replace your Loop token'
-        },
-        'ambush': {
-          img: '/images/icons/ambush.png',
-          useMessage: 'ambush',
-          areaAction: true
-        },
-        'materialize': {
-          img: '/images/icons/ghost.png',
-          useMessage: 'materialize',
-          areaAction: true
-        },
-        'xavier': {
-          useMessage: 'xavier token',
-          buttonMessage: 'Reveal token on Xavier'
-        }
-      }
+      actions: {}
     };
-  },
-  created: function created() {
-    this.shared.init('actionTypes', this.actionTypes);
   },
   mounted: function mounted() {
     var _this = this;
@@ -17279,7 +17230,7 @@ __webpack_require__.r(__webpack_exports__);
       } // otherwise return the appropriate static image
 
 
-      return (_this$shared$actionTy = this.shared.actionTypes[this.popup.type]) === null || _this$shared$actionTy === void 0 ? void 0 : _this$shared$actionTy.img;
+      return this.shared.actionTypes ? (_this$shared$actionTy = this.shared.actionTypes[this.popup.type]) === null || _this$shared$actionTy === void 0 ? void 0 : _this$shared$actionTy.img : null;
     }
   }
 });
@@ -102632,6 +102583,52 @@ window.App.state = {
     'xA16x': '<img class="icon-image ml-3" src="/images/icons/attack-16.png">',
     'xA17x': '<img class="icon-image ml-3" src="/images/icons/attack-17.png">',
     'xA18x': '<img class="icon-image ml-3" src="/images/icons/attack-18.png">'
+  },
+  actionTypes: {
+    'pass': {
+      buttonMessage: 'Pass for the turn'
+    },
+    'skip': {
+      buttonMessage: 'Skip this action'
+    },
+    locked: {
+      buttonMessage: 'Declare yourself locked'
+    },
+    'token': {
+      useMessage: 'reveal token',
+      areaAction: true
+    },
+    'skill': {
+      img: '/images/icons/skilled.png',
+      useMessage: 'use skill',
+      areaAction: true
+    },
+    'magick': {
+      img: '/images/icons/enchanted.png',
+      useMessage: 'use magick',
+      areaAction: true,
+      buttonMessage: 'Flip your units in this area to use magick'
+    },
+    'loop': {
+      img: '/images/icons/loop.png',
+      useMessage: 'use loop',
+      areaAction: true,
+      buttonMessage: 'Replace your Loop token'
+    },
+    'ambush': {
+      img: '/images/icons/ambush.png',
+      useMessage: 'ambush',
+      areaAction: true
+    },
+    'materialize': {
+      img: '/images/icons/ghost.png',
+      useMessage: 'materialize',
+      areaAction: true
+    },
+    'xavier': {
+      useMessage: 'xavier token',
+      buttonMessage: 'Reveal token on Xavier'
+    }
   },
 
   /**
