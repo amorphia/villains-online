@@ -19260,7 +19260,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.area-map__actions {\n    top: 55%;\n    transition: all .1s;\n    position: absolute;\n    right: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 95%;\n}\n.area-map__actions .toggle {\n    transform: translateX(100%);\n    padding: .5rem;\n    height: 2em;\n}\n.area-map__actions.closed {\n    right: 100%;\n    left: unset;\n    top: 0;\n    transform: translate(0, 0);\n}\n.area-map__actions-content {\n    display: flex;\n    padding: .5rem;\n    background-image: url(/images/background-blurred.jpg);\n    background-size: cover;\n    background-position: center;\n    max-height: 100%;\n    max-width: 100%;\n    opacity: 1;\n    transition: all .1s;\n    border: 1px solid #ffffff;\n    box-shadow: 0 0 10px 4px rgba(0,0,0,1);\n}\n.area-map__actions.closed .area-map__actions-content {\n    max-height: 0;\n    max-width: 0;\n    opacity: 0;\n}\n\n", ""]);
+exports.push([module.i, "\n.area-map__actions {\n    top: 55%;\n    transition: all .1s;\n    position: absolute;\n    right: 50%;\n    transform: translate(50%,-50%);\n    max-width: 95%;\n    max-height: 95%;\n}\n.area-map__actions .toggle {\n    transform: translateX(100%);\n    padding: .5rem;\n    height: 2em;\n}\n.area-map__actions.closed {\n    right: 100%;\n    left: unset;\n    top: 0;\n    transform: translate(0, 0);\n}\n.area-map__actions-content {\n    display: flex;\n    padding: .5rem;\n    background-image: url(/images/background-blurred.jpg);\n    background-size: cover;\n    background-position: center;\n    max-height: 100%;\n    max-width: 100%;\n    opacity: 1;\n    transition: all .1s;\n    border: 1px solid #ffffff;\n    box-shadow: 0 0 10px 4px rgba(0,0,0,1);\n}\n.area-map__actions.closed .area-map__actions-content {\n    pointer-events: none;\n    max-height: 0;\n    max-width: 0;\n    opacity: 0;\n}\n\n", ""]);
 
 // exports
 
@@ -74180,7 +74180,23 @@ var render = function () {
               "button",
               {
                 staticClass: "toggle minimize-toggle top right",
-                on: { click: _vm.toggleClose },
+                on: {
+                  click: function ($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "left", 37, $event.key, [
+                        "Left",
+                        "ArrowLeft",
+                      ])
+                    ) {
+                      return null
+                    }
+                    if ("button" in $event && $event.button !== 0) {
+                      return null
+                    }
+                    return _vm.toggleClose.apply(null, arguments)
+                  },
+                },
               },
               [
                 _c("i", {

@@ -6,7 +6,7 @@
              class="area-map__actions d-flex justify-center align-stretch z-7">
 
             <!-- close button -->
-            <button @click="toggleClose" class="toggle minimize-toggle top right">
+            <button @click.left="toggleClose" class="toggle minimize-toggle top right">
                 <i :class="closed ? 'icon-maximize' : 'icon-minimize'"></i>
                 <loading-streak v-if="closed" position="left"></loading-streak>
                 <loading-streak v-if="closed" position="right"></loading-streak>
@@ -121,6 +121,7 @@
     }
 
     .area-map__actions.closed .area-map__actions-content {
+        pointer-events: none;
         max-height: 0;
         max-width: 0;
         opacity: 0;
