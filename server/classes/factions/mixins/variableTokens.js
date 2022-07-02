@@ -4,21 +4,27 @@ let obj = {
      * Setup variable tokens for factions that has a variable number of tokens that unlock along with their upgrades
      * (i.e. they start with 1 copy, then upgrade 1 unlocks a second, and upgrade 2 unlocks the third)
      *
-     * @param tokenName
-     * @param tokenCache
+     * @param args
+     *      @prop cache
+     *      @prop reserves
+     *      @prop key
+     *      @prop value
+     *      @prop multiplier
      */
-    setupVariableTokens( tokenName, tokenCache ){
+    setupVariableItems( args ){
+        let multiplier = args.multiplier ?? 1;
+
         // how many tokens should be in our cache?
-        let numThatShouldBeInCache = 2 - this.data.upgrade;
+        args.numThatShouldBeInCache = (2 - this.data.upgrade) * multiplier;
 
         // if there are too few in the cache move some from our reserves to the cache
-        if( tokenCache.length < numThatShouldBeInCache ){
-            this.moveVariableTokensToCache( numThatShouldBeInCache, tokenName, tokenCache );
+        if( args.cache.length < args.numThatShouldBeInCache ){
+            this.moveVariableItemsToCache( args );
         }
 
         // if there are too many tokens in our cache move tokens from our cache to our reserves
-        if( tokenCache.length > numThatShouldBeInCache ){
-            this.moveVariableTokensToReserves( numThatShouldBeInCache, tokenCache );
+        if( args.cache.length > args.numThatShouldBeInCache ){
+            this.moveVariableItemsToReserves( args );
         }
     },
 
@@ -26,14 +32,12 @@ let obj = {
     /**
      * Move variable tokens from our reserves to our cache
      *
-     * @param numThatShouldBeInCache
-     * @param tokenName
-     * @param tokenCache
+     * @param args
      */
-    moveVariableTokensToCache( numThatShouldBeInCache, tokenName, tokenCache ){
-        while( tokenCache.length < numThatShouldBeInCache ){
-            let token = this.getVariableTokenFromReserves( tokenName );
-            if( token ) _.moveItemById( token.id, this.data.tokens, tokenCache );
+    moveVariableItemsToCache( args ){
+        while( args.cache.length < args.numThatShouldBeInCache ){
+            let item = this.getVariableItemFromReserves( args );
+            if( item ) _.moveItemById( item.id, args.reserves, args.cache );
         }
     },
 
@@ -41,23 +45,23 @@ let obj = {
     /**
      * Get a matching variable token from our reserves that isn't in play or revealed
      *
-     * @param tokenName
-     * @returns {Token}
+     * @param args
+     * @returns object
      */
-    getVariableTokenFromReserves( tokenName ){
-        return this.data.tokens.find( token => token.type === tokenName && !token.location && !token.revealed );
+    getVariableItemFromReserves( args ){
+        let key = args.key ?? 'type';
+        return args.reserves.find( item => item[key] === args.value && !item.location && !item.revealed );
     },
 
 
     /**
      * Move variable tokens from our cache to our reserves
      *
-     * @param numThatShouldBeInCache
-     * @param tokenCache
+     * @param args
      */
-    moveVariableTokensToReserves( numThatShouldBeInCache, tokenCache ){
-        while( tokenCache.length > numThatShouldBeInCache ) {
-            this.data.tokens.push( tokenCache.pop() );
+    moveVariableItemsToReserves( args ){
+        while( args.cache.length > args.numThatShouldBeInCache ) {
+            args.reserves.push( args.cache.pop() );
         }
     },
 
@@ -66,13 +70,17 @@ let obj = {
      * Upgrade a variable token by adding additional tokens to our reserves from our
      *  token cache until we reach our upgrade value
      *
-     * @param tokenCache
+     * @param args
      */
-    upgradeVariableTokens( tokenCache ){
+    upgradeVariableItems( args ){
+        const multiplier = args.multiplier ?? 1;
+
         // get the number of tokens to add
-        let numThatShouldBeInCache = 2 - this.data.upgrade;
-        this.moveVariableTokensToReserves( numThatShouldBeInCache, tokenCache );
+        args.numThatShouldBeInCache = (2 - this.data.upgrade) * multiplier;
+        this.moveVariableItemsToReserves( args );
     },
+
+
 
 };
 

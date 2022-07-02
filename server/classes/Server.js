@@ -530,7 +530,7 @@ class Server {
     updateLobbyPopulation( player, joining = false ){
         // add or remove this player from the lobby player's object
         if( joining ){
-            this.lobbyPlayers[player.id] = player.data.name;
+            this.lobbyPlayers[player.id] = player.data;
         } else {
             delete this.lobbyPlayers[player.id];
         }

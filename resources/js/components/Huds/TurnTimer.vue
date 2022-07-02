@@ -1,5 +1,8 @@
 <template>
-   <div v-if="timestamp && shared.admin" class="width-100 center-text p-3 mx-3 mb-3 glass" :class="computedClasses">
+   <div v-if="timestamp && shared.admin"
+        class="width-100 timer center-text p-2 mx-3 mb-3 glass secondary-font"
+        :class="computedClasses"
+   >
        {{ elapsedText }}
    </div>
 </template>
@@ -69,6 +72,10 @@
 </script>
 
 <style>
+    .timer {
+        font-size: 2rem;
+    }
+
     .timer--white {
         color: rgba(255,255,255,.65);
     }

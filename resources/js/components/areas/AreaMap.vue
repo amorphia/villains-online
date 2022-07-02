@@ -3,7 +3,7 @@
         <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="shared.event.emit( 'areaClicked', area )">
 
             <!-- Control -->
-            <div class="area-map__owner-wrap z-2 cursor-help">
+            <div class="area-map__owner-wrap z-3 cursor-help">
                 <!-- owner -->
                 <img v-if="area.owner"
                      @click.right.prevent="() => {

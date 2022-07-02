@@ -1,6 +1,8 @@
 <template>
     <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-        <span class="mr-4">ambushes :<span class="highlight ml-2">{{ ambushes }}</span> </span> kills in enemy areas :<span class="highlight ml-2">{{ kills }}</span>
+        <span class="mr-4">traps :<span class="highlight ml-2">{{ traps }}</span> </span>
+        <span class="mr-4">ambushes :<span class="highlight ml-2">{{ ambushes }}</span> </span>
+        kills :<span class="highlight ml-2">{{ kills }}</span>
     </div>
 </template>
 
@@ -30,6 +32,9 @@
                 ).length;
             },
 
+            traps(){
+                return this.faction.maxTraps - this.faction.trappedAreas.length;
+            },
 
             /**
              * Returns the number of ambushes we have left this turn

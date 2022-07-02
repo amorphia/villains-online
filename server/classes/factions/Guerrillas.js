@@ -10,7 +10,8 @@ class Guerrillas extends Faction {
         // triggers
         this.triggers = {
             "onCleanUp" : "resetAmbushUsedCount",
-            //"onStartOfTurn" : "setViperDeployLimit",
+            "onMoveAll" : "checkForTraps",
+            "onDeployAll" : "checkForTraps",
         };
 
 
@@ -20,6 +21,8 @@ class Guerrillas extends Faction {
         this.data.focusDescription = "Kill many units in enemy areas";
         this.data.flipableUnits = ['champion'];
         this.data.viperMoveCount = 1;
+        this.data.trappedAreas = [];
+        this.data.maxTraps = 3;
 
         // tracks the number of ambush actions we have available each turn
         this.data.ambushes = {
@@ -74,7 +77,8 @@ class Guerrillas extends Faction {
                 selected: false,
                 hitsAssigned: 0,
                 flipped: false,
-                onDeploy: 'viperDeploy'
+                onDeploy: 'viperDeploy',
+                onMove: 'viperBoobyTrap'
             }
         };
     }
@@ -227,78 +231,50 @@ class Guerrillas extends Faction {
         await this.chooseViperSide();
 
         // handle bring units trigger
-        await this.bringUnits( event );
+        await this.viperBoobyTrap( event );
+    }
+
+    viperBoobyTrap( event ){
+        let area = event.from;
+
+        // if viper wasn't moved/deployed from an area do nothing
+        if( !area || area === event.unit.location ) return;
+
+        // if we have already used our max traps
+        if(this.data.trappedAreas.length >= this.data.maxTraps){
+           return this.message( `Red Viper has run out of booby traps`, { class: 'warning' } );
+        }
+
+        // if this area already has a trap
+        if(this.data.trappedAreas.includes(area)){
+            return this.message( `Red Viper has already trapped this part of the city`, { class: 'warning' } );
+        }
+
+        // place a trap
+        this.data.trappedAreas.push(area);
+        this.message( `Red Viper places a <span class="faction-guerrillas">booby trap</span> in the ${area}`);
     }
 
     /**
-     * Handle Red Viper's bring units ability
      *
      * @param event
+     * @returns {Promise<void>}
      */
-    async bringUnits( event ) {
-        let area = this.game().areas[ event.from  ];
-
-        // if we didn't deploy from another area then return
-        if (!event.from || event.from === event.unit.location) return;
-
-        // if we don't have any more units in the from area then return
-        if( ! this.data.units.find( unit => _.unitInArea( unit, event.from ) ) ) return;
-
-        // if the plants are in this game, check for vines
-        let vines = area.data.tokens.filter( token => token.type === 'vines' ).length;
-
-        // Let player choose which units to bring, if any
-        let response = await this.prompt( 'choose-units', {
-            count : this.data.viperMoveCount,
-            areas : [event.from],
-            playerOnly : true,
-            canDecline : true,
-            optionalMax : true,
-            policePayoff : event.unit.location,
-            vines: vines,
-            message: `Choose a unit to move with Red Viper to The ${event.from}`
-        });
-
-        if( response.decline ) return;
-
-        console.log( 'bringUnits response', response );
-
-        // bring our units along
-        await this.resolveBringUnits( response.units, response.cost, event );
-
-
+    async checkForTraps(event){
+        for(let unitEvent of event.units){
+            let unit = unitEvent.unit;
+            if(unit.faction !== this.name && this.data.trappedAreas.includes(unit.location)){
+                await this.explodeTrap(unit);
+                return;
+            }
+        }
     }
 
-
-    /**
-     * Actually move the units we decided to bring with red viper
-     *
-     * @param units
-     * @param cost
-     * @param event
-     */
-    async resolveBringUnits( units, cost, event ){
-
-        // pay any costs to move these units
-        if( cost ) this.payCost( cost );
-
-        // grab the units from our object map
-        units = units.map( unitId => this.game().objectMap[ unitId ] );
-
-        // move our units
-        units.forEach( unit => {
-            unit.location = event.unit.location;
-            if( unit.ready ) unit.ready = false;
-        });
-
-        // display results
-        this.message( `Sneaks ${units.length} unit${units.length > 1 ? 's':'' } to The ${event.unit.location}` );
-        await this.game().timedPrompt('units-shifted', {
-            message : `${units.length === 1 ? 'A Unit sneaks' : 'Units sneak'} to The ${event.unit.location}`,
-            units: units
-        });
+    async explodeTrap(unit){
+        this.data.trappedAreas = this.data.trappedAreas.filter( area => area !== unit.location );
+        this.message( `A trap placed by Red Viper has been triggered by the <span class="faction-${unit.faction}">${unit.faction}</span> in the ${unit.location}`);
+        await this.nonCombatAttack( 4, 1, unit.location, unit.faction );
     }
-
 
     /**
      * Choose which side to place Red Viper on

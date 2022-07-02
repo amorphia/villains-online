@@ -110,7 +110,10 @@ class Society extends Faction {
      * Process faction upgrade
      */
     processUpgrade() {
-        this.upgradeVariableTokens( this.data.words );
+        this.upgradeVariableItems({
+            cache: this.data.words,
+            reserves: this.data.tokens,
+        });
     }
 
 
@@ -369,7 +372,11 @@ class Society extends Faction {
      * On setup remove two of our word of command tokens from our reserves
      */
     setupWordTokens(){
-        this.setupVariableTokens( 'word-of-command', this.data.words );
+        this.setupVariableItems({
+            value: 'word-of-command',
+            reserves: this.data.tokens,
+            cache: this.data.words
+        });
     }
 }
 

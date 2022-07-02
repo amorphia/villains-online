@@ -97,7 +97,11 @@ class Spiders extends Faction {
      * Remove the vines tokens we haven't unlocked yet from our reserves
      */
     setupDropTokens(){
-        this.setupVariableTokens( 'drop', this.data.drops );
+        this.setupVariableItems({
+            value: 'drop',
+            cache: this.data.drops,
+            reserves: this.data.tokens,
+        });
     }
 
     /**
@@ -106,7 +110,10 @@ class Spiders extends Faction {
 
     processUpgrade() {
         // add additional vines tokens to our reserves
-        this.upgradeVariableTokens( this.data.drops );
+        this.upgradeVariableItems({
+            cache: this.data.drops,
+            reserves: this.data.tokens,
+        });
     }
 
 

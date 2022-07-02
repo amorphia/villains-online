@@ -28,6 +28,9 @@
                 // add smoke
                 units = this.getSmoke( units );
 
+                // add booby trap
+                units = this.getBoobyTraps( units );
+
                 // add ghosts
                 //units = this.getGhosts( units );
 
@@ -77,6 +80,20 @@
 
                 // add smoke
                 units.push({type: 'smoke', faction: 'ninjas'});
+
+                return units;
+            },
+
+            /**
+             * Add this faction's smoke to our units array
+             * @returns {Unit[]}
+             */
+            getBoobyTraps( units ){
+                // abort conditions
+                if ( this.skilled || ! this.faction.trappedAreas?.includes( this.area ) ) return units;
+
+                // add smoke
+                units.push({type: 'booby-trap', faction: 'guerrillas'});
 
                 return units;
             },

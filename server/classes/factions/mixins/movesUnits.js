@@ -153,6 +153,13 @@ let obj = {
         await this.unitTriggeredEvents( 'move', output.units )
             .catch( error => console.log( error ) );
 
+        // check for glabal events
+        for(let faction of Object.values(this.game().factions) ){
+            if(faction.triggers?.onMoveAll){
+                 await faction[ faction.triggers.onMoveAll ]( output );
+            }
+        }
+
         return output;
     },
 

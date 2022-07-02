@@ -8,34 +8,22 @@
         <!-- main content -->
         <div class="d-flex flex-center width-100 height-100 pos-relative">
 
-            <!-- rules -->
-            <a href="/files/villains_v4.2_web.pdf" target="_blank" class="d-block button pos-absolute bottom-0 left-0">
-                view game rules <i class="icon-launch"></i>
-            </a>
-
-            <a href="/files/villains_v4.2_web.pdf" target="_blank" class="d-block button pos-absolute bottom-0 left-0">
-                view game rules <i class="icon-launch"></i>
-            </a>
-
 
             <!-- view faction sheets modal -->
             <view-factions></view-factions>
 
             <!-- TOP BAR -->
             <div class="d-flex justify-between width-100 pos-absolute top-0 left-0 right-0 px-4 pt-2">
-
-                <!-- view faction sheets button -->
-                <a class="lobby__action-link pointer grow-0 shrink-0 pr-4" @click="openFactions">view factions</a>
-
-                <!-- lobby players -->
-                <div class="d-flex justify-center grow-1 shrink-1 lobby__players">
-                    <div v-for="player in shared.lobbyPlayers" class="m-3">{{ player }}</div>
-                </div>
-
                 <!-- logout button -->
-                <a href="/logout" class="lobby__action-link grow-0 shrink-0 pl-4 right-text">logout</a>
+                <a href="/logout" class="lobby__action-link  ml-auto right-text">logout</a>
             </div>
 
+            <!-- lobby players -->
+            <div class="lobby__players pos-absolute left-0 top-0 bottom-0 bg-shadow-3">
+                <div v-for="player in sortedLobbyPlayers" class="lobby__player d-flex align-center" :class="{ admin: player.admin}">
+                    <i v-if="player.admin" class="icon-influence mr-1"></i>{{ player.name }}
+                </div>
+            </div>
 
             <!-- open game join/settings -->
             <div v-if="shared.game" class="open-game glass width-40">
@@ -53,7 +41,9 @@
 
                 <div class="open-game__players">
                     <div v-for="player in shared.game.players" class="d-flex justify-center align-center">
-                        <span>{{ player.name | startCase }}</span>
+                        <span class="d-flex align-center" :class="{gold : player.admin}">
+                           <i v-if="player.admin" class="icon-influence mr-1"></i> {{ player.name | startCase }}
+                        </span>
                         <i
                             v-if="gameCreator && player.id !== shared.id"
                             @click="removePlayer(player)"
@@ -149,6 +139,15 @@
                 return Object.keys( this.shared.game?.players ).length;
             },
 
+
+            sortedLobbyPlayers(){
+                return Object.values(this.shared.lobbyPlayers)
+                    .sort( (a,b) => {
+                        if(a.admin && !b.admin) return -1;
+                        if(b.admin && !a.admin) return 1;
+                        return a.name > b.name ? -1 : 1;
+                    });
+            },
 
             /**
              * can another player join the game?
@@ -318,6 +317,20 @@
 
     .game-setup__option-checkbox{
         font-size: .8em;
+    }
+
+    .lobby__players {
+        display: flex;
+        flex-direction: column;
+        gap: .25rem;
+        align-items: start;
+        padding: 1rem;
+        width: 10rem;
+        text-transform: capitalize;
+    }
+
+    .lobby__player.admin {
+        color: gold;
     }
 
 </style>

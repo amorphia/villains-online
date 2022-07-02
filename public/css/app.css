@@ -488,7 +488,7 @@ a {
   --primary-color: #76316599;
   --primary-light-color: #d7a2ff;
   --primary-font: "Teko", helvetica, sans-serif;
-  --secondary-font: "Oswald", impact, arial, sans-serif;
+  --secondary-font: "Oswald", helvetica, arial, sans-serif;
   --accent-font: "Abel", helvetica, arial, sans-serif;
   --success-color: #38b383;
   --gold: #ffec02;
@@ -649,6 +649,10 @@ a {
 
 .off-white {
   color: var(--off-white);
+}
+
+.gold {
+  color: var(--gold);
 }
 
 .primary-font {

@@ -5,11 +5,16 @@ let obj = {
      * @param attack
      * @param count
      * @param area
+     * @param targetFaction
      */
-    async nonCombatAttack( attack, count, area ){
+    async nonCombatAttack( attack, count, area, targetFaction = null ){
+
+        if(typeof area === "string"){
+            area = this.game().areas[area];
+        }
 
         // get our potential target factions, and if we have none, return
-        let targetFactions = this.getTargetFactions( area );
+        let targetFactions = targetFaction ? [targetFaction] : this.getTargetFactions( area );
         if( !targetFactions ) return;
 
         // resolve our non-combat attacks

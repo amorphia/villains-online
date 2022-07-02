@@ -7,9 +7,9 @@
     --dark-grey: #0e0e0e;
     --primary-color: #76316599;
     --primary-light-color: #d7a2ff;
-    --primary-font: "Teko", helvetica, sans-serif;
-    --secondary-font: "Oswald", impact, arial, sans-serif;
-    --accent-font: "Abel", helvetica, arial, sans-serif;
+    --primary-font: 'Teko', helvetica, sans-serif;
+    --secondary-font: 'Oswald', helvetica, arial, sans-serif;
+    --accent-font: 'Abel', helvetica, arial, sans-serif;
     --success-color: #38b383;
     --gold: #ffec02;
     --highlight-color : #FFA700;
@@ -77,6 +77,7 @@
 .white { color: white }
 .light-yellow { color: var(--light-yellow) }
 .off-white { color: var(--off-white)}
+.gold { color: var(--gold)}
 
 .primary-font { font-family: var(--primary-font) }
 .secondary-font { font-family: var(--secondary-font) }

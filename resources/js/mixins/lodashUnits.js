@@ -172,6 +172,14 @@ let helpers = {
         return faction.units.filter( unit => this.isValidUnit( unit, options ) );
     },
 
+    factionDeadInArea( faction, area, options = {} ){
+        // format inputs
+        if( faction.data ) faction = faction.data;
+        if( typeof area !== 'string' ) area = area.name;
+
+        // apply unit filters
+        return faction.units.filter( unit => this.deadInArea( unit, area, options ) );
+    },
 
     /**
      * Get all the dead from a faction

@@ -78,7 +78,10 @@ class Plants extends Faction {
      */
     processUpgrade() {
         // add additional vines tokens to our reserves
-        this.upgradeVariableTokens( this.data.vines );
+        this.upgradeVariableItems({
+            reserves: this.data.tokens,
+            cache: this.data.vines,
+        });
     }
 
 
@@ -286,7 +289,11 @@ class Plants extends Faction {
      * Remove the vines tokens we haven't unlocked yet from our reserves
      */
     setupVinesTokens(){
-        this.setupVariableTokens( 'vines', this.data.vines );
+        this.setupVariableItems({
+            value: 'vines',
+            reserves: this.data.tokens,
+            cache: this.data.vines,
+        });
     }
 
 }

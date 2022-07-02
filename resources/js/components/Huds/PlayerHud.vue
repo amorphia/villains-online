@@ -12,8 +12,8 @@
 
             <!-- player name -->
             <div class="player-hud__title grow-1">
-                <div class="player-hud__name width-100 ellipses">
-                    <i v-if="shared.isFirstPlayer( player )" class="first-player icon-key"></i>
+                <div class="player-hud__name width-100 ellipses" :class="{ gold: player.admin}">
+                    <!-- <i v-if="shared.isFirstPlayer( player )" class="first-player icon-key"></i> -->
                     {{ player.name | startCase }}
                 </div>
                 <div class="player-hud__faction width-100 ellipses">{{ faction.name }}</div>

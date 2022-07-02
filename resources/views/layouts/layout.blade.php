@@ -29,7 +29,9 @@
 
     <!-- FONTS -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href='https://fonts.googleapis.com/css?family=Abel|Teko|Oswald?subsets=latin' rel='stylesheet' type='text/css'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abel&family=Oswald&family=Teko&display=swap" rel="stylesheet">
 
 </head>
 <body id="top" class="@yield( 'page' )">

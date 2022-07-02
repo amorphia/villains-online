@@ -205,6 +205,16 @@
                 return Object.keys( owners );
             },
 
+            selectedAreas(){
+                if( !this.selected.length ) return [];
+
+                let areas = {};
+                this.selected.forEach( unit => {
+                    areas[unit.location] = true;
+                });
+
+                return Object.keys( areas );
+            },
 
             /**
              * Return the full area objects from the game data for each of the area names
@@ -271,7 +281,6 @@
 
                 return units;
             },
-
 
             /**
              * Returns the units currently trapped in webs but that still need to attack
@@ -426,11 +435,21 @@
                         return;
                     }
 
+                    if(this.data.raiseDeadTargets){
+                        let validTypes = [...this.data.raiseDeadTargets, this.playerKilledInAreaTypes()];
+                        if(!validTypes.includes(unit.type)) return;
+                    }
+
                     // if none of these filters already put the kibosh on things, then return true
                     return true;
                 });
             },
 
+            playerKilledInAreaTypes(){
+                const types = {};
+                _.factionDeadInArea( this.shared.faction, this.currentArea).forEach( unit => types[unit.type] = true);
+                return Object.keys(types);
+            },
 
             /**
              * Determines if a given faction should not have its units included in the unit pool
@@ -468,6 +487,11 @@
 
                 // if we need to select units from different players and we already have one from this faction
                 if( this.data.differentPlayers && !unit.selected && this.selectedOwners.includes( unit.faction ) ){
+                    return true;
+                }
+
+                // if we need to select units from different players and we already have one from this faction
+                if( this.data.differentAreas && !unit.selected && this.selectedAreas.includes( unit.location ) ){
                     return true;
                 }
             },

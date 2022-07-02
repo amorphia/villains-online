@@ -213,6 +213,13 @@ let obj = {
         await this.unitTriggeredEvents( 'deploy', output.units )
             .catch( error => { console.error( error ) });
 
+        // check for global events
+        for(let faction of Object.values(this.game().factions) ){
+            if(faction.triggers?.onDeployAll){
+                await faction[ faction.triggers.onDeployAll ]( output );
+            }
+        }
+
         // return our output
         return output;
     },
@@ -243,12 +250,9 @@ let obj = {
         }
 
 
-
-        console.log( 'delpoy response', response );
         if( !unit.flipped && response.transformUnit ) {
             this[response.transformUnit]( unit );
         }
-
 
         // ready units
         if( response.readyUnits ){

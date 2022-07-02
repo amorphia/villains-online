@@ -229,6 +229,10 @@
                     });
                 }
 
+                if(this.faction.trappedAreas && this.faction.trappedAreas.includes(this.area.name)){
+                    status['boobyTrapped'] = 'has been booby trapped'
+                }
+
                 return status;
             },
 
