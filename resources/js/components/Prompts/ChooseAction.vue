@@ -16,7 +16,7 @@
             <div class="width-100 d-flex justify-center flex-column align-center">
 
                 <!-- title -->
-                <div class="title">Confirm Action</div>
+                <div class="title" v-html="message"></div>
 
                 <!-- Skill / Token flipper -->
                 <area-flipper v-if="area"
@@ -31,6 +31,10 @@
                                :area="area"
                                :highlight="firstToken">
                     </token-row>
+
+                    <unit-row class="mt-3" v-if="forcedMoleKingAction"
+                        :units="[ this.moleKing ]">
+                    </unit-row>
 
                     <!-- ambush display -->
                     <div class="" v-if="action.name === 'ambush'">
@@ -234,11 +238,33 @@
             generateActions(){
                 let actions = {};
 
-                // can we activate skills?
-                if( this.useableSkills.length ) actions.skill = this.useableSkills;
+                /********************
+                 * NON-ACTION ACTIONS
+                 ********************/
+
+                // can we magick?
+                if( this.useableMagick.length ) actions.magick = this.useableMagick;
+
+                // can we materialize?
+                if( this.useableMaterialize.length ) actions.materialize = this.useableMaterialize;
+
+                /********************
+                 * ACTION ACTIONS
+                 ********************/
+
+                // forced mole king action
+                if( this.forcedMoleKingAction){
+                    actions.token = [this.forcedMoleKingAction];
+                    this.actions = actions;
+                    this.shared.actions = actions;
+                    return;
+                }
 
                 // can we reveal tokens?
                 if( this.revealableTokens.length  ) actions.token = this.revealableTokens;
+
+                // can we activate skills?
+                if( this.useableSkills.length ) actions.skill = this.useableSkills;
 
                 // can we ambush?
                 if( this.ambushAreas.length  ) actions.ambush = this.ambushAreas;
@@ -248,12 +274,6 @@
 
                 // can we skip?
                 if( this.shared.faction.hasOwnProperty( 'skips' ) && this.shared.faction.skips.used < this.shared.faction.skips.max ) actions.skip = true;
-
-                // can we magick?
-                if( this.useableMagick.length ) actions.magick = this.useableMagick;
-
-                // can we materialize?
-                if( this.useableMaterialize.length ) actions.materialize = this.useableMaterialize;
 
                 // can we loop?
                 if( this.useableLoop.length ) actions.loop = this.useableLoop;
@@ -347,6 +367,9 @@
                 return this.actions.pass || this.actions.locked || this.actions.skip;
             },
 
+            message(){
+                return this.forcedMoleKingAction ? `The <span class="gold">Mole King</span> demands you reveal your token in the ${this.forcedMoleKingAction}` : "Confirm Action";
+            },
 
             // should show pass type actions
             showPass(){ return this.actions.pass },
@@ -362,6 +385,23 @@
                 return this.action.name === 'token' ? this.firstUnrevealed( this.area ) : null;
             },
 
+            moleKing(){
+                for(let faction of Object.values(this.shared.data.factions)){
+                    if(faction.moleKing && faction.moleKing.location && !faction.moleKing.killed){
+                        return faction.moleKing;
+                    }
+                }
+            },
+
+            forcedMoleKingAction(){
+                let moleKingArea = this.moleKing ? this.moleKing.location : null;
+
+                if(moleKingArea && this.revealableTokens.includes(moleKingArea)){
+                    return moleKingArea;
+                }
+
+                return false;
+            },
 
             /**
              * Returns our button message

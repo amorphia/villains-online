@@ -42,6 +42,7 @@
     --faction-spiders: #ae7688;
     --faction-skeletons: #b2a366;
     --faction-bikers: #9d72bb;
+    --faction-molemen: #99634B;
 }
 
 .faction-neutral{color: white}
@@ -70,6 +71,7 @@
 .faction-spiders {color: var(--faction-spiders)}
 .faction-skeletons {color: var(--faction-skeletons)}
 .faction-bikers {color: var(--faction-bikers)}
+.faction-molemen {color: var(--faction-molemen)}
 
 .primary { color: var(--primary-color) }
 .primary-light { color: var(--primary-light-color) }

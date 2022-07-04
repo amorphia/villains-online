@@ -1,6 +1,6 @@
 <template>
 
-        <div v-if="unitStats.length > 0" class="map-player__content flex-center m-1" :class="`faction-${name}`">
+        <div v-if="unitStats.length > 0 || Object.keys(statusIcons).length > 0" class="map-player__content flex-center m-1" :class="`faction-${name}`">
             <!-- player icon -->
             <div class="map-player__icon"><img :src="`/images/factions/${name}/icon.jpg`"></div>
 
@@ -231,6 +231,10 @@
 
                 if(this.faction.trappedAreas && this.faction.trappedAreas.includes(this.area.name)){
                     status['boobyTrapped'] = 'has been booby trapped'
+                }
+
+                if(this.faction.tunnels && this.faction.tunnels.includes(this.area.name)){
+                    status['tunnel'] = 'has been tunneled to'
                 }
 
                 return status;

@@ -30,27 +30,29 @@ let obj = {
      */
     captureEnemyMarker( area ){
         // push this area name to our list of areas captured this turn
-        this.data.areasCapturedThisTurn.push( area.name );
+        if( this.areaWasCaptured( area ) ) {
+            this.data.areasCapturedThisTurn.push(area.name);
+        }
 
-        if( this.shouldScoreCapturedReward( area ) ){
+        if( this.areaWasCaptured( area ) && this.shouldScoreCapturedReward() ){
             this.data.captured.current++;
             return this.applyCapturedRewards();
         }
     },
 
-
     /**
      * Should we score a captured reward for taking this area?
      *
-     * @param area
      * @returns {boolean}
      */
-    shouldScoreCapturedReward( area ){
-        return area.data.owner // was this area previously owned
-                && area.data.owner !== this.name // by someone other than us?
-                && this.data.captured.current < this.data.captured.max; // and do we still have rewards to claim?
+    shouldScoreCapturedReward(){
+        return this.data.captured.current < this.data.captured.max; // and do we still have rewards to claim?
     },
 
+    areaWasCaptured( area ){
+        return area.data.owner // was this area previously owned
+            && area.data.owner !== this.name; // by someone other than us?
+    },
 
     /**
      * Gain the appropriate rewards for capturing an area

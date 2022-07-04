@@ -178,6 +178,8 @@ class Area {
 
         // if control of this area changed from one player to another handle that transition
         if( controller && controller.name !== this.data.owner ){
+            console.log("control changed hands:", controller.name, this.data.owner);
+
             // the new owner captures the enemy marker
             data.capture = controller.captureEnemyMarker( this );
 

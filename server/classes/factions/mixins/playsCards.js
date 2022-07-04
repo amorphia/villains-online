@@ -80,6 +80,8 @@ let obj = {
 
         // announce the discard
         this.message(`discards cards`, { type: 'cards', cards: cards } );
+
+        return cards;
     },
 
 

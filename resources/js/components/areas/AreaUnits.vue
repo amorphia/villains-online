@@ -31,6 +31,7 @@
                 // add booby trap
                 units = this.getBoobyTraps( units );
 
+                units = this.getTunnels( units );
                 // add ghosts
                 //units = this.getGhosts( units );
 
@@ -98,6 +99,15 @@
                 return units;
             },
 
+            getTunnels( units ){
+                // abort conditions
+                if ( this.skilled || ! this.faction.tunnels?.includes( this.area ) ) return units;
+
+                // add smoke
+                units.push({type: 'tunnel', faction: 'molemen'});
+
+                return units;
+            },
 
             /**
              * Add this faction's ghosts to our units array

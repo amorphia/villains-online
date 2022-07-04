@@ -62,6 +62,12 @@ let obj = {
         // get the areas we can deploy to
         let areas = this.getDeployAreas( args );
 
+        // modify args
+        const faction = args.faction ?? args.player.faction();
+        if(faction.modifyDeployAreas){
+            areas = faction.modifyDeployAreas(areas);
+        }
+
         let data = {
             deployLimit : args.deployLimit || this.data.deployLimit,
             toAreas : areas,
