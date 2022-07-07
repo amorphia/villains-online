@@ -150,7 +150,7 @@ let helpers = {
             if( area.data ) area = area.data; // format input
 
             // if the token...
-            if( !area.tokens.some( token => token.revealed ) ){
+            if( !area.tokens.some( token => !token.revealed ) ){
                 areas[area.name] = true;
             }
         });
