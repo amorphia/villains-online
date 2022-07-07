@@ -143,14 +143,14 @@ let helpers = {
         return count;
     },
 
-    areasWithUnrevealedTokens( areasData, options = {} ){
+    areasWithoutUnrevealedTokens( areasData, options = {} ){
         let areas = {};
 
         Object.values( areasData ).forEach( area => {
             if( area.data ) area = area.data; // format input
 
             // if the token...
-            if( !area.tokens.some( token => !token.revealed ) ){
+            if( !area.tokens.some( token => token.revealed ) ){
                 areas[area.name] = true;
             }
         });
