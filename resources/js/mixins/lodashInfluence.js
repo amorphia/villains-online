@@ -57,7 +57,7 @@ let helpers = {
             influence += (1 + controlBonusInfluence);
         }
 
-        if(influence) debug = true;
+        //if(influence) debug = true;
         if(debug) console.log("control influence", influence);
         influence += this.unitInfluence( faction, area ); // get influence from our units
         if(debug) console.log("unit influence", influence);

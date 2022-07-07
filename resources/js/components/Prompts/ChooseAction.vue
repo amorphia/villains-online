@@ -602,14 +602,17 @@
              */
             useableMaterialize(){
                 if( this.shared.faction.name !== 'ghosts') return [];
-                let potentialAreas = _.areasWithoutUnrevealedTokens( this.shared.data.areas );
 
                 let areas = {};
                 this.faceDownGhosts.forEach( unit => {
-                    if( potentialAreas.includes(unit.location) ) areas[unit.location] = true;
+                    if( this.areasWithoutUnrevealedTokens.includes(unit.location) ) areas[unit.location] = true;
                 });
 
                 return Object.keys( areas );
+            },
+
+            areasWithoutUnrevealedTokens(){
+               return _.areasWithoutUnrevealedTokens( this.shared.data.areas );
             },
 
             faceDownGhosts(){
