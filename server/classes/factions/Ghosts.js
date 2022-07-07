@@ -158,6 +158,8 @@ class Ghosts extends Faction {
 
         // cycle through each player and check for patsies
         for( let faction of Object.values( this.game().factions ) ){
+            if(faction.name === this.name) continue;
+
             faction.data.units.forEach( unit => {
                 if( _.unitInArea( unit, area, { type: 'patsy' } ) ){
                     faction.returnUnitToReserves( unit );
