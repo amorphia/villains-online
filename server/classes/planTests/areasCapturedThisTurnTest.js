@@ -10,7 +10,7 @@ const test = function areasMostUnits( debug, faction, areaCount ){
     let result = faction.data.areasCapturedThisTurn.length >= areaCount;
 
     if( debug ) console.log(
-        'areasMostUnits',
+        'areasMostUnits ---',
         'areaCount req:', areaCount,
         'factionAreasCaptured:', faction.data.areasCapturedThisTurn.length,
         'result:', result

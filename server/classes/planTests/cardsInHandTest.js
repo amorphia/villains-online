@@ -11,7 +11,7 @@ const test = function cardsInHand( debug, faction, cardCount ){
     let result = factionCardsInHand >= cardCount;
 
     if( debug ) console.log(
-        'discardCards',
+        'cardsInHand ---',
         'cardCount req:', cardCount,
         'factionCardsInHand:', factionCardsInHand,
         'result:', result

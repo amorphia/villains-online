@@ -1,38 +1,82 @@
 <template>
-        <div class="place-token-top p-4 d-flex justify-center align-center">
+    <div class="place-token-top p-4 d-flex justify-center align-center">
 
-            <!-- pass confirmation -->
-            <player-prompt v-if="confirmingPass" classes="">
-                <div class="px-5">
-                    <div class="title">Are you sure you want to pass?</div>
-                    <div class="flex-center">
-                        <button class="button button-empty" @click="confirmingPass = false">no</button>
-                        <button class="button" @click="passToken">Yes Pass</button>
-                    </div>
+        <!-- pass confirmation -->
+        <player-prompt v-if="confirmingPass" classes="">
+            <div class="px-5">
+                <div class="title">Are you sure you want to pass?</div>
+                <div class="flex-center">
+                    <button class="button button-empty" @click="confirmingPass = false">no</button>
+                    <button class="button" @click="passToken">Yes Pass</button>
                 </div>
-            </player-prompt>
-
-            <!-- pass button -->
-            <button class="button button-empty place-token__button right-text" @click="confirmingPass = true">PASS</button>
-
-            <!-- tokens -->
-            <div class="place-token__tokens center-text pos-relative">
-                <token-set
-                    :tokens="reserves"
-                    classes="one-line"
-                    :selected="token"
-                    noBorder="true"
-                ></token-set>
-                <div v-if="token && token.req" class="place-token-req prompt-question">{{ token.req }}</div>
             </div>
+        </player-prompt>
 
-            <!-- save place token -->
-            <button class="button place-token__button" @click="placeToken" :disabled="saveDisabled">place token</button>
+
+        <!-- pass confirmation -->
+        <player-prompt v-if="placeGhostPrompt" classes="">
+            <div class="px-5">
+                <div class="title center-text">Place a ghost in an area you control</div>
+                <div class="mt-3 pb-4">
+                    <!-- reserves -->
+                    <area-flipper
+                        :areas="ghostableAreas"
+                        :index="ghostAreaIndex"
+                        @update="updateGhostIndex"
+                    >
+                        <unit-row
+                            :units="ghosts"
+                            :selectedUnit="ghost"
+                            @unit="clickGhost"
+                        ></unit-row>
+                        </area-flipper>
+                </div>
+
+                <div v-if="ghost" class="place-token-req center-text prompt-question" v-html="shared.filterText(ghost.description)"></div>
+
+                <div class="flex-center">
+                    <button class="button button-empty" @click="() => {
+                        this.placeGhostPrompt = false;
+                        this.ghost = null;
+                    }">back</button>
+                    <button class="button" :disabled="!ghost" @click="placeGhost">Place Ghost</button>
+                </div>
+            </div>
+        </player-prompt>
+
+        <!-- pass button -->
+        <button class="button button-empty place-token__button right-text" @click="confirmingPass = true">PASS</button>
+
+        <!-- tokens -->
+        <div class="place-token__tokens center-text pos-relative">
+            <token-set
+                :tokens="reserves"
+                classes="one-line"
+                :selected="token"
+                noBorder="true"
+            ></token-set>
+            <div v-if="token && token.req" class="place-token-req prompt-question">{{ token.req }}</div>
         </div>
+
+        <span v-if="ghostableAreas.length && ghosts.length"  @click="()=>{
+            this.placeGhostPrompt = true;
+            this.removeToken();
+        }">
+            <unit-icon
+                class="pointer"
+                :unit="{ type: 'banshee', faction: 'ghosts', flipped: true }"
+            />
+        </span>
+
+
+        <!-- save place token -->
+        <button class="button place-token__button" @click="placeToken" :disabled="saveDisabled">place token</button>
+    </div>
 </template>
 
 
 <script>
+
     export default {
 
         name: 'place-token',
@@ -41,7 +85,10 @@
                 shared : App.state,
                 areaIndex : 0,
                 token : null,
+                ghost: null,
                 confirmingPass : false,
+                placeGhostPrompt: false,
+                ghostAreaIndex: 0,
             };
         },
 
@@ -108,7 +155,6 @@
                 return !this.token || _.money( this.shared.faction ) < this.shared.faction.tokenCost;
             },
 
-
             /**
              * Returns this faction's token reserves
              * @returns {Token[]}
@@ -134,10 +180,37 @@
              */
             availableAreas(){
                 return Object.values( this.shared.data.areas ).filter( area => area.tokens.length < area.maxTokens );
-            }
+            },
+
+            ghostableAreas(){
+                if(!this.shared.faction.canPlaceGhostsDuringTokens || !this.shared.faction.areas.length || !this.ghosts.length) return [];
+                let areas = this.shared.faction.units.reduce((areas, unit) => {
+                    if(_.unitInPlay(unit, { isChampion: true } )) areas.push(unit.location);
+                    return areas;
+                }, [])
+                areas = _.xor(this.shared.faction.areas, areas);
+
+                return areas.map(area => this.shared.data.areas[area]);
+            },
+
+            ghosts(){
+                return this.shared.faction.units.filter(unit => _.unitInReserves(unit, { isChampion: true } ));
+            },
+
+            ghostArea(){
+                return this.ghostableAreas[this.ghostAreaIndex];
+            },
         },
 
         methods : {
+            updateGhostIndex( index ){
+                this.ghostAreaIndex = index;
+            },
+
+            clickGhost(unit){
+                this.ghost = unit;
+                this.$set( unit, 'place', this.ghostArea.name );
+            },
 
             /**
              * Remove our selected token
@@ -158,6 +231,15 @@
                 this.shared.token = null;
             },
 
+            removeGhost(){
+                // reset token
+                if( this.ghost ){
+                    this.$set( this.ghost, 'place', null );
+                    this.ghost = null;
+                }
+
+                this.placeGhostPrompt = false;
+            },
 
             /**
              * Set our selected token
@@ -186,6 +268,9 @@
              * @param token
              */
             tokenClicked( token ){
+                this.placeGhost = false;
+                this.ghost = null;
+
                 // if we clicked an already placed token, abort
                 if( token.location ) return;
 
@@ -258,16 +343,27 @@
              */
             placeToken(){
                 this.shared.respond( 'place-token', 'place', this.token.place, this.token.id );
-                this.shared.showXavier = false;
-                this.removeToken();
+                this.reset();
             },
 
+            /**
+             * Resolve our token placement
+             */
+            placeGhost(){
+                this.shared.respond( 'place-token', 'ghost', this.ghost.place, this.ghost.id );
+                this.reset();
+            },
 
             /**
              * Pass on placing tokens
              */
             passToken(){
                 this.shared.respond( 'place-token', 'pass' );
+                this.reset();
+            },
+
+            reset(){
+                this.removeGhost();
                 this.shared.showXavier = false;
                 this.removeToken();
             }
@@ -307,4 +403,3 @@
     }
 
 </style>
-

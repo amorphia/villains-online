@@ -10,7 +10,7 @@ const test = function controlTarget( debug, faction ) {
     let result = faction.targetArea().data.owner === faction.name;
 
     if( debug ) console.log(
-        'controlTarget',
+        'controlTarget ---',
         'targetController:', targetController,
         'result:', result
     );

@@ -18,7 +18,7 @@ const test = function killMost( debug, faction ){
         && killCounts[0].kills !== killCounts[1].kills; // and there isn't a tie
 
     if( debug ) console.log(
-        'killMost',
+        'killMost ---',
         'killCounts[0]:',killCounts[0],
         'result:', result
     );

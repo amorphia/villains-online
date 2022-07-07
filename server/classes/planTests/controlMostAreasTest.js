@@ -22,7 +22,7 @@ const test = function controlMostAreas( debug, faction, ties = true ){
         :(factionAreasControlled > mostEnemy) ;
 
     if( debug ) console.log(
-        'controlAreas',
+        'controlMostAreas ---',
         'mostEnemy req:', mostEnemy,
         'ties?', ties,
         'factionAreasControlled:', factionAreasControlled,

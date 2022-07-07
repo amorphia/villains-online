@@ -18,7 +18,7 @@ const test = function controlEnemyTargets( debug, faction, targetCount ){
     let result = enemyTargetsControlled >= targetCount;
 
     if( debug ) console.log(
-        'controlEnemyTargets',
+        'controlEnemyTargets ---',
         'targetCount req:', targetCount,
         'factionEnemyTargetsControlled:', enemyTargetsControlled,
         'result:', result

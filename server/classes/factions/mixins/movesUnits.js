@@ -119,7 +119,7 @@ let obj = {
 
         // do we have any valid units (i.e. ones in this area, ?
         let hasUnits = this.data.units.some(
-            unit => _.unitInArea( unit, area, { notWebbed : true } ) && ( !kauInDestination || unit.type !== 'champion' )
+            unit => _.unitInArea( unit, area, { notWebbed : true } ) && !unit.noMove && ( !kauInDestination || (unit.type !== 'champion' && !unit.isChampion) )
         );
 
         // is the area trapped?

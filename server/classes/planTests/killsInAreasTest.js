@@ -11,7 +11,7 @@ const test = function killsInAreas( debug, faction, areaCount ){
     let result = factionAreasWithKills >= areaCount;
 
     if( debug ) console.log(
-        'killsInAreas',
+        'killsInAreas ---',
         'areaCount req:', areaCount,
         'factionAreasWithKills:', factionAreasWithKills,
         'result:', result

@@ -11,7 +11,7 @@ const test = function useSkills( debug, faction, skillsUsed ){
     let result = factionSkillsUsed >= skillsUsed;
 
     if( debug ) console.log(
-        'useSkills',
+        'useSkills ---',
         'skillsUsed req:', skillsUsed,
         'factionSkillsUsed:', factionSkillsUsed,
         'result:', result

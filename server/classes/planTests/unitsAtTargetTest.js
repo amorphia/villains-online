@@ -13,7 +13,7 @@ const test = function unitsAtTarget( debug, faction, unitCount, type = 'talent' 
     let result = factionUnitsAtTarget >= unitCount;
 
     if( debug ) console.log (
-        'unitsAtTarget',
+        'unitsAtTarget ---',
         'unitCount req:', unitCount,
         'type req:', type,
         'factionUnitsAtTarget:', factionUnitsAtTarget,

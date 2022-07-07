@@ -13,7 +13,7 @@ const test = function tokensInAreas( debug, faction, areaCount, type ) {
     let result = factionCount >= areaCount;
 
     if( debug ) console.log(
-        'tokensInAreas',
+        'tokensInAreas ---',
         'areaCount req:', areaCount,
         'type req:', type,
         'factionCount:', factionCount,

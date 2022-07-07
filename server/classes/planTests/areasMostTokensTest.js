@@ -11,7 +11,7 @@ const test = function areasMostTokens( debug, faction, areaCount ){
     let result = factionAreasMostTokens >= areaCount;
 
     if( debug ) console.log(
-        'areasMostTokens',
+        'areasMostTokens ---',
         'areaCount req:', areaCount,
         'factionAreasMostTokens:', factionAreasMostTokens,
         'result:', result

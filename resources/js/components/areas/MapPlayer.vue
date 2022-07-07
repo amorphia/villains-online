@@ -11,8 +11,10 @@
                 <span>{{ unitType.val }}</span>
 
                 <!--  champion -->
-                <i v-if="unitType.name === 'champion'" class="map-player_champion-wrap">
-                    <img class="map-player__champion" :src="`/images/factions/${name}/portrait.png`">
+                <i v-if="unitType.name === 'champion' || ['poltergeist', 'mad-king', 'banshee'].includes(unitType.name)" class="map-player_champion-wrap">
+                    <img v-if="unitType.name === 'champion'" class="map-player__champion" :src="`/images/factions/${name}/portrait.png`">
+                    <img v-else class="map-player__champion" :src="`/images/factions/${name}/${unitType.name}.png`">
+
                     <div v-if="unitType.pipped > 0" class="pos-absolute map-player__pips d-flex justify-center width-100" >
                         <i v-for="n in unitType.pipped" class="icon-circle" :class="`faction-${name}`"></i>
                     </div>
@@ -83,6 +85,14 @@
                         if( unit.webbed ){
                             if( units.web  ) units.web.count++;
                             else units.web = { count : 1, pipped : 0 };
+
+                            return units;
+                        }
+
+                        // if this unit is a face down ghost, count it separately
+                        if( unit.ghost && unit.flipped ){
+                            if( units.ghost ) units.ghost.count++;
+                            else units.ghost = { count : 1, pipped : 0 };
 
                             return units;
                         }

@@ -11,7 +11,7 @@ const test = function unitsInPlay( debug, faction, unitsInPlay ){
     let result = factionUnitsInPlay >= unitsInPlay;
 
     if( debug ) console.log(
-        'unitsInPlay',
+        'unitsInPlay ---',
         'unitsInPlay req:', unitsInPlay,
         'factionUnitsInPlay:', factionUnitsInPlay,
         'result:', result

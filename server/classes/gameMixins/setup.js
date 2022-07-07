@@ -216,8 +216,8 @@ let setup = {
      */
     generateGame( saved = null ){
         this.buildActionDeck( saved );
-        this.buildAreas( saved );
         this.buildFactions( saved );
+        this.buildAreas( saved );
         this.started = true;
         Server.io.to('lobby').emit( 'activeGames', Server.getActiveGames() );
     },
@@ -288,9 +288,18 @@ let setup = {
         // roll an 8 sided die to decide our neutral controlled area
         let roll = _.roll( 1, 8, this );
         let startingArea = this.areas[ this.data.areaOrder[roll] ];
-        startingArea.data.owner = 'neutral';
+
+        // check if any of our factions should take over for the neutral area
+        for(let faction of Object.values(this.factions)){
+            if(!faction.data.controlNeutralSetupArea) continue;
+
+            this.message({ message: `The ${startingArea.name} is controlled by <span class="faction-${faction.name}">${faction.name}</span>`, class: 'none' });
+            return faction.gainControlOfArea( startingArea );
+        }
 
         this.message({ message: `The ${startingArea.name} is controlled by neutrals`, class: 'none' });
+        startingArea.data.owner = 'neutral';
+
     },
 
 

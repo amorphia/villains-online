@@ -11,7 +11,7 @@ const test = function webbedFaction( debug, faction, webbedByFactionCount ){
     let result = ! Object.values( webbedTotals.factions ).some( total => total < webbedByFactionCount );
 
     if( debug ) console.log(
-        'webbedTotal',
+        'webbedTotal ---',
         'webbedCount req:', webbedByFactionCount,
         'webbedTotals.factions:', webbedTotals.factions,
         'result:', result

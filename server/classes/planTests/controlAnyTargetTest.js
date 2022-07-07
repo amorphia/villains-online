@@ -17,7 +17,7 @@ const test = function controlAnyTarget( debug, faction, targetCount ){
     let result = targetsControlled >= targetCount;
 
     if( debug ) console.log(
-        'controlAnyTargets',
+        'controlAnyTargets ---',
         'targetCount req:', targetCount,
         'factionTargetsControlled:', targetsControlled,
         'result:', result

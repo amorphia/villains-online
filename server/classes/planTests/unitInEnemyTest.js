@@ -25,7 +25,7 @@ const test = function unitInEnemy( debug, faction, unitType, unitCount ){
     let result = factionUnitCount >= unitCount;
 
     if( debug ) console.log (
-        'unitInEnemy',
+        'unitInEnemy ---',
         'unitType req:', unitType,
         'unitCount req:', unitCount,
         'factionUnitCount:', factionUnitCount,

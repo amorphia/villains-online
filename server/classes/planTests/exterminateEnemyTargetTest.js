@@ -13,7 +13,7 @@ const test = function exterminateEnemyTarget( debug, faction ){
     }
 
     if( debug ) console.log(
-        'exterminateEnemyTarget',
+        'exterminateEnemyTarget ---',
         'result:', result
     );
 

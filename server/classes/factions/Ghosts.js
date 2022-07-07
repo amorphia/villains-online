@@ -7,11 +7,6 @@ class Ghosts extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
-        // faction event triggers
-        this.triggers = {
-            "onStartOfTurn" : "setRandomTarget",
-        };
-
         this.capturedRewards = [
             { ap : 1, cardDraw : 1 },
             { ap : 1, cardDraw : 1 },
@@ -22,65 +17,81 @@ class Ghosts extends Faction {
         //data
         this.data.name = this.name;
         this.data.title = "The Lost Legion";
-        this.data.focusDescription = "Control any player's Targets";
-        //this.data.ghosts = []; // used to store our ghost units
-        this.data.upgradeDeploy = 0;
+        this.data.focusDescription = "Retain areas you control";
+        this.data.canPlaceGhostsDuringTokens = true;
+        this.data.flipableUnits = ['spirit','banshee','geist'];
+        this.data.addUpgradeToControlInfluence = true;
+        this.data.controlNeutralSetupArea = true;
 
-        //this.data.lastMaterializeGameAction = 0;
-        this.data.randomTarget = true; // should we choose our target randomly
-        this.data.ghostDeploy = true; // do we deploy ghosts
-        this.data.scarePatsiesBounced = 2; // how many patsies do we bounce with our scare token
+        this.triggers = {
+            "onCleanUp" : "returnGhosts",
+        };
 
-        this.data.flipableUnits = ['goon', 'mole', 'talent', 'champion'];
-
-        // units
         this.shouldSetUnitBaseStats = {
-            props : ['attack', 'influence', 'skilled']
+            basic : false,
+            props : ['attack']
         };
 
-        // tokens
-        this.tokens['scare'] = {
-            count: 1,
-            data: {
-                influence: 1,
-                type: 'scare',
-                cost: 0,
-                resource : 1,
-                description: "Each opponent must return two of their patsies in this area to their reserves",
-                req : "The token must be discarded if you don't return any patsies to their reserves"
-            }
-        };
-
-        // units
-        this.units['goon'].count = 7;
-        this.units['goon'].data.ghost = false;
-        this.units['goon'].data.flipped = false;
-
-        this.units['mole'].count = 7;
-        this.units['mole'].data.ghost = false;
-        this.units['mole'].data.flipped = false;
-
-        this.units['talent'].count = 5;
-        this.units['talent'].data.ghost = false;
-        this.units['talent'].data.flipped = false;
-
-        delete this.units['patsy'];
-
-        this.units['champion'] = {
+        this.units['mad-king'] = {
             count: 1,
             data: {
                 name: "King Elliot",
-                type: 'champion',
+                type: 'mad-king',
+                isChampion: true,
                 basic: false,
-                influence: 1,
-                attack: [4],
-                cost: 1,
+                attack: [7],
+                influence: 0,
+                noDeploy: true,
+                noMove: true,
                 killed: false,
                 flipped: false,
                 selected: false,
                 blockEnemyTokenInfluence: true,
                 hitsAssigned: 0,
-                ghost : false
+                ghost : true,
+                description: "Haunt: Enemy tokens don't produce xIx in this area"
+            }
+        };
+
+        this.units['banshee'] = {
+            count: 1,
+            data: {
+                name: "The Banshee",
+                type: 'banshee',
+                isChampion: true,
+                basic: false,
+                attack: [9,9],
+                noDeploy: true,
+                influence: 0,
+                noMove: true,
+                killed: false,
+                flipped: false,
+                selected: false,
+                onUnflip: "bansheeWail",
+                hitsAssigned: 0,
+                ghost : true,
+                description: "Wail: When revealed You may play action cards equal to the number of CARD tokens here"
+            }
+        };
+
+        this.units['poltergeist'] = {
+            count: 1,
+            data: {
+                name: "The Poltergeist",
+                type: 'poltergeist',
+                isChampion: true,
+                basic: false,
+                attack: [5],
+                noDeploy: true,
+                influence: 0,
+                noMove: true,
+                killed: false,
+                flipped: false,
+                selected: false,
+                onUnflip: "scarePatsies",
+                hitsAssigned: 0,
+                ghost : true,
+                description: "Scare: When revealed return all enemy patsies in this area to their reserves"
             }
         };
     }
@@ -91,40 +102,97 @@ class Ghosts extends Faction {
      *
      * @returns {string}
      */
-    setRandomTarget() {
-        let target, card;
+    async placeGhost( game, areaName, unitId ) {
 
-        if( this.data.randomTarget ){
-            // sect a random card, if we select one without a target do it again until we find one with a target
-            while( !target ){
-                card = _.sample( this.data.cards.hand );
-                target = card.target;
+        this.game().popup( this.playerId, { type: 'materialize', area : areaName, faction : this.name });
+
+        const ghost = this.data.units.find( unit => unit.id === unitId );
+
+        this.becomeGhost( ghost );
+        ghost.location = areaName;
+
+        /*
+        await this.game().timedPrompt('units-shifted', {
+            message : `A ghost is haunting the ${areaName}`,
+            units: [ghost],
+        });
+        */
+
+        // advance game
+        game.data.gameAction++;
+        game.advancePlayer();
+    }
+
+    async bansheeWail( unit ){
+        let bansheeMax = this.getBansheeMax( unit );
+        let cardsPlayed = 0;
+        let declined = false;
+
+        if(!bansheeMax || !this.data.cards.hand.length ){
+            return this.message( "The banshee unable to wail", { class : 'warning' } );
+        }
+
+        // play a numbers of cards up to our card limit
+        while( cardsPlayed < bansheeMax && !declined ) {
+            let output = await this.playACard({
+                area: this.game().areas[unit.location],
+                player: this.game().getPlayerByFaction( this.name ),
+                message: `Play a card in the ${unit.location} (${bansheeMax - cardsPlayed} remaining)`
+            });
+
+            if( output?.declined ){
+                declined = true;
+            } else {
+                cardsPlayed++;
             }
-
-            card.randomTarget = true;
-        }
-
-    }
-
-
-    /**
-     * Process faction upgrade
-     *
-     * @param {number} upgrade
-     */
-    processUpgrade( upgrade ){
-        // if we haven't upgraded our deploy yet, upgrade it by one
-        if( !this.data.upgradeDeploy ){
-            this.data.deployLimit++;
-            this.data.upgradeDeploy = true;
-        }
-
-        // if this is our second upgrade remove our random target selecting
-        if( upgrade === 2 ){
-            this.data.randomTarget = false;
         }
     }
 
+    getBansheeMax( unit ){
+        return this.game().areas[unit.location].data.tokens.filter( token => token.type === 'card').length;
+    }
+
+    async scarePatsies( unit ){
+        let area = unit.location;
+        let units = [];
+
+        // cycle through each player and check for patsies
+        for( let faction of Object.values( this.game().factions ) ){
+            faction.data.units.forEach( unit => {
+                if( _.unitInArea( unit, area, { type: 'patsy' } ) ){
+                    faction.returnUnitToReserves( unit );
+                    units.push( unit );
+                }
+            });
+        }
+
+        // announce what happened to all players
+        await this.game().timedPrompt('units-shifted', {
+            message : `Patsies scared out of The ${area}`,
+            units: units,
+            area : area,
+        });
+    }
+
+
+    async takeMaterializeAction( player, areaName ){
+        // show popup
+        this.game().popup( this.playerId, { type: 'materialize', area : areaName, faction : this.name });
+        const ghost = this.data.units.find( unit => unit.location === areaName && unit.isChampion );
+
+        await this.unflipUnit( ghost );
+
+        await this.game().timedPrompt('units-shifted', {
+            message: `${ghost.name} materializes in the ${ghost.location}`,
+            units: [ghost],
+        });
+
+        if(ghost.onUnflip){
+            await this[ghost.onUnflip]( ghost );
+        }
+
+        this.game().advancePlayer();
+    }
 
     /**
      * Handle ghost unit deploy
@@ -132,7 +200,7 @@ class Ghosts extends Faction {
      * @param units
      * @param area
      * @returns {[]}
-     */
+
     deployGhosts( units, area ){
         let output = [];
 
@@ -153,6 +221,7 @@ class Ghosts extends Faction {
 
         return output;
     }
+     */
 
 
     /**
@@ -162,13 +231,14 @@ class Ghosts extends Faction {
      */
     becomeGhost( unit ){
         // flip the appropriate flags
-        unit.ghost = true;
         unit.flipped = true;
 
+        if("blockEnemyTokenInfluence" in unit){
+            unit.blockEnemyTokenInfluence = false;
+        }
+
         // set stats
-        unit.influence = 0;
         unit.attack = [];
-        if( unit.skilled ) unit.skilled = false;
     }
 
 
@@ -177,14 +247,19 @@ class Ghosts extends Faction {
      *
      * @param unit
      */
-    unflipUnit( unit ) {
-        unit.ghost = false;
+    async unflipUnit( unit ) {
         unit.flipped = false;
         unit.attack = [...unit.baseAttack];
-        unit.influence = unit.baseInfluence;
-        if( unit.baseSkilled ) unit.skilled = true;
+
+        if("blockEnemyTokenInfluence" in unit){
+            unit.blockEnemyTokenInfluence = true;
+        }
     }
 
+    returnGhosts(){
+        let ghosts = this.data.units.filter( unit => unit.ghost && _.unitInPlay( unit ) );
+        ghosts.forEach( unit => this.returnUnitToReserves( unit ) );
+    }
 
 
     /**
@@ -192,7 +267,6 @@ class Ghosts extends Faction {
      *
      * @param player
      * @param areaName
-     */
     async takeMaterializeAction( player, areaName ){
 
         // show popup
@@ -209,13 +283,13 @@ class Ghosts extends Faction {
 
         this.game().advancePlayer( {}, false  );
     }
-
+     */
 
     /**
      * Begin the materializing process by doing some book keeping
      *
      * @param area
-     */
+
     async beginMaterializing( area ){
 
         // choose units to materalize
@@ -237,14 +311,14 @@ class Ghosts extends Faction {
         // resolve our materialize
         await this.resolveMaterialize( response, area );
     }
-
+     */
 
     /**
      * Resolve our materialize action
      *
      * @param response
      * @param area
-     */
+
     async resolveMaterialize( response, area ){
         // turn our unitIds into the full objects
         let units = response.units.map( unitId => this.game().objectMap[ unitId ] );
@@ -266,7 +340,7 @@ class Ghosts extends Faction {
             units: units
         });
     }
-
+     */
 
     /**
      * Can we activate our scare token?
@@ -274,7 +348,7 @@ class Ghosts extends Faction {
      * @param token
      * @param area
      * @returns {boolean}
-     */
+
     canActivateScare( token, area ) {
         // check if there are any enemy patsies in the area
         let enemyPatsies = Object.keys( this.enemyUnitsInArea( area, { type : 'patsy' } ) );
@@ -282,13 +356,13 @@ class Ghosts extends Faction {
         // if so return true, otherwise false
         return !! enemyPatsies.length;
     }
-
+     */
 
     /**
      * Handle our scare token activation
      *
      * @param args
-     */
+
     async activateScareToken( args ) {
         let area = args.area;
         let promises = [];
@@ -322,7 +396,7 @@ class Ghosts extends Faction {
         // and finally advance to the next player
         this.game().advancePlayer();
     }
-
+     */
 
     /**
      * Handle the scaring of patsies for one faction
@@ -330,7 +404,7 @@ class Ghosts extends Faction {
      * @param faction
      * @param units
      * @param area
-     */
+
     handleFactionScare( faction, units, area ){
 
         // scare doesn't effect the ghosts
@@ -365,7 +439,7 @@ class Ghosts extends Faction {
             .then( async ([player, response]) => { this.handleScareUnitsResponse( player, response, units ) });
 
     }
-
+     */
 
     /**
      * Handle the response from our choose scare units prompt
@@ -373,7 +447,7 @@ class Ghosts extends Faction {
      * @param player
      * @param response
      * @param units
-     */
+
     async handleScareUnitsResponse( player, response, units ){
 
         // once we get a response push the selected patsies to the units array
@@ -381,14 +455,14 @@ class Ghosts extends Faction {
         // then clear the player prompt
         player.setPrompt({ active : false, updatePlayerData : true });
     }
-
+     */
 
     /**
      * Auto select our patsies, if able
      *
      * @param patsiesInArea
      * @returns {*}
-     */
+
     autoSelectPatsies( patsiesInArea ){
         // if the number of patsies is less than or equal to the number we need to bounce, just return them all
         if( patsiesInArea.length <= this.data.scarePatsiesBounced ) return patsiesInArea;
@@ -401,9 +475,9 @@ class Ghosts extends Faction {
         // anything fancy going on (like being ready, or flipped) that we can safely select and if so return enough of them
         let basicPatsies = patsiesInArea.map( unit => !unit.ready && !unit.flipped ).filter( unit => unit );
         if( basicPatsies.length >= this.data.scarePatsiesBounced ) return patsiesInArea.slice( 0, this.data.scarePatsiesBounced );
-         */
-    }
 
+    }
+    */
 }
 
 

@@ -11,7 +11,7 @@ const test = function controlAreas( debug, faction, areaCount ){
     let result = factionAreasControlled >= areaCount;
 
     if( debug ) console.log(
-        'controlAreas',
+        'controlAreas ---',
         'areaCount req:', areaCount,
         'factionAreasControlled:', factionAreasControlled,
         'result:', result

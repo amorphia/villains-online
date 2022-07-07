@@ -143,6 +143,20 @@ let helpers = {
         return count;
     },
 
+    areasWithUnrevealedTokens( areasData, options = {} ){
+        let areas = {};
+
+        Object.values( areasData ).forEach( area => {
+            if( area.data ) area = area.data; // format input
+
+            // if the token...
+            if( !area.tokens.some( token => !token.revealed ) ){
+                areas[area.name] = true;
+            }
+        });
+
+        return Object.keys(areas);
+    },
 
     /**
      * Returns an array of area names matching the areas where the given faction has one or more units

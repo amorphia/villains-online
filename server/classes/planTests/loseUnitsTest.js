@@ -11,7 +11,7 @@ const test = function loseUnits( debug, faction, lostUnits ){
     let result = factionLostUnits >= lostUnits;
 
     if( debug ) console.log (
-        'loseUnits',
+        'loseUnits ---',
         'lostUnits req:', lostUnits,
         'factionLostUnits:', factionLostUnits,
         'result:', result

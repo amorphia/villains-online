@@ -11,7 +11,7 @@ const test = function conquerAreas( debug, faction, areaCount ){
     let result = factionAreasConquered >= areaCount;
 
     if( debug ) console.log(
-        'conquerAreas',
+        'conquerAreas ---',
         'areaCount req:', areaCount,
         'factionAreasConquered:', factionAreasConquered,
         'result:', result

@@ -12,7 +12,7 @@ const test = function skilledAtTarget( debug, faction, unitCount ){
     let result = factionUnitsAtTarget >= unitCount;
 
     if( debug ) console.log (
-        'skilledAtTarget',
+        'skilledAtTarget ---',
         'unitCount req:', unitCount,
         'factionUnitsAtTarget:', factionUnitsAtTarget,
         'result:', result

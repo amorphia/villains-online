@@ -11,7 +11,7 @@ const test = function killTypeCount( debug, faction, typeCount ){
     let result = Object.keys( typesKilled ).length >= typeCount;
 
     if( debug ) console.log(
-        'killTypeCount',
+        'killTypeCount ---',
         'typeCount req:', typeCount,
         'typesKilled:', typesKilled,
         'result:', result

@@ -172,7 +172,7 @@
              * @returns {Unit[]}
              */
             fromAreaUnits( area ){
-                return this.shared.faction.units.filter( unit => _.unitInArea( unit, area, { notWebbed : true } ) && (unit.type !== 'champion' || !this.destinationBlockedByKau ) );
+                return this.shared.faction.units.filter( unit => _.unitInArea( unit, area, { notWebbed : true } ) && !unit.noMove && ((unit.type !== 'champion' && !unit.isChampion) || !this.destinationBlockedByKau ) );
             },
         },
 

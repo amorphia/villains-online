@@ -13,6 +13,7 @@ window.App.state = {
     action : null, // store our current action
     card : null, // store our selected card
     token : null, // store our selected token
+    unit: null, // store our selected unit
     showXavier : false, // should we show xavier blackstone during token placement?
     viewDiscard : false, // should we open the discard pile?
     messages : [], // store game messages

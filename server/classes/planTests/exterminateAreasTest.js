@@ -12,7 +12,7 @@ const test = function exterminateAreas( debug, faction, exterminateCount = 1, ta
     let result = factionExterminatedAreas >= exterminateCount;
 
     if( debug ) console.log (
-        'exterminateAreas',
+        'exterminateAreas ---',
         'exterminateCount req:', exterminateCount,
         'factionExterminatedAreas:', factionExterminatedAreas,
         'result:', result

@@ -11,7 +11,7 @@ const test = function unitsInAreas( debug, faction, areaCount ){
     let result =  factionAreasWithUnits >= areaCount;
 
     if( debug ) console.log(
-        'unitsInAreas',
+        'unitsInAreas ---',
         'areaCount req:', areaCount,
         'factionAreasWithUnits:', factionAreasWithUnits,
         'result:', result

@@ -1,12 +1,18 @@
 let obj = [
     {
-        name: '1',
+        name: 'Symmetrical Stacking',
         num : 1,
         faction : 'ghosts',
         objectives : [
             {
                 requirements : [
-                    { test : 'controlTarget', args : [] },
+                    { test : 'retainAreas', args : [1] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'unitsInPlay', args : [8] },
                 ],
                 value : 1
             },
@@ -16,16 +22,10 @@ let obj = [
                 ],
                 value : 1
             },
-            {
-                requirements : [
-                    { test : 'killUnits', args : [4] },
-                ],
-                value : 1
-            },
         ]
     },
     {
-        name: '2',
+        name: 'Hostile Manifestations',
         num : 2,
         faction : 'ghosts',
         objectives : [
@@ -37,42 +37,35 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'exterminateAreas', args : [1, 'target'] },
+                    { test : 'retainAreas', args : [2] },
                 ],
                 value : 2
             },
         ]
     },
     {
-        name: '3',
+        name: 'Peace for the restless souls',
         num : 3,
         faction : 'ghosts',
         objectives : [
             {
                 requirements : [
-                    { test : 'controlAnyTarget', args : [2] },
-                    { test : 'enemyMarkers', args : [3] },
+                    { test : 'retainAreas', args : [3] },
                 ],
                 value : 3
             },
         ]
     },
     {
-        name: '4',
+        name: 'Free the anchored ones',
         num : 4,
         faction : 'ghosts',
         objectives : [
             {
                 requirements : [
-                    { test : 'influenceInAreas', args : [6,1] },
+                    { test : 'retainAreas', args : [2] },
                 ],
-                value : 1
-            },
-            {
-                requirements : [
-                    { test : 'controlAnyTarget', args : [1] },
-                ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
@@ -83,33 +76,33 @@ let obj = [
         ]
     },
     {
-        name: '5',
+        name: 'Extra-Planar Obelisk',
         num : 5,
         faction : 'ghosts',
         objectives : [
             {
                 requirements : [
-                    { test : 'controlAnyTarget', args : [1] },
+                    { test : 'retainAreas', args : [1] },
                     { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 2
             },
             {
                 requirements : [
-                    { test : 'unitsInPlay', args : [8] },
+                    { test : 'killUnits', args : [4] },
                 ],
                 value : 1
             },
         ]
     },
     {
-        name: '6',
+        name: 'Free Roaming Vapors',
         num : 6,
         faction : 'ghosts',
         objectives : [
             {
                 requirements : [
-                    { test : 'controlAnyTarget', args : [1] },
+                    { test : 'retainAreas', args : [1] },
                     { test : 'killUnits', args : [4] },
                 ],
                 value : 2
@@ -123,15 +116,15 @@ let obj = [
         ]
     },
     {
-        name: '7',
+        name: 'Non-Terminal Phantasms',
         num : 7,
         faction : 'ghosts',
         objectives : [
             {
                 requirements : [
-                    { test : 'skilledAtTarget', args : [2] },
+                    { test : 'retainAreas', args : [2] },
                 ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
@@ -139,16 +132,10 @@ let obj = [
                 ],
                 value : 1
             },
-            {
-                requirements : [
-                    { test : 'influenceInAreas', args : [6,1] },
-                ],
-                value : 1
-            },
         ]
     },
     {
-        name: '8',
+        name: 'Transcendence Rituals',
         num : 8,
         faction : 'ghosts',
         objectives : [
@@ -160,7 +147,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'exterminateAreas', args : [1, 'target'] },
+                    { test : 'retainAreas', args : [2] },
                 ],
                 value : 2
             },

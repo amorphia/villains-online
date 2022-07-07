@@ -41,6 +41,12 @@ let obj = {
             return;
         }
 
+        if( action === 'ghost'){
+            let faction = player.faction();
+            faction.placeGhost( this, ...args );
+            return;
+        }
+
         if( action === 'pass' ){
             this.passOnPlacingToken( player );
             return;

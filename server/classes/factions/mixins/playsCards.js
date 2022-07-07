@@ -150,7 +150,8 @@ let obj = {
             free : args.free,
             cards : args.cards || [],
             fusion : args.fusion,
-            reduceCost : args.reduceCost
+            reduceCost : args.reduceCost,
+            message: args.message,
         };
 
         [player, response] = await this.game().promise({ players: player, name: 'choose-card', data : data })

@@ -10,7 +10,11 @@ class PlanTester {
      */
     test( faction, plan ){
 
-        if( this.debug ) console.log( '', 'plan:', plan.name, 'faction:', faction.name );
+        if( this.debug ){
+            console.log( '-----------------------' );
+            console.log( 'plan:', plan.name,  );
+            console.log( 'faction:', faction.name );
+        }
 
         let results = [];
         let hasFailedObjective = false;

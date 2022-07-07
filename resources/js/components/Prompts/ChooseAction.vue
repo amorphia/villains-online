@@ -81,10 +81,9 @@
                     <div v-if="action.name === 'materialize'"
                          class="choose-action__skilled-units center-text">
 
-                        <unit-row :units="ghostsInArea"></unit-row>
+                        <unit-icon :unit="ghostInArea" :unhiddenGhost="true"></unit-icon>
 
-                        <div class="width-100 choose-action__skill-ability">
-                            Reveal ghosts in this area?
+                        <div class="width-100 choose-action__skill-ability" v-html="ghostInArea.description">
                         </div>
 
                     </div>
@@ -245,9 +244,6 @@
                 // can we magick?
                 if( this.useableMagick.length ) actions.magick = this.useableMagick;
 
-                // can we materialize?
-                if( this.useableMaterialize.length ) actions.materialize = this.useableMaterialize;
-
                 /********************
                  * ACTION ACTIONS
                  ********************/
@@ -259,6 +255,9 @@
                     this.shared.actions = actions;
                     return;
                 }
+
+                // can we materialize?
+                if( this.useableMaterialize.length ) actions.materialize = this.useableMaterialize;
 
                 // can we reveal tokens?
                 if( this.revealableTokens.length  ) actions.token = this.revealableTokens;
@@ -279,7 +278,7 @@
                 if( this.useableLoop.length ) actions.loop = this.useableLoop;
 
                 // can we declare ourselves locked?
-                if( !this.revealableTokens.length && this.activeTokens.length ) actions.locked = true;
+                if( !this.revealableTokens.length && (this.activeTokens.length || ( !this.useableMaterialize.length && this.faceDownGhosts.length ) ) ) actions.locked = true;
 
                 // can we reveal an xavier token?
                 if( this.canXavier ) actions.xavier = this.xavier.location;
@@ -556,9 +555,9 @@
              * Return an array of our ghost units in our selected area
              * @returns {Unit[]}
              */
-            ghostsInArea(){
-                if( !this.shared.faction.ghostDeploy || !this.action?.area ) return [];
-                return this.shared.faction.units.filter( unit => unit.ghost && unit.location === this.action?.area );
+            ghostInArea(){
+                if( !this.shared.faction.canPlaceGhostsDuringTokens || !this.action?.area ) return [];
+                return this.shared.faction.units.find( unit => unit.ghost && unit.flipped && unit.location === this.action?.area );
             },
 
 
@@ -603,15 +602,21 @@
              */
             useableMaterialize(){
                 if( this.shared.faction.name !== 'ghosts') return [];
+                let potentialAreas = _.areasWithUnrevealedTokens( this.shared.data.areas, { unrevealed: true });
 
                 let areas = {};
-                this.shared.faction.units.forEach( unit => {
-                    if( unit.ghost ) areas[unit.location] = true;
+                this.faceDownGhosts.forEach( unit => {
+                    if( potentialAreas.includes(unit.location) ) areas[unit.location] = true;
                 });
-                return Object.keys( areas );
 
+                return Object.keys( areas );
             },
 
+            faceDownGhosts(){
+                if( this.shared.faction.name !== 'ghosts') return [];
+
+                return this.shared.faction.units.filter( unit => unit.ghost && unit.flipped );
+            },
 
             /**
              * Returns an array of area names matching the areas where we can take a magick action

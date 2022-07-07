@@ -30,6 +30,8 @@ let obj = {
     setUnitBaseStats( unit ){
         if( this.shouldSetUnitBaseStats.basic && !unit.basic ) return;
 
+        if( this.shouldSetUnitBaseStats.basic === false && unit.basic ) return;
+
         this.shouldSetUnitBaseStats.props.forEach( prop => {
             if( unit[prop] !== undefined ){
                 let baseProp = _.camelCase( `base ${prop}` );

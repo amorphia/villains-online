@@ -11,7 +11,7 @@ const test = function killsInEnemy( debug, faction, killCount ){
     let result = factionKillsInEnemy >= killCount;
 
     if( debug ) console.log(
-        'killsInEnemy',
+        'killsInEnemy ---',
         'killCount req:', killCount,
         'factionKillsInEnemy:', factionKillsInEnemy,
         'result:', result

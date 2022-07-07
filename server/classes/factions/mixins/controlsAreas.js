@@ -8,6 +8,7 @@ let obj = {
     gainControlOfArea( area ){
         area.data.owner = this.name;
         area.takeControl( this );
+        this.data.areas.push(area.name);
     },
 
 
@@ -19,6 +20,7 @@ let obj = {
     loseControlOfArea( area ){
         area.data.owner = null;
         area.loseControl( this );
+        this.data.areas = this.data.areas.filter(item => item !== area.name);
     },
 
 

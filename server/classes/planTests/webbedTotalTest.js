@@ -12,7 +12,7 @@ const test = function webbedTotal( debug, faction, webbedCount ){
     let result = webbedTotals.total >= webbedCount;
 
     if( debug ) console.log(
-        'webbedTotal',
+        'webbedTotal ---',
         'webbedCount req:', webbedCount,
         'webbedTotals.total:', webbedTotals.total,
         'result:', result

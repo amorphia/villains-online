@@ -11,7 +11,7 @@ const test = function mrFusion( debug, faction, fusionCount ){
     let result = factionFusionCount && factionFusionCount >= fusionCount;
 
     if( debug ) console.log(
-        'mrFusion',
+        'mrFusion ---',
         'fusionCount req:', fusionCount,
         'factionFusionCount:', factionFusionCount,
         'result:', result

@@ -24,7 +24,7 @@ const test = function playRules( debug, faction, count, mode = 'total' ){
     }
 
     if( debug ) console.log(
-        'playRules',
+        'playRules ---',
         'count req:', count,
         'rulesPlayed:', rulesPlayed,
         'result:', result

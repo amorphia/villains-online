@@ -45,13 +45,30 @@ let helpers = {
         if( area.data ) area = area.data;
 
         let influence = 0;
+        let controlBonusInfluence = 0;
 
-        if( area.owner === faction.name ) influence++; // if we currently own the area gain 1
+        let debug = false;
+
+        // if we currently own the area gain 1
+        if( area.owner === faction.name ){
+            if(faction.addUpgradeToControlInfluence){
+                controlBonusInfluence += faction.upgrade;
+            }
+            influence += (1 + controlBonusInfluence);
+        }
+
+        if(influence) debug = true;
+        if(debug) console.log("control influence", influence);
         influence += this.unitInfluence( faction, area ); // get influence from our units
+        if(debug) console.log("unit influence", influence);
         influence += this.tokenInfluence( faction, factions, area ); // get influence from our tokens
+        if(debug) console.log("token influence", influence);
         influence += this.cardInfluence( faction, factions, area ); // get influence from our action cards
+        if(debug) console.log("card influence", influence);
         influence += this.cultistKillInfluence( faction, area, factions ); // get cultist kill influence
+        if(debug) console.log("cultist influence", influence);
         influence += this.plantInfluence( faction, area ); // get plant influence
+        if(debug) console.log("plant influence", influence);
 
         return influence;
     },
@@ -212,7 +229,7 @@ let helpers = {
         if( faction.name === 'ghosts' || !factions['ghosts'] ) return false;
 
         // do we have any units with the blockEnemyTokenInfluence ability in this area?
-        return factions['ghosts'].units.some( unit => unit.blockEnemyTokenInfluence && !unit.flipped && this.unitInArea( unit, area.name ) );
+        return factions['ghosts'].units.some( unit => unit.blockEnemyTokenInfluence && this.unitInArea( unit, area.name ) );
     },
 
 

@@ -2,7 +2,7 @@
     <div class="d-inline-block pos-relative">
         <div class="units-hud__unit d-inline-block pos-relative"
              :class="setClasses"
-             @click="$emit( 'unit', unit, hpLeft )">
+             @click="onClick">
 
             <!-- ghost icon container -->
             <div v-if="viewableGhost" class="ghost-icon__container"></div>
@@ -40,13 +40,24 @@
             'classes',
             'noSelect',
             'hidePatsies',
-            'hitsToAssign'
+            'hitsToAssign',
+            'globalEmit',
+            'unhiddenGhost',
         ],
 
         data() {
             return {
                 shared : App.state
             };
+        },
+
+        methods: {
+            onClick(){
+                this.$emit( 'unit', this.unit, this.hpLeft );
+                if(this.globalEmit){
+                    App.event.emit( 'unitClicked', this.unit );
+                }
+            }
         },
 
         computed :{
@@ -63,11 +74,15 @@
             /**
              * Is this unit a viewable ghost?
              * @returns {boolean}
-             */
+
             viewableGhost(){
                 return this.unit.ghost && this.shared.faction.ghostDeploy;
             },
+             */
 
+            viewableGhost(){
+                return this.unit.ghost && this.unit.flipped && this.shared.faction.canPlaceGhostsDuringTokens;
+            },
 
             /**
              * Set our classes
@@ -86,7 +101,7 @@
                 if( this.unit.ready ) classes.push( 'ready' );
 
                 // is this unit a viewable ghost
-                //if( this.viewableGhost ) classes.push( 'is-ghost' );
+                if( this.viewableGhost && !this.unhiddenGhost ) classes.push( 'is-ghost' );
 
                 // if this is a patsy and we are hiding patsies, reduce the opactiy
                 if( this.unit.type === 'patsy' && this.hidePatsies ) classes.push( 'opacity-6' );
@@ -103,6 +118,7 @@
             img(){
                 // abandoned version of the ghosts
                 //if( this.unit.ghost && !this.shared.faction.ghostDeploy ) return `/images/factions/ghosts/units/ghost.png`;
+                if( this.viewableGhost ) return `/images/factions/${this.unit.faction}/units/${this.unit.type}.png`;
 
                 return `/images/factions/${this.unit.faction}/units/${this.unit.type}${this.unit.flipped ? '-flipped' : ''}.png`;
             },
@@ -226,7 +242,7 @@
     }
 
     .units-hud__unit.is-ghost .unit-hud__unit-image {
-        /* opacity: .8; */
+         opacity: .7;
     }
 
     .ghost-icon__container:before {
@@ -234,10 +250,10 @@
         position: absolute;
         width: 40%;
         height: 40%;
-        /* background-image: url(/images/icons/ghost.png); */
+        background-image: url(/images/icons/hidden.png);
         z-index: 3;
         left: 50%;
-        top: 15%;
+        top: 5%;
         background-repeat: no-repeat;
         background-size: contain;
         transform: translate(-50%, -70%);

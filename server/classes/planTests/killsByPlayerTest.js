@@ -12,7 +12,7 @@ const test = function killsByPlayer( debug, faction, killCount, playerCount ){
     let result = kills >= playerCount;
 
     if( debug ) console.log(
-        'killsInAreas',
+        'killsInAreas ---',
         'killCount req:', killCount,
         'playerCount req:', playerCount,
         'factionWithMinKills:', kills,

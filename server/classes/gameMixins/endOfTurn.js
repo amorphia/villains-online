@@ -64,6 +64,10 @@ let obj = {
 
         let areaData = [];
 
+        for(let faction of Object.values(this.factions)){
+            faction.data.retainedAreas = [];
+        }
+
         // for each area, determine the current controller
         for( let i = 0; i < this.data.areaOrder.length; i++ ) {
             let area = this.areas[ this.data.areaOrder[i] ];

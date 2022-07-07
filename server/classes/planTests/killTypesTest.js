@@ -18,7 +18,7 @@ const test = function killTypes( debug, faction, types, killCount ){
     let result = killsOfTypes >= killCount;
 
     if( debug ) console.log(
-        'killTypeCount',
+        'killTypeCount ---',
         'types req:', types,
         'killCount req:', killCount,
         'typesKilled:', typesKilled,

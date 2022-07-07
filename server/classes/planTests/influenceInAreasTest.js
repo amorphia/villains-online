@@ -12,7 +12,7 @@ const test = function influenceInAreas( debug, faction, influenceCount, areaCoun
     let result = areasWithEnoughInfluence >= areaCount;
 
     if( debug ) console.log(
-        'influenceInAreas',
+        'influenceInAreas ---',
         'influenceCount req:', influenceCount,
         'areaCount req:', areaCount,
         'areasWithEnoughInfluence:', areasWithEnoughInfluence,

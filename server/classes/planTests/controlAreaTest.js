@@ -11,7 +11,7 @@ const test = function controlArea( debug, faction, areaName ) {
     let result = areaController === faction.name;
 
     if( debug ) console.log(
-        'controlArea',
+        'controlArea ---',
         'areaName req:', areaName,
         'areaController:', areaController,
         'result:', result

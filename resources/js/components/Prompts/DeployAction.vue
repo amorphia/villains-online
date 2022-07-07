@@ -120,7 +120,7 @@
                 if( !this.destinationBlockedByKau ) return;
 
                 this.selected.forEach( unit => {
-                    if( unit.type === 'champion' ) this.$set( unit, 'selected', false );
+                    if( unit.type === 'champion' || unit.isChampion ) this.$set( unit, 'selected', false );
                 })
             }
         },

@@ -14,7 +14,7 @@ const test = function controlAreasAnd( debug, faction, areaNames ) {
 
 
     if( debug ) console.log(
-        'controlAreasAnd',
+        'controlAreasAnd ---',
         'areaName req:', areaNames,
         'result:', result
     );

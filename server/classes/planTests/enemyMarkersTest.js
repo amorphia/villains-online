@@ -11,7 +11,7 @@ const test = function enemyMarkers( debug, faction, enemyMarkers ){
     let result = faction.data.captured.current >= enemyMarkers;
 
     if( debug ) console.log(
-        'enemyMarkers',
+        'enemyMarkers ---',
         'enemyMarkers req:', enemyMarkers,
         'factionEnemyMarkers:', factionEnemyMarkers,
         'result:', result

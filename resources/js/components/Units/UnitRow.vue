@@ -9,6 +9,7 @@
                    :hitsToAssign="hitsToAssign"
                    :allSelected="allSelected"
                    :hidePatsies="hidePatsies"
+                   :globalEmit="globalEmit"
                    @unit="(u, hp) => $emit( 'unit', u, hp )">
         </unit-icon>
     </div>
@@ -26,7 +27,8 @@
             'assigningHits',
             'allSelected',
             'hidePatsies',
-            'hitsToAssign'
+            'hitsToAssign',
+            'globalEmit'
         ],
         data() {
             return {

@@ -11,7 +11,7 @@ const test = function killUnits( debug, faction, killedUnits ) {
     let result = factionKilledUnits >= killedUnits;
 
     if( debug ) console.log(
-        'killUnits',
+        'killUnits ---',
         'killedUnits req:', killedUnits,
         'factionKilledUnits:', factionKilledUnits,
         'result:', result
