@@ -393,7 +393,7 @@
             },
 
             forcedMoleKingAction(){
-                if(this.moleKing.faction === this.shared.faction.name) return false;
+                if(this.moleKing?.faction === this.shared.faction.name) return false;
 
                 let moleKingArea = this.moleKing ? this.moleKing.location : null;
 
