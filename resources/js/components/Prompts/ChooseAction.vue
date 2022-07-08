@@ -249,7 +249,7 @@
                  ********************/
 
                 // forced mole king action
-                if( this.forcedMoleKingAction){
+                if( this.forcedMoleKingAction ){
                     actions.token = [this.forcedMoleKingAction];
                     this.actions = actions;
                     this.shared.actions = actions;
@@ -393,6 +393,8 @@
             },
 
             forcedMoleKingAction(){
+                if(this.moleKing.faction === this.shared.faction.name) return false;
+
                 let moleKingArea = this.moleKing ? this.moleKing.location : null;
 
                 if(moleKingArea && this.revealableTokens.includes(moleKingArea)){
