@@ -29,7 +29,7 @@ class Ghosts extends Faction {
 
         this.shouldSetUnitBaseStats = {
             basic : false,
-            props : ['attack']
+            props : ['attack', 'influence']
         };
 
         this.units['mad-king'] = {
@@ -39,8 +39,8 @@ class Ghosts extends Faction {
                 type: 'mad-king',
                 isChampion: true,
                 basic: false,
-                attack: [7],
-                influence: 0,
+                attack: [],
+                influence: 2,
                 noDeploy: true,
                 noMove: true,
                 killed: false,
@@ -60,7 +60,7 @@ class Ghosts extends Faction {
                 type: 'banshee',
                 isChampion: true,
                 basic: false,
-                attack: [9,9],
+                attack: [8,8],
                 noDeploy: true,
                 influence: 0,
                 noMove: true,
@@ -70,7 +70,7 @@ class Ghosts extends Faction {
                 onUnflip: "bansheeWail",
                 hitsAssigned: 0,
                 ghost : true,
-                description: "Wail: When revealed You may play action cards equal to the number of CARD tokens here"
+                description: "Wail: When revealed draw an action card, then you may play up to two action cards in this area"
             }
         };
 
@@ -81,17 +81,17 @@ class Ghosts extends Faction {
                 type: 'poltergeist',
                 isChampion: true,
                 basic: false,
-                attack: [5],
+                attack: [6,6],
                 noDeploy: true,
                 influence: 0,
                 noMove: true,
                 killed: false,
                 flipped: false,
                 selected: false,
-                onUnflip: "scarePatsies",
+                onUnflip: "scareUnits",
                 hitsAssigned: 0,
                 ghost : true,
-                description: "Scare: When revealed return all enemy patsies in this area to their reserves"
+                description: "Scare: When revealed return all enemy patsies in this area to their reserves and wound all units with toughness"
             }
         };
     }
@@ -152,7 +152,7 @@ class Ghosts extends Faction {
         return this.game().areas[unit.location].data.tokens.filter( token => token.type === 'card').length;
     }
 
-    async scarePatsies( unit ){
+    async scareUnits( unit ){
         let area = unit.location;
         let units = [];
 
@@ -168,10 +168,23 @@ class Ghosts extends Faction {
             });
         }
 
+        // wound units
+        let toughUnits = _.enemyUnitsInArea( this, area, this.game().factions, { isUnwounded: true } );
+
+        toughUnits = Object.values(toughUnits).reduce((items, item) => {
+            return [...items, ...item];
+        }, []);
+
+        console.log(toughUnits);
+
+        for( let item of toughUnits ){
+            item.flipped = true;
+        }
+
         // announce what happened to all players
         await this.game().timedPrompt('units-shifted', {
-            message : `Patsies scared out of The ${area}`,
-            units: units,
+            message : `Units scared in The ${area}`,
+            units: [...units, ...toughUnits],
             area : area,
         });
     }
@@ -252,6 +265,7 @@ class Ghosts extends Faction {
     async unflipUnit( unit ) {
         unit.flipped = false;
         unit.attack = [...unit.baseAttack];
+        unit.influence = unit.baseInfluence;
 
         if("blockEnemyTokenInfluence" in unit){
             unit.blockEnemyTokenInfluence = true;

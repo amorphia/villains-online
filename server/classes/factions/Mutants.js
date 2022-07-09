@@ -22,7 +22,7 @@ class Mutants extends Faction {
 
         // tokens
         this.tokens['biomorph'] = {
-            count: 1,
+            count: 2,
             data: {
                 influence: 1,
                 resource: 1,
@@ -82,16 +82,16 @@ class Mutants extends Faction {
         this.message( `wounded Mother Oozes heal, splitting off a new mother ooze` );
 
         for( let area of areasWithHealedOozes ){
-                let args = {
-                    area: area,
-                    faction: this,
-                    player: this.playerId,
-                    free: true,
-                    unitTypes: ['champion'],
-                    deployLimit: 1
-                };
+            let args = {
+                area: area,
+                faction: this,
+                player: this.playerId,
+                free: true,
+                unitTypes: ['champion'],
+                deployLimit: 1
+            };
 
-                await this.deploy( args );
+            await this.deploy( args );
         }
     }
 

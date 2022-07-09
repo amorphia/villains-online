@@ -71,7 +71,7 @@ class Robots extends Faction {
                 basic: false,
                 influence: 1,
                 attack: [5, 5],
-                cost: 2,
+                cost: 1,
                 ready: false,
                 skilled: true,
                 killed : false,

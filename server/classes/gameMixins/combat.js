@@ -46,15 +46,20 @@ let obj = {
      * @param count
      */
     async assignHitsToUnit( unit, faction, count = 1 ){
+        let owner = this.factions[unit.faction];
 
         // hidden units are immune
         if( unit.hidden ){
-            return 'hidden unit ignores hit'
+            return 'hidden unit ignores hit';
+        }
+
+        if( owner.data.smokeAreas?.includes(unit.location) ){
+            this.popup( owner.playerId, { type: 'smoke', area : unit.location, faction : owner.name });
+            return 'a hit was lost in the smoke';
         }
 
         // if this unit has an onDamaged trigger, resolve it
         if( unit.onDamaged ){
-            let owner = this.factions[unit.faction];
             let onDamagedResults = await owner[unit.onDamaged]({
                 unit : unit,
                 hits : count,

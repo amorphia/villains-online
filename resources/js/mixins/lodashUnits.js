@@ -27,6 +27,8 @@ let helpers = {
             && ( !options.notSkilled || !unit.skilled )
             && ( !options.ready || unit.ready )
             && ( !options.notReady || !unit.ready )
+            && ( !options.isUnwounded || (unit.toughness && !unit.flipped) )
+            && ( !options.isWounded || (unit.toughness && unit.flipped) )
             && ( !options.type || unit.type === options.type )
             && ( !options.typeIn || options.typeIn.includes(unit.type) )
             && ( !options.notType || unit.type !== options.notType )

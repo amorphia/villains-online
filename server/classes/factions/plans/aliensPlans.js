@@ -143,19 +143,20 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 1] }
-                ],
-                value : 1
-            },
-            {
-                requirements : [
-                    { test : 'enemyMarkers', args : [2] }
-                ],
-                value : 1
-            },
-            {
-                requirements : [
                     { test : 'skilledAtTarget', args : [2] }
+
+                ],
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'enemyMarkers', args : [1] }
+                ],
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'unitInEnemy', args : ['mole', 1] }
                 ],
                 value : 1
             },

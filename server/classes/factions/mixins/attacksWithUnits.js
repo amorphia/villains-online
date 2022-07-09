@@ -585,12 +585,15 @@ let obj = {
         // cycle through the units chosen as victims and apply the appropriate hits
         let results = [];
 
+        if(response.targets.some( target => target.id === "smoke")){
+            let ninjas = this.game().factions['ninjas'];
+            ninjas.clearSmokeFromAreas(area);
+        }
+
         for( let target of response.targets ){
 
             // if we are are assigning a hit to a smoke token, remove it
             if(target.id === 'smoke'){
-                let ninjas = this.game().factions['ninjas'];
-                ninjas.clearSmokeFromAreas(area);
                 continue;
             }
 

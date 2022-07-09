@@ -9,7 +9,7 @@ class Ninjas extends Faction {
 
         // triggers
         this.triggers = {
-            "onCleanUp" : "clearSmokeFromAreas",
+            //"onCleanUp" : "clearSmokeFromAreas",
             "onAfterTokenReveal" : "lotusDancerMove"
         };
 
@@ -55,7 +55,7 @@ class Ninjas extends Faction {
                 basic: false,
                 influence: 2,
                 seeking: true,
-                attack: [4],
+                attack: [3],
                 cost: 0,
                 killed: false,
                 selected: false,

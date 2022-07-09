@@ -24,15 +24,6 @@ class Molemen extends Faction {
         this.data.flipableUnits = ['champion'];
         this.data.moleKing = null;
 
-
-        this.capturedRewards = [
-            { ap : 1, maxEnergy : 1 },
-            { ap : 1, cardDraw : 1 },
-            { ap : 1, maxEnergy : 1 },
-            { ap : 1, cardDraw : 1 },
-            { ap : 2, },
-        ];
-
         // we can capture more tokens than usual, neat!
         this.data.captured.max = this.capturedRewards.length;
 
@@ -91,6 +82,18 @@ class Molemen extends Faction {
         this.upgradeVariableItems({
             reserves: this.data.tokens,
             cache: this.data.deployCache,
+        });
+
+        this.sortTokens();
+    }
+
+    sortTokens(){
+        const order = ['deploy', 'card', 'move', 'battle', 'dig'];
+        this.data.tokens.sort((a, b) => {
+            const aIndex = order.indexOf(a.type);
+            const bIndex = order.indexOf(b.type);
+            if( aIndex === bIndex ) return 0;
+            return aIndex < bIndex ? -1 : 1;
         });
     }
 

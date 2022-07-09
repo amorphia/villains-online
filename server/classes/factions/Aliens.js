@@ -44,13 +44,13 @@ class Aliens extends Faction {
                 req : "This token must be discarded if you don't deploy at least one unit"
             }
         };
-        this.tokens['deploy'].count = 1;
+        this.tokens['deploy'].count = 2;
         this.tokens['move'].count = 2;
 
         // units
         this.units['goon'].count = 3;
         this.units['mole'].count = 8;
-        this.units['patsy'].count = 3;
+        this.units['patsy'].count = 4;
 
         this.units['champion'] = {
             count: 1,
