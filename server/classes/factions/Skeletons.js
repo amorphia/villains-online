@@ -379,7 +379,7 @@ class Skeletons extends Faction {
     }
 
     async resolveRaiseUnit( response ){
-        if( response.units.length === 0 ){
+        if( response?.units?.length ){
             return false;
         }
 
