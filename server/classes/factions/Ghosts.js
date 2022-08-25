@@ -70,6 +70,7 @@ class Ghosts extends Faction {
                 onUnflip: "bansheeWail",
                 hitsAssigned: 0,
                 ghost : true,
+                bansheeCards: 2,
                 description: "Wail: When revealed draw an action card, then you may play up to two action cards in this area"
             }
         };
@@ -124,20 +125,19 @@ class Ghosts extends Faction {
     }
 
     async bansheeWail( unit ){
-        let bansheeMax = this.getBansheeMax( unit );
         let cardsPlayed = 0;
         let declined = false;
 
-        if(!bansheeMax || !this.data.cards.hand.length ){
+        if(!this.data.cards.hand.length ){
             return this.message( "The banshee unable to wail", { class : 'warning' } );
         }
 
         // play a numbers of cards up to our card limit
-        while( cardsPlayed < bansheeMax && !declined ) {
+        while( cardsPlayed < unit.bansheeCards && !declined ) {
             let output = await this.playACard({
                 area: this.game().areas[unit.location],
                 player: this.game().getPlayerByFaction( this.name ),
-                message: `Play a card in the ${unit.location} (${bansheeMax - cardsPlayed} remaining)`
+                message: `Play a card in the ${unit.location} (${unit.bansheeCards - cardsPlayed} remaining)`
             });
 
             if( output?.declined ){
@@ -146,10 +146,6 @@ class Ghosts extends Faction {
                 cardsPlayed++;
             }
         }
-    }
-
-    getBansheeMax( unit ){
-        return this.game().areas[unit.location].data.tokens.filter( token => token.type === 'card').length;
     }
 
     async scareUnits( unit ){
