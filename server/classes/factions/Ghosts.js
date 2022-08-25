@@ -128,9 +128,8 @@ class Ghosts extends Faction {
         let cardsPlayed = 0;
         let declined = false;
 
-        if(!this.data.cards.hand.length ){
-            return this.message( "The banshee unable to wail", { class : 'warning' } );
-        }
+        // draw a card
+        this.drawCards();
 
         // play a numbers of cards up to our card limit
         while( cardsPlayed < unit.bansheeCards && !declined ) {
