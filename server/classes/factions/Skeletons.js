@@ -131,7 +131,7 @@ class Skeletons extends Faction {
         const areas = {};
 
         Object.values( this.game().factions ).forEach( faction => {
-            const options = { killed : true };
+            const options = { killed : true, basic: true };
 
             if( faction.name !== this.name ){
                 options.typeIn = unitTypesInReserves;
@@ -372,6 +372,7 @@ class Skeletons extends Faction {
             count: count,
             areas: filteredAreas,
             killedOnly: true,
+            basicOnly: true,
             raiseDeadTargets: reserveTypes,
             canDecline: true,
             differentAreas: true,
