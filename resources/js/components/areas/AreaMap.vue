@@ -284,6 +284,16 @@
                         });
                     }
 
+                    // Raised dead?
+                    if( faction.raiseAreas?.includes( this.area.name )){
+                        stats.push({
+                            name : 'raise',
+                            owner : faction.name,
+                            title : 'raise',
+                            description : `the ${faction.name} have raised the dead in this area`
+                        });
+                    }
+
                     // smoke?
                     if( faction.smokeAreas?.includes( this.area.name )){
                         stats.push({

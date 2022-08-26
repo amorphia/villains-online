@@ -9,7 +9,7 @@ class Skeletons extends Faction {
 
         // triggers
         this.triggers = {
-            "onCleanUp" : "resetSkeletonUnits",
+            "onCleanUp" : "resetRaiseAreas",
             "onSetup" : "setupPatsies",
         };
 
@@ -18,13 +18,14 @@ class Skeletons extends Faction {
         this.data.title = "The Restless Dead";
         this.data.focusDescription = "Have units of specific types in enemy areas";
         //this.data.optionalAttack = true; // this faction doesn't need to attack with its units
-        this.data.endOfTurnRevive = 0; // how many skeletons to revive at the end of the turn
+        //this.data.endOfTurnRevive = 0; // how many skeletons to revive at the end of the turn
         this.data.patsyCache = [];
 
         // icons
         this.data.statusIcon = 'skeleton';
         this.data.statusDescription = 'has skeleton units';
         this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
+        this.data.raiseAreas = [];
 
         // tokens
         delete this.tokens['card'];
@@ -129,8 +130,6 @@ class Skeletons extends Faction {
         const unitTypesInReserves = this.unitTypesInReserves();
         const areas = {};
 
-        console.log('unitTypesInReserves', unitTypesInReserves);
-
         Object.values( this.game().factions ).forEach( faction => {
             const options = { killed : true };
 
@@ -144,12 +143,12 @@ class Skeletons extends Faction {
                         areas[unit.location] = new Set();
                     }
 
-
                     areas[unit.location].add( unit.type );
-                    console.log('areas[unit.location]', areas[unit.location]);
                 }
             })
         });
+
+        this.data.raiseAreas.forEach(area => delete areas[area]);
 
         return areas;
     }
@@ -197,7 +196,10 @@ class Skeletons extends Faction {
                 }
             } else {
                 let unitRaised = await this.raiseUnit([args.area.name]);
+                console.log("unitRaised", unitRaised);
+
                 if( unitRaised ){
+                    console.log("unit raised");
                     actionsTaken.push('raise');
                 }
             }
@@ -221,7 +223,7 @@ class Skeletons extends Faction {
             actions.push( 'raise' );
         }
 
-        if( !actionsTaken.includes( 'card' ) && this.canActivateCard( token, area ) ){
+        if( actionsTaken.filter( action => action === 'card' ).length < this.data.cardLimit && this.canActivateCard( token, area ) ){
             actions.push( 'card' );
         }
 
@@ -313,7 +315,6 @@ class Skeletons extends Faction {
      * @returns {string}
      */
     checkBecomeSkeleton( event ){
-
         // event.hits is the number of hits assigned to this unit
         if( event.unit.flipped || event.hits > 1 ){
             return;
@@ -358,7 +359,9 @@ class Skeletons extends Faction {
 
     async raiseUnit( areas, count = 1){
 
-        if( !areas.length ){
+        let filteredAreas = areas.filter(area => !this.data.raiseAreas.includes(area));
+
+        if( !filteredAreas.length ){
             this.message( "No dead to raise", { class : 'warning' } );
             return;
         }
@@ -367,7 +370,7 @@ class Skeletons extends Faction {
 
         let response = await this.prompt( 'choose-units', {
             count: count,
-            areas: areas,
+            areas: filteredAreas,
             killedOnly: true,
             raiseDeadTargets: reserveTypes,
             canDecline: true,
@@ -379,11 +382,13 @@ class Skeletons extends Faction {
     }
 
     async resolveRaiseUnit( response ){
-        if( response?.units?.length ){
+        if( !response?.units?.length ){
             return false;
         }
 
         let units = [];
+
+        let raiseAreas = this.data.raiseAreas;
 
         response.units.forEach( responseUnit => {
             let chosenUnit = this.game().objectMap[ responseUnit ];
@@ -407,10 +412,12 @@ class Skeletons extends Faction {
             }
 
             unit.location = area;
+            raiseAreas.push(area);
 
             units.push(unit);
         });
 
+        console.log("Done raising");
 
         await this.game().timedPrompt('units-shifted', {
             message: `Skeletons were raised`,
@@ -436,6 +443,9 @@ class Skeletons extends Faction {
         await this.raiseUnit( areas, 2 );
     }
 
+    resetRaiseAreas(){
+        this.data.raiseAreas = [];
+    }
 
     /**
      * Returns a list of areas that are adjacent to the given area, and where we have tokens
@@ -504,25 +514,6 @@ class Skeletons extends Faction {
         area.data.tokens.push( token );
         this.message( `Xer'Zhul moves a token from The ${fromArea.name} to the ${area.name}` );
     }
-
-
-    /**
-     * Handle our end of turn revival trigger
-     */
-    async resetSkeletonUnits() {
-        if( !this.data.endOfTurnRevive ) {
-            console.log( 'no end of turn unflip' );
-            return;
-        }
-
-        console.log( 'attempting unflip' );
-
-        await this.flipUnits({
-            count : this.data.endOfTurnRevive,
-            flippedOnly : true
-        });
-    }
-
 
     /**
      * Generate display text for faction combat modifications

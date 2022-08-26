@@ -27,35 +27,8 @@
 }
 
 
-.icon-ask:before {
-    content: "\e912";
-}
-.icon-save:before {
-    content: "\e962";
-}
-.icon-volume-high:before {
-    content: "\ea26";
-}
-.icon-volume-mid:before {
-    content: "\ea27";
-}
-.icon-volume-low:before {
-    content: "\ea28";
-}
-.icon-mute:before {
-    content: "\ea2a";
-}
-.icon-checkbox-checked:before {
-    content: "\ea52";
-}
-.icon-checkbox-unchecked:before {
-    content: "\ea53";
-}
-.icon-tokens:before {
-    content: "\ea54";
-}
-.icon-x:before {
-    content: "\e92e";
+.icon-raise:before {
+    content: "\e913";
 }
 .icon-spider:before {
     content: "\e90f";
@@ -207,6 +180,36 @@
 .icon-card:before {
     content: "\e933";
 }
+.icon-ask:before {
+    content: "\e912";
+}
+.icon-save:before {
+    content: "\e962";
+}
+.icon-volume-high:before {
+    content: "\ea26";
+}
+.icon-volume-mid:before {
+    content: "\ea27";
+}
+.icon-volume-low:before {
+    content: "\ea28";
+}
+.icon-mute:before {
+    content: "\ea2a";
+}
+.icon-checkbox-checked:before {
+    content: "\ea52";
+}
+.icon-checkbox-unchecked:before {
+    content: "\ea53";
+}
+.icon-tokens:before {
+    content: "\ea54";
+}
+.icon-x:before {
+    content: "\e92e";
+}
 .icon-left:before {
     content: "\e940";
 }
@@ -227,12 +230,6 @@
 }
 .icon-units:before {
     content: "\e93a";
-}
-.icon-tokens:before {
-    content: "\ea54";
-}
-.icon-x:before {
-    content: "\e92e";
 }
 .icon-hax0red:before {
     content: "\e900";
