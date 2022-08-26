@@ -373,6 +373,7 @@ class Skeletons extends Faction {
             areas: filteredAreas,
             killedOnly: true,
             basicOnly: true,
+            optionalMax: true,
             raiseDeadTargets: reserveTypes,
             canDecline: true,
             differentAreas: true,
