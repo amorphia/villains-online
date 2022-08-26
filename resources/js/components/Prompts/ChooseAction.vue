@@ -607,14 +607,14 @@
 
                 let areas = {};
                 this.faceDownGhosts.forEach( unit => {
-                    if( this.areasWithoutUnrevealedTokens.includes(unit.location) ) areas[unit.location] = true;
+                    if( this.areasWithoutUnrevealedEnemyTokens.includes(unit.location) ) areas[unit.location] = true;
                 });
 
                 return Object.keys( areas );
             },
 
-            areasWithoutUnrevealedTokens(){
-               return _.areasWithoutUnrevealedTokens( this.shared.data.areas );
+            areasWithoutUnrevealedEnemyTokens(){
+               return _.areasWithoutUnrevealedTokens( this.shared.data.areas, { enemy: this.shared.faction.name } );
             },
 
             faceDownGhosts(){

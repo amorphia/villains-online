@@ -150,7 +150,13 @@ let helpers = {
             if( area.data ) area = area.data; // format input
 
             // if the token...
-            if( !area.tokens.some( token => token.id && !token.revealed ) ){
+            let unrevealedTokens = area.tokens.filter(token => token.id && !token.revealed);
+
+            if(options.enemy){
+                unrevealedTokens = unrevealedTokens.filter(token => token.faction !== options.enemy);
+            }
+
+            if( !unrevealedTokens.length ){
                 areas[area.name] = true;
             }
         });
