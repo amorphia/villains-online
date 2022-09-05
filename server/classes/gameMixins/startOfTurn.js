@@ -47,6 +47,8 @@ let obj = {
             faction.drawPlans();
         });
 
+        this.gainBankResource();
+
         // handle start of turn triggers
         await this.handleStartOfTurnTriggers();
 
@@ -60,6 +62,15 @@ let obj = {
         await this.pushGameDataToPlayers();
     },
 
+    gainBankResource(){
+        const owner = this.areas['bank'].data.owner;
+        console.log("bank owner", owner);
+        if(!owner || owner === "neutral" ) return;
+
+        console.log("grant bank owner a resource");
+        this.factions[owner].gainResources(1);
+        this.message({ message: 'Gain xRx for controlling the Bank', faction : owner });
+    },
 
     /**
      * Handle our faction start of turn triggers

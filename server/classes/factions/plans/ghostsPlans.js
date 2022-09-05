@@ -18,7 +18,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'enemyMarkers', args : [3] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 1
             },
@@ -31,6 +31,12 @@ let obj = [
         objectives : [
             {
                 requirements : [
+                    { test : 'retainAreas', args : [1] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 1
@@ -39,7 +45,7 @@ let obj = [
                 requirements : [
                     { test : 'retainAreas', args : [2] },
                 ],
-                value : 2
+                value : 1
             },
         ]
     },
@@ -63,13 +69,19 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'retainAreas', args : [2] },
+                    { test : 'retainAreas', args : [1] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 1] },
+                    { test : 'enemyMarkers', args : [2] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'retainAreas', args : [2] },
                 ],
                 value : 1
             },

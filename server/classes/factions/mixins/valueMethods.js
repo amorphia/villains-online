@@ -634,9 +634,9 @@ let mixin = {
      */
     resourcesToCollect(){
         let areas = this.areas();
-        let resources = areas.length;
-        if( areas.includes( 'bank' ) ) resources++;
-        return resources;
+        //let resources = areas.length;
+        //if( areas.includes( 'bank' ) ) resources++;
+        return areas.length;
     },
 
 

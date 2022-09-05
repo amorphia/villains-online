@@ -5,7 +5,7 @@ class Bank extends Area {
     constructor( name, game ) {
         super( name, game );
 
-        this.data.control = "You gain an extra xRx during the COLLECT RESOURCES step.";
+        this.data.control = "You gain xRx at the start of the turn.";
         this.data.skill = "Gain xRxxRx";
         this.data.adjacent = [ 'factory', 'capitol', 'university' ];
     }
