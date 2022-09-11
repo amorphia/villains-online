@@ -120,7 +120,10 @@ let obj = {
         if( args.unit.deadly ) args.deadly = true;
 
         // if this is a non-deadly unit attacking, set bonus dice
-        if( !args.deadly ) args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice, args.area );
+        // if( !args.deadly ) args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice, args.area );
+
+        // if this is a unit attacking, set bonus dice
+        args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice, args.area );
     },
 
 
@@ -346,7 +349,7 @@ let obj = {
         let toHit = args.attacks[0];
 
         // deadly attacks can't be modified, so just return our attack value
-        if( args.deadly ) return toHit;
+        // if( args.deadly ) return toHit;
 
         // subtract any attack bonuses set by our args
         if( args.attackBonus ) toHit -= args.attackBonus;
@@ -360,6 +363,9 @@ let obj = {
                 if (args.unit[prop]) toHit -= this.data.unitPropAttackBonus[prop];
             }
         }
+
+        // deadly attacks can't be negatively modified, so just return our attack value
+        if( args.deadly ) return toHit;
 
         // finally if our target faction has a defense bonus apply that here
         let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, { debug : true, unit : args.unit } );

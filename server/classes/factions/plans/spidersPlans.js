@@ -6,13 +6,19 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'killsByPlayer', args : [2,3] },
+                    { test : 'killsByPlayer', args : [1,3] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
                     { test : 'useSkills', args : [2] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'killsByPlayer', args : [2,3] },
                 ],
                 value : 1
             },
@@ -25,13 +31,19 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'killsByPlayer', args : [2,3] },
+                    { test : 'killsByPlayer', args : [1,3] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
                     { test : 'unitInEnemy', args : ['mole', 1] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'killsByPlayer', args : [2,3] },
                 ],
                 value : 1
             },
@@ -153,13 +165,13 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [2] },
+                    { test : 'killsByPlayer', args : [2,2] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'killsByPlayer', args : [1,3] },
+                    { test : 'useSkills', args : [2] },
                 ],
                 value : 1
             },

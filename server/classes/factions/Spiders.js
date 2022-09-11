@@ -17,8 +17,8 @@ class Spiders extends Faction {
         this.data.name = this.name;
         this.data.title = "The Eyes of the Woods";
         this.data.focusDescription = "Kill units beloning to many different players";
-        this.data.dropDeploy = 2; // how many spider do we place with our Drop token?
-        this.data.xchxchDeploy = 1; // how many spiders do we place at the start of combat with xchxch?
+        this.data.dropDeploy = 1; // how many spider do we place with our Drop token?
+        // this.data.xchxchDeploy = 1; // how many spiders do we place at the start of combat with xchxch?
 
         // tokens
 
@@ -32,8 +32,8 @@ class Spiders extends Faction {
                 type: 'drop',
                 cost: 0,
                 resource : 1,
-                description: "Place two spiders in this area from your reserves, then start a battle here if able",
-                req : "To avoid discarding this token you must place at least one spider, or start a battle"
+                description: "Place a spider in this area from your reserves, then start a battle here if able",
+                req : "To avoid discarding this token you must place a spider, or start a battle"
             }
         };
 
@@ -54,6 +54,7 @@ class Spiders extends Faction {
         this.units['goon'].count = 4;
         this.units['mole'].count = 4;
         this.units['patsy'].count = 6;
+        this.units['patsy'].data.attack = [8];
 
         this.units['spider'] = {
             count: 10,
@@ -64,9 +65,10 @@ class Spiders extends Faction {
                 cost: 0,
                 noDeploy: true,
                 influence: 0,
-                attack: [6],
+                attack: [4],
                 deadly : true,
                 killed: false,
+                firstStrike: true,
                 selected: false,
                 hitsAssigned: 0,
             }
@@ -83,6 +85,7 @@ class Spiders extends Faction {
                 deadly: true,
                 flipped: false,
                 toughness: true,
+                firstStrike: true,
                 cost: 1,
                 killed: false,
                 onDeploy: 'deployXchxchWeb',
