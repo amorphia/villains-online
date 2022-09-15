@@ -17,7 +17,7 @@ class Spiders extends Faction {
         this.data.name = this.name;
         this.data.title = "The Eyes of the Woods";
         this.data.focusDescription = "Kill units beloning to many different players";
-        this.data.dropDeploy = 1; // how many spider do we place with our Drop token?
+        //this.data.dropDeploy = 1; // how many spider do we place with our Drop token?
         // this.data.xchxchDeploy = 1; // how many spiders do we place at the start of combat with xchxch?
 
         // tokens
@@ -204,7 +204,7 @@ class Spiders extends Faction {
      */
     async activateDropToken( args ) {
         // poop out spiders
-        let units = await this.resolveSpawnSpiders( args.area, this.data.dropDeploy, `Spiders drop from above in The ${args.area.name}` );
+        let units = await this.resolveSpawnSpiders( args.area, 1, `Spiders drop from above in The ${args.area.name}` );
 
         // if we have no spiders to place, log the error
         if( !units.length ) this.message( 'No more spiders in reserves to place', { class : 'warning' });
