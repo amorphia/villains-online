@@ -13,6 +13,13 @@ class Molemen extends Faction {
             'onSetup' : 'setUpVariousBits',
         };
 
+        this.capturedRewards = [
+            { ap : 1, maxEnergy : 1 },
+            { ap : 1, cardDraw : 1 },
+            { ap : 1, maxEnergy : 1 },
+            { ap : 2, cardDraw : 1 },
+        ];
+
         //data
         this.data.name = this.name;
         this.data.title = "the Kingdom of the Molemen";
