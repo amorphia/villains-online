@@ -249,6 +249,7 @@ class Ghosts extends Faction {
 
         // set stats
         unit.attack = [];
+        unit.influence = 0;
     }
 
 
