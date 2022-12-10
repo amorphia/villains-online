@@ -15,6 +15,7 @@ class Bikers extends Faction {
         this.data.upgrade = 0;
         this.data.redployFree = true;
 
+
         // tokens
         this.tokens['bully'] = {
             count: 2,
