@@ -237,6 +237,19 @@ let helpers = {
         return results;
     },
 
+    enemyAreasWhereFactionHasUnits( faction, factions, areas, predictions = false ){
+        if( faction.data ) faction = faction.data;
+
+        let enemyAreas = this.determineEnemyAreas( faction, factions, areas, predictions );
+        let enemyAreasWithUnits = [];
+
+        for( let area of Object.values( areas ) ) {
+            if ( !enemyAreas.includes( area.name ) || !this.factionHasUnitsInArea( faction, area ) ) continue;
+            enemyAreasWithUnits.push(area.name);
+        }
+
+        return enemyAreasWithUnits;
+    },
 
     /**
      * Return the number of enemy units in areas you own, or are predicted to own

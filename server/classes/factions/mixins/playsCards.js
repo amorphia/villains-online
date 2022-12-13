@@ -222,6 +222,14 @@ let obj = {
     getResolvedCardArray(  card, area  ){
         // if the card is an event, just throw it in the discard
         if( card.type === 'event' ){
+
+            let collectDiscardsToken = area.data.tokens.find( token => token.collectDiscardedCards  && token.revealed );
+            if(collectDiscardsToken){
+                let faction = this.game().factions[collectDiscardsToken.faction];
+                faction.message(`Scrounges a ${card.name} card from the trash`);
+                return faction.data.cards.hand;
+            }
+
             return this.game().deck.discard;
         }
 

@@ -11,7 +11,7 @@ let obj = {
     async revealToken( player, token, area, wildType = null) {
 
         // if this is a resource token gain a resource
-        if( token.resource ) this.gainResources( 1 );
+        if( token.resource ) this.gainResources( token.resource );
 
         // reveal this token
         token.revealed = true;

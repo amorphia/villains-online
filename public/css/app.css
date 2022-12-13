@@ -519,6 +519,7 @@ a {
   --faction-skeletons: #b2a366;
   --faction-bikers: #9d72bb;
   --faction-molemen: #99634B;
+  --faction-survivalists: #7A7535;
 }
 
 .faction-neutral {
@@ -627,6 +628,10 @@ a {
 
 .faction-molemen {
   color: var(--faction-molemen);
+}
+
+.faction-survivalists {
+  color: var(--faction-survivalists);
 }
 
 .primary {

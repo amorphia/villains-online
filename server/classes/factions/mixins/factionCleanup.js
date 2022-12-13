@@ -59,16 +59,38 @@ let obj = {
      * Remove our active action cards
      */
     removeActiveCards(){
+        let collectCards = null;
+
+        // does a faction steal discarded cards in an area?
+        _.forEach(this.game().areas, area => {
+            let token = area.data.tokens.find( token => token.collectDiscardedCards && token.revealed );
+            if(token && token.faction !== this.name){
+                collectCards = {
+                    faction: this.game().factions[token.faction],
+                    area: area.name,
+                };
+            }
+        });
+
         // remove active cards
         this.data.cards.active.forEach( card => {
             let cardClass = this.game().cards[card.class];
             new cardClass().clear( this );
+
+            if(collectCards){
+                collectCards.faction.message(`Scrounges a ${card.name} card from the trash`);
+                collectCards.faction.data.cards.hand.push(card);
+            } else {
+                this.game().deck.discard.push( card );
+            }
+
+            this.game().deck.discard.push( card )
+
             card.owner = null;
             card.playedIn = null;
         });
 
-        let cards = this.data.cards.active.splice( 0 );
-        cards.forEach( card => this.game().deck.discard.push( card ) );
+        this.data.cards.active = [];
     },
 
 

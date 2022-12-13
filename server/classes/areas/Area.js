@@ -40,24 +40,39 @@ class Area {
      * Clean up this area
      */
     cleanUp(){
+        this.cleanUpCards();
+
         // clear tokens
         this.data.tokens = [];
-
-        // clear card owners
-        this.data.cards.forEach( card => card.owner = null );
-
-        // move cards to discard
-        let cards = this.data.cards.splice( 0 );
-        cards.forEach( card => this.game().deck.discard.push( card ) );
 
         // clear battle marker
         this.data.battle = false;
     }
 
+    cleanUpCards(){
+        let collectDiscardsToken = this.data.tokens.find( token => token.collectDiscardedCards && token.revealed );
+        let faction;
+        if( collectDiscardsToken ) faction = this.game().factions[collectDiscardsToken.faction];
+
+        // set card owner and move to appropriate deck
+        this.data.cards.forEach( card => {
+            console.log("card.owner", card.owner, faction?.name);
+            if(faction && card.owner !== faction.name){
+                faction.message(`Scrounges a ${card.name} card from the trash`);
+                faction.data.cards.hand.push(card);
+            } else {
+                this.game().deck.discard.push( card );
+            }
+
+            card.owner = null;
+        });
+
+        // clear cards
+        this.data.cards = [];
+    }
 
 
     getDeployableAdjacentAreas(){
-        //todo I think there's a reason I started this method, but I can't remember why
         return this.data.adjacent;
     }
 

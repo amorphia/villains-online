@@ -111,6 +111,7 @@ let helpers = {
 
         // otherwise cycle through each area and push the ones we don't control to our results
         Object.values( areas ).forEach( area => {
+            if( area.data ) area = area.data;
             if( area.owner && area.owner !== 'neutral' && area.owner !== faction.name ) enemyAreas.push( area.name );
         });
 

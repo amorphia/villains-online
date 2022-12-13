@@ -20,6 +20,12 @@ let helpers = {
                 return;
             }
 
+            // prepared units can be assigned two hits
+            if( unit.prepared ) {
+                assignableHits += 2;
+                return;
+            }
+
             // other units can be assigned one hit
             assignableHits++;
         });
@@ -51,8 +57,13 @@ let helpers = {
         // if the defending faction has a basic defense bonus apply it
         if( defendingFaction.defenseBonus ) defenseBonus += defendingFaction.defenseBonus;
 
+        if( defendingFaction.defenseBonus ) defenseBonus += defendingFaction.defenseBonus;
+
         // if the defending player has a biohazard token they gain +2 defense
         if( this.hasBiohazardInArea( defendingFaction, area ) ) defenseBonus += 2;
+
+        let soloDefenseBonus = this.soloDefenseBonus( defendingFaction, area );
+        if( soloDefenseBonus ) defenseBonus += soloDefenseBonus;
 
         // if the defending player has a special faction defense bonus apply it
         if( defendingFaction.factionDefenseBonus ) defenseBonus += defendingFaction.factionDefenseBonus;
@@ -60,6 +71,14 @@ let helpers = {
         return defenseBonus;
     },
 
+    soloDefenseBonus( defendingFaction, area ){
+        let defendingUnits = this.factionUnitsInArea(defendingFaction, area);
+        console.log("soloDefenseBonus defendingUnits", defendingUnits );
+        console.log("defendingUnits.count === 1", defendingUnits.length === 1 );
+        console.log("defendingUnits[0].soloDefenseBonus", defendingUnits[0].soloDefenseBonus );
+
+        if(defendingUnits.length === 1 && defendingUnits[0].soloDefenseBonus) return defendingUnits[0].soloDefenseBonus;
+    },
 
     /**
      * Does this faction have a revealed biohazard token in the area?

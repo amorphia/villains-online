@@ -97,9 +97,21 @@ let obj = {
         let slideSpeed = 3;
         if( this.fastMode ) slideSpeed = .5;
 
+        // check if Ol' Zeke is stealing targets again
+        let stealsTarget = null;
+        _.forEach( this.factions, faction => {
+            let zeke = faction.data.zeke;
+            if(zeke && _.unitInPlay(zeke)){
+                stealsTarget = {
+                    faction,
+                    area: zeke.location,
+                }
+            }
+        });
+
         // score each target and record the results
         _.forEach( this.factions, faction => {
-            targets.push( this.scoreTarget( faction ) );
+            targets.push( this.scoreTarget( faction, stealsTarget ) );
         });
 
         // display the results to each player
@@ -112,17 +124,23 @@ let obj = {
      * Score a faction's target
      *
      * @param faction
+     * @param stealsTarget
      * @returns {object}
      */
-    scoreTarget( faction ){
+    scoreTarget( faction, stealsTarget ){
         let card = faction.data.cards.target[0];
+        let area = card.target;
+
+        let targetStolen = area === stealsTarget?.area;
+        let owner = targetStolen ? stealsTarget?.faction.name : this.areas[card.target].data.owner;
 
         let target = {
             file : card.file,
-            area : card.target,
+            area : area,
             placer : faction.name,
-            owner : this.areas[card.target].data.owner,
-            flipped : false
+            owner : owner,
+            flipped : false,
+            stolen : !!targetStolen,
         };
 
         // if this area is controlled (by a non-neutral faction) award our AP
@@ -334,8 +352,6 @@ let obj = {
      * Manage cleanup step
      */
     async cleanUpStep(){
-        _.forEach( this.areas, area => area.cleanUp() );
-
         try {
             for( let faction of Object.values( this.factions ) ){
                 await faction.cleanUp();
@@ -343,6 +359,8 @@ let obj = {
         } catch( error ){
             console.error( error );
         }
+
+        _.forEach( this.areas, area => area.cleanUp() );
     },
 
 
