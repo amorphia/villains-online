@@ -181,6 +181,8 @@ class Survivalists extends Faction {
         unit.flipped = false;
         if( unit.type === 'champion' ) return;
 
+        unit.prepared = false;
+
         if( unit.baseAttack ) unit.attack = [...unit.baseAttack];
 
         if( !unit.baseSkilled ) {
