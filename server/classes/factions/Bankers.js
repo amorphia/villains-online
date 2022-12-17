@@ -19,6 +19,8 @@ class Bankers extends Faction {
         this.data.focusDescription = "Control many areas";
 
         // tokens
+        this.tokens['deploy'].count = 4;
+
         this.tokens['credit-freeze'] = {
             count : 1,
             data : {
