@@ -12,7 +12,7 @@ class Survivalists extends Faction {
         this.data.focusDescription = "Have units in enemy areas";
         this.data.title = "Coalition of Preppers";
         this.data.zeke = null;
-        this.data.unitPropAttackBonus = { startedPrepared : 2 };
+        this.data.unitPropAttackBonus = { startedPrepared : 0 };
 
         this.triggers = {
             "onDeployAll" : "checkBugOut",

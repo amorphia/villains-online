@@ -161,7 +161,7 @@
              * @returns {boolean}
              */
             hasSmoke(){
-                return this.data.unit && this.shared.faction.smokeAreas?.includes( this.area.name );
+                return this.shared.faction.smokeAreas?.includes( this.area.name );
             },
 
 
