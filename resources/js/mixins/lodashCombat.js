@@ -57,11 +57,10 @@ let helpers = {
         // if the defending faction has a basic defense bonus apply it
         if( defendingFaction.defenseBonus ) defenseBonus += defendingFaction.defenseBonus;
 
-        if( defendingFaction.defenseBonus ) defenseBonus += defendingFaction.defenseBonus;
-
         // if the defending player has a biohazard token they gain +2 defense
         if( this.hasBiohazardInArea( defendingFaction, area ) ) defenseBonus += 2;
 
+        // Ol' Zeke don't take kindly to outsiders
         let soloDefenseBonus = this.soloDefenseBonus( defendingFaction, area );
         if( soloDefenseBonus ) defenseBonus += soloDefenseBonus;
 
