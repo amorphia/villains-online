@@ -17,7 +17,7 @@ class Bureau extends Faction {
         this.data.name = this.name;
         this.data.title = "The Bureau of Eternity";
         this.data.focusDescription = "Have the most tokens in many areas";
-        this.data.bonusDeploy = { type: 'champion', count : 1 };
+        //this.data.bonusDeploy = { type: 'champion', count : 1 };
 
         // track our skips used
         this.data.skips = {
@@ -37,7 +37,7 @@ class Bureau extends Faction {
                 influence: 1,
                 type: 'loop',
                 cost: 0,
-                resource: 1,
+                //resource: 1,
                 description: "Once this token has been activated, you may replace it with a (face down) token from your reserves as an action.",
                 req : "Passive token: this token may always be activated"
             }
