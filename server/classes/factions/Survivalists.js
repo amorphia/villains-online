@@ -39,27 +39,27 @@ class Survivalists extends Faction {
 
 
         // units
-        this.units['mole'].prepared = false;
-        this.units['mole'].skilled = false;
-        this.units['mole'].ready = false;
+        this.units['mole'].data.prepared = false;
+        this.units['mole'].data.skilled = false;
+        this.units['mole'].data.ready = false;
         this.units['mole'].data.onDamaged = 'checkPrepperToughness';
 
-        this.units['goon'].prepared = false;
-        this.units['goon'].skilled = false;
-        this.units['goon'].ready = false;
+        this.units['goon'].data.prepared = false;
+        this.units['goon'].data.skilled = false;
+        this.units['goon'].data.ready = false;
         this.units['goon'].data.onDamaged = 'checkPrepperToughness';
 
         this.units['patsy'].count = 6;
-        this.units['patsy'].prepared = false;
-        this.units['patsy'].preparedAttack = [9];
-        this.units['patsy'].baseAttack = [];
-        this.units['patsy'].skilled = false;
-        this.units['patsy'].ready = false;
+        this.units['patsy'].data.prepared = false;
+        this.units['patsy'].data.preparedAttack = [9];
+        this.units['patsy'].data.baseAttack = [];
+        this.units['patsy'].data.skilled = false;
+        this.units['patsy'].data.ready = false;
         this.units['patsy'].data.onDamaged = 'checkPrepperToughness';
 
         this.units['talent'].count = 4;
-        this.units['talent'].prepared = false;
-        this.units['talent'].baseSkilled = true;
+        this.units['talent'].data.prepared = false;
+        this.units['talent'].data.baseSkilled = true;
         this.units['talent'].data.onDamaged = 'checkPrepperToughness';
 
         this.units['champion'] = {

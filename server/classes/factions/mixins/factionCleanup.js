@@ -77,7 +77,7 @@ let obj = {
             let cardClass = this.game().cards[card.class];
             new cardClass().clear( this );
 
-            if(collectCards){
+            if(collectCards && card.playedIn === collectCards.area){
                 collectCards.faction.message(`Scrounges a ${card.name} card from the trash`);
                 collectCards.faction.data.cards.hand.push(card);
             } else {
