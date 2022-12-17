@@ -12,7 +12,7 @@ class Survivalists extends Faction {
         this.data.focusDescription = "Have units in enemy areas";
         this.data.title = "Coalition of Preppers";
         this.data.zeke = null;
-        this.data.unitPropAttackBonus = { prepared : 0 };
+        this.data.unitPropAttackBonus = { startedPrepared : 2 };
 
         this.triggers = {
             "onDeployAll" : "checkBugOut",
@@ -51,8 +51,7 @@ class Survivalists extends Faction {
 
         this.units['patsy'].count = 6;
         this.units['patsy'].data.prepared = false;
-        this.units['patsy'].data.preparedAttack = [9];
-        this.units['patsy'].data.baseAttack = [];
+        this.units['patsy'].data.attack = [9];
         this.units['patsy'].data.skilled = false;
         this.units['patsy'].data.ready = false;
         this.units['patsy'].data.onDamaged = 'checkPrepperToughness';
@@ -82,7 +81,7 @@ class Survivalists extends Faction {
     }
 
     processUpgrade( upgrade ){
-        this.data.unitPropAttackBonus = { prepared : (upgrade * 2) };
+        this.data.unitPropAttackBonus = { startedPrepared : (upgrade * 2) };
     }
 
     /**
@@ -168,8 +167,6 @@ class Survivalists extends Faction {
         unit.prepared = true;
         unit.skilled = true;
         unit.ready = true;
-
-        if(unit.preparedAttack) unit.attack = [...unit.preparedAttack];
     }
 
     /**
@@ -182,8 +179,6 @@ class Survivalists extends Faction {
         if( unit.type === 'champion' ) return;
 
         unit.prepared = false;
-
-        if( unit.baseAttack ) unit.attack = [...unit.baseAttack];
 
         if( !unit.baseSkilled ) {
             unit.skilled = false;

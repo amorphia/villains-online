@@ -147,7 +147,10 @@ class Battle {
 
         // for each unit, mark if it must attack during this phase
         unitsInArea.forEach( unit => {
-            if( this.canAttackThisPhase( unit ) ) unit.needsToAttack = true;
+            if( this.canAttackThisPhase( unit ) ){
+                unit.needsToAttack = true;
+                if( unit.prepared ) unit.startedPrepared = true;
+            }
         });
 
         // add this faction to our list of factions participating in this battle
@@ -209,7 +212,8 @@ class Battle {
      */
     clearFactionNeedsToAttack( faction ){
         faction.units.forEach( unit => {
-            if( unit.needsToAttack ) unit.needsToAttack = false
+            if( unit.needsToAttack ) unit.needsToAttack = false;
+            if( unit.startedPrepared ) delete unit.startedPrepared;
         });
     }
 
@@ -245,6 +249,7 @@ class Battle {
         await gameFaction.attack( attackArgs ).catch( error => console.error( error ) );
         this.data.completedAttacks[faction.name]++;
         unit.needsToAttack = false;
+        if(unit.startedPrepared) delete unit.startedPrepared;
         this.data.currentUnit = null;
     }
 
@@ -305,6 +310,7 @@ class Battle {
      */
     removeUnitFromCombat( unit ){
         if( unit.needsToAttack ) unit.needsToAttack = false;
+        if( unit.startedPrepared ) delete unit.startedPrepared;
         for( let faction of Object.values( this.data.factions ) ){
             if( faction.name !== unit.faction ) continue;
             faction.units = faction.units.filter( item => item.id !== unit.id );
@@ -313,6 +319,7 @@ class Battle {
 
     addUnitToCombat( unit ){
         if( unit.attack.length ) unit.needsToAttack = true;
+        if( unit.prepared ) unit.startedPrepared = true;
         for( let faction of Object.values( this.data.factions ) ){
             if( faction.name !== unit.faction ) continue;
             faction.units.push( unit );
