@@ -89,7 +89,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'killsInAreas', args : [4] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 2
             },

@@ -18,7 +18,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 1
             },

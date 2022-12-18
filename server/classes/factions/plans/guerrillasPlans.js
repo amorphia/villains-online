@@ -56,7 +56,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 1
             },

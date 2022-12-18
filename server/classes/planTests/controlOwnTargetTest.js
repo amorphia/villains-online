@@ -5,12 +5,12 @@
  * @param faction
  * @returns {boolean}
  */
-const test = function controlTarget( debug, faction ) {
+const test = function controlOwnTarget( debug, faction ) {
     let targetController = faction.targetArea().data.owner;
     let result = faction.targetArea().data.owner === faction.name;
 
     if( debug ) console.log(
-        'controlTarget ---',
+        'controlOwnTarget ---',
         'targetController:', targetController,
         'result:', result
     );

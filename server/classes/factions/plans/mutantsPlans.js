@@ -20,7 +20,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'influenceInAreas', args : [6,1] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 1
             },

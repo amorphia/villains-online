@@ -112,7 +112,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'playRules', args : [5, 'total'] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 3
             },

@@ -7,7 +7,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'killTypeCount', args : [3] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 2
             },

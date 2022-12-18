@@ -37,7 +37,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 1
             },
@@ -57,7 +57,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'useSkills', args : [6] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 2
             },

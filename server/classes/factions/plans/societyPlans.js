@@ -48,7 +48,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'tokensInAreas', args : [8] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 3
             },
@@ -163,7 +163,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'tokensInAreas', args : [6] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 1
             },

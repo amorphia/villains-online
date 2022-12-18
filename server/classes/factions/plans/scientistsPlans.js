@@ -120,7 +120,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'cardsInHand', args : [4] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 1
             },

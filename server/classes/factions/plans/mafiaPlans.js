@@ -25,7 +25,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'exterminateEnemyTarget', args : [] },
+                    { test : 'controlTargets', args : [2] },
                 ],
                 value : 2
             },
@@ -45,9 +45,15 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'unitsAtEnemyTargets', args : [ 2, 'mole' ] },
+                    { test : 'exterminateAreas', args : [1] },
                 ],
-                value : 2
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'controlEnemyTargets', args : [1] },
+                ],
+                value : 1
             },
         ]
     },
@@ -59,19 +65,13 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'unitsAtEnemyTargets', args : [ 4 ] },
+                    { test : 'controlTargets', args : [2] },
                 ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
                     { test : 'exterminateAreas', args : [1] },
-                ],
-                value : 1
-            },
-            {
-                requirements : [
-                    { test : 'controlTarget', args : [] },
                 ],
                 value : 1
             },
@@ -97,7 +97,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'enemyMarkers', args : [3] },
+                    { test : 'influenceInAreas', args : [6,1] },
                 ],
                 value : 1
             },
@@ -111,13 +111,13 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'unitsAtEnemyTargets', args : [3] },
+                    { test : 'controlEnemyTargets', args : [1] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'influenceInAreas', args : [6,1] },
+                    { test : 'enemyMarkers', args : [3] },
                 ],
                 value : 1
             },

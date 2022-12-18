@@ -86,7 +86,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'exterminateAreas', args : [1] },
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 2
             },
@@ -133,7 +133,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'controlTarget', args : [] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 1
             },
