@@ -15,6 +15,11 @@ class Bikers extends Faction {
         this.data.upgrade = 0;
         this.data.redployFree = true;
 
+        // triggered events
+        this.triggers = {
+            "onAfterActivateToken" : "checkTurfWar"
+        };
+
         // tokens
         this.tokens['bully'] = {
             count: 2,
@@ -28,25 +33,38 @@ class Bikers extends Faction {
             }
         };
 
+        this.tokens['turf'] = {
+            count: 1,
+            data: {
+                influence: 1,
+                type: 'deploy',
+                cost: 0,
+                resource: 1,
+                description: "Treat as a basic deploy token, except flip it face down when an opponent activates a deploy token here.",
+                req: "This token must be discarded if you don't deploy any units"
+            }
+        };
+
+        this.tokens['deploy'].count = 2;
+
         delete this.tokens['battle'];
         delete this.tokens['move'];
 
         // units
-        this.units['goon'].count = 5;
-        this.units['goon'].data.noReplace = true;
+        //this.units['goon'].data.noReplace = true;
         this.units['goon'].data.redeployFree = true;
 
+        //this.units['mole'].data.noReplace = true;
+        this.units['mole'].data.redeployFree = true;
+
         this.units['patsy'].count = 8;
-        this.units['patsy'].data.noReplace = true;
+        //this.units['patsy'].data.noReplace = true;
         this.units['patsy'].data.redeployFree = true;
 
-        this.units['talent'].count = 5;
-        this.units['talent'].data.noReplace = true;
+        this.units['talent'].count = 4;
+        //this.units['talent'].data.noReplace = true;
         this.units['talent'].data.redeployFree = true;
 
-        this.units['mole'].count = 3;
-        this.units['mole'].data.noReplace = true;
-        this.units['mole'].data.redeployFree = true;
 
         this.units['champion'] = {
             count: 1,
@@ -58,7 +76,7 @@ class Bikers extends Faction {
                 attack: [6,6,6],
                 cost: 3,
                 toughness: true,
-                clipped: false,
+                flipped: false,
                 killed: false,
                 onDeploy: 'bladeIntimidate',
                 onMove: 'bladeIntimidate',
@@ -105,8 +123,18 @@ class Bikers extends Faction {
                 units: units,
             });
         }
-
     }
+
+    checkTurfWar( token ) {
+        if (token.faction === this.name || token.type !== "deploy") return;
+
+        let turf = this.getTurfToken();
+        if (!turf.revealed || !turf.location === token.location) return;
+
+        turf.revealed = false;
+        this.message("Flips their Turf War token face down in the face of hostile incursions");
+    }
+
 
     async factionChooseIntimidateAction( faction, area, unitCount ) {
         const factionCount = faction.unitsInArea(area).length;
@@ -236,6 +264,27 @@ class Bikers extends Faction {
 
         // advance the game
         this.game().advancePlayer();
+    }
+
+    /**
+     * Can we activate our bully token?
+     *
+     * @returns {boolean}
+     */
+    canActivateTurf( token, area ){
+        return this.canActivateDeploy( token, area );
+    }
+
+    getTurfToken()
+    {
+        return this.data.tokens.find(token => token.name === 'turf');
+    }
+
+    /**
+     *
+     */
+    async activateTurfToken( args ) {
+        this.activateDeployToken( args );
     }
 
 
