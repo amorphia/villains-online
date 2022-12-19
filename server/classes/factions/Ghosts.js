@@ -176,10 +176,17 @@ class Ghosts extends Faction {
             item.flipped = true;
         }
 
+        let totalUnits = [...units, ...toughUnits];
+
+        if(!totalUnits.length){
+            this.message( "No units became scared", { class : 'warning' } );
+            return;
+        }
+
         // announce what happened to all players
         await this.game().timedPrompt('units-shifted', {
             message : `Units scared in The ${area}`,
-            units: [...units, ...toughUnits],
+            units: totalUnits,
             area : area,
         });
     }
