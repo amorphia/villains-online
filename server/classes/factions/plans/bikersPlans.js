@@ -31,15 +31,9 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'killUnits', args : [4] },
+                    { test : 'areasMostUnits', args : [3] },
                 ],
-                value : 1
-            },
-            {
-                requirements : [
-                    { test : 'areasMostUnits', args : [2] },
-                ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [

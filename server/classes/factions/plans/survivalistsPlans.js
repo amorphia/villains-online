@@ -120,7 +120,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [3] },
+                    { test : 'loseUnits', args : [3] },
                 ],
                 value : 1
             },
