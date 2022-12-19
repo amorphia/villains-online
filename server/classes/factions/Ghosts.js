@@ -7,14 +7,8 @@ class Ghosts extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
-        this.capturedRewards = [
-            { ap : 1, cardDraw : 1 },
-            { ap : 1, cardDraw : 1 },
-            { ap : 1 },
-            { ap : 2 },
-        ];
-
         //data
+        this.data.maxEnergy = 8;
         this.data.name = this.name;
         this.data.title = "The Lost Legion";
         this.data.focusDescription = "Retain areas you control";

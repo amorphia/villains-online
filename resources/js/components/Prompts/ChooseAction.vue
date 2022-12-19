@@ -607,7 +607,8 @@
 
                 let areas = {};
                 this.faceDownGhosts.forEach( unit => {
-                    if( this.areasWithoutUnrevealedEnemyTokens.includes(unit.location) ) areas[unit.location] = true;
+                    //if( this.areasWithoutUnrevealedEnemyTokens.includes(unit.location) ) areas[unit.location] = true;
+                    areas[unit.location] = true;
                 });
 
                 return Object.keys( areas );
