@@ -12,7 +12,6 @@ class Bikers extends Faction {
         this.data.bonusDeploy = { inPlay: true, count : 2 };
         this.data.title = "Hell's Blade Cycle Club";
         this.data.focusDescription = "Most units in areas";
-        this.data.upgrade = 0;
         this.data.redployFree = true;
 
         // triggered events
@@ -114,8 +113,9 @@ class Bikers extends Faction {
         const responses = await Promise.all( promises );
 
         // process choices
-        const units = this.processIntimidateActions( responses );
+        const { units, payoffs } = this.processIntimidateActions( responses );
 
+        this.resolvePayoffs( payoffs );
 
         if(units.length){
             await this.game().timedPrompt('units-shifted', {
@@ -165,10 +165,9 @@ class Bikers extends Faction {
         };
     }
 
-
-
     processIntimidateActions( responses ){
         const units = [];
+        let payoffs = 0;
 
         responses.forEach( response => {
             const faction = response.faction;
@@ -177,6 +176,7 @@ class Bikers extends Faction {
                 faction.payCost(1);
                 let message = `Danny "The Blade" Strugis shakes down <span class="faction-${faction.name}">the ${faction.name}</span> for xC1x`;
                 this.game().message({ faction, message });
+                payoffs++;
                 return;
             }
 
@@ -187,9 +187,15 @@ class Bikers extends Faction {
             }
         });
 
-        return units;
+        return { units, payoffs };
     }
 
+    resolvePayoffs( payoffs ){
+        if( !payoffs || !this.data.upgrade ) return;
+
+        let resources = this.data.upgrade === 1 ? 1 : payoffs;
+        this.gainResources( resources );
+    }
 
     async bladeRecruit( event ){
         console.log("blade recruit", event);
