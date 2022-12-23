@@ -21,6 +21,8 @@ class Devils extends Faction {
         this.data.chaosLevel = '';
         this.data.strifeCardBonusApplied = false;
 
+        this.data.maxEnergy = 7;
+
         // how much chaos we need to achieve each chaos level
         this.data.chaosLevels = {
             strife: 2,

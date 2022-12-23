@@ -123,7 +123,7 @@ class Ghosts extends Faction {
         let declined = false;
 
         // draw a card
-        this.drawCards();
+        this.drawCards(1, true);
 
         // play a numbers of cards up to our card limit
         while( cardsPlayed < unit.bansheeCards && !declined ) {

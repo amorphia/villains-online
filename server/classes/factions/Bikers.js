@@ -38,7 +38,6 @@ class Bikers extends Faction {
                 influence: 1,
                 type: 'deploy',
                 cost: 0,
-                resource: 1,
                 description: "Treat as a basic deploy token, except flip it face down when an opponent activates a deploy token here.",
                 req: "This token must be discarded if you don't deploy any units"
             }
@@ -129,7 +128,7 @@ class Bikers extends Faction {
         if (token.faction === this.name || token.type !== "deploy") return;
 
         let turf = this.getTurfToken();
-        if (!turf.revealed || !turf.location === token.location) return;
+        if (!turf.revealed || turf.location !== token.location) return;
 
         turf.revealed = false;
         this.message("Flips their Turf War token face down in the face of hostile incursions");
