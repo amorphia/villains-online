@@ -27,6 +27,7 @@
 
         <!-- submit button -->
         <div class="width-100 d-flex justify-center">
+            <button v-if="data.canDecline" class="button button-empty" @click="decline">Decline</button>
             <button class="button" :disabled="!canSubmit" @click="resolve">Discard selected cards</button>
         </div>
 
@@ -59,7 +60,7 @@
                 }
 
                 // if we have more cards to select select this card and return
-                if( this.needToSelect !== 0 ){
+                if( this.needToSelect !== 0 || this.data.unlimited ){
                     this.$set( card, 'selected', true );
                     return;
                 }
@@ -83,6 +84,13 @@
                 this.shared.respond( 'discard-card', data );
             },
 
+            /**
+             * Resolve this prompt
+             */
+            decline(){
+                data = { ...this.data, declined : true };
+                this.shared.respond( 'discard-card', data );
+            },
         },
 
         computed : {
@@ -104,6 +112,10 @@
                     return this.data.message;
                 }
 
+                if(this.data.unlimited){
+                    return 'Discard any number of cards';
+                }
+
                 return this.data.count === 1 ? 'Discard a card' : `Discard ${this.data.count} cards`;
             },
 
@@ -122,6 +134,7 @@
              * @returns {number}
              */
             needToSelect(){
+                if(this.data.canDecline) return 0;
                 return this.data.count - this.selected.length;
             },
 
@@ -131,6 +144,7 @@
              * @returns {boolean}
              */
             canSubmit(){
+                if(this.data.canDecline) return this.selected.length;
                 return this.needToSelect === 0;
             },
         }

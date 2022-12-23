@@ -25,6 +25,7 @@ let obj = {
     bikers : { name: 'bikers', owner : null, blocked : false, status : 0, selectable : true },
     molemen : { name: 'molemen', owner : null, blocked : false, status : 0, selectable : true },
     survivalists : { name: 'survivalists', owner : null, blocked : false, status : 0, selectable : true },
+    devils : { name: 'devils', owner : null, blocked : false, status : 0, selectable : true },
 };
 
 module.exports = Object.assign({}, obj );

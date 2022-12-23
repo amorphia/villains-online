@@ -423,6 +423,7 @@ let obj = {
      * @returns {object} // results
      */
     async handleAttackHits( hits, victim, args ){
+
         // if we scored no hits, abort
         if( !hits ){
             this.game().sound( 'wiff' );
@@ -453,7 +454,7 @@ let obj = {
         // if we targeted a specific unit with this attack assign our hits to that unit
         if( args.targetUnit ){
             this.game().message({ faction: this, message: `hits <span class="faction-${args.targetUnit.faction}">${args.targetUnit.faction} ${args.targetUnit.name}</span> in the ${args.area.name}` });
-            return await this.game().assignHitsToUnit( args.targetUnit, this, hits );
+            return await this.game().assignHitsToUnit( args.targetUnit, this, hits, args );
         }
 
         // if this was a deadly attack assign our deadly hits to all enemy factions
@@ -573,7 +574,7 @@ let obj = {
         //if( this.smokeScreenAttack( response, killer ) ) return;
 
         // resolve our hit assignment
-        return await this.resolveHitAssignment( response, killer, area  );
+        return await this.resolveHitAssignment( response, killer, area, args );
     },
 
 
@@ -583,10 +584,13 @@ let obj = {
      * @param response
      * @param killer
      * @param area
+     * @param args
      * @returns {string|undefined} // we either return undefined, or the string "kills" for reasons I don't quite recall
      */
-    async resolveHitAssignment( response, killer, area ){
+    async resolveHitAssignment( response, killer, area, args ){
         let hasKill;
+
+        console.log("resolveHitAssignment args", args);
 
         // cycle through the units chosen as victims and apply the appropriate hits
         let results = [];
@@ -607,7 +611,7 @@ let obj = {
             let unit = this.game().objectMap[ target.id ];
 
             // assign hits to that unit
-            let result = await this.game().assignHitsToUnit( unit, killer, target.hits );
+            let result = await this.game().assignHitsToUnit( unit, killer, target.hits, args );
 
             // if we killed the unit, set hasKill to "kills"
             if( result === 'kills' ) hasKill = result;

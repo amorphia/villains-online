@@ -29,6 +29,7 @@
         <!-- current player prompt -->
         <div v-if="showPromptMessage" class="player-hud__message ellipses shrink-0 game-phase center-text highlight lowercase">{{ player.prompt.name | clearHyphens }}</div>
 
+
         <!-- player target -->
         <div v-if="faction.cards.target.length && shared.canSeeTarget( faction )"
              class="player-hud__target p-2 text-center shrink-0"
@@ -53,10 +54,25 @@
             <div class="player-hud__pip-content__item "><i class="icon-flag pip-icon"></i><span class="ellipses">{{ faction.captured.current }} / {{ faction.captured.max }}</span></div>
         </div>
 
+        <!-- devil chaos -->
+        <div v-if="faction.name === 'devils'" class="ellipses overflow-hidden game-phase lowercase highlight chaos-track">
+            <div class="chaos-track__internal d-flex flex-wrap">
+                <span class="">CHAOS</span>
+                <div class="d-flex justify-center align-center grow-1">
+                    <i v-for="n in faction.chaosLevels.max"
+                       class="faction-track__pip"
+                       :class="n <= faction.chaos ? 'icon-circle active' : 'icon-circle-open'"></i>
+                </div>
+            </div>
+        </div>
+
+
         <!-- modifier abilities -->
         <div class="player-hud__stats-row pos-relative width-100 display-flex shrink-1 overflow-hidden flex-wrap">
             <i v-for="stat in stats" class="stat-icon" :class="`icon-${stat.name}`" :title="`${stat.title} - ${stat.description}`"></i>
         </div>
+
+
     </div>
 </template>
 
@@ -162,6 +178,13 @@
         background-image: url(/images/icons/pp.png);
     }
 
+    .faction-track__pip {
+        font-size: .5em;
+        display: block;
+        padding: .3em;
+        color: var(--primary-light-color);
+    }
+
     .player-hud {
         margin: 0 .5em .35em;
         background-color: rgba(255, 131, 213, 0.11);
@@ -187,6 +210,19 @@
         border-radius: .25em;
         font-family: var(--primary-font);
         color: var(--off-white);
+    }
+
+    .chaos-track {
+        background-color: rgba(0,0,0,.5);
+        padding: 0 .5em;
+        border-radius: 0 0 .25em .25em;
+        font-family: var(--primary-font);
+        color: var(--off-white);
+        width: 100%;
+    }
+
+    .chaos-track__internal {
+        margin-top: -.25em;
     }
 
     .player-hud__pip-content__item {

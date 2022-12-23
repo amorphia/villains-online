@@ -243,6 +243,7 @@ class Battle {
             attackBonus : this.options.attackBonus,
             inCombat : true,
             controllingFaction : controllingFaction,
+            scoreKills : this.options.scoreKills,
         };
 
         // attack with the unit

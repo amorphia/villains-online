@@ -44,8 +44,9 @@ let obj = {
      * @param unit
      * @param faction
      * @param count
+     * @param options
      */
-    async assignHitsToUnit( unit, faction, count = 1 ){
+    async assignHitsToUnit( unit, faction, count = 1, options = {} ){
         let owner = this.factions[unit.faction];
 
         // hidden units are immune
@@ -77,7 +78,7 @@ let obj = {
 
         // otherwise kill the unit
         try {
-            await this.killUnit( unit, faction );
+            await this.killUnit( unit, faction, options );
         } catch( error ){
             console.error( error );
         }
@@ -91,9 +92,17 @@ let obj = {
      *
      * @param unit
      * @param faction
+     * @param options
      */
-    async killUnit( unit, faction ){
+    async killUnit( unit, faction, options = {} ){
         if( typeof faction === 'string' ) faction = this.factions[faction];
+
+        console.log("killUnit options", options);
+
+        // if we have overridden who scores this kill apply that now
+        if(options.scoreKills){
+            faction = options.scoreKills;
+        }
 
         // un-web our unit if needed
         if( unit.webbed ) delete unit.webbed;
@@ -112,7 +121,7 @@ let obj = {
         }
 
         // check for triggered events belonging to a faction whenever they kill a unit
-        if( faction.triggers.onFactionKillsUnit ) await faction[faction.triggers.onFactionKillsUnit]( unit );
+        if( faction.triggers.onFactionKillsUnit ) await faction[faction.triggers.onFactionKillsUnit]( unit, options );
 
         // unflip our unit if needed
         if( unit.flipped ) this.factions[unit.faction].unflipUnit( unit );

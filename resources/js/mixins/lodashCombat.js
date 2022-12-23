@@ -72,10 +72,6 @@ let helpers = {
 
     soloDefenseBonus( defendingFaction, area ){
         let defendingUnits = this.factionUnitsInArea(defendingFaction, area);
-        console.log("soloDefenseBonus defendingUnits", defendingUnits );
-        console.log("defendingUnits.count === 1", defendingUnits.length === 1 );
-        console.log("defendingUnits[0].soloDefenseBonus", defendingUnits[0].soloDefenseBonus );
-
         if(defendingUnits.length === 1 && defendingUnits[0].soloDefenseBonus) return defendingUnits[0].soloDefenseBonus;
     },
 

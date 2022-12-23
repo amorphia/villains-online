@@ -16,6 +16,7 @@
     --dark-color: #333333;
     --off-white : #ADADAD;
     --light-yellow : #ffe000;
+    --red: #ff0000;
 
     --faction-martyrs: #CADDDC;
     --faction-mafia: #ff6800;
@@ -44,6 +45,7 @@
     --faction-bikers: #9d72bb;
     --faction-molemen: #99634B;
     --faction-survivalists: #7A7535;
+    --faction-devils: #d37167;
 }
 
 .faction-neutral{color: white}
@@ -74,6 +76,7 @@
 .faction-bikers {color: var(--faction-bikers)}
 .faction-molemen {color: var(--faction-molemen)}
 .faction-survivalists {color: var(--faction-survivalists)}
+.faction-devils {color: var(--faction-devils)}
 
 .primary { color: var(--primary-color) }
 .primary-light { color: var(--primary-light-color) }
@@ -82,6 +85,7 @@
 .light-yellow { color: var(--light-yellow) }
 .off-white { color: var(--off-white)}
 .gold { color: var(--gold)}
+.red { color: var(--red)}
 
 .primary-font { font-family: var(--primary-font) }
 .secondary-font { font-family: var(--secondary-font) }
