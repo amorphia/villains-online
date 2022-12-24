@@ -19,9 +19,7 @@ class Devils extends Faction {
         this.data.title = "The Laughter in the Dark";
         this.data.chaos = 0; // tracks how may kills we have that aren't from attacking with our units
         this.data.chaosLevel = '';
-        this.data.strifeCardBonusApplied = false;
-
-        this.data.maxEnergy = 7;
+        this.data.cardLimit = 2;
 
         // how much chaos we need to achieve each chaos level
         this.data.chaosLevels = {
@@ -33,9 +31,6 @@ class Devils extends Faction {
 
         this.data.stokeBattles = 1;
         this.data.flipableUnits = ['champion'];
-
-        // tokens
-        delete this.tokens['battle'];
 
         this.tokens['stoke'] = {
             count: 2,
@@ -95,7 +90,7 @@ class Devils extends Faction {
         // apply strife
         if( this.data.chaos === this.data.chaosLevels.strife ){
             this.data.chaosLevel = "strife";
-            this.data.cardLimit++;
+            //this.data.cardLimit++;
             levelText = ": <span class='highlight'>STRIFE</span>";
         }
 
@@ -158,7 +153,7 @@ class Devils extends Faction {
     }
 
     princeLootCards( event ) {
-        if( !this.hasChaosLevel("bedlam") ) return this.message( "Has not achieved bedlam", { class: 'warning' } );
+        //if( !this.hasChaosLevel("bedlam") ) return this.message( "Has not achieved bedlam", { class: 'warning' } );
         if( !this.data.cards.hand.length ) return this.message( "Has no cards to discard", { class: 'warning' } );
 
         return this.game().promise({
@@ -189,7 +184,7 @@ class Devils extends Faction {
     resetChaos(){
         // reset strife bonus
         if( this.data.chaos >= this.data.chaosLevels.strife ){
-            this.data.cardLimit--;
+            //this.data.cardLimit--;
         }
 
         // reset pandemonium bonus

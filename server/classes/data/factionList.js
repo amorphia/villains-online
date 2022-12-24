@@ -22,10 +22,10 @@ let obj = {
     spiders : { name: 'spiders', owner : null, blocked : false, status : 0, killer : true, selectable : true},
     skeletons : { name: 'skeletons', owner : null, blocked : false, status : 0, selectable : true },
     martyrs : { name: 'martyrs', owner : null, blocked : false, status : 1, selectable : true },
-    bikers : { name: 'bikers', owner : null, blocked : false, status : 0, selectable : true },
+    bikers : { name: 'bikers', owner : null, blocked : false, status : 0, selectable : true, killer : true, },
     molemen : { name: 'molemen', owner : null, blocked : false, status : 1, selectable : true },
     survivalists : { name: 'survivalists', owner : null, blocked : false, status : 0, selectable : true },
-    devils : { name: 'devils', owner : null, blocked : false, status : 0, selectable : true, killer : true, },
+    devils : { name: 'devils', owner : null, blocked : false, status : 0, selectable : true, killer : false, },
 };
 
 module.exports = Object.assign({}, obj );
