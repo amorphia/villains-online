@@ -590,8 +590,6 @@ let obj = {
     async resolveHitAssignment( response, killer, area, args ){
         let hasKill;
 
-        console.log("resolveHitAssignment args", args);
-
         // cycle through the units chosen as victims and apply the appropriate hits
         let results = [];
 

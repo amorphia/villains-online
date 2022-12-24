@@ -164,8 +164,6 @@ class Ghosts extends Faction {
             return [...items, ...item];
         }, []);
 
-        console.log(toughUnits);
-
         for( let item of toughUnits ){
             item.flipped = true;
         }

@@ -56,7 +56,6 @@ class Area {
 
         // set card owner and move to appropriate deck
         this.data.cards.forEach( card => {
-            console.log("card.owner", card.owner, faction?.name);
             if(faction && card.owner !== faction.name){
                 faction.message(`Scrounges a ${card.name} card from the trash`);
                 faction.data.cards.hand.push(card);

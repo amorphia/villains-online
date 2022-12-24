@@ -251,7 +251,7 @@ let obj = {
         });
 
         // heal wounded units, ad unflip units coming in from the reserves
-        if( !unit.dontUnflipOnDeploy && unit.flipped && ( unit.toughness || !unit.location || unit.skeleton ) ){
+        if( !unit.dontUnflipAutomatically && unit.flipped && ( unit.toughness || !unit.location || unit.skeleton ) ){
             this.unflipUnit( unit );
         }
 

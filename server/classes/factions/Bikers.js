@@ -139,7 +139,6 @@ class Bikers extends Faction {
         const factionCount = faction.unitsInArea(area).length;
         // only opponents with fewer units than us are affected
         if (faction.name === this.name || factionCount === 0 || factionCount >= unitCount){
-            console.log(faction.name + ' not intimidated', faction.unitsInArea(area).length, unitCount);
             return {notIntimidated: true};
         }
 
@@ -197,13 +196,10 @@ class Bikers extends Faction {
     }
 
     async bladeRecruit( event ){
-        console.log("blade recruit", event);
         if(!this.data.upgrade || !this.data.units.some( unit =>  _.unitInReserves( unit, { type : 'patsy' } ) ) ) return;
 
         // gain resources equal to the hits scored
         const count = this.data.upgrade === 1 ? 1 : event.hits;
-        console.log("recruit count", count);
-
         await this.resolveRecruitPatsies( event.unit.location, count );
     }
 

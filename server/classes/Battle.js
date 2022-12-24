@@ -243,7 +243,7 @@ class Battle {
             attackBonus : this.options.attackBonus,
             inCombat : true,
             controllingFaction : controllingFaction,
-            scoreKills : this.options.scoreKills,
+            onCombatDeath : this.options.onCombatDeath,
         };
 
         // attack with the unit
@@ -319,10 +319,12 @@ class Battle {
     }
 
     addUnitToCombat( unit ){
+        if(unit.location !== this.area.name ) return;
+
         if( unit.attack.length ) unit.needsToAttack = true;
         if( unit.prepared ) unit.startedPrepared = true;
         for( let faction of Object.values( this.data.factions ) ){
-            if( faction.name !== unit.faction ) continue;
+            if( faction.name !== unit.faction || faction.units.find( item => item.id === unit.id )) continue;
             faction.units.push( unit );
         }
     }

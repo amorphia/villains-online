@@ -10,7 +10,7 @@ class Devils extends Faction {
         // triggers
         this.triggers = {
             "onCleanUp" : "resetChaos",
-            "onFactionKillsUnit" : "raiseChaos",
+            "onFactionKillsUnit" : "checkCardChaos",
         };
 
         // data
@@ -51,16 +51,16 @@ class Devils extends Faction {
                 flipped: false,
                 type: 'champion',
                 basic: false,
-                attack: [6],
+                attack: [],
                 influence: 1,
                 seeking : false,
-                cost: 1,
+                cost: 0,
                 killed : false,
                 skilled : true,
                 ready : false,
                 onDeploy: 'deployCheckIfDelighted',
                 onSkill: 'princeLootCards',
-                dontUnflipOnDeploy: true,
+                dontUnflipAutomatically: true,
                 selected : false,
                 hitsAssigned : 0,
             }
@@ -77,11 +77,14 @@ class Devils extends Faction {
         this.data.stokeBattles = upgrade + 1;
     }
 
-    raiseChaos( unit, options ){
-        console.log("raise Chaos", unit, options);
-
+    checkCardChaos( unit, options ){
         // if the attack was
-        if(options.unit?.faction === this.name || this.data.chaos >= this.data.chaosLevels.max) return;
+        if(options.unit || unit.faction === this.name) return;
+        this.raiseChaos();
+    }
+
+    raiseChaos(){
+        if(this.data.chaos >= this.data.chaosLevels.max) return;
 
         // increment chaos
         this.data.chaos++;
@@ -116,7 +119,7 @@ class Devils extends Faction {
      * @param event
      */
     deployCheckIfDelighted( event ) {
-        if(event.unit.flipped || !this.hasChaosLevel("bedlam")) return;
+        if(event.unit.flipped || !this.hasChaosLevel("pandemonium")) return;
         this.becomesDelighted( event.unit );
     }
 
@@ -129,6 +132,8 @@ class Devils extends Faction {
         unit.seeking = true;
         unit.attack = [6,6,6];
         unit.influence = 3;
+
+        if( this.game().combat ) this.game().combat.addUnitToCombat( unit );
 
         this.message("The Gleeful Prince becomes delighted" );
     }
@@ -146,7 +151,7 @@ class Devils extends Faction {
 
         unit.flipped = false;
         unit.seeking = false;
-        unit.attack = [6];
+        unit.attack = [];
         unit.influence = 1;
 
         this.message("The Gleeful Prince is no longer delighted" );
@@ -206,6 +211,12 @@ class Devils extends Faction {
         return this.canActivateBattle( token, area );
     }
 
+    collectStokeChaos(unit){
+        if(unit.faction !== this.name){
+            this.raiseChaos();
+        }
+    }
+
     /**
      * Handle activating our Mr. Fusion token
      *
@@ -213,13 +224,13 @@ class Devils extends Faction {
      */
     async activateStokeToken( args ){
         let battles = 0;
-        let stokingTheFlames = !this.hasUnitsInArea( args.area );
+        let stokingTheFlames = !this.hasUnitsInArea( args.area, { withAttack : true } );
         let options = {};
 
         if( stokingTheFlames ){
             this.message( "Is stoking the flames of hate and violence" );
             this.drawCards( 1, true );
-            options.scoreKills = this;
+            options.onCombatDeath = { method: 'collectStokeChaos', faction: this };
         }
 
         // keep playing cards until we decide to stop

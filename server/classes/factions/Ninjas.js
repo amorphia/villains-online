@@ -99,7 +99,6 @@ class Ninjas extends Faction {
 
         // if the token revealed wasn't a battle token, or lotus dancer isn't in play, then abort
         let lotusDancer = this.getChampionInPlay();
-        console.log( lotusDancer );
         if (token.type !== 'battle' || !lotusDancer) return;
 
         // get lotus dancer's area, and the token's area

@@ -180,8 +180,6 @@ class Skeletons extends Faction {
                 unitTypes: Array.from(raiseableUnits),
             });
 
-            console.log( 'choose lich option response', response );
-
             // if we declined conclude the loop
             if( response.action === 'decline' ){
                 done = true;
@@ -196,10 +194,8 @@ class Skeletons extends Faction {
                 }
             } else {
                 let unitRaised = await this.raiseUnit([args.area.name]);
-                console.log("unitRaised", unitRaised);
 
                 if( unitRaised ){
-                    console.log("unit raised");
                     actionsTaken.push('raise');
                 }
             }
@@ -418,8 +414,6 @@ class Skeletons extends Faction {
 
             units.push(unit);
         });
-
-        console.log("Done raising");
 
         await this.game().timedPrompt('units-shifted', {
             message: `Skeletons were raised`,

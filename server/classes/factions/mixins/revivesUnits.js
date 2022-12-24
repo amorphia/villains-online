@@ -64,7 +64,6 @@ let obj = {
             if( unit.flipped ) this.faction.unflipUnit( unit );
         });
 
-        console.log( 'checkForReviveEvent', args.reviveEvent, this.hasOwnProperty( args.reviveEvent ) );
         if( args.reviveEvent && typeof this[args.reviveEvent] === 'function' ){
             units = this[args.reviveEvent]( units, args );
         }

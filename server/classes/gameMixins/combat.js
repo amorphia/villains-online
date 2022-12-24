@@ -97,11 +97,9 @@ let obj = {
     async killUnit( unit, faction, options = {} ){
         if( typeof faction === 'string' ) faction = this.factions[faction];
 
-        console.log("killUnit options", options);
-
-        // if we have overridden who scores this kill apply that now
-        if(options.scoreKills){
-            faction = options.scoreKills;
+        // if we have some triggered effect on combat death
+        if( options.onCombatDeath ){
+            await options.onCombatDeath.faction[options.onCombatDeath.method]( unit );
         }
 
         // un-web our unit if needed
@@ -124,7 +122,7 @@ let obj = {
         if( faction.triggers.onFactionKillsUnit ) await faction[faction.triggers.onFactionKillsUnit]( unit, options );
 
         // unflip our unit if needed
-        if( unit.flipped ) this.factions[unit.faction].unflipUnit( unit );
+        if( unit.flipped && !unit.dontUnflipAutomatically) this.factions[unit.faction].unflipUnit( unit );
 
     },
 };
