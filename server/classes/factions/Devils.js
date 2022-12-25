@@ -56,10 +56,12 @@ class Devils extends Faction {
                 seeking : false,
                 cost: 0,
                 killed : false,
-                skilled : true,
-                ready : false,
+                hidden: true,
                 onDeploy: 'deployCheckIfDelighted',
-                onSkill: 'princeLootCards',
+                onBeforeBattle: 'increaseCombatAttack',
+                //onSkill: 'princeLootCards',
+                //skilled : true,
+                //ready : false,
                 dontUnflipAutomatically: true,
                 selected : false,
                 hitsAssigned : 0,
@@ -113,6 +115,10 @@ class Devils extends Faction {
         this.message( `Have achieved chaos level ${this.data.chaos}${levelText}` );
     }
 
+    increaseCombatAttack( combat ){
+        combat.data.attackBonus += 2;
+    }
+
     /**
      * Handle our Dr T attack trigger
      *
@@ -129,11 +135,11 @@ class Devils extends Faction {
         if(unit.flipped) return;
 
         unit.flipped = true;
-        unit.seeking = true;
-        unit.attack = [6,6,6];
+        //unit.seeking = true;
+        //unit.attack = [6,6,6];
         unit.influence = 3;
 
-        if( this.game().combat ) this.game().combat.addUnitToCombat( unit );
+        //if( this.game().combat ) this.game().combat.addUnitToCombat( unit );
 
         this.message("The Gleeful Prince becomes delighted" );
     }

@@ -6,7 +6,7 @@ class Battle {
     data = {
         title : 'Resolving pre-combat effects', // {string} text to display in the combat UI title bar
         factionIndex : 0, // {number} the index of the faction currently resolving their attacks
-        attackBonus : null, // {number} global attack bonus applied to all units in this battle
+        attackBonus : 0, // {number} global attack bonus applied to all units in this battle
         areaName : null, // {string} the name of the area this battle is taking place in
         currentUnit : null, // {Unit} the unit currently resolving its attacks
         factions : [], // {array} the factions participating in this combat
@@ -79,8 +79,18 @@ class Battle {
      * resolve battle triggers
      */
     async resolveBattleTriggers( triggerType ){
+
+        // check for unit based modifications
+        let units = this.area.units();
+        for( let unit of units ){
+            let method = unit[triggerType];
+            if( method ) await this.game().factions[unit.faction][method]( this );
+        }
+
+        // check for faction based modifications
         for( let faction of Object.values( this.game().factions ) ){
-            if( faction.triggers[triggerType] ) await faction[ faction.triggers[triggerType] ]( this );
+            let method = faction.triggers[triggerType];
+            if( method ) await faction[method]( this );
         }
 
         if( triggerType === 'onBeforeBattle' ) this.data.preCombatEffects = false;
@@ -240,7 +250,7 @@ class Battle {
             area : area,
             attacks : unit.attack,
             unit : unit,
-            attackBonus : this.options.attackBonus,
+            attackBonus : this.data.attackBonus,
             inCombat : true,
             controllingFaction : controllingFaction,
             onCombatDeath : this.options.onCombatDeath,

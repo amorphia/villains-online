@@ -347,12 +347,14 @@ let obj = {
     getToHitNumber( args, victim ){
         // we start with our attack value
         let toHit = args.attacks[0];
+        console.log("getToHitNumber start", toHit, args);
 
         // deadly attacks can't be modified, so just return our attack value
         // if( args.deadly ) return toHit;
 
         // subtract any attack bonuses set by our args
         if( args.attackBonus ) toHit -= args.attackBonus;
+        console.log("getToHitNumber after args.attackBonus", toHit);
 
         // if we are attacking with a unit and our faction has a global attack bonus, apply it
         if( args.unit && this.data.attackBonus ) toHit -= this.data.attackBonus;
@@ -370,6 +372,8 @@ let obj = {
         // finally if our target faction has a defense bonus apply that here
         let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, { debug : true, unit : args.unit } );
         if( defenseBonus )  toHit += defenseBonus;
+
+        console.log("getToHitNumber final", toHit);
 
         return toHit;
     },
