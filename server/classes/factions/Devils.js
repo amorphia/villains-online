@@ -10,7 +10,7 @@ class Devils extends Faction {
         // triggers
         this.triggers = {
             "onCleanUp" : "resetChaos",
-            "onFactionKillsUnit" : "checkCardChaos",
+            "onFactionKillsUnit" : "checkKillChaos",
         };
 
         // data
@@ -79,9 +79,9 @@ class Devils extends Faction {
         this.data.stokeBattles = upgrade + 1;
     }
 
-    checkCardChaos( unit, options ){
+    checkKillChaos( unit, options ){
         // if the attack was
-        if(options.unit || unit.faction === this.name) return;
+        if(options.inCombat || unit.faction === this.name) return;
         this.raiseChaos();
     }
 
