@@ -10,15 +10,15 @@ class Spiders extends Faction {
         // triggers
         this.triggers = {
             "onSetup" : "setupDropTokens",
-            //"onBeforeBattle" : "deployXchxchAmbushUnits"
+            "onBeforeBattle" : "xchxchAmbushUnits"
         };
 
         //data
         this.data.name = this.name;
         this.data.title = "The Eyes of the Woods";
-        this.data.focusDescription = "Kill units beloning to many different players";
-        //this.data.dropDeploy = 1; // how many spider do we place with our Drop token?
-        // this.data.xchxchDeploy = 1; // how many spiders do we place at the start of combat with xchxch?
+        this.data.focusDescription = "Kill units belonging to many different players";
+        this.data.dropDeploy = 1; // how many spider do we place with our Drop token?
+        this.data.xchxchDeploy = 1; // how many spiders do we place at the start of combat with xchxch?
 
         // tokens
 
@@ -81,11 +81,11 @@ class Spiders extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 1,
-                attack: [4],
-                deadly: true,
+                attack: [],
+                //deadly: true,
                 flipped: false,
                 toughness: true,
-                firstStrike: true,
+                //firstStrike: true,
                 cost: 1,
                 killed: false,
                 onDeploy: 'deployXchxchWeb',
@@ -180,6 +180,22 @@ class Spiders extends Faction {
         });
     }
 
+    /**
+     * Deploy patsies directly into battle if XchXch is present
+     *
+     * @param battle
+     */
+    async xchxchAmbushUnits( battle ){
+
+        // is Xchxch here? No? then return
+        if( !this.championInArea( battle.area.name ) ) return;
+
+        // if we have no spiders, abort
+        if( !this.hasSpiders() ) return this.message( 'No spiders in reserves to place', { class : 'warning' });
+
+        // poop out spiders
+        await this.resolveSpawnSpiders( battle.area, this.data.xchxchDeploy, `XchXch summons her brood to battle` );
+    }
 
     /**
      * Place a spider unit in the given area
