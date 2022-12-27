@@ -102,11 +102,15 @@ class Guerrillas extends Faction {
      * @returns {boolean}
      */
     canActivateSnipers( token, area ) {
+        return !! this.areasWithEnemyUnits({}, area.name ).length;
+
+        /*
         // do we have a valid target?
         let validTargets = !! this.areasWithEnemyUnits({}, area.name ).length;
         // do we have a unit in this area to be our trigger man
         let hasUnitToShootWith = this.hasUnitsInArea( area );
         return validTargets && hasUnitToShootWith;
+        */
     }
 
 
