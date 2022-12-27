@@ -93,12 +93,13 @@
             },
 
             tooltipMessage() {
-                if (this.token) return `Reval ${this.token.name} token`;
+                if (this.token) return `Reveal ${this.token.name} token`;
                 if (this.action === 'skill') return `Activate Area skill`;
                 if (this.action === 'magick') return `Cast Magick Spell`;
                 if (this.action === 'loop') return `Exploit Time Loop`;
                 if (this.action === 'ambush') return `Launch an Ambush`;
                 if (this.action === 'materialize') return `Materialize Ghosts`;
+                if (this.action === 'shelter') return `Revive a basic unit`;
             },
 
             tooltipContent() {
@@ -106,6 +107,7 @@
                 if (this.action === 'magick') return `Flip your enchanted units in this area face-up to use the witches' magick ability, then take another action.`;
                 if (this.action === 'loop') return `Replace your Loop token with a token from your reserves placed face-down.`;
                 if (this.action === 'ambush') return `Discard one of your revealed tokens in this area to start a battle here.`;
+                if (this.action === 'shelter') return `Discard this token to revive a killed basic unit here.`;
                 if (this.action === 'materialize') return `Flip any of your Ghost units in this area face-up by paying their unit cost, then take another action.`;
                 return "Default text, if you see this something didn't work right."
             }

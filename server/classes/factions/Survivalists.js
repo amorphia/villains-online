@@ -24,6 +24,7 @@ class Survivalists extends Faction {
         // tokens
         this.tokens['deploy'].count = 4;
 
+        /*
         this.tokens['scrounge'] = {
             count: 1,
             data: {
@@ -36,7 +37,20 @@ class Survivalists extends Faction {
                 collectDiscardedCards: true,
             }
         };
+        */
 
+        this.tokens['shelter'] = {
+            count: 1,
+            data: {
+                influence: 1,
+                type: 'shelter',
+                cost: 0,
+                resource: 2,
+                description: "Discard this token as an action to return one of your killed basic units here to play",
+                req : "Passive token: this token may always be activated",
+                collectDiscardedCards: true,
+            }
+        };
 
         // units
         this.units['mole'].data.prepared = false;
@@ -90,22 +104,70 @@ class Survivalists extends Faction {
      * @param token
      * @param area
      * @returns {boolean}
-     */
+
     canActivateScrounge( token, area ) {
         return true;
     }
-
+    */
 
     /**
      * Resolve our scrounge token
      *
      * @param args
      * @returns {Promise<void>}
+
+     async activateScroungeToken( args ) {
+        this.game().advancePlayer();
+    }
      */
-    async activateScroungeToken( args ) {
+
+    /**
+     * Can we activate our shelter token?
+     *
+     * @param token
+     * @param area
+     * @returns {boolean}
+    */
+     canActivateShelter( token, area ) {
+        return true;
+    }
+
+    /**
+     * Resolve our shelter token
+     *
+     * @param args
+     * @returns {Promise<void>}
+    */
+     async activateShelterToken( args ) {
         this.game().advancePlayer();
     }
 
+    /**
+     * Take a shelter action by removing a shelter token
+     *
+     * @param player
+     * @param areaName
+     */
+    async takeShelterAction( player, areaName ){
+        let area = this.game().areas[areaName];
+
+        // show popup
+        this.game().popup( this.playerId, { type: 'shelter', area : areaName, faction : this.name });
+
+        // choose revive unit
+        await this.reviveUnits({
+            reviveCount: 1,
+            areas: [areaName],
+            basicOnly: true,
+        });
+
+        // discard our shelter token
+        let token = this.data.tokens.find(token => token.type === "shelter");
+        _.discardToken( token, area );
+
+        // advance the game
+        this.game().advancePlayer();
+    }
 
     checkPrepperToughness( event ){
         // event.hits is the number of hits assigned to this unit

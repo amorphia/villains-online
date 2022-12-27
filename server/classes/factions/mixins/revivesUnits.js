@@ -4,9 +4,9 @@ let obj = {
      * Resolve this card ability
      */
     async reviveUnits( args ){
-
         // get our potential areas, and if we have none abort
-        let areas = this.getAreasWithKilledUnits();
+        let areas = this.getValidAreas( args );
+
         if( !areas.length ){
             this.message( 'No killed units to revive', { class : 'warning' } );
             return;
@@ -19,6 +19,7 @@ let obj = {
             areas : areas,
             playerOnly : true,
             killedOnly : true,
+            basicOnly : args.basicOnly,
             message: `Choose up to ${args.reviveCount} units killed to revive`,
         });
 
@@ -29,7 +30,16 @@ let obj = {
         }
 
         // revive our units
-        await this.resolveUnitRevival( response, args );
+        return await this.resolveUnitRevival( response, args );
+    },
+
+
+    getValidAreas( args ){
+        if( args.areas ){
+            return args.areas;
+        }
+
+        return this.getAreasWithKilledUnits( args );
     },
 
 
@@ -38,12 +48,12 @@ let obj = {
      *
      * @returns {string[]}
      */
-    getAreasWithKilledUnits(){
+    getAreasWithKilledUnits( args ){
         let areas = {};
 
         // get areas where we have killed units
         this.data.units.forEach( unit => {
-            if( unit.killed && unit.location ){
+            if( unit.killed && unit.location && (!args.basicOnly || unit.basic) ){
                 areas[unit.location] = true;
             }
         });
@@ -53,7 +63,6 @@ let obj = {
 
 
     async resolveUnitRevival( response, args ){
-
         // get our unit objects
         let units = response.units.map( unitId => this.game().objectMap[unitId] );
 

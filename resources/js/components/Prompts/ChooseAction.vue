@@ -103,6 +103,21 @@
 
                     </div>
 
+                    <!-- shelter display -->
+                    <div v-if="action.name === 'shelter'"
+                         class="choose-action__skilled-units center-text">
+
+                        <token-row
+                            :area="area"
+                            :highlight="shelterToken">
+                        </token-row>
+
+                        <div class="width-100 choose-action__skill-ability">
+                            Discard your shelter token to revive one of your killed basic units?
+                        </div>
+
+                    </div>
+
                 </area-flipper>
 
                 <!--  Reveal token requirement -->
@@ -277,6 +292,9 @@
                 // can we loop?
                 if( this.useableLoop.length ) actions.loop = this.useableLoop;
 
+                // can we shelter?
+                if( this.useableShelter.length ) actions.shelter = this.useableShelter;
+
                 // can we declare ourselves locked?
                 if( !this.revealableTokens.length && (this.activeTokens.length || ( !this.useableMaterialize.length && this.faceDownGhosts.length ) ) ) actions.locked = true;
 
@@ -303,6 +321,7 @@
                     case 'skill':
                     case 'magick':
                     case 'materialize':
+                    case 'shelter':
                     case 'loop':
                         args = [this.action.area];
                         break;
@@ -597,6 +616,19 @@
                 return this.loopToken && reserves ? [this.loopToken.location] : [];
             },
 
+
+            shelterToken(){
+                return this.shared.faction.tokens.find( token => token.type === 'shelter'
+                    && token.revealed
+                    && token.location );
+            },
+
+            useableShelter(){
+                if(!this.shelterToken) return [];
+
+                let deadInArea = _.factionDeadInArea( this.shared.faction, this.shelterToken.location, { basic: true } )
+                return deadInArea.length ? [this.shelterToken.location] : [];
+            },
 
             /**
              * Returns an array of area names matching the areas where we can take a materialize action

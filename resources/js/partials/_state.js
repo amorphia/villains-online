@@ -122,6 +122,12 @@ window.App.state = {
             areaAction : true,
             buttonMessage: 'Replace your Loop token'
         },
+        'shelter' : {
+            img : '/images/icons/shelter.png',
+            useMessage: 'use shelter',
+            areaAction : true,
+            buttonMessage: 'Revive a killed basic unit'
+        },
         'ambush' : {
             img : '/images/icons/ambush.png',
             useMessage: 'ambush',
