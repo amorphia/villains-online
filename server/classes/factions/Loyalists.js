@@ -63,7 +63,7 @@ class Loyalists extends Faction {
                 cost: 0,
                 noDeploy: true,
                 influence: 0,
-                attack: [5],
+                attack: [],
                 skilled: true,
                 ready: false,
                 killed: false,
@@ -81,7 +81,7 @@ class Loyalists extends Faction {
                 cost: 0,
                 noDeploy: true,
                 influence: 0,
-                attack: [2],
+                attack: [1],
                 firstStrike : true,
                 killed: false,
                 selected: false,
@@ -104,7 +104,7 @@ class Loyalists extends Faction {
                 hitsAssigned: 0,
                 onMove: 'placeServants',
                 onDeploy: 'placeServants',
-                onUnitKilled: 'queenDeath'
+                //onUnitKilled: 'queenDeath'
             }
         };
     }
@@ -117,14 +117,17 @@ class Loyalists extends Faction {
     placeServants( event ){
         this.data.units.forEach( unit => {
             // all of our non-killed servants move into the queen's area
-           if( this.validEntourageUnit( unit ) && !unit.killed ) unit.location = event.unit.location;
+           if( this.validEntourageUnit( unit ) && !unit.killed ){
+               unit.location = event.unit.location;
+               if( unit.type === 'bishop') unit.ready = true;
+           }
         });
     }
 
     validEntourageUnit( unit ){
         if( unit.type === 'servant' ) return true;
-        if( this.data.upgrade >= 1 && unit.type === 'bishop' ) return true;
-        if( this.data.upgrade >= 2 && unit.type === 'guard' ) return true;
+        if( this.data.upgrade >= 2 && unit.type === 'bishop' ) return true;
+        if( this.data.upgrade >= 1 && unit.type === 'guard' ) return true;
     }
 
 
@@ -132,7 +135,7 @@ class Loyalists extends Faction {
      * Handle our queen death event trigger
      *
      * @param event
-     */
+
     async queenDeath( event ){
 
         // announce the queen's death and grab the deetz
@@ -163,7 +166,7 @@ class Loyalists extends Faction {
 
         await killer.replaceUnit( unit, { message : `The ${killer.name} replace a unit in The ${unit.location}` } );
     }
-
+     */
 
     /**
      * Begin the mourning process, and identify the killer, the units they may replace,
@@ -171,7 +174,7 @@ class Loyalists extends Faction {
      *
      * @param event
      * @returns {[*, *|string[], *]}
-     */
+
     initiateQueenDeath( event ) {
 
         let killer = this.game().factions[ event.unit.killed ]; //  who killed the queen
@@ -187,7 +190,7 @@ class Loyalists extends Faction {
 
         return [ killer, potentialTypes, potentialAreas ];
     }
-
+     */
 
     /**
      * Can we activate our knight token
@@ -318,7 +321,7 @@ class Loyalists extends Faction {
      * @param mods
      * @param area
      * @returns {*}
-     */
+
     factionCombatMods(mods, area) {
 
         // queen death
@@ -331,7 +334,7 @@ class Loyalists extends Faction {
 
         return mods;
     }
-
+    */
 
 }
 
