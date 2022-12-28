@@ -282,6 +282,8 @@ class Survivalists extends Faction {
         // if we have no where to bug out to, we can't bug out
         if(!this.getBugOutDestinations( area )) return false;
 
+        console.log("this.getBugOutDestinations( area )", this.getBugOutDestinations( area ));
+
         // otherwise we are good!
         return true;
     }
