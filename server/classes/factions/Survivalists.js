@@ -304,7 +304,11 @@ class Survivalists extends Faction {
 
     getBugOutDestinations( area ){
         let areas = area.getDeployableAdjacentAreas();
-        return areas.filter( areaName => !this.hasUnitsInArea( areaName ));
+        console.log("getBugOutDestinations areas", areas);
+        return areas.filter( areaName => {
+            console.log("!this.hasUnitsInArea( areaName )", !this.hasUnitsInArea( areaName ));
+            return !this.hasUnitsInArea( areaName );
+        });
     }
 
 
