@@ -156,7 +156,7 @@ let obj = [
                 requirements : [
                     { test : 'killUnits', args : [5] },
                 ],
-                value : 2
+                value : 1
             },
         ]
     },
