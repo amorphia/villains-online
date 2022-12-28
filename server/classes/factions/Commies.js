@@ -46,7 +46,8 @@ class Commies extends Faction {
                 skilled: true,
                 ready: false,
                 killed : false,
-                onSkill : 'papovMoveShoot', //papovMove
+                //onSkill : 'papovMoveShoot',
+                onSkill : 'papovMove',
                 selected : false,
                 hitsAssigned : 0
             }
@@ -69,7 +70,7 @@ class Commies extends Faction {
      * Handle Papov's skill triggered ability
      *
      * @param event
-
+    */
     async papovMove( event ){
         this.message(`<span class="faction-commies">Commissar Papova</span> calls for reinforcements` );
         await this.move({
@@ -82,14 +83,14 @@ class Commies extends Faction {
             player : this.playerId
         }).catch( error => console.error( error ) );
     }
-     */
+
 
 
     /**
      * Handle Papov's skill triggered ability
      *
      * @param event
-     */
+     *
     async papovMoveShoot( event ){
 
         this.message(`<span class="faction-commies">Commissar Papova</span> calls for reinforcements` );
