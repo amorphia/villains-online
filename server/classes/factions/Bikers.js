@@ -46,7 +46,7 @@ class Bikers extends Faction {
         this.tokens['deploy'].count = 2;
 
         delete this.tokens['battle'];
-        delete this.tokens['move'];
+        //delete this.tokens['move'];
 
         // units
         //this.units['goon'].data.noReplace = true;
@@ -56,6 +56,7 @@ class Bikers extends Faction {
         this.units['mole'].data.redeployFree = true;
 
         this.units['patsy'].count = 8;
+        this.units['patsy'].data.attack = [8];
         //this.units['patsy'].data.noReplace = true;
         this.units['patsy'].data.redeployFree = true;
 
@@ -112,7 +113,7 @@ class Bikers extends Faction {
         const responses = await Promise.all( promises );
 
         // process choices
-        const { units, payoffs } = this.processIntimidateActions( responses );
+        const { units, payoffs } = await this.processIntimidateActions( responses );
 
         this.resolvePayoffs( payoffs );
 
@@ -146,7 +147,7 @@ class Bikers extends Faction {
             players: faction.playerId,
             name: 'choose-units',
             data : {
-                message: "Choose a unit to return to your reserves, or pay xC1x",
+                message: "Choose a unit to sacrifice, or pay xC1x",
                 count : 1,
                 areas : [ area ],
                 playerOnly: true,
@@ -163,11 +164,11 @@ class Bikers extends Faction {
         };
     }
 
-    processIntimidateActions( responses ){
+    async processIntimidateActions( responses ){
         const units = [];
         let payoffs = 0;
 
-        responses.forEach( response => {
+        for( response of responses){
             const faction = response.faction;
 
             if(response.pay){
@@ -181,9 +182,9 @@ class Bikers extends Faction {
             if(response.unit){
                 const unit = this.game().objectMap[response.unit];
                 units.push( _.clone(unit) );
-                faction.returnUnitToReserves( unit );
+                await this.game().killUnit( unit, this );
             }
-        });
+        }
 
         return { units, payoffs };
     }
