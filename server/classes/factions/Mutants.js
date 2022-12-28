@@ -27,8 +27,8 @@ class Mutants extends Faction {
                 influence: 1,
                 resource: 1,
                 cost : 0,
-                description: "Target player sacrifices a patsy in this area (you may choose yourself), if they do you may deploy a Mother Ooze to this area without paying its deploy cost.",
-                req : "this token must be discarded if no player can sacrifice a unit here"
+                description: "Target player sacrifices a patsy in this area (you may choose yourself), if they do you may deploy a unit to this area without paying its deploy cost.",
+                req : "this token must be discarded if no player can sacrifice a patsy here"
             }
         };
 
@@ -42,16 +42,17 @@ class Mutants extends Faction {
             count: 6,
             data: {
                 name: "Mother Ooze",
-                toughness : true,
+                toughness: true,
                 flipped: false,
                 type: 'champion',
                 basic: false,
                 influence: 1,
                 attack: [5],
-                cost: 2,
-                killed : false,
-                selected : false,
-                hitsAssigned : 0
+                cost: 1,
+                killed: false,
+                selected: false,
+                hitsAssigned: 0,
+                onDamaged: 'onOoozeWounded',
             }
         };
     }
@@ -67,6 +68,9 @@ class Mutants extends Faction {
         this.data.upgradeDeploy = upgrade;
     }
 
+    onOozeWounded( unit ){
+        unit.influence = 2;
+    }
 
     /**
      * Handle our Heal Oozes end of turn trigger
@@ -75,7 +79,9 @@ class Mutants extends Faction {
 
         // heal our oozes, and keep track of the areas where we did it
         let areasWithHealedOozes = this.getHealedOozeAreas();
+        this.message( `wounded Mother Oozes heal` );
 
+        /*
         // if we didn't have any wounded oozes, then we are done here
         if( !areasWithHealedOozes.length ) return;
 
@@ -93,6 +99,7 @@ class Mutants extends Faction {
 
             await this.deploy( args );
         }
+         */
     }
 
 
@@ -163,13 +170,22 @@ class Mutants extends Faction {
             free : true,
             fromToken : true,
             deployLimit: 1,
-            unitTypes: ['champion'],
+            //unitTypes: ['champion'],
         };
         let deployed = await this.deploy( options );
 
         this.game().advancePlayer();
     }
 
+    /**
+     * Handle unflipping a unit
+     *
+     * @param unit
+     */
+    unflipUnit( unit ){
+        unit.influence = 1;
+        unit.flipped = false;
+    }
 
     /**
      * Allows the player to choose a faction to biomorph a patsy

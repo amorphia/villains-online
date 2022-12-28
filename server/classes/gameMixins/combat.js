@@ -73,6 +73,11 @@ let obj = {
         // if this unit has toughness, isn't wounded, and we are only assigning it one hit then it becomes wounded
         if( count === 1 && unit.toughness && !unit.flipped ){
             unit.flipped = true;
+
+            if( unit.onWounded ) {
+                await owner[unit.onWounded](unit);
+            }
+
             return 'wounds';
         }
 
