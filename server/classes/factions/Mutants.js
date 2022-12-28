@@ -52,7 +52,7 @@ class Mutants extends Faction {
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
-                onDamaged: 'onOoozeWounded',
+                onWounded: 'onOoozeWounded',
             }
         };
     }
