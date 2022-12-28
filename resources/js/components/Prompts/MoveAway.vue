@@ -141,7 +141,7 @@
              * @returns {Area}
              */
             area(){
-                return this.shared.data.areas[ this.data.toAreas[this.toAreaIndex] ];
+                return this.shared.data.areas[ this.data.toAreas[this.toAreaIndex] ] ?? {};
             },
 
 
