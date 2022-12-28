@@ -68,7 +68,7 @@ class Mutants extends Faction {
         this.data.upgradeDeploy = upgrade;
     }
 
-    onOozeWounded( unit ){
+    onOoozeWounded( unit ){
         unit.influence = 2;
     }
 
