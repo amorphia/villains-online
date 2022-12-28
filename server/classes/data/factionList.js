@@ -1,5 +1,5 @@
 let obj = {
-    mutants : { name: 'mutants', owner : null, blocked : false, status : 3, basic : true, selectable : true },
+    mutants : { name: 'mutants', owner : null, blocked : false, status : 2, basic : true, selectable : true },
     mafia : { name: 'mafia', owner : null, blocked : false, status : 2, basic: true, selectable : true },
     scientists : { name: 'scientists', owner : null, blocked : false, status : 3, basic: true, selectable : true },
     robots : { name: 'robots', owner : null, blocked : false, killer : true, status : 3, basic: true, selectable : true },
