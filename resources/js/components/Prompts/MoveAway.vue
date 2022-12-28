@@ -187,7 +187,7 @@
              * @returns {Unit[]}
              */
             currentAreaUnits(){
-                if(!Array.isArray(this.fromAreaUnits)) return [];
+                if(!Array.isArray(this.fromAreaUnits) || this.fromAreaUnits.length === 0) return [];
 
                 return this.fromAreaUnits.filter( unit => unit.selected === this.area.name ) ?? [];
             },
