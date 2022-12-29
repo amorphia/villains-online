@@ -132,6 +132,9 @@ class Bikers extends Faction {
         if (!turf.revealed || turf.location !== token.location) return;
 
         turf.revealed = false;
+        let player = this.getPlayer();
+        player.data.passed = false;
+
         this.message("Flips their Turf War token face down in the face of hostile incursions");
     }
 
