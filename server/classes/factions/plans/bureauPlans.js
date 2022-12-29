@@ -1,6 +1,6 @@
 let obj = [
     {
-        name: '1',
+        name: 'FATE REVERSAL PROTOCOLS',
         num : 1,
         faction : 'bureau',
         objectives : [
@@ -25,27 +25,27 @@ let obj = [
         ]
     },
     {
-        name: '2',
+        name: 'TRUNCATE THE SPLINTERED LINES',
         num : 2,
         faction : 'bureau',
         objectives : [
             {
                 requirements : [
                     { test : 'areasMostTokens', args : [2] },
-                    { test : 'useSkills', args : [2] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 2
             },
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 1] },
+                    { test : 'useSkills', args : [2] },
                 ],
                 value : 1
             },
         ]
     },
     {
-        name: '3',
+        name: 'THE PERFECT MOMENT FOREVER',
         num : 3,
         faction : 'bureau',
         objectives : [
@@ -70,13 +70,13 @@ let obj = [
         ]
     },
     {
-        name: '4',
+        name: 'LEGIONS OF THE FUTURE’S PAST',
         num : 4,
         faction : 'bureau',
         objectives : [
             {
                 requirements : [
-                    { test : 'unitsInPlay', args : [8] },
+                    { test : 'unitsInPlay', args : [9] },
                 ],
                 value : 1
             },
@@ -95,13 +95,13 @@ let obj = [
         ]
     },
     {
-        name: '5',
+        name: 'INFINITE REGRESSIONS',
         num : 5,
         faction : 'bureau',
         objectives : [
             {
                 requirements : [
-                    { test : 'loseUnits', args : [3] },
+                    { test : 'loseUnits', args : [4] },
                 ],
                 value : 1
             },
@@ -120,7 +120,7 @@ let obj = [
         ]
     },
     {
-        name: '6',
+        name: 'FORGE THE GOLDEN TIMELINE',
         num : 6,
         faction : 'bureau',
         objectives : [
@@ -134,7 +134,7 @@ let obj = [
         ]
     },
     {
-        name: '7',
+        name: 'STOP THE CASCADE DISRUPTIONS',
         num : 7,
         faction : 'bureau',
 
@@ -148,7 +148,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'influenceInAreas', args : [6,1] },
+                    { test : 'influenceInAreas', args : [8,1] },
                 ],
                 value : 1
             },
