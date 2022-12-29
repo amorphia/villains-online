@@ -95,9 +95,14 @@ let obj = [
             {
                 requirements : [
                     { test : 'retainAreas', args : [1] },
-                    { test : 'tokensInAreas', args : [5] },
                 ],
-                value : 2
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'loseUnits', args : [3] },
+                ],
+                value : 1
             },
             {
                 requirements : [
@@ -140,7 +145,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'loseUnits', args : [3] },
+                    { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 1
             },
