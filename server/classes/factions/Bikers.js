@@ -168,7 +168,7 @@ class Bikers extends Faction {
         const units = [];
         let payoffs = 0;
 
-        for( response of responses){
+        for( let response of responses){
             const faction = response.faction;
 
             if(response.pay){
