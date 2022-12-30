@@ -165,7 +165,7 @@ let obj = [
                     { test : 'tokensInAreas', args : [6] },
                     { test : 'controlOwnTarget', args : [] },
                 ],
-                value : 1
+                value : 2
             },
         ]
     },
