@@ -1,5 +1,7 @@
 <template>
-    <div :class="classes"
+    <div
+        v-if="isValidOption"
+        :class="classes"
          @click="$emit( 'clicked', faction.name )"
          class="choose-factions__faction pointer d-flex justify-end align-center">
 
@@ -26,6 +28,7 @@
             "remainingPlayers",
             "killersSelected",
             "expansionsSelected",
+            "factionOptions",
         ],
 
         data() {
@@ -40,6 +43,11 @@
                 this.faction.selectable = true;
                 this.$emit( 'isSelectable', true );
             }
+
+            if( this.shared.data && this.shared.data.gameType === 'secret' ){
+                this.faction.selectable = this.isValidOption;
+                this.$emit( 'isSelectable', this.isValidOption );
+            }
         },
 
         methods : {
@@ -52,6 +60,9 @@
 
                 // otherwise if we are in free for all mode then anything goes
                 if( this.shared.data && this.shared.data.gameType === 'anarchy' ) return true;
+
+                // if a scret game and we have a valid selection
+                if( this.shared.data && this.shared.data.gameType === 'secret' && this.isValidOption ) return true;
 
                 // if the faction is defined as unselectable (and its not anarchy mode) return false
                 if( !this.faction.selectable ) return false;
@@ -80,6 +91,10 @@
         },
 
         computed : {
+            isValidOption(){
+                if(!this.shared.data || this.shared.data.gameType !== 'secret' ) return true;
+                return this.factionOptions.includes(this.faction.name);
+            },
 
             /**
              * Return the computed classes for this faction

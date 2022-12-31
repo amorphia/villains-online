@@ -22,8 +22,9 @@ let setup = {
 
         // send our game log message for this player's choice, being sure to laud those players bold enough to
         // choose their faction randomly
-        let message = `chose the ${factionName}`;
-        if( random ) message = `Like the mighty eagle ${player.data.name} randomly chooses the ${factionName} `;
+        let message = `chooses the ${factionName}`;
+        if( this.data.gameType === "secret" ) message = `chooses a faction`;
+        if( random ) message = `Like the mighty eagle ${player.data.name} randomly ${message}`;
         this.message({ message: message, player : player, class : random ? 'highlight' : ''  });
 
         // update players
@@ -192,8 +193,13 @@ let setup = {
         this.data.state = 'choose-factions';
         this.data.factions = _.cloneDeep( require('../data/factionList') );
 
-        // reandomize our player order and add those players to this socket.io game room
+        // randomize our player order and add those players to this socket.io game room
         this.randomizePlayerOrder();
+
+        if(this.data.gameType === "secret"){
+            this.generatePlayerFactionOptions();
+        }
+
         this.addPlayersToRoom();
 
         // close our game to new players
@@ -207,6 +213,31 @@ let setup = {
     },
 
 
+    generatePlayerFactionOptions(){
+        let killFactions = _.shuffle( Object.values(_.cloneDeep( this.data.factions )).filter( faction => faction.killer ).map( faction => faction.name ) );
+        let basicFactions = _.shuffle( Object.values(_.cloneDeep( this.data.factions )).filter( faction => !faction.killer && faction.basic ).map( faction => faction.name ) );
+        let otherFactions = Object.values(_.cloneDeep( this.data.factions )).filter( faction => !faction.killer && !faction.basic ).map( faction => faction.name );
+
+        let options = [];
+
+        // populate our kill factions
+        options.push(killFactions.splice(0, this.secretFactionSelection));
+
+        // populate our basic factions
+        options.push(basicFactions.splice(0, this.secretFactionSelection));
+
+        // populate our other factions
+        otherFactions = _.shuffle([...basicFactions, ...otherFactions]);
+
+        for(let i = 0; i < this.data.playerOrder.length - 2; i++){
+            options.push(otherFactions.splice(0, this.secretFactionSelection));
+        }
+
+        options = _.shuffle( options );
+
+        this.data.factionOptions = {};
+        this.data.playerOrder.forEach( (player, index) => this.data.factionOptions[player] = options[index]);
+    },
 
 
     /**

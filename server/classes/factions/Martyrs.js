@@ -174,6 +174,12 @@ class Martyrs extends Faction {
             this.data.cards.hand
         );
 
+        this.messagePlayer({
+            message : 'You drew the following',
+            type : 'cards',
+            cards : [card],
+        });
+
         this.message( `Takes a card from the ${killer.name} as punishment for their transgression against the divine`);
     }
 

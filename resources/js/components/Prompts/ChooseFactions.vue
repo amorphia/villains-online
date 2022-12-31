@@ -47,6 +47,7 @@
                             @blocked="blockFaction"
                             :faction="faction"
                             :selected="selectedFaction"
+                            :factionOptions="factionOptions"
                             :key="faction.name"
                             @isSelectable="e => setIsSelectable( faction, e )"
                             :remainingPlayers="remainingPlayers"
@@ -63,6 +64,7 @@
                             @blocked="blockFaction"
                             :faction="faction"
                             :selected="selectedFaction"
+                            :factionOptions="factionOptions"
                             :key="faction.name"
                             @isSelectable="e => setIsSelectable( faction, e )"
                             :remainingPlayers="remainingPlayers"
@@ -113,6 +115,10 @@
                         .sort( this.sortFactions );
             },
 
+            factionOptions(){
+                if(this.shared.data.gameType !== 'secret') return [];
+                return this.shared.data.factionOptions[this.shared.player.id];
+            },
 
             /**
              * Return an array of our expansion factions
@@ -210,7 +216,8 @@
              */
             factionText( player ){
                 if( player.active ) return "Choosing...";
-                else if( player.faction ) return player.faction;
+                if( player.faction && this.shared.data.gameType === 'secret' ) return "Faction Chosen";
+                if( player.faction ) return player.faction;
             },
 
 
@@ -218,11 +225,18 @@
              * Choose a random faction
              */
             chooseRandomFaction(){
-                let unselectedFactions = Object.values( this.shared.data.factions )
-                    .filter( faction => faction.selectable === true );
-
+                let unselectedFactions;
                 this.random = true;
-                this.selectedFaction = _.sample( unselectedFactions ).name;
+
+                if(this.shared.data.gameType === 'secret'){
+                    unselectedFactions = this.factionOptions;
+                    this.selectedFaction = _.sample( unselectedFactions );
+                } else {
+                    unselectedFactions = Object.values( this.shared.data.factions )
+                        .filter( faction => faction.selectable === true );
+                    this.selectedFaction = _.sample( unselectedFactions ).name;
+                }
+
                 this.chooseFaction();
             },
 

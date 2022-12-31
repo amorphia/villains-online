@@ -111,7 +111,8 @@
                 gameTypes : [
                     'basic',
                     'optimized',
-                    'anarchy'
+                    'anarchy',
+                    'secret',
                 ],
                 // game options
                 options : {
