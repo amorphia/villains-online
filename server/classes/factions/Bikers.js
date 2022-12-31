@@ -71,7 +71,7 @@ class Bikers extends Faction {
                 name: "Danny 'The Blade' Sturgis",
                 type: 'champion',
                 basic: false,
-                influence: 2,
+                influence: 3,
                 attack: [6,6,6],
                 cost: 3,
                 toughness: true,

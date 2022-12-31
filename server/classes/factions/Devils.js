@@ -52,7 +52,7 @@ class Devils extends Faction {
                 type: 'champion',
                 basic: false,
                 attack: [],
-                influence: 1,
+                influence: 2,
                 seeking : false,
                 cost: 0,
                 killed : false,
@@ -137,7 +137,7 @@ class Devils extends Faction {
         unit.flipped = true;
         //unit.seeking = true;
         //unit.attack = [6,6,6];
-        unit.influence = 3;
+        unit.influence = 4;
 
         //if( this.game().combat ) this.game().combat.addUnitToCombat( unit );
 
@@ -158,7 +158,7 @@ class Devils extends Faction {
         unit.flipped = false;
         unit.seeking = false;
         unit.attack = [];
-        unit.influence = 1;
+        unit.influence = 2;
 
         this.message("The Gleeful Prince is no longer delighted" );
     }
