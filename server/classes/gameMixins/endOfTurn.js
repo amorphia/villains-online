@@ -280,7 +280,8 @@ let obj = {
                 total : faction.data.ap + faction.data.pp,
                 hasVictory : faction.hasVictory(),
                 capitolToken : faction.lastCapitolToken(),
-                rolls: faction.data.rolls
+                rolls: faction.data.rolls,
+                hits: faction.data.hits,
             }
         });
 

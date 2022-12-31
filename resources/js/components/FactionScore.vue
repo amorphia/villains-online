@@ -24,6 +24,12 @@
 
         <!-- average dice roll -->
         <td class="faction-score__rolls" v-text="rollAvg"></td>
+
+        <!-- expected/actual hits -->
+        <td class="faction-score__rolls" v-text="hits"></td>
+
+        <!-- luck -->
+        <td class="faction-score__rolls" v-text="luck"></td>
     </tr>
 </template>
 
@@ -72,6 +78,23 @@
 
 
                 return (total_val / total_rolls).toFixed( 1 );
+            },
+
+            expectedHits(){
+                return Math.round(this.score.hits.expected);
+            },
+
+            hits(){
+                return `${this.score.hits.actual}/${this.expectedHits}`;
+            },
+
+            luck(){
+                let luck = (this.score.hits.actual - this.expectedHits).toFixed( 0 );
+                if(luck > 0){
+                    luck = `+${luck}`;
+                }
+
+                return luck;
             }
         }
     }

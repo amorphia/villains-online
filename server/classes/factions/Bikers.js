@@ -46,7 +46,7 @@ class Bikers extends Faction {
         this.tokens['deploy'].count = 2;
 
         delete this.tokens['battle'];
-        //delete this.tokens['move'];
+        delete this.tokens['move'];
 
         // units
         //this.units['goon'].data.noReplace = true;
@@ -82,7 +82,7 @@ class Bikers extends Faction {
                 selected : false,
                 hitsAssigned : 0,
                 noReplace: true,
-                onHit: 'bladeRecruit',
+                //onHit: 'bladeRecruit',
                 redeployFree: true,
             }
         };

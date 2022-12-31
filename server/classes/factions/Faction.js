@@ -9,6 +9,10 @@ class Faction {
     data = {
         owner : null, //the player who owns this faction
         rolls : [], // used to track our faction die rolls
+        hits : {
+            expected: 0,
+            actual: 0,
+        },
         areas: [],
         retainedAreas: [],
 

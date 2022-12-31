@@ -388,12 +388,24 @@ let obj = {
      */
     calculateHits( rolls, toHitNumber ){
         let hits = 0;
+
         rolls.forEach( roll => {
-            if( roll >= toHitNumber ) hits++;
+            this.data.hits.expected += this.getExpectedHits( toHitNumber );
+
+            if( roll >= toHitNumber ) {
+                this.data.hits.actual++;
+                hits++;
+            }
         });
         return hits;
     },
 
+    getExpectedHits( toHitNumber ){
+        if( toHitNumber > 10 ) return 0;
+        if( toHitNumber <= 1 ) return 1;
+
+        return (11 - toHitNumber) / 10;
+    },
 
     /**
      * Returns an array of faction names to exclude from being selected

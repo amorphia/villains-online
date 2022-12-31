@@ -13,11 +13,13 @@
                 <tr>
                     <th class="faction-score__name-header">faction name</th>
                     <th class="faction-score__victory-header">objective</th>
-                    <th class="faction-score__total-header">total points</th>
+                    <th class="faction-score__total-header">points</th>
                     <th class="faction-score__ap-header"><img class="icon-image" src="/images/icons/ap.png"></th>
                     <th class="faction-score__pp-header"><img class="icon-image" src="/images/icons/pp.png"></th>
-                    <th class="faction-score__token-header">capitol token</th>
+                    <th class="faction-score__token-header">capitol</th>
                     <th class="faction-score__rolls-header">AVG roll</th>
+                    <th class="faction-score__rolls-header">Hits</th>
+                    <th class="faction-score__rolls-header">Luck</th>
                 </tr>
 
                 <!-- table content -->
