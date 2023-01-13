@@ -33,7 +33,7 @@ class Devils extends Faction {
         this.data.flipableUnits = ['champion'];
 
         this.tokens['stoke'] = {
-            count: 2,
+            count: 3,
             data: {
                 influence: 1,
                 type : 'battle',
@@ -43,6 +43,8 @@ class Devils extends Faction {
                 req : "This token must be discarded if no combat takes place when activating it"
             }
         };
+
+        delete this.tokens['battle'];
 
         this.units['champion'] = {
             count: 1,
