@@ -89,7 +89,7 @@ class Spiders extends Faction {
                 cost: 1,
                 killed: false,
                 onDeploy: 'deployXchxchWeb',
-                onMove: 'deployXchxchWeb',
+                //onMove: 'deployXchxchWeb',
                 selected: false,
                 hitsAssigned: 0,
             }
