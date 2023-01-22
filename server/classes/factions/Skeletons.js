@@ -9,7 +9,7 @@ class Skeletons extends Faction {
 
         // triggers
         this.triggers = {
-            "onCleanUp" : "resetRaiseAreas",
+            //"onCleanUp" : "resetRaiseAreas",
             "onSetup" : "setupPatsies",
         };
 
@@ -47,12 +47,12 @@ class Skeletons extends Faction {
             props : ['influence', 'skilled']
         };
 
-        this.units['goon'].count = 4;
+        this.units['goon'].count = 5;
         this.units['goon'].data.onDamaged = 'checkBecomeSkeleton';
         this.units['goon'].data.flipped = false;
         this.units['goon'].data.skeleton = false;
 
-        this.units['mole'].count = 4;
+        this.units['mole'].count = 5;
         this.units['mole'].data.onDamaged = 'checkBecomeSkeleton';
         this.units['mole'].data.flipped = false;
         this.units['mole'].data.skeleton = false;
@@ -63,7 +63,7 @@ class Skeletons extends Faction {
         this.units['talent'].data.skeleton = false;
 
 
-        this.units['patsy'].count = 4;
+        this.units['patsy'].count = 6;
         this.units['patsy'].data.onDamaged = 'checkBecomeSkeleton';
         this.units['patsy'].data.flipped = false;
         this.units['patsy'].data.skeleton = false;
@@ -76,7 +76,7 @@ class Skeletons extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 0,
-                attack: [],
+                attack: [5],
                 cost: 0,
                 flipped: false,
                 killed: false,
@@ -85,8 +85,9 @@ class Skeletons extends Faction {
                 skilled: true,
                 ready: false,
                 hitsAssigned: 0,
-                onDamaged : 'checkBecomeSkeleton',
-                onSkill : 'xerZhulRaiseDead',
+                toughness: true,
+                onDeploy: 'xerZhulActions',
+                onMove: 'xerZhulActions',
             }
         };
     }
@@ -128,28 +129,26 @@ class Skeletons extends Faction {
 
     deadWeCanRaiseByArea(){
         const unitTypesInReserves = this.unitTypesInReserves();
+        const areasWithSkeletons = this.areasWithUnits({ basic: true, flipped: true });
+
         const areas = {};
 
         Object.values( this.game().factions ).forEach( faction => {
             const options = { killed : true, basic: true };
-
-            if( faction.name !== this.name ){
-                options.typeIn = unitTypesInReserves;
-            }
+            options.typeIn = unitTypesInReserves;
 
             faction.data.units.forEach( unit => {
-                if( _.isValidUnit( unit, options ) ){
-                    if( !areas[unit.location] ){
-                        areas[unit.location] = new Set();
-                    }
+                if( !_.isValidUnit( unit, options ) ) return;
 
-                    areas[unit.location].add( unit.type );
+                if( !areas[unit.location] ){
+                    areas[unit.location] = new Set();
                 }
+
+                areas[unit.location].add( unit.type );
             })
         });
 
-        this.data.raiseAreas.forEach(area => delete areas[area]);
-
+        areasWithSkeletons.forEach(area => delete areas[area]);
         return areas;
     }
 
@@ -167,7 +166,7 @@ class Skeletons extends Faction {
         let done = false;
 
         while(done === false){
-            let {availableActions, raiseableUnits} = this.populateLichActions( args.token, args.area, actionsTaken );
+            let {availableActions, raiseableUnits, raiseableAreas} = this.populateLichActions( args.token, args.area, actionsTaken );
 
             if( availableActions.length === 0 ){
                 done = true;
@@ -193,7 +192,7 @@ class Skeletons extends Faction {
                     actionsTaken.push('card');
                 }
             } else {
-                let unitRaised = await this.raiseUnit([args.area.name]);
+                let unitRaised = await this.raiseUnit(raiseableAreas);
 
                 if( unitRaised ){
                     actionsTaken.push('raise');
@@ -215,7 +214,7 @@ class Skeletons extends Faction {
         let actions = [];
         const deadWeCanRaise = this.deadWeCanRaiseByArea();
 
-        if( !actionsTaken.includes( 'raise' ) && deadWeCanRaise[area.name] ){
+        if( !actionsTaken.includes( 'raise' ) && Object.keys( deadWeCanRaise ).length ){
             actions.push( 'raise' );
         }
 
@@ -223,9 +222,13 @@ class Skeletons extends Faction {
             actions.push( 'card' );
         }
 
+        let raiseableUnitTypes = new Set();
+        Object.values(deadWeCanRaise).forEach(set => set.forEach(val => raiseableUnitTypes.add(val)));
+
         return {
             availableActions : actions,
-            raiseableUnits : deadWeCanRaise[area.name] ?? new Set()
+            raiseableUnits : raiseableUnitTypes,
+            raiseableAreas : Object.keys(deadWeCanRaise),
         };
     }
 
@@ -355,9 +358,9 @@ class Skeletons extends Faction {
 
     async raiseUnit( areas, count = 1){
 
-        let filteredAreas = areas.filter(area => !this.data.raiseAreas.includes(area));
+       // let filteredAreas = areas.filter(area => !this.data.raiseAreas.includes(area));
 
-        if( !filteredAreas.length ){
+        if( !areas.length ){
             this.message( "No dead to raise", { class : 'warning' } );
             return;
         }
@@ -366,7 +369,7 @@ class Skeletons extends Faction {
 
         let response = await this.prompt( 'choose-units', {
             count: count,
-            areas: filteredAreas,
+            areas: areas,
             killedOnly: true,
             basicOnly: true,
             optionalMax: true,
@@ -386,7 +389,7 @@ class Skeletons extends Faction {
 
         let units = [];
 
-        let raiseAreas = this.data.raiseAreas;
+        //let raiseAreas = this.data.raiseAreas;
 
         response.units.forEach( responseUnit => {
             let chosenUnit = this.game().objectMap[ responseUnit ];
@@ -410,7 +413,7 @@ class Skeletons extends Faction {
             }
 
             unit.location = area;
-            raiseAreas.push(area);
+            //raiseAreas.push(area);
 
             units.push(unit);
         });
@@ -423,25 +426,56 @@ class Skeletons extends Faction {
         return true;
     }
 
+    async xerZhulActions( event ){
+        const toArea = event.unit.location;
+        const fromArea = event.from;
+        const XerZhul = event.unit;
+
+        if( fromArea === event.unit.location ) return;
+
+        // if we moved from an area raise dead
+        if( fromArea ){
+            await this.xerZhulRaiseDead( fromArea );
+        }
+
+        await this.xerZhulAttack( XerZhul, toArea );
+    }
+
+    async xerZhulAttack( unit, area ){
+        // resolve attack with that unit
+        let output = await this.attack({
+            area : this.game().areas[area],
+            attacks : unit.attack,
+            unit : unit
+        });
+
+        if( output ){
+            await this.game().timedPrompt('noncombat-attack', { output : [output] } )
+                .catch( error => console.error( error ) );
+        }
+    }
 
     /**
-     * Allow Xer'Zhul to raise the dead when he uses a skill ability
+     * Allow Xer'Zhul to raise the dead
      *
-     * @param event
+     * @param area
      */
-    async xerZhulRaiseDead( event ){
+    async xerZhulRaiseDead( area ){
         const areas = Object.keys( this.deadWeCanRaiseByArea() );
 
-        if( !areas.length ){
+        if( !areas.includes( area ) ){
             this.message( "No dead for Xer'Zhul to raise", { class : 'warning' } );
             return;
         }
-        await this.raiseUnit( areas, 2 );
+
+        await this.raiseUnit( [ area ] );
     }
 
+    /*
     resetRaiseAreas(){
         this.data.raiseAreas = [];
     }
+     */
 
     /**
      * Returns a list of areas that are adjacent to the given area, and where we have tokens
