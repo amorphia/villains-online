@@ -6,8 +6,8 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlMostAreas', args : [false] },
-                    { test : 'enemyMarkers', args : [3] }
+                    { test : 'controlAreas', args : [4] },
+                    { test : 'enemyMarkers', args : [2] }
                 ],
                 value : 3
             }
@@ -20,7 +20,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlMostAreas', args : [true] },
+                    { test : 'controlAreas', args : [3] },
                 ],
                 value : 1
             },
@@ -60,7 +60,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlMostAreas', args : [true] },
+                    { test : 'controlAreas', args : [3] },
                 ],
                 value : 1
             },
@@ -155,7 +155,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'controlMostAreas', args : [true] },
+                    { test : 'controlAreas', args : [3] },
                 ],
                 value : 1
             },
