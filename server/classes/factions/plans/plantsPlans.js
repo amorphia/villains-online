@@ -1,6 +1,6 @@
 let obj = [
     {
-        name: 'Mass Flowering (1)',
+        name: 'Triumph of the Tangle',
         num : 1,
         faction : 'plants',
         objectives : [
@@ -13,14 +13,14 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'exterminateAreas', args : [1] },
+                    { test : 'killUnits', args : [2] },
                 ],
                 value : 1
             },
         ]
     },
     {
-        name: '2',
+        name: 'A Blossoming Annihilation',
         num : 2,
         faction : 'plants',
         objectives : [
@@ -38,14 +38,14 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'exterminateAreas', args : [1] },
+                    { test : 'loseUnits', args : [3] },
                 ],
                 value : 1
             },
         ]
     },
     {
-        name: '3',
+        name: 'From Lords to Loam',
         num : 3,
         faction : 'plants',
         objectives : [
@@ -57,7 +57,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'killUnits', args : [3] },
+                    { test : 'killUnits', args : [2] },
                 ],
                 value : 1
             },
@@ -84,7 +84,7 @@ let obj = [
         ]
     },
     {
-        name: '5',
+        name: 'The Song of Re-Wilding',
         num : 5,
         faction : 'plants',
         objectives : [
@@ -96,7 +96,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'influenceInAreas', args : [6,1] },
+                    { test : 'influenceInAreas', args : [7,1] },
                 ],
                 value : 1
             },
@@ -147,7 +147,7 @@ let obj = [
         ]
     },
     {
-        name: '8',
+        name: 'Seeds of a New World',
         num : 8,
         faction : 'plants',
         objectives : [
@@ -165,7 +165,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [2] },
+                    { test : 'useSkills', args : [3] },
                 ],
                 value : 1
             },

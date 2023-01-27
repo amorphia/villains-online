@@ -105,7 +105,7 @@
                      :class="`faction-${obj.faction}`"
                      :title="`the ${obj.faction} have ${obj.influence} influence in the ${area.name}`">
                     {{ obj.influence }}
-                    {{ obj.faction === 'plants' && killedPlant ? '*' : '' }}
+                    <!-- {{ obj.faction === 'plants' && killedPlant ? '*' : '' }} -->
                 </div>
 
                 <!-- influence tooltip -->

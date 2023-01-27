@@ -10,15 +10,15 @@ class Plants extends Faction {
         // triggered events
         this.triggers = {
             "onSetup" : "setupVinesTokens",
-            "onAfterCombatStep" : "sproutPlants",
-            "onCleanUp" : "removePlantsFromUnitMix"
+            //"onAfterCombatStep" : "sproutPlants",
+            "onCleanUp" : "sproutPlants"
         };
 
         //data
         this.data.name = this.name;
         this.data.title = "The Reclamation of Gaia";
         this.data.focusDescription = "Have many enemy units in your areas";
-        this.data.maxEnergy = 8;
+        //this.data.maxEnergy = 8;
         this.data.flipableUnits = ['champion'];
         this.data.additionalUnitIcon = ['plant'];
         this.data.hasPlants = true;
@@ -45,9 +45,10 @@ class Plants extends Faction {
         };
 
         // units
-        this.units['goon'].count = 2;
-        this.units['mole'].count = 7;
-        this.units['talent'].count = 4;
+        //this.units['goon'].count = 3;
+        delete this.units['mole'];
+        this.units['mole'].count = 8;
+        this.units['talent'].count = 6;
         this.units['patsy'].count = 8;
         this.units['patsy'].data.influence = 1;
 
@@ -72,6 +73,15 @@ class Plants extends Faction {
         };
     }
 
+    getDeployLimit( args ){
+        let deployLimit = this.data.deployLimit;
+
+        if( args.token ){
+            deployLimit += this.data.plants[args.token.location] ?? 0;
+        }
+
+        return deployLimit;
+    }
 
     /**
      * Process faction upgrade
@@ -214,6 +224,8 @@ class Plants extends Faction {
         for( let area of areas ){
             await this.choosePlantConvert( area );
         }
+
+        this.removePlantsFromUnitMix()
     }
 
 

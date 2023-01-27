@@ -235,7 +235,15 @@ class Faction {
         this.message( message );
     }
 
-
+    /**
+     * Return our current deploy limit
+     *
+     * @param args
+     * @returns {number}
+     */
+    getDeployLimit( args ){
+        return this.data.deployLimit;
+    }
 
     /**
      * Return a unit to our reserves

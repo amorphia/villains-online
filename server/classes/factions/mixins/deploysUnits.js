@@ -69,7 +69,7 @@ let obj = {
         }
 
         let data = {
-            deployLimit : args.deployLimit || this.data.deployLimit,
+            deployLimit : args.deployLimit || this.getDeployLimit( args ),
             toAreas : areas,
             fromAreas : this.deployFromAreas( args ),
             unitTypes : args.unitTypes,
