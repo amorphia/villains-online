@@ -62,7 +62,7 @@ class Game {
         discard: []
     };
 
-    cardTracker = {};
+
 
     // capitol tokens
     capitolTokens = [
@@ -79,7 +79,7 @@ class Game {
         maxPP :13, // how many Plan Points a player needs to win
         upgradePoints : [ 4, 8 ], // how many points (on a single track) do players need to unlock their upgrades
         gameType : 'optimized', // our default game mode, basic/optimized/anarchy
-
+        cardTracker : {},
         // internals
         rolls : [], // used to track the culminate die rolls made throughout the game
         creator : null, // the player who created this game
@@ -579,11 +579,11 @@ class Game {
         this.data.deckCount = this.deck.deck.length;
 
         // track that we've drawn this card
-        if(!this.cardTracker[card.class]){
-            this.cardTracker[card.class] = { drawn: 0, played: 0, target: 0 };
+        if(!this.data.cardTracker[card.class]){
+            this.data.cardTracker[card.class] = { drawn: 0, played: 0, target: 0 };
         }
 
-        this.cardTracker[card.class].drawn++;
+        this.data.cardTracker[card.class].drawn++;
 
         return card;
     }

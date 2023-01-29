@@ -123,7 +123,7 @@ let obj = {
         _.moveItemById( target.id, faction.data.cards.hand, faction.data.cards.target );
 
         // track our card targeting
-        this.cardTracker[target.class].target++;
+        this.data.cardTracker[target.class].target++;
 
         // de-select target card if was selected randomly
         let targetCard = this.objectMap[ target.id ];

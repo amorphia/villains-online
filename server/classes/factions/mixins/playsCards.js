@@ -169,7 +169,7 @@ let obj = {
         let card = this.game().objectMap[ response.cardId ];
 
         // track our card play
-        this.game().cardTracker[card.class].played++;
+        this.game().data.cardTracker[card.class].played++;
 
         // pay its cost
         this.payCost( response.cost, false, 'card' );

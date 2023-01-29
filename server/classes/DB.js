@@ -79,7 +79,7 @@ class DB {
         console.log("saving final scores", data.cards );
 
         axios.post( `${this.trackerHost}/api/import`, data )
-            .then( result => console.log( result ) )
+            .then( result => {} )
             .catch( errors => console.log( errors ) );
     }
 
@@ -99,7 +99,7 @@ class DB {
             scores : scores,
             win_type : this.getWinType( scores ),
             winner : scores[0],
-            cards: game.cardTracker,
+            cards: game.data.cardTracker,
         };
     }
 
