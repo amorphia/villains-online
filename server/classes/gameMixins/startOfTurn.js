@@ -122,6 +122,9 @@ let obj = {
         // move the player's chosen target card from their hand to their target array
         _.moveItemById( target.id, faction.data.cards.hand, faction.data.cards.target );
 
+        // track our card targeting
+        this.cardTracker[target.class].target++;
+
         // de-select target card if was selected randomly
         let targetCard = this.objectMap[ target.id ];
         if( targetCard.randomTarget ) delete targetCard.randomTarget;

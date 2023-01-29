@@ -62,6 +62,8 @@ class Game {
         discard: []
     };
 
+    cardTracker = {};
+
     // capitol tokens
     capitolTokens = [
         { ap : 1, turn : 1 },
@@ -575,6 +577,13 @@ class Game {
 
         // update the deck count for the UI
         this.data.deckCount = this.deck.deck.length;
+
+        // track that we've drawn this card
+        if(!this.cardTracker[card.class]){
+            this.cardTracker[card.class] = { drawn: 0, played: 0, target: 0 };
+        }
+
+        this.cardTracker[card.class].drawn++;
 
         return card;
     }
