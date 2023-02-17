@@ -119,7 +119,7 @@ class Bikers extends Faction {
 
         if(units.length){
             await this.game().timedPrompt('units-shifted', {
-                message : `Danny "The Blade" scares units out of town`,
+                message : `Danny "The Blade" claims more victims`,
                 units: units,
             });
         }

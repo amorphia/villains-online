@@ -9,6 +9,8 @@ let obj = {
      */
     async nonCombatAttack( attack, count, area, targetFaction = null ){
 
+        console.log("nonCombatAttack targetFaction:", targetFaction);
+
         if(typeof area === "string"){
             area = this.game().areas[area];
         }
