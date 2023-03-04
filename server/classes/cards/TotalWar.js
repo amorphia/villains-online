@@ -7,11 +7,11 @@ class TotalWar extends Card {
      */
     handle(){
         Object.values( this.game.areas ).forEach( area => area.data.battle = true );
-        this.faction.data.attackBonus += 1;
+        this.faction.data.attackBonus += 2;
     }
 
     clear( faction ){
-        faction.data.attackBonus -= 1;
+        faction.data.attackBonus -= 2;
     }
 }
 

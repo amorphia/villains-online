@@ -88,6 +88,9 @@ let helpers = {
         let tokens = this.getTokenCounts( faction, area ); // get the token counts of each token we have revealed in this area
         let areaScared = this.areaIsScared( faction, factions, area ); // is this area scared by the ghosts champion?
 
+        // gain 1 influence for each cease fire
+        if( cards['cease-fire'] ) influence += (1 * cards['cease-fire']);
+
         // gain 2 influence for each rousing speech
         if( cards['rousing-speech'] ) influence += (2 * cards['rousing-speech']);
 
