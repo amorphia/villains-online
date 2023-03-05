@@ -11,6 +11,7 @@ class Devils extends Faction {
         this.triggers = {
             "onCleanUp" : "resetChaos",
             "onFactionKillsUnit" : "checkKillChaos",
+            "onBeforeSkill" : "shouldChaosInsteadOfSkill",
         };
 
         // data
@@ -72,13 +73,34 @@ class Devils extends Faction {
     }
 
 
-    /**
-     * Process faction upgrade
-     *
-     * @param {number} upgrade
-     */
-    processUpgrade( upgrade ){
-        this.data.stokeBattles = upgrade + 1;
+    async shouldChaosInsteadOfSkill( area ){
+
+        // if we have our second upgrade gain a free chaos
+        if( this.data.upgrade === 2 ){
+            this.raiseChaos();
+            return {};
+        }
+
+        // if we don't have our first upgrade abort
+        if( this.data.upgrade !== 1 ){
+            return {};
+        }
+
+        // prompt player to decide to raise chaos instead of activate the skill ability
+        let response = await this.prompt( 'question', {
+            message: `Gain a chaos instead of resolving the skill ability of the ${area.name}?`,
+        });
+
+        // if we decline, abort
+        if ( !response.answer ){
+            this.message( `The devils declines to raise chaos instead of resolving the ${area.name} ability` );
+            return {};
+        }
+
+        // if we accept, raise chaos and set the flag to skip the skill
+        this.raiseChaos();
+        this.message(`The devils raise chaos instead of resolving the ${area.name} ability` );
+        return { dontResolveSkill : true };
     }
 
     checkKillChaos( unit, options ){

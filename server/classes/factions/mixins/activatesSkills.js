@@ -27,20 +27,25 @@ let obj = {
         let exhaustedUnits = await this.useSkilledUnitsToActivateSkill( area, options );
 
         // handle any pre-skill triggers (that may modify our skill)
-        let skillModification = null;
+        let skillModification = {};
+
         if( this.triggers.onBeforeSkill ){
             skillModification = await this[this.triggers.onBeforeSkill]( area, exhaustedUnits );
         }
 
         try {
             // activate this area's skill
-            await area.skill( this );
+            if( !skillModification?.dontResolveSkill ){
+                await area.skill( this );
+            }
+
 
             // if we have the doubleResolve skill modification, resolve that skill a second time
             if( skillModification?.doubleResolve ) await area.skill( this );
 
             // handle any post skill activation triggers
             await this.handlePostSkillTriggers( area, exhaustedUnits );
+
         } catch ( error ) {
             console.error( error );
         }
