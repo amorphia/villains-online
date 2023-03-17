@@ -10,7 +10,7 @@ class Mutants extends Faction {
 
         // triggers
         this.triggers = {
-            "onAfterCombatStep" : "healOozes"
+            "onCleanUp" : "healOozes"
         };
 
         // data
