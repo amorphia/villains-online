@@ -76,7 +76,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'useSkills', args : [5] },
+                    { test : 'useSkills', args : [6] },
                     { test : 'enemyMarkers', args : [3] },
                 ],
                 value : 2
