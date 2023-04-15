@@ -34,7 +34,7 @@ class Ghosts extends Faction {
                 isChampion: true,
                 basic: false,
                 attack: [],
-                influence: 0,
+                influence: 1,
                 noDeploy: true,
                 noMove: true,
                 killed: false,
@@ -137,11 +137,9 @@ class Ghosts extends Faction {
     }
 
     async placeHerald( unit ){
-
-        console.log("place herald");
-
         let area = this.game().areas[ unit.location ];
-        let areas = [unit.location, ...area.data.adjacent];
+        let ownedAreas = this.areas();
+        let areas = area.data.adjacent.filter( area => !ownedAreas.includes( area ));
         let herald = this.data.units.find(unit => unit.type === 'herald');
 
         // prompt player to select an area
