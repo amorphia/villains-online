@@ -34,7 +34,7 @@ class Ghosts extends Faction {
                 isChampion: true,
                 basic: false,
                 attack: [],
-                influence: 2,
+                influence: 0,
                 noDeploy: true,
                 noMove: true,
                 killed: false,
@@ -42,8 +42,26 @@ class Ghosts extends Faction {
                 selected: false,
                 blockEnemyTokenInfluence: true,
                 hitsAssigned: 0,
+                onUnflip: 'placeHerald',
                 ghost : true,
-                description: "Haunt: Enemy tokens don't produce xIx in this area"
+                description: "Enemy tokens don't produce xIx in this area, Rule: When revealed place your herald in this or an adjacent area"
+            }
+        };
+
+        this.units['herald'] = {
+            count: 1,
+            data: {
+                name: "Herald of Mad King Eliiot",
+                type: 'herald',
+                basic: false,
+                attack: [],
+                influence: 2,
+                noDeploy: true,
+                noMove: true,
+                killed: false,
+                selected: false,
+                hitsAssigned: 0,
+                returnOnCleanup: true,
             }
         };
 
@@ -116,6 +134,30 @@ class Ghosts extends Faction {
         // advance game
         game.data.gameAction++;
         game.advancePlayer();
+    }
+
+    async placeHerald( unit ){
+
+        console.log("place herald");
+
+        let area = this.game().areas[ unit.location ];
+        let areas = [unit.location, ...area.data.adjacent];
+        let herald = this.data.units.find(unit => unit.type === 'herald');
+
+        // prompt player to select an area
+        let response = await this.prompt( 'choose-area', {
+            areas : areas,
+            show: 'units',
+            addOwnUnit: herald,
+            message: "Choose an area to place the Herald of Mad King Elliot",
+        });
+
+        herald.location = response.area;
+
+        await this.game().timedPrompt('units-shifted', {
+            message : `The Herald of Mad King Elliot is ordered to the ${area.name}`,
+            units: [herald],
+        });
     }
 
     async bansheeWail( unit ){
@@ -268,7 +310,7 @@ class Ghosts extends Faction {
     }
 
     returnGhosts(){
-        let ghosts = this.data.units.filter( unit => unit.ghost && _.unitInPlay( unit ) );
+        let ghosts = this.data.units.filter( unit => (unit.ghost || unit.returnOnCleanup) && _.unitInPlay( unit ) );
         ghosts.forEach( unit => this.returnUnitToReserves( unit ) );
     }
 

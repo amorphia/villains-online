@@ -11,9 +11,10 @@
                     <!-- units -->
                     <div v-if="data.show === 'units'" class="">
                         <unit-row v-for="(set, name) in units"
-                                  :units="set"
-                                  :key="name"
-                                    ></unit-row>
+                          :units="set"
+                          :key="name"
+                          :selectedUnit="data.addOwnUnit"
+                        ></unit-row>
                     </div>
                     <!-- tokens -->
                     <token-row v-else :area="area"></token-row>
@@ -74,6 +75,11 @@
 
                     // get the faction's units in the area and add them to out tally
                     let factionUnits = _.factionUnitsInArea( faction, this.area.name );
+
+                    if( this.data.addOwnUnit && faction.name === this.shared.faction.name ){
+                        factionUnits.unshift( this.data.addOwnUnit );
+                    }
+
                     if( factionUnits.length ){
                         units[faction.name] = factionUnits;
                     }

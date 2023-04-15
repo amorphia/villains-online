@@ -27,6 +27,9 @@
 }
 
 
+.icon-herald:before {
+    content: "\e914";
+}
 .icon-raise:before {
     content: "\e913";
 }
