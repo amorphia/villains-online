@@ -25,8 +25,14 @@
     background-image: url('/images/background.jpg');
     color: white;
     font-family: var(--primary-font);
-    background-size: cover;
+    background-position: center top;
+    background-size: 100% auto;
     min-height: 100vh;
+
+    @media (min-aspect-ratio: 1/1){
+        background-size: cover;
+    }
+
 }
 
 .glass {
