@@ -7,9 +7,14 @@ let obj = [
             {
                 requirements : [
                     { test : 'haveChaos', args : ['strife'] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'loseUnits', args : [3] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
@@ -46,7 +51,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'haveChaos', args : ['pandemonium'] },
-                    { test : 'killUnits', args : [5] }
+                    { test : 'tokensInAreas', args : [ 3, 'stoke' ] },
                 ],
                 value : 3
             },
@@ -60,9 +65,14 @@ let obj = [
             {
                 requirements : [
                     { test : 'haveChaos', args : ['strife'] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'unitsInPlay', args : [8] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
@@ -80,15 +90,20 @@ let obj = [
             {
                 requirements : [
                     { test : 'exterminateAreas', args : [1] },
-                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'haveChaos', args : ['pandemonium'] },
+                    { test : 'haveChaos', args : ['strife'] },
                 ],
-                value : 2
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'tokensInAreas', args : [5] },
+                ],
+                value : 1
             },
         ]
     },
@@ -100,7 +115,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'haveChaos', args : ['bedlam'] },
-                    { test : 'skilledAtTarget', args : [2] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 2
             },
@@ -119,7 +134,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'exterminateAreas', args : [1] },
+                    { test : 'skilledAtTarget', args : [2] },
                 ],
                 value : 1
             },
@@ -131,7 +146,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [5] },
+                    { test : 'exterminateAreas', args : [1] },
                 ],
                 value : 1
             },
@@ -144,13 +159,13 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'haveChaos', args : ['bedlam'] },
+                    { test : 'useSkills', args : [2] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [2] },
+                    { test : 'haveChaos', args : ['bedlam'] },
                 ],
                 value : 1
             },
