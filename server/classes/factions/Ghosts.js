@@ -13,7 +13,7 @@ class Ghosts extends Faction {
         this.data.title = "The Lost Legion";
         this.data.focusDescription = "Retain areas you control";
         this.data.canPlaceGhostsDuringTokens = true;
-        this.data.flipableUnits = ['spirit','banshee','geist'];
+        this.data.flipableUnits = ['mad-king','banshee','poltergeist'];
         this.data.addUpgradeToControlInfluence = true;
         this.data.controlNeutralSetupArea = true;
 
@@ -58,6 +58,7 @@ class Ghosts extends Faction {
                 influence: 2,
                 noDeploy: true,
                 noMove: true,
+                hidden: true,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
@@ -94,7 +95,7 @@ class Ghosts extends Faction {
                 type: 'poltergeist',
                 isChampion: true,
                 basic: false,
-                attack: [6,6],
+                attack: [5,5],
                 noDeploy: true,
                 influence: 0,
                 noMove: true,
