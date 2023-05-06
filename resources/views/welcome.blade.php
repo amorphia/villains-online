@@ -6,11 +6,6 @@
 
     <div class="d-flex p-5 align-start justify-center landing">
 
-        <!-- rules -->
-        <a href="/files/villains_full_rules.pdf" target="_blank" class="d-block button pos-absolute top-0 left-0">
-            view game rules <i class="icon-launch"></i>
-        </a>
-
         <div class="width-30 pt-5 landing__panel">
             <img src="/images/logo-with-blood.png" class="landing__logo width-100 d-block">
         </div>
