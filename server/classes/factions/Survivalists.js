@@ -39,6 +39,7 @@ class Survivalists extends Faction {
         };
         */
 
+        /*
         this.tokens['shelter'] = {
             count: 1,
             data: {
@@ -49,6 +50,19 @@ class Survivalists extends Faction {
                 description: "Discard this token as an action to return one of your killed basic units here to play",
                 req : "Passive token: this token may always be activated",
                 collectDiscardedCards: true,
+            }
+        };
+        */
+
+        this.tokens['scrounge'] = {
+            count: 1,
+            data: {
+                influence: 1,
+                type: 'scrounge',
+                cost: 0,
+                resource: 2,
+                description: "Extra Refunded (gain xRxxRx when revealed), if you have no other tokens or units here you may deploy a patsy to this area, it becomes prepared",
+                req : "Discard this token if you do not deploy a patsy when activating it",
             }
         };
 
@@ -63,17 +77,14 @@ class Survivalists extends Faction {
         this.units['goon'].data.ready = false;
         this.units['goon'].data.onDamaged = 'checkPrepperToughness';
 
-        this.units['patsy'].count = 6;
+        this.units['patsy'].count = 8;
         this.units['patsy'].data.prepared = false;
         this.units['patsy'].data.attack = [9];
         this.units['patsy'].data.skilled = false;
         this.units['patsy'].data.ready = false;
         this.units['patsy'].data.onDamaged = 'checkPrepperToughness';
 
-        this.units['talent'].count = 4;
-        this.units['talent'].data.prepared = false;
-        this.units['talent'].data.baseSkilled = true;
-        this.units['talent'].data.onDamaged = 'checkPrepperToughness';
+        delete this.units['talent'];
 
         this.units['champion'] = {
             count: 1,
@@ -82,7 +93,7 @@ class Survivalists extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 0,
-                attack: [6,6],
+                attack: [5],
                 cost: 1,
                 toughness: true,
                 flipped: false,
@@ -90,6 +101,8 @@ class Survivalists extends Faction {
                 selected: false,
                 hitsAssigned: 0,
                 soloDefenseBonus: 3,
+                skilled: true,
+                ready: false,
             }
         };
     }
@@ -104,22 +117,30 @@ class Survivalists extends Faction {
      * @param token
      * @param area
      * @returns {boolean}
-
-    canActivateScrounge( token, area ) {
-        return true;
-    }
     */
+    canActivateScrounge( token, area ) {
+        return !this.hasUnitsInArea( area ) && !this.tokensInArea().length;
+    }
 
     /**
      * Resolve our scrounge token
      *
      * @param args
      * @returns {Promise<void>}
-
+    */
      async activateScroungeToken( args ) {
+        let options = {
+            deployLimit: 1,
+            readyUnits: true,
+            unitType: 'patsy',
+            area: args.area,
+        };
+
+        // deploy a patsy, and ready it
+        await this.deploy( options ).catch( error => console.error( error ) );
+
         this.game().advancePlayer();
     }
-     */
 
     /**
      * Can we activate our shelter token?
@@ -127,27 +148,28 @@ class Survivalists extends Faction {
      * @param token
      * @param area
      * @returns {boolean}
-    */
+
      canActivateShelter( token, area ) {
         return true;
     }
+    */
 
     /**
      * Resolve our shelter token
      *
      * @param args
      * @returns {Promise<void>}
-    */
+
      async activateShelterToken( args ) {
         this.game().advancePlayer();
     }
-
+    */
     /**
      * Take a shelter action by removing a shelter token
      *
      * @param player
      * @param areaName
-     */
+
     async takeShelterAction( player, areaName ){
         let area = this.game().areas[areaName];
 
@@ -168,7 +190,13 @@ class Survivalists extends Faction {
         // advance the game
         this.game().advancePlayer();
     }
+     */
 
+    /**
+     *
+     * @param event
+     * @returns {string}
+     */
     checkPrepperToughness( event ){
         // event.hits is the number of hits assigned to this unit
         if( !event.unit.flipped || event.hits > 1 ){

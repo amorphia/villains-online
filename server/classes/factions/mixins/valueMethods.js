@@ -737,6 +737,22 @@ let mixin = {
 
 
     /**
+     * Does this faction have units in the given area?
+     *
+     * @param area
+     * @param options
+     * @returns {boolean}
+     */
+    tokensInArea( area, options = {} ) {
+        if(area.name) area = area.name;
+        return this.data.tokens.filter(token => {
+            return token.location === area
+                && (!options.revealed || token.revealed)
+                && (!options.unrevealed || !token.revealed);
+        });
+    },
+
+    /**
      * Return's our player name
      *
      * @returns {string}
