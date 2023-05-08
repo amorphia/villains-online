@@ -140,6 +140,12 @@ class Game {
         }
     }
 
+    trappedAreas(){
+        return Object.values( this.areas ).reduce( (areas, area) => {
+            if(area.hasCard( 'trapped-like-rats' )) areas.push(area.name);
+            return areas;
+        }, []);
+    }
 
     /**
      * Add each of our basic event listeners to a player's socket

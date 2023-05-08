@@ -313,6 +313,7 @@
                             && _.unitInArea( unit, area, {
                                 deployable : true,
                                 notChampion : this.destinationBlockedByKau,
+                                skilled : this.data.isSkilled,
                                 types : this.data.unitTypes
                         }));
 
@@ -493,6 +494,7 @@
                     unit => _.isValidUnit( unit, {
                         notSelected : true,
                         types : this.data.unitTypes,
+                        skilled: this.data.isSkilled,
                         deployable: true,
                         notChampion : this.destinationBlockedByKau,
                         inReserves : true,

@@ -151,7 +151,9 @@ class Area {
      *
      * @returns {boolean}
      */
-    hasKau(){
+    hasKau(faction = null){
+        if(faction?.name) faction = faction.name;
+        if(faction === 'aliens') return false;
         let aliens = this.game().factions['aliens'];
         if( aliens && this.name === aliens.data.kau.location && !aliens.data.kau.killed ) return true;
     }

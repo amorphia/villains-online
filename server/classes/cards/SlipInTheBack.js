@@ -8,16 +8,16 @@ class SlipInTheBack extends Card {
     async handle(){
 
         // do we have a talent to deploy?
-        if( ! this.hasTalentToDeploy() ){
-            this.faction.message( "No talents to deploy", { class : 'warning'  });
+        if( ! this.hasSkilledUnitToDeploy() ){
+            this.faction.message( "No skilled units to deploy", { class : 'warning'  });
             return;
         }
 
         let args = {
             free: true,
             deployLimit: 1,
-            unitTypes: ['talent'],
-            readyUnits: true
+            isSkilled: true,
+            readyUnits: true,
         };
 
         // deploy a talent, and ready it
@@ -31,10 +31,16 @@ class SlipInTheBack extends Card {
      *
      * @returns {boolean}
      */
-    hasTalentToDeploy(){
-        return this.faction.data.units.some( unit => unit.type === 'talent' // do we have a talent
-                                                 && !unit.noDeploy // that isn't prevented from being deployed
-                                                 && !unit.killed ); // and isn't killed?
+    hasSkilledUnitToDeploy(){
+        const destinationHasKau = this.area.hasKau(this.faction);
+        const trappedAreas = this.game.trappedAreas();
+
+        return this.faction.data.units.some( unit => unit.skilled === true // do we have a talent
+            && !unit.noDeploy // that isn't prevented from being deployed
+            && !unit.killed // and isn't killed?
+            && (!destinationHasKau || unit.type !== 'champion') // and isn't being blocked by Kau
+            && !trappedAreas.includes(unit.location) // and isn't trapped
+        );
     }
 }
 

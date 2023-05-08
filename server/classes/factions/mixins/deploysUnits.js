@@ -78,7 +78,8 @@ let obj = {
             noBonusUnits : args.noBonusUnits,
             readyUnits : args.readyUnits,
             reduceCost : args.reduceCost,
-            transformUnit : args.transformUnit
+            transformUnit : args.transformUnit,
+            isSkilled: args.isSkilled,
         };
 
         // have the player select units to deploy
