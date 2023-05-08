@@ -119,7 +119,7 @@ class Survivalists extends Faction {
      * @returns {boolean}
     */
     canActivateScrounge( token, area ) {
-        return !this.hasUnitsInArea( area ) && !this.tokensInArea().length;
+        return !this.hasUnitsInArea( area ) && this.tokensInArea( area ).length <= 1;
     }
 
     /**
@@ -129,15 +129,20 @@ class Survivalists extends Faction {
      * @returns {Promise<void>}
     */
      async activateScroungeToken( args ) {
-        let options = {
-            deployLimit: 1,
-            readyUnits: true,
-            unitType: 'patsy',
-            area: args.area,
-        };
+        args.deployLimit = 1;
+        args.unitTypes = 'patsy';
 
-        // deploy a patsy, and ready it
-        await this.deploy( options ).catch( error => console.error( error ) );
+        let output = await this.deploy( args );
+
+        // if we didn't deploy anything, discard the token
+        if( output?.declined ){
+            this.game().declineToken( this.playerId, args.token, true );
+            return;
+        }
+
+        let unit = output?.units[0]?.unit;
+        console.log("scrounge unit", unit);
+        this.becomePrepared(unit, false);
 
         this.game().advancePlayer();
     }
@@ -250,13 +255,13 @@ class Survivalists extends Faction {
      *
      * @param
      */
-    becomePrepared( unit ) {
+    becomePrepared( unit, ready = true ) {
         if( unit.flipped || unit.killed || !unit.location ) return;
 
         unit.flipped = true;
         unit.prepared = true;
         unit.skilled = true;
-        unit.ready = true;
+        unit.ready = ready;
     }
 
     /**
