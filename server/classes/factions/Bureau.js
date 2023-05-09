@@ -28,8 +28,8 @@ class Bureau extends Faction {
         // tokens
         this.tokens['deploy'].count = 4;
         this.tokens['card'].count = 4;
-        this.tokens['move'].count = 2;
-        this.tokens['battle'].count = 2;
+        //this.tokens['move'].count = 2;
+        //this.tokens['battle'].count = 2;
 
         this.tokens['loop'] = {
             count: 1,
