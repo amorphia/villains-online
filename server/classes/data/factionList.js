@@ -4,7 +4,7 @@ let obj = {
     scientists : { name: 'scientists', owner : null, blocked : false, status : 3, basic: true, selectable : true },
     robots : { name: 'robots', owner : null, blocked : false, killer : true, status : 3, basic: true, selectable : true },
     bankers : { name: 'bankers', owner : null, blocked : false, status : 2, basic: true, selectable : true },
-    commies : { name: 'commies', owner : null, blocked : false, status : 2, basic: true, selectable : true },
+    commies : { name: 'commies', owner : null, blocked : false, status : 3, basic: true, selectable : true },
     aliens : { name: 'aliens', owner : null, blocked : false, status : 2, basic: true, selectable : true },
     cultists : { name: 'cultists', owner : null, blocked : false, killer : true, status : 3, basic: true, selectable : true },
     loyalists : { name: 'loyalists', owner : null, blocked : false, status : 1, selectable : true },
@@ -19,13 +19,13 @@ let obj = {
     bureau : { name: 'bureau', owner : null, blocked : false, status : 2, selectable : true },
     plants : { name: 'plants', owner : null, blocked : false, status : 2, selectable : true },
     ghosts : { name: 'ghosts', owner : null, blocked : false, status : 0, selectable : true },
-    spiders : { name: 'spiders', owner : null, blocked : false, status : 0, killer : true, selectable : true},
+    spiders : { name: 'spiders', owner : null, blocked : false, status : 1, killer : true, selectable : true},
     skeletons : { name: 'skeletons', owner : null, blocked : false, status : 0, selectable : true },
     martyrs : { name: 'martyrs', owner : null, blocked : false, status : 1, selectable : true },
-    bikers : { name: 'bikers', owner : null, blocked : false, status : 0, selectable : true, killer : true, },
+    bikers : { name: 'bikers', owner : null, blocked : false, status : 1, selectable : true, killer : true, },
     molemen : { name: 'molemen', owner : null, blocked : false, status : 1, selectable : true },
     survivalists : { name: 'survivalists', owner : null, blocked : false, status : 0, selectable : true },
-    devils : { name: 'devils', owner : null, blocked : false, status : 0, selectable : true, killer : false, },
+    devils : { name: 'devils', owner : null, blocked : false, status : 1, selectable : true, killer : false, },
 };
 
 module.exports = Object.assign({}, obj );
