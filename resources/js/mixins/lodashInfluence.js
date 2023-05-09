@@ -170,20 +170,13 @@ let helpers = {
      * @returns {number}
      */
     martyrInfluence( faction, area ) {
-        let influence = 0;
-        // only the martyrs have a martyr token
-        if (faction.name !== 'martyrs') return influence;
+        let areaName = area.name ?? area;
 
-        // look for a revealed token named martyr in this area
-        if (!area.tokens.some(token => token.name === 'martyr' && token.revealed)) return influence;
+        if( faction.name === 'martyrs' && faction.memorials[areaName] ){
+            return faction.memorials[areaName];
+        }
 
-        faction.units.forEach( unit => {
-            if( this.deadInArea( unit, area ) ){ // if this unit is in this area and not webbed
-                influence += unit.influence; // add its influence to our tally
-            }
-        });
-
-        return influence;
+        return 0;
     },
 
 

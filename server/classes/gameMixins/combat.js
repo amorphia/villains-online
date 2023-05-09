@@ -101,6 +101,7 @@ let obj = {
      */
     async killUnit( unit, faction, options = {} ){
         if( typeof faction === 'string' ) faction = this.factions[faction];
+        let victimFaction = this.factions[unit.faction];
 
         // if we have some triggered effect on combat death
         if( options.onCombatDeath ){
@@ -125,6 +126,8 @@ let obj = {
 
         // check for triggered events belonging to a faction whenever they kill a unit
         if( faction.triggers.onFactionKillsUnit ) await faction[faction.triggers.onFactionKillsUnit]( unit, options );
+
+        if( victimFaction.triggers.onFactionUnitKilled ) await victimFaction[victimFaction.triggers.onFactionUnitKilled]( unit, faction, options );
 
         // unflip our unit if needed
         if( unit.flipped && !unit.dontUnflipAutomatically) this.factions[unit.faction].unflipUnit( unit );

@@ -27,6 +27,9 @@
 }
 
 
+.icon-memorial:before {
+    content: "\E915";
+}
 .icon-herald:before {
     content: "\E914";
 }
@@ -233,6 +236,15 @@
 }
 .icon-units:before {
     content: "\E93A";
+}
+.icon-circle:before {
+    content: "\E930";
+}
+.icon-num-3:before {
+    content: "\E91B";
+}
+.icon-num-4:before {
+    content: "\E91C";
 }
 .icon-hax0red:before {
     content: "\E900";

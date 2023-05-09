@@ -125,6 +125,17 @@
                 return units;
             },
 
+            /**
+             * Add our memorials to our units tally
+             * @returns {object} // { plants : { count : {number}, pipped : 0 }, etc... }
+             */
+            tallyMemorials( units ){
+                if( !this.memorialsInArea ) return units;
+
+                // add our memorials count
+                units['memorial'] = { count : this.memorialsInArea, pipped : 0 };
+                return units;
+            },
 
             /**
              * Add our ghosts to our units tally
@@ -163,6 +174,9 @@
                 // add in our plants
                 units = this.tallyPlants( units );
 
+                // add in our memorials
+                units = this.tallyMemorials( units );
+
                 // add in our ghosts
                 units = this.tallyGhosts( units );
 
@@ -188,7 +202,14 @@
                 return this.faction.plants[this.area.name];
             },
 
-
+            /**
+             * Returns the number of plants this faction has in this area
+             * @returns {number}
+             */
+            memorialsInArea(){
+                if( this.faction.name !== 'martyrs' ) return 0;
+                return this.faction.memorials[this.area.name];
+            },
             /**
              * Returns an array of the ghost units this player has in the area
              * @returns {Unit[]}

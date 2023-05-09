@@ -25,6 +25,9 @@
                 //  get our plants
                 units = this.getPlants( units );
 
+                //  get our memorials
+                units = this.getMemorials( units );
+
                 // add smoke
                 units = this.getSmoke( units );
 
@@ -70,6 +73,21 @@
                 return units;
             },
 
+            /**
+             * Add this faction's memorials to our units array
+             * @returns {Unit[]}
+             */
+            getMemorials( units ){
+                // abort conditions
+                if ( this.skilled || !this.faction.memorials?.[this.area] ) return units;
+
+                // add our memorials
+                for (let i = 0; i < this.faction.memorials[this.area]; i++) {
+                    units.push({ type: 'memorial', faction: 'martyrs' });
+                }
+
+                return units;
+            },
 
             /**
              * Add this faction's smoke to our units array

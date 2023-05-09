@@ -9,7 +9,8 @@ class Martyrs extends Faction {
 
         // triggers
         this.triggers = {
-           // "onCleanUp" : "resetIncarnationKilledBy"
+           "onCleanUp" : "resetMemorials",
+            "onFactionUnitKilled" : "makeMemorial",
         };
 
         //data
@@ -17,22 +18,23 @@ class Martyrs extends Faction {
         this.data.focusDescription = "Lose many units";
         this.data.title = "The Martyrs of the Final Truth";
         this.controlsCombat = this.canControlCombat;
+        this.data.maxMemorials = 1;
+        this.data.memorials = {};
 
         // tokens
         delete this.tokens['battle'];
 
         this.tokens['martyr'] = {
-            count: 2,
+            count: 1,
             data: {
                 influence: 1,
                 type: 'martyr',
                 resource: 1,
                 cost: 0,
-                description: "Your killed units still produce influence in this area. Start a battle here if able.",
+                description: "You may have any number of memorials here. you may start a battle here.",
                 req : "This token may always be activated"
             }
         };
-
 
         // units
         this.units['goon'].count = [4];
@@ -58,7 +60,8 @@ class Martyrs extends Faction {
         };
     }
 
-    processUpgrade(){
+    processUpgrade( upgrade ){
+        this.data.maxMemorials = upgrade + 1;
     }
 
     /**
@@ -104,6 +107,18 @@ class Martyrs extends Faction {
         });
     }
 
+    makeMemorial( unit ) {
+        const areaName = unit.location;
+
+        if (!this.data.memorials[areaName]) {
+            return this.data.memorials[areaName] = 1;
+        }
+
+        let maxMemorials = this.data.tokens.some( token => token.type === 'martyr' && token.revealed && token.location === areaName ) ? 25 : this.data.maxMemorials;
+        if ( this.data.memorials[areaName] < maxMemorials ){
+            this.data.memorials[areaName]++;
+        }
+    }
 
     /**
      * Handle The Incarnation's death triggers
@@ -114,19 +129,6 @@ class Martyrs extends Faction {
     async incarnationReborn( event ){
         let killer = this.game().factions[ event.unit.killed ]; //  who killed the queen
         let incarnation = this.getChampion();
-
-        /*
-        // if the same player kills The Incarnation of Divinity twice in a turn it stays dead
-        if( incarnation.killedBy.includes( killer.name ) ){
-            this.game().message({ faction : killer, message: `Have <span class="highlight">snuffed out</span> the light of divinity for a second time! This time it works` });
-            return;
-        }
-
-
-        // mark this player has killed the incarnation
-        incarnation.killedBy.push( killer.name );
-
-        */
 
         // announce thw death and rebirth of the incarnation of divinity, the cycle begins anew!
         this.game().sound( 'holy' );
@@ -187,9 +189,8 @@ class Martyrs extends Faction {
     /**
      * Reset The Incarnation has been killed by players array
      */
-    resetIncarnationKilledBy(){
-        let incarnation = this.getChampion();
-        incarnation.killedBy = [];
+    resetMemorials(){
+        this.data.memorials = {};
     }
 
 
@@ -214,9 +215,28 @@ class Martyrs extends Faction {
      * @param args
      */
     async activateMartyrToken( args ) {
-        // start a battle here
-        await this.game().battle( args.area, { attackBonus : this.data.upgrade } );
+        await this.startMartyrBattle( args );
         this.game().advancePlayer();
+    }
+
+    async startMartyrBattle( args ) {
+        console.log( "startMartyrBattle" );
+
+        if(!args.area.canBattle()){
+            return this.message( `No battle may take place in the ${args.area.name}`, { class: 'warning' } );
+        }
+
+        // prompt player to decide to move lotus dancer
+        let response = await this.prompt( 'question', {
+            message: `Start a battle in the ${args.area.name}?`
+        });
+
+        if ( !response.answer ){
+            return this.message( `The Martyrs choose peace in the ${args.area.name}` );
+        }
+
+        // start a battle here
+        await this.game().battle( args.area );
     }
 
 }

@@ -747,6 +747,7 @@ let mixin = {
         if(area.name) area = area.name;
         return this.data.tokens.filter(token => {
             return token.location === area
+                && (!options.type || token.type === options.type)
                 && (!options.revealed || token.revealed)
                 && (!options.unrevealed || !token.revealed);
         });
