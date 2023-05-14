@@ -25,7 +25,7 @@ class Martyrs extends Faction {
         delete this.tokens['battle'];
 
         this.tokens['martyr'] = {
-            count: 1,
+            count: 2,
             data: {
                 influence: 1,
                 type: 'martyr',
@@ -72,38 +72,36 @@ class Martyrs extends Faction {
      */
     async incarnationConvert( event ){
         let area = this.game().areas[ event.unit.location ];
-        let reservePatsyCount = this.unitsInReserves({ type: 'patsy' });
-        let enemyPatsies = this.enemyUnitsInArea( area, { type : 'patsy', canBeReplaced: true } );
-
-        let maxConversion = _.min([
-            reservePatsyCount.length,
-            Object.keys( enemyPatsies ).length
-        ])
+        let enemyUnits = this.enemyUnitsInArea( area );
+        let maxConversion = Object.keys( enemyUnits ).length;
 
         if( !maxConversion ){
-            return this.message( `The Incarnation of Divinity can't convert any patsies`, { class : 'warning' } );
+            return this.message( `The Incarnation of Divinity can't recruit new followers`, { class : 'warning' } );
         }
 
-        let response = await this.prompt('choose-units', {
+        let trappedAreas = this.game().trappedAreas();
+        let areasWithPatsies = this.areasWithUnits({ type: "patsy" })
+            .filter(areaName  => areaName !== area.name && !trappedAreas.includes( areaName ) );
+
+        let response = await this.prompt('global-place', {
             count : maxConversion,
-            areas : [area.name],
+            area : area.name,
+            fromAreas: areasWithPatsies,
             unitTypes : ['patsy'],
-            enemyOnly : true,
-            differentPlayers : true,
-            canBeReplaced: true,
-            message: "Choose one patsy from each enemy player to convert"
+            message: `Choose up to ${maxConversion} patsies to place in the ${area.name}`,
         });
+
+        if(response.decline){
+            return this.message( `The Incarnation of Divinity declines to spread the glorious truth` );
+        }
 
         let patsies = response.units.map( unitId => this.game().objectMap[unitId] );
-        let originalPatsies = _.cloneDeep( patsies );
 
-        patsies.forEach( async (unit) => {
-            await this.replaceUnit( unit, { silent : true } );
-        });
+        patsies.forEach( unit => unit.location = area.name );
 
         await this.game().timedPrompt('units-shifted', {
-            message : "The Incarnation of divinity finds new followers",
-            units: originalPatsies,
+            message : "The Incarnation of divinity sends missionaries to recruit new followers",
+            units: patsies,
         });
     }
 
@@ -220,7 +218,6 @@ class Martyrs extends Faction {
     }
 
     async startMartyrBattle( args ) {
-        console.log( "startMartyrBattle" );
 
         if(!args.area.canBattle()){
             return this.message( `No battle may take place in the ${args.area.name}`, { class: 'warning' } );

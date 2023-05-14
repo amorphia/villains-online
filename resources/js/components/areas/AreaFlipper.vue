@@ -32,16 +32,16 @@
     export default {
 
         name: 'area-flipper',
-        props : [
-            'areas',
-            'index',
-            'classes',
-            'hasReserves',
-            'isReserves',
-            'noZoom',
-            'locked',
-            'hidePips'
-        ],
+        props : {
+            'areas': {},
+            'index': { default: 0 },
+            'classes': {},
+            'hasReserves': {},
+            'isReserves': {},
+            'noZoom': {},
+            'locked': {},
+            'hidePips': {},
+        },
 
         data() {
             return {
