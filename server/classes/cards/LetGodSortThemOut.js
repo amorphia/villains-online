@@ -103,8 +103,12 @@ class LetGodSortThemOut extends Card {
      * @param faction
      */
     async resolveFactionSacrificeUnits( response, units ){
+        if(!response?.player){
+            return;
+        }
+
         // clear our prompt
-        response.player?.setPrompt({ active : false, updatePlayerData : true });
+        response?.player?.setPrompt({ active : false, updatePlayerData : true });
 
         let unitNames = [];
 
