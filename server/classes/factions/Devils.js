@@ -37,10 +37,10 @@ class Devils extends Faction {
             count: 3,
             data: {
                 influence: 1,
-                type : 'battle',
+                type : 'stoke',
                 resource : 1,
                 cost : 0,
-                description: "Treat as a basic BATTLE token in every way, except if you have no units here when you successfully activate this token draw an action card, and all units killed in this battle count as your kills",
+                description: "Start a battle in this area. If you have no attackers in this battle: draw an action card as the battle begins, then gain one chaos for each enemy unit killed in this battle",
                 req : "This token must be discarded if no combat takes place when activating it"
             }
         };
