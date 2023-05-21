@@ -13,7 +13,7 @@
         <div class="target-block-reveal mt-4" :class="{revealed : target.flipped}">
             <div v-if="target.owner" class="center-text">
                 <div class="one-line" :class="`faction-${target.owner}`">Taken by The {{ target.owner | startCase }}</div>
-                <div v-if="target.stolen" class="one-line highlight">Target stolen by Ol' Zeke</div>
+                <div v-if="target.stolen" class="one-line highlight">Ol' Zeke shares the score</div>
                 <img class="target-block__ap-icon" :src="`/images/icons/ap-1.png`">
             </div>
             <div v-else class="center-text primary-light">Uncontrolled</div>

@@ -13,6 +13,7 @@ class Survivalists extends Faction {
         this.data.title = "Coalition of Preppers";
         this.data.zeke = null;
         this.data.unitPropAttackBonus = { startedPrepared : 0 };
+        this.data.minimumBugOutCount = 1;
 
         this.triggers = {
             "onDeployAll" : "checkBugOut",
@@ -306,8 +307,8 @@ class Survivalists extends Faction {
         // if this area is trapped we can't bug out
         if( area.isTrapped( this ) ) return false;
 
-        // if we have fewer than 2 units in this area we can't bug out
-        if( this.unitsInArea( area ).length < 2 ) return false;
+        // if we have fewer than x units in this area we can't bug out
+        if( this.unitsInArea( area ).length < this.data.minimumBugOutCount ) return false;
 
         // if we have no unwebbed units we can't bug out
         if( this.unitsInArea( area, { notWebbed : true } ).length < 1 ) return false;
