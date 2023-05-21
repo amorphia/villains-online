@@ -76,7 +76,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'unitsInPlay', args : [9] },
+                    { test : 'unitsInPlay', args : [10] },
                 ],
                 value : 1
             },
@@ -101,7 +101,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'loseUnits', args : [4] },
+                    { test : 'exterminateAreas', args : [1] },
                 ],
                 value : 1
             },
@@ -127,7 +127,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'areasMostTokens', args : [4] },
-                    { test : 'enemyMarkers', args : [2] },
+                    { test : 'useSkills', args : [3] },
                 ],
                 value : 3
             },
@@ -148,13 +148,13 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'influenceInAreas', args : [8,1] },
+                    { test : 'killUnits', args : [6] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'killUnits', args : [5] },
+                    { test : 'influenceInAreas', args : [9,1] },
                 ],
                 value : 1
             },
@@ -168,7 +168,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'areasMostTokens', args : [2] },
-                    { test : 'exterminateAreas', args : [1] },
+                    { test : 'loseUnits', args : [4] },
                 ],
                 value : 2
             },
