@@ -34,7 +34,7 @@
         <div class="view-player__resources view-player__title width-50"> Upgrade: <span>{{ faction.upgrade ? faction.upgrade : 'none' }}</span></div>
 
         <!-- cards in hand -->
-        <div class="view-player__hand view-player__title width-50">Cards in hand: <span>{{ faction.cards.hand.length }}</span> <span class="note">/ +{{ faction.cardDraw }}</span></div>
+        <div class="view-player__hand view-player__title width-50">Cards in hand: <span>{{ faction.cards.hand.length }}</span> <span class="note">/ +{{ faction.cardDraw }}</span> <i v-if="shared.admin" @click="drawCard()" class="icon-maximize pr-2"></i></div>
 
         <!-- Deploy limit -->
         <div class="view-player__deploy view-player__title width-50">Deploy Limit: <span>{{ faction.deployLimit }}</span></div>
@@ -91,6 +91,13 @@
                     faction: this.faction.name,
                     type: type,
                     val: val
+                });
+            },
+
+            drawCard() {
+                App.event.emit( 'sound', 'ui' );
+                this.shared.socketEmit( 'manualCardDraw', {
+                    faction: this.faction.name,
                 });
             },
         }

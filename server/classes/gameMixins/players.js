@@ -518,6 +518,18 @@ let mixin = {
         this.message({ message: `manually adjusted the ${data.faction} ${pointsTypeText} (${data.val})`, class: 'warning', player : player });
         await this.updatePoints();
     },
+
+    /**
+     * Manually draw a player cards
+     *
+     * @param player
+     * @param data
+     */
+    async manualCardDraw( player, data ){
+        this.factions[data.faction].drawCards(1, true );
+        this.message({ message: `manually drew a card for ${data.faction}`, class: 'warning', player : player });
+        await this.pushGameDataToPlayers();
+    },
 };
 
 module.exports = mixin;

@@ -32,6 +32,7 @@ class Game {
         'passToken',
         'sendBribe',
         'setPoints',
+        'manualCardDraw',
         'initPassAction',
         'initLockedAction',
         'initSkillAction',

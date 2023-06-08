@@ -97,6 +97,7 @@ class Survivalists extends Faction {
                 attack: [5],
                 cost: 1,
                 toughness: true,
+                survivesNukeIfAlone: true,
                 flipped: false,
                 killed: false,
                 selected: false,

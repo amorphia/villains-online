@@ -20,6 +20,9 @@ class SuitcaseNuke extends Card {
         // if we didn't choose to sacrifice a unit, discard suitcase nuke and abort
         if( !response.units.length ) return this.discardSuitcaseNuke( "chose not to activate the suitcase nuke" );
 
+        const unit = this.game.objectMap[response.units[0]];
+        await this.game.killUnit( unit, this.faction );
+
         // BOOOOOOOOOOM!
         await this.explodeSuitcaseNuke();
     }
@@ -102,20 +105,40 @@ class SuitcaseNuke extends Card {
      * Kill all units in the nuked area
      */
     async clearNukedAreaUnits(){
+        let unitsToKill = [];
 
         // cycle through each faction
         for( let faction of Object.values( this.game.factions ) ){
             // for each faction cycle through each unit
-
-            let units = faction.unitsInArea( this.area );
-
-            for( let unit of units ) {
-                await this.game.killUnit( unit, this.faction );
-            }
+            let units = faction.unitsInArea( this.area ).forEach( unit => {
+                let canSurvive = this.checkIfSurvivesNuke( unit );
+                console.log("canSurvive", canSurvive, unit);
+                if(!canSurvive){
+                    unitsToKill.push(unit);
+                }
+            });
         }
+
+        console.log( "unitstoKill", unitsToKill );
+
+        for( let unit of unitsToKill ) {
+            await this.game.killUnit( unit, this.faction );
+        }
+
+        await this.game.timedPrompt('units-shifted', {
+            message: `Units consumed in nuclear hellfire`,
+            units: unitsToKill
+        });
     }
 
+    checkIfSurvivesNuke( unit ){
+        if(!unit.survivesNukeIfAlone){
+            return false;
+        }
 
+        const faction = this.game.factions[ unit.faction ];
+        return faction.unitsInArea( this.area.name ).length === 1;
+    }
 }
 
 module.exports = SuitcaseNuke;
