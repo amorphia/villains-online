@@ -132,6 +132,8 @@ class Ghosts extends Faction {
         });
         */
 
+        this.message( `Places a ghost in the ${areaName}`);
+
         // advance game
         game.data.gameAction++;
         game.advancePlayer();

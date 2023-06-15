@@ -82,8 +82,6 @@ class Skeletons extends Faction {
                 killed: false,
                 selected: false,
                 skeleton: false,
-                skilled: true,
-                ready: false,
                 hitsAssigned: 0,
                 toughness: true,
                 onDeploy: 'xerZhulActions',

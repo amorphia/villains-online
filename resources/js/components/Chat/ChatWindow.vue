@@ -19,6 +19,7 @@
         data() {
             return {
                 shared : App.state,
+                maxChatLength : 500,
             };
         },
 
@@ -26,7 +27,7 @@
             // handle incoming messages
             this.shared.socket.on( 'message', message => {
                 this.shared.messages.unshift( message );
-                if( this.shared.messages.length > 50 ){
+                if( this.shared.messages.length > this.maxChatLength ){
                     this.shared.messages.pop();
                 }
             });
