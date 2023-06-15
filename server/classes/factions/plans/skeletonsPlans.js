@@ -77,15 +77,16 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'useSkills', args : [3] },
+                    { test : 'unitTypesInEnemy', args : [3] },
+                    { test : 'exterminateAreas', args : [1] },
                 ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
-                    { test : 'unitTypesInEnemy', args : [3] },
+                    { test : 'useSkills', args : [2] },
                 ],
-                value : 2
+                value : 1
             },
         ]
     },
