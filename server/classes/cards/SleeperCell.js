@@ -41,7 +41,7 @@ class SleeperCell extends Card {
             }
 
             // remove attack bonus
-            this.faction.data.unitTypeAttackBonus = this.faction.data.unitTypeAttackBonus.filter( bonus => bonus.from !== "Sleeper Cell" );
+            faction.data.unitTypeAttackBonus = faction.data.unitTypeAttackBonus.filter( bonus => bonus.from !== "Sleeper Cell" );
         });
     }
 }
