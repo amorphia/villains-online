@@ -27,8 +27,11 @@
 }
 
 
-.icon-memorial:before {
-    content: "\E915";
+.icon-cloak-and-dagger:before {
+    content: "\E916";
+}
+.icon-sleeper-cell:before {
+    content: "\E917";
 }
 .icon-herald:before {
     content: "\E914";
@@ -186,6 +189,9 @@
 .icon-card:before {
     content: "\E933";
 }
+.icon-memorial:before {
+    content: "\E915";
+}
 .icon-ask:before {
     content: "\E912";
 }
@@ -236,15 +242,6 @@
 }
 .icon-units:before {
     content: "\E93A";
-}
-.icon-circle:before {
-    content: "\E930";
-}
-.icon-num-3:before {
-    content: "\E91B";
-}
-.icon-num-4:before {
-    content: "\E91C";
 }
 .icon-hax0red:before {
     content: "\E900";

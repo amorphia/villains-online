@@ -116,7 +116,8 @@
                 ],
                 // game options
                 options : {
-                    allowBribes : false
+                    allowBribes : false,
+                    expansionCards : true,
                 }
             };
         },
@@ -215,6 +216,10 @@
             setGameType( type ){
                 // only the game's creator can change the type
                 if( !this.gameCreator ) return App.event.emit( 'sound', 'error' );
+
+                if( type === "basic" ){
+                    this.expansionCards = false;
+                }
 
                 // set game type
                 App.event.emit( 'sound', 'ui' );

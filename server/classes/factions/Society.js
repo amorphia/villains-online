@@ -267,22 +267,7 @@ class Society extends Faction {
      * @returns {boolean}
      */
     canActivateHypnosis( token, area ) {
-        return this.potentialHypnosisTypes( area ).length > 0;
-    }
-
-
-    /**
-     * Determines the potential types of units we can hypnotize in the given area
-     *
-     * @param area
-     */
-    potentialHypnosisTypes( area ){
-        // the types we have in our reserves
-        let reservesTypes = this.unitTypesInReserves( true );
-        // the types our opponents have in this area
-        let enemyTypes = this.enemyUnitTypesInArea( area, { basic : true, canBeReplaced: true } );
-        // whatever types are on both arrays are hypnotizable
-        return _.intersection( reservesTypes, enemyTypes );
+        return this.getValidReplacementTypes( { area } ).length > 0;
     }
 
 
@@ -293,6 +278,17 @@ class Society extends Faction {
      */
     async activateHypnosisToken( args ) {
 
+        let result = await this.replaceUnit( { area: args.area, sound: "hypnotize", message: "The society hypnotizes a unit" });
+
+        if( !result ){
+            this.game().declineToken( this.playerId, args.token, true );
+            return;
+        }
+
+        // advance game
+        this.game().advancePlayer();
+
+        /*
         // choose a unit to hypnotize
         let response = await this.prompt( 'choose-units', {
             count : 1,
@@ -317,6 +313,7 @@ class Society extends Faction {
 
         // advance game
         this.game().advancePlayer();
+         */
     }
 
 
@@ -324,9 +321,8 @@ class Society extends Faction {
      * Resolve a hypnotize replacement
      *
      * @param response
-     */
-    async resolveHypnosis( response ){
 
+    async resolveHypnosis( response ){
         // get our unit object, then pay its cost
         let unit = this.game().objectMap[ response.units[0] ];
         if( unit.cost > 0 ) this.payCost( unit.cost, true );
@@ -339,7 +335,7 @@ class Society extends Faction {
         // resolve the replacement
         await this.replaceUnit( unit, { message : `The Society hypnotizes a unit in The ${unit.location}` } );
     }
-
+     */
 
     /**
      * Can we activate our Word of Command token?

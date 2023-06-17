@@ -66,8 +66,12 @@
 
                 <!-- submit buttons -->
                 <div class="flex-center">
+                    <button class="button button-empty mr-auto" @click="resolve( 'goBack' )"
+                            v-if="canGoBack">back</button>
+
                     <button class="button button-empty" @click="resolve( false )"
                             v-if="canDecline">decline</button>
+
                     <button class="button"
                             @click="resolve( true )"
                             :disabled="!canSave">place selected units</button>
@@ -134,6 +138,9 @@
              * @returns {object}
              */
             getResponseData( option ){
+                // if we goBacked...
+                if( option === "goBack" ) return { goBack : true };
+
                 // if we declined...
                 if( !option ) return { decline : true };
 
@@ -243,14 +250,12 @@
              */
             fromAreaUnits( area ){
                 // get our units
-                let units = this.shared.faction.units
+                return this.shared.faction.units
                     .filter( unit => _.unitInArea( unit, area, {
                                 notChampion : this.destinationBlockedByKau,
                                 skilled : this.data.isSkilled,
                                 types : this.data.unitTypes
                         }));
-
-                return units;
             },
         },
 
@@ -282,6 +287,9 @@
                 return false;
             },
 
+            canGoBack(){
+                return this.data.canGoBack;
+            },
 
             /**
              * Can we save our choices?

@@ -718,6 +718,15 @@ let mixin = {
         // attack bonus
         if( this.data.attackBonus ) mods.push( { type : 'attackBonus', text : `Gains +${this.data.attackBonus} to attack rolls`, val : this.data.attackBonus });
 
+        // unit type attack bonus
+        if( this.data.unitTypeAttackBonus.length ){
+            this.data.unitTypeAttackBonus.forEach( bonus => {
+                if( this.typeInArea( bonus.type, area ) ){
+                    mods.push( { type : 'attackBonus', text : `${bonus.from} grants +${bonus.value} to attack rolls with ${bonus.type}s`, val : bonus.value });
+                }
+            })
+        }
+
         // defense bonus
         if( this.data.defenseBonus ) mods.push( { type : 'defenseBonus', text : `Enemies suffer -${this.data.defenseBonus} to their attack rolls`, val : this.data.defenseBonus });
 

@@ -249,7 +249,7 @@
                     }
 
                     // does this unit have first strike (each faction has its own color first strike icon)
-                    if( unit.firstStrike ) status[`${unit.faction}-first-strike`] = 'has units with first strike';
+                    if( unit.firstStrike ) status[`first-strike`] = 'has units with first strike';
 
                     // does xavier have a token on him?
                     if (unit.token) status['xavier-token'] = 'Xavier Blackstone has a token placed on him';

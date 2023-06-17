@@ -350,6 +350,9 @@ let setup = {
         // Create our card objects deck
         let cards = _.cloneDeep( require('../data/cardList') );
         cards.forEach( card => {
+            // filter our expansion cards if not playing with them
+            if(card.expansion && !this.data.expansionCards) return;
+
             card.owner = null;
             card.area = null;
             card.status = null;

@@ -6,6 +6,8 @@
 
             <!-- ghost icon container -->
             <div v-if="viewableGhost" class="ghost-icon__container"></div>
+            <div v-if="unit.hidden" class="hidden-icon__container"></div>
+            <div v-if="unit.temporaryfirstStrike" class="temporary_first_strike-icon__container"></div>
             <div v-if="unit.webbed" class="webbed-icon__container"></div>
 
             <!-- xavier token -->
@@ -245,6 +247,20 @@
          opacity: .7;
     }
 
+    .temporary_first_strike-icon__container:before {
+        content: "";
+        position: absolute;
+        width: 40%;
+        height: 40%;
+        background-image: url(/images/icons/first-strike.png);
+        z-index: 3;
+        left: 50%;
+        top: 5%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        transform: translate(-50%, -70%);
+    }
+
     .ghost-icon__container:before {
         content: "";
         position: absolute;
@@ -259,6 +275,19 @@
         transform: translate(-50%, -70%);
     }
 
+    .hidden-icon__container:before {
+        content: "";
+        position: absolute;
+        width: 40%;
+        height: 40%;
+        background-image: url(/images/icons/hidden.png);
+        z-index: 3;
+        left: 50%;
+        top: 5%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        transform: translate(-50%, -70%);
+    }
 
     .webbed-icon__container:before {
         content: "";

@@ -41,6 +41,7 @@ class Faction {
         attackBonus : 0, // bonus to apply to our unit's die rolls
         defenseBonus : 0, // penalty to apply to our enemies unit's die rolls
         bonusDice : 0, // how many extra dice our units throw when attacking
+        unitTypeAttackBonus : [],
 
         // area stuff
         anyOrderPlans : false, // can we score our plans in any order? Set by the church

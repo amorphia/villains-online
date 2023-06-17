@@ -79,6 +79,7 @@ let obj = {
 
         // resolve hits
         let resolveHitsResult = await this.handleAttackHits( hits, victim, args );
+        attackResult.hasKill = !!resolveHitsResult;
 
         // return results
         return attackResult;
@@ -364,6 +365,13 @@ let obj = {
             for( let prop in this.data.unitPropAttackBonus ) {
                 if (args.unit[prop]) toHit -= this.data.unitPropAttackBonus[prop];
             }
+        }
+
+        // if we get a bonus for attacking with a unit of a specific type apply it here
+        if( args.unit && this.data.unitTypeAttackBonus.length ){
+            this.data.unitTypeAttackBonus.forEach( bonus => {
+                if( bonus.type === args.unit.type ) toHit -= bonus.value;
+            });
         }
 
         // deadly attacks can't be negatively modified, so just return our attack value
