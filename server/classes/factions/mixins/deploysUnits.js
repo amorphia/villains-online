@@ -252,7 +252,7 @@ let obj = {
         });
 
         // heal wounded units, ad unflip units coming in from the reserves
-        if( !unit.dontUnflipAutomatically && unit.flipped && ( unit.toughness || !unit.location || unit.skeleton ) ){
+        if( !unit.dontUnflipAutomatically && unit.flipped && ( unit.toughness || !unit.location ) ){
             this.unflipUnit( unit );
         }
 
@@ -262,10 +262,10 @@ let obj = {
         }
 
         // ready units
-        if( response.readyUnits ){
+        if( response.readyUnits && !unit.cannotBeReady ){
             unit.ready = true;
         } else {
-            if( unit.ready && ( unit.faction !== 'hackers' || !unit.location ) ) unit.ready = false;
+            if( unit.ready && ( unit.faction !== 'hackers' || unit.cannotBeReady || !unit.location ) ) unit.ready = false;
         }
 
         // unghost ghosts

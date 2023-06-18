@@ -47,26 +47,26 @@ class Skeletons extends Faction {
             props : ['influence', 'skilled']
         };
 
-        this.units['goon'].count = 5;
-        this.units['goon'].data.onDamaged = 'checkBecomeSkeleton';
+        //this.units['goon'].count = 5;
+        this.units['goon'].data.toughness = true;
         this.units['goon'].data.flipped = false;
-        this.units['goon'].data.skeleton = false;
+        this.units['goon'].data.onWounded = 'becomeSkeleton';
 
-        this.units['mole'].count = 5;
-        this.units['mole'].data.onDamaged = 'checkBecomeSkeleton';
+        //this.units['mole'].count = 5;
+        this.units['mole'].data.toughness = true;
         this.units['mole'].data.flipped = false;
-        this.units['mole'].data.skeleton = false;
+        this.units['mole'].data.onWounded = 'becomeSkeleton';
 
-        this.units['talent'].count = 3;
-        this.units['talent'].data.onDamaged = 'checkBecomeSkeleton';
+        //this.units['talent'].count = 3;
+        this.units['talent'].data.toughness = true;
         this.units['talent'].data.flipped = false;
-        this.units['talent'].data.skeleton = false;
+        this.units['talent'].data.onWounded = 'becomeSkeleton';
 
 
         this.units['patsy'].count = 6;
-        this.units['patsy'].data.onDamaged = 'checkBecomeSkeleton';
+        this.units['patsy'].data.toughness = true;
         this.units['patsy'].data.flipped = false;
-        this.units['patsy'].data.skeleton = false;
+        this.units['patsy'].data.onWounded = 'becomeSkeleton';
 
 
         this.units['champion'] = {
@@ -306,39 +306,17 @@ class Skeletons extends Faction {
     */
 
     /**
-     * Can this unit become a skeleton after being assigned hits?
-     *
-     * @param event
-     * @returns {string}
-     */
-    checkBecomeSkeleton( event ){
-        // event.hits is the number of hits assigned to this unit
-        if( event.unit.flipped || event.hits > 1 ){
-            return;
-        }
-
-        this.becomeSkeleton( event.unit );
-        return `transforms ${event.unit.name} into a skeleton`;
-    }
-
-
-    /**
      * Flip a unit to their skeleton side
      *
      * @param unit
      */
     becomeSkeleton( unit ) {
-        if( !unit.flipped && !unit.killed ) {
-            unit.flipped = true;
-            unit.skeleton = true;
-
-            // XerZhul doesn't lose any stats
-            if(unit.type === 'champion') return;
-
-            unit.influence = 0;
-            if( unit.skilled ) unit.skilled = false;
-            if( unit.ready ) unit.ready = false;
-        }
+        unit.flipped = true;
+        unit.skeleton = true;
+        unit.influence = 0;
+        unit.cannotBeReady = true;
+        if( unit.skilled ) unit.skilled = false;
+        if( unit.ready ) unit.ready = false;
     }
 
 
@@ -350,6 +328,7 @@ class Skeletons extends Faction {
     unflipUnit( unit ) {
         unit.flipped = false;
         unit.skeleton = false;
+        unit.cannotBeReady = false;
         unit.influence = unit.baseInfluence;
         if ( unit.baseSkilled ) unit.skilled = true;
     }

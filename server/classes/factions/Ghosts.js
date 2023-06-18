@@ -207,8 +207,12 @@ class Ghosts extends Faction {
             return [...items, ...item];
         }, []);
 
-        for( let item of toughUnits ){
-            item.flipped = true;
+        for( let victim of toughUnits ){
+            victim.flipped = true;
+            if( victim.onWounded ){
+                let faction = this.game().factions[victim.faction];
+                await faction[victim.onWounded]( victim );
+            }
         }
 
         let totalUnits = [...units, ...toughUnits];
