@@ -111,8 +111,13 @@
                 // abort conditions
                 if ( this.skilled || ! this.faction.trappedAreas?.includes( this.area ) ) return units;
 
-                // add smoke
-                units.push({type: 'booby-trap', faction: 'guerrillas'});
+                let count = this.faction.trappedAreas?.filter( area => area === this.area ).length;
+
+                for(let i = 0; i < count; i++ ){
+                    // add booby traps
+                    units.push({type: 'booby-trap', faction: 'guerrillas'});
+                }
+
 
                 return units;
             },

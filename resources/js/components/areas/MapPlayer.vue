@@ -126,6 +126,18 @@
             },
 
             /**
+             */
+            tallyBoobyTraps( units ){
+                if(!this.faction.trappedAreas || !this.faction.trappedAreas.includes(this.area.name)) return;
+
+                let count = this.faction.trappedAreas?.filter( area => area === this.area.name ).length;
+
+                // add our plants count
+                units['traps'] = { count : count, pipped : 0 };
+                return units;
+            },
+
+            /**
              * Add our memorials to our units tally
              * @returns {object} // { plants : { count : {number}, pipped : 0 }, etc... }
              */
@@ -173,6 +185,9 @@
 
                 // add in our plants
                 units = this.tallyPlants( units );
+
+                // add our booby traps
+                //units = this.tallyBoobyTraps( units );
 
                 // add in our memorials
                 units = this.tallyMemorials( units );
@@ -258,10 +273,6 @@
                     this.abilityIcons.forEach( ability => {
                         if( unit[ability] ) status[ability] = `has a ${ability} unit`;
                     });
-                }
-
-                if(this.faction.trappedAreas && this.faction.trappedAreas.includes(this.area.name)){
-                    status['boobyTrapped'] = 'has been booby trapped'
                 }
 
                 if(this.faction.tunnels && this.faction.tunnels.includes(this.area.name)){

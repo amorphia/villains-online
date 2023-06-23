@@ -71,15 +71,14 @@ let obj = {
             victim : victim.name,
             rolls : rolls,
             toHit : toHit,
-            hits : hits
+            hits : hits,
         };
 
         this.game().message( attackResult );
         if( this.game().data.combat ) this.game().data.combat.lastAttack = attackResult;
 
         // resolve hits
-        let resolveHitsResult = await this.handleAttackHits( hits, victim, args );
-        attackResult.hasKill = !!resolveHitsResult;
+        attackResult.hasKill = await this.handleAttackHits( hits, victim, args );
 
         // return results
         return attackResult;
@@ -187,6 +186,10 @@ let obj = {
     async setAttackTargets( args ){
         // if this is a deadly attack we don't have a target
         if( args.deadly ) return { deadly : true, name : 'deadly' };
+
+        if( Array.isArray( args.targets ) && args.targets.length === 1 ){
+            return this.game().factions[args.targets[0]];
+        }
 
         // if we can choose the specific unit we want to attack do so now
         if( this.canChooseUnitAsAttackTarget( args ) ) {
@@ -425,16 +428,24 @@ let obj = {
         let factions = [ this.name ];
 
         // if we don't have any additional factions to exclude then return just us
-        if( !args.exclude ) return factions;
+        if( !args.exclude && !args.targets ) return factions;
 
-        // if our factions to exclude isn't an array then push it to our array
+        // if our factions to exclude isn't an array then make it an array
         if( ! Array.isArray( args.exclude ) ){
             factions.push( args.exclude );
-            return factions;
+        }
+
+        if( args.targets ) {
+            let targets = Array.isArray( args.targets ) ? args.targets : [args.targets];
+            Object.values(this.game().factions).forEach( faction => {
+                if( !targets.includes( faction.name ) ){
+                    faction.push( faction.name );
+                }
+            });
         }
 
         // otherwise merge the supplied exclude array to our existing array and return
-        return _.concat( factions, args.exclude  );
+        return _.uniq( _.concat( factions, args.exclude  ) );
     },
 
 
@@ -612,7 +623,7 @@ let obj = {
      * @returns {string|undefined} // we either return undefined, or the string "kills" for reasons I don't quite recall
      */
     async resolveHitAssignment( response, killer, area, args ){
-        let hasKill;
+        let hasKill = [];
 
         // cycle through the units chosen as victims and apply the appropriate hits
         let results = [];
@@ -636,7 +647,7 @@ let obj = {
             let result = await this.game().assignHitsToUnit( unit, killer, target.hits, args );
 
             // if we killed the unit, set hasKill to "kills"
-            if( result === 'kills' ) hasKill = result;
+            if( result === 'kills' ) hasKill.push( unit );
 
             // add to our message string to our results
             results.push( `${result} <span class="faction-${this.name}">${unit.name}</span>` );
@@ -645,6 +656,10 @@ let obj = {
         // display our results
         if( results.length ){
             this.game().message({ faction: killer, message: `${results.join(', ')} in the ${area.name}` });
+        }
+
+        if(!hasKill.length){
+            hasKill = false;
         }
 
         return hasKill;

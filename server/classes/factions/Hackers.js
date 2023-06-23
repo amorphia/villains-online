@@ -65,7 +65,6 @@ class Hackers extends Faction {
                 selected: false,
                 hitsAssigned: 0,
                 onDeploy: 'exhaustEnemyUnitsInArea',
-                onMove: 'exhaustEnemyUnitsInArea',
             }
         };
     }

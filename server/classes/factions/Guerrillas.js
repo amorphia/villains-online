@@ -22,7 +22,7 @@ class Guerrillas extends Faction {
         this.data.flipableUnits = ['champion'];
         this.data.viperMoveCount = 1;
         this.data.trappedAreas = [];
-        this.data.maxTraps = 3;
+        this.data.maxTraps = 6;
 
         // tracks the number of ambush actions we have available each turn
         this.data.ambushes = {
@@ -249,13 +249,8 @@ class Guerrillas extends Faction {
            return this.message( `Red Viper has run out of booby traps`, { class: 'warning' } );
         }
 
-        // if this area already has a trap
-        if(this.data.trappedAreas.includes(area)){
-            return this.message( `Red Viper has already trapped this part of the city`, { class: 'warning' } );
-        }
-
         // place a trap
-        this.data.trappedAreas.push(area);
+        this.data.trappedAreas.push( area );
         this.message( `Red Viper places a <span class="faction-guerrillas">booby trap</span> in the ${area}`);
     }
 
@@ -267,17 +262,21 @@ class Guerrillas extends Faction {
     async checkForTraps(event){
         for(let unitEvent of event.units){
             let unit = unitEvent.unit;
-            if(unit.faction !== this.name && this.data.trappedAreas.includes(unit.location)){
+            if( unit.faction !== this.name && this.data.trappedAreas.includes( unit.location ) ){
                 await this.explodeTrap(unit);
                 return;
             }
         }
     }
 
-    async explodeTrap(unit){
+    async explodeTrap( unit ){
+        let count = this.data.trappedAreas.filter( area => area === unit.location ).length;
         this.data.trappedAreas = this.data.trappedAreas.filter( area => area !== unit.location );
-        this.message( `A trap placed by Red Viper has been triggered by the <span class="faction-${unit.faction}">${unit.faction}</span> in the ${unit.location}`);
-        await this.nonCombatAttack( 4, 1, unit.location, unit.faction );
+
+        let messageStart = count === 1 ? `A trap` : `${count} traps`;
+        this.message( `${messageStart} placed by Red Viper has been triggered by the <span class="faction-${unit.faction}">${unit.faction}</span> in the ${unit.location}`);
+
+        await this.nonCombatAttack( 4, count, unit.location, unit.faction );
     }
 
     /**

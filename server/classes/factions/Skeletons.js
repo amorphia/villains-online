@@ -84,8 +84,8 @@ class Skeletons extends Faction {
                 skeleton: false,
                 hitsAssigned: 0,
                 toughness: true,
+                seeking: true,
                 onDeploy: 'xerZhulActions',
-                onMove: 'xerZhulActions',
             }
         };
     }
@@ -311,6 +311,7 @@ class Skeletons extends Faction {
      * @param unit
      */
     becomeSkeleton( unit ) {
+        unit.killed = null;
         unit.flipped = true;
         unit.skeleton = true;
         unit.influence = 0;
@@ -333,7 +334,7 @@ class Skeletons extends Faction {
         if ( unit.baseSkilled ) unit.skilled = true;
     }
 
-    async raiseUnit( areas, count = 1){
+    async raiseUnit( areas, count = 1, type = null){
 
        // let filteredAreas = areas.filter(area => !this.data.raiseAreas.includes(area));
 
@@ -405,17 +406,7 @@ class Skeletons extends Faction {
 
     async xerZhulActions( event ){
         const toArea = event.unit.location;
-        const fromArea = event.from;
-        const XerZhul = event.unit;
-
-        if( fromArea === event.unit.location ) return;
-
-        // if we moved from an area raise dead
-        if( fromArea ){
-            await this.xerZhulRaiseDead( fromArea );
-        }
-
-        await this.xerZhulAttack( XerZhul, toArea );
+        await this.xerZhulAttack( this.getChampion(), toArea );
     }
 
     async xerZhulAttack( unit, area ){
@@ -426,10 +417,30 @@ class Skeletons extends Faction {
             unit : unit
         });
 
-        if( output ){
-            await this.game().timedPrompt('noncombat-attack', { output : [output] } )
-                .catch( error => console.error( error ) );
-        }
+        await this.game().timedPrompt('noncombat-attack', { output : [output] } )
+            .catch( error => console.error( error ) );
+
+        if(!output.hasKill ) return;
+
+        let units = [];
+        let types = output.hasKill.map( unit => unit.type );
+
+        types.forEach( type => {
+            let skeleton = this.data.units.find( unit => !unit.location && unit.type === type );
+            if(!skeleton) return;
+
+            if(!skeleton.skeleton){
+                this.becomeSkeleton( skeleton );
+            }
+
+            skeleton.location = area;
+            units.push( skeleton );
+        });
+
+        await this.game().timedPrompt('units-shifted', {
+            message: `Skeletons were raised`,
+            units: units
+        });
     }
 
     /**
