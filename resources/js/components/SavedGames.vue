@@ -32,7 +32,7 @@
             </div>
 
             <!-- GAME OPTIONS BUTTON -->
-            <a href="/files/villains_v4.2_web.pdf" target="_blank" class="d-inline stat-icon highlight pointer">
+            <a href="/files/villains_v4.3_web.pdf" target="_blank" class="d-inline stat-icon highlight pointer">
                 <i class='icon-plans' title="view game rules"></i> <span>rules</span>
             </a>
 

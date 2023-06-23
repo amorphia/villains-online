@@ -22,7 +22,7 @@
                     </div>
 
                     <div class="pt-3">
-                        <a href="/files/villains_v4.2_web.pdf" target="_blank" class=" width-100 d-block button">
+                        <a href="/files/villains_v4.3_web.pdf" target="_blank" class=" width-100 d-block button">
                             view game rules <i class="icon-launch"></i>
                         </a>
                     </div>
