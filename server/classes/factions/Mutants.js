@@ -27,7 +27,7 @@ class Mutants extends Faction {
                 influence: 1,
                 resource: 1,
                 cost : 0,
-                description: "Target player sacrifices a patsy in this area (you may choose yourself), if they do you may deploy a unit to this area without paying its deploy cost.",
+                description: "A player of your choice sacrifices a patsy in this area (you may choose yourself), if they do place a unit from your reserves in this area.",
                 req : "this token must be discarded if no player can sacrifice a patsy here"
             }
         };
@@ -162,17 +162,31 @@ class Mutants extends Faction {
         // kill the chosen unit
         await this.game().killUnit( unit, this );
 
-        // deploy a mother ooze here
-        let options = {
-            area: args.area,
-            faction: this,
-            player: this.playerId,
-            free : true,
-            fromToken : true,
-            deployLimit: 1,
-            //unitTypes: ['champion'],
-        };
-        let deployed = await this.deploy( options );
+        const unitTypesInReserves = this.unitTypesInReserves();
+
+        if( !unitTypesInReserves.length ){
+            this.message(`No units in reserves to place`, { class : 'warning' } );
+            return;
+        }
+
+        // prompt player for global place
+        response = await this.prompt('global-place', {
+            count : 1,
+            area : args.area.name,
+            fromAreas: [],
+            unitTypes: unitTypesInReserves,
+            required: true,
+            message: `Choose a unit from your reserves to place in the ${args.area.name}`,
+        });
+
+        let ourUnit = this.game().objectMap[ response.units[0] ];
+
+        ourUnit.location = args.area.name;
+
+        await this.game().timedPrompt('units-shifted', {
+            message: `A Unit was biomorphed`,
+            units: [ourUnit],
+        });
 
         this.game().advancePlayer();
     }
