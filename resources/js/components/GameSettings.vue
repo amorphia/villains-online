@@ -16,6 +16,12 @@
 
                     <!-- rules -->
                     <div class="pt-4">
+                        <a href="#" @click="openPlayerAid" class=" width-100 d-block button">
+                            view player aid cards
+                        </a>
+                    </div>
+
+                    <div class="pt-3">
                         <a href="/files/villains_v4.2_web.pdf" target="_blank" class=" width-100 d-block button">
                             view game rules <i class="icon-launch"></i>
                         </a>
@@ -57,6 +63,13 @@
             return {
                 shared : App.state
             };
+        },
+
+        methods: {
+            openPlayerAid(){
+                this.shared.openCheatSheets = !this.shared.openCheatSheets;
+                this.shared.openSettings = false;
+            }
         }
     }
 </script>
