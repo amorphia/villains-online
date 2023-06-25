@@ -50,7 +50,6 @@ class Aliens extends Faction {
         // units
         this.units['goon'].count = 3;
         this.units['mole'].count = 8;
-        this.units['patsy'].count = 4;
 
         this.units['champion'] = {
             count: 1,
