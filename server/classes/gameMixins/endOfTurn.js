@@ -155,7 +155,7 @@ let obj = {
 
         // otherwise if someone didn't place a blocked target
         let owner = this.areas[card.target].data.owner;
-        target.owners.push( owner );
+        if( owner ) target.owners.push( owner );
 
         if((area === stealsTarget?.area) && (owner !== stealsTarget?.faction.name)){
             target.targetStolen = stealsTarget?.faction.name;
