@@ -278,7 +278,7 @@ let obj = {
         this.pushGameDataToPlayers();
 
         // if we have 4+ players, record the score in our external tracker
-        if( Object.keys( this.factions ).length >= 4 ){
+        if( Object.keys( this.factions ).length >= 3 ){
             Server.saveToTracker( this, scores, isIncomplete );
         }
     },
