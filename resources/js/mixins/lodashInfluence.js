@@ -9,6 +9,8 @@ let helpers = {
      * @returns {object[]} // { factionName : {number} }
      */
     eachInfluenceInArea( area, factions, withZeros ){
+        if( !area ) return false;
+
         if( area.data ) area = area.data; //format input
 
         let influences = [];
@@ -40,6 +42,8 @@ let helpers = {
      * @returns {number}
      */
     influence( faction, area, factions ){
+        if( !area ) return false;
+
         // format inputs
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
@@ -116,6 +120,8 @@ let helpers = {
      * @returns {number}
      */
     plantInfluence( faction, area ){
+        if( !area ) return false;
+
         // format input
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
@@ -133,6 +139,8 @@ let helpers = {
      * @returns {number}
      */
     unitInfluence( faction, area ){
+        if( !area ) return false;
+
         // format inputs
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;

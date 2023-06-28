@@ -237,6 +237,8 @@ let helpers = {
      * @returns {boolean}
      */
     areaIsTrapped( faction, area ){
+        if( !area ) return false;
+
         // format inputs
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
@@ -294,6 +296,8 @@ let helpers = {
      * @returns {number}
      */
     policePayoffs( faction, area ){
+        if( !area ) return false;
+
         // format inputs
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
@@ -314,6 +318,8 @@ let helpers = {
      * @returns {boolean}
      */
     hasKau( faction, area ){
+        if( !area ) return false;
+
         return faction.kau && faction.kau.location === area.name && !faction.kau.killed;
     },
 

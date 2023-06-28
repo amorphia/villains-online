@@ -7,7 +7,7 @@
  * @returns {boolean}
  */
 const test = function skilledAtTarget( debug, faction, unitCount ){
-    let targetName = faction.targetArea().name;
+    let targetName = faction.targetName();
     let factionUnitsAtTarget = faction.data.units.filter( unit => _.unitInArea( unit, targetName, { skilled : true } ) ).length;
     let result = factionUnitsAtTarget >= unitCount;
 

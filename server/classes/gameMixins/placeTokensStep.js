@@ -4,6 +4,9 @@ let obj = {
      * Begin the place tokens step
      */
     async startPlaceTokensStep(){
+        if( this.data.ignoredAreas.length ){
+            await this.allPlayersDiscardACard();
+        }
 
         // set state, phase,and default listener / prompt
         this.data.state = "action-step";
@@ -26,6 +29,37 @@ let obj = {
         await this.pushGameDataToPlayers();
     },
 
+    async allPlayersDiscardACard(){
+            let promises = [];
+
+            // cycle through each faction and make the enemy players discard an action card
+            Object.values( this.factions ).forEach( faction => {
+                promises.push( this.factionDiscardCard( faction ) );
+            });
+
+            let responses = await Promise.all( promises );
+
+            for( let response of responses ) {
+                response.faction.discardCards( response.cards );
+            }
+    },
+
+    async factionDiscardCard( faction ){
+
+        let [player, response] = await this.promise({
+            players: faction.playerId,
+            name: 'discard-card',
+            data : { count : 1 }
+        });
+
+        await this.updatePlayerData();
+
+        return {
+            player,
+            faction,
+            cards : response.cards,
+        }
+    },
 
     /**
      * Handle the player response from the "place token" prompt

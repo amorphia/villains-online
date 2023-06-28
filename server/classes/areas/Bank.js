@@ -7,7 +7,11 @@ class Bank extends Area {
 
         this.data.control = "You gain xRx at the start of the turn.";
         this.data.skill = "Gain xRxxRx";
-        this.data.adjacent = [ 'factory', 'capitol', 'university' ];
+        this.data.adjacent = ['factory', 'capitol', 'university' ];
+        this.data.adjacentAlts = {
+            factory : "laboratory",
+            university: "subway",
+        };
     }
 
 

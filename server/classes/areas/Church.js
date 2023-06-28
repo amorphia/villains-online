@@ -8,6 +8,10 @@ class Church extends Area {
         this.data.control = "You may complete your plan objectives in any order";
         this.data.skill = "Flip one of your face-up action tokens face-down";
         this.data.adjacent = [ 'sewers', 'subway', 'capitol' ];
+        this.data.adjacentAlts = {
+            sewers : "police",
+            subway: "university",
+        };
     }
 
 

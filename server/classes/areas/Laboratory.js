@@ -9,6 +9,10 @@ class Laboratory extends Area {
         this.data.control = "You draw an extra card during the DRAW ACTION CARDS step";
         this.data.skill = "Reveal the top card of the action deck: you may play that card for free in The Laboratory or draw it";
         this.data.adjacent = [ 'police', 'capitol', 'factory' ];
+        this.data.adjacentAlts = {
+            police : "sewers",
+            factory: "bank",
+        };
     }
 
 

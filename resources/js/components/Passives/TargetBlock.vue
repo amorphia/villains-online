@@ -11,8 +11,8 @@
 
         <!-- owner -->
         <div class="target-block-reveal mt-4" :class="{revealed : target.flipped}">
-            <div v-if="target.owner" class="center-text">
-                <div class="one-line" :class="`faction-${target.owner}`">Taken by The {{ target.owner | startCase }}</div>
+            <div v-if="target.owners.length" class="center-text">
+                <div v-for="owner in target.owners" :key="owner" class="one-line" :class="`faction-${owner}`">Taken by The {{ owner | startCase }}</div>
                 <div v-if="target.stolen" class="one-line highlight">Ol' Zeke shares the score</div>
                 <img class="target-block__ap-icon" :src="`/images/icons/ap-1.png`">
             </div>
@@ -54,7 +54,7 @@
 
             checkForAPSound() {
                 // if someone scored points for this play the points sound
-                if ( this.target.owner ) {
+                if ( this.target.owners.length ) {
                     App.event.emit('sound', 'points');
                     return;
                 }

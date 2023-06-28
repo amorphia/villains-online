@@ -196,6 +196,8 @@ let setup = {
         // randomize our player order and add those players to this socket.io game room
         this.randomizePlayerOrder();
 
+        this.removeAreas();
+
         if(this.data.gameType === "secret"){
             this.generatePlayerFactionOptions();
         }
@@ -212,6 +214,16 @@ let setup = {
         this.setTimeout();
     },
 
+    removeAreas(){
+        // if we have 4 more more players, all areas are active.
+        if( this.data.playerOrder.length > 3 ) return this.data.areaOrder = [ ...this.data.allAreas ];
+
+        // if we have a fewer than 4 players choose 2 areas to be ignored.
+        let ignorableAreas = this.data.allAreas.filter( area => area !== "capitol" );
+        let ignoredArea = _.shuffle( ignorableAreas ).pop();
+        this.data.ignoredAreas = [ ignoredArea, this.areaOpposite[ignoredArea] ];
+        this.data.areaOrder = this.data.allAreas.filter( area => !this.data.ignoredAreas.includes( area ) );
+    },
 
     generatePlayerFactionOptions(){
         let killFactions = _.shuffle( Object.values(_.cloneDeep( this.data.factions )).filter( faction => faction.killer ).map( faction => faction.name ) );
@@ -300,24 +312,40 @@ let setup = {
     /**
      * Build our Area instances and set our neutral area
      */
-    buildAreas() {
+    buildAreas( saved = null ) {
         let areaClasses = require('../Areas');
+
+        let ignoredAreas = saved ? saved.data.ignoredAreas : this.data.ignoredAreas;
+
         _.forEach( areaClasses, (Func, name) => {
             let area = new Func( name, this );
+
+            if( ignoredAreas.includes( name ) ){
+                this.data.ignoredAreaData[name] = area.data;
+                this.data.ignoredAreaData[name].ignored = true;
+                return;
+            }
+
             this.areas[name] = area;
             this.data.areas[name] = area.data;
-        });
-        this.setNeutralArea();
-    },
 
+            if(this.data.ignoredAreas.length){
+                area.updateAdjacency( this.data.ignoredAreas );
+            }
+        });
+
+        if(!saved ){
+            this.setNeutralArea();
+        }
+
+    },
 
     /**
      * Determine which area will be neutral controlled at the start of the turn
      */
     setNeutralArea(){
-
         // roll an 8 sided die to decide our neutral controlled area
-        let roll = _.roll( 1, 8, this );
+        let roll = _.roll( 1, 8 - this.data.ignoredAreas.length, this );
         let startingArea = this.areas[ this.data.areaOrder[roll] ];
 
         // check if any of our factions should take over for the neutral area
@@ -356,6 +384,12 @@ let setup = {
             card.owner = null;
             card.area = null;
             card.status = null;
+
+            /*
+            if(this.data.ignoredAreas.includes( card.target )){
+                card.target = this.targetShifts[card.target][card.shift];
+            }
+            */
 
             this.newObject( card, saved );
             this.deck.deck.push( card );

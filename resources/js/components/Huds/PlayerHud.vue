@@ -129,8 +129,10 @@
                     'church',
                     'university',
                     'subway',
-
                 ];
+
+                areasToShow = areasToShow.filter( area => !this.shared.data.ignoredAreas.includes( area ) );
+
                 let stats = [];
 
                 // add card stats

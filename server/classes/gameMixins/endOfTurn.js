@@ -131,30 +131,43 @@ let obj = {
         let card = faction.data.cards.target[0];
         let area = card.target;
 
-        let owner = this.areas[card.target].data.owner;
-
-        let targetStolen = null;
-
-        if((area === stealsTarget?.area) && (owner !== stealsTarget?.faction.name)){
-            targetStolen = stealsTarget?.faction.name;
-            stealsTarget?.faction.gainAP( 1 );
-            this.message({ faction: stealsTarget?.faction, message: "Ol' Zeke finds some valuables in the " + area });
-        }
-
         let target = {
             file : card.file,
             area : area,
             placer : faction.name,
-            owner : owner,
+            owners : [],
             flipped : false,
-            stolen : targetStolen,
+            stolen : null,
         };
 
+        // if someone placed a blocked target
+        if( this.data.ignoredAreas.includes( area ) ){
+            Object.values(this.factions).forEach( factionItem => {
+                if( factionItem.name === target.placer ) return;
+
+                target.owners.push( factionItem.name );
+                factionItem.gainAP( 1 );
+                this.message({ faction: factionItem, message: "Scores the target in the " + area });
+            });
+
+            return target;
+        }
+
+        // otherwise if someone didn't place a blocked target
+        let owner = this.areas[card.target].data.owner;
+        target.owners.push( owner );
+
+        if((area === stealsTarget?.area) && (owner !== stealsTarget?.faction.name)){
+            target.targetStolen = stealsTarget?.faction.name;
+            stealsTarget?.faction.gainAP( 1 );
+            this.message({ faction: stealsTarget?.faction, message: "Ol' Zeke finds some valuables in the " + area });
+        }
+
         // if this area is controlled (by a non-neutral faction) award our AP
-        if( target.owner && this.factions[target.owner] ){
+        if( owner && this.factions[owner] ){
             let points = this.data.turn === 4 && this.doubleTargetsFourthTurn ? 2 : 1;
-            this.factions[target.owner].gainAP( points );
-            this.message({ faction: this.factions[target.owner], message: "Scores the target in the " + area });
+            this.factions[owner].gainAP( points );
+            this.message({ faction: this.factions[owner], message: "Scores the target in the " + area });
         }
 
         return target;

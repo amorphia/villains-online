@@ -1,6 +1,11 @@
 <template>
     <div class="area-map-container" :class="`${area.name}-container`">
-        <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="shared.event.emit( 'areaClicked', area )">
+        <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="areaClicked">
+
+            <!-- blocked -->
+            <div v-if="area.ignored" class="area-map__blocked pos-absolute-center flex-center">
+                <span class="pos-relative" style="top: 5px;">BLOCKED</span>
+            </div>
 
             <!-- Control -->
             <div class="area-map__owner-wrap z-3 cursor-help">
@@ -8,7 +13,7 @@
                 <img v-if="area.owner"
                      @click.right.prevent="() => {
                          $refs.controllerTooltip.open();
-                         shared.event.emit( 'areaClicked', area );
+                         areaClicked();
                      }"
                      class="area-map__owner-portrait z-2"
                      :src="`/images/factions/${area.owner}/icon.jpg`"
@@ -36,7 +41,7 @@
                 <img
                      @click.right.prevent="() => {
                          $refs.battleTooltip.open();
-                         shared.event.emit( 'areaClicked', area );
+                         areaClicked();
                      }"
                      class="width-100 height-100 area-map__battle-marker"
                      src="/images/icons/battle.png"
@@ -52,7 +57,7 @@
             <i v-if="exterminated"
                @click.right.prevent="() => {
                          $refs.exterminateTooltip.open();
-                         shared.event.emit( 'areaClicked', area );
+                         areaClicked();
                }"
                class="area-map__exterminated icon-exterminate z-2 cursor-help"
                :style="`color: var(--faction-${exterminated}); border-color: var(--faction-${exterminated})`"
@@ -65,7 +70,7 @@
             </i>
 
             <!-- tokens -->
-            <div class="width-100 shrink-0 pos-absolute top-0">
+            <div class="width-100 shrink-0 pos-absolute top-0" v-if="!area.ignored">
                 <token-row
                     :area="area"
                     :token="token"
@@ -153,7 +158,7 @@
 <script>
     export default {
         name: 'area-map',
-        props: ['area', 'classes'],
+        props: ['areaName', 'classes'],
 
         data() {
             return {
@@ -173,6 +178,12 @@
         },
 
         methods : {
+            areaClicked(){
+                if(this.area.ignored) return;
+
+                this.shared.event.emit( 'areaClicked', this.area );
+            },
+
             openStatTooltip(index){
                 const ref = `statTooltip-${index}`;
                 this.$refs[ref].open();
@@ -323,6 +334,9 @@
         },
 
         computed : {
+            area(){
+                return this.shared.data.areas[this.areaName] ?? this.shared.data.ignoredAreaData[this.areaName];
+            },
 
             /**
              * Does this area have any actions that may be taken here by the active player?
@@ -440,6 +454,11 @@
                 if( this.opacity || (this.shared.actions && !this.hasActions ) ){
                     classes += ' opacity-4'
                 }
+
+                if( this.area.ignored ){
+                    classes += ' opacity-4';
+                }
+
                 return classes;
             },
 
@@ -482,6 +501,15 @@
     .influence-marker {
         width: 1em;
         height: 1em;
+    }
+
+    .area-map__blocked {
+        width: 70%;
+        height: 70%;
+        border-radius: 1rem;
+        font-size: 4rem;
+        background-color: rgba(0,0,0,.7);
+        box-shadow: 0px 0px 6px rgba(0,0,0,.5);
     }
 
     .area-map-container {

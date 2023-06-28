@@ -12,6 +12,10 @@ let obj = {
             cardsToDraw++;
         }
 
+        if( this.game().data.ignoredAreas.length ){
+            cardsToDraw++;
+        }
+
         // draw our cards
         this.drawCards( cardsToDraw );
     },

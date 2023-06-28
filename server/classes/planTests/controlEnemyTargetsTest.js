@@ -8,12 +8,17 @@
  */
 const test = function controlEnemyTargets( debug, faction, targetCount ){
     let areasControlled = faction.areas();
+    let ignoredAreas = faction.game().data.ignoredAreas;
+    let enemyTargetsControlled = 0;
 
-    let enemyTargetsControlled = Object.values( faction.game().factions )
-        .map( item => {
-            return item.name !== faction.name // if this faction is not us
-                && areasControlled.includes( item.targetName() ); // and areas we control includes their target
-        }).filter( item => item ).length; // get rid of false values
+    Object.values( faction.game().factions ).forEach( factionItem => {
+        if( factionItem.name === faction.name ) return;
+
+        let target = factionItem.targetName();
+
+        // if we control this target or if an opponent played a target in a blocked area
+        if( areasControlled.includes( target ) || ignoredAreas.includes( target ) ) enemyTargetsControlled++;
+    });
 
     let result = enemyTargetsControlled >= targetCount;
 

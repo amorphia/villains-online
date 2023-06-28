@@ -35,6 +35,26 @@ class Area {
         return Server.games[this.gameId];
     }
 
+    updateAdjacency( ignored ){
+        let adjacent = [];
+
+        // if we are the capitol then our adjacent equals every area not on the ignore list
+        if( this.name === "capitol" ){
+            this.data.adjacent = this.data.adjacent.filter( adjacent => !ignored.includes( adjacent ) );
+            return;
+        }
+
+        this.data.adjacent.forEach( area => {
+            // otherwise we need to shift our adjacent areas over a bit
+            if( ignored.includes( area ) ){
+                adjacent.push( this.data.adjacentAlts[area] );
+            } else {
+                adjacent.push( area );
+            }
+        })
+
+        this.data.adjacent = adjacent;
+    }
 
     /**
      * Clean up this area

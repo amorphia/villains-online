@@ -8,6 +8,17 @@
 
         <!-- players -->
         <div class="players width-35 height-100 p-5 d-flex flex-center flex-wrap">
+
+            <!-- ignored areas -->
+            <div v-if="shared.data.ignoredAreas.length" class="choose-factions__player-container">
+                <div v-for="(area, index) in shared.data.ignoredAreas"
+                     class="choose-factions__player pull-center d-flex align-stretch">
+                    <div class="choose-factions__area-index bold width-10 p-4">X</div>
+                    <div class="choose-factions__player-name ellipses width-50 p-4">{{ area }}</div>
+                </div>
+            </div>
+
+            <!-- players -->
             <div class="choose-factions__player-container">
                 <div v-for="(player, index) in shared.orderedPlayers()"
                      class="choose-factions__player pull-center d-flex align-stretch"

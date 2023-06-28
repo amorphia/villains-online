@@ -8,6 +8,10 @@ class Sewers extends Area {
         this.data.control = "Gain +1 Deploy Limit";
         this.data.skill = "Choose one of your units, deploy a unit of that type to the same area without paying its unit cost";
         this.data.adjacent = [ 'capitol', 'police', 'church' ];
+        this.data.adjacentAlts = {
+            police : "laboratory",
+            church : "subway",
+        };
     }
 
 

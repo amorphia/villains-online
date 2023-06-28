@@ -63,7 +63,7 @@ let obj = {
     },
 
     gainBankResource(){
-        const owner = this.areas['bank'].data.owner;
+        const owner = this.areas['bank']?.data?.owner;
         if(!owner || owner === "neutral" ) return;
 
         this.factions[owner].gainResources(1);

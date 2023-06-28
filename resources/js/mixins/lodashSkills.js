@@ -25,6 +25,8 @@ let helpers = {
      * @returns {boolean}
      */
     canUseMagick( faction, area, factions ){
+        if( !area ) return false;
+
         // format inputs
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;
@@ -46,6 +48,8 @@ let helpers = {
      * @returns {boolean}
      */
     canUseSkill( faction, area, factions ){
+        if( !area ) return false;
+
         // format data
         if( faction.data ) faction = faction.data;
         if( area.data ) area = area.data;

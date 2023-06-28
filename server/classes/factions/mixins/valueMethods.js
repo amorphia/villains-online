@@ -299,7 +299,6 @@ let mixin = {
         return this.game().areas[areaName];
     },
 
-
     /**
      * Return the name of this faction's target for the turn
      *

@@ -97,6 +97,8 @@ let helpers = {
      * @returns {string|boolean} // faction name or false
      */
     areaExterminated( area, factions ){
+        if( !area ) return false;
+
         if( area.data ) area = area.data; // format input
 
         // if the area has been nuked, return the name of the faction that played the nuke

@@ -44,6 +44,8 @@ let helpers = {
      * @returns {number}
      */
     calculateDefenseBonus( attackingFaction, defendingFaction, area, options = {} ){
+        if( !area ) return false;
+
         // format inputs
         if( attackingFaction.data ) attackingFaction = attackingFaction.data;
         if( defendingFaction.data ) defendingFaction = defendingFaction.data;
@@ -83,6 +85,8 @@ let helpers = {
      * @returns {boolean}
      */
     hasBiohazardInArea( faction, area ) {
+        if( !area ) return false;
+
         if( area.data ) area = area.data; // format inputs
 
         // if we aren't the mutants, then nope

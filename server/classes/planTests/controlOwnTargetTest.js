@@ -6,12 +6,12 @@
  * @returns {boolean}
  */
 const test = function controlOwnTarget( debug, faction ) {
-    let targetController = faction.targetArea().data.owner;
-    let result = faction.targetArea().data.owner === faction.name;
+    let areasControlled = faction.areas();
+    let result = areasControlled.includes(faction.targetName());
 
     if( debug ) console.log(
         'controlOwnTarget ---',
-        'targetController:', targetController,
+        'areasControlled:', areasControlled,
         'result:', result
     );
 

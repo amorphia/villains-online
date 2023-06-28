@@ -10,10 +10,15 @@ class Shakedown extends Card {
 
         // cycle through each faction and make the enemy players discard an action card
         Object.values( this.game.factions ).forEach( faction => {
+            if( !this.canFactionDiscardCard( faction ) ) return;
             promises.push( this.factionChooseCardToDiscard( faction ) );
         });
 
-        await Promise.all( promises );
+        let responses = await Promise.all( promises );
+
+        for( let response of responses ) {
+            response.faction.discardCards( response.cards );
+        }
     }
 
 
@@ -34,27 +39,20 @@ class Shakedown extends Card {
      * @param faction
      * @returns {Promise|undefined}
      */
-    factionChooseCardToDiscard( faction ){
-        if( !this.canFactionDiscardCard( faction ) ) return;
-
-        return this.game.promise({
+    async factionChooseCardToDiscard( faction ){
+        let [player, response] = await this.game.promise({
             players: faction.playerId,
             name: 'discard-card',
             data : { count : 1 }
-        }).then( ([player, response]) => this.resolveShakedownDiscard( player, response, faction ) );
-    }
+        });
 
+        await this.game.updatePlayerData();
 
-    /**
-     * Resolve this faction's shakedown discard
-     *
-     * @param player
-     * @param response
-     * @param faction
-     */
-    resolveShakedownDiscard( player, response, faction ){
-        faction.discardCards( response.cards );
-        player.setPrompt({ active : false, updatePlayerData : true });
+        return {
+            player,
+            faction,
+            cards : response.cards,
+        }
     }
 }
 

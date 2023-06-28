@@ -8,6 +8,8 @@ let helpers = {
      * @return {object} // formatted { typeOne : {number}, typeTwo : {number} }
      */
     getTokenCounts( faction, area ){
+        if( !area ) return false;
+
         if( area.data ) area = area.data; // format input
         let tokens = {};
 
@@ -62,6 +64,8 @@ let helpers = {
      * @returns {*}
      */
     getFirstToken( area, options ){
+        if( !area ) return false;
+
         if( area.data ) area = area.data; // format input
 
         return this.find( area.tokens, token => {
@@ -80,6 +84,8 @@ let helpers = {
      * @returns {Token}
      */
     firstUnrevealedToken( area, options = {} ){
+        if( !area ) return false;
+
         if( area.data ) area = area.data; // format input
 
         options.revealed = false;
@@ -95,6 +101,8 @@ let helpers = {
      * @returns {*}
      */
     firstRevealedToken( area, options = {} ){
+        if( !area ) return false;
+
         if( area.data ) area = area.data; // format data
 
         options.revealed = true;
@@ -110,6 +118,8 @@ let helpers = {
      * @returns {boolean|number}
      */
     discardToken( token, area ){
+        if( !area ) return false;
+
         if( area.data ) area = area.data; // format
         let tokenSpace = false;
 

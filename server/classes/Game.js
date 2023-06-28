@@ -42,6 +42,54 @@ class Game {
         'respond'
     ];
 
+    areaOpposite = {
+        sewers: "bank",
+        police: "university",
+        laboratory: "subway",
+        factory: "church",
+        bank: "sewers",
+        university: "police",
+        subway: "laboratory",
+        church: "factory",
+    };
+
+    /*
+    targetShifts = {
+        sewers: {
+            right: "police",
+            left: "church",
+        },
+        police: {
+            right: "laboratory",
+            left: "sewers",
+        },
+        laboratory: {
+            right: "factory",
+            left: "police",
+        },
+        factory: {
+            right: "bank",
+            left: "laboratory",
+        },
+        bank: {
+            right: "university",
+            left: "factory",
+        },
+        university: {
+            right: "subway",
+            left: "bank",
+        },
+        subway: {
+            right: "church",
+            left: "university",
+        },
+        church: {
+            right: "sewers",
+            left: "subway",
+        },
+    };
+    */
+
     defaultListener; // the default listener, is set during each phase
     listening = {}; // map of current event listeners
     id; // game ID
@@ -62,8 +110,6 @@ class Game {
         deck : [],
         discard: []
     };
-
-
 
     // capitol tokens
     capitolTokens = [
@@ -100,10 +146,10 @@ class Game {
         factions : {}, // reference to our factions object
         areaIndex : 0, // used when working through each area in area order
         areas : {}, // reference to our areas object
+        ignoredAreaData : {}, // reference to our areas object
         spectators: {}, // referencer to ours spectators object
 
-        // each of the areas in order
-        areaOrder : [
+        allAreas: [
             'capitol',
             'sewers',
             'police',
@@ -112,8 +158,14 @@ class Game {
             'bank',
             'university',
             'subway',
-            'church'
+            'church',
         ],
+
+        // each of the areas in order
+        areaOrder: [],
+
+        //activeAreas: [],
+        ignoredAreas: [],
     };
 
 

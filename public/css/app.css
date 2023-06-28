@@ -2930,6 +2930,11 @@ a {
   background-color: var(--primary-color);
 }
 
+.choose-factions__area-index {
+  background-color: var(--red);
+  color: black;
+}
+
 .choose-factions__player.active .choose-factions__player-index {
   background-color: var(--highlight-color);
   color: black;

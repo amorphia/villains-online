@@ -8,6 +8,10 @@ class Police extends Area {
         this.data.control = "You may look at each enemy target (after picking yours)";
         this.data.skill = "Make an attack with any one of your units";
         this.data.adjacent = [ 'sewers', 'capitol', 'laboratory' ];
+        this.data.adjacentAlts = {
+            sewers : "church",
+            laboratory : "factory",
+        };
     }
     /**
      * Handle a faction losing control of this area
