@@ -4,7 +4,7 @@ let obj = {
      * Begin the place tokens step
      */
     async startPlaceTokensStep(){
-        if( this.data.ignoredAreas.length ){
+        if( this.data.ignoredAreas.length  && this.threePlayerExtraDraw ){
             await this.allPlayersDiscardACard();
         }
 

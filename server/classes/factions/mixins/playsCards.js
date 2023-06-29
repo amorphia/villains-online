@@ -12,7 +12,7 @@ let obj = {
             cardsToDraw++;
         }
 
-        if( this.game().data.ignoredAreas.length ){
+        if( this.game().data.ignoredAreas.length && this.threePlayerExtraDraw ){
             cardsToDraw++;
         }
 

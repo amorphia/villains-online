@@ -14,6 +14,7 @@ class Game {
     playerTimeoutLength = 10; // how long to wait for a player to reconnect before checking for them again, in seconds
     maxPlayerTimeouts = 50; // how many timeout checks (in seconds above) to make before giving up
     secretFactionSelection = 5;
+    threePlayerExtraDraw = false;
 
     /**
      * Internals
