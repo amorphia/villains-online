@@ -191,9 +191,9 @@ class Plants extends Faction {
      */
     async handleSoulLureResponse( player, response, area, units ){
         let unit = this.game().objectMap[response.units[0]];
+        let owner = this.game().factions[unit.faction];
 
-        unit.location = area.name;
-        if( unit.ready ) unit.ready = false;
+        await owner.placeUnit( unit, area.name );
         units.push( unit );
 
         player.setPrompt({ active : false, updatePlayerData : true });

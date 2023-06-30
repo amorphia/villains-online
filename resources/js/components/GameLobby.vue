@@ -118,6 +118,7 @@
                 options : {
                     allowBribes : false,
                     expansionCards : true,
+                    trackData : true,
                 }
             };
         },
@@ -218,7 +219,9 @@
                 if( !this.gameCreator ) return App.event.emit( 'sound', 'error' );
 
                 if( type === "basic" ){
-                    this.expansionCards = false;
+                    console.log("update basic game toggles");
+                    this.options.expansionCards = false;
+                    this.options.trackData = false;
                 }
 
                 // set game type

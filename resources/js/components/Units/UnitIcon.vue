@@ -5,10 +5,12 @@
              @click="onClick">
 
             <!-- ghost icon container -->
-            <div v-if="viewableGhost" class="ghost-icon__container"></div>
-            <div v-if="unit.hidden" class="hidden-icon__container"></div>
-            <div v-if="unit.temporaryfirstStrike" class="temporary_first_strike-icon__container"></div>
-            <div v-if="unit.webbed" class="webbed-icon__container"></div>
+            <div v-if="viewableGhost" class="ghost-icon__container" title="Ghost: May be revealed"></div>
+            <div v-if="unit.hidden" class="hidden-icon__container" title="Hidden: may not be assigned hits"></div>
+            <div v-if="unit.risen" class="risen-icon__container" title="Risen: +1 influence, and an attack of 8"></div>
+            <div v-if="unit.temporaryfirstStrike" class="temporary_first_strike-icon__container" title="First Strike: attacks first in combat, victims don't retaliate"></div>
+            <div v-if="unit.webbed" class="webbed-icon__container" title="Webbed: Loses influence and skilled, may not leave area"></div>
+
 
             <!-- xavier token -->
             <token-slot v-if="hasToken" :forcedtoken="unit.placeToken" :token="unit.token"></token-slot>
@@ -258,8 +260,10 @@
         top: 5%;
         background-repeat: no-repeat;
         background-size: contain;
-        transform: translate(-50%, -70%);
+        transform: translate(-50%, -50%);
     }
+
+
 
     .ghost-icon__container:before {
         content: "";
@@ -272,7 +276,21 @@
         top: 5%;
         background-repeat: no-repeat;
         background-size: contain;
-        transform: translate(-50%, -70%);
+        transform: translate(-50%, -50%);
+    }
+
+    .risen-icon__container:before {
+        content: "";
+        position: absolute;
+        width: 40%;
+        height: 40%;
+        background-image: url(/images/icons/risen.png);
+        z-index: 3;
+        left: 50%;
+        top: 5%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        transform: translate(-50%, -50%);
     }
 
     .hidden-icon__container:before {
@@ -286,7 +304,7 @@
         top: 5%;
         background-repeat: no-repeat;
         background-size: contain;
-        transform: translate(-50%, -70%);
+        transform: translate(-50%, -50%);
     }
 
     .webbed-icon__container:before {

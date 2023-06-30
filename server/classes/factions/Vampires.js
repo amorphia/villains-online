@@ -152,8 +152,7 @@ class Vampires extends Faction {
 
         // move the selected units
         units.forEach( unit => {
-            unit.location = areaName;
-            if( unit.ready ) unit.ready = false;
+            this.placeUnit( unit, areaName );
         });
 
         return units;
@@ -306,6 +305,13 @@ class Vampires extends Faction {
             type: 'becomeVampire',
             text: `Face up units that roll a hit become vampires, improving their attacks`
         });
+
+        if( this.data.unitPropAttackBonus.vampire ){
+            mods.push({
+                type: 'vampireUpgrade',
+                text: `Vampires gain +${this.data.unitPropAttackBonus.vampire} to their attacks`,
+            });
+        }
 
         return mods;
     }

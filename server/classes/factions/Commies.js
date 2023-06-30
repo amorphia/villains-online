@@ -7,6 +7,11 @@ class Commies extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
+        // triggers
+        this.triggers = {
+            "onCleanUp" : "clearRiseBonus",
+        };
+
         // data
         this.data.name = this.name;
         this.data.title = "The New Collective";
@@ -14,6 +19,7 @@ class Commies extends Faction {
         this.data.risePatsies = 0; // how many bonus patsies to deploy with our ride token
         this.data.bonusDeploy = { type: 'patsy', count : 1 };
         this.data.focusDescription = "Have high influence in areas";
+        this.data.riseAttackValue = 8;
 
         // tokens
         this.tokens['rise-up'] = {
@@ -22,8 +28,8 @@ class Commies extends Faction {
                 influence: 1,
                 cost : 0,
                 areaStat : true,
-                resource : 1,
-                description : 'Communist patsies produce +1 influence in this area.',
+                resource : 0,
+                description : `Communist patsies produce xIx in this area, and gain an attack of xA${this.data.riseAttackValue}x.`,
                 req : "Passive token: this token may always be activated"
             }
         };
@@ -33,7 +39,10 @@ class Commies extends Faction {
         this.units['mole'].count = 4;
         this.units['talent'].count = 2;
         this.units['patsy'].count = 12;
-        this.units['patsy'].data.attack = [9];
+        this.units['patsy'].data.onDeploy = "checkRiseToken";
+        this.units['patsy'].data.onMove = "checkRiseToken";
+        this.units['patsy'].data.onPlace = "checkRiseToken";
+
         this.units['champion'] = {
             count: 1,
             data: {
@@ -62,7 +71,7 @@ class Commies extends Faction {
      */
     processUpgrade( upgrade ){
         // gain bonus patsies equal to our upgrade count
-        this.data.risePatsies = upgrade;
+        this.data.risePatsies = upgrade * 2;
     }
 
 
@@ -140,6 +149,15 @@ class Commies extends Faction {
         return true;
     }
 
+    becomeRisen( unit ){
+        unit.attack = [this.data.riseAttackValue];
+        unit.risen = true;
+    }
+
+    clearRisen( unit ){
+        unit.attack = [];
+        unit.risen = false;
+    }
 
     /**
      * Handle activating our rise up token
@@ -161,8 +179,52 @@ class Commies extends Faction {
             } );
         }
 
+        this.data.units.forEach( unit => {
+            if( _.unitInArea( unit, args.area, { type : "patsy" } ) ){
+                this.becomeRisen( unit );
+            }
+        });
+
         // advance the game
         this.game().advancePlayer();
+    }
+
+    checkRiseToken( event ){
+        let unit = event.unit;
+        let riseLocation = this.data.tokens.find( token => token.type === "rise-up" && token.location && token.revealed )?.location;
+
+        if( !riseLocation || riseLocation !== unit.location ){
+            this.clearRisen( unit );
+            return;
+        }
+
+        this.becomeRisen( unit );
+    }
+
+    clearRiseBonus() {
+        this.data.units.forEach( unit => {
+            if( unit.type === "patsy" ) this.clearRisen( unit );
+        });
+    }
+
+    /**
+     * Get a list of our faction combat modifications
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ) {
+        let riseLocation = this.data.tokens.find( token => token.type === "rise-up" && token.location && token.revealed )?.location;
+
+        if( riseLocation === area.name ){
+            mods.push({
+                type: 'commieUpgrade',
+                text: `The RISE token grants your patsies an attack of xA${this.data.riseAttackValue}x in this area`,
+            });
+        }
+
+        return mods;
     }
 
 }

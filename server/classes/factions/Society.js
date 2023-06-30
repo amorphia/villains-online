@@ -124,7 +124,7 @@ class Society extends Faction {
      */
     placeHenchman( event ){
         let henchman = this.data.units.find( unit => unit.type === 'henchman' && !unit.killed );
-        if( henchman ) henchman.location = event.unit.location;
+        if( henchman ) this.placeUnit( henchman, event.unit.location );
     }
 
 

@@ -128,6 +128,7 @@ class Game {
         upgradePoints : [ 4, 8 ], // how many points (on a single track) do players need to unlock their upgrades
         gameType : 'optimized', // our default game mode, basic/optimized/anarchy
         expansionCards: true,
+        trackData: true,
         cardTracker : {},
         // internals
         rolls : [], // used to track the culminate die rolls made throughout the game

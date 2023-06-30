@@ -180,8 +180,7 @@ class Mutants extends Faction {
         });
 
         let ourUnit = this.game().objectMap[ response.units[0] ];
-
-        ourUnit.location = args.area.name;
+        await this.placeUnit( ourUnit, args.area.name );
 
         await this.game().timedPrompt('units-shifted', {
             message: `A Unit was biomorphed`,

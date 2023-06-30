@@ -146,7 +146,7 @@ class Ninjas extends Faction {
      */
     async resolveLotusDancerMove( lotusDancer, area ){
         // st lotus dancer's new area
-        lotusDancer.location = area.name;
+        this.placeUnit( lotusDancer, area.name )
 
         // show results to all players
         this.game().sound('wiff');

@@ -204,6 +204,18 @@ class Faction {
         unit.flipped = false;
     }
 
+    async placeUnit( unit, area, options = {} ){
+        if( typeof area !== 'string') area = area.name;
+
+        if( !unit.location || options.unflip ) this.unflipUnit( unit );
+
+        unit.location = area;
+        unit.killed = null;
+        if( unit.ready ) unit.ready = false;
+        if( unit.webbed ) delete unit.webbed;
+
+        await this.unitTriggeredEvents( 'place', [ { unit: unit } ] );
+    }
 
     /**
      * Gain Area Points and display the results

@@ -172,11 +172,7 @@ let obj = {
         if( original.cost > 0 ) this.payCost( original.cost, true );
 
         // replace unit
-        replacement.location = original.location;
-
-        if( replacement.ready ) replacement.ready = false;
-        if( replacement.flipped ) this.unflipUnit( replacement );
-        if( replacement.webbed ) delete replacement.webbed;
+        await this.placeUnit( replacement, original.location, { unflip: true } );
 
         // prepare data for popup prompt
         units.push( replacement );

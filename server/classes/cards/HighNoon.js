@@ -96,12 +96,7 @@ class HighNoon extends Card {
         // cycle through our units and deploy them
         for( let unit of units ){
             let faction = this.game.factions[ unit.faction ];
-            await faction.resolveDeploy( faction.playerId, {
-                cost: 0,
-                units: [unit.id],
-                toArea: this.area.name,
-                hidePrompt : true
-            }).catch( error => console.error( error ) );
+            await faction.placeUnit( unit, this.area.name );
         }
 
         // display the results

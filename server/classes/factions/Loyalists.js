@@ -114,11 +114,11 @@ class Loyalists extends Faction {
      *
      * @param event
      */
-    placeServants( event ){
+    async placeServants( event ){
         this.data.units.forEach( unit => {
             // all of our non-killed servants move into the queen's area
            if( this.validEntourageUnit( unit ) && !unit.killed ){
-               unit.location = event.unit.location;
+               this.placeUnit( unit, event.unit.location );
                if( unit.type === 'bishop') unit.ready = true;
            }
         });

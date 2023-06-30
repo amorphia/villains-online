@@ -97,7 +97,7 @@ class Martyrs extends Faction {
 
         let patsies = response.units.map( unitId => this.game().objectMap[unitId] );
 
-        patsies.forEach( unit => unit.location = area.name );
+        patsies.forEach( unit => this.placeUnit( unit, area.name ) );
 
         await this.game().timedPrompt('units-shifted', {
             message : "The Incarnation of divinity sends missionaries to recruit new followers",

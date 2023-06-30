@@ -16,7 +16,7 @@ let obj = {
         let events = this.getUnitTriggeredEvents( type, unitsData, area );
 
         // resolve our triggered events
-        if( events.length )await this.resolveUnitTriggeredEvents( events, area )
+        if( events.length ) await this.resolveUnitTriggeredEvents( events, area )
             .catch( error => console.log( error ) );
 
     },

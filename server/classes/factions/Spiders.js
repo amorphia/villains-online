@@ -205,10 +205,9 @@ class Spiders extends Faction {
      */
     placeSpider( area ){
         let spider = this.data.units.find( unit => _.unitInReserves( unit, { type : 'spider' } ) );
-
         if( !spider ) return null;
 
-        spider.location = area.name;
+        this.placeUnit( spider, area.name );
         return spider;
     }
 
