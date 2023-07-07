@@ -12,7 +12,7 @@ class FishInABarrel extends Card {
             .catch( error => console.error( error ) );
 
         if( output.hasKill ){
-            this.game().sound( 'coin' );
+            this.game.sound( 'coin' );
             this.faction.gainAP( 1 );
         }
     }
