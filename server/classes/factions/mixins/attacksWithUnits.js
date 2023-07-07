@@ -439,7 +439,7 @@ let obj = {
             let targets = Array.isArray( args.targets ) ? args.targets : [args.targets];
             Object.values(this.game().factions).forEach( faction => {
                 if( !targets.includes( faction.name ) ){
-                    faction.push( faction.name );
+                    factions.push( faction.name );
                 }
             });
         }
