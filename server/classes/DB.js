@@ -72,11 +72,9 @@ class DB {
      * @param {boolean} incomplete
      */
     track( game, scores, incomplete ) {
-        if( !game?.id || game.data.gameType === "basic" || !this.trackerHost ) return;
+        if( !game?.id || !game.data.trackData || !this.trackerHost ) return;
 
         let data = this.getGameData( game, scores, incomplete );
-
-        console.log("saving final scores", data.cards );
 
         axios.post( `${this.trackerHost}/api/import`, data )
             .then( result => {} )

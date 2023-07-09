@@ -278,9 +278,7 @@ let obj = {
         this.pushGameDataToPlayers();
 
         // record the score in our external tracker
-        if( this.data.trackData ){
-            Server.saveToTracker( this, scores, isIncomplete );
-        }
+        Server.saveToTracker( this, scores, isIncomplete );
     },
 
 
