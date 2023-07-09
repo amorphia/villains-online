@@ -1,12 +1,12 @@
 let obj = [
     {
-        name: '1',
+        name: 'Botnet Takeover',
         num : 1,
         faction : 'hackers',
         objectives : [
             {
                 requirements : [
-                    { test : 'killUnits', args : [4] },
+                    { test : 'killUnits', args : [6] },
                 ],
                 value : 1
             },
@@ -25,7 +25,7 @@ let obj = [
         ]
     },
     {
-        name: '2',
+        name: 'Brute Force Crack',
         num : 2,
         faction : 'hackers',
         objectives : [
@@ -50,33 +50,33 @@ let obj = [
         ]
     },
     {
-        name: '3',
+        name: 'Self Modifying Virus',
         num : 3,
         faction : 'hackers',
         objectives : [
-            {
-                requirements : [
-                    { test : 'useSkills', args : [6] },
-                    { test : 'controlOwnTarget', args : [] },
-                ],
-                value : 2
-            },
             {
                 requirements : [
                     { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 1
             },
+            {
+                requirements : [
+                    { test : 'useSkills', args : [4] },
+                    { test : 'influenceInAreas', args : [7,1] },
+                ],
+                value : 2
+            },
         ]
     },
     {
-        name: '4',
+        name: 'Collapse the Firewalls',
         num : 4,
         faction : 'hackers',
         objectives : [
             {
                 requirements : [
-                    { test : 'useSkills', args : [6] },
+                    { test : 'useSkills', args : [4] },
                     { test : 'enemyMarkers', args : [3] },
                 ],
                 value : 2
@@ -90,7 +90,7 @@ let obj = [
         ]
     },
     {
-        name: '5',
+        name: 'Social Engineering',
         num : 5,
         faction : 'hackers',
         objectives : [
@@ -108,14 +108,14 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'influenceInAreas', args : [7,1] },
+                    { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 1
             },
         ]
     },
     {
-        name: '6',
+        name: 'Def-Con Recruiting',
         num : 6,
         faction : 'hackers',
         objectives : [
@@ -127,7 +127,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [4] },
+                    { test : 'useSkills', args : [6] },
                 ],
                 value : 1
             },
@@ -140,7 +140,7 @@ let obj = [
         ]
     },
     {
-        name: '7',
+        name: 'Hack the Planet',
         num : 7,
         faction : 'hackers',
         objectives : [
@@ -153,7 +153,7 @@ let obj = [
         ]
     },
     {
-        name: '8',
+        name: 'Phishing Attacks',
         num : 8,
         faction : 'hackers',
         objectives : [
