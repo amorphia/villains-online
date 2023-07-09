@@ -22,7 +22,7 @@ class Mutants extends Faction {
 
         // tokens
         this.tokens['biomorph'] = {
-            count: 2,
+            count: 1,
             data: {
                 influence: 1,
                 resource: 1,
@@ -39,7 +39,7 @@ class Mutants extends Faction {
         this.units['patsy'].count = 6;
 
         this.units['champion'] = {
-            count: 6,
+            count: 4,
             data: {
                 name: "Mother Ooze",
                 toughness: true,
