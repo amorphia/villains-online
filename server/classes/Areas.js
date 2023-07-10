@@ -3,8 +3,8 @@ let areas = [
     'sewers',
     'police',
     'laboratory',
-    'factory',
     'bank',
+    'factory',
     'university',
     'subway',
     'church'

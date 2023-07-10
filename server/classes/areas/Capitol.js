@@ -8,7 +8,7 @@ class Capitol extends Area {
         this.data.maxTokens = 6;
         this.data.control = "Collect this turn's Capitol Token";
         this.data.skill = "Exchange the position of two action tokens in the same area";
-        this.data.adjacent = [ 'sewers', 'police', 'laboratory', 'factory', 'bank', 'university', 'subway', 'church' ];
+        this.data.adjacent = [ 'sewers', 'police', 'laboratory', 'bank', 'factory', 'university', 'subway', 'church' ];
     }
 
 

@@ -8,10 +8,10 @@ class Factory extends Area {
 
         this.data.control = "Your units gain +2 to their attack rolls";
         this.data.skill = "Start a battle in any area where you have a unit";
-        this.data.adjacent = [ 'laboratory', 'capitol', 'bank' ];
+        this.data.adjacent = ['bank', 'capitol', 'university' ];
         this.data.adjacentAlts = {
-            laboratory : "police",
-            bank: "university",
+            bank : "laboratory",
+            university: "subway",
         };
     }
 

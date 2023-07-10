@@ -44,14 +44,14 @@ class Game {
     ];
 
     areaOpposite = {
-        sewers: "bank",
+        sewers: "factory",
         police: "university",
         laboratory: "subway",
-        factory: "church",
-        bank: "sewers",
+        factory: "sewers",
+        bank: "church",
         university: "police",
         subway: "laboratory",
-        church: "factory",
+        church: "bank",
     };
 
     /*
@@ -156,8 +156,8 @@ class Game {
             'sewers',
             'police',
             'laboratory',
-            'factory',
             'bank',
+            'factory',
             'university',
             'subway',
             'church',

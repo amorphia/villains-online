@@ -696,16 +696,14 @@
         background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);
     }
 
-
-    .bank-container { order: 8; }
-    .area-map-bank {
-        background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);
-    }
-
-
-    .factory-container { order: 9; }
+    .factory-container { order: 8; }
     .area-map-factory {
         background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);
+    }
+
+    .bank-container { order: 9; }
+    .area-map-bank {
+        background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);
     }
 
 </style>
