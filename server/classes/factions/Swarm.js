@@ -12,6 +12,7 @@ class Swarm extends Faction {
         this.data.focusDescription = "Have units in many areas";
         this.data.title = "The Swarm";
         this.data.factionDefenseBonus = 0; // the negative modifier we apply to enemy die rolls
+        this.data.ignorePositiveModifiersWhenDefending = false;
         this.data.hatchCount = 4; // how many drones to hatch
         this.data.bonusDeploy = { type: 'champion', count : 1 }; // our champion doesn't use up deploy limit
 
@@ -49,7 +50,7 @@ class Swarm extends Faction {
                 cost: 0,
                 noDeploy: true,
                 influence: 1,
-                attack: [7],
+                attack: [6],
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
@@ -79,7 +80,12 @@ class Swarm extends Faction {
      * @param {number} upgrade
      */
     processUpgrade( upgrade ) {
-        this.data.factionDefenseBonus = upgrade;
+        if(upgrade === 1){
+            this.data.factionDefenseBonus = 1;
+        } else {
+            this.data.factionDefenseBonus = 2;
+            this.data.ignorePositiveModifiersWhenDefending = true;
+        }
     }
 
 

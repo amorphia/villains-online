@@ -351,41 +351,56 @@ let obj = {
     getToHitNumber( args, victim ){
         // we start with our attack value
         let toHit = args.attacks[0];
-        console.log("getToHitNumber start", toHit, args);
+        let attackBonus = 0;
+        console.log("getToHitNumber start", toHit);
 
         // deadly attacks can't be modified, so just return our attack value
         // if( args.deadly ) return toHit;
 
         // subtract any attack bonuses set by our args
-        if( args.attackBonus ) toHit -= args.attackBonus;
-        console.log("getToHitNumber after args.attackBonus", toHit);
+        if( args.attackBonus ) attackBonus += args.attackBonus;
+        console.log("attackBonus after args.attackBonus", attackBonus);
 
         // if we are attacking with a unit and our faction has a global attack bonus, apply it
-        if( args.unit && this.data.attackBonus ) toHit -= this.data.attackBonus;
+        if( args.unit && this.data.attackBonus ) attackBonus += this.data.attackBonus;
+        console.log("attackBonus after attacker.attackBonus", attackBonus);
 
         // if we get a bonus for attacking with a unit having a given prop, apply it here
         if( args.unit && this.data.unitPropAttackBonus ){
             for( let prop in this.data.unitPropAttackBonus ) {
-                if (args.unit[prop]) toHit -= this.data.unitPropAttackBonus[prop];
+                if (args.unit[prop]) attackBonus += this.data.unitPropAttackBonus[prop];
             }
         }
+        console.log("attackBonus after attacker.unitPropAttackBonus", attackBonus);
 
         // if we get a bonus for attacking with a unit of a specific type apply it here
         if( args.unit && this.data.unitTypeAttackBonus.length ){
             this.data.unitTypeAttackBonus.forEach( bonus => {
-                if( bonus.type === args.unit.type ) toHit -= bonus.value;
+                if( bonus.type === args.unit.type ) attackBonus += bonus.value;
             });
         }
+        console.log("attackBonus after attacker.unitTypeAttackBonus", attackBonus);
+
+
+        console.log("final attackBonus", attackBonus);
+
+        // Apply attack bonus
+        if( !victim.data.ignorePositiveModifiersWhenDefending ) toHit -= attackBonus;
+        else console.log("victim.ignorePositiveModifiersWhenDefending");
 
         // deadly attacks can't be negatively modified, so just return our attack value
-        if( args.deadly ) return toHit;
+        if( args.deadly ) {
+            console.log("deadly attacks can't be modified negatively, final toHit:", toHit);
+            console.log("attack args:", args);
+            return toHit;
+        }
 
         // finally if our target faction has a defense bonus apply that here
         let defenseBonus = _.calculateDefenseBonus( this.data, victim.data, args.area, { debug : true, unit : args.unit } );
-        if( defenseBonus )  toHit += defenseBonus;
+        if( defenseBonus ) toHit += defenseBonus;
 
         console.log("getToHitNumber final", toHit);
-
+        console.log("attack args:", args);
         return toHit;
     },
 
