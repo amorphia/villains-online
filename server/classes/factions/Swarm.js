@@ -83,7 +83,7 @@ class Swarm extends Faction {
         if(upgrade === 1){
             this.data.factionDefenseBonus = 1;
         } else {
-            this.data.factionDefenseBonus = 2;
+            this.data.factionDefenseBonus = 1;
             this.data.ignorePositiveModifiersWhenDefending = true;
         }
     }
