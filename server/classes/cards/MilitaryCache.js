@@ -7,12 +7,12 @@ class MilitaryCache extends Card {
     async handle(){
         await this.faction.move({
             area: this.area,
-            toArea : this.area.name,
+            toArea: this.area.name,
             fromToken: false,
             canDecline: true,
             moveLimit: 2,
             farMove: false,
-            player : this.faction.playerId
+            player: this.faction.playerId
         }).catch( error => console.error( error ) );
 
         // gain +2 to our unit attacks

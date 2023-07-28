@@ -96,14 +96,14 @@ let obj = {
      * @returns {Area[]}
      */
     getMovePotentialAreas( args, area ) {
-        // if our move is limited to adjacency return areas adjacent to the given area
-        if ( !args.farMove && !this.data.farMove ) {
-            return args.area.data.adjacent.slice()
+        // if we can farMove return all areas but the given one
+        if ( args.farMove || ( this.data.farMove && args.fromToken ) ) {
+            let areas = this.game().data.areaOrder.slice();
+            return areas.filter( area => area !== args.area.name );
         }
 
-        // otherwise return all areas but the given one
-        let areas = this.game().data.areaOrder.slice();
-        return areas.filter( area => area !== args.area.name );
+        // otherwise our move is limited to adjacency return areas adjacent to the given area
+        return args.area.data.adjacent.slice()
     },
 
 
