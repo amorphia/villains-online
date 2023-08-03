@@ -96,6 +96,11 @@ let obj = {
      * @returns {Area[]}
      */
     getMovePotentialAreas( args, area ) {
+        console.log( "getMovePotentialAreas" );
+        console.log( "args.farMove", args.farMove );
+        console.log( "this.data.farMove", this.data.farMove );
+        console.log( "args.fromToken", args.fromToken );
+
         // if we can farMove return all areas but the given one
         if ( args.farMove || ( this.data.farMove && args.fromToken ) ) {
             let areas = this.game().data.areaOrder.slice();
