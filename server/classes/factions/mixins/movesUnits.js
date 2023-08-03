@@ -22,6 +22,8 @@ let obj = {
         // make sure our move action knows this comes from a card
         args.fromToken = true;
 
+        console.log( "activateMoveToken args:", args );
+
         // resolve move action
         let output = await this.move( args ).catch( error => console.error( error ) );
 
@@ -45,6 +47,8 @@ let obj = {
      * @param args
      */
     async move( args ){
+        console.log( "move args:", args );
+
         // get the areas we can move from
         let fromAreas = this.moveFromAreas( args );
         if( !fromAreas.length ){
@@ -78,6 +82,7 @@ let obj = {
      * @returns {*}
      */
     moveFromAreas( args = {} ){
+        console.log( "moveFromAreas args:", args );
         let destinationArea = typeof args.area === 'string' ? this.game().areas[args.area] : args.area;
 
         // get our potential areas
@@ -96,7 +101,7 @@ let obj = {
      * @returns {Area[]}
      */
     getMovePotentialAreas( args, area ) {
-        console.log( "getMovePotentialAreas" );
+        console.log( "getMovePotentialAreas args:", args );
         console.log( "args.farMove", args.farMove );
         console.log( "this.data.farMove", this.data.farMove );
         console.log( "args.fromToken", args.fromToken );
