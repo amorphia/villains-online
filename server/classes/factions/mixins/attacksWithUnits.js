@@ -385,7 +385,7 @@ let obj = {
         console.log("final attackBonus", attackBonus);
 
         // Apply attack bonus
-        if( !victim.data.ignorePositiveModifiersWhenDefending ) toHit -= attackBonus;
+        if( !victim.data?.ignorePositiveModifiersWhenDefending ) toHit -= attackBonus;
         else console.log("victim.ignorePositiveModifiersWhenDefending");
 
         // deadly attacks can't be negatively modified, so just return our attack value
