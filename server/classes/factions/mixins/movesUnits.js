@@ -8,7 +8,7 @@ let obj = {
      * @returns {boolean}
      */
     canActivateMove( token, area ){
-        return this.money() >= token.cost && this.moveFromAreas( { area:area } ).length > 0;
+        return this.money() >= token.cost && this.moveFromAreas( { area:area, fromToken: true } ).length > 0;
     },
 
 
