@@ -372,13 +372,7 @@ class Skeletons extends Faction {
         response.units.forEach( responseUnit => {
             let chosenUnit = this.game().objectMap[ responseUnit ];
             let area = chosenUnit.location;
-            let unit;
-
-            if( chosenUnit.faction !== this.name ){
-                unit = this.data.units.find( item => _.unitInReserves( item, { type: chosenUnit.type } ) );
-            } else {
-                unit = chosenUnit;
-            }
+            let unit = this.data.units.find( item => _.unitInReserves( item, { type: chosenUnit.type } ) );
 
             if( !unit ){
                 this.message( "Could not raise this unit", { class : 'warning' } );
