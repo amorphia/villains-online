@@ -219,9 +219,7 @@
                 if( !this.gameCreator ) return App.event.emit( 'sound', 'error' );
 
                 if( type === "basic" ){
-                    console.log("update basic game toggles");
                     this.options.expansionCards = false;
-                    this.options.trackData = false;
                 }
 
                 // set game type
