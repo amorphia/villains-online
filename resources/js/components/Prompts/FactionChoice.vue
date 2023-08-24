@@ -68,10 +68,10 @@
                 if( !this.faction.selectable ) return false;
 
                 // but if we are in basic mode everything goes as long as they are basic factions
-                if( this.shared.data && this.shared.data.gameType === 'basic' ) return this.faction.basic;
+                if( this.shared.data && this.shared.data.gameType === 'basic' && !this.faction.basic ) return false;
 
                 // if we are in optimized mode and already have max killer factions allow only non-killers
-                if( this.shared.data && this.shared.data.gameType === 'optimized'
+                if( this.shared.data
                     && !this.moreKillersAllowed
                     && this.faction.killer) return false;
 
@@ -81,7 +81,7 @@
                     && !this.faction.basic) return false;
 
                 // force the last player to pick a killer faction if one hasn't been picked yet (in optimized)
-                if( this.shared.data && this.shared.data.gameType === 'optimized'
+                if( this.shared.data
                     && this.remainingPlayers === 1
                     && !this.killersSelected
                     && !this.faction.killer) return false;
