@@ -157,13 +157,13 @@ let obj = [
                     { test : 'areasMostUnits', args : [2] },
                     { test : 'skilledAtTarget', args : [2] },
                 ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
                     { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
-                value : 2
+                value : 1
             },
         ]
     },
