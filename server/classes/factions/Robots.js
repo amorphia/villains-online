@@ -16,9 +16,9 @@ class Robots extends Faction {
         this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
 
         this.capturedRewards = [
-            { ap : 1, maxEnergy : 1, cardDraw : 1 },
-            { ap : 1, cardDraw : 1, maxEnergy : 1 },
-            { ap : 1 },
+            { ap : 1, maxEnergy : 1 },
+            { ap : 1, cardDraw : 1 },
+            { ap : 1, maxEnergy : 1 },
             { ap : 2 },
         ];
 
