@@ -10,7 +10,7 @@ class Police extends Area {
         this.data.adjacent = [ 'sewers', 'capitol', 'laboratory' ];
         this.data.adjacentAlts = {
             sewers : "church",
-            laboratory : "factory",
+            laboratory : "bank",
         };
     }
     /**
