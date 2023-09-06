@@ -3,7 +3,7 @@
         <div class="d-flex justify-center px-5">
                 <div class="width-100 center-text">
                     <!-- title -->
-                    <div class="title d-inline-block">{{ message }}</div>
+                    <div class="title d-inline-block" v-html="shared.filterText( message )"></div>
 
                     <!-- cards display -->
                     <div>
@@ -88,7 +88,7 @@
              * Resolve this prompt
              */
             decline(){
-                data = { ...this.data, declined : true };
+                let data = { ...this.data, declined : true };
                 this.shared.respond( 'discard-card', data );
             },
         },

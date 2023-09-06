@@ -11,7 +11,8 @@ class Devils extends Faction {
         this.triggers = {
             "onCleanUp" : "resetChaos",
             "onFactionKillsUnit" : "checkKillChaos",
-            "onBeforeSkill" : "shouldChaosInsteadOfSkill",
+            "onAfterSkill" : "shouldTormentAfterSkill",
+            "onAfterTokenReveal" : "handlePrincePlacement",
         };
 
         // data
@@ -57,50 +58,78 @@ class Devils extends Faction {
                 attack: [],
                 influence: 2,
                 seeking : false,
-                cost: 0,
+                noDeploy: true,
                 killed : false,
                 hidden: true,
                 onDeploy: 'deployCheckIfDelighted',
                 onBeforeBattle: 'increaseCombatAttack',
-                //onSkill: 'princeLootCards',
-                //skilled : true,
-                //ready : false,
                 dontUnflipAutomatically: true,
                 selected : false,
                 hitsAssigned : 0,
             }
         };
     }
+    async handlePrincePlacement( token ) {
+        // if we didn't reveal the token, abort
+        if (token.type !== 'stoke') return;
 
+        let destinationAreaName = token.location;
 
-    async shouldChaosInsteadOfSkill( area ){
+        // check for areas with vampires (that aren't this area), if we have none, abort
+        let prince = this.getChampion();
+        if( prince.killed ) return;
 
-        // if we have our second upgrade gain a free chaos
-        if( this.data.upgrade === 2 ){
-            this.raiseChaos();
-            return {};
-        }
-
-        // if we don't have our first upgrade abort
-        if( this.data.upgrade !== 1 ){
-            return {};
-        }
-
-        // prompt player to decide to raise chaos instead of activate the skill ability
+        // prompt player to decide to move lotus dancer
         let response = await this.prompt( 'question', {
-            message: `Gain a chaos instead of resolving the skill ability of the ${area.name}?`,
+            message: `Place the Gleeful Prince in the ${destinationAreaName}?`
+        });
+
+        if ( !response.answer ) return this.message( 'The Gleeful Prince is happy to stay where he is' );
+
+        // st lotus dancer's new area
+        this.placeUnit( prince, destinationAreaName )
+
+        // show results to all players
+        this.game().sound('wiff');
+        this.message( `The Gleeful Prince jaunted into the ${area.name}` );
+
+        await this.game().timedPrompt('units-shifted', {
+            message: `The Gleeful Prince jaunted into the ${area.name}`,
+            units: prince
+        }).catch(error => console.error(error));
+    }
+
+    async shouldTormentAfterSkill( area ){
+        // if we don't have our first upgrade abort
+        if( !this.data.upgrade ) return;
+
+        let countWording = this.data.upgrade === 1 ? "an attack" : "two attacks";
+
+        //
+        let [player, response] = await this.game().promise({
+            players: this.playerId,
+            name: 'discard-card',
+            data : {
+                message: `Discard an action card to make ${countWording} of xA5x in the ${area.name}?`,
+                count: 1,
+                canDecline : true,
+            },
         });
 
         // if we decline, abort
-        if ( !response.answer ){
-            this.message( `The devils declines to raise chaos instead of resolving the ${area.name} ability` );
-            return {};
+        if ( response.declined ){
+            return this.message( `The devils decline to torment the ${area.name}` );
         }
 
-        // if we accept, raise chaos and set the flag to skip the skill
-        this.raiseChaos();
-        this.message(`The devils raise chaos instead of resolving the ${area.name} ability` );
-        return { dontResolveSkill : true };
+        this.discardCards( response.cards );
+
+        let attackValue = this.data.upgrade === 1 ? [5] : [5,5];
+        let output = await this.attack({ area: area, attacks: attackValue });
+
+        if ( output ) {
+            await this.game().timedPrompt('noncombat-attack', {output: [output]})
+                .catch(error => console.error(error));
+        }
     }
 
     checkKillChaos( unit, options ){

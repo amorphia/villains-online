@@ -51,7 +51,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'haveChaos', args : ['pandemonium'] },
-                    { test : 'tokensInAreas', args : [ 3, 'stoke' ] },
+                    { test : 'tokensInAreas', args : [ 2, 'stoke' ] },
                 ],
                 value : 3
             },
