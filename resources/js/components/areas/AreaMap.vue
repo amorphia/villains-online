@@ -37,7 +37,7 @@
             </div>
 
             <!-- battle marker -->
-            <div v-if="area.battle" class="tooltip area-map__battle-marker-container">
+            <div v-if="willBattle" class="tooltip area-map__battle-marker-container">
                 <img
                      @click.right.prevent="() => {
                          $refs.battleTooltip.open();
@@ -336,6 +336,22 @@
         computed : {
             area(){
                 return this.shared.data.areas[this.areaName] ?? this.shared.data.ignoredAreaData[this.areaName];
+            },
+
+            playerCount(){
+                return this.shared.data.playerOrder.length;
+            },
+
+            revealedTokensCount(){
+                let revealedTokens = this.area.tokens.filter(token => token.revealed);
+                return revealedTokens.length;
+            },
+
+            willBattle(){
+                if(this.shared.data.tokenLayaway){
+                    return this.revealedTokensCount >= (this.playerCount - 1);
+                }
+                return this.area.battle;
             },
 
             /**
