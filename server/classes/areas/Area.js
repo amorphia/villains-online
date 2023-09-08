@@ -165,6 +165,9 @@ class Area {
         return this.data.tokens.some( token => token.type === tokenType && token.revealed );
     }
 
+    tokenCount(){
+        return this.data.tokens.length;
+    }
 
     /**
      * Does this area have Kau in it?

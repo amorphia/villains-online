@@ -56,8 +56,15 @@ let obj = {
      * @returns {array}
      */
     areasWithBattleMarkers(){
+        if(this.data.tokenLayaway){
+            return this.areasWithMinimumActivatedTokens();
+        }
         return Object.values( this.areas ).filter( area => area.data.battle );
     },
+
+    areasWithMinimumActivatedTokens(){
+        return Object.values( this.areas ).filter( area => area.tokenCount() >= (this.data.playerOrder.length - 1) );
+    }
 };
 
 module.exports = obj;

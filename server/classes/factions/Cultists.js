@@ -19,6 +19,8 @@ class Cultists extends Faction {
         this.tokens['nothing'] = {
             count: 4,
             data: {
+                cost : 0,
+                influence: 0,
                 description: "This token does nothing except bluff the opponent, discarded when revealed",
                 req : "This token must always be discarded"
             }
@@ -144,9 +146,13 @@ class Cultists extends Faction {
      */
     canActivateNothing(){
         // no, don't even think about it
-        return false;
+        return this.game().data.tokenLayaway;
     }
 
+    activateNothingToken( args ){
+        // just advance the game, easy as pie
+        this.game().advancePlayer();
+    }
 
     /**
      * Generate display text for faction combat modifications

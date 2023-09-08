@@ -103,7 +103,9 @@ let obj = {
         let token = this.objectMap[ tokenId ];
 
         // pay any costs to place this token
-        faction.payCost( faction.data.tokenCost );
+        if( !this.data.tokenLayaway ){
+            faction.payCost( faction.data.tokenCost );
+        }
 
         // set token location
         token.location = areaId;

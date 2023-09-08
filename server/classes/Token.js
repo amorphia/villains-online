@@ -7,7 +7,8 @@ class Token {
     selected; // is this token currently selected (used on the UI side, but initialized here so its reactive out of the box)
     location = null; // area where the token has been placed, null represents the player's reserves
 
-    constructor( faction, name, data ) {
+    constructor( faction, name, data, game ) {
+        data = { ...data }; // shallow copy the token data
         this.owner = faction.owner;
         this.faction = faction.name;
         this.name = name;
@@ -18,6 +19,11 @@ class Token {
         // "march the streets"). So lets initialize the type here matching the token's name, then we can overwrite
         // it later when need be
         this.type = name;
+
+        if( game.data.tokenLayaway && faction.data.tokenCost !== 0 ){
+            data.cost = data.resource ? 0 : data.cost + 1;
+            delete data.resource;
+        }
 
         Object.assign( this, data );
     }

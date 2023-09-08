@@ -49,7 +49,7 @@ let obj = {
     setupTokens( saved ){
         _.forEach( this.tokens, ( value, name ) => {
             for( let i = 0; i < value.count; i++ ) {
-                let token = new Token( this, name, value.data );
+                let token = new Token( this, name, value.data, this.game() );
                 token = this.game().newObject( token, saved );
                 this.data.tokens.push( token );
             }
