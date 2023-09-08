@@ -5,9 +5,9 @@ let obj = {
      *
      * @returns {{upgrade: *, faction: *}|null}
      */
-    collectUpgrades(){
+    collectUpgrades( forcedPoints ){
         // get our highest point value
-        const maxPoints = Math.max( this.data.ap, this.data.pp );
+        const maxPoints = forcedPoints ?? Math.max( this.data.ap, this.data.pp );
 
         // check if we qualify for an upgrade
         let upgrade = this.checkIfWeQualifyForNewUpgrade( maxPoints );

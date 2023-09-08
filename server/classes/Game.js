@@ -129,6 +129,8 @@ class Game {
         gameType : 'optimized', // our default game mode, basic/optimized/anarchy
         expansionCards: true,
         trackData: true,
+        sharedUpgrades: true,
+        tokenLayaway: false,
         cardTracker : {},
         // internals
         rolls : [], // used to track the culminate die rolls made throughout the game

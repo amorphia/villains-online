@@ -64,9 +64,9 @@
 
 
                 <!-- game options -->
-                <div v-if="shared.admin && gameCreator" class="game-setup__options d-flex justify-center my-2">
+                <div v-if="shared.admin && gameCreator" class="game-setup__options d-flex justify-center flex-wrap my-2" style="gap: 1em">
                     <div v-for="(val, option) in options"
-                         class="game-setup__option py-2 px-3"
+                         class="game-setup__option"
                          :class="{ active : val }"
                          @click="options[option] = !options[option]"
                     ><i class="mr-2 game-setup__option-checkbox"
@@ -119,6 +119,8 @@
                     allowBribes : false,
                     expansionCards : true,
                     trackData : true,
+                    sharedUpgrades : true,
+                    tokenLayaway: false,
                 }
             };
         },

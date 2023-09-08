@@ -328,11 +328,21 @@ let obj = {
      */
     async collectUpgrades(){
         let promises = [];
+        let forcedPoints = null;
+
+        // if we are doing shared upgrades, look at the highest point value of every faction and use
+        // that to score upgrades
+        if( this.data.sharedUpgrades ){
+            forcedPoints = 0;
+            Object.values( this.factions ).forEach(faction => {
+                forcedPoints = Math.max( faction.data.ap, faction.data.pp, forcedPoints );
+            });
+        }
 
         // have each faction collect their upgrades, then create an array
         // of the newly acquired upgrades
         let upgrades = Object.values( this.factions )
-            .map( faction => faction.collectUpgrades() )
+            .map( faction => faction.collectUpgrades( forcedPoints ) )
             .filter( item => item );
 
         // if no upgrades were scored, then we are done here
