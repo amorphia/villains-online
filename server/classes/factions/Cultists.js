@@ -16,13 +16,14 @@ class Cultists extends Faction {
         this.data.focusDescription = "Kill many units";
 
         // tokens
-        this.tokens['nothing'] = {
+        this.tokens['ritual'] = {
             count: 4,
             data: {
                 cost : 0,
-                influence: 0,
-                description: "This token does nothing except bluff the opponent, discarded when revealed",
-                req : "This token must always be discarded"
+                influence: 1,
+                type : 'ritual',
+                description: "This token does nothing except produce an influence, discard when another ritual has been revealed here",
+                req : "This must always be discarded is another ritual is face-up here"
             }
         };
         delete this.tokens['battle'];
@@ -144,12 +145,12 @@ class Cultists extends Faction {
      *
      * @returns {boolean}
      */
-    canActivateNothing(){
-        // no, don't even think about it
-        return this.game().data.tokenLayaway;
+    canActivateRitual( token, area ){
+        return area.data.tokens.filter( token => token.type === "ritual" && token.revealed ).length < 2;
+        //return this.game().data.tokenLayaway;
     }
 
-    activateNothingToken( args ){
+    activateRitualToken( args ){
         // just advance the game, easy as pie
         this.game().advancePlayer();
     }
