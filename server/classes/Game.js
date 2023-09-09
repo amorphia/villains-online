@@ -131,6 +131,7 @@ class Game {
         trackData: true,
         sharedUpgrades: true,
         tokenLayaway: false,
+        tokenLayawayCombat: false,
         tokenLayawayEnergyReduction: 1,
         cardTracker : {},
         // internals

@@ -121,6 +121,7 @@
                     trackData : true,
                     sharedUpgrades : true,
                     tokenLayaway: false,
+                    tokenLayawayCombat: false,
                 }
             };
         },
