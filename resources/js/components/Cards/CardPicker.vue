@@ -61,7 +61,9 @@
              */
             source( card ){
                 // if we have an action card
-                if( this.type === 'card' ) return `background-image : url('/images/cards/${card.file}.jpg')`;
+                if( this.type === 'card' ) {
+                    return `background-image : url('/images/cards/${card.file}.jpg')`;
+                }
 
                 // if we have a plan card
                 if( this.type === 'plan' ) return `background-image : url('/images/factions/${this.faction}/plans/${card.num}.jpg')`;

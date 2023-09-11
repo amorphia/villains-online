@@ -130,9 +130,11 @@ class Game {
         expansionCards: true,
         trackData: true,
         sharedUpgrades: true,
+        catchUpCards: true,
         tokenLayaway: false,
-        tokenLayawayCombat: false,
-        tokenLayawayEnergyReduction: 1,
+        ActivatedTokenCombat: false,
+        tokenLayawayLimit: false,
+        tokenLayawayEnergyReduction: 0,
         cardTracker : {},
         // internals
         rolls : [], // used to track the culminate die rolls made throughout the game

@@ -15,6 +15,8 @@ class Faction {
         },
         areas: [],
         retainedAreas: [],
+        tokenLimit: 5,
+        tokenLimitRemaining: 5,
 
         // progress
         ap : 0, // area points

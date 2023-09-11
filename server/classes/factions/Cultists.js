@@ -14,6 +14,7 @@ class Cultists extends Faction {
         this.data.bonusDeploy = { type: 'champion', count : 1 };
         this.data.title = "The Church of Doom";
         this.data.focusDescription = "Kill many units";
+        this.data.tokenLimit = this.data.tokenLimitRemaining = 11;
 
         // tokens
         this.tokens['ritual'] = {

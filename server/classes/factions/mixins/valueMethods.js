@@ -779,6 +779,10 @@ let mixin = {
      */
     rulesPlayed(){
         return _.rulesPlayed( this, this.game().data.areas );
+    },
+
+    totalPoints(){
+        return this.data.ap + this.data.pp;
     }
 };
 

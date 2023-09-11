@@ -348,7 +348,7 @@
             },
 
             willBattle(){
-                if(this.shared.data.tokenLayawayCombat){
+                if(this.shared.data.ActivatedTokenCombat){
                     return this.revealedTokensCount >= (this.playerCount - 1);
                 }
                 return this.area.battle;

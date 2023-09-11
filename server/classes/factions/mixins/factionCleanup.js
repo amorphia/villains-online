@@ -20,6 +20,9 @@ let obj = {
         // reset used skills
         this.data.usedSkills = [];
 
+        // reset token limit
+        this.data.tokenLimitRemaining = this.data.tokenLimit + this.game().data.turn;
+
         // reset token spy
         this.data.tokenSpy = [];
 

@@ -22,7 +22,7 @@ class Token {
 
         if( game.data.tokenLayaway && faction.data.tokenCost !== 0 ){
             data.cost = data.resource ? 0 : data.cost + 1;
-            delete data.resource;
+            if( !game.data.tokenLayawayLimit ) delete data.resource;
         }
 
         Object.assign( this, data );

@@ -57,6 +57,21 @@ class Card {
         return output;
     }
 
+    killedUnitHigherTP( value, output ){
+        let killedHigherTP = false;
+        let factionTP = this.faction.totalPoints();
+
+        if( output.hasKill ){
+            output.hasKill.forEach(unit => {
+                let faction = this.game.factions[unit.faction];
+                let tp = faction.totalPoints();
+                if(tp >= factionTP + value) killedHigherTP = true;
+            });
+        }
+
+        return killedHigherTP;
+    }
+
 }
 
 module.exports = Card;

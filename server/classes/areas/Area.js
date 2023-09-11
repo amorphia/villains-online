@@ -35,6 +35,10 @@ class Area {
         return Server.games[this.gameId];
     }
 
+    owner(){
+        return this.data.owner ? this.game().factions[this.data.owner] : null;
+    }
+
     updateAdjacency( ignored ){
         let adjacent = [];
 

@@ -386,6 +386,10 @@ let setup = {
             card.area = null;
             card.status = null;
 
+            if( this.data.catchUpCards && card.catchUp ){
+                card.file += "-catchup";
+            }
+
             /*
             if(this.data.ignoredAreas.includes( card.target )){
                 card.target = this.targetShifts[card.target][card.shift];

@@ -103,9 +103,10 @@ let obj = {
         let token = this.objectMap[ tokenId ];
 
         // pay any costs to place this token
-        if( !this.data.tokenLayaway ){
-            faction.payCost( faction.data.tokenCost );
-        }
+        this.payForTokenPlacement( faction );
+
+        // reduce token limit
+        faction.tokenLimitRemaining -= 1;
 
         // set token location
         token.location = areaId;
@@ -134,6 +135,17 @@ let obj = {
         this.advancePlayer();
     },
 
+    payForTokenPlacement( faction ){
+        if( this.data.tokenLayaway && !this.data.tokenLayawayLimit ){
+            return;
+        }
+
+        if( this.data.tokenLayawayLimit && faction.data.tokenLimitRemaining > 0){
+            return;
+        }
+
+        faction.payCost( faction.data.tokenCost );
+    },
 
     /**
      * Check if this area now need a combat marker placed in it

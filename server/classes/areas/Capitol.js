@@ -38,6 +38,27 @@ class Capitol extends Area {
 
 
     /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+
+    takeControl( faction ){
+        faction.data.collectsCapitolToken = true;
+    }
+     */
+
+    /**
+     * Handle a faction losing control of this area
+     *
+     * @param faction
+
+    loseControl( faction ){
+        faction.data.collectsCapitolToken = false;
+    }
+     */
+
+
+    /**
      * Resolve this area's skill ability
      *
      * @param faction

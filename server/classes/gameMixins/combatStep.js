@@ -56,7 +56,7 @@ let obj = {
      * @returns {array}
      */
     areasWithBattleMarkers(){
-        if(this.data.tokenLayawayCombat){
+        if(this.data.ActivatedTokenCombat){
             return this.areasWithMinimumActivatedTokens();
         }
         return Object.values( this.areas ).filter( area => area.data.battle );

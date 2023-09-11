@@ -8,8 +8,15 @@ class PublicBacklash extends Card {
      */
     async handle(){
         // make two attacks of 5 in this area
-        await this.faction.nonCombatAttack(5, 2, this.area )
+        let output = await this.faction.nonCombatAttack(5, 2, this.area )
             .catch( error => console.error( error ) );
+
+        if( !this.game.data.catchUpCards ) return;
+
+        if( this.killedUnitHigherTP( 3, output ) ){
+            this.game.sound( 'coin' );
+            this.faction.gainAP( 1 );
+        }
     }
 }
 

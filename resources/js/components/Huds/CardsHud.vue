@@ -4,7 +4,7 @@
             <!-- cards -->
             <div v-for="card in shared.faction.cards.hand"
                  class="cards-hud__card d-inline-block height-100">
-                <img class="cards-hud__card-image height-100" :src="`/images/cards/${card.file}.jpg`">
+                <img class="cards-hud__card-image height-100" :src="image(card)">
             </div>
         </horizontal-scroll>
     </hud-popout>
@@ -21,6 +21,11 @@
                 shared : App.state,
             };
         },
+        methods: {
+            image( card ) {
+                return `/images/cards/${card.file}.jpg`;
+            }
+        }
     }
 </script>
 

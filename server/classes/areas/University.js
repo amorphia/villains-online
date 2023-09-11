@@ -71,7 +71,7 @@ class University extends Area {
 
         // remove skilled from each patsy
         faction.data.units.forEach( unit => {
-            if( unit.type === 'patsy' && unit.skilled ){
+            if( unit.type === 'patsy' && unit.skilled && !unit.prepared ){
                 unit.skilled = false;
             }
         });

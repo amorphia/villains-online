@@ -64,7 +64,7 @@
 
 
                 <!-- game options -->
-                <div v-if="shared.admin && gameCreator" class="game-setup__options d-flex justify-center flex-wrap my-2" style="gap: 1em">
+                <div v-if="shared.admin && gameCreator" class="game-setup__options d-flex justify-center flex-wrap px-7 mt-4 mb-2" style="gap: .5em">
                     <div v-for="(val, option) in options"
                          class="game-setup__option"
                          :class="{ active : val }"
@@ -116,12 +116,14 @@
                 ],
                 // game options
                 options : {
-                    allowBribes : false,
-                    expansionCards : true,
                     trackData : true,
+                    expansionCards : true,
+                    catchUpCards: true,
                     sharedUpgrades : true,
                     tokenLayaway: false,
-                    tokenLayawayCombat: false,
+                    ActivatedTokenCombat: false,
+                    tokenLayawayLimit: false,
+                    allowBribes : false,
                 }
             };
         },
@@ -310,6 +312,11 @@
         position: relative;
         top: 3px;
         margin-right: .5rem;
+    }
+
+    .game-setup__options {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .game-setup__option {
