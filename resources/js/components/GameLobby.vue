@@ -118,12 +118,13 @@
                 options : {
                     trackData : true,
                     expansionCards : true,
-                    catchUpCards: true,
+                    catchUpCards : true,
                     sharedUpgrades : true,
-                    tokenLayaway: false,
-                    ActivatedTokenCombat: false,
-                    tokenLayawayLimit: false,
+                    tokenLayaway : false,
+                    ActivatedTokenCombat : false,
+                    tokenLayawayLimit : false,
                     allowBribes : false,
+                    playtestMode : false,
                 }
             };
         },

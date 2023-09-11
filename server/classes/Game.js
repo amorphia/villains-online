@@ -132,6 +132,7 @@ class Game {
         sharedUpgrades: true,
         catchUpCards: true,
         tokenLayaway: false,
+        playtestMode: false,
         ActivatedTokenCombat: false,
         tokenLayawayLimit: false,
         tokenLayawayEnergyReduction: 0,

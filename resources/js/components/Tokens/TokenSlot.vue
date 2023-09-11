@@ -98,10 +98,12 @@
                 // if this token is empty, or already revealed do nothing
                 if( ! this.token || this.token.revealed || !this.shared.faction.name ) return false;
 
+                let player = this.shared.getPlayer();
 
                 if( this.token.faction === this.shared.faction?.name // if this is our token
                     || this.shared.faction?.tokenSpy.includes( this.token.location ) // or we can tokenSpy the area
                     || this.ministerSpy // or the minister is letting us spy
+                    || ( player?.admin && this.shared.data.playtestMode )
                 ) return true;
 
                 return false;
