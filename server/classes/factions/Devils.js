@@ -11,7 +11,7 @@ class Devils extends Faction {
         this.triggers = {
             "onCleanUp" : "resetChaos",
             "onFactionKillsUnit" : "checkKillChaos",
-            "onAfterSkill" : "shouldTormentAfterSkill",
+            //"onAfterSkill" : "shouldTormentAfterSkill",
             "onAfterTokenReveal" : "handlePrincePlacement",
         };
 
@@ -22,6 +22,7 @@ class Devils extends Faction {
         this.data.chaos = 0; // tracks how may kills we have that aren't from attacking with our units
         this.data.chaosLevel = '';
         this.data.cardLimit = 2;
+        this.data.princeCombatBonus = 2;
 
         // how much chaos we need to achieve each chaos level
         this.data.chaosLevels = {
@@ -62,6 +63,7 @@ class Devils extends Faction {
                 killed : false,
                 hidden: true,
                 onDeploy: 'deployCheckIfDelighted',
+                onPlace: 'deployCheckIfDelighted',
                 onBeforeBattle: 'increaseCombatAttack',
                 dontUnflipAutomatically: true,
                 selected : false,
@@ -169,7 +171,8 @@ class Devils extends Faction {
     }
 
     increaseCombatAttack( combat ){
-        combat.data.attackBonus += 2;
+        let upgradeBonus = this.data.upgrade >= 2 ? 1 : 0;
+        combat.data.attackBonus += this.data.princeCombatBonus + upgradeBonus;
     }
 
     /**
@@ -178,7 +181,7 @@ class Devils extends Faction {
      * @param event
      */
     deployCheckIfDelighted( event ) {
-        if(event.unit.flipped || !this.hasChaosLevel("pandemonium")) return;
+        if(event.unit.flipped || !this.hasChaosLevel("pandemonium") || !this.data.upgrade) return;
         this.becomesDelighted( event.unit );
     }
 
