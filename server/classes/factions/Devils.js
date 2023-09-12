@@ -162,7 +162,7 @@ class Devils extends Faction {
 
         // apply pandemonium
         if( this.data.chaos === this.data.chaosLevels.pandemonium ){
-            this.becomesDelighted();
+            if( this.data.upgrade ) this.becomesDelighted();
             this.data.chaosLevel = "pandemonium";
             levelText = ": <span class='highlight'>PANDEMONIUM</span>";
         }
