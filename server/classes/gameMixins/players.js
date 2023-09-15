@@ -501,7 +501,7 @@ let mixin = {
                 await this.updatePoints();
                 break;
             case 'pp':
-                pointsTypeText = 'Area Points';
+                pointsTypeText = 'Plan Points';
                 this.factions[data.faction].gainPP( data.val );
                 await this.updatePoints();
                 break;

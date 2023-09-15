@@ -15,7 +15,7 @@ class PublicBacklash extends Card {
 
         if( this.killedUnitHigherTP( 3, output ) ){
             this.game.sound( 'coin' );
-            this.faction.gainAP( 1 );
+            this.faction.gainPP( 1 );
         }
     }
 }

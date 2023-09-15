@@ -685,7 +685,7 @@ let obj = [
         shift : 'left',
         type : 'rule',
         scope : 'global',
-        description : 'Your units gain +1 to their attack rolls'
+        description : 'Your units gain +2 to their attack rolls'
     },
     {
         class : 'total-war',
@@ -696,7 +696,7 @@ let obj = [
         shift : 'left',
         type : 'rule',
         scope : 'global',
-        description : 'Your units gain +1 to their attack rolls'
+        description : 'Your units gain +2 to their attack rolls'
     },
     {
         class : 'trapped-like-rats',
