@@ -350,7 +350,6 @@
              * Resolve our token placement
              */
             placeGhost(){
-                console.log("GOT HERE", this.ghost.place, this.ghost.id);
                 this.shared.respond( 'place-token', 'ghost', this.ghost.place, this.ghost.id );
                 this.reset();
             },

@@ -52,11 +52,9 @@ let helpers = {
         if( area.data ) area = area.data;
 
         let defenseBonus = 0;
-        console.log("defenseBonus initial", defenseBonus);
 
         // defense bonuses only apply to attacks from units
         if( !options.unit ){
-            console.log("defenseBonus only applies to attacks from units", defenseBonus);
             return defenseBonus;
         }
 
@@ -64,7 +62,6 @@ let helpers = {
         if( defendingFaction.defenseBonus ){
             defenseBonus += defendingFaction.defenseBonus;
         }
-        console.log("after defendingFaction.defenseBonus", defenseBonus);
 
         // if the defending player has a biohazard token they gain +2 defense
         //if( this.hasBiohazardInArea( defendingFaction, area ) ) defenseBonus += 2;
@@ -72,13 +69,10 @@ let helpers = {
         // Ol' Zeke don't take kindly to outsiders
         let soloDefenseBonus = this.soloDefenseBonus( defendingFaction, area );
         if( soloDefenseBonus ) defenseBonus += soloDefenseBonus;
-        console.log("after defender.soloDefenseBonus", defenseBonus);
 
         // if the defending player has a special faction defense bonus apply it
         if( defendingFaction.factionDefenseBonus ) defenseBonus += defendingFaction.factionDefenseBonus;
-        console.log("after defendingFaction.factionDefenseBonus", defenseBonus);
 
-        console.log("defenseBonus final", defenseBonus);
         return defenseBonus;
     },
 

@@ -296,7 +296,7 @@ let mixin = {
      */
     targetArea(){
         let areaName = this.data.cards.target[0].target;
-        return this.game().areas[areaName];
+        return this.game().areas[areaName] ?? { name: areaName };
     },
 
     /**

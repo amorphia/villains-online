@@ -11,7 +11,7 @@ const test = function exterminateTarget( debug, faction ){
 
     if( debug ) console.log(
         'exterminateTarget ---',
-        'targetArea:', targetArea.name,
+        'targetArea:', targetArea?.name,
         'result:', result
     );
 
