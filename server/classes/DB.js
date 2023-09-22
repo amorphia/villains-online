@@ -95,6 +95,7 @@ class DB {
             incomplete : incomplete,
             turns : game.data.turn,
             scores : scores,
+            basic : game.data.gameType === 'basic',
             win_type : this.getWinType( scores ),
             winner : scores[0],
             cards: game.data.cardTracker,
