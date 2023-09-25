@@ -34,6 +34,7 @@ class Game {
         'sendBribe',
         'setPoints',
         'manualCardDraw',
+        'mulliganCards',
         'initPassAction',
         'initLockedAction',
         'initSkillAction',

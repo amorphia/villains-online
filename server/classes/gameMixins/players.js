@@ -530,6 +530,22 @@ let mixin = {
         this.message({ message: `manually drew a card for ${data.faction}`, class: 'warning', player : player });
         await this.pushGameDataToPlayers();
     },
+
+    /**
+     * Mulligan a player's cards
+     *
+     * @param player
+     * @param data
+     */
+    async mulliganCards( player, data ){
+        console.log("mulligan cards data", data);
+        let faction = this.factions[data.faction];
+        let cardIDs = faction.data.cards.hand.map( card => card.id );
+        faction.discardCards( cardIDs );
+        faction.drawCards( cardIDs.length );
+        this.message({ message: `mulligans their hand`, class: 'warning', player : player });
+        await this.pushGameDataToPlayers();
+    },
 };
 
 module.exports = mixin;

@@ -64,6 +64,10 @@
 
             <!-- buttons -->
             <div class="width-100 d-flex justify-center mt-4">
+                <button v-if="mode === 'cards' && canMulligan"
+                        class="button"
+                        @click="mulligan">MULLIGAN CARDS</button>
+
                 <button v-if="mode === 'cards'"
                         class="button button-empty"
                         @click="mode = 'plans'">VIEW PLANS</button>
@@ -117,6 +121,12 @@
                 this.shared.socketEmit( 'chooseTargetPlan', this.plan, this.target );
             },
 
+            mulligan(){
+                App.event.emit( 'sound', 'ui' );
+                this.shared.socketEmit( 'mulliganCards', {
+                    faction: this.shared.faction.name,
+                });
+            },
 
             /**
              * Handle clicking a card
@@ -147,6 +157,10 @@
         },
 
         computed : {
+
+            canMulligan(){
+                return !this.shared.faction.cards.hand.some( card => this.shared.data.areas[card.target] );
+            },
 
             /**
              * Get our save button text

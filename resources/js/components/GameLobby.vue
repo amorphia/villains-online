@@ -64,10 +64,10 @@
 
 
                 <!-- game options -->
-                <div v-if="shared.admin && gameCreator" class="game-setup__options d-flex justify-center flex-wrap px-7 mt-4 mb-2" style="gap: .5em">
+                <div v-if="canOption" class="game-setup__options d-flex justify-center flex-wrap px-7 mt-4 mb-2" style="gap: .5em">
                     <div v-for="(val, option) in options"
                          class="game-setup__option"
-                         :class="{ active : val }"
+                         :class="{ active : val, 'game-setup__option--disabled' : !canOption }"
                          @click="options[option] = !options[option]"
                     ><i class="mr-2 game-setup__option-checkbox"
                         :class="val ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>{{ alphaCaps( option ) }}</div>
@@ -121,7 +121,7 @@
                     catchUpCards : true,
                     sharedUpgrades : true,
                     tokenLayaway : false,
-                    ActivatedTokenCombat : false,
+                    //ActivatedTokenCombat : false,
                     tokenLayawayLimit : false,
                     allowBribes : false,
                     playtestMode : false,
@@ -135,6 +135,9 @@
         },
 
         computed : {
+            canOption(){
+                return this.shared.admin && this.gameCreator;
+            },
 
             gameCreator(){
                 return this.shared.game.creator === this.shared.id
@@ -322,11 +325,18 @@
 
     .game-setup__option {
         font-size: .8em;
+        cursor: pointer;
     }
 
     .game-setup__type-option {
         cursor: pointer;
         margin: .3em;
+    }
+
+    .game-setup__option--disabled {
+        cursor: default;
+        pointer-events: none;
+        opacity: .5;
     }
 
     .game-setup__type-option.active, .game-setup__option.active {
