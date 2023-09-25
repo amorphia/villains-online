@@ -80,28 +80,35 @@ let obj = {
         let enemyTypes = this.enemyUnitTypesInArea( options.area, { basic : true, canBeReplaced: true } );
 
         let validTypes = _.intersection( optionsTypes, enemyTypes );
+        console.log("validTypes", validTypes);
 
         // the types we have in our reserves
         let reservesTypes = this.unitTypesInReserves( true );
+        console.log("reservesTypes", reservesTypes);
 
         // types we have in play
         let playTypes = this.getReplaceableTypesInPlay( validTypes );
+        console.log("playTypes", playTypes);
 
         // combine our types and the valid types to produce a master list of potential types
         let ourTypes = new Set([ ...reservesTypes, ...playTypes ]);
         ourTypes = [ ...ourTypes ];
+        console.log("ourTypes", ourTypes);
 
         // whatever types are on both arrays are hypnotizable
-        return _.intersection( ourTypes, validTypes );
+        let finalTypes = _.intersection( ourTypes, validTypes );
+        console.log("finalTypes", finalTypes);
+
+        return finalTypes;
     },
 
     getReplaceableTypesInPlay( validTypes ){
         let types = new Set();
 
-        let trappedAreas = this.game().trappedAreas();
+        //let trappedAreas = this.game().trappedAreas();
 
         this.data.units.forEach( unit => {
-            if( this.canThisUnitBeAReplacement( unit, validTypes, trappedAreas ) ){
+            if( this.canThisUnitBeAReplacement( unit, validTypes ) ){
                 types.add( unit.type );
             }
         });
@@ -109,15 +116,12 @@ let obj = {
         return [ ...types ];
     },
 
-    canThisUnitBeAReplacement( unit, validTypes, trappedAreas ){
+    canThisUnitBeAReplacement( unit, validTypes ){
         // a unit can't be re-deployed if it isn't already in a play, duh
         if( !_.unitInPlay( unit ) ) return false;
 
-        // a webbed unit is stuck
-        if( unit.webbed ) return false;
-
         // if our deploy is limited to a certain unit type only include areas with those
-        if( validTypes.includes( unit.type ) ) return false;
+        if( !validTypes.includes( unit.type ) ) return false;
 
         // if we made it this far, then yes! We can redeploy this unit
         return true;
@@ -129,11 +133,10 @@ let obj = {
      * @returns {Unit}
      */
     async getReplacementUnit( enemyUnit, options ){
-        let trappedAreas = this.game().trappedAreas();
-
         // use the enemy unit to determine type we can place
-        let areasWithType = this.areasWithUnits({ type: enemyUnit.type, notWebbed: true })
-            .filter( areaName  => !trappedAreas.includes( areaName ) );
+        let areasWithType = this.areasWithUnits({ type: enemyUnit.type, notWebbed: true });
+
+        console.log("areasWithType", areasWithType);
 
         // prompt player for global place
         let response = await this.prompt('global-place', {
