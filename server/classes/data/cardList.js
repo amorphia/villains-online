@@ -872,7 +872,7 @@ let obj = [
         name : "Cloak and Dagger",
         expansion: true,
         cost : 0,
-        target : 'sewers',
+        target : 'police',
         shift : 'left',
         type : 'rule',
         scope : 'global',
