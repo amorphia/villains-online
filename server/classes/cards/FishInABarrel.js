@@ -13,7 +13,7 @@ class FishInABarrel extends Card {
 
         if( !this.game.data.catchUpCards ) return;
 
-        if( this.killedUnitHigherTP( 2, output ) ){
+        if( this.killedUnitHigherTP( 3, output ) ){
             this.game.sound( 'coin' );
             this.faction.gainAP( 1 );
         }
