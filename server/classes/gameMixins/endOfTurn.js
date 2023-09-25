@@ -158,7 +158,7 @@ let obj = {
         if( owner ) target.owners.push( owner );
 
         if((area === stealsTarget?.area) && (owner !== stealsTarget?.faction.name)){
-            target.targetStolen = stealsTarget?.faction.name;
+            target.stolen = stealsTarget?.faction.name;
             stealsTarget?.faction.gainAP( 1 );
             this.message({ faction: stealsTarget?.faction, message: "Ol' Zeke finds some valuables in the " + area });
         }
