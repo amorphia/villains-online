@@ -147,7 +147,9 @@ class Cultists extends Faction {
      * @returns {boolean}
      */
     canActivateRitual( token, area ){
-        return area.data.tokens.filter( token => token.revealed && token.owner === this.name ).length < 2;
+        let revealedTokens = area.data.tokens.filter( token => token.revealed && token.faction === this.name );
+        console.log('revealedTokens:', revealedTokens);
+        return revealedTokens.length <= 1;
         //return this.game().data.tokenLayaway;
     }
 
