@@ -7,9 +7,9 @@ class University extends Area {
 
         this.data.control = "Your patsies are skilled";
         this.data.skill = "Look at each face-down action token in the area of your choice.";
-        this.data.adjacent = [ 'factory', 'capitol', 'subway' ];
+        this.data.adjacent = [ 'bank', 'capitol', 'subway' ];
         this.data.adjacentAlts = {
-            factory : "bank",
+            bank : "factory",
             subway : "church",
         };
     }
