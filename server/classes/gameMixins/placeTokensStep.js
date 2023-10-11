@@ -154,10 +154,11 @@ let obj = {
      */
     checkForCombatMarker( area ){
         // for three player games we want a min of 4 tokens, otherwise == to the number of players
-        let minTokens = this.data.playerOrder.length === 3 ? 4 : this.data.playerOrder.length;
+        let playerCount = Object.keys( this.players ).length;
+        let minTokens = playerCount === 3 ? 4 : playerCount;
 
         // does this area have tokens equal to or greater than the player count? If so, battle marker!
-        if( area.data.tokens.length >= Object.keys( this.players ).length ){
+        if( area.data.tokens.length >= minTokens ){
             area.data.battle = true;
         }
     },
