@@ -36,6 +36,8 @@ let setup = {
             this.generateGame();
             this.handleFactionSetupTriggers();
             this.resolveStartOfTurnStep();
+
+            console.log("finish generate game data", this.data);
         }
     },
 
@@ -262,6 +264,8 @@ let setup = {
      * @param saved // optional
      */
     generateGame( saved = null ){
+        console.log("start of generate game data", this.data);
+
         this.buildActionDeck( saved );
         this.buildFactions( saved );
         this.buildAreas( saved );
