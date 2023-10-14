@@ -178,8 +178,12 @@ let setup = {
         // if we aren't currenly open then there must be a mistake, abort!
         if( this.data.state !== 'open' ) return;
 
+        console.log("passed options", options);
+
         // set game options
         Object.assign( this.data, options );
+
+        console.log("post merge options", options);
 
         // play to 12 points in basic mode
         if(this.data.gameType === "basic"){
