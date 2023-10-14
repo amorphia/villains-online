@@ -299,6 +299,9 @@ window.App.state = {
      * @returns {boolean}
      */
     canSeeTarget( faction ){
+        if(this.getPlayer()?.admin && this.data.playtestMode){
+            return true;
+        }
 
         // if this is us, then sure
         if( this.faction.name === faction.name ){

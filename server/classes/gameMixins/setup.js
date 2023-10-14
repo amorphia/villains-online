@@ -37,7 +37,7 @@ let setup = {
             this.handleFactionSetupTriggers();
             this.resolveStartOfTurnStep();
 
-            console.log("finish generate game data", this.data);
+            console.log("finish generate expansionCards", this.data.expansionCards);
         }
     },
 
@@ -264,7 +264,7 @@ let setup = {
      * @param saved // optional
      */
     generateGame( saved = null ){
-        console.log("start of generate game data", this.data);
+        console.log("start of generate game expansionCards", this.data.expansionCards);
 
         this.buildActionDeck( saved );
         this.buildFactions( saved );
