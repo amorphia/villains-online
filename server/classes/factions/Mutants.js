@@ -27,7 +27,7 @@ class Mutants extends Faction {
                 influence: 1,
                 resource: 1,
                 cost : 0,
-                description: "A player of your choice sacrifices a patsy in this area (you may choose yourself), if they do place a unit from your reserves in this area.",
+                description: "An opponent of your choice sacrifices a patsy in this area (if able), if they do you may deploy a unit to this area without paying its unit cost.",
                 req : "this token must be discarded if no player can sacrifice a patsy here"
             }
         };
@@ -36,7 +36,7 @@ class Mutants extends Faction {
         this.units['goon'].count = 6;
         this.units['mole'].count = 6;
         this.units['talent'].count = 4;
-        this.units['patsy'].count = 6;
+        this.units['patsy'].count = 5;
 
         this.units['champion'] = {
             count: 4,
@@ -69,7 +69,7 @@ class Mutants extends Faction {
     }
 
     onOoozeWounded( unit ){
-        unit.influence = 2;
+        //unit.influence = 2;
     }
 
     /**
@@ -131,7 +131,7 @@ class Mutants extends Faction {
      */
     canActivateBiomorph( token, area ) {
         // are there any patsies here?
-        return _.factionsWithUnitsInArea( this.game().data.factions, area, { type : 'patsy' } ).length;
+        return _.factionsWithUnitsInArea( this.game().data.factions, area, { type : 'patsy', exclude : [ this.name ] } ).length;
     }
 
 
@@ -162,30 +162,20 @@ class Mutants extends Faction {
         // kill the chosen unit
         await this.game().killUnit( unit, this );
 
-        const unitTypesInReserves = this.unitTypesInReserves();
+        let options = {
+            area: args.area.name,
+            faction: this,
+            player: this.playerId,
+            free: true,
+            deployLimit: 1,
+        };
 
-        if( !unitTypesInReserves.length ){
-            this.message(`No units in reserves to place`, { class : 'warning' } );
-            return;
+        // deploy the selected unit
+        let output = await this.deploy( options );
+
+        if ( output?.declined ){
+            this.message( `declines to deploy a unit to the ${args.area.name}` );
         }
-
-        // prompt player for global place
-        response = await this.prompt('global-place', {
-            count : 1,
-            area : args.area.name,
-            fromAreas: [],
-            unitTypes: unitTypesInReserves,
-            required: true,
-            message: `Choose a unit from your reserves to place in the ${args.area.name}`,
-        });
-
-        let ourUnit = this.game().objectMap[ response.units[0] ];
-        await this.placeUnit( ourUnit, args.area.name );
-
-        await this.game().timedPrompt('units-shifted', {
-            message: `A Unit was biomorphed`,
-            units: [ourUnit],
-        });
 
         this.game().advancePlayer();
     }
@@ -208,7 +198,7 @@ class Mutants extends Faction {
      */
     async getBiomorphTargetFaction( args ){
         // get the players with patsies in the area
-        let factions = _.factionsWithUnitsInArea( this.game().data.factions, args.area, { type : 'patsy' } );
+        let factions = _.factionsWithUnitsInArea( this.game().data.factions, args.area, { type : 'patsy', exclude : [ this.name ] } );
 
         // abort if we have no options
         if( !factions.length ){
@@ -225,7 +215,7 @@ class Mutants extends Faction {
         let response = await this.prompt( 'choose-victim', {
             areas : [args.area.name],
             faction: this.name,
-            allowSelf : true,
+            allowSelf : false,
             message: 'Choose a player to sacrifice a patsy',
             targetFactions : factions,
         });
@@ -244,23 +234,6 @@ class Mutants extends Faction {
      */
     factionCombatMods( mods, area ){
 
-        // defense mod from biohazard token
-        if( this.hasBiohazardInArea( area ) ){
-            let existingMod = mods.find( mod => mod.type === 'defenseBonus' );
-            if( existingMod ){
-                existingMod.val += 2;
-                existingMod.text = `Enemies suffer -${existingMod.val} to their attack rolls`
-            } else {
-                mods.push( { type : 'defenseBonus', text : `Enemies suffer -2 to their attack rolls`, val : 2 });
-            }
-        }
-
-        // mother ooze heal / deploy
-        if( this.data.units.find( unit => _.unitInArea( unit, area, { type : 'champion' } ) ) ){
-            mods.push( { type : 'motherOoze', text : `Wounded Mother Ooozes heal and spawn new units at the end of the turn` });
-        }
-
-        return mods;
     }
 }
 
