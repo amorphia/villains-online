@@ -26,6 +26,12 @@ class Ghosts extends Faction {
             props : ['attack', 'influence']
         };
 
+        this.capturedRewards = [
+            { ap : 1, maxEnergy : 1, cardDraw : 1 },
+            { ap : 2 },
+            { ap : 2 },
+        ];
+
         this.units['mad-king'] = {
             count: 1,
             data: {
@@ -43,6 +49,7 @@ class Ghosts extends Faction {
                 blockEnemyTokenInfluence: true,
                 hitsAssigned: 0,
                 onUnflip: 'placeHerald',
+                hidden: false,
                 ghost : true,
                 description: "Enemy tokens don't produce xIx in this area, Rule: When revealed place your herald in this or an adjacent area"
             }
@@ -80,6 +87,7 @@ class Ghosts extends Faction {
                 killed: false,
                 flipped: false,
                 selected: false,
+                hidden: false,
                 onUnflip: "bansheeWail",
                 hitsAssigned: 0,
                 ghost : true,
@@ -102,6 +110,7 @@ class Ghosts extends Faction {
                 killed: false,
                 flipped: false,
                 selected: false,
+                hidden: false,
                 onUnflip: "scareUnits",
                 hitsAssigned: 0,
                 ghost : true,
