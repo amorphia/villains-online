@@ -38,7 +38,7 @@ class SlipInTheBack extends Card {
         return this.faction.data.units.some( unit => unit.skilled === true // do we have a talent
             && !unit.noDeploy // that isn't prevented from being deployed
             && !unit.killed // and isn't killed?
-            && (!destinationHasKau || unit.type !== 'champion') // and isn't being blocked by Kau
+            && (!destinationHasKau || !_.isChampion( unit )) // and isn't being blocked by Kau
             && !trappedAreas.includes(unit.location) // and isn't trapped
         );
     }

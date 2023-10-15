@@ -34,7 +34,7 @@
 
         mounted(){
             // get our xavier unit
-            this.xavier = this.shared.faction.units.find( unit => unit.type === "champion" );
+            this.xavier = this.shared.faction.units.find( unit => _.isChampion( unit ) );
         },
 
         methods : {

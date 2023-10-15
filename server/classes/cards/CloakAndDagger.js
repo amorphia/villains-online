@@ -6,7 +6,7 @@ class CloakAndDagger extends Card {
      * Resolve this card ability
      */
     handle(){
-        let champions = this.faction.data.units.filter( unit => unit.type === "champion" );
+        let champions = this.faction.data.units.filter( unit => _.isChampion( unit ) );
 
         champions.forEach( unit => {
            if( unit.hidden ){
@@ -19,7 +19,7 @@ class CloakAndDagger extends Card {
     }
 
     clear( faction ){
-        let champions = faction.data.units.filter( unit => unit.type === "champion" );
+        let champions = faction.data.units.filter( unit => _.isChampion( unit ) );
 
         champions.forEach( unit => {
             if( unit.noClearCloakAndDagger ){

@@ -32,8 +32,8 @@ let helpers = {
             && ( !options.type || unit.type === options.type )
             && ( !options.typeIn || options.typeIn.includes(unit.type) )
             && ( !options.notType || unit.type !== options.notType )
-            && ( !options.notChampion || unit.type !== 'champion' && !unit.isChampion )
-            && ( !options.isChampion || unit.type === 'champion' || unit.isChampion )
+            && ( !options.notChampion || !this.isChampion( unit ) )
+            && ( !options.isChampion || this.isChampion( unit ) )
             && ( !options.types || options.types.includes( unit.type ) )
             && ( !options.hidden || unit.hidden )
             && ( !options.canCombat || (!unit.hidden || ( unit.attack.length && !unit.webbed ) ) )
@@ -86,6 +86,9 @@ let helpers = {
         return this.isValidUnit( unit, options );
     },
 
+    isChampion( unit ){
+        return unit.type === "champion" || unit.isChampion;
+    },
 
     /**
      * Returns the units the given faction has in the given area

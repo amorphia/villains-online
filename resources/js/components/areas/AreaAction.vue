@@ -68,7 +68,7 @@
              */
             xavier(){
                 if( this.shared.faction.name !== 'society' ) return;
-                return this.shared.faction.units.find( unit => unit.type === 'champion' && unit.location === this.area.name );
+                return this.shared.faction.units.find( unit => _.isChampion( unit ) && unit.location === this.area.name );
             },
 
 

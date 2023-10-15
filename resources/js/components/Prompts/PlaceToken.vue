@@ -132,7 +132,7 @@
              */
             xavier(){
                 if( this.shared.faction.name !== 'society' ) return false;
-                return this.shared.faction.units.find( unit => unit.type === 'champion' );
+                return this.shared.faction.units.find( unit => _.isChampion( unit ) );
             },
 
 
