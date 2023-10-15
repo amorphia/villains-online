@@ -10,8 +10,8 @@ class Guerrillas extends Faction {
         // triggers
         this.triggers = {
             "onCleanUp" : "resetAmbushUsedCount",
-            "onMoveAll" : "checkForTraps",
-            "onDeployAll" : "checkForTraps",
+            //"onMoveAll" : "checkForTraps",
+            //"onDeployAll" : "checkForTraps",
         };
 
 
@@ -66,19 +66,19 @@ class Guerrillas extends Faction {
                 name: "Red Viper",
                 type: 'champion',
                 basic: false,
-                attack: [6, 6],
-                warAttack: [6, 6],
+                attack: [5, 5],
+                warAttack: [5, 5],
                 peaceAttack: [],
                 influence: 0,
                 warInfluence: 0,
-                peaceInfluence: 2,
+                peaceInfluence: 3,
                 cost: 0,
                 killed: false,
                 selected: false,
                 hitsAssigned: 0,
                 flipped: false,
                 onDeploy: 'viperDeploy',
-                onMove: 'viperBoobyTrap'
+                //onMove: 'viperBoobyTrap'
             }
         };
     }
@@ -235,7 +235,7 @@ class Guerrillas extends Faction {
         await this.chooseViperSide();
 
         // handle bring units trigger
-        await this.viperBoobyTrap( event );
+        //await this.viperBoobyTrap( event );
     }
 
     viperBoobyTrap( event ){
