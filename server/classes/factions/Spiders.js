@@ -65,10 +65,9 @@ class Spiders extends Faction {
                 cost: 0,
                 noDeploy: true,
                 influence: 0,
-                attack: [4],
+                attack: [5],
                 deadly : true,
                 killed: false,
-                firstStrike: true,
                 selected: false,
                 hitsAssigned: 0,
             }
@@ -94,6 +93,19 @@ class Spiders extends Faction {
                 hitsAssigned: 0,
             }
         };
+    }
+
+    /**
+     * Sort this faction to the front of combat order
+     *
+     * @param combatFactions
+     */
+    battleOrderSort( combatFactions ) {
+        combatFactions.sort( (a, b) => {
+            if ( a.name === this.name ) return -1;
+            if ( b.name === this.name ) return 1;
+            return a.order - b.order
+        });
     }
 
     /**
