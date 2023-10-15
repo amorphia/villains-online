@@ -136,11 +136,11 @@ let obj = {
     },
 
     payForTokenPlacement( faction ){
-        if( this.data.tokenLayaway && !this.data.tokenLayawayLimit ){
+        if( this.data.options?.tokenLayaway && !this.data.options?.tokenLayawayLimit ){
             return;
         }
 
-        if( this.data.tokenLayawayLimit && faction.data.tokenLimitRemaining > 0){
+        if( this.data.options?.tokenLayawayLimit && faction.data.tokenLimitRemaining > 0){
             return;
         }
 

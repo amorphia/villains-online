@@ -36,8 +36,6 @@ let setup = {
             this.generateGame();
             this.handleFactionSetupTriggers();
             this.resolveStartOfTurnStep();
-
-            console.log("finish generate expansionCards", this.data.expansionCards);
         }
     },
 
@@ -180,12 +178,8 @@ let setup = {
         // if we aren't currenly open then there must be a mistake, abort!
         if( this.data.state !== 'open' ) return;
 
-        console.log("passed options", options);
-
         // set game options
         Object.assign( this.data, options );
-
-        console.log("post merge options", options);
 
         // play to 12 points in basic mode
         if(this.data.gameType === "basic"){
@@ -264,8 +258,6 @@ let setup = {
      * @param saved // optional
      */
     generateGame( saved = null ){
-        console.log("start of generate game expansionCards", this.data.expansionCards);
-
         this.buildActionDeck( saved );
         this.buildFactions( saved );
         this.buildAreas( saved );
@@ -385,7 +377,7 @@ let setup = {
         // Create our card objects deck
         let cards = _.cloneDeep( require('../data/cardList') );
         cards.forEach( card => {
-            let includeExpansionCards = saved?.data?.expansionCards ?? this.data.expansionCards;
+            let includeExpansionCards = saved?.data?.options?.expansionCards ?? this.data.options?.expansionCards;
 
             // filter our expansion cards if not playing with them
             if(card.expansion && !includeExpansionCards) return;
@@ -394,7 +386,7 @@ let setup = {
             card.area = null;
             card.status = null;
 
-            if( this.data.catchUpCards && card.catchUp ){
+            if( this.data.options?.catchUpCards && card.catchUp ){
                 card.file += "-catchup";
             }
 

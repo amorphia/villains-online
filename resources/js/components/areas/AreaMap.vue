@@ -348,7 +348,7 @@
             },
 
             willBattle(){
-                if(this.shared.data.ActivatedTokenCombat){
+                if(this.shared.data.options?.ActivatedTokenCombat){
                     return this.revealedTokensCount >= (this.playerCount - 1);
                 }
                 return this.area.battle;

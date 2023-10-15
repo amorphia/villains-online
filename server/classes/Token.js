@@ -20,9 +20,9 @@ class Token {
         // it later when need be
         this.type = name;
 
-        if( game.data.tokenLayaway && faction.data.tokenCost !== 0 ){
+        if( game.data.options?.tokenLayaway && faction.data.tokenCost !== 0 ){
             data.cost = data.resource ? 0 : data.cost + 1;
-            if( !game.data.tokenLayawayLimit ) delete data.resource;
+            if( !game.data.options?.tokenLayawayLimit ) delete data.resource;
         }
 
         Object.assign( this, data );

@@ -332,7 +332,7 @@ let obj = {
 
         // if we are doing shared upgrades, look at the highest point value of every faction and use
         // that to score upgrades
-        if( this.data.sharedUpgrades ){
+        if( this.data.options?.sharedUpgrades ){
             forcedPoints = 0;
             Object.values( this.factions ).forEach(faction => {
                 forcedPoints = Math.max( faction.data.ap, faction.data.pp, forcedPoints );

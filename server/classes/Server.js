@@ -47,6 +47,9 @@ class Server {
             // set game type
             socket.on( 'setGameType', (gameId, type) => this.setGameType( socket, gameId, type ) );
 
+            // set game options
+            socket.on( 'setOptions', (gameId, options) => this.setOptions( socket, gameId, options ) );
+
             // load last game
             socket.on( 'loadGame', game => { this.loadGame( game ) } );
 
@@ -309,9 +312,25 @@ class Server {
 
         if( game.isOpen() ) {
             game.data.gameType = type;
+
+            if(type === "basic"){
+                game.data.options.expansionCards = false;
+            }
+
             this.io.to( 'lobby' ).emit( 'openGame', game.data );
         }
     }
+
+
+    setOptions( socket, gameId, options ){
+        let game = this.games[gameId];
+
+        if( game.isOpen() ) {
+            game.data.options = options;
+            this.io.to( 'lobby' ).emit( 'openGame', game.data );
+        }
+    }
+
 
     /**
      * Play a sound to either a room or a player

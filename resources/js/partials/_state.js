@@ -299,7 +299,7 @@ window.App.state = {
      * @returns {boolean}
      */
     canSeeTarget( faction ){
-        if(this.getPlayer()?.admin && this.data.playtestMode){
+        if(this.getPlayer()?.admin && this.data.options?.playtestMode){
             return true;
         }
 

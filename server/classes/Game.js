@@ -128,14 +128,16 @@ class Game {
         maxPP :13, // how many Plan Points a player needs to win
         upgradePoints : [ 4, 8 ], // how many points (on a single track) do players need to unlock their upgrades
         gameType : 'optimized', // our default game mode, basic/optimized/anarchy
-        expansionCards: true,
-        trackData: true,
-        sharedUpgrades: true,
-        catchUpCards: true,
-        tokenLayaway: false,
-        playtestMode: false,
-        ActivatedTokenCombat: false,
-        tokenLayawayLimit: false,
+        options : {
+            trackData: true,
+            sharedUpgrades: true,
+            catchUpCards: true,
+            expansionCards: false,
+            playtestMode: false,
+            tokenLayaway: false,
+            ActivatedTokenCombat: false,
+            tokenLayawayLimit: false,
+        },
         tokenLayawayEnergyReduction: 0,
         cardTracker : {},
         // internals
@@ -317,6 +319,9 @@ class Game {
         let game = Server.games[gameId];
         if( game ){
             let player = Server.getPlayer( socket );
+            if(!game[event]){
+                console.log("Missing game event: " + event);
+            }
             game[event]( player, ...args );
         }
     }

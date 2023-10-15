@@ -6,7 +6,7 @@ let obj = {
     resetEnergy(){
         this.data.energy = this.data.maxEnergy;
 
-        if(this.game().data.tokenLayaway  && this.data.tokenCost !== 0){
+        if(this.game().data.options?.tokenLayaway  && this.data.tokenCost !== 0){
             this.data.energy -= this.game().data.tokenLayawayEnergyReduction;
         }
     },

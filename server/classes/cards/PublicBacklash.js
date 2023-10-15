@@ -11,7 +11,7 @@ class PublicBacklash extends Card {
         let output = await this.faction.nonCombatAttack(5, 2, this.area )
             .catch( error => console.error( error ) );
 
-        if( !this.game.data.catchUpCards ) return;
+        if( !this.game.data.options?.catchUpCards ) return;
 
         if( this.killedUnitHigherTP( 3, output ) ){
             this.game.sound( 'coin' );

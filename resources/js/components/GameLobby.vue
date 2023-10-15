@@ -64,11 +64,11 @@
 
 
                 <!-- game options -->
-                <div v-if="canOption" class="game-setup__options d-flex justify-center flex-wrap px-7 mt-4 mb-2" style="gap: .5em">
+                <div class="game-setup__options d-flex justify-center flex-wrap px-7 mt-4 mb-2" style="gap: .5em">
                     <div v-for="(val, option) in options"
                          class="game-setup__option"
                          :class="{ active : val, 'game-setup__option--disabled' : !canOption }"
-                         @click="options[option] = !options[option]"
+                         @click="setOptions( option )"
                     ><i class="mr-2 game-setup__option-checkbox"
                         :class="val ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>{{ alphaCaps( option ) }}</div>
                 </div>
@@ -114,18 +114,6 @@
                     'anarchy',
                     'secret',
                 ],
-                // game options
-                options : {
-                    trackData : true,
-                    expansionCards : true,
-                    catchUpCards : true,
-                    sharedUpgrades : true,
-                    tokenLayaway : false,
-                    //ActivatedTokenCombat : false,
-                    tokenLayawayLimit : false,
-                    allowBribes : false,
-                    playtestMode : false,
-                }
             };
         },
 
@@ -137,6 +125,10 @@
         computed : {
             canOption(){
                 return this.shared.admin && this.gameCreator;
+            },
+
+            options(){
+                return this.shared.game?.options;
             },
 
             gameCreator(){
@@ -194,6 +186,19 @@
         },
 
         methods : {
+            setOptions( option ){
+                console.log( "set option: " + option );
+
+                // only the game's creator can change the options
+                if( !this.gameCreator ) return App.event.emit( 'sound', 'error' );
+
+                let newOptions = { ...this.options };
+                newOptions[option] = !newOptions[option];
+                console.log( "newOptions: ", newOptions );
+
+                this.shared.socket.emit( 'setOptions', this.shared.game.id, newOptions );
+            },
+
             /**
              * Transforms a string to start case (to remove underscores and separate camel case words),
              * then transforms string to uppercase
@@ -226,10 +231,6 @@
             setGameType( type ){
                 // only the game's creator can change the type
                 if( !this.gameCreator ) return App.event.emit( 'sound', 'error' );
-
-                if( type === "basic" ){
-                    this.options.expansionCards = false;
-                }
 
                 // set game type
                 App.event.emit( 'sound', 'ui' );

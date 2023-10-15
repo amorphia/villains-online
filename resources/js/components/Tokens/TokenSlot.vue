@@ -103,7 +103,7 @@
                 if( this.token.faction === this.shared.faction?.name // if this is our token
                     || this.shared.faction?.tokenSpy.includes( this.token.location ) // or we can tokenSpy the area
                     || this.ministerSpy // or the minister is letting us spy
-                    || ( player?.admin && this.shared.data.playtestMode )
+                    || ( player?.admin && this.shared.data.options?.playtestMode )
                 ) return true;
 
                 return false;
