@@ -9,7 +9,7 @@ class Bikers extends Faction {
 
         // data
         this.data.name = this.name;
-        this.data.bonusDeploy = { inPlay: true, count : 2 };
+        this.data.bonusDeploy = { inPlay: true, count : 1 };
         this.data.title = "Hell's Blade Cycle Club";
         this.data.focusDescription = "Most units in areas";
         this.data.redployFree = true;
@@ -88,6 +88,17 @@ class Bikers extends Faction {
         };
     }
 
+
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+        this.data.bonusDeploy.count = 1 + upgrade;
+    }
+
+
     /**
      * Handle our basta sacrifice trigger
      *
@@ -114,8 +125,6 @@ class Bikers extends Faction {
 
         // process choices
         const { units, payoffs } = await this.processIntimidateActions( responses );
-
-        this.resolvePayoffs( payoffs );
 
         if(units.length){
             await this.game().timedPrompt('units-shifted', {
@@ -192,59 +201,6 @@ class Bikers extends Faction {
         return { units, payoffs };
     }
 
-    resolvePayoffs( payoffs ){
-        if( !payoffs || !this.data.upgrade ) return;
-
-        let resources = this.data.upgrade === 1 ? 1 : payoffs;
-        this.gainResources( resources );
-    }
-
-    async bladeRecruit( event ){
-        if(!this.data.upgrade || !this.data.units.some( unit =>  _.unitInReserves( unit, { type : 'patsy' } ) ) ) return;
-
-        // gain resources equal to the hits scored
-        const count = this.data.upgrade === 1 ? 1 : event.hits;
-        await this.resolveRecruitPatsies( event.unit.location, count );
-    }
-
-
-
-    async resolveRecruitPatsies( area, count ){
-        let units = [];
-
-        // add spiders equal to our dropDeploy count
-        for( let i = 0; i < count; i++ ){
-            let patsy = this.placePatsy( area );
-            if( !patsy ) continue;
-            units.push( patsy );
-        }
-
-        // abort if we didn't deploy any units
-        if( !units.length ) return [];
-
-        // send out the birth announcements
-        this.message( "The Blade's brutal act of violence draws in more gang members" );
-
-        await this.game().timedPrompt('units-shifted', {
-            message : "The Blade's brutal act of violence draws in more gang members",
-            units: units
-        }).catch( error => console.error( error ) );
-
-        return units;
-    }
-
-
-    placePatsy( area ){
-        let patsy = this.data.units.find( unit => _.unitInReserves( unit, { type : 'patsy' } ) );
-
-        if( this.game().combat ) this.game().combat.addUnitToCombat( patsy );
-
-        if( !patsy ) return null;
-
-        patsy.location = area;
-        return patsy;
-    }
-
 
     /**
      * Can we activate our bully token?
@@ -280,8 +236,7 @@ class Bikers extends Faction {
         return this.canActivateDeploy( token, area );
     }
 
-    getTurfToken()
-    {
+    getTurfToken(){
         return this.data.tokens.find(token => token.name === 'turf');
     }
 
