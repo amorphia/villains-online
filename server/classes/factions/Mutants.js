@@ -39,7 +39,7 @@ class Mutants extends Faction {
         this.units['patsy'].count = 5;
 
         this.units['champion'] = {
-            count: 4,
+            count: 3,
             data: {
                 name: "Mother Ooze",
                 toughness: true,
