@@ -1,7 +1,7 @@
 <template>
     <div class="area-action center-text highlight tooltip"
          @click.left="emitAction"
-         @click.right.prevent="() => $refs.tooltip.open()"
+         @click.right.prevent.stop="() => $refs.tooltip.open()"
     >
         <div class="area-action__image">
             <img v-if="icon" :src="icon" >

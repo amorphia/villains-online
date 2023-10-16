@@ -2,7 +2,7 @@
     <div class="area-map__token-space ratio-square pos-relative selected-circle"
          :class="computeClasses"
          @click.left="emitToken"
-         @click.right.prevent="showTooltip"
+         @click.right.prevent.stop="showTooltip"
     >
         <img v-if="tokenImage" class="area-map__token" :src="tokenImage">
 

@@ -1,6 +1,6 @@
 <template>
     <i
-       @click.right.prevent="() => {
+       @click.right.prevent.stop="() => {
            $refs.tooltip.open();
            shared.event.emit( 'areaClicked', area );
        }"

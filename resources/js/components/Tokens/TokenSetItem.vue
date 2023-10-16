@@ -1,7 +1,7 @@
 <template>
     <div class="tokens-hud__token d-inline-block tooltip selected-circle"
             @click.left="tokenClicked"
-            @click.right.prevent="$refs.tooltip.open()"
+            @click.right.prevent.stop="$refs.tooltip.open()"
     >
         <img class="tokens-hud__token-image"
              :class="tokenClass"

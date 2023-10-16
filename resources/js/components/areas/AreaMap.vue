@@ -1,6 +1,16 @@
 <template>
     <div class="area-map-container" :class="`${area.name}-container`">
-        <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="areaClicked">
+        <div class="area-map pos-relative width-100 height-100" :class="computedClasses" @click="areaClicked"
+             @click.right.prevent.stop="() => {
+                $refs.areaTooltip.open();
+                areaClicked();
+              }"
+        >
+
+            <tool-tip direction="center" ref="areaTooltip">
+                <div v-html="shared.filterText(`Control: <span class='highlight'>${shared.filterText(this.area.control)}</span>`)"></div>
+                <div v-html="shared.filterText(`Skill: <span class='highlight'>${shared.filterText(this.area.skill)}</span>`)"></div>
+            </tool-tip>
 
             <!-- blocked -->
             <div v-if="area.ignored" class="area-map__blocked pos-absolute-center flex-center">
@@ -11,7 +21,7 @@
             <div class="area-map__owner-wrap z-3 cursor-help">
                 <!-- owner -->
                 <img v-if="area.owner"
-                     @click.right.prevent="() => {
+                     @click.right.prevent.stop="() => {
                          $refs.controllerTooltip.open();
                          areaClicked();
                      }"
@@ -39,7 +49,7 @@
             <!-- battle marker -->
             <div v-if="willBattle" class="tooltip area-map__battle-marker-container">
                 <img
-                     @click.right.prevent="() => {
+                     @click.right.prevent.stop="() => {
                          $refs.battleTooltip.open();
                          areaClicked();
                      }"
@@ -55,7 +65,7 @@
 
             <!-- exterminate -->
             <i v-if="exterminated"
-               @click.right.prevent="() => {
+               @click.right.prevent.stop="() => {
                          $refs.exterminateTooltip.open();
                          areaClicked();
                }"
@@ -80,7 +90,7 @@
 
             <!-- graveyard -->
             <div v-if="graveyard" class="area-map__graveyard cursor-help"
-                 @click.right.prevent="() => $refs.killsTooltip.open()"
+                 @click.right.prevent.stop="() => $refs.killsTooltip.open()"
             >
                 <!-- dead -->
                 <div class="icon-graveyard mb-2"></div>
@@ -99,7 +109,7 @@
 
             <!-- influence -->
             <div v-if="influence.length" class="area-map__influence cursor-help"
-                @click.right.prevent="() => $refs.influenceTooltip.open()"
+                @click.right.prevent.stop="() => $refs.influenceTooltip.open()"
             >
                 <div class="influence-marker mb-2">
                     <img src="/images/icons/influence.png">

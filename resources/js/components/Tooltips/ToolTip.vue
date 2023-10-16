@@ -170,6 +170,18 @@
         transform: translateX(0%);
     }
 
+    .tooltip--center {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20rem;
+    }
+
+    .tooltip--center::after {
+        display: none;
+    }
+
+
     .tooltip--bottom-left::after {
         bottom: 100%;
         right: 15px;
