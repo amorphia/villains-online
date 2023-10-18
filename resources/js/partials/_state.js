@@ -21,6 +21,7 @@ window.App.state = {
     factionName : null, // store the current faction name
     id : null, // store our player id
     name : null, // store our player name
+    sharedImage: null,
 
     // track the current influence leader for each area
     areaLeaders : {

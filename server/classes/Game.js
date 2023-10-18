@@ -33,6 +33,7 @@ class Game {
         'passToken',
         'sendBribe',
         'setPoints',
+        'shareImage',
         'manualCardDraw',
         'mulliganCards',
         'initPassAction',
@@ -617,6 +618,12 @@ class Game {
         Server.io.to( this.id ).emit( 'updatePoints', data );
     }
 
+    async shareImage( player, data ){
+        console.log( "shareImage", data );
+
+        // push to each player
+        Server.io.to( this.id ).emit( 'updateSharedImage', data.file );
+    }
 
     /**
      * Push each faction's current resource and energy count to each player

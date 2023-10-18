@@ -1,6 +1,6 @@
 <template>
 
-    <div v-if="shared.player.prompt.name" class="player-prompt z-3" :class="setClasses">
+    <div v-if="openPrompt" class="player-prompt z-3" :class="setClasses">
 
         <!-- close button -->
         <button @click="close" class="toggle minimize-toggle top right">
@@ -22,7 +22,7 @@
     export default {
 
         name: 'player-prompt',
-        props : ['classes'],
+        props : ['classes', 'forceOpen'],
         data() {
             return {
                 closed : false,
@@ -31,6 +31,9 @@
         },
 
         computed : {
+            openPrompt(){
+                return this.shared.player.prompt?.name || this.forceOpen;
+            },
             /**
              * Set our classes
              * @returns {string}

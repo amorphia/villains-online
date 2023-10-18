@@ -5,6 +5,7 @@
             <game-lobby v-if="!shared.data"></game-lobby>
             <choose-factions v-else-if="shared.data.state === 'choose-factions'"></choose-factions>
             <game-container v-else ></game-container>
+
         </div>
         <chat-window :closed="chatClosed" @toggleChat="chatClosed = !chatClosed"></chat-window>
 
@@ -138,6 +139,12 @@
                         this.shared.data.factions[ item.faction ].pp = item.pp;
                         this.shared.data.factions[ item.faction ].ap = item.ap;
                     });
+                });
+
+                // listen for points update
+                this.shared.socket.on( 'updateSharedImage', file => {
+                    console.log("updateSharedImage", file);
+                    this.shared.sharedImage = file;
                 });
             },
 

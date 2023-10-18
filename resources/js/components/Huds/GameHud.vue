@@ -18,9 +18,14 @@
             <!-- PLAYER STATS -->
             <div class="player-panel grow-1 shrink-1 width-100 overflow-auto">
                 <player-hud v-for="player in shared.orderedPlayers()"
-                            :player="player"
-                            :key="player.id"></player-hud>
+                    :player="player"
+                    :key="player.id"
+                />
+
+                <share-image />
             </div>
+
+
 
             <!-- CONTROLS -->
             <div class="control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap">

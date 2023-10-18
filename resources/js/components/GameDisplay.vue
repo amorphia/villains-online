@@ -12,6 +12,7 @@
         </transition>
 
         <!-- core components -->
+        <view-shared-image />
         <view-combat />
         <view-area />
         <view-player />
