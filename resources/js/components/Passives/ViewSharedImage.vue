@@ -1,5 +1,5 @@
 <template>
-    <player-prompt :forceOpen="open" classes="">
+    <player-prompt :forceOpen="open" :forceOnly="true" classes="">
         <div class="p-4 image-container flex-center">
             <img class="shared-image" :src="file" />
         </div>
@@ -34,7 +34,7 @@
 
 <style scoped>
     .image-container {
-        width: 75vw;
+        width: 70vw;
         height: 75vh;
     }
 

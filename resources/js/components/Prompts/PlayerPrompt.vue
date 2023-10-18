@@ -22,7 +22,7 @@
     export default {
 
         name: 'player-prompt',
-        props : ['classes', 'forceOpen'],
+        props : ['classes', 'forceOpen', 'forceOnly'],
         data() {
             return {
                 closed : false,
@@ -32,7 +32,11 @@
 
         computed : {
             openPrompt(){
-                return this.shared.player.prompt?.name || this.forceOpen;
+                if(this.forceOnly){
+                    return this.forceOpen;
+                }
+
+                return this.shared.player.prompt?.name;
             },
             /**
              * Set our classes
