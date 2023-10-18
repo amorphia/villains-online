@@ -34,8 +34,8 @@
 
 <style scoped>
     .image-container {
-        width: 70vw;
-        height: 75vh;
+        width: 72vw;
+        height: 76vh;
     }
 
     .shared-image {
