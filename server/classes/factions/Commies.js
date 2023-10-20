@@ -15,11 +15,11 @@ class Commies extends Faction {
         // data
         this.data.name = this.name;
         this.data.title = "The New Collective";
-        this.data.commisarPatsyAttackValue = 7;
+        //this.data.commisarPatsyAttackValue = 7;
         this.data.risePatsies = 0; // how many bonus patsies to deploy with our ride token
         this.data.bonusDeploy = { type: 'patsy', count : 1 };
         this.data.focusDescription = "Have high influence in areas";
-        this.data.riseAttackValue = 7;
+        this.data.riseAttackValue = 6;
 
         // tokens
         this.tokens['rise-up'] = {
@@ -28,7 +28,7 @@ class Commies extends Faction {
                 influence: 1,
                 cost : 0,
                 areaStat : true,
-                resource : 0,
+                resource : 1,
                 description : `Communist patsies produce xIx in this area, and gain an attack of xA${this.data.riseAttackValue}x.`,
                 req : "Passive token: this token may always be activated"
             }
@@ -49,8 +49,8 @@ class Commies extends Faction {
                 name: "Commissar Papova",
                 type: 'champion',
                 basic: false,
-                influence: 2,
-                attack: [5],
+                influence: 3,
+                attack: [3],
                 cost: 1,
                 skilled: true,
                 ready: false,
