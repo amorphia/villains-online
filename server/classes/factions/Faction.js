@@ -298,6 +298,7 @@ Object.assign( Faction.prototype, require( "./mixins/deploysUnits" ) );
 Object.assign( Faction.prototype, require( "./mixins/revivesUnits" ) );
 Object.assign( Faction.prototype, require( "./mixins/playsCards" ) );
 Object.assign( Faction.prototype, require( "./mixins/movesUnits" ) );
+Object.assign( Faction.prototype, require( "./mixins/becomesLocked" ) );
 Object.assign( Faction.prototype, require( "./mixins/attacksWithUnits" ) );
 Object.assign( Faction.prototype, require( "./mixins/makesNonCombatAttacks" ) );
 Object.assign( Faction.prototype, require( "./mixins/unitTriggeredEvents" ) );

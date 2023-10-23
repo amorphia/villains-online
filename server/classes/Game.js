@@ -125,19 +125,22 @@ class Game {
     // the game data we share with the UI side
     data = {
         // settings
-        maxAP : 13, // how many Area Points a player needs to win
-        maxPP :13, // how many Plan Points a player needs to win
+        maxAP : 12, // how many Area Points a player needs to win
+        maxPP :12, // how many Plan Points a player needs to win
         upgradePoints : [ 4, 8 ], // how many points (on a single track) do players need to unlock their upgrades
         gameType : 'optimized', // our default game mode, basic/optimized/anarchy
         options : {
             trackData: true,
             sharedUpgrades: true,
             catchUpCards: true,
+            thirteenPoints: true,
+            lootWhenLocked: true,
             expansionCards: false,
+            openMode: false,
             playtestMode: false,
-            tokenLayaway: false,
-            ActivatedTokenCombat: false,
-            tokenLayawayLimit: false,
+            //tokenLayaway: false,
+            //ActivatedTokenCombat: false,
+            //tokenLayawayLimit: false,
         },
         tokenLayawayEnergyReduction: 0,
         cardTracker : {},

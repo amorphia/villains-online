@@ -39,7 +39,7 @@
             },
 
             scoreBoardImage(){
-                return this.shared.data?.gameType === "basic" ? "/images/score-board-basic.jpg" : "/images/score-board.jpg";
+                return this.shared.data?.options?.thirteenPoints ? "/images/score-board.jpg" : "/images/score-board-basic.jpg";
             }
 
         },

@@ -104,6 +104,7 @@
                     || this.shared.faction?.tokenSpy.includes( this.token.location ) // or we can tokenSpy the area
                     || this.ministerSpy // or the minister is letting us spy
                     || ( player?.admin && this.shared.data.options?.playtestMode )
+                    || this.shared.data.options?.openMode
                 ) return true;
 
                 return false;

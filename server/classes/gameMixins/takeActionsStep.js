@@ -79,9 +79,10 @@ let obj = {
      *
      * @param player
      */
-    takeLockedAction( player ){
-        this.message({ message: `are locked`, faction : player.faction() });
-        this.advancePlayer();
+    async takeLockedAction( player ){
+        let faction = player.faction();
+        await faction.lockedAction( player );
+        this.advancePlayer( {} );
     },
 
 

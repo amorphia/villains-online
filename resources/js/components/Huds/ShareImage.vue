@@ -17,7 +17,7 @@
                 open: false,
                 shared : App.state,
                 images: [
-                    { file: null, text: "CLEAR" },
+                    { file: null, text: "-- CLEAR --" },
                     { file: "/images/examples/victory-points.png", text: "VICTORY POINTS" },
                     { file: "/images/examples/icons.png", text: "ICONS" },
                     { file: "/images/examples/start-phase.png", text: "START PHASE" },
@@ -41,11 +41,11 @@
         computed: {
             showControls(){
                 let player = this.shared.getPlayer();
-                return this.shared.data.options?.playtestMode && player?.admin;
+                return player?.admin;
             },
 
             toggleText(){
-                return this.open ? "CLOSE" : "OPEN";
+                return this.open ? "close" : "show slide";
             }
         }
     }

@@ -304,6 +304,10 @@ window.App.state = {
             return true;
         }
 
+        if(this.data.options?.openMode){
+            return true;
+        }
+
         // if this is us, then sure
         if( this.faction.name === faction.name ){
             return true;

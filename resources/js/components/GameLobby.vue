@@ -64,7 +64,7 @@
 
 
                 <!-- game options -->
-                <div class="game-setup__options d-flex justify-center flex-wrap px-7 mt-4 mb-2" style="gap: .5em">
+                <div v-if="shared.admin" class="game-setup__options d-flex justify-center flex-wrap px-7 mt-4 mb-2" style="gap: .5em">
                     <div v-for="(val, option) in options"
                          class="game-setup__option"
                          :class="{ active : val, 'game-setup__option--disabled' : !canOption }"

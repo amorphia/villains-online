@@ -181,10 +181,10 @@ let setup = {
         // set game options
         Object.assign( this.data, options );
 
-        // play to 12 points in basic mode
-        if(this.data.gameType === "basic"){
-            this.data.maxAP = 12;
-            this.data.maxPP = 12;
+        // play to 13 points in thirteenPoints mode
+        if(this.data.options.thirteenPoints){
+            this.data.maxAP = 13;
+            this.data.maxPP = 13;
         }
 
         // create a new save game model in the DB
