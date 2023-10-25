@@ -675,9 +675,9 @@
     }
 
     .area-map {
-        background-position: center top, center;
+        background-position: center top, center 23%, center;
         background-repeat: no-repeat, no-repeat;
-        background-size: 100% 2vw, cover;
+        background-size: 100% 2vw, contain, cover;
         box-shadow: inset 0 0 0px 4px rgba(0,0,0,.5);
         border: 2px solid rgba(255,255,255,.3);
         transition: opacity .1s;
@@ -685,51 +685,51 @@
 
     .church-container { order: 1; }
     .area-map-church {
-        background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-bg.jpg);
+        background-image: url(/images/areas/church-tokens.png), url(/images/areas/church-name.png), url(/images/areas/church-bg.jpg);
     }
 
     .sewers-container { order: 2; }
     .area-map-sewers {
-        background-image: url(/images/areas/sewers-tokens.png),url(/images/areas/sewers-bg.jpg);
+        background-image: url(/images/areas/sewers-tokens.png), url(/images/areas/sewers-name.png), url(/images/areas/sewers-bg.jpg);
     }
 
 
     .police-container { order: 3; }
     .area-map-police {
-        background-image: url(/images/areas/police-tokens.png),url(/images/areas/police-bg.jpg);
+        background-image: url(/images/areas/police-tokens.png), url(/images/areas/police-name.png), url(/images/areas/police-bg.jpg);
     }
 
     .subway-container { order: 4; }
     .area-map-subway {
-        background-image: url(/images/areas/subway-tokens.png),url(/images/areas/subway-bg.jpg);
+        background-image: url(/images/areas/subway-tokens.png), url(/images/areas/subway-name.png), url(/images/areas/subway-bg.jpg);
     }
 
 
     .capitol-container { order: 5; }
     .area-map-capitol {
-        background-image: url(/images/areas/capitol-tokens.png),url(/images/areas/capitol-bg.jpg);
+        background-image: url(/images/areas/capitol-tokens.png), url(/images/areas/capitol-name.png), url(/images/areas/capitol-bg.jpg);
     }
 
 
     .laboratory-container { order: 6; }
     .area-map-laboratory {
-        background-image: url(/images/areas/laboratory-tokens.png),url(/images/areas/laboratory-bg.jpg);
+        background-image: url(/images/areas/laboratory-tokens.png), url(/images/areas/laboratory-name.png), url(/images/areas/laboratory-bg.jpg);
     }
 
 
     .university-container { order: 7; }
     .area-map-university {
-        background-image: url(/images/areas/university-tokens.png),url(/images/areas/university-bg.jpg);
+        background-image: url(/images/areas/university-tokens.png), url(/images/areas/university-name.png), url(/images/areas/university-bg.jpg);
     }
 
     .factory-container { order: 8; }
     .area-map-factory {
-        background-image: url(/images/areas/factory-tokens.png),url(/images/areas/factory-bg.jpg);
+        background-image: url(/images/areas/factory-tokens.png), url(/images/areas/factory-name.png), url(/images/areas/factory-bg.jpg);
     }
 
     .bank-container { order: 9; }
     .area-map-bank {
-        background-image: url(/images/areas/bank-tokens.png),url(/images/areas/bank-bg.jpg);
+        background-image: url(/images/areas/bank-tokens.png), url(/images/areas/bank-name.png), url(/images/areas/bank-bg.jpg);
     }
 
 </style>
