@@ -810,6 +810,7 @@ let obj = [
         scope : 'global',
         description : 'Your moles gain +3 to their attack rolls and first strike',
     },
+    /*
     {
         class : 'sleeper-cell',
         file : 'sleeper-cell-2',
@@ -822,6 +823,7 @@ let obj = [
         scope : 'global',
         description : 'Your moles gain +3 to their attack rolls and first strike',
     },
+    */
     {
         class : 'brainwash',
         file : 'brainwash-1',
@@ -833,6 +835,7 @@ let obj = [
         type : 'event',
         scope : 'local'
     },
+    /*
     {
         class : 'brainwash',
         file : 'brainwash-2',
@@ -844,6 +847,7 @@ let obj = [
         type : 'event',
         scope : 'local'
     },
+     */
     {
         class : 'show-initiative',
         file : 'show-initiative-1',
@@ -855,6 +859,7 @@ let obj = [
         type : 'event',
         scope : 'local'
     },
+    /*
     {
         class : 'show-initiative',
         file : 'show-initiative-2',
@@ -866,6 +871,7 @@ let obj = [
         type : 'event',
         scope : 'local'
     },
+     */
     {
         class : 'cloak-and-dagger',
         file : 'cloak-and-dagger-1',

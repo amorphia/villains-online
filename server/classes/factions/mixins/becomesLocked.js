@@ -18,7 +18,7 @@ let obj = {
           count : 1
       });
 
-      this.discardCards( response.cards );
+      this.discardCards( response.cards, { bottomOfDeck: true } );
   },
 
 };

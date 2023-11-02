@@ -63,8 +63,9 @@ let obj = {
      * Discard action cards
      *
      * @param cards
+     * @param options
      */
-    discardCards( cards ){
+    discardCards( cards, options = {} ){
         // if we only supplied a card object, wrap that card in an array
         if( !Array.isArray( cards ) ) cards = [cards];
 
@@ -75,14 +76,20 @@ let obj = {
 
         // move each card from our hand to the discard pile
         for( let card of cards ) {
+            let destination = options.bottomOfDeck ? this.game().deck.deck : this.game().deck.discard;
             _.moveItemById(
                 card.id,
                 this.data.cards.hand,
-                this.game().deck.discard
+                destination,
+                "unshift",
             );
         }
 
         // announce the discard
+        if( options.bottomOfDeck ){
+            return this.message(`discards a card to the bottom of the deck` );
+        }
+
         this.message(`discards cards`, { type: 'cards', cards: cards } );
 
         return cards;
