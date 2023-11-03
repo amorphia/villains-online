@@ -20,6 +20,7 @@ let obj = {
             playerOnly : true,
             killedOnly : true,
             basicOnly : args.basicOnly,
+            canDecline: true,
             message: `Choose up to ${args.reviveCount} units killed to revive`,
         });
 
