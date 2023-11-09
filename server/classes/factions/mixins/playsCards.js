@@ -171,7 +171,7 @@ let obj = {
         let results = await this.resolveCard( args, response );
 
         // handle any faction "onAfterSkill" triggered events
-        if( this.triggers.onAfterCardPlayed ) await this[this.triggers.onAfterCardPlayed]( results );
+        if( this.triggers.onAfterCardPlayed && results.card ) await this[this.triggers.onAfterCardPlayed]( results );
 
         return results;
     },
