@@ -55,15 +55,15 @@
 
                     <!-- selected units -->
                     <div class="popout-hud__block p-3 pos-relative"
-                         :class="{ 'has-ghosts' : shared.faction.ghostDeploy }"
+                         :class="{ 'has-toggle' : hasToggleUnits }"
                          v-for="(units, location) in groupBy( selected, 'location' )"
                          :data-count="location !== 'null' ? location : 'reserves'">
-                        <div v-for="unit in units" class="units-hud__unit d-inline-block pos-relative" :class="{'deploy__ghost' : unit.asGhost }">
+                        <div v-for="unit in units" class="units-hud__unit d-inline-block pos-relative">
                             <img
                                  class="unit-hud__unit-image"
                                  @click="unit.selected = false"
-                                 :src="`/images/factions/${unit.faction}/units/${unit.type}${(unit.flipped || unit.asGhost) ? '-flipped' : ''}.png`">
-                            <div v-if="shared.faction.ghostDeploy" class="pointer deploy__toggle-ghost" @click="toggleGhost( unit )">{{ !unit.asGhost ? 'non-' : '' }}ghost</div>
+                                 :src="sourceImage(unit)">
+                            <div v-if="unit.canDeployFlipped" class="pointer deploy__toggle-ghost" @click="toggleFlipped( unit )">{{ !unit.deployFlipped ? 'non-' : '' }}flipped</div>
                         </div>
                     </div>
                 </area-flipper>
@@ -134,18 +134,27 @@
         },
 
         methods : {
+            sourceImage( unit ){
+                let url = `/images/factions/${unit.faction}/units/${unit.type}`;
+
+                if(unit.flipped || unit.deployFlipped){
+                    url += '-flipped';
+                }
+
+                return url + '.png';
+            },
 
             /**
              * Toggle whether to deploy a unit as a ghost
              * @param unit
              */
-            toggleGhost( unit ){
-                if( unit.asGhost ){
-                    this.$set( unit, 'asGhost', false );
+            toggleFlipped( unit ){
+                if( unit.deployFlipped ){
+                    this.$set( unit, 'deployFlipped', false );
                     return;
                 }
 
-                this.$set( unit, 'asGhost', true );
+                this.$set( unit, 'deployFlipped', true );
             },
 
 
@@ -156,6 +165,10 @@
             resolve( option ){
                 let data = this.getResponseData( option );
                 data = { ...this.data, ...data  };
+
+                let toBeFlipped = this.selected.filter( unit => unit.deployFlipped ).map( unit => unit.id )
+                if( toBeFlipped ) data.toBeFlipped = toBeFlipped;
+
                 this.shared.respond( 'deploy-action', data );
             },
 
@@ -384,6 +397,9 @@
                 }
             },
 
+            hasToggleUnits(){
+                return this.selected.some( unit => unit.canDeployFlipped );
+            },
 
             /**
              * How much of our base deploy have we used?
@@ -676,7 +692,7 @@
         transform: translate(-50%, -70%);
     }
 
-    .has-ghosts .units-hud__unit {
+    .has-toggle .units-hud__unit {
         height: 8vw;
     }
 

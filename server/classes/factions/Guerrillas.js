@@ -72,6 +72,7 @@ class Guerrillas extends Faction {
                 influence: 0,
                 warInfluence: 0,
                 peaceInfluence: 3,
+                canDeployFlipped: "peaceSide",
                 cost: 0,
                 killed: false,
                 selected: false,
@@ -232,7 +233,7 @@ class Guerrillas extends Faction {
      */
     async viperDeploy( event ){
         // viper is no longer free to our deploy limit
-        await this.chooseViperSide();
+        // await this.chooseViperSide();
 
         // handle bring units trigger
         //await this.viperBoobyTrap( event );
@@ -299,6 +300,18 @@ class Guerrillas extends Faction {
             viper.attack = [...viper.peaceAttack];
             viper.influence = viper.peaceInfluence;
         }
+    }
+
+    unflipUnit( viper ) {
+        viper.flipped = false;
+        viper.attack = [...viper.warAttack];
+        viper.influence = viper.warInfluence;
+    }
+
+    peaceSide( viper ){
+        viper.flipped = true;
+        viper.attack = [...viper.peaceAttack];
+        viper.influence = viper.peaceInfluence;
     }
 
 

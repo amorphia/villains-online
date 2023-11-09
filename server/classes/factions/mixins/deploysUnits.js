@@ -206,13 +206,6 @@ let obj = {
         // make an array of unit names
         let unitNames = units.map( unit => unit.name );
 
-        // ghost deploy
-        if( response.ghosts && response.ghosts.length ){
-            let ghostOutput = this.game().factions['ghosts'].deployGhosts( response.ghosts, response.toArea );
-            ghostOutput.forEach( ghost => unitNames.push( 'ghost' ) );
-            units = _.concat( units, ghostOutput );
-        }
-
         // display our deployment results
         await this.displayDeployResults( units, output, unitNames, response  );
 
@@ -256,6 +249,9 @@ let obj = {
             this.unflipUnit( unit );
         }
 
+        if( response.toBeFlipped && response.toBeFlipped.includes( unit.id ) && unit.canDeployFlipped ){
+            this[unit.canDeployFlipped]( unit );
+        }
 
         if( !unit.flipped && response.transformUnit ) {
             this[response.transformUnit]( unit );

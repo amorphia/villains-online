@@ -42,6 +42,7 @@ class Agency extends Faction {
 
         this.units['patsy'].count = 2;
         this.units['patsy'].data.toughness = true;
+        this.units['patsy'].data.canDeployFlipped = false;
         this.units['patsy'].data.flipped = false;
         this.units['patsy'].data.onWounded = 'becomeAgent';
 
@@ -145,6 +146,7 @@ class Agency extends Faction {
             areas : [ area.name ],
             playerOnly : true,
             revealedOnly : true,
+            typeIn : ["intel", "card"],
             message : "Choose a revealed CARD or INTEL token to flip face down",
         });
 
@@ -298,6 +300,7 @@ class Agency extends Faction {
     becomeAgent( unit ) {
         unit.killed = null;
         unit.flipped = true;
+        unit.canDeployFlipped = "becomeAgent";
         unit.influence = 2;
     }
 
@@ -311,6 +314,7 @@ class Agency extends Faction {
 
         if( unit.type === 'patsy' ){
             unit.influence = 0;
+            unit.canDeployFlipped = false;
         }
     }
 
