@@ -50,6 +50,9 @@ let obj = {
         let victim = await this.setAttackTargets( args );
         if( !victim ) return;
 
+        // resolve on before attack triggers
+        if(args.unit?.onBeforeAttack) await this[args.unit.onBeforeAttack]( args, victim );
+
         // apply swarm multi dice defense mod
         if( !args.deadly ) this.applyDroneDiceReduction( victim, args );
 
@@ -113,11 +116,13 @@ let obj = {
      * @returns {*}
      */
     setUnitAttackArgs( args ){
+        let unit = args.unit;
+
         // if we aren't attacking with a unit, abort
-        if( !args.unit ) return;
+        if( !unit ) return;
 
         // if this is an attack from a deadly unit, set deadly in our args
-        if( args.unit.deadly ) args.deadly = true;
+        if( unit.deadly ) args.deadly = true;
 
         // if this is a non-deadly unit attacking, set bonus dice
         // if( !args.deadly ) args.attacks = this.addBonusDiceToAttack( args.attacks.slice(), args.bonusDice, args.area );

@@ -167,7 +167,7 @@ class Witches extends Faction {
         if( this.data.magickCardsFree ) args.cost = 0;
 
         // allow player to select a valid card (if any)
-        let response = await this.prompt( 'choose-magick', args );
+        let response = await this.prompt( 'choose-action-card', args );
 
         // discard unselected cards (if any)
         if( response.unselected.length ) this.discardCards( response.unselected );

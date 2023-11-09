@@ -182,6 +182,8 @@
             canSelectToken( token ){
                 return !(token.location !== this.area.name // check token area
                     || (this.data.unrevealedOnly && token.revealed) // check unrevealed only
+                    || (this.data.type && token.type !== this.data.type) // check type
+                    || (this.data.typeIn && this.data.typeIn.includes(token.type)) // check typeIn
                     || (this.data.revealedOnly && !token.revealed) // check revealed only
                     || (this.data.enemyOnly && token.faction === this.shared.faction.name) // check enemy only
                     || (this.data.playerOnly && token.faction !== this.shared.faction.name) ); // check player only

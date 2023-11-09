@@ -115,9 +115,10 @@ let helpers = {
      *
      * @param token
      * @param area
+     * @param replacementToken
      * @returns {boolean|number}
      */
-    discardToken( token, area ){
+    discardToken( token, area, replacementToken = null ){
         if( !area ) return false;
 
         if( area.data ) area = area.data; // format
@@ -130,7 +131,13 @@ let helpers = {
         // an empty object, return the token spot number that this token was discarded from
         _.forEach( area.tokens, (item, index, collection ) => {
             if( item.id && token.id === item.id ){
-                collection[index] = {};
+                if(replacementToken){
+                    replacementToken.location = area.name;
+                } else {
+                    replacementToken = {};
+                }
+
+                collection[index] = replacementToken;
                 tokenSpace = index + 1;
             }
         });

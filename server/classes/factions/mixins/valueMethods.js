@@ -232,6 +232,13 @@ let mixin = {
         return _.enemyUnitsInArea( this.data, area.name, this.game().data.factions, options );
     },
 
+    enemyTypesInArea( area, options = {} ){
+        let enemyUnits = this.enemyUnitsInArea( area, options );
+        let enemyTypes = {};
+        Object.values(enemyUnits).forEach(units => units.forEach( unit => enemyTypes[unit.type] = true ) );
+        return Object.keys(enemyTypes);
+    },
+
 
     /**
      * Returns an array of areaNames matching the areas where we have units
@@ -756,6 +763,7 @@ let mixin = {
         return this.data.tokens.filter(token => {
             return token.location === area
                 && (!options.type || token.type === options.type)
+                && (!options.typeIn || options.typeIn.includes(token.type))
                 && (!options.revealed || token.revealed)
                 && (!options.unrevealed || !token.revealed);
         });

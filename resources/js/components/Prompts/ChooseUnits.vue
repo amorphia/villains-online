@@ -415,6 +415,8 @@
                     // filter flipped units
                     if( this.data.flippedOnly && !unit.flipped ) return;
 
+                    if( this.data.unflippedOnly && unit.flipped ) return;
+
                     // filter ready units
                     if( this.data.readyOnly && !unit.ready ) return;
 

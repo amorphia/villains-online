@@ -534,6 +534,7 @@ a {
   --faction-molemen: #99634B;
   --faction-survivalists: #7A7535;
   --faction-devils: #d37167;
+  --faction-agency: #5f5f89;
 }
 
 .faction-neutral {
@@ -650,6 +651,10 @@ a {
 
 .faction-devils {
   color: var(--faction-devils);
+}
+
+.faction-agency {
+  color: var(--faction-agency);
 }
 
 .primary {

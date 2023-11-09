@@ -38,6 +38,26 @@ let helpers = {
         return faction.units.some( unit => this.unitInArea( unit, area, { flipped : true } ) );
     },
 
+    canUseAgent( faction, area ){
+        if( !area ) return false;
+
+        // format inputs
+        if( faction.data ) faction = faction.data;
+        if( area.data ) area = area.data;
+
+        // if we aren't witches then heck no
+        if( faction.name !== 'agency') return false;
+        if(faction.usedWoundAgentActions >= faction.maxWoundAgentActions) return false;
+
+        // do we have any face-up patsies in this area?
+        if(!faction.units.some( unit => this.unitInArea( unit, area, { type: "patsy", notFlipped : true } ) ) ){
+            return false;
+        }
+
+        // do we have any face-down card or intel tokens in the area?
+        let validTypes = ["intel", "card"];
+        return faction.tokens.some( token => validTypes.includes(token.type) && token.location === area.name && token.revealed );
+    },
 
     /**
      * Can the given faction activate the skill ability of the given area?

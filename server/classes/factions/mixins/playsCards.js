@@ -168,11 +168,17 @@ let obj = {
         [player, response] = await this.game().promise({ players: player, name: 'choose-card', data : data })
             .catch( error => console.error( error ) );
 
-        return this.resolveCard( args, response );
+        let results = await this.resolveCard( args, response );
+
+        // handle any faction "onAfterSkill" triggered events
+        if( this.triggers.onAfterCardPlayed ) await this[this.triggers.onAfterCardPlayed]( results );
+
+        return results;
     },
 
 
     async resolveCard( args, response ){
+        console.log("resolveCard args.area", args.area);
         // if we declined to resolve a card abort
         if( response.decline ) return { declined : true };
 
@@ -234,6 +240,8 @@ let obj = {
      * @returns {[]}
      */
     getResolvedCardArray(  card, area  ){
+        console.log( "getResolvedCardArray area", area );
+
         // if the card is an event, just throw it in the discard
         if( card.type === 'event' ){
 

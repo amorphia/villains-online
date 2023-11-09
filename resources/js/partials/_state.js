@@ -114,6 +114,12 @@ window.App.state = {
             areaAction : true,
             buttonMessage: 'Flip your units in this area to use magick'
         },
+        'agent' : {
+            img : '/images/icons/agent.png',
+            useMessage: 'use agent',
+            areaAction : true,
+            buttonMessage: 'take agent action'
+        },
         'smoke' : {
             img : '/images/icons/smoke.png',
         },

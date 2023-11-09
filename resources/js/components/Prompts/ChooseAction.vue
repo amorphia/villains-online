@@ -76,6 +76,20 @@
 
                     </div>
 
+                    <!-- agent display -->
+                    <div v-if="action.name === 'agent'"
+                         class="choose-action__skilled-units center-text">
+
+                        <unit-row
+                            :units="unflippedPatsiesInArea"
+                        >
+                        </unit-row>
+
+                        <div class="width-100 choose-action__skill-ability">
+                            Wound a patsy in this area to flip a CARD or INTEL token face down?
+                        </div>
+
+                    </div>
 
                     <!-- materialize display -->
                     <div v-if="action.name === 'materialize'"
@@ -259,6 +273,9 @@
                 // can we magick?
                 if( this.useableMagick.length ) actions.magick = this.useableMagick;
 
+                // can we agent?
+                if( this.useableAgent.length ) actions.agent = this.useableAgent;
+
                 /********************
                  * ACTION ACTIONS
                  ********************/
@@ -320,6 +337,7 @@
                     case 'ambush':
                     case 'skill':
                     case 'magick':
+                    case 'agent':
                     case 'materialize':
                     case 'shelter':
                     case 'loop':
@@ -571,6 +589,13 @@
                 return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area, { flipped : true } ));
             },
 
+            /**
+             * Return an array of our flipped units in our selected area
+             * @returns {Unit[]}
+             */
+            unflippedPatsiesInArea(){
+                return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area, { notFlipped : true } ));
+            },
 
             /**
              * Return an array of our ghost units in our selected area
@@ -675,6 +700,24 @@
                 }, []);
             },
 
+            /**
+             * Returns an array of area names matching the areas where we can take the agent action
+             * @returns {string[]|Array}
+             */
+            useableAgent(){
+                // if not applicable, return an empty array
+                if( this.shared.faction.name !== 'agency'
+                    || this.shared.faction.lastAgentGameAction === this.shared.data.gameAction
+                ) return [];
+
+
+                return Object.values( this.shared.data.areas ).reduce( (array, area) =>{
+                    if( _.canUseAgent( this.shared.faction, area, this.shared.data.factions ) ){
+                        array.push( area.name );
+                    }
+                    return array;
+                }, []);
+            },
 
             /**
              * Is our ability to save our choice disabled?
