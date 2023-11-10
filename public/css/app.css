@@ -1873,6 +1873,10 @@ a {
   display: inline-block;
 }
 
+.d-inline-flex {
+  display: inline-flex;
+}
+
 .d-flex {
   display: flex;
 }

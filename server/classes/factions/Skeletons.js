@@ -51,22 +51,30 @@ class Skeletons extends Faction {
         this.units['goon'].data.toughness = true;
         this.units['goon'].data.flipped = false;
         this.units['goon'].data.onWounded = 'becomeSkeleton';
+        this.units['goon'].data.canDeployFlipped = false;
+        this.units['goon'].data.deployFlippedMethod = "becomeSkeleton";
 
         //this.units['mole'].count = 5;
         this.units['mole'].data.toughness = true;
         this.units['mole'].data.flipped = false;
         this.units['mole'].data.onWounded = 'becomeSkeleton';
+        this.units['mole'].data.canDeployFlipped = false;
+        this.units['mole'].data.deployFlippedMethod = "becomeSkeleton";
 
         //this.units['talent'].count = 3;
         this.units['talent'].data.toughness = true;
         this.units['talent'].data.flipped = false;
         this.units['talent'].data.onWounded = 'becomeSkeleton';
+        this.units['talent'].data.canDeployFlipped = false;
+        this.units['talent'].data.deployFlippedMethod = "becomeSkeleton";
 
 
         this.units['patsy'].count = 6;
         this.units['patsy'].data.toughness = true;
         this.units['patsy'].data.flipped = false;
         this.units['patsy'].data.onWounded = 'becomeSkeleton';
+        this.units['patsy'].data.canDeployFlipped = false;
+        this.units['patsy'].data.deployFlippedMethod = "becomeSkeleton";
 
 
         this.units['champion'] = {
@@ -316,6 +324,7 @@ class Skeletons extends Faction {
         unit.skeleton = true;
         unit.influence = 0;
         unit.cannotBeReady = true;
+        unit.canDeployFlipped = true;
         if( unit.skilled ) unit.skilled = false;
         if( unit.ready ) unit.ready = false;
     }
@@ -331,6 +340,7 @@ class Skeletons extends Faction {
         unit.skeleton = false;
         unit.cannotBeReady = false;
         unit.influence = unit.baseInfluence;
+        unit.canDeployFlipped = false;
         if ( unit.baseSkilled ) unit.skilled = true;
     }
 

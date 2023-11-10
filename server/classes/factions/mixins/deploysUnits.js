@@ -245,12 +245,16 @@ let obj = {
         });
 
         // heal wounded units, ad unflip units coming in from the reserves
-        if( !unit.dontUnflipAutomatically && unit.flipped && ( unit.toughness || !unit.location ) ){
+        if( !unit.dontUnflipAutomatically && unit.flipped && ( unit.toughness || !unit.location || unit.canDeployFlipped ) ){
             this.unflipUnit( unit );
         }
 
-        if( response.toBeFlipped && response.toBeFlipped.includes( unit.id ) && unit.canDeployFlipped ){
-            this[unit.canDeployFlipped]( unit );
+        console.log("flipped test", response.toBeFlipped, response.toBeFlipped?.includes( unit.id ), unit.id);
+
+        if( response.toBeFlipped && response.toBeFlipped.includes( unit.id ) ){
+            console.log("flipping unit", unit);
+            this[unit.deployFlippedMethod]( unit );
+            console.log("flipped unit", unit);
         }
 
         if( !unit.flipped && response.transformUnit ) {

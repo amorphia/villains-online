@@ -54,16 +54,20 @@
                     </div>
 
                     <!-- selected units -->
-                    <div class="popout-hud__block p-3 pos-relative"
-                         :class="{ 'has-toggle' : hasToggleUnits }"
-                         v-for="(units, location) in groupBy( selected, 'location' )"
-                         :data-count="location !== 'null' ? location : 'reserves'">
-                        <div v-for="unit in units" class="units-hud__unit d-inline-block pos-relative">
-                            <img
-                                 class="unit-hud__unit-image"
-                                 @click="unit.selected = false"
-                                 :src="sourceImage(unit)">
-                            <div v-if="unit.canDeployFlipped" class="pointer deploy__toggle-ghost" @click="toggleFlipped( unit )">{{ !unit.deployFlipped ? 'non-' : '' }}flipped</div>
+                    <div class="d-flex align-center justify-center">
+                        <div class="popout-hud__block d-inline-flex align-center p-3 pos-relative"
+                             :class="{ 'has-toggle' : hasToggleUnits }"
+                             v-for="(units, location) in groupBy( selected, 'location' )"
+                             :data-count="location !== 'null' ? location : 'reserves'">
+                            <div v-for="unit in units" class="units-hud__unit pos-relative" style="display: inline-flex">
+                                <div>
+                                    <deploy-unit-icon
+                                        @clicked="unit.selected = false"
+                                        :unit="unit"
+                                    />
+                                    <div v-if="unit.canDeployFlipped" class="pointer deploy__toggle-ghost" @click="toggleFlipped( unit )">{{ !unit.deployFlipped ? 'non-' : '' }}flipped</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </area-flipper>
@@ -96,9 +100,11 @@
 
 
 <script>
+    import DeployUnitIcon from "../Units/DeployUnitIcon";
     export default {
 
         name: 'deploy-action',
+        components: {DeployUnitIcon},
         data() {
             return {
                 shared : App.state,
@@ -134,16 +140,6 @@
         },
 
         methods : {
-            sourceImage( unit ){
-                let url = `/images/factions/${unit.faction}/units/${unit.type}`;
-
-                if(unit.flipped || unit.deployFlipped){
-                    url += '-flipped';
-                }
-
-                return url + '.png';
-            },
-
             /**
              * Toggle whether to deploy a unit as a ghost
              * @param unit
@@ -166,8 +162,10 @@
                 let data = this.getResponseData( option );
                 data = { ...this.data, ...data  };
 
-                let toBeFlipped = this.selected.filter( unit => unit.deployFlipped ).map( unit => unit.id )
-                if( toBeFlipped ) data.toBeFlipped = toBeFlipped;
+                let toBeFlipped = this.selected.filter( unit => unit.deployFlipped ).map( unit => unit.id );
+                if( toBeFlipped?.length ) data.toBeFlipped = toBeFlipped;
+
+                console.log("resolve deploy data", data);
 
                 this.shared.respond( 'deploy-action', data );
             },

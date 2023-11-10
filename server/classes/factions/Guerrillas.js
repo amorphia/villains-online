@@ -72,7 +72,8 @@ class Guerrillas extends Faction {
                 influence: 0,
                 warInfluence: 0,
                 peaceInfluence: 3,
-                canDeployFlipped: "peaceSide",
+                canDeployFlipped: true,
+                deployFlippedMethod: "setPeaceSide",
                 cost: 0,
                 killed: false,
                 selected: false,
@@ -308,7 +309,7 @@ class Guerrillas extends Faction {
         viper.influence = viper.warInfluence;
     }
 
-    peaceSide( viper ){
+    setPeaceSide( viper ){
         viper.flipped = true;
         viper.attack = [...viper.peaceAttack];
         viper.influence = viper.peaceInfluence;

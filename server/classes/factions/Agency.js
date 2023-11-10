@@ -43,6 +43,7 @@ class Agency extends Faction {
         this.units['patsy'].count = 2;
         this.units['patsy'].data.toughness = true;
         this.units['patsy'].data.canDeployFlipped = false;
+        this.units['patsy'].data.deployFlippedMethod = "becomeAgent";
         this.units['patsy'].data.flipped = false;
         this.units['patsy'].data.onWounded = 'becomeAgent';
 
@@ -300,7 +301,7 @@ class Agency extends Faction {
     becomeAgent( unit ) {
         unit.killed = null;
         unit.flipped = true;
-        unit.canDeployFlipped = "becomeAgent";
+        unit.canDeployFlipped = true;
         unit.influence = 2;
     }
 
