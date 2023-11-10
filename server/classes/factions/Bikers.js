@@ -9,7 +9,7 @@ class Bikers extends Faction {
 
         // data
         this.data.name = this.name;
-        this.data.bonusDeploy = { inPlay: true, count : 1 };
+        this.data.bonusDeploy = { inPlay: true, count : 0 };
         this.data.title = "Hell's Blade Cycle Club";
         this.data.focusDescription = "Most units in areas";
         this.data.redployFree = true;
@@ -49,19 +49,17 @@ class Bikers extends Faction {
         //delete this.tokens['move'];
 
         // units
-        //this.units['goon'].data.noReplace = true;
         this.units['goon'].data.redeployFree = true;
+        this.units['patsy'].count = 6;
 
-        //this.units['mole'].data.noReplace = true;
         this.units['mole'].data.redeployFree = true;
+        this.units['patsy'].count = 6;
 
-        this.units['patsy'].count = 8;
+        this.units['patsy'].count = 4;
         this.units['patsy'].data.attack = [8];
-        //this.units['patsy'].data.noReplace = true;
         this.units['patsy'].data.redeployFree = true;
 
         this.units['talent'].count = 4;
-        //this.units['talent'].data.noReplace = true;
         this.units['talent'].data.redeployFree = true;
 
 
@@ -71,9 +69,9 @@ class Bikers extends Faction {
                 name: "Danny 'The Blade' Sturgis",
                 type: 'champion',
                 basic: false,
-                influence: 3,
-                attack: [6,6,6],
-                cost: 3,
+                influence: 1,
+                attack: [5,5],
+                cost: 2,
                 toughness: true,
                 flipped: false,
                 killed: false,
@@ -95,7 +93,7 @@ class Bikers extends Faction {
      * @param {number} upgrade
      */
     processUpgrade( upgrade ){
-        this.data.bonusDeploy.count = 1 + upgrade;
+        this.data.bonusDeploy.count = upgrade;
     }
 
 
