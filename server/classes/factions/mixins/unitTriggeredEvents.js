@@ -9,6 +9,8 @@ let obj = {
      * @param area
      */
     async unitTriggeredEvents( type, unitsData, area ){
+        let output = {};
+
         // wrap our units in an array if its not already
         if( !Array.isArray( unitsData ) ) unitsData = [ unitsData ];
 
@@ -16,9 +18,13 @@ let obj = {
         let events = this.getUnitTriggeredEvents( type, unitsData, area );
 
         // resolve our triggered events
-        if( events.length ) await this.resolveUnitTriggeredEvents( events, area )
-            .catch( error => console.log( error ) );
+        if( events.length ){
+            output = await this.resolveUnitTriggeredEvents( events, area )
+                .catch( error => console.log( error ) );
+        }
 
+        console.log("unitTriggeredEvents output:", output);
+        return output;
     },
 
 
@@ -55,17 +61,22 @@ let obj = {
      * @param events
      */
     async resolveUnitTriggeredEvents( events ){
+        let output = {};
+
         // cycle through our events
         for( let event of events ) {
             let faction = this.game().factions[ event.unit.faction ];
 
             // resolve the triggered event
             try {
-                await faction[ event.event ]( event );
+                let eventOutput = await faction[ event.event ]( event );
+                output = { ...output, ...eventOutput };
             } catch( error ){
                 console.error( error );
             }
         }
+
+        return output;
     },
 
 };

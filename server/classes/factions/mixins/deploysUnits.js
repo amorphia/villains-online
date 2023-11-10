@@ -48,7 +48,7 @@ let obj = {
         await this.handleAfterActivateTokenTriggers( args );
 
         // advance game
-        this.game().advancePlayer();
+        this.game().advancePlayer({}, !output?.dontAdvancePlayer );
     },
 
 
@@ -63,7 +63,7 @@ let obj = {
         let areas = this.getDeployAreas( args );
 
         // modify args
-        const faction = args.faction ?? args.player.faction();
+        const faction = args.faction ?? args.player?.faction() ?? this;
         if(faction.modifyDeployAreas){
             areas = faction.modifyDeployAreas(areas);
         }
@@ -80,6 +80,7 @@ let obj = {
             reduceCost : args.reduceCost,
             transformUnit : args.transformUnit,
             isSkilled: args.isSkilled,
+            canDecline: args.canDecline,
         };
 
         // have the player select units to deploy
@@ -210,14 +211,19 @@ let obj = {
         await this.displayDeployResults( units, output, unitNames, response  );
 
         // handle triggered events
-        await this.unitTriggeredEvents( 'deploy', output.units )
+        let triggeredOutput = await this.unitTriggeredEvents( 'deploy', output.units )
             .catch( error => { console.error( error ) });
+
 
         // check for global events
         for(let faction of Object.values(this.game().factions) ){
             if(faction.triggers?.onDeployAll){
                 await faction[ faction.triggers.onDeployAll ]( output );
             }
+        }
+
+        if(triggeredOutput?.dontAdvancePlayer){
+            output.dontAdvancePlayer = true;
         }
 
         // return our output

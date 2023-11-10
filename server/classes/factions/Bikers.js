@@ -131,17 +131,27 @@ class Bikers extends Faction {
         }
     }
 
-    checkTurfWar( token ) {
+    async checkTurfWar( token ) {
         if (token.faction === this.name || token.type !== "deploy") return;
 
+        this.message("Responds in the face of hostile incursions into their turf");
+
+        let args = {
+            player: this.getPlayer(),
+            area: this.game().areas[token.location],
+            canDecline: true,
+        };
+
+        await this.deploy( args );
+
+        /*
         let turf = this.getTurfToken();
         if (!turf.revealed || turf.location !== token.location) return;
 
         turf.revealed = false;
         let player = this.getPlayer();
         player.data.passed = false;
-
-        this.message("Flips their Turf War token face down in the face of hostile incursions");
+        */
     }
 
 

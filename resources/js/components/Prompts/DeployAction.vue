@@ -443,6 +443,8 @@
                 // if this deploy action if from a token, then yes
                 if( this.data.fromToken ) return true;
 
+                if( this.data.canDecline ) return true;
+
                 // if we have no units to deploy, then yes
                 if( !this.reserves.length && !this.hasFromAreaUnits ) return true;
 

@@ -7,7 +7,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'playEvents', args : [3] },
-                    { test : 'tokensInAreas', args : [5] },
+                    { test : 'tokensInAreas', args : [6] },
                 ],
                 value : 2
             },
@@ -33,7 +33,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'killUnits', args : [4] },
+                    { test : 'killUnits', args : [5] },
                 ],
                 value : 1
             },

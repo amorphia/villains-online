@@ -164,6 +164,8 @@ class Agency extends Faction {
         // flip it face down
         token.revealed = false;
 
+        this.data.usedWoundAgentActions++;
+
         // announce our response
         this.message( `flips their <span class="faction-${token.faction}">${token.name}</span> token in the ${token.location} face down` );
     }
@@ -186,11 +188,11 @@ class Agency extends Faction {
 
     surveyorOnBeforeAttack( args, victim ) {
         let championsInArea = victim.unitsInArea( args.area, { isChampion: true } );
-        console.log("championsInArea", championsInArea);
 
         if (!championsInArea.length ) return;
 
         args.attacks.push(3);
+        //args.attacks.push(3);
         args.seeking = true;
     }
 
@@ -346,7 +348,7 @@ class Agency extends Faction {
         });
 
         // if we didn't choose a token, abort
-        if( !fromResponse.tokens ) return this.message( `Declines to move a token to the ${area.name}` );
+        if( !fromResponse.tokens?.length ) return this.message( `Declines to move a token to the ${area.name}` );
 
         // player optionally chooses a token to move
         let toResponse = await this.prompt( 'choose-tokens', {
@@ -358,10 +360,12 @@ class Agency extends Faction {
         });
 
         // if we didn't choose a token, abort
-        if( !toResponse.tokens ) return this.message( `Declines to move a token to the ${area.name}` );
+        if( !toResponse.tokens?.length ) return this.message( `Declines to move a token to the ${area.name}` );
 
         // resolve our token drag
         this.resolveTokenMove( fromResponse, toResponse, area );
+
+        return { dontAdvancePlayer: true };
     }
 
 
@@ -383,7 +387,7 @@ class Agency extends Faction {
         _.discardToken( toToken, toArea, fromToken );
 
         //move to new area
-        this.message( `The Surveyor moves a token from The ${fromArea.name} to the ${area.name}` );
+        this.message( `The Surveyor moves a token from The ${fromArea.name} to the ${toArea.name}` );
     }
 
     /**
