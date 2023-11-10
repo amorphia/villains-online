@@ -76,7 +76,6 @@ class Bikers extends Faction {
                 flipped: false,
                 killed: false,
                 onDeploy: 'bladeIntimidate',
-                onMove: 'bladeIntimidate',
                 selected : false,
                 hitsAssigned : 0,
                 noReplace: true,
