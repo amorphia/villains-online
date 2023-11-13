@@ -85,6 +85,9 @@ let obj = {
         // if our reward is Plan Points, gain them and return
         if( prop === 'pp' ) return this.gainPP( value );
 
+        // if our reward is resources, gain them and return
+        if( prop === 'resources' ) return this.gainResources( value );
+
         // otherwise use the prop name to increase the matching property on our data object
         this.data[prop] += value;
     }

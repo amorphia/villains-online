@@ -14,10 +14,10 @@ class Molemen extends Faction {
         };
 
         this.capturedRewards = [
-            { ap : 1, maxEnergy : 1 },
-            { ap : 1, cardDraw : 1 },
-            { ap : 1, maxEnergy : 1 },
-            { ap : 2, cardDraw : 1 },
+            { ap : 1, maxEnergy : 1, resources: 2 },
+            { ap : 1, cardDraw : 1, resources: 2 },
+            { ap : 1, maxEnergy : 1, resources: 2 },
+            { ap : 2, cardDraw : 1, resources: 2 },
         ];
 
         //data
