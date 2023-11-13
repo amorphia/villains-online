@@ -106,7 +106,7 @@ let obj = {
             advance = false;
         }
 
-        if( output.dontAdvancePlayer ){
+        if( output?.dontAdvancePlayer ){
             advance = false;
         }
 

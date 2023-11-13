@@ -223,7 +223,7 @@ let obj = {
         }
 
         if(triggeredOutput?.dontAdvancePlayer){
-            output.dontAdvancePlayer = true;
+            output?.dontAdvancePlayer = true;
         }
 
         // return our output
