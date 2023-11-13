@@ -28,6 +28,8 @@ class Survivalists extends Faction {
             { ap : 2, cardDraw : 1 },
         ];
 
+        this.data.captured.max = this.capturedRewards.length;
+
         // tokens
         this.tokens['deploy'].count = 4;
 
