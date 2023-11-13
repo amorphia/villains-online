@@ -22,6 +22,12 @@ class Survivalists extends Faction {
             "onCleanUp" : "prepareUnits"
         };
 
+        this.capturedRewards = [
+            { ap : 1, maxEnergy : 1 },
+            { ap : 2, cardDraw : 1 },
+            { ap : 2, cardDraw : 1 },
+        ];
+
         // tokens
         this.tokens['deploy'].count = 4;
 
