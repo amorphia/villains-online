@@ -74,7 +74,7 @@ class Agency extends Faction {
      * Process faction upgrade
      */
     processUpgrade( upgrade ) {
-        this.data.maxWoundAgentActions = upgrade === 1 ? 1 : 100;
+        this.data.maxWoundAgentActions = upgrade;
     }
 
     async takeAgentAction( player, areaName ){
@@ -172,7 +172,6 @@ class Agency extends Faction {
 
 
     incrementEventCardTracker( event ){
-        console.log("incrementEventCardTracker", event);
         if(event.card.type === "event") this.data.eventCardsPlayed++;
     }
 
@@ -222,6 +221,7 @@ class Agency extends Faction {
         // draw our intel cards
         let cards = this.drawIntelCards( area, enemyTypesCount );
         let done = false;
+        let advance = true;
 
         while(done === false){
             let response = await this.chooseIntelCard( area, cards );
@@ -239,7 +239,13 @@ class Agency extends Faction {
             //args.area = this.game().areas[args.area];
             response.cardId = cardId;
             response.cost = this.game().objectMap[ cardId ].cost;
-            await this.resolveCard( args, response );
+
+            let output = await this.resolveCard( args, response );
+            console.log("intel output", output );
+
+            if(output?.dontAdvancePlayer){
+                advance = false;
+            }
 
             this.data.eventCardsPlayed++;
 
@@ -252,7 +258,7 @@ class Agency extends Faction {
         // discard unselected cards (if any)
         if( cards.length ) this.discardCards( cards.map( item => item.id ) );
 
-        this.game().advancePlayer();
+        this.game().advancePlayer( {}, advance );
     }
 
     /**

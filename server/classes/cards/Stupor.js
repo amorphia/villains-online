@@ -37,7 +37,7 @@ class Stupor extends Card {
      */
     hasTokensToStupor(){
         // does this area have a token belonging to another player that hasn't been revealed?
-        return this.area.data.tokens.some( token => token.faction !== this.faction.name && !token.revealed );
+        return this.area.data.tokens.some( token => token.id && token.faction !== this.faction.name && !token.revealed );
     }
 }
 

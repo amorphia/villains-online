@@ -31,6 +31,8 @@ class Subway extends Area {
         if ( output?.declined ){
             faction.message( `Failed to deploy`, { class : 'warning' });
         }
+
+        return output;
     }
 
 

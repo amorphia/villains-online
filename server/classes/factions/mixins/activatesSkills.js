@@ -33,15 +33,20 @@ let obj = {
             skillModification = await this[this.triggers.onBeforeSkill]( area, exhaustedUnits );
         }
 
+        let output = {};
+
         try {
             // activate this area's skill
             if( !skillModification?.dontResolveSkill ){
-                await area.skill( this );
+                output = await area.skill( this );
             }
 
 
             // if we have the doubleResolve skill modification, resolve that skill a second time
-            if( skillModification?.doubleResolve ) await area.skill( this );
+            if( skillModification?.doubleResolve ){
+                let secondOutput = await area.skill( this );
+                output = {...output, ...secondOutput}
+            }
 
             // handle any post skill activation triggers
             await this.handlePostSkillTriggers( area, exhaustedUnits );
@@ -50,8 +55,7 @@ let obj = {
             console.error( error );
         }
 
-
-        return exhaustedUnits;
+        return { exhaustedUnits, output };
 
     },
 

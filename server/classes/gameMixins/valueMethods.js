@@ -21,7 +21,7 @@ let mixin = {
         let areasWithUnrevealedTokens = {};
 
         _.forEach( this.areas, area => {
-            if( _.find( area.data.tokens, token => !token.revealed ) ) areasWithUnrevealedTokens[area.name] = true
+            if( _.find( area.data.tokens, token => token.id && !token.revealed ) ) areasWithUnrevealedTokens[area.name] = true
         });
 
         if( output === 'array' ) areasWithUnrevealedTokens = Object.keys( areasWithUnrevealedTokens );

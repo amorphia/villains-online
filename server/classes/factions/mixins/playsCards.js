@@ -123,10 +123,16 @@ let obj = {
         let output;
         let cardsPlayed = 0;
         let declined = false;
+        let advance = true;
 
         // play a numbers of cards up to our card limit
         while( cardsPlayed < this.data.cardLimit && !declined ) {
-            let output = await this.playACard( args );
+            output = await this.playACard( args );
+
+            if( output?.dontAdvancePlayer ){
+                advance = false;
+            }
+
             if( output?.declined ){
                 declined = true;
             } else {
@@ -143,7 +149,7 @@ let obj = {
         // handle onActivateToken triggers
         await this.handleAfterActivateTokenTriggers( args );
 
-        this.game().advancePlayer();
+        this.game().advancePlayer( {}, advance );
     },
 
 
@@ -178,7 +184,6 @@ let obj = {
 
 
     async resolveCard( args, response ){
-        console.log("resolveCard args.area", args.area);
         // if we declined to resolve a card abort
         if( response.decline ) return { declined : true };
 
@@ -198,17 +203,12 @@ let obj = {
         let message = `Pay xC${response.cost}x to play <span class="highlight">${ card.name }</span>`;
         this.message( message, { type: 'cards', cards: [card], area : args.area });
 
-        // resolve the card
-        try {
-            // new up our card class
-            let cardClass = this.game().cards[ card.class ];
-            await new cardClass().resolve( this, args.area );
-        } catch( error ){
-            console.error( error );
-        }
+        // new up our card class
+        let cardClass = this.game().cards[ card.class ];
+        let cardOutput = await new cardClass().resolve( this, args.area );
 
         // return our output
-        return { cost: response.cost, card: card, area: response.areaName };
+        return { cost: response.cost, card: card, area: response.areaName, dontAdvancePlayer: cardOutput?.dontAdvancePlayer };
     },
 
 
@@ -240,8 +240,6 @@ let obj = {
      * @returns {[]}
      */
     getResolvedCardArray(  card, area  ){
-        console.log( "getResolvedCardArray area", area );
-
         // if the card is an event, just throw it in the discard
         if( card.type === 'event' ){
 

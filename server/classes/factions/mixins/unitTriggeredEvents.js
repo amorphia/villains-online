@@ -23,7 +23,6 @@ let obj = {
                 .catch( error => console.log( error ) );
         }
 
-        console.log("unitTriggeredEvents output:", output);
         return output;
     },
 

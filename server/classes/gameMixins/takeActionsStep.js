@@ -96,15 +96,17 @@ let obj = {
         let area = this.areas[areaName];
         let faction = player.faction();
         let advance = true;
-        let exhaustedUnits;
 
-        try {
-            exhaustedUnits = await faction.useSkill( area );
-        } catch( error ){
-            console.error( error );
-        }
+        let results = await faction.useSkill( area );
+
+        let exhaustedUnits = results?.exhaustedUnits;
+        let output = results?.output;
 
         if( exhaustedUnits && exhaustedUnits.some( event => event.unit.exhaustExtraAction ) ){
+            advance = false;
+        }
+
+        if( output.dontAdvancePlayer ){
             advance = false;
         }
 

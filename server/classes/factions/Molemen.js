@@ -132,13 +132,17 @@ class Molemen extends Faction {
         const cards = this.discardCards( response.cards );
         const area = cards[0].target;
 
-        // save tunnel
-        this.data.tunnels.push(area);
+        if(area){
+            this.message( "No target to tunnel to", { class : 'warning'  });
+        } else {
+            // save tunnel
+            this.data.tunnels.push(area);
 
-        await this.game().timedPrompt('units-shifted', {
-            message: `Digs a tunnel to the ${area}`,
-            units: [{ type: 'tunnel', location: area, faction: this.name }]
-        });
+            await this.game().timedPrompt('units-shifted', {
+                message: `Digs a tunnel to the ${area}`,
+                units: [{ type: 'tunnel', location: area, faction: this.name }]
+            });
+        }
 
         // advance the game
         this.game().advancePlayer();

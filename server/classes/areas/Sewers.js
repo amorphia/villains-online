@@ -67,7 +67,7 @@ class Sewers extends Area {
             message: "Choose a unit to duplicate"
         });
 
-        await this.resolveCloneUnit( response, faction );
+        return await this.resolveCloneUnit( response, faction );
     }
 
 
@@ -152,6 +152,8 @@ class Sewers extends Area {
         if ( output?.declined ){
             faction.message( `Can't deploy to the ${unit.location}` );
         }
+
+        return output;
     }
 
 }

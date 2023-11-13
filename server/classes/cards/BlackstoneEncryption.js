@@ -18,7 +18,7 @@ class BlackstoneEncryption extends Card {
         let areaToActivate = await this.chooseAreaToActivate( areas );
 
         // activate that skill
-         await this.faction.useSkill( areaToActivate )
+        return await this.faction.useSkill( areaToActivate )
              .catch( error => console.log( error ) );
     }
 
