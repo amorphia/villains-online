@@ -123,7 +123,13 @@ class Survivalists extends Faction {
 
     processUpgrade( upgrade ){
         this.data.units.forEach(unit => {
-           unit.soloDefenseBonus = unit.baseSoloDefenseBonus ? (unit.baseSoloDefenseBonus + upgrade) : upgrade;
+            if(unit.basic){
+                unit.soloDefenseBonus = 2;
+            }
+
+            if( upgrade === 2 && unit.baseSoloDefenseBonus ){
+                unit.soloDefenseBonus = unit.baseSoloDefenseBonus + 2;
+            }
         });
     }
 
