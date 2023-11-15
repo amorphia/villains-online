@@ -12,14 +12,14 @@ class Survivalists extends Faction {
         this.data.focusDescription = "Have units in enemy areas";
         this.data.title = "Coalition of Preppers";
         this.data.zeke = null;
-        this.data.unitPropAttackBonus = { startedPrepared : 0 };
+        //this.data.unitPropAttackBonus = { startedPrepared : 0 };
         this.data.minimumBugOutCount = 1;
 
         this.triggers = {
             "onDeployAll" : "checkBugOut",
             "onMoveAll" : "checkBugOut",
             'onSetup' : 'setZekeData',
-            "onCleanUp" : "prepareUnits"
+            "onAfterDetermineControl" : "prepareUnits"
         };
 
         this.capturedRewards = [
@@ -79,16 +79,19 @@ class Survivalists extends Faction {
         this.units['mole'].data.prepared = false;
         this.units['mole'].data.skilled = false;
         this.units['mole'].data.ready = false;
+        this.units['mole'].data.soloDefenseBonus = 0;
         this.units['mole'].data.onDamaged = 'checkPrepperToughness';
 
         this.units['goon'].data.prepared = false;
         this.units['goon'].data.skilled = false;
         this.units['goon'].data.ready = false;
+        this.units['goon'].data.soloDefenseBonus = 0;
         this.units['goon'].data.onDamaged = 'checkPrepperToughness';
 
         this.units['patsy'].count = 8;
         this.units['patsy'].data.prepared = false;
-        this.units['patsy'].data.attack = [9];
+        //this.units['patsy'].data.attack = [9];
+        this.units['patsy'].data.soloDefenseBonus = 0;
         this.units['patsy'].data.skilled = false;
         this.units['patsy'].data.ready = false;
         this.units['patsy'].data.onDamaged = 'checkPrepperToughness';
@@ -111,6 +114,7 @@ class Survivalists extends Faction {
                 selected: false,
                 hitsAssigned: 0,
                 soloDefenseBonus: 3,
+                baseSoloDefenseBonus: 3,
                 skilled: true,
                 ready: false,
             }
@@ -118,7 +122,9 @@ class Survivalists extends Faction {
     }
 
     processUpgrade( upgrade ){
-        this.data.unitPropAttackBonus = { startedPrepared : (upgrade * 2) };
+        this.data.units.forEach(unit => {
+           unit.soloDefenseBonus = unit.baseSoloDefenseBonus ? (unit.baseSoloDefenseBonus + upgrade) : upgrade;
+        });
     }
 
     /**
@@ -241,7 +247,7 @@ class Survivalists extends Faction {
         if(this.data.upgrade > 0){
             mods.push({
                 type: 'prepperAttack',
-                text: `Your prepared units in this area gain ${this.data.upgrade * 2} to their attack rolls`
+                text: `Units attacking you suffer -${this.data.upgrade} to their attack rolls if you have only one defending unit remaining`
             });
         }
 

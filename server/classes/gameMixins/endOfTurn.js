@@ -1,5 +1,4 @@
 let obj = {
-
     /**
      * Begin the end of turn step
      */
@@ -8,6 +7,11 @@ let obj = {
         // determine control step
         this.data.phase = "determine-control";
         await this.determineControlStep();
+
+        // check faction onAfterDetermineControl Triggers
+        Object.values( this.factions ).forEach( faction => {
+            if( faction.triggers.onAfterDetermineControl ) faction[faction.triggers.onAfterDetermineControl]();
+        });
 
         // collect resources step
         this.collectResourcesStep();
