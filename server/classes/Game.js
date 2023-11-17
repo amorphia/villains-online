@@ -684,6 +684,14 @@ class Game {
         // rebuild the action deck card by card without breaking our deck references
         cards.forEach( card => this.deck.deck.push( card ) );
 
+        Object.values( this.factions ).forEach( faction => {
+            console.log("reshuffle", faction.name, faction.data.hiddenDiscard?.length);
+            if( faction.data.hiddenDiscard?.length ){
+                let hiddenCards = faction.data.hiddenDiscard.splice( 0 );
+                hiddenCards.forEach( card => this.deck.deck.push( card ) );
+            }
+        });
+
         // shuffle the deck
         this.shuffle( this.deck.deck );
 

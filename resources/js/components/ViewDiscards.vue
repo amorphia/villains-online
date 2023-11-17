@@ -19,6 +19,18 @@
                      class="view-discard__card">
             </div>
             <div v-else class="view-player__empty">Discard Pile Empty</div>
+
+            <!-- discard pile -->
+            <template v-if="shared.faction.hiddenDiscard">
+                <div class="title">Face Down Cards</div>
+                <div v-if="shared.faction.hiddenDiscard.length" class="d-flex flex-wrap justify-center pt-4">
+                    <img v-for="card in sortedHiddenDiscard"
+                         @click="shared.card = `/images/cards/${card.file}.jpg`"
+                         :src="`/images/cards/${card.file}.jpg`"
+                         class="view-discard__card">
+                </div>
+                <div v-else class="view-player__empty">No Face Down Cards</div>
+            </template>
         </div>
     </transition>
 </template>
@@ -39,6 +51,13 @@
             // Sorts our discard pile by name
             sortedDiscard(){
                 return this.shared.data.discard.sort( (a,b) => (a.file < b.file) ? -1 : (a.file > b.file) ? 1 : 0 );
+            },
+
+            // Sorts our discard pile by name
+            sortedHiddenDiscard(){
+                if( !this.shared.faction.hiddenDiscard?.length ) return [];
+
+                return this.shared.faction.hiddenDiscard.sort( (a,b) => (a.file < b.file) ? -1 : (a.file > b.file) ? 1 : 0 );
             },
 
             // sets our shuffle message to alert players if the deck has been shuffled yet this game

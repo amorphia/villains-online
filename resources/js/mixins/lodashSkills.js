@@ -39,7 +39,7 @@ let helpers = {
     },
 
     canUseAgent( faction, area ){
-        if( !area ) return false;
+        if( !area || !faction.maxWoundAgentActions ) return false;
 
         // format inputs
         if( faction.data ) faction = faction.data;

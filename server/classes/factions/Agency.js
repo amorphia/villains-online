@@ -21,11 +21,17 @@ class Agency extends Faction {
 
         // icons
         this.data.flipableUnits = ['patsy'];
-        this.data.hasKilledChampion = false;
+        this.data.hasKilledChampion = [];
+        this.data.flipTokenOnWetwork = false;
+        this.data.maxIntelCards = 2;
+        this.data.surveyorBonusDice = 0;
         this.data.eventCardsPlayed = 0;
-        this.data.maxWoundAgentActions = 0;
-        this.data.usedWoundAgentActions = 0;
-        this.data.lastAgentGameAction = 0; // used to track if we are permitted to use agent again
+        //this.data.maxWoundAgentActions = 0;
+        //this.data.usedWoundAgentActions = 0;
+        //this.data.lastAgentGameAction = 0; // used to track if we are permitted to use agent again
+        this.data.hiddenDiscard = [];
+
+        this.tokens['battle'].count = 2;
 
         // tokens
         this.tokens['intel'] = {
@@ -34,7 +40,7 @@ class Agency extends Faction {
                 influence: 1,
                 type: 'intel',
                 cost: 0,
-                resource: 1,
+                resource: 0,
                 description: "Reveal a card from the action deck for each type of basic enemy unit in this area, you may play any event cards revealed this way here (pay costs normally) and discard the rest.",
                 req :  "Discard this token if no cards are revealed after activating it"
             }
@@ -74,9 +80,12 @@ class Agency extends Faction {
      * Process faction upgrade
      */
     processUpgrade( upgrade ) {
-        this.data.maxWoundAgentActions = upgrade;
+        //this.data.maxWoundAgentActions = upgrade;
+        this.data.flipTokenOnWetwork = true;
+        this.data.surveyorBonusDice = upgrade;
     }
 
+    /*
     async takeAgentAction( player, areaName ){
         let area = this.game().areas[areaName];
 
@@ -169,30 +178,80 @@ class Agency extends Faction {
         // announce our response
         this.message( `flips their <span class="faction-${token.faction}">${token.name}</span> token in the ${token.location} face down` );
     }
-
+    */
 
     incrementEventCardTracker( event ){
         if(event.card.type === "event") this.data.eventCardsPlayed++;
     }
 
-    checkKilledChampion( unit, options ){
-        if(!_.isChampion( unit ) || this.data.hasKilledChampion){
+    async checkKilledChampion( unit, options ) {
+        if (!_.isChampion(unit) || this.data.hasKilledChampion.includes( unit.faction )) {
             return;
         }
 
-        this.data.hasKilledChampion = true;
-        this.drawCards( 2, true );
+        this.data.hasKilledChampion.push( unit.faction );
+        this.drawCards(2, true);
         this.message("draws two cards for assassinating an enemy champion");
+
+        if ( !this.data.flipTokenOnWetwork ) return;
+
+        // flip token stuff
+
+        let flippableAreas = this.areasWithRevealedValidTokens();
+        if( ! flippableAreas.length  ){
+            return this.message( "No tokens to flip", { class: 'warning' } );
+        }
+
+        // prompt our player to choose a token to flip faced down
+        response = await this.prompt( 'choose-tokens', {
+            count : 1,
+            areas : flippableAreas,
+            playerOnly : true,
+            revealedOnly : true,
+            typeIn : ["intel", "card"],
+            message : "Choose a revealed CARD or INTEL token to flip face down",
+        });
+
+        // prepare our data, then resolve our action card
+        // if we didn't choose a token, abort
+        if( !response.tokens ) return this.message("Declines to flip a token", { class: "warning" });
+
+        // get our token object
+        let token = this.game().objectMap[ response.tokens[0] ];
+
+        // flip it face down
+        token.revealed = false;
+
+        // announce our response
+        this.message( `flips their <span class="faction-${token.faction}">${token.name}</span> token in the ${token.location} face down` );
+    }
+
+    areasWithRevealedValidTokens(){
+        let areas = {};
+        let validTypes = ['card', 'intel'];
+
+        // cycle through our tokens
+        this.data.tokens.forEach( token => {
+            // if this token is in play, not on xavier, and not revealed add its location to our areas
+            if( token.location && token.revealed && validTypes.includes(token.type) ){
+                areas[token.location] = true;
+            }
+        });
+
+        return Object.keys( areas );
     }
 
     surveyorOnBeforeAttack( args, victim ) {
         let championsInArea = victim.unitsInArea( args.area, { isChampion: true } );
+        if ( !championsInArea.length ) return;
 
-        if (!championsInArea.length ) return;
+        let loops = this.data.surveyorBonusDice;
 
-        args.attacks.push(3);
-        //args.attacks.push(3);
-        args.seeking = true;
+        while( loops ){
+            args.attacks.push(3);
+            args.seeking = true;
+            loops--;
+        }
     }
 
     /**
@@ -222,6 +281,7 @@ class Agency extends Faction {
         let cards = this.drawIntelCards( area, enemyTypesCount );
         let done = false;
         let advance = true;
+        let cardsPlayed = 0;
 
         while(done === false){
             let response = await this.chooseIntelCard( area, cards );
@@ -251,14 +311,30 @@ class Agency extends Faction {
 
             // remove it from our cards array
             cards = cards.filter( item => item.id !== cardId );
+            cardsPlayed++;
 
-            if( !cards.length ) done = true;
+            if( !cards.length || cardsPlayed === this.data.maxIntelCards ) done = true;
         }
 
         // discard unselected cards (if any)
-        if( cards.length ) this.discardCards( cards.map( item => item.id ) );
+        if( cards.length ) this.discardCardsToHiddenDiscard( cards );
 
         this.game().advancePlayer( {}, advance );
+    }
+
+    discardCardsToHiddenDiscard( cards ){
+        let count = cards.length;
+
+        // move each card from our hand to the discard pile
+        for( let card of cards ) {
+            _.moveItemById(
+                card.id,
+                this.data.cards.hand,
+                this.data.hiddenDiscard,
+            );
+        }
+
+        this.message(`places ${count} cards face down` );
     }
 
     /**
@@ -290,12 +366,7 @@ class Agency extends Faction {
         let cards = this.data.cards.hand.slice( -count );
 
         // reveal the cards to all players
-        this.game().message({
-            faction : this,
-            message: `use intel in the <span class="highlight">${area.name}</span> revealing:`,
-            type : 'cards',
-            cards : cards,
-        });
+        this.message(`use intel in the <span class="highlight">${area.name}</span> to draw ${count} cards`);
 
         return cards;
     }
@@ -328,9 +399,9 @@ class Agency extends Faction {
     }
 
     resetTrackers(){
-        this.data.hasKilledChampion = false;
+        this.data.hasKilledChampion = [];
         this.data.eventCardsPlayed = 0;
-        this.data.currentWoundAgentActions = 0;
+        //this.data.currentWoundAgentActions = 0;
     }
 
     async surveyorDragToken( event ){
@@ -427,14 +498,15 @@ class Agency extends Faction {
             text: `Wounded patsies gain xIxxIx`
         });
 
-        mods.push({
-            type: 'surveyorBonus',
-            text: `the Surveyor gains +1 attack die and seeking when attacking a player with a champion here`
-        });
+        if(this.data.surveyorBonusDice){
+            mods.push({
+                type: 'surveyorBonus',
+                text: `the Surveyor gains +${this.data.surveyorBonusDice} attack die and seeking when attacking a player with a champion here`
+            });
+        }
+
         return mods;
     }
-
-
 }
 
 
