@@ -8,8 +8,8 @@
 
                 <!-- response buttons -->
                 <div class="flex-center">
-                    <button class="button button-empty" @click="resolve( false )">No</button>
-                    <button class="button" @click="resolve( true )">Yes</button>
+                    <button class="button button-empty" @click="resolve( false )">{{ noText }}</button>
+                    <button class="button" @click="resolve( true )">{{ yesText }}</button>
                 </div>
 
             </div>
@@ -30,6 +30,14 @@
         },
 
         computed : {
+            noText(){
+                return this.data.noButtonText ?? "no";
+            },
+
+            yesText(){
+                return this.data.yesButtonText ?? "yes";
+            },
+
             /**
              * return prompt data
              * @returns {object}

@@ -17,14 +17,29 @@ class RousingSpeech extends Card {
         if( !oldOwner || (this.faction.totalPoints() + 4) > oldOwner.totalPoints() ) return;
 
         this.faction.captureEnemyMarker( this.area );
+        this.game.sound( 'coin' );
 
         // if the old owner isn't the neutral, the old owner loses control of the area
         oldOwner.loseControlOfArea( this.area );
 
+        // prompt player to decide to move lotus dancer
+        let response = await this.faction.prompt( 'question', {
+            message: `Take control of this area or leave it neutral?`,
+            yesButtonText: 'Take Control',
+            noButtonText: 'Leave Neutral',
+        });
+
+        if ( !response.answer ) {
+            await this.game.timedPrompt('seize-control', {
+                area: this.area.name,
+                message: `The ${this.faction.name} claim the control marker of the ${this.area.name} from the ${oldOwner.name} leaving it neutral`,
+            });
+
+            return;
+        }
+
         // the new owner gains control of the area
         this.faction.gainControlOfArea( this.area );
-
-        this.game.sound( 'coin' );
 
         await this.game.timedPrompt('seize-control', {
             area: this.area.name,
