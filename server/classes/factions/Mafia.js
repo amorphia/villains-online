@@ -10,7 +10,7 @@ class Mafia extends Faction {
         // triggers
         this.triggers = {
             "onStartOfTurn" : "chooseSpy",
-            "onCleanUp" : "resetSpy"
+            "onCleanUp" : "resetSpy",
         };
 
         // data
@@ -19,6 +19,8 @@ class Mafia extends Faction {
         this.data.title = "La Cosa Nostra";
         this.data.focusDescription = "Infiltrate or control enemy targets";
         this.data.bonusDeploy = { type: 'champion', count: 1 };
+        this.data.fixerReturnedCount = 0;
+        this.data.fixerReturnedMax = 0;
 
         //tokens
         this.tokens['hit-man'] = {
@@ -48,6 +50,7 @@ class Mafia extends Faction {
                 ready: false,
                 type: 'champion',
                 onDeploy : 'fixerDeploy',
+                onUnitKilled: 'fixerKilled',
                 basic: false,
                 influence: 1,
                 attack: [5],
@@ -57,6 +60,29 @@ class Mafia extends Faction {
                 hitsAssigned : 0
             }
         };
+    }
+
+    /**
+     * Process faction upgrade
+     */
+    processUpgrade( upgrade ) {
+        this.data.fixerReturnedMax = upgrade;
+    }
+
+    async fixerKilled( event ){
+        if(!this.data.fixerReturnedMax || this.data.fixerReturnedMax <= this.data.fixerReturnedCount){
+            return;
+        }
+
+        let fixer = this.getChampion();
+
+        // announce thw death and rebirth of the incarnation of divinity, the cycle begins anew!
+        this.game().sound( 'wiff' );
+        this.message(`The fixer slinks away`);
+
+        // return  to our reserves
+        this.returnUnitToReserves( fixer );
+        this.data.fixerReturnedCount++;
     }
 
     /**
@@ -93,6 +119,7 @@ class Mafia extends Faction {
      */
     resetSpy(){
         this.data.spy = null;
+        this.data.fixerReturnedCount = 0;
     }
 
 
@@ -113,6 +140,7 @@ class Mafia extends Faction {
         /// if we don't have our upgrades yet, then we are done
         if( !this.data.upgrade ) return;
 
+        /*
         // the fixer makes an attack upon entering the area if we have our second upgrade
         let area = this.game().areas[ fixer.location ];
         let output = await this.attack({
@@ -127,7 +155,7 @@ class Mafia extends Faction {
             await this.game().timedPrompt('noncombat-attack', { output : [output] } )
                 .catch( error => console.error( error ) );
         }
-
+        */
     }
 
 
