@@ -9,7 +9,7 @@ class Subway extends Area {
         this.data.skill = "Deploy one unit to any area (pay costs normally).";
         this.data.adjacent = [ 'university', 'capitol', 'church' ];
         this.data.adjacentAlts = {
-            university : "bank",
+            university : "factory",
             church : "sewers",
         };
     }
