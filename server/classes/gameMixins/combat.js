@@ -54,8 +54,9 @@ let obj = {
             return 'hidden unit ignores hit';
         }
 
-        if( owner.data.smokeAreas?.includes(unit.location) ){
+        if( unit.type === 'smoke' ){
             this.popup( owner.playerId, { type: 'smoke', area : unit.location, faction : owner.name });
+            owner.data.smokeAreas = owner.data.smokeAreas?.filter( area => area !== unit.location )
             return 'a hit was lost in the smoke';
         }
 
