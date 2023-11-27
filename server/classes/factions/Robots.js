@@ -8,6 +8,11 @@ class Robots extends Faction {
     constructor( owner, game ) {
         super( owner, game );
 
+        // triggered events
+        this.triggers = {
+            "onSetup": "setupKillFactionCapturedRewards",
+        };
+
         // data
         this.data.name = this.name;
         this.data.title = "Rise of the Machines";
@@ -81,7 +86,6 @@ class Robots extends Faction {
             }
         };
     }
-
 
     /**
      * Process faction upgrade

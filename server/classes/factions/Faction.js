@@ -100,6 +100,13 @@ class Faction {
 
     }
 
+    setupKillFactionCapturedRewards(){
+        if(this.game().data.playerOrder.length >= 4) return;
+
+        console.log("setting kill faction captured rewards for three player");
+
+        this.capturedRewards[0] = {};
+    }
 
     /**
      * Set God mode

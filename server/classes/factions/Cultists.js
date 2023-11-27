@@ -7,6 +7,11 @@ class Cultists extends Faction {
     constructor(owner, game) {
         super(owner, game);
 
+        // triggered events
+        this.triggers = {
+            "onSetup": "setupKillFactionCapturedRewards",
+        };
+
         // data
         this.data.maxEnergy = 4;
         this.data.tokenCost = 0; // post to place tokens
@@ -56,7 +61,6 @@ class Cultists extends Faction {
             }
         };
     }
-
 
     /**
      * Process faction upgrade
