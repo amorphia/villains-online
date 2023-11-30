@@ -132,7 +132,10 @@ class Bikers extends Faction {
     }
 
     async checkTurfWar( token ) {
-        if (token.faction === this.name || token.type !== "deploy") return;
+
+        let turf = this.data.tokens.find( token => token.name === 'turf' && token.revealed );
+
+        if (token.faction === this.name || token.type !== "deploy" || turf?.location !== token.location) return;
 
         this.message("Responds in the face of hostile incursions into their turf");
 
