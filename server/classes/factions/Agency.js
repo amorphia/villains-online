@@ -203,7 +203,7 @@ class Agency extends Faction {
         }
 
         // prompt our player to choose a token to flip faced down
-        response = await this.prompt( 'choose-tokens', {
+        let response = await this.prompt( 'choose-tokens', {
             count : 1,
             areas : flippableAreas,
             playerOnly : true,
