@@ -3,7 +3,7 @@ let obj = {
   async lockedAction(){
       this.message( `are locked` );
 
-      if(this.game().data?.options?.lootWhenLocked && this.data.cards.hand.length){
+      if(this.game().data?.options?.lootWhenLocked){
           await this.lootOnLocked();
       }
   },
