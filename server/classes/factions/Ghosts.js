@@ -32,6 +32,8 @@ class Ghosts extends Faction {
             { ap : 2 },
         ];
 
+        this.data.captured.max = this.capturedRewards.length;
+
         this.units['mad-king'] = {
             count: 1,
             data: {
