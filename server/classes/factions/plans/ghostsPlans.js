@@ -145,7 +145,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [4] },
+                    { test : 'tokensInAreas', args : [5] },
                 ],
                 value : 1
             },
