@@ -63,7 +63,7 @@ class Card {
         let killedHigherTP = false;
         let factionTP = this.faction.totalPoints();
 
-        if( output.hasKill ){
+        if( output?.hasKill ){
             output.hasKill.forEach(unit => {
                 let faction = this.game.factions[unit.faction];
                 let tp = faction.totalPoints();
