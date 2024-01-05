@@ -56,15 +56,21 @@ let obj = [
         objectives : [
             {
                 requirements : [
+                    { test : 'skilledAtTarget', args : [2] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'controlArea', args : ['capitol'] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 2] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
-                value : 2
+                value : 1
             },
         ]
     },

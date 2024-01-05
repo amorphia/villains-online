@@ -200,8 +200,8 @@ class Loyalists extends Faction {
      * @returns {boolean}
      */
     canActivateKnight( token, area ) {
-        // do we have any knightable units in this area?
-        return !! this.data.units.find( unit => this.knightable( unit, area ) );
+        // do we have any knightable units in play?
+        return !! this.data.units.find( unit => this.knightable( unit ) );
     }
 
 
@@ -209,14 +209,10 @@ class Loyalists extends Faction {
      * is the given unit knightable?
      *
      * @param unit
-     * @param area
      * @returns {boolean}
      */
-    knightable( unit, area ){
-        if( area?.name ) area = area.name;
-        return unit.location === area
-                && unit.basic
-                && !unit.flipped;
+    knightable( unit ){
+        return _.unitInPlay( unit, { basic: true, notFlipped : true });
    }
 
 
@@ -226,12 +222,8 @@ class Loyalists extends Faction {
      * @param args
      */
     async activateKnightToken( args ) {
-        // creat an array of IDs for all of the knightable units in this area
-        let knightableUnitIds = this.data.units.filter( unit => this.knightable( unit, args.area ) )
-                                                .map( unit => unit.id );
-
         // choose which units to knight
-        let unitsToKnight = await this.chooseUnitsToKnight( knightableUnitIds, args );
+        let unitsToKnight = await this.chooseUnitsToKnight( args );
 
         // resolve knighting ceremony
         await this.resolveKnightUnits( unitsToKnight, args );
@@ -244,21 +236,19 @@ class Loyalists extends Faction {
     /**
      * Choose which units to knight
      *
-     * @param knightableUnitIds
      * @param args
      */
-    async chooseUnitsToKnight( knightableUnitIds, args ){
-        // if we can knight all the units we have here then just return them all,
-        // no need to choose. Just grab the appropriate objects from our map
-        if( knightableUnitIds.length <= this.data.knightCount ){
-            return knightableUnitIds.map( unitId => this.game().objectMap[unitId] );
-        }
+    async chooseUnitsToKnight( args ){
+        let areas = this.areasWithUnits( { basic: true, notFlipped : true } );
 
         let response = await this.prompt('choose-units', {
-            count : this.data.knightCount,
-            areas : [args.area.name],
-            unitList: knightableUnitIds,
+            count : 2,
+            areas : areas,
+            basicOnly : true,
             playerOnly : true,
+            unflippedOnly : true,
+            differentAreas : true,
+            optionalMax : true,
             message: "Choose units to knight"
         });
 

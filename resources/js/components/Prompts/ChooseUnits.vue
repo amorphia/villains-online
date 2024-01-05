@@ -492,6 +492,8 @@
                     return true;
                 }
 
+                console.log("this.data.differentAreas", this.data.differentAreas, "!unit.selected", !unit.selected, "this.selectedAreas.includes( unit.location )", this.selectedAreas.includes( unit.location ) );
+
                 // if we need to select units from different players and we already have one from this faction
                 if( this.data.differentAreas && !unit.selected && this.selectedAreas.includes( unit.location ) ){
                     return true;
