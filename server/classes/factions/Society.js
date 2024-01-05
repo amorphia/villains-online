@@ -53,7 +53,7 @@ class Society extends Faction {
         this.tokens['word-of-command'] = {
             count: 3,
             data: {
-                influence: 1,
+                influence: 2,
                 type: 'word-of-command',
                 cost: 0,
                 description: "Activate this area's skill ability (if you have not already activated it)",
