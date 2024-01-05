@@ -29,6 +29,7 @@ class Society extends Faction {
                 influence: 1,
                 type: 'hypnosis',
                 cost: 0,
+                resource : 1,
                 description: "Replace a unit in this area by paying its unit cost",
                 req : "This token must be discarded if you don't replace a unit"
             }
