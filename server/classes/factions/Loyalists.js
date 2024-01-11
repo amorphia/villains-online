@@ -12,7 +12,6 @@ class Loyalists extends Faction {
         this.data.name = this.name;
         this.data.title = "Her Majesty's Loyalists";
         this.data.knightCount = 2; // how many knights to create with our knight token
-        this.data.maxEnergy = 8;
         this.data.focusDescription = "Control specific areas";
 
         this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent'];
@@ -242,7 +241,7 @@ class Loyalists extends Faction {
         let areas = this.areasWithUnits( { basic: true, notFlipped : true } );
 
         let response = await this.prompt('choose-units', {
-            count : 2,
+            count : this.data.knightCount,
             areas : areas,
             basicOnly : true,
             playerOnly : true,
