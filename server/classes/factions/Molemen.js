@@ -132,7 +132,7 @@ class Molemen extends Faction {
         const cards = this.discardCards( response.cards );
         const area = cards[0].target;
 
-        if(area){
+        if(!area){
             this.message( "No target to tunnel to", { class : 'warning'  });
         } else {
             // save tunnel
