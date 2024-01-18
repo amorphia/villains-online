@@ -74,6 +74,8 @@ class University extends Area {
             if( unit.type === 'patsy' && unit.skilled && !unit.prepared ){
                 unit.skilled = false;
             }
+
+            faction.exhaustUnskilledUnits();
         });
     }
 

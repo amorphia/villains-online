@@ -100,6 +100,14 @@ class Faction {
 
     }
 
+    exhaustUnskilledUnits(){
+        this.data.units.forEach( unit => {
+            if( unit.ready && !unit.skilled ){
+                unit.ready = false;
+            }
+        });
+    }
+
     setupKillFactionCapturedRewards(){
         if(this.game().data.playerOrder.length >= 4) return;
 
