@@ -106,7 +106,7 @@ class Bikers extends Faction {
         let area = event.unit.location;
 
         // if The Blade wasn't deployed from a different area do nothing
-        if( from === area ) return;
+        // if( from === area ) return;
 
         const unitCount = this.unitsInArea( area ).length;
 
