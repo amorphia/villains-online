@@ -137,6 +137,7 @@ class Skeletons extends Faction {
         const unitTypesInReserves = this.unitTypesInReserves();
         const areasWithSkeletons = this.areasWithUnits({ basic: true, flipped: true });
 
+        console.log('unitTypesInReserves', unitTypesInReserves);
         const areas = {};
 
         Object.values( this.game().factions ).forEach( faction => {
@@ -144,7 +145,11 @@ class Skeletons extends Faction {
             options.typeIn = unitTypesInReserves;
 
             faction.data.units.forEach( unit => {
-                if( !_.isValidUnit( unit, options ) ) return;
+                if( !_.isValidUnit( unit, options ) ) {
+                    console.log('options', options);
+                    console.log('not a valid unit to skeletonize', unit);
+                    return;
+                }
 
                 if( !areas[unit.location] ){
                     areas[unit.location] = new Set();
