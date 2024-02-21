@@ -145,6 +145,7 @@ class Skeletons extends Faction {
             options.typeIn = unitTypesInReserves;
 
             faction.data.units.forEach( unit => {
+                console.log('options', options);
                 if( !_.isValidUnit( unit, options ) ) {
                     console.log('options', options);
                     //console.log('not a valid unit to skeletonize', unit);

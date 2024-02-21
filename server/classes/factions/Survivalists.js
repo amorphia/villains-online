@@ -70,7 +70,7 @@ class Survivalists extends Faction {
                 type: 'scrounge',
                 cost: 0,
                 resource: 2,
-                description: "Extra Refunded (gain xRxxRx when revealed), if you have no other tokens or units here you may deploy a patsy to this area, it becomes prepared",
+                description: "Extra Refunded (gain xRxxRx when revealed), if you have no other tokens here you may deploy a patsy to this area, it becomes prepared",
                 req : "Discard this token if you do not deploy a patsy when activating it",
             }
         };
@@ -141,7 +141,8 @@ class Survivalists extends Faction {
      * @returns {boolean}
     */
     canActivateScrounge( token, area ) {
-        return !this.hasUnitsInArea( area ) && this.tokensInArea( area ).length <= 1;
+        //return !this.hasUnitsInArea( area ) && this.tokensInArea( area ).length <= 1;
+        return this.tokensInArea( area ).length <= 1;
     }
 
     /**
@@ -165,6 +166,7 @@ class Survivalists extends Faction {
         let unit = output?.units[0]?.unit;
         console.log("scrounge unit", unit);
         this.becomePrepared(unit, false);
+        unit.ready = true;
 
         this.game().advancePlayer();
     }
