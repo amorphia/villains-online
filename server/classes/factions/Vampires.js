@@ -288,7 +288,10 @@ class Vampires extends Faction {
      */
     unflipUnit( unit ) {
         unit.flipped = false;
-        if( unit.type !== 'champion' ) unit.vampire = false;
+        if( unit.type === 'champion' ) return;
+
+        unit.vampire = false;
+        unit.combatTempProp = 'vampire';
         // if( unit.baseAttack ) unit.attack = [...unit.baseAttack];
     }
 

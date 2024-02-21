@@ -373,7 +373,7 @@ let obj = {
         // if we get a bonus for attacking with a unit having a given prop, apply it here
         if( args.unit && this.data.unitPropAttackBonus ){
             for( let prop in this.data.unitPropAttackBonus ) {
-                if (args.unit[prop]) attackBonus += this.data.unitPropAttackBonus[prop];
+                if (args.unit[prop] || args.unit.combatTempProp === prop) attackBonus += this.data.unitPropAttackBonus[prop];
             }
         }
         console.log("attackBonus after attacker.unitPropAttackBonus", attackBonus);
