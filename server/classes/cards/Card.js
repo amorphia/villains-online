@@ -53,9 +53,6 @@ class Card {
 
         let output = await faction.deploy( args ).catch( error => console.error( error ) );
         if ( output?.declined ) return false;
-
-        console.log("cardDeploy", output);
-
         return output;
     }
 

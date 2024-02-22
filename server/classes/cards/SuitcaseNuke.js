@@ -112,14 +112,11 @@ class SuitcaseNuke extends Card {
             // for each faction cycle through each unit
             let units = faction.unitsInArea( this.area ).forEach( unit => {
                 let canSurvive = this.checkIfSurvivesNuke( unit );
-                console.log("canSurvive", canSurvive, unit);
                 if(!canSurvive){
                     unitsToKill.push(unit);
                 }
             });
         }
-
-        console.log( "unitstoKill", unitsToKill );
 
         for( let unit of unitsToKill ) {
             await this.game.killUnit( unit, this.faction );

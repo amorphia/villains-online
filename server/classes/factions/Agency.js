@@ -301,7 +301,6 @@ class Agency extends Faction {
             response.cost = this.game().objectMap[ cardId ].cost;
 
             let output = await this.resolveCard( args, response );
-            console.log("intel output", output );
 
             if(output?.dontAdvancePlayer){
                 advance = false;

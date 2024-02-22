@@ -164,7 +164,6 @@ class Survivalists extends Faction {
         }
 
         let unit = output?.units[0]?.unit;
-        console.log("scrounge unit", unit);
         this.becomePrepared(unit, false);
         unit.ready = true;
 
@@ -361,9 +360,7 @@ class Survivalists extends Faction {
 
     getBugOutDestinations( area ){
         let areas = area.getDeployableAdjacentAreas();
-        console.log("getBugOutDestinations areas", areas);
         return areas.filter( areaName => {
-            console.log("!this.hasUnitsInArea( areaName )", !this.hasUnitsInArea( areaName ));
             return !this.hasUnitsInArea( areaName );
         });
     }

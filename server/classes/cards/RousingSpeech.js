@@ -11,9 +11,6 @@ class RousingSpeech extends Card {
         if( !this.game.data.options?.catchUpCards ) return;
 
         let oldOwner = this.area.owner();
-
-        console.log("oldOwner", oldOwner);
-
         if( !oldOwner || (this.faction.totalPoints() + 4) > oldOwner.totalPoints() ) return;
 
         this.faction.captureEnemyMarker( this.area );
