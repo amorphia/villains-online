@@ -1,5 +1,5 @@
 class PlanTester {
-    debug = true;
+    debug = false;
 
     /**
      * Test a plan card to determine which objectives have been completed, and how many total points may be scored

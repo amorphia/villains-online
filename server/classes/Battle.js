@@ -81,8 +81,8 @@ class Battle {
     cleanupAfterBattle(){
         // I'm sure there is a better way to this, but this was easy
         // cycle through every unit in the game and delete any "combatTempProps"
-        Object.values(this.game().factions).forEach(faction => {
-            faction.data.units.forEach(unit => delete unit.combatTempProp);
+        Object.values( this.game().factions ).forEach( faction => {
+            faction.data.units.forEach( unit => delete unit.combatTempProp );
         });
     }
 
