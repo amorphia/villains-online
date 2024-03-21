@@ -76,6 +76,21 @@
 
                     </div>
 
+                    <!-- surveyor display -->
+                    <div v-if="action.name === 'surveyor'"
+                         class="choose-action__skilled-units center-text">
+
+                        <unit-row
+                            :units="championInArea"
+                        >
+                        </unit-row>
+
+                        <div class="width-100 choose-action__skill-ability">
+                            Take your Surveyor Action?
+                        </div>
+
+                    </div>
+
                     <!-- agent display -->
                     <div v-if="action.name === 'agent'"
                          class="choose-action__skilled-units center-text">
@@ -273,6 +288,9 @@
                 // can we magick?
                 if( this.useableMagick.length ) actions.magick = this.useableMagick;
 
+                // can we use the surveyor?
+                if( this.useableSurveyor.length ) actions.surveyor = this.useableSurveyor;
+
                 // can we agent?
                 if( this.useableAgent.length ) actions.agent = this.useableAgent;
 
@@ -337,6 +355,7 @@
                     case 'ambush':
                     case 'skill':
                     case 'magick':
+                    case 'surveyor':
                     case 'agent':
                     case 'materialize':
                     case 'shelter':
@@ -598,6 +617,14 @@
             },
 
             /**
+             * Return an array of our champions in the area
+             * @returns {Unit[]}
+             */
+            championInArea(){
+                return this.shared.faction.units.filter( unit => _.unitInArea( unit, this.area, { isChampion : true } ));
+            },
+
+            /**
              * Return an array of our ghost units in our selected area
              * @returns {Unit[]}
              */
@@ -698,6 +725,23 @@
                     }
                     return array;
                 }, []);
+            },
+
+            useableSurveyor(){
+                console.log("calculating useable surveyor");
+                // if not applicable, return an empty array
+                if( this.shared.faction.name !== 'agency' ) return [];
+                console.log("is agency");
+
+                let champion = this.shared.faction.units.find( unit => _.unitInPlay( unit, { isChampion : true } ));
+                console.log("hasChampion", champion);
+
+                console.log("last game action matches", this.shared.faction.lastSurveyorGameAction === this.shared.data.gameAction);
+
+                if(this.shared.faction.lastSurveyorGameAction === this.shared.data.gameAction || !champion) return [];
+
+                console.log("surveyor location", champion.location);
+                return [champion.location];
             },
 
             /**

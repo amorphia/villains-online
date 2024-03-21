@@ -126,6 +126,24 @@ let mixin = {
     },
 
 
+    areasWithTokens( options = {} ){
+        let areas = {};
+
+        // cycle through our tokens
+        this.data.tokens.forEach( token => {
+            // if this token is in play, not on xavier, and not revealed add its location to our areas
+            if( token.location
+                && token.location !== 'xavier'
+                && ( !options.revealed || token.revealed )
+                && ( !options.unrevealed || !token.revealed )
+            ){
+                areas[token.location] = true;
+            }
+        });
+
+        return Object.keys( areas );
+    },
+
     /**
      * Filter an array of area names to only include areas adjacent to the given area
      *
@@ -141,12 +159,20 @@ let mixin = {
     /**
      * Filter an array of area names to remove any areas where cease fire is active
      *
-     * @param areas
+     * @param options
      * @returns {array}
      */
-    filterAreasByCeaseFire( areas ){
-        return areas.filter( area => {
+    filterAreasByCeaseFire( options = {} ){
+        if( !options.areas ){
+            options.areas = this.game().data.areaOrder;
+        }
+
+        return options.areas.filter( area => {
             let areaObj = this.game().areas[area];
+            if( options.invert ){
+               return areaObj.hasCard( 'cease-fire' );
+            }
+
             return !areaObj.hasCard( 'cease-fire' );
         });
     },
@@ -456,14 +482,14 @@ let mixin = {
     /**
      * Return an array of unit types we have in our reserves
      *
-     * @param basicOnly
+     * @param options
      * @returns {string[]}
      */
-    unitTypesInReserves( basicOnly ){
+    unitTypesInReserves( options = {} ){
         let types = {};
 
         this.data.units.forEach( unit => {
-           if( _.unitInReserves( unit, { basic : basicOnly } ) ) types[unit.type] = true;
+           if( _.unitInReserves( unit, options ) ) types[unit.type] = true;
         });
 
         return Object.keys( types );
@@ -508,8 +534,9 @@ let mixin = {
      *
      * @returns {Unit}
      */
-    getChampion(){
-        return this.data.units.find( unit => unit.type === 'champion' );
+    getChampion( options = {}){
+        options = { isChampion : true, ...options };
+        return this.data.units.find( unit => _.isValidUnit( unit, options ) );
     },
 
 

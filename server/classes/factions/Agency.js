@@ -1,5 +1,10 @@
 let Faction = require( './Faction' );
 
+class Order {
+    constructor( data ) {
+        Object.assign( this, data );
+    }
+}
 
 class Agency extends Faction {
     name = 'agency';
@@ -9,6 +14,7 @@ class Agency extends Faction {
 
         // triggers
         this.triggers = {
+            "onStartOfTurn" : "refreshOrders",
             "onCleanUp" : "resetTrackers",
             "onFactionKillsUnit" : "checkKilledChampion",
             "onAfterCardPlayed" : "incrementEventCardTracker",
@@ -20,18 +26,18 @@ class Agency extends Faction {
         this.data.focusDescription = "Play many event cards";
 
         // icons
-        this.data.flipableUnits = ['patsy'];
         this.data.hasKilledChampion = [];
-        this.data.flipTokenOnWetwork = false;
         this.data.maxIntelCards = 2;
+        this.data.lastSurveyorGameAction = 0; // used to track if we are permitted to take a regular action
+        this.data.cardLimit = 1;
         this.data.surveyorBonusDice = 0;
         this.data.eventCardsPlayed = 0;
-        //this.data.maxWoundAgentActions = 0;
-        //this.data.usedWoundAgentActions = 0;
-        //this.data.lastAgentGameAction = 0; // used to track if we are permitted to use agent again
+        this.data.extraCardsOnWetwork = false;
         this.data.hiddenDiscard = [];
 
-        this.tokens['battle'].count = 2;
+        this.data.surveyorOrders = [];
+
+        this.tokens['battle'].count = 1;
 
         // tokens
         this.tokens['intel'] = {
@@ -41,18 +47,10 @@ class Agency extends Faction {
                 type: 'intel',
                 cost: 0,
                 resource: 0,
-                description: "Reveal a card from the action deck for each type of basic enemy unit in this area, you may play any event cards revealed this way here (pay costs normally) and discard the rest.",
+                description: "Reveal a card from the action deck for each type of basic enemy unit in this area, you may play two event cards revealed this way here (pay costs normally) and discard the rest.",
                 req :  "Discard this token if no cards are revealed after activating it"
             }
         };
-
-        this.units['patsy'].count = 2;
-        this.units['patsy'].data.toughness = true;
-        this.units['patsy'].data.canDeployFlipped = false;
-        this.units['patsy'].data.deployFlippedMethod = "becomeAgent";
-        this.units['patsy'].data.flipped = false;
-        this.units['patsy'].data.onWounded = 'becomeAgent';
-
 
         this.units['champion'] = {
             count: 1,
@@ -60,9 +58,9 @@ class Agency extends Faction {
                 name: "The Surveyor",
                 type: 'champion',
                 basic: false,
-                influence: 1,
-                attack: [3],
-                cost: 1,
+                influence: 0,
+                attack: [5],
+                cost: 0,
                 flipped: false,
                 killed: false,
                 selected: false,
@@ -71,117 +69,50 @@ class Agency extends Faction {
                 seeking: false,
                 onBeforeAttack: 'surveyorOnBeforeAttack',
                 //onAfterAttack: 'surveyorOnAfterAttack',
-                onDeploy: 'surveyorDragToken',
+                //onDeploy: 'surveyorDragToken',
             }
         };
+    }
+
+    setupOrders( saved ){
+        let orders = [
+            { name: "recuperate", ready: true, validMethod: "canRecuperate", actionMethod: "surveyorRecuperate", unlocked: true },
+            { name: "assassinate", ready: true, validMethod: "canAssassinate", actionMethod: "surveyorAssassinate", unlocked: true },
+            { name: "reposition", ready: true, validMethod: "canReposition", actionMethod: "surveyorReposition", unlocked: true },
+            { name: "flush-out", ready: true, validMethod: "canFlushOut", actionMethod: "surveyorFlushOut", unlocked: true },
+            { name: "operation", ready: true, validMethod: "canOperation", actionMethod: "surveyorOperation", unlocked: false },
+            { name: "black-ops", ready: true, validMethod: "canBlackOps", actionMethod: "surveyorBlackOps", unlocked: false },
+        ];
+
+        _.forEach( orders, order => {
+            let orderObj = new Order( order );
+            orderObj = this.game().newObject( orderObj, saved );
+            this.data.surveyorOrders.push( orderObj );
+        });
     }
 
     /**
      * Process faction upgrade
      */
     processUpgrade( upgrade ) {
-        //this.data.maxWoundAgentActions = upgrade;
-        this.data.flipTokenOnWetwork = true;
+        let order;
+
+        if( upgrade === 2 ){
+            order = this.getOrder( 'black-ops' );
+            order.unlocked = true;
+        }
+
+        order = this.getOrder( 'operation' );
+        order.unlocked = true;
         this.data.surveyorBonusDice = upgrade;
     }
 
-    /*
-    async takeAgentAction( player, areaName ){
-        let area = this.game().areas[areaName];
-
-        // show agent popup
-        this.game().popup( this.playerId, { type: 'agent', area : areaName, faction : this.name });
-
-        // We can't take an agent action twice in a row
-        if( this.game().data.gameAction === this.data.lastAgentGameAction ) {
-            this.message('Too soon to agent again', { class: 'warning' } );
-            return;
-        }
-
-        // can only take this action so many times a turn depending on upgrades
-        if( this.data.usedWoundAgentActions >= this.data.maxWoundAgentActions ) {
-            this.message('All agent actions used up', { class: 'warning' } );
-            return;
-        }
-
-        // need a face-up patsy to wound here
-        let patsies = this.unitsInArea( area, { type: "patsy", notFlipped: true } );
-        if( !patsies.length ) {
-            this.message('No face up patsies in this area', { class: 'warning' } );
-            return;
-        }
-
-        // need a card or intel token to flip face down here
-        let tokens = this.tokensInArea( area, { typeIn: ["card", "intel"], revealed: true } );
-        if( !tokens.length ) {
-            this.message('No valid tokens in this area', { class: 'warning' } );
-            return;
-        }
-
-        // resolve our agent action
-        try {
-            await this.resolveAgentAction( area );
-        } catch( error ){
-            console.error( error );
-        }
-
-        // advance to the next action, but don't advance to the next player
-        this.game().advancePlayer( {}, false );
+    getOrder( orderName ){
+        return this.data.surveyorOrders.find( order => order.name === orderName );
     }
-
-
-    async resolveAgentAction( area ){
-        // record this game action as the last time we resolved the magick action (we haven't incremented
-        // the gameAction counter yet for this action, so we gotta add one to it now)
-        this.data.lastAgentGameAction = this.game().data.gameAction + 1;
-
-        // choose a patsy
-        // prompt player to select a unit to attack with
-        let response = await this.prompt( 'choose-units', {
-            count : 1,
-            areas : [ area.name ],
-            playerOnly : true,
-            unitTypes: ["patsy"],
-            unflippedOnly: true,
-            canDecline: true,
-            message: "Choose a face-up patsy to become wounded",
-        });
-
-        if( !response.units ) return this.message("Declines to wound a patsy", { class: "warning" });
-        let patsy = this.game().objectMap[ response.units[0] ];
-
-        // prompt our player to choose a token to flip faced down
-        response = await this.prompt( 'choose-tokens', {
-            count : 1,
-            areas : [ area.name ],
-            playerOnly : true,
-            revealedOnly : true,
-            typeIn : ["intel", "card"],
-            message : "Choose a revealed CARD or INTEL token to flip face down",
-        });
-
-        // prepare our data, then resolve our action card
-        // if we didn't choose a token, abort
-        if( !response.tokens ) return this.message("Declines to flip a token", { class: "warning" });
-
-        // wound patsy
-        this.becomeAgent( patsy );
-
-        // get our token object
-        let token = this.game().objectMap[ response.tokens[0] ];
-
-        // flip it face down
-        token.revealed = false;
-
-        this.data.usedWoundAgentActions++;
-
-        // announce our response
-        this.message( `flips their <span class="faction-${token.faction}">${token.name}</span> token in the ${token.location} face down` );
-    }
-    */
 
     incrementEventCardTracker( event ){
-        if(event.card.type === "event") this.data.eventCardsPlayed++;
+        if( event.card.type === "event" ) this.data.eventCardsPlayed++;
     }
 
     async checkKilledChampion( unit, options ) {
@@ -190,66 +121,234 @@ class Agency extends Faction {
         }
 
         this.data.hasKilledChampion.push( unit.faction );
-        this.drawCards(2, true);
+        this.drawCards( 2, true );
+        this.refreshOrders();
         this.message("draws two cards for assassinating an enemy champion");
-
-        if ( !this.data.flipTokenOnWetwork ) return;
-
-        // flip token stuff
-
-        let flippableAreas = this.areasWithRevealedValidTokens();
-        if( ! flippableAreas.length  ){
-            return this.message( "No tokens to flip", { class: 'warning' } );
-        }
-
-        // prompt our player to choose a token to flip faced down
-        let response = await this.prompt( 'choose-tokens', {
-            count : 1,
-            areas : flippableAreas,
-            playerOnly : true,
-            revealedOnly : true,
-            typeIn : ["intel", "card"],
-            message : "Choose a revealed CARD or INTEL token to flip face down",
-        });
-
-        // prepare our data, then resolve our action card
-        // if we didn't choose a token, abort
-        if( !response.tokens ) return this.message("Declines to flip a token", { class: "warning" });
-
-        // get our token object
-        let token = this.game().objectMap[ response.tokens[0] ];
-
-        // flip it face down
-        token.revealed = false;
-
-        // announce our response
-        this.message( `flips their <span class="faction-${token.faction}">${token.name}</span> token in the ${token.location} face down` );
     }
 
-    areasWithRevealedValidTokens(){
-        let areas = {};
-        let validTypes = ['card', 'intel'];
+    refreshOrders(){
+        this.data.surveyorOrders.forEach( order => order.ready = true );
+    }
 
-        // cycle through our tokens
-        this.data.tokens.forEach( token => {
-            // if this token is in play, not on xavier, and not revealed add its location to our areas
-            if( token.location && token.revealed && validTypes.includes(token.type) ){
-                areas[token.location] = true;
-            }
+    async takeSurveyorAction(){
+        // record our surveyor action
+        this.data.lastSurveyorGameAction = this.game().data.gameAction + 1;
+
+        await this.surveyorAction();
+
+        // advance to the next action, but don't advance to the next player
+        this.game().advancePlayer( {}, false );
+    }
+
+    async surveyorAction(){
+        let surveyor = this.getChampion();
+        if( !_.unitInPlay( surveyor ) ) return this.message( "The Surveyor is not in play", { class: "warning" } );
+
+        let validOrders = this.data.surveyorOrders
+            .filter( order => order.ready && order.unlocked && this[order.validMethod]( surveyor ) )
+            .map( order => order.name );
+
+        if( !validOrders.length ) return this.message("No legal Surveyor Actions", { class: "warning", silent :true  });
+
+        // prompt player to select an order
+        let response = await this.prompt( 'choose-order', {
+            orders : validOrders,
+            surveyor: surveyor,
+            message: "Choose an order to issue to the surveyor",
         });
 
-        return Object.keys( areas );
+        if( response?.decline ) return this.message( "The agency declines to issue orders to The Surveyor" );
+
+        let selectedOrder = this.getOrder( response.selectedOrder );
+        await this[selectedOrder.actionMethod]( surveyor );
+    }
+
+    getEnemiesWithNoUnrevealedTokens(){
+        let factions = [];
+
+        Object.values(this.game().factions).forEach(faction => {
+            if( faction.areasWithTokens({ unrevealed: true }).length === 0 ) factions.push( faction.name );
+        });
+
+        return _.uniq( factions );
+    }
+
+    getFactionsWithChampionInReserves(){
+        let factions = [];
+
+        Object.values(this.game().factions).forEach(faction => {
+            if( faction.unitTypesInReserves().includes("champion") ) factions.push( faction.name );
+        });
+
+        return _.uniq(factions);
+    }
+
+    canRecuperate( surveyor ){
+        return surveyor.flipped;
+    }
+
+    async surveyorRecuperate( surveyor ) {
+        this.unflipUnit( surveyor );
+        this.message("The Surveyor shakes off his wounds");
+
+        await this.game().timedPrompt('units-shifted', {
+            message : `The Surveyor shakes off his wounds`,
+            units: [surveyor],
+        });
+    }
+
+    canAssassinate( surveyor ){
+        let areasWithEnemyChampions = this.areasWithEnemyUnits({ isChampion: true, notHidden: true });
+        let ceaseFireAreas = this.filterAreasByCeaseFire( { invert : true });
+
+        if( ceaseFireAreas.length ){
+            areasWithEnemyChampions = _.difference( areasWithEnemyChampions, ceaseFireAreas );
+        }
+
+        return areasWithEnemyChampions.includes( surveyor.location );
+    }
+
+    async surveyorAssassinate( surveyor ){
+        this.message("The Surveyor attempts to assassinate a champion");
+
+        // resolve attack with that unit
+        let area = this.game().areas[ surveyor.location ];
+
+        await this.attack({
+            area : area,
+            attacks : surveyor.attack,
+            targets : this.enemiesWithUnitsInArea( area, { isChampion: true, notHidden: true }),
+            forceChooseTarget : true,
+            unit : surveyor,
+            noDecline : true
+        });
+    }
+
+    canReposition( surveyor ){
+        return true;
+    }
+
+    async surveyorReposition( surveyor ){
+        this.message("The Surveyor repositions");
+
+        let areas = this.game().areas[ surveyor.location ].data.adjacent;
+
+        // prompt player to select an area
+        let response = await this.prompt( 'choose-area', {
+            areas : areas,
+            show : 'units',
+            addOwnUnit : surveyor,
+            message : "Choose an area to place The Surveyor",
+            canDecline : true,
+        });
+
+        if( response?.declined ) return this.message( "declines to reposition" );
+
+        surveyor.location = response.area;
+
+        await this.game().timedPrompt('units-shifted', {
+            message : `The Surveyor repositions to the ${response.area.name}`,
+            units: [surveyor],
+        });
+    }
+
+    getValidFlushOutFactions(){
+        let factionsWithChampionInReserves = this.getFactionsWithChampionInReserves();
+        let enemiesWithNoUnrevealedTokens = this.getEnemiesWithNoUnrevealedTokens();
+        return _.difference( factionsWithChampionInReserves, enemiesWithNoUnrevealedTokens );
+
+        //return validFlushOutFactions;
+    }
+
+    canFlushOut( surveyor ){
+        let validFlushOutFactions = this.getValidFlushOutFactions();
+        return validFlushOutFactions.length > 0;
+    }
+
+    async surveyorFlushOut( surveyor ){
+        let validFlushOutFactions = this.getValidFlushOutFactions();
+        let response;
+
+        // choose player
+        response = await this.prompt( 'choose-players', {
+            factions : validFlushOutFactions,
+            count : 1,
+            message: "Choose a player to place their champion in play",
+            canDecline: true,
+        });
+
+        if( response?.decline ) return this.message( "declines to flush out" );
+
+        // figure out what areas
+        let faction = this.game().factions[response.factions[0]];
+        let areas = faction.areasWithTokens();
+        let champion = faction.getChampion( { inReserves : true } );
+
+        // player chooses area
+        response = await faction.prompt( 'choose-area', {
+            areas : areas,
+            show: 'units',
+            addOwnUnit: champion,
+            message: "Choose an area to place your champion"
+        });
+
+        // place boss
+        let area = this.game().areas[ response.area ];
+        await this.placeUnit( champion, area.name );
+
+        let text = `The Surveyor has flushed the ${faction.name} champion out of hiding into the ${area.name}`;
+        this.message( text );
+
+        await this.game().timedPrompt('units-shifted', {
+            message : text,
+            units: [champion],
+        });
+
+        let order = this.getOrder( 'flush-out' );
+        order.ready = false;
+    }
+
+    canOperation( surveyor ){
+        return this.hasPlayableCard();
+    }
+
+    async surveyorOperation( surveyor ) {
+        await this.surveyorPlayCard( surveyor, 'operation' );
+    }
+
+    async surveyorPlayCard( surveyor, orderName,  free = false ){
+        let output = await this.playACard({
+            area: this.game().areas[surveyor.location],
+            player: this.game().getPlayerByFaction( this.name ),
+            message: `Play a card in the ${surveyor.location}`,
+            free: free,
+        });
+
+        if( output?.declined ) return;
+
+        let order = this.getOrder( orderName );
+        order.ready = false;
+    }
+
+    canBlackOps( surveyor ){
+        return this.hasPlayableCard( true );
+    }
+
+    async surveyorBlackOps( surveyor ) {
+        await this.surveyorPlayCard( surveyor, 'black-ops', true );
     }
 
     surveyorOnBeforeAttack( args, victim ) {
         let championsInArea = victim.unitsInArea( args.area, { isChampion: true } );
         if ( !championsInArea.length ) return;
 
+        args.seeking = true;
+
         let loops = this.data.surveyorBonusDice;
+        let surveyor = this.getChampion();
 
         while( loops ){
-            args.attacks.push(3);
-            args.seeking = true;
+            args.attacks.push(surveyor.attack[0]);
             loops--;
         }
     }
@@ -376,6 +475,7 @@ class Agency extends Faction {
      *
      * @param unit
      */
+    /*
     becomeAgent( unit ) {
         unit.killed = null;
         unit.flipped = true;
@@ -387,7 +487,7 @@ class Agency extends Faction {
      * Revert a flipped unit to its face up side
      *
      * @param unit
-     */
+
     unflipUnit( unit ) {
         unit.flipped = false;
 
@@ -396,13 +496,16 @@ class Agency extends Faction {
             unit.canDeployFlipped = false;
         }
     }
+     */
 
     resetTrackers(){
         this.data.hasKilledChampion = [];
         this.data.eventCardsPlayed = 0;
-        //this.data.currentWoundAgentActions = 0;
+        this.data.cardLimit = 1;
+        this.data.maxIntelCards = 1;
     }
 
+    /*
     async surveyorDragToken( event ){
         let unit = event.unit;
         let area = this.game().areas[unit.location];
@@ -452,6 +555,7 @@ class Agency extends Faction {
      * @param to
      * @param toArea
      */
+    /*
      resolveTokenMove( from, to, toArea ){
         // move token
         let fromToken = this.game().objectMap[ from.tokens[0] ] ;
@@ -472,6 +576,7 @@ class Agency extends Faction {
      * @param toArea
      * @returns {[]}
      */
+    /*
      getTokenMoveAreas( toArea ){
         let areas = [];
 
@@ -492,17 +597,21 @@ class Agency extends Faction {
      * @returns {*}
      */
     factionCombatMods( mods, area ) {
+        /*
         mods.push({
             type: 'patsyAgent',
             text: `Wounded patsies gain xIxxIx`
         });
+        */
 
-        if(this.data.surveyorBonusDice){
-            mods.push({
-                type: 'surveyorBonus',
-                text: `the Surveyor gains +${this.data.surveyorBonusDice} attack die and seeking when attacking a player with a champion here`
-            });
-        }
+        let text = this.data.surveyorBonusDice
+            ? `the Surveyor gains +${this.data.surveyorBonusDice} attack die and seeking when attacking a player with a champion here`
+            : `the Surveyor gains seeking when attacking a player with a champion here`
+
+        mods.push({
+            type: 'surveyorBonus',
+            text: text,
+        });
 
         return mods;
     }

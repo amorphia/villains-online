@@ -56,7 +56,6 @@ let obj = {
         });
     },
 
-
     /**
      * Setup our plan objects
      *

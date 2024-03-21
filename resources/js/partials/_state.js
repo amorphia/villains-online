@@ -114,6 +114,12 @@ window.App.state = {
             areaAction : true,
             buttonMessage: 'Flip your units in this area to use magick'
         },
+        'surveyor' : {
+            img : '/images/icons/agent.png',
+            useMessage: 'use surveyor',
+            areaAction : true,
+            buttonMessage: 'Issue The Surveyor an order'
+        },
         'agent' : {
             img : '/images/icons/agent.png',
             useMessage: 'use agent',

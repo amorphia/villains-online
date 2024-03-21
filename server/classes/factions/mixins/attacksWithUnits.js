@@ -189,10 +189,12 @@ let obj = {
      * @returns {object|Faction}
      */
     async setAttackTargets( args ){
+        console.log("setAttackTargets", args);
+
         // if this is a deadly attack we don't have a target
         if( args.deadly ) return { deadly : true, name : 'deadly' };
 
-        if( Array.isArray( args.targets ) && args.targets.length === 1 ){
+        if( Array.isArray( args.targets ) && args.targets.length === 1 && !args.forceChooseTarget ){
             return this.game().factions[args.targets[0]];
         }
 
@@ -301,7 +303,7 @@ let obj = {
         if( !targetFactions.length ) return;
 
         // if we have only one option, and we must choose a faction then just return that faction
-        if( targetFactions.length === 1 && !args.optional ) {
+        if( targetFactions.length === 1 && !args.optional && !args.forceChooseTarget ) {
             return this.game().factions[ targetFactions[0] ];
         }
 

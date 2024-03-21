@@ -83,7 +83,7 @@ let obj = {
         console.log("validTypes", validTypes);
 
         // the types we have in our reserves
-        let reservesTypes = this.unitTypesInReserves( true );
+        let reservesTypes = this.unitTypesInReserves( { basic: true } );
         console.log("reservesTypes", reservesTypes);
 
         // types we have in play

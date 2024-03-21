@@ -462,7 +462,7 @@ class Game {
      * @param message
      */
     message( message ){
-        if( message.class === 'warning' ){
+        if( message.class === 'warning' && !message.silent ){
             this.sound( 'error' );
         }
         Server.message( this.data.id, message );

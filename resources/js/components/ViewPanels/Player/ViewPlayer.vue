@@ -25,6 +25,8 @@
                 <!-- player state -->
                 <player-state :faction="faction"></player-state>
 
+                <player-orders v-if="faction.name === 'agency'" :faction="faction"></player-orders>
+
                 <!-- completed plans -->
                 <player-plans :faction="faction"></player-plans>
             </div>

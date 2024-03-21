@@ -288,6 +288,7 @@ let setup = {
                 faction.setupUnits( saved );
                 faction.setupTokens( saved );
                 faction.setupPlans( saved );
+                if( faction.setupOrders ) faction.setupOrders( saved );
                 this.factions[name] = faction;
                 this.data.factions[name] = faction.data;
             }

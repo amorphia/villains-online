@@ -96,6 +96,7 @@
                 if (this.token) return `Reveal ${this.token.name} token`;
                 if (this.action === 'skill') return `Activate Area skill`;
                 if (this.action === 'magick') return `Cast Magick Spell`;
+                if (this.action === 'surveyor') return `Issue Surveyor Order`;
                 if (this.action === 'agent') return `Take Agent Action`;
                 if (this.action === 'loop') return `Exploit Time Loop`;
                 if (this.action === 'ambush') return `Launch an Ambush`;
@@ -106,6 +107,7 @@
             tooltipContent() {
                 if (this.action === 'skill') return `Exhaust your readied units in this area to activate this area's skill ability: <span class="highlight">${this.shared.filterText(this.area.skill)}</span>`;
                 if (this.action === 'magick') return `Flip your enchanted units in this area face-up to use the witches' magick ability, then take another action.`;
+                if (this.action === 'surveyor') return `Issue The Surveyor an order`;
                 if (this.action === 'agent') return `Wound a patsy in this area to flip a CARD or INTEL token face down`;
                 if (this.action === 'loop') return `Replace your Loop token with a token from your reserves placed face-down.`;
                 if (this.action === 'ambush') return `Discard one of your revealed tokens in this area to start a battle here.`;

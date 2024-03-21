@@ -21,8 +21,9 @@
                 </area-flipper>
 
                 <!-- submit button -->
-                <div>
-                    <button class="button" @click="resolve">{{ buttonMessage }}</button>
+                <div class="width-100 d-flex justify-center">
+                    <button v-if="data.canDecline" class="button button-empty" @click="resolve( false )">decline</button>
+                    <button class="button" @click="resolve( true )">{{ buttonMessage }}</button>
                 </div>
             </div>
         </div>
@@ -140,8 +141,8 @@
             /**
              * Resolve this prompt
              */
-            resolve(){
-                let data = { area : this.area.name,  };
+            resolve( value ){
+                let data = value ? { area : this.area.name  } : { declined : true };
                 data = { ...this.data, ...data };
                 this.shared.respond( 'choose-area', data );
             },

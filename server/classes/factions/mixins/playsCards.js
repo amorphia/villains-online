@@ -104,7 +104,17 @@ let obj = {
      * @returns {boolean}
      */
     canActivateCard( token, area ){
-        // get the lowest cost card in our hand, otherwise return an impossibly
+        return this.hasPlayableCard();
+    },
+
+    hasPlayableCard( free = false ){
+        // do we have any cards in hand?
+        if( !this.data.cards.hand.length ) return false;
+
+        // if we have a card, and don't need to pay costs them we good
+        if( free ) return true;
+
+        // otherwise get the lowest cost card in our hand, otherwise return an impossibly
         // high cost that we could never possibly pay
         let lowestCost = this.data.cards.hand.reduce( (acc, card) => {
             return card.cost < acc ? card.cost : acc;
@@ -112,7 +122,6 @@ let obj = {
 
         return this.money() >= lowestCost;
     },
-
 
     /**
      * Activate a card token

@@ -96,6 +96,10 @@
                     return;
                 }
 
+                if( this.selected.length >= this.data.count ) {
+                    return App.event.emit( 'sound', 'error' );
+                }
+
                 // otherwise select it
                 this.selected.push( faction );
             },
