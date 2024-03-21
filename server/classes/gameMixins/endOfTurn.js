@@ -345,9 +345,13 @@ let obj = {
 
         // have each faction collect their upgrades, then create an array
         // of the newly acquired upgrades
-        let upgrades = Object.values( this.factions )
-            .map( faction => faction.collectUpgrades( forcedPoints ) )
-            .filter( item => item );
+        let upgrades = [];
+
+        let factions = Object.values( this.factions );
+        for( let faction of factions ) {
+            let upgrade = await faction.collectUpgrades( forcedPoints );
+            if( upgrade ) upgrades.push( upgrade );
+        }
 
         // if no upgrades were scored, then we are done here
         if( !upgrades.length ) return;

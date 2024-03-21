@@ -25,7 +25,7 @@
 
         <!-- buttons -->
         <div class="width-100 d-flex justify-center">
-            <button class="button button-empty" @click="resolve( false )">decline</button>
+            <button v-if="data.canDecline" class="button button-empty" @click="resolve( false )">decline</button>
             <button class="button" :disabled="!this.selectedOrder" @click="resolve( true )">Submit</button>
         </div>
 

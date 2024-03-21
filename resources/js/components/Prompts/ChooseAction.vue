@@ -728,19 +728,16 @@
             },
 
             useableSurveyor(){
-                console.log("calculating useable surveyor");
                 // if not applicable, return an empty array
                 if( this.shared.faction.name !== 'agency' ) return [];
-                console.log("is agency");
+                if( this.shared.faction.lastSurveyorGameAction === this.shared.data.gameAction ) return [];
 
-                let champion = this.shared.faction.units.find( unit => _.unitInPlay( unit, { isChampion : true } ));
-                console.log("hasChampion", champion);
+                let champion = this.shared.faction.units.find( unit => _.isValidUnit( unit, { isChampion : true, onBoard : true } ));
+                if( !champion ) return [];
 
-                console.log("last game action matches", this.shared.faction.lastSurveyorGameAction === this.shared.data.gameAction);
+                let fromGraveyardOrder = this.shared.faction.surveyorOrders.find( order => order.fromGraveyard && order.unlocked );
+                if( !fromGraveyardOrder && champion.killed ) return [];
 
-                if(this.shared.faction.lastSurveyorGameAction === this.shared.data.gameAction || !champion) return [];
-
-                console.log("surveyor location", champion.location);
                 return [champion.location];
             },
 

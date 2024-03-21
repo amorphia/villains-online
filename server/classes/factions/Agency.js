@@ -27,6 +27,7 @@ class Agency extends Faction {
 
         // icons
         this.data.hasKilledChampion = [];
+        this.data.unlockedOrders = 0;
         this.data.maxIntelCards = 2;
         this.data.lastSurveyorGameAction = 0; // used to track if we are permitted to take a regular action
         this.data.cardLimit = 1;
@@ -59,7 +60,7 @@ class Agency extends Faction {
                 type: 'champion',
                 basic: false,
                 influence: 0,
-                attack: [5],
+                attack: [6],
                 cost: 0,
                 flipped: false,
                 killed: false,
@@ -76,12 +77,14 @@ class Agency extends Faction {
 
     setupOrders( saved ){
         let orders = [
-            { name: "recuperate", ready: true, validMethod: "canRecuperate", actionMethod: "surveyorRecuperate", unlocked: true },
-            { name: "assassinate", ready: true, validMethod: "canAssassinate", actionMethod: "surveyorAssassinate", unlocked: true },
-            { name: "reposition", ready: true, validMethod: "canReposition", actionMethod: "surveyorReposition", unlocked: true },
-            { name: "flush-out", ready: true, validMethod: "canFlushOut", actionMethod: "surveyorFlushOut", unlocked: true },
-            { name: "operation", ready: true, validMethod: "canOperation", actionMethod: "surveyorOperation", unlocked: false },
-            { name: "black-ops", ready: true, validMethod: "canBlackOps", actionMethod: "surveyorBlackOps", unlocked: false },
+            { name: "recuperate", ready: true, unlocked: true },
+            { name: "assassinate", ready: true, unlocked: true },
+            { name: "reposition", ready: true, unlocked: true },
+            { name: "flush-out", ready: true, unlocked: true },
+            { name: "conspire", ready: true, unlocked: false },
+            { name: "resuscitate", ready: true, unlocked: false, fromGraveyard: true },
+            { name: "black-ops", ready: true, unlocked: false },
+            { name: "disrupt", ready: true, unlocked: false },
         ];
 
         _.forEach( orders, order => {
@@ -94,16 +97,22 @@ class Agency extends Faction {
     /**
      * Process faction upgrade
      */
-    processUpgrade( upgrade ) {
-        let order;
+    async processUpgrade( upgrade ) {
 
-        if( upgrade === 2 ){
-            order = this.getOrder( 'black-ops' );
-            order.unlocked = true;
+        while ( this.data.unlockedOrders < upgrade ) {
+            let validOrders = this.data.surveyorOrders.filter( order => !order.unlocked ).map( order => order.name );
+
+            // prompt player to select an order
+            let response = await this.prompt('choose-order', {
+                orders: validOrders,
+                message: "Choose an order to unlock",
+            });
+
+            let selectedOrder = this.getOrder( response.selectedOrder );
+            selectedOrder.unlocked = true;
+            this.data.unlockedOrders++;
         }
 
-        order = this.getOrder( 'operation' );
-        order.unlocked = true;
         this.data.surveyorBonusDice = upgrade;
     }
 
@@ -140,12 +149,41 @@ class Agency extends Faction {
         this.game().advancePlayer( {}, false );
     }
 
+    getOrderValidMethod( orderName ){
+        let name = _.startCase( orderName ).replaceAll( " ", "" );
+        return "can" + name;
+    }
+
+    getOrderActionMethod( orderName ){
+        let name = _.startCase( orderName ).replaceAll( " ", "" );
+        return "surveyor" + name;
+    }
+
+    isValidOrder( surveyor, order ){
+        // is this order unlocked?
+        if( !order.unlocked ) return false;
+
+        // is this order ready?
+        if( !order.ready ) return false;
+
+        // is this order for killed surveyors only and he has not been killed?
+        if( order.fromGraveyard && !surveyor.killed ) return false;
+
+        // is this order for alive surveyors only and he has been killed?
+        if( !order.fromGraveyard && surveyor.killed ) return false;
+
+        // check the specific order requirements
+        return this[this.getOrderValidMethod(order.name)]( surveyor );
+    }
+
+
+
     async surveyorAction(){
         let surveyor = this.getChampion();
-        if( !_.unitInPlay( surveyor ) ) return this.message( "The Surveyor is not in play", { class: "warning" } );
+        if( _.unitInReserves( surveyor ) ) return this.message( "The Surveyor is not in play", { class: "warning" } );
 
         let validOrders = this.data.surveyorOrders
-            .filter( order => order.ready && order.unlocked && this[order.validMethod]( surveyor ) )
+            .filter( order => this.isValidOrder( surveyor, order ) )
             .map( order => order.name );
 
         if( !validOrders.length ) return this.message("No legal Surveyor Actions", { class: "warning", silent :true  });
@@ -153,14 +191,17 @@ class Agency extends Faction {
         // prompt player to select an order
         let response = await this.prompt( 'choose-order', {
             orders : validOrders,
-            surveyor: surveyor,
-            message: "Choose an order to issue to the surveyor",
+            surveyor : surveyor,
+            message : "Choose an order to issue to the surveyor",
+            canDecline : true,
         });
 
         if( response?.decline ) return this.message( "The agency declines to issue orders to The Surveyor" );
 
-        let selectedOrder = this.getOrder( response.selectedOrder );
-        await this[selectedOrder.actionMethod]( surveyor );
+        //let selectedOrder = this.getOrder( response.selectedOrder );
+        this.message( `The Agency orders The Surveyor to ${_.startCase(response.selectedOrder)}` );
+        let actionMethod = this.getOrderActionMethod( response.selectedOrder );
+        await this[actionMethod]( surveyor );
     }
 
     getEnemiesWithNoUnrevealedTokens(){
@@ -197,8 +238,22 @@ class Agency extends Faction {
         });
     }
 
+    getPassedFactions(){
+        let factions = [];
+
+        Object.values( this.game().players ).forEach( player => {
+           if( player.data.passed ){
+               let faction = player.faction().name;
+               factions.push( faction );
+           }
+        });
+
+        return factions;
+    }
+
     canAssassinate( surveyor ){
-        let areasWithEnemyChampions = this.areasWithEnemyUnits({ isChampion: true, notHidden: true });
+        let passedFactions = this.getPassedFactions();
+        let areasWithEnemyChampions = this.areasWithEnemyUnits({ isChampion: true, notHidden: true, notOwnedBy : passedFactions });
         let ceaseFireAreas = this.filterAreasByCeaseFire( { invert : true });
 
         if( ceaseFireAreas.length ){
@@ -209,8 +264,6 @@ class Agency extends Faction {
     }
 
     async surveyorAssassinate( surveyor ){
-        this.message("The Surveyor attempts to assassinate a champion");
-
         // resolve attack with that unit
         let area = this.game().areas[ surveyor.location ];
 
@@ -308,14 +361,6 @@ class Agency extends Faction {
         order.ready = false;
     }
 
-    canOperation( surveyor ){
-        return this.hasPlayableCard();
-    }
-
-    async surveyorOperation( surveyor ) {
-        await this.surveyorPlayCard( surveyor, 'operation' );
-    }
-
     async surveyorPlayCard( surveyor, orderName,  free = false ){
         let output = await this.playACard({
             area: this.game().areas[surveyor.location],
@@ -331,11 +376,68 @@ class Agency extends Faction {
     }
 
     canBlackOps( surveyor ){
-        return this.hasPlayableCard( true );
+        return this.hasPlayableCard();
     }
 
     async surveyorBlackOps( surveyor ) {
-        await this.surveyorPlayCard( surveyor, 'black-ops', true );
+        await this.surveyorPlayCard( surveyor, 'black-ops' );
+    }
+
+    canConspire( surveyor ){
+        return this.hasUnitsInArea( surveyor.location );
+    }
+
+    async surveyorConspire( surveyor ) {
+        // do we want to sacrifice a unit?
+        let response = await this.prompt( 'sacrifice-units', {
+            count : 1,
+            areas : [surveyor.location],
+            optional : true
+        });
+
+        // if we didn't choose to sacrifice a unit, discard suitcase nuke and abort
+        if( !response.units.length ) return this.message( "chose not to conspire against their units" );
+
+        const unit = this.game().objectMap[response.units[0]];
+        await this.game().killUnit( unit, this );
+        this.gainResources( unit.cost + 1 );
+
+        this.message( `The Surveyor conspires against a unit` );
+        await this.game().timedPrompt('units-shifted', {
+            message : `The Surveyor conspires against a unit`,
+            units: [unit],
+        });
+
+        let order = this.getOrder( 'conspire' );
+        order.ready = false;
+    }
+
+    canDisrupt( surveyor ){
+        return this.readyEnemyUnitsInArea( surveyor.location ).length > 0;
+    }
+
+    async surveyorDisrupt( surveyor ) {
+        let units = this.readyEnemyUnitsInArea( surveyor.location );
+        units.forEach( unit => unit.ready = false );
+
+        await this.game().timedPrompt('units-shifted', {
+            message : `The Surveyor disrupts the ready enemy units in the ${surveyor.location}`,
+            units: units,
+        });
+
+        let order = this.getOrder( 'disrupt' );
+        order.ready = false;
+    }
+
+    canResuscitate( surveyor ){
+        return surveyor.killed;
+    }
+
+    async surveyorResuscitate( surveyor ) {
+        this.returnUnitToReserves( surveyor );
+
+        let order = this.getOrder( 'resuscitate' );
+        order.ready = false;
     }
 
     surveyorOnBeforeAttack( args, victim ) {

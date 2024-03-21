@@ -5,7 +5,7 @@ let obj = {
      *
      * @returns {{upgrade: *, faction: *}|null}
      */
-    collectUpgrades( forcedPoints ){
+    async collectUpgrades( forcedPoints ){
         // get our highest point value
         const maxPoints = forcedPoints ?? Math.max( this.data.ap, this.data.pp );
 
@@ -16,7 +16,7 @@ let obj = {
         // process our upgrade
         this.data.upgrade = upgrade;
         if(this.processUpgrade){
-            this.processUpgrade( upgrade );
+            await this.processUpgrade( upgrade );
         }
 
         return {

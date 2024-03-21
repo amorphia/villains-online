@@ -113,6 +113,15 @@ let mixin = {
         Object.values( this.game().factions ).forEach( faction => {
             // enemy units only
             if( faction.name === this.name ) return;
+
+            // wrap notOwnedBy in array if needed
+            if( args.notOwnedBy && !Array.isArray( args.notOwnedBy ) ){
+                args.notOwnedBy = [ args.notOwnedBy ];
+            }
+
+            // check if faction matches notOwnedBy
+            if( args.notOwnedBy && args.notOwnedBy.includes( faction.name ) ) return;
+
             // get this faction's areas with units
             areas = _.union( areas, faction.areasWithUnits( args ) );
         });
@@ -123,6 +132,26 @@ let mixin = {
         if( args.noCeaseFire ) areas = this.filterAreasByCeaseFire( areas );
 
         return areas;
+    },
+
+
+    readyEnemyUnitsInArea( area ){
+        if( typeof area !== "string" ) area = area.name;
+
+        let units = [];
+
+        Object.values( this.game().data.factions ).forEach( faction => {
+            // don't exhause our own units
+            if( faction.name === this.name ) return;
+
+            // cycle through this faction's units
+            faction.units.forEach( unit => {
+                // if the unit is ready and in the area add it to our collection
+                if ( unit.ready && unit.location === area ) units.push( unit );
+            });
+        });
+
+        return units;
     },
 
 

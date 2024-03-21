@@ -86,6 +86,12 @@ let helpers = {
         return this.isValidUnit( unit, options );
     },
 
+    unitInGraveyard( unit, options = {} ){
+        options.onBoard = true;
+        options.killed = true;
+        return this.isValidUnit( unit, options );
+    },
+
     isChampion( unit ){
         return unit.type === "champion" || unit.isChampion;
     },
