@@ -230,7 +230,7 @@ class Society extends Faction {
      */
     canActivatePush( token, area ) {
         // if there are basic enemy units in this area, then yes
-        return this.hasEnemyUnitsInArea( area, { basic : true, notWebbed : true } );
+        return !area.isTrapped( this ) && this.hasEnemyUnitsInArea( area, { basic : true, notWebbed : true } );
     }
 
 
