@@ -240,8 +240,11 @@
                 this.random = true;
 
                 if(this.shared.data.gameType === 'secret'){
-                    unselectedFactions = this.factionOptions;
-                    this.selectedFaction = _.sample( unselectedFactions );
+                    unselectedFactions = Object.values( this.shared.data.factions ).filter( faction => {
+                        return faction.selectable && this.factionOptions.includes( faction.name );
+                    });
+
+                    this.selectedFaction = _.sample( unselectedFactions ).name;
                 } else {
                     unselectedFactions = Object.values( this.shared.data.factions )
                         .filter( faction => faction.selectable === true );
