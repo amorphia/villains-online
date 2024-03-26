@@ -48,8 +48,25 @@
         <!-- Bonus Dice -->
         <div class="view-player__bonus-dice view-player__title width-50">Bonus Attack Dice: <span>+{{ faction.bonusDice }}</span></div>
 
+        <!-- tokens in areas -->
+        <div class="view-player__bonus-dice view-player__title width-50">Areas with tokens: <span>{{ tokensAreasRevealed }} ({{ tokensAreas }})</span></div>
+
+
+        <!-- Skills used -->
+        <div class="view-player__bonus-dice view-player__title width-50">Skills Activated: <span>{{ faction.usedSkills.length }}</span></div>
+
+        <!-- Killed Count -->
+        <div class="view-player__bonus-dice view-player__title width-50">Kills: <span>{{ kills }}</span></div>
+
+        <!-- units in play -->
+        <div class="view-player__bonus-dice view-player__title width-50">Units in play: <span>{{ unitsInPlay }}</span></div>
+
+        <!-- Lost Count -->
+        <div class="view-player__bonus-dice view-player__title width-50">Units Lost: <span>{{ losses }}</span></div>
+
+
         <!-- Captured Markers -->
-        <div class="view-player__captured view-player__title width-100">Captured Markers: <span>{{ faction.captured.current }} / {{ faction.captured.max }}</span></div>
+        <div class="view-player__captured view-player__title width-50">Captured Markers: <span>{{ faction.captured.current }} / {{ faction.captured.max }}</span></div>
     </div>
 
 </template>
@@ -76,6 +93,29 @@
                 let bonus = this.faction.defenseBonus;
                 if( this.faction.factionDefenseBonus ) bonus += this.faction.factionDefenseBonus;
                 return bonus;
+            },
+
+            kills(){
+                let kills = _.factionKills( this.faction, this.shared.data.factions ) ?? [];
+                return kills.length;
+            },
+
+            losses(){
+                let losses = this.faction.units.filter( unit => _.unitInGraveyard( unit ) );
+                return losses.length;
+            },
+
+            unitsInPlay(){
+                let units = this.faction.units.filter( unit => _.unitInPlay( unit ) );
+                return units.length;
+            },
+
+            tokensAreas(){
+                return _.areasWithTokensCount( this.faction, this.shared.data.areas );
+            },
+
+            tokensAreasRevealed(){
+                return _.areasWithTokensCount( this.faction, this.shared.data.areas, { revealed: true } );
             },
         },
 
