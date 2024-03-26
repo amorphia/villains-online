@@ -161,10 +161,10 @@ let helpers = {
                     if( shouldRiseUp && unit.type === 'patsy' ) influence++;
                 }
             });
-
-            // add in any martyr influence if applicable
-            influence += this.martyrInfluence( faction, area );
         }
+
+        // add in any martyr influence if applicable
+        influence += this.martyrInfluence( faction, area );
 
         return influence;
     },
