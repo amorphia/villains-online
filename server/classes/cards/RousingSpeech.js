@@ -38,6 +38,9 @@ class RousingSpeech extends Card {
         // the new owner gains control of the area
         this.faction.gainControlOfArea( this.area );
 
+        let trigger = this.faction.triggers.onControlArea;
+        if( trigger ) await this.faction[trigger]( this.area );
+
         await this.game.timedPrompt('seize-control', {
             area: this.area.name,
             message: `The ${this.faction.name} seize control of the ${this.area.name} from the ${oldOwner.name}`,
