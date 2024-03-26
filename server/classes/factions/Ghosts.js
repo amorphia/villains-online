@@ -16,9 +16,11 @@ class Ghosts extends Faction {
         this.data.flipableUnits = ['mad-king','banshee','poltergeist'];
         this.data.addUpgradeToControlInfluence = true;
         this.data.controlNeutralSetupArea = true;
+        this.data.retainableAreas = [];
 
         this.triggers = {
             "onCleanUp" : "returnGhosts",
+            "onStartOfTurn" : "recordRetainableAreas",
         };
 
         this.shouldSetUnitBaseStats = {
@@ -148,6 +150,10 @@ class Ghosts extends Faction {
         // advance game
         game.data.gameAction++;
         game.advancePlayer();
+    }
+
+    recordRetainableAreas(){
+        this.data.retainableAreas = [ ...this.areas() ];
     }
 
     async placeHerald( unit ){

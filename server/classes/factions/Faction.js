@@ -14,7 +14,6 @@ class Faction {
             actual: 0,
         },
         areas: [],
-        retainedAreas: [],
         tokenLimit: 5,
         tokenLimitRemaining: 5,
 

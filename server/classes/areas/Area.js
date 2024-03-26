@@ -218,11 +218,6 @@ class Area {
             oldController : this.data.owner
         };
 
-        // if we retained the area make note of that fact
-        if(oldController && controller && oldController.name === controller.name){
-            controller.data.retainedAreas.push( this.name );
-        }
-
         // if control of this area changed from one player to another handle that transition
         if( controller && controller.name !== this.data.owner ){
             // the new owner captures the enemy marker

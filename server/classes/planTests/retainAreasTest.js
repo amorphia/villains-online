@@ -7,7 +7,8 @@
  * @returns {boolean}
  */
 const test = function retainAreas( debug, faction, areaCount ){
-    let areasRetainedCount = faction.data.retainedAreas.length;
+    let retainedAreas = _.intersection( faction.data.retainableAreas, faction.areas() );
+    let areasRetainedCount = retainedAreas.length;
     let result = areasRetainedCount >= areaCount;
 
     if( debug ){
