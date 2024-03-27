@@ -104,11 +104,6 @@ let obj = {
         if( typeof faction === 'string' ) faction = this.factions[faction];
         let victimFaction = this.factions[unit.faction];
 
-        // if we have some triggered effect on combat death
-        if( options.onCombatDeath ){
-            await options.onCombatDeath.faction[options.onCombatDeath.method]( unit );
-        }
-
         // un-web our unit if needed
         if( unit.webbed ) delete unit.webbed;
 
@@ -119,16 +114,19 @@ let obj = {
         if( unit.ready ) unit.ready = false;
 
         // check for any triggered events on the victim unit that triggers when it is killed
-        try {
-            await faction.unitTriggeredEvents( 'unitKilled', [{ unit : unit }] );
-        } catch( error ){
-            console.error( error );
+        let triggerResults = await faction.unitTriggeredEvents( 'unitKilled', [{ unit : unit }] );
+
+        // check for triggered events that trigger when a unit is killed
+        if( triggerResults !== "NO_FURTHER_TRIGGERS" ){
+            // if we have some triggered effect on combat death
+            if( options.onCombatDeath ) await options.onCombatDeath.faction[options.onCombatDeath.method]( unit );
+
+            // check for triggered events belonging to a faction whenever they kill a unit
+            if( faction.triggers.onFactionKillsUnit ) await faction[faction.triggers.onFactionKillsUnit]( unit, options );
+
+            // check for triggered events whenever one of your units are killed
+            if( victimFaction.triggers.onFactionUnitKilled ) await victimFaction[victimFaction.triggers.onFactionUnitKilled]( unit, faction, options );
         }
-
-        // check for triggered events belonging to a faction whenever they kill a unit
-        if( faction.triggers.onFactionKillsUnit ) await faction[faction.triggers.onFactionKillsUnit]( unit, options );
-
-        if( victimFaction.triggers.onFactionUnitKilled ) await victimFaction[victimFaction.triggers.onFactionUnitKilled]( unit, faction, options );
 
         // unflip our unit if needed
         if( unit.flipped && !unit.dontUnflipAutomatically) this.factions[unit.faction].unflipUnit( unit );

@@ -52,8 +52,8 @@ class Mafia extends Faction {
                 onDeploy : 'fixerDeploy',
                 onUnitKilled: 'fixerKilled',
                 basic: false,
-                influence: 1,
-                attack: [5],
+                influence: 2,
+                attack: [],
                 cost: 0,
                 killed : false,
                 selected : false,
@@ -83,6 +83,8 @@ class Mafia extends Faction {
         // return  to our reserves
         this.returnUnitToReserves( fixer );
         this.data.fixerReturnedCount++;
+
+        return "NO_FURTHER_TRIGGERS";
     }
 
     /**
