@@ -45,7 +45,7 @@ class Sewers extends Area {
     async skill( faction ){
 
         // get areas where we have units, and if we have none abort
-        let areasWithUnits = faction.areasWithUnits( faction, { deployable : true } );
+        let areasWithUnits = faction.areasWithUnits( faction, { deployableType : true } );
         if( ! areasWithUnits.length  ){
             faction.message( "No units in play", { class: 'warning' } );
             return false;
@@ -123,7 +123,7 @@ class Sewers extends Area {
      */
     unitTypeIsCloneable( unit,  trappedAreas ){
         return _.unitInReserves( unit )
-            || ( _.unitInPlay( unit ) && !trappedAreas.includes( unit.location ) )
+            || ( _.unitInPlay( unit, { deployableType : true } ) && !trappedAreas.includes( unit.location ) )
     }
 
 

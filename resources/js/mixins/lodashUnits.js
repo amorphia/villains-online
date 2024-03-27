@@ -40,6 +40,7 @@ let helpers = {
             && ( !options.notWebbed || !unit.webbed )
             && ( !options.notHidden || !unit.hidden )
             && ( !options.deployable || ( !unit.noDeploy && !unit.webbed ) )
+            && ( !options.deployableType || !unit.noDeploy )
             && ( !options.hasProp || unit[options.hasProp] )
             && ( ( !options.attacks && !options.withAttack ) || ( unit.attack.length && !unit.webbed ) );
     },
