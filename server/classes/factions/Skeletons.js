@@ -423,6 +423,10 @@ class Skeletons extends Faction {
             unit : unit
         });
 
+        if(!output){
+            return;
+        }
+
         await this.game().timedPrompt('noncombat-attack', { output : [output] } )
             .catch( error => console.error( error ) );
 
