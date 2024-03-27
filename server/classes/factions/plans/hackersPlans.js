@@ -6,19 +6,19 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'killUnits', args : [6] },
+                    { test : 'useSkills', args : [5] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [4] },
+                    { test : 'killUnits', args : [4] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'skilledAtTarget', args : [3] },
+                    { test : 'skilledAtTarget', args : [2] },
                 ],
                 value : 1
             },
@@ -37,15 +37,9 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'controlOwnTarget', args : [] },
+                    { test : 'useSkills', args : [6] },
                 ],
-                value : 1
-            },
-            {
-                requirements : [
-                    { test : 'useSkills', args : [5] },
-                ],
-                value : 1
+                value : 2
             },
         ]
     },
@@ -63,7 +57,7 @@ let obj = [
             {
                 requirements : [
                     { test : 'useSkills', args : [4] },
-                    { test : 'influenceInAreas', args : [7,1] },
+                    { test : 'influenceInAreas', args : [6,1] },
                 ],
                 value : 2
             },
@@ -77,13 +71,18 @@ let obj = [
             {
                 requirements : [
                     { test : 'useSkills', args : [4] },
-                    { test : 'enemyMarkers', args : [3] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
-                    { test : 'loseUnits', args : [3] },
+                    { test : 'enemyMarkers', args : [3] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'loseUnits', args : [4] },
                 ],
                 value : 1
             },
@@ -127,7 +126,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [6] },
+                    { test : 'useSkills', args : [5] },
                 ],
                 value : 1
             },
@@ -146,7 +145,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'useSkills', args : [8] },
+                    { test : 'useSkills', args : [7] },
                 ],
                 value : 3
             },
@@ -159,7 +158,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'useSkills', args : [7] },
+                    { test : 'useSkills', args : [6] },
                 ],
                 value : 2
             },
