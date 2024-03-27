@@ -11,6 +11,7 @@ class SleeperCell extends Card {
         let output = await this.faction.deploy({
             faction: this.faction,
             player: this.faction.playerId,
+            areas: [this.area.name],
             deployLimit: 1,
             free: true,
             unitTypes: ["mole"],
