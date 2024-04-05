@@ -14,10 +14,10 @@ class Molemen extends Faction {
         };
 
         this.capturedRewards = [
-            { ap : 1, maxEnergy : 1, resources: 2 },
             { ap : 1, cardDraw : 1, resources: 2 },
-            { ap : 1, maxEnergy : 1, resources: 2 },
-            { ap : 2, cardDraw : 1, resources: 2 },
+            { ap : 1, cardDraw : 1, resources: 2 },
+            { ap : 1, cardDraw : 1, resources: 3 },
+            { ap : 2, resources: 3 },
         ];
 
         //data
@@ -43,7 +43,7 @@ class Molemen extends Faction {
                 type : 'dig',
                 cost : 0,
                 resource: 1,
-                description: "Draw two action cards, then discard a card from your hand. Place a tunnel marker in the area matching that card’s TARGET.",
+                description: "Draw an action card, then discard a card from your hand. Place a tunnel marker in the area matching that card’s TARGET.",
                 req : "This token may always be activated"
             }
         };
@@ -61,8 +61,8 @@ class Molemen extends Faction {
                 name: "The Mole King",
                 type: 'champion',
                 basic: false,
-                influence: 2,
-                attack: [9,9],
+                influence: 1,
+                attack: [],
                 cost: 1,
                 killed : false,
                 selected : false,
@@ -122,7 +122,7 @@ class Molemen extends Faction {
     async activateDigToken( args ){
 
         // draw card
-        this.drawCards(2, true );
+        this.drawCards(1, true );
 
         // discard card
         const response = await this.prompt('discard-card', {
