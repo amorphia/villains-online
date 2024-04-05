@@ -88,6 +88,10 @@ let obj = {
         // if our reward is resources, gain them and return
         if( prop === 'resources' ) return this.gainResources( value );
 
+        if( this.game().data?.options?.fastCapture && prop === 'maxEnergy') return this.gainResources( 2 );
+
+        if( this.game().data?.options?.fastCapture && prop === 'cardDraw') return this.drawCards( 2 );
+
         // otherwise use the prop name to increase the matching property on our data object
         this.data[prop] += value;
     }

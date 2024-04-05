@@ -138,6 +138,7 @@ class Game {
             expansionCards: false,
             openMode: false,
             playtestMode: false,
+            fastCapture: false,
             //tokenLayaway: false,
             //ActivatedTokenCombat: false,
             //tokenLayawayLimit: false,
