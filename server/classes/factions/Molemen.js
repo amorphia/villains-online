@@ -30,6 +30,7 @@ class Molemen extends Faction {
         this.data.cardCache = [];
         this.data.flipableUnits = ['champion'];
         this.data.moleKing = null;
+        this.data.bonusDeploy = { type: 'champion', count : 1 }; // our champion doesn't use up deploy limit
 
         // we can capture more tokens than usual, neat!
         this.data.captured.max = this.capturedRewards.length;
@@ -42,7 +43,7 @@ class Molemen extends Faction {
                 type : 'dig',
                 cost : 0,
                 resource: 1,
-                description: "Draw an action card, then discard a card from your hand. Place a tunnel marker in the area matching that card’s TARGET.",
+                description: "Draw two action cards, then discard a card from your hand. Place a tunnel marker in the area matching that card’s TARGET.",
                 req : "This token may always be activated"
             }
         };
@@ -121,7 +122,7 @@ class Molemen extends Faction {
     async activateDigToken( args ){
 
         // draw card
-        this.drawCards(1, true );
+        this.drawCards(2, true );
 
         // discard card
         const response = await this.prompt('discard-card', {
