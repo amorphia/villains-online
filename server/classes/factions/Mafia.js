@@ -52,7 +52,7 @@ class Mafia extends Faction {
                 onDeploy : 'fixerDeploy',
                 onUnitKilled: 'fixerKilled',
                 basic: false,
-                influence: 2,
+                influence: 1,
                 attack: [],
                 cost: 0,
                 killed : false,
