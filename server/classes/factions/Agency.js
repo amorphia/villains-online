@@ -17,25 +17,21 @@ class Agency extends Faction {
             "onStartOfTurn" : "refreshOrders",
             "onCleanUp" : "resetTrackers",
             "onFactionKillsUnit" : "checkKilledChampion",
-            "onAfterCardPlayed" : "incrementEventCardTracker",
         };
 
         //data
         this.data.name = this.name;
         this.data.title = "Section Seven";
-        this.data.focusDescription = "Play many event cards";
+        this.data.focusDescription = "Assassinate enemy champions";
 
-        // icons
+        this.data.maxEnergy = 8;
         this.data.hasKilledChampion = [];
         this.data.unlockedOrders = 0;
-        this.data.maxIntelCards = 2;
         this.data.lastSurveyorGameAction = 0; // used to track if we are permitted to take a regular action
-        this.data.cardLimit = 1;
         this.data.surveyorBonusDice = 0;
         this.data.eventCardsPlayed = 0;
         this.data.extraCardsOnWetwork = false;
         this.data.hiddenDiscard = [];
-
         this.data.surveyorOrders = [];
 
         this.tokens['battle'].count = 1;
@@ -47,9 +43,9 @@ class Agency extends Faction {
                 influence: 1,
                 type: 'intel',
                 cost: 0,
-                resource: 0,
-                description: "Reveal a card from the action deck for each type of basic enemy unit in this area, you may play two event cards revealed this way here (pay costs normally) and discard the rest.",
-                req :  "Discard this token if no cards are revealed after activating it"
+                resource: 1,
+                description: "Place The Surveyor here from your reserves, or perform the action on one readied order.",
+                req :  "Discard this token if you don’t place the surveyor or activate an order"
             }
         };
 
@@ -62,6 +58,7 @@ class Agency extends Faction {
                 influence: 0,
                 attack: [6],
                 cost: 0,
+                noDeploy: true,
                 flipped: false,
                 killed: false,
                 selected: false,
@@ -78,13 +75,14 @@ class Agency extends Faction {
     setupOrders( saved ){
         let orders = [
             { name: "recuperate", ready: true, unlocked: true },
-            { name: "assassinate", ready: true, unlocked: true },
+            { name: "strike", ready: true, unlocked: true },
             { name: "reposition", ready: true, unlocked: true },
             { name: "flush-out", ready: true, unlocked: true },
             { name: "conspire", ready: true, unlocked: false },
             { name: "resuscitate", ready: true, unlocked: false, fromGraveyard: true },
             { name: "black-ops", ready: true, unlocked: false },
             { name: "disrupt", ready: true, unlocked: false },
+            { name: "detonate", ready: true, unlocked: true },
         ];
 
         _.forEach( orders, order => {
@@ -120,19 +118,15 @@ class Agency extends Faction {
         return this.data.surveyorOrders.find( order => order.name === orderName );
     }
 
-    incrementEventCardTracker( event ){
-        if( event.card.type === "event" ) this.data.eventCardsPlayed++;
-    }
-
     async checkKilledChampion( unit, options ) {
         if (!_.isChampion(unit) || this.data.hasKilledChampion.includes( unit.faction )) {
             return;
         }
 
         this.data.hasKilledChampion.push( unit.faction );
-        this.drawCards( 2, true );
+        this.drawCards( 1, true );
         this.refreshOrders();
-        this.message("draws two cards for assassinating an enemy champion");
+        this.message("draws a card for assassinating an enemy champion");
     }
 
     refreshOrders(){
@@ -238,6 +232,63 @@ class Agency extends Faction {
         });
     }
 
+    canDetonate( surveyor ){
+        let area = this.game().areas[surveyor.location];
+        return this.hasEnemyUnitsInArea( area );
+    }
+
+    async surveyorDetonate( surveyor ) {
+        let area = this.game().areas[surveyor.location];
+
+        // get our target faction
+        let targetFaction = await this.selectEnemyPlayerWithUnitsInArea( area, 'Choose player to target with the detonation' );
+
+        // abort if we don't have any targets
+        if( !targetFaction ){
+            this.message( "No targets for the detonation", { class : 'warning' } );
+            return;
+        }
+
+        // get our victim and kill it
+        let unit = await this.getSacrificeVictim( targetFaction, area );
+
+        // show our work
+        this.game().message({ faction: targetFaction, message: `sacrifices <span class="faction-${unit.faction}">${unit.name}</span> in the ${area.name}` });
+        await this.game().timedPrompt('units-shifted', {
+            message : `The Surveyor detonates a device in the ${area.name}`,
+            units: [unit]
+        });
+
+        await this.game().killUnit( unit, this );
+
+        let order = this.getOrder( 'detonate' );
+        order.ready = false;
+    }
+
+    async getSacrificeVictim( faction, area ) {
+        // alert players
+        this.game().sound( 'basta' );
+        let message = `<span class="faction-${faction.name}">the ${faction.name}</span> must lose a unit in the deadly blast`;
+        this.game().message({ faction, message });
+
+        // get our enemy units
+        let enemyUnits = _.factionUnitsInArea(faction, area);
+
+        // if there is only one enemy units just return it
+        if ( enemyUnits.length === 1 ) {
+            return enemyUnits[0];
+        }
+
+        // otherwise let that player choose which of their units to sacrifice
+        let [player, response] = await this.game().promise({
+            players: faction.playerId,
+            name: 'sacrifice-units',
+            data: {count: 1, areas: [area]}
+        }).catch(error => console.error(error));
+
+        return this.game().objectMap[response.units[0]];
+    }
+
     getPassedFactions(){
         let factions = [];
 
@@ -251,9 +302,9 @@ class Agency extends Faction {
         return factions;
     }
 
-    canAssassinate( surveyor ){
+    canStrike( surveyor ){
         let passedFactions = this.getPassedFactions();
-        let areasWithEnemyChampions = this.areasWithEnemyUnits({ isChampion: true, notHidden: true, notOwnedBy : passedFactions });
+        let areasWithEnemyChampions = this.areasWithEnemyUnits({ isChampion: true, notOwnedBy : passedFactions });
         let ceaseFireAreas = this.filterAreasByCeaseFire( { invert : true });
 
         if( ceaseFireAreas.length ){
@@ -263,14 +314,14 @@ class Agency extends Faction {
         return areasWithEnemyChampions.includes( surveyor.location );
     }
 
-    async surveyorAssassinate( surveyor ){
+    async surveyorStrike( surveyor ){
         // resolve attack with that unit
         let area = this.game().areas[ surveyor.location ];
 
         await this.attack({
             area : area,
             attacks : surveyor.attack,
-            targets : this.enemiesWithUnitsInArea( area, { isChampion: true, notHidden: true }),
+            targets : this.enemiesWithUnitsInArea( area, { isChampion: true }),
             forceChooseTarget : true,
             unit : surveyor,
             noDecline : true
@@ -463,8 +514,10 @@ class Agency extends Faction {
      * @returns {boolean}
      */
     canActivateIntel( token, area ) {
-        // are there any enemy basic unit in this area?
-        return this.hasEnemyUnitsInArea( area, { basic : true });
+        let unit = this.getChampion();
+        let order = this.getOrder( 'resuscitate' );
+
+        return !unit.killed || ( order.unlocked && order.ready );
     }
 
     /**
@@ -474,137 +527,28 @@ class Agency extends Faction {
      */
     async activateIntelToken( args ) {
         let area = args.area;
-        let enemyTypesCount = this.enemyTypesInArea( area, { basic : true } ).length;
+        let unit = this.getChampion();
 
-        args.fromToken = true;
-
-        // draw our intel cards
-        let cards = this.drawIntelCards( area, enemyTypesCount );
-        let done = false;
-        let advance = true;
-        let cardsPlayed = 0;
-
-        while(done === false){
-            let response = await this.chooseIntelCard( area, cards );
-
-            let cardId = response.selected;
-
-            // if we decline then conclude the loop
-            if( !cardId ){
-                done = true;
-                this.game().message( 'declines to play an event card' );
-                continue;
-            }
-
-            // prepare our data, then resolve our action card
-            //args.area = this.game().areas[args.area];
-            response.cardId = cardId;
-            response.cost = this.game().objectMap[ cardId ].cost;
-
-            let output = await this.resolveCard( args, response );
-
-            if(output?.dontAdvancePlayer){
-                advance = false;
-            }
-
-            this.data.eventCardsPlayed++;
-
-            // remove it from our cards array
-            cards = cards.filter( item => item.id !== cardId );
-            cardsPlayed++;
-
-            if( !cards.length || cardsPlayed === this.data.maxIntelCards ) done = true;
+        if( !unit.location ){
+            await this.placeSurveyor( unit, area );
+        } else {
+            await this.surveyorAction();
         }
 
-        // discard unselected cards (if any)
-        if( cards.length ) this.discardCardsToHiddenDiscard( cards );
-
-        this.game().advancePlayer( {}, advance );
+        this.game().advancePlayer();
     }
 
-    discardCardsToHiddenDiscard( cards ){
-        let count = cards.length;
+    async placeSurveyor( unit, area ){
+        await this.placeUnit( unit, area.name );
 
-        // move each card from our hand to the discard pile
-        for( let card of cards ) {
-            _.moveItemById(
-                card.id,
-                this.data.cards.hand,
-                this.data.hiddenDiscard,
-            );
-        }
-
-        this.message(`places ${count} cards face down` );
+        await this.game().timedPrompt('units-shifted', {
+            message : `The Surveyor enters the ${area.name}`,
+            units: [unit],
+        });
     }
-
-    /**
-     *
-     *
-     */
-    async chooseIntelCard( area, cards ){
-        let args = {
-            area : area.name,
-            cards : cards,
-            type : "event",
-            message : "Choose an event card to play",
-        };
-
-        // allow player to select a valid card (if any)
-        return await this.prompt( 'choose-action-card', args );
-    }
-
-
-    /**
-     * Draw cards to be revealed to our magick ability
-     *
-     * @returns {array}
-     */
-    drawIntelCards( area, count ){
-        // draw cards equal to our count then remove them from our hand because we
-        // don't actually want to treat them as regularly drawn cards
-        this.drawCards( count );
-        let cards = this.data.cards.hand.slice( -count );
-
-        // reveal the cards to all players
-        this.message(`use intel in the <span class="highlight">${area.name}</span> to draw ${count} cards`);
-
-        return cards;
-    }
-
-
-    /**
-     * Flip a unit to their skeleton side
-     *
-     * @param unit
-     */
-    /*
-    becomeAgent( unit ) {
-        unit.killed = null;
-        unit.flipped = true;
-        unit.canDeployFlipped = true;
-        unit.influence = 2;
-    }
-
-    /**
-     * Revert a flipped unit to its face up side
-     *
-     * @param unit
-
-    unflipUnit( unit ) {
-        unit.flipped = false;
-
-        if( unit.type === 'patsy' ){
-            unit.influence = 0;
-            unit.canDeployFlipped = false;
-        }
-    }
-     */
 
     resetTrackers(){
         this.data.hasKilledChampion = [];
-        this.data.eventCardsPlayed = 0;
-        this.data.cardLimit = 1;
-        this.data.maxIntelCards = 1;
     }
 
     /*

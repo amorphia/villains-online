@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-         events played :<span class="highlight ml-2">{{ focus }}</span>
+         assassinated :<span class="highlight ml-2">{{ focus }}</span>
     </div>
 </template>
 
@@ -18,14 +18,12 @@
         },
         computed : {
             focus(){
-                return this.faction.eventCardsPlayed;
-            },
+                if( !this.faction.hasKilledChampion.length ){
+                    return "none";
+                }
 
-            /*
-            actions(){
-                return this.faction.maxWoundAgentActions - this.faction.usedWoundAgentActions;
+                return this.faction.hasKilledChampion.join(', ');
             },
-            */
         }
     }
 </script>

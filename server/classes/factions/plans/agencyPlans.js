@@ -6,7 +6,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playEvents', args : [3] },
+                    { test : 'assassinate', args : [1] },
                     { test : 'tokensInAreas', args : [6] },
                 ],
                 value : 2
@@ -26,7 +26,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playEvents', args : [3] },
+                    { test : 'assassinate', args : [1] },
                     { test : 'skilledAtTarget', args : [2] },
                 ],
                 value : 2
@@ -46,7 +46,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playEvents', args : [4] },
+                    { test : 'assassinate', args : [2] },
                     { test : 'useSkills', args : [2] },
                 ],
                 value : 2
@@ -66,16 +66,16 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playEvents', args : [5] },
-                ],
-                value : 2
-            },
-            {
-                requirements : [
                     { test : 'unitsInPlay', args : [8] },
                     { test : 'useSkills', args : [2] },
                 ],
                 value : 1
+            },
+            {
+                requirements : [
+                    { test : 'assassinate', args : [2] },
+                ],
+                value : 2
             },
         ]
     },
@@ -86,15 +86,9 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playEvents', args : [4] },
+                    { test : 'assassinate', args : [2] },
                 ],
-                value : 1
-            },
-            {
-                requirements : [
-                    { test : 'exterminateAreas', args : [1] },
-                ],
-                value : 1
+                value : 2
             },
             {
                 requirements : [
@@ -111,8 +105,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playEvents', args : [6] },
-                    { test : 'controlOwnTarget', args : [] },
+                    { test : 'assassinate', args : [3] },
                 ],
                 value : 3
             },
@@ -125,7 +118,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playEvents', args : [3] },
+                    { test : 'assassinate', args : [1] },
                     { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 2
@@ -145,7 +138,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'playEvents', args : [3] },
+                    { test : 'assassinate', args : [1] },
                     { test : 'exterminateAreas', args : [1] },
                 ],
                 value : 2
