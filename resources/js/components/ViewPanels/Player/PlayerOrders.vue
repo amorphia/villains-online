@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- active cards -->
-        <div class="view-player__title">Available Orders:</div>
+        <div class="view-player__title">{{ text }}</div>
         <div class="view-player__active-cards">
             <img v-for="order in orders" class="view-player__card"
                  :src="`/images/factions/agency/orders/${order.name}.jpg`">
@@ -15,7 +15,7 @@
     export default {
 
         name: 'player-orders',
-        props : ['faction'],
+        props : ['faction', 'ready'],
 
         data() {
             return {
@@ -24,8 +24,12 @@
         },
 
         computed : {
+            text(){
+                return this.ready ? "Unlocked Orders:" : "Available Orders:"
+            },
+
             orders(){
-                return this.faction.surveyorOrders.filter( order => order.ready && order.unlocked );
+                return this.faction.surveyorOrders.filter( order => order.unlocked && (!this.ready || order.ready) );
             },
         },
     }

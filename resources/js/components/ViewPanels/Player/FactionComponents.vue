@@ -63,6 +63,7 @@
             </div>
         </div>
 
+        <player-orders v-if="faction.name === 'agency'" :faction="faction" ></player-orders>
     </div>
 </template>
 
