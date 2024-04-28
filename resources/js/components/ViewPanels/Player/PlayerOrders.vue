@@ -25,7 +25,7 @@
 
         computed : {
             text(){
-                return this.ready ? "Unlocked Orders:" : "Available Orders:"
+                return this.ready ?  "Available Orders:" : "Unlocked Orders:";
             },
 
             orders(){
