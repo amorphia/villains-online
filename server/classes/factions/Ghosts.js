@@ -29,8 +29,8 @@ class Ghosts extends Faction {
         };
 
         this.capturedRewards = [
-            { ap : 1, maxEnergy : 1, cardDraw : 1 },
-            { ap : 2 },
+            { ap : 1, resources : 2, cards : 1 },
+            { ap : 2, resources : 1, cards : 2  },
             { ap : 2 },
         ];
 

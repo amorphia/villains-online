@@ -25,6 +25,13 @@ class Bureau extends Faction {
             used : 0,
         };
 
+        this.capturedRewards = [
+            { ap : 1, resources : 1 },
+            { ap : 1, cards : 1 },
+            { ap : 1 },
+            { ap : 2 },
+        ];
+
         // tokens
         this.tokens['deploy'].count = 4;
         this.tokens['card'].count = 4;

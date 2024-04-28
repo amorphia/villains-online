@@ -23,14 +23,6 @@ class Hackers extends Faction {
         this.data.hax0redMarkers = 0;
         this.data.usedHax0redMarkers = 0;
 
-        this.capturedRewards = [
-            { ap : 1, cardDraw : 1 },
-            { ap : 1, cardDraw : 1 },
-            { ap : 1 },
-            { ap : 2 }
-        ];
-
-
         // tokens
         this.tokens['boot-up'] = {
             count: 1,

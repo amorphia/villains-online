@@ -21,9 +21,9 @@ class Conquistadors extends Faction {
         this.data.focusDescription = "Conquer many areas";
 
         this.capturedRewards = [
-            { ap : 1, cardDraw : 1 },
-            { ap : 1, cardDraw : 1 },
-            { ap : 1 },
+            { ap : 1, cards : 1 },
+            { ap : 1, cards : 2 },
+            { ap : 1, cards : 2 },
             { ap : 2 },
         ];
 

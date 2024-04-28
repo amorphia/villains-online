@@ -21,10 +21,10 @@ class Aliens extends Faction {
         this.data.flipableUnits = ['champion'];
 
         this.capturedRewards = [
-            { ap : 1, maxEnergy : 1 },
-            { ap : 1, cardDraw : 1 },
-            { ap : 1, maxEnergy : 1 },
-            { ap : 1, cardDraw : 1 },
+            { ap : 1, resources : 2 },
+            { ap : 1, cards : 2 },
+            { ap : 1, resources : 2 },
+            { ap : 1, cards : 2 },
             { ap : 1, pp : 1 },
             { ap : 1, pp : 1 },
         ];

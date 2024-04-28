@@ -74,8 +74,8 @@ class Faction {
 
     // the rewards we get for each enemy marker we capture
     capturedRewards = [
-        { ap : 1, maxEnergy : 1 },
-        { ap : 1, cardDraw : 1 },
+        { ap : 1, resource : 2 },
+        { ap : 1, cards : 2 },
         { ap : 1 },
         { ap : 2 },
     ];
