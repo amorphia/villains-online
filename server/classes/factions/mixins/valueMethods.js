@@ -98,21 +98,21 @@ let mixin = {
         return this.areas().includes( area );
     },
 
-
     /**
-     * Returns an array of area names with enemy units in them
+     * Returns an array of area names with units in them
      *
      * @param args
      * @param adjacentToArea
      * @returns {Array}
      */
-    areasWithEnemyUnits( args = {}, adjacentToArea = null ){
+    areasWithAnyPlayerUnits( args = {}, adjacentToArea = null ){
         let areas = [];
 
         // cycle through each game faction looking for areas where each enemy player has units
         Object.values( this.game().factions ).forEach( faction => {
-            // enemy units only
-            if( faction.name === this.name ) return;
+
+            // enemy units only?
+            if( args.enemyOnly && faction.name === this.name ) return;
 
             // wrap notOwnedBy in array if needed
             if( args.notOwnedBy && !Array.isArray( args.notOwnedBy ) ){
@@ -132,6 +132,19 @@ let mixin = {
         if( args.noCeaseFire ) areas = this.filterAreasByCeaseFire( areas );
 
         return areas;
+    },
+
+    /**
+     * Returns an array of area names with enemy units in them
+     *
+     * @param args
+     * @param adjacentToArea
+     * @returns {Array}
+     */
+    areasWithEnemyUnits( args = {}, adjacentToArea = null ){
+        args.enemyOnly = true;
+        
+        return this.areasWithAnyPlayerUnits( args, adjacentToArea );
     },
 
 

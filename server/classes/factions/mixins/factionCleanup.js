@@ -36,6 +36,9 @@ let obj = {
             console.error( error );
         }
 
+        // return units with the returnOnCleanup property
+        this.returnUnitsThatReturnAutomatically();
+
         // reset dead units
         this.cleanUpKilled();
 
@@ -43,6 +46,10 @@ let obj = {
         this.data.areasCapturedThisTurn = [];
     },
 
+    returnUnitsThatReturnAutomatically(){
+        let units = this.data.units.filter( unit =>  unit.returnOnCleanup && _.unitInPlay( unit ) );
+        units.forEach( unit => this.returnUnitToReserves( unit ) );
+    },
 
     /**
      * Reset our action tokens

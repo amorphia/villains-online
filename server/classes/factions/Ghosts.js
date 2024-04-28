@@ -53,6 +53,7 @@ class Ghosts extends Faction {
                 blockEnemyTokenInfluence: true,
                 hitsAssigned: 0,
                 onUnflip: 'placeHerald',
+                returnOnCleanup: true,
                 hidden: false,
                 ghost : true,
                 description: "Enemy tokens don't produce xIx in this area, Rule: When revealed place your herald in this or an adjacent area"
@@ -93,6 +94,7 @@ class Ghosts extends Faction {
                 selected: false,
                 hidden: false,
                 onUnflip: "bansheeWail",
+                returnOnCleanup: true,
                 hitsAssigned: 0,
                 ghost : true,
                 bansheeCards: 2,
@@ -115,6 +117,7 @@ class Ghosts extends Faction {
                 flipped: false,
                 selected: false,
                 hidden: false,
+                returnOnCleanup: true,
                 onUnflip: "scareUnits",
                 hitsAssigned: 0,
                 ghost : true,
@@ -330,12 +333,6 @@ class Ghosts extends Faction {
             unit.blockEnemyTokenInfluence = true;
         }
     }
-
-    returnGhosts(){
-        let ghosts = this.data.units.filter( unit => (unit.ghost || unit.returnOnCleanup) && _.unitInPlay( unit ) );
-        ghosts.forEach( unit => this.returnUnitToReserves( unit ) );
-    }
-
 
     /**
      * Handle our Materialize action

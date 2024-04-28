@@ -105,7 +105,7 @@ class Swarm extends Faction {
         }
 
         // return broodnest to our reserves
-        broodnest.location = null;
+        this.returnUnitToReserves( broodnest )
     }
 
 
