@@ -27,7 +27,19 @@ let helpers = {
             // compare this list of units per area to our list of most by area, if this faction has more than
             // the existing entry (if any) it takes the top spot
             for (const [key, value] of Object.entries( unitsInArea ) ) {
-                if( !mostUnits[key] || mostUnits[key].count < value ) mostUnits[key] = { faction : faction.name, count : value }
+                // if this area hasn't been set yet, add it
+                if( !mostUnits[key] ){
+                    mostUnits[key] = { faction : faction.name, count : value };
+                    continue;
+                }
+
+                // if the current most units faction ties our count, no faction has the most units
+                if( mostUnits[key]?.count === value ){
+                    mostUnits[key].faction = null;
+                    continue;
+                }
+
+                if( value > mostUnits[key].count ) mostUnits[key].faction = faction.name;
             }
         });
 
