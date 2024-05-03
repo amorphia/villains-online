@@ -368,6 +368,11 @@ let obj = {
         if( args.attackBonus ) attackBonus += args.attackBonus;
         console.log("attackBonus after args.attackBonus", attackBonus);
 
+        // if a unit in this area increases all unit attack values add that here
+        let areaAttackBonusFromUnits = this.calculateAreaAttackBonusFromUnits( args );
+        if( areaAttackBonusFromUnits ) attackBonus += areaAttackBonusFromUnits;
+        console.log("attackBonus after areaAttackBonusFromUnits", attackBonus);
+
         // if we are attacking with a unit and our faction has a global attack bonus, apply it
         if( args.unit && this.data.attackBonus ) attackBonus += this.data.attackBonus;
         console.log("attackBonus after attacker.attackBonus", attackBonus);
@@ -411,6 +416,18 @@ let obj = {
         return toHit;
     },
 
+    calculateAreaAttackBonusFromUnits( args ){
+        if( !args.unit ) return 0;
+        let bonus = 0;
+
+        Object.values( this.game().factions ).forEach( faction => {
+           faction.data.units.forEach( unit => {
+               if( unit.areaUnitAttackBonus && _.unitInArea( unit, args.area ) ) bonus += unit.areaUnitAttackBonus;
+           });
+        });
+
+        return bonus;
+    },
 
     /**
      * Calculate how many hits we scored with this attack

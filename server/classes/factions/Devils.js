@@ -62,15 +62,29 @@ class Devils extends Faction {
                 noDeploy: true,
                 killed : false,
                 hidden: true,
+                areaUnitAttackBonus: 2,
                 onDeploy: 'deployCheckIfDelighted',
                 onPlace: 'deployCheckIfDelighted',
-                onBeforeBattle: 'increaseCombatAttack',
+                //onBeforeBattle: 'increaseCombatAttack',
                 dontUnflipAutomatically: true,
                 selected : false,
                 hitsAssigned : 0,
             }
         };
     }
+
+    /**
+     * Process faction upgrade
+     *
+     * @param {number} upgrade
+     */
+    processUpgrade( upgrade ){
+        if( upgrade !== 2 ) return;
+
+        let unit = this.getChampion();
+        unit.areaUnitAttackBonus++;
+    }
+
     async handlePrincePlacement( token ) {
         // if we didn't reveal the token, abort
         if (token.type !== 'stoke') return;
@@ -101,6 +115,7 @@ class Devils extends Faction {
         }).catch(error => console.error(error));
     }
 
+    /*
     async shouldTormentAfterSkill( area ){
         // if we don't have our first upgrade abort
         if( !this.data.upgrade ) return;
@@ -133,6 +148,7 @@ class Devils extends Faction {
                 .catch(error => console.error(error));
         }
     }
+    */
 
     checkKillChaos( unit, options ){
         // if the attack was
@@ -170,10 +186,12 @@ class Devils extends Faction {
         this.message( `Have achieved chaos level ${this.data.chaos}${levelText}` );
     }
 
+    /*
     increaseCombatAttack( combat ){
         let upgradeBonus = this.data.upgrade >= 2 ? 1 : 0;
         combat.data.attackBonus += this.data.princeCombatBonus + upgradeBonus;
     }
+    */
 
     /**
      * Handle our Dr T attack trigger

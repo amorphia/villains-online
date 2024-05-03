@@ -64,7 +64,7 @@ class Molemen extends Faction {
                 basic: false,
                 influence: 1,
                 attack: [],
-                cost: 1,
+                cost: 0,
                 killed : false,
                 selected : false,
                 toughness : true,
