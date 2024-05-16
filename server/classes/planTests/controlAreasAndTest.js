@@ -8,7 +8,7 @@
  */
 const test = function controlAreasAnd( debug, faction, areaNames ) {
     let result = areaNames.every( area => {
-        let areaController = faction.game().areas[ area ].data.owner;
+        let areaController = faction.game().areas[ area ].data?.owner;
         return areaController === faction.name;
     });
 
