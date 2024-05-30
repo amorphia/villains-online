@@ -7,7 +7,7 @@ class ToTheDeath extends Card {
      */
     async handle(){
         // deploy a free unit
-        await this.cardDeploy( this.faction, this.area, { free: true, deployLimit: 1 } )
+        await this.cardDeploy( this.faction, this.area, { free: true, deployLimit: 1, basicOnly: true } )
             .catch( error => console.error( error ) );
 
         this.keepFighting = true;

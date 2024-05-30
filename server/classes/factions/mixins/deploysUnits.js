@@ -81,6 +81,7 @@ let obj = {
             transformUnit : args.transformUnit,
             isSkilled: args.isSkilled,
             canDecline: args.canDecline,
+            basicOnly: args.basicOnly,
         };
 
         // have the player select units to deploy

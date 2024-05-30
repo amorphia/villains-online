@@ -323,9 +323,9 @@
                     .filter( unit => ( this.data.free || unit.cost <= _.money( this.shared.faction ) || unit.redeployFree )
                             && _.unitInArea( unit, area, {
                                 deployable : true,
-                                notChampion : this.destinationBlockedByKau,
+                                notChampion : this.destinationBlockedByKau || this.data.basicOnly,
                                 skilled : this.data.isSkilled,
-                                types : this.data.unitTypes
+                                types : this.data.unitTypes,
                         }));
 
                 /*
@@ -512,7 +512,7 @@
                         types : this.data.unitTypes,
                         skilled: this.data.isSkilled,
                         deployable: true,
-                        notChampion : this.destinationBlockedByKau,
+                        notChampion : this.destinationBlockedByKau || this.data.basicOnly,
                         inReserves : true,
                     }) && ( unit.cost <= _.money( this.shared.faction ) || this.data.free || this.shared.faction.ghostDeploy )
                 );
