@@ -84,7 +84,7 @@ class Bureau extends Faction {
     }
 
     sortTokens(){
-        const order = ['deploy', 'card', 'move', 'battle', 'dig'];
+        const order = ['deploy', 'card', 'move', 'battle', 'loop'];
         this.data.tokens.sort((a, b) => {
             const aIndex = order.indexOf(a.type);
             const bIndex = order.indexOf(b.type);
