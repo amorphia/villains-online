@@ -10,7 +10,7 @@ class Bureau extends Faction {
         // triggered events
         this.triggers = {
             "onCleanUp" : "resetUsedSkips",
-            "onAfterActivateToken" : "eraseThePast"
+            "onAfterActivateToken" : "eraseThePast",
         };
 
         //data
@@ -24,13 +24,6 @@ class Bureau extends Faction {
             max : 0,
             used : 0,
         };
-
-        this.capturedRewards = [
-            { ap : 1, resources : 1 },
-            { ap : 1, cards : 1 },
-            { ap : 1 },
-            { ap : 2 },
-        ];
 
         // tokens
         this.tokens['deploy'].count = 4;

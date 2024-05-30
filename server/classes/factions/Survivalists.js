@@ -23,8 +23,8 @@ class Survivalists extends Faction {
         };
 
         this.capturedRewards = [
-            { ap : 1, resources : 2 },
-            { ap : 2, cards : 2 },
+            { ap : 1, cards : 1, resources: 2 },
+            { ap : 2, cards : 2, resources: 1 },
             { ap : 2 },
         ];
 
