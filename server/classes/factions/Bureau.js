@@ -11,12 +11,15 @@ class Bureau extends Faction {
         this.triggers = {
             "onCleanUp" : "resetUsedSkips",
             "onAfterActivateToken" : "eraseThePast",
+            'onSetup' : 'setUpVariousBits',
         };
 
         //data
         this.data.name = this.name;
         this.data.title = "The Bureau of Eternity";
         this.data.focusDescription = "Have the most tokens in many areas";
+        this.data.deployCache = [];
+        this.data.cardCache = [];
         //this.data.bonusDeploy = { type: 'champion', count : 1 };
 
         // track our skips used
@@ -26,10 +29,10 @@ class Bureau extends Faction {
         };
 
         // tokens
-        this.tokens['deploy'].count = 4;
-        this.tokens['card'].count = 4;
-        //this.tokens['move'].count = 2;
-        //this.tokens['battle'].count = 2;
+        this.tokens['deploy'].count = 5;
+        this.tokens['card'].count = 5;
+        this.tokens['move'].count = 2;
+        this.tokens['battle'].count = 2;
 
         this.tokens['loop'] = {
             count: 1,
@@ -60,16 +63,35 @@ class Bureau extends Faction {
         };
     }
 
-
     /**
      * Process faction upgrade
      *
      * @param {number} upgrade
      */
-    processUpgrade( upgrade ) {
-        this.data.skips.max = upgrade === 1 ? 1 : 3;
+    processUpgrade( upgrade ){
+        // add additional tokens to our reserves
+        this.upgradeVariableItems({
+            reserves: this.data.tokens,
+            cache: this.data.cardCache,
+        });
+
+        this.upgradeVariableItems({
+            reserves: this.data.tokens,
+            cache: this.data.deployCache,
+        });
+
+        this.sortTokens();
     }
 
+    sortTokens(){
+        const order = ['deploy', 'card', 'move', 'battle', 'dig'];
+        this.data.tokens.sort((a, b) => {
+            const aIndex = order.indexOf(a.type);
+            const bIndex = order.indexOf(b.type);
+            if( aIndex === bIndex ) return 0;
+            return aIndex < bIndex ? -1 : 1;
+        });
+    }
 
     /**
      * Resolve our skip action
@@ -114,8 +136,8 @@ class Bureau extends Faction {
      */
     getFirstMatchingEnemyToken( area, ourToken ){
         return area.data.tokens.find( token => token.faction !== this.name
-                                                        && token.revealed
-                                                        && token.name === ourToken.name );
+            && token.revealed
+            && token.name === ourToken.name );
     }
 
 
@@ -247,6 +269,28 @@ class Bureau extends Faction {
      */
     resetUsedSkips(){
         this.data.skips.used = 0;
+    }
+
+
+    setUpVariousBits(){
+        this.setupDeployAndCardTokens();
+    }
+
+    /**
+     * Remove the vines tokens we haven't unlocked yet from our reserves
+     */
+    setupDeployAndCardTokens(){
+        this.setupVariableItems({
+            value: 'deploy',
+            reserves: this.data.tokens,
+            cache: this.data.deployCache,
+        });
+
+        this.setupVariableItems({
+            value: 'card',
+            reserves: this.data.tokens,
+            cache: this.data.cardCache,
+        });
     }
 }
 
