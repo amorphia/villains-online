@@ -26,10 +26,10 @@ class Devils extends Faction {
 
         // how much chaos we need to achieve each chaos level
         this.data.chaosLevels = {
-            strife: 2,
-            bedlam: 4,
-            pandemonium: 6,
-            max: 6,
+            strife: 1,
+            bedlam: 3,
+            pandemonium: 5,
+            max: 5,
         };
 
         this.data.stokeBattles = 1;
