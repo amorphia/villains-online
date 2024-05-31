@@ -252,9 +252,10 @@ class Survivalists extends Faction {
         }
 
         if(this.data.upgrade > 0){
+            let basicModifier = this.data.upgrade === 2 ?  "" : " and that unit is basic";
             mods.push({
                 type: 'prepperAttack',
-                text: `Units attacking you suffer -${this.data.upgrade} to their attack rolls if you have only one defending unit remaining`
+                text: `Units attacking you suffer -2 to their attack rolls if you have only one defending unit remaining${basicModifier}`,
             });
         }
 
