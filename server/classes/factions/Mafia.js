@@ -36,11 +36,14 @@ class Mafia extends Faction {
 
         // units
         this.units['talent'].count = 2;
-        this.units['goon'].count = 4;
+        this.units['goon'].count = 5;
         this.units['goon'].data.influence = 2;
-        this.units['goon'].data.toughness = true;
-        this.units['goon'].data.flipped = false;
-        this.units['goon'].data.onWounded = 'onGoonWounded';
+        this.units['goon'].data.attack = [4,4];
+        this.units['mole'].count = 4;
+        this.units['patsy'].count = 6;
+        //this.units['goon'].data.toughness = true;
+        //this.units['goon'].data.flipped = false;
+        //this.units['goon'].data.onWounded = 'onGoonWounded';
 
         this.units['champion'] = {
             count: 1,
@@ -107,6 +110,7 @@ class Mafia extends Faction {
 
     }
 
+    /*
     onGoonWounded( unit ){
         unit.influence = 1;
     }
@@ -115,6 +119,7 @@ class Mafia extends Faction {
         unit.influence = 2;
         unit.flipped = false;
     }
+    */
 
     /**
      * Reset the faction we are spying on end of turn trigger
