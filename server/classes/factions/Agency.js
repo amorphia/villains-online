@@ -80,11 +80,11 @@ class Agency extends Faction {
             { name: "reposition", ready: true, unlocked: true, starting: true },
             { name: "flush-out", ready: true, unlocked: true, starting: true, exhausts: true },
 
-            { name: "conspire", ready: true, unlocked: true, exhausts: true },
+            { name: "conspire", ready: true, unlocked: false, exhausts: true },
             //{ name: "resuscitate", ready: true, unlocked: false, fromGraveyard: true },
             { name: "operation", ready: true, unlocked: false, exhausts: true },
-            { name: "recruit", ready: true, unlocked: true, exhausts: true },
-            { name: "disrupt", ready: true, unlocked: true, exhausts: true },
+            { name: "recruit", ready: true, unlocked: false, exhausts: true },
+            { name: "disrupt", ready: true, unlocked: false, exhausts: true },
         ];
 
         _.forEach( orders, order => {
