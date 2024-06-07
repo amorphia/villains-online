@@ -109,6 +109,8 @@ class Agency extends Faction {
                 message: "Choose an order to unlock",
             });
 
+            if( response?.decline ) return this.message( "The agency declines to issue new orders" );
+
             let selectedOrder = this.getOrder( response.selectedOrder );
             selectedOrder.unlocked = true;
             this.message(`Unlocks a new order`, { type: 'order', order: selectedOrder.name } );
