@@ -105,6 +105,7 @@ class Agency extends Faction {
             // prompt player to select an order
             let response = await this.prompt('choose-order', {
                 orders: validOrders,
+                canDecline: true,
                 message: "Choose an order to unlock",
             });
 
