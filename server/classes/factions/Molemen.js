@@ -151,8 +151,10 @@ class Molemen extends Faction {
     }
 
     modifyDeployAreas(areas){
+        let validTunnels = this.data.tunnels.filter(areaName => this.game().areas[areaName]);
+
         // merge areas and tunnels, enforcing uniqueness
-        return [...new Set([...areas, ...this.data.tunnels])];
+        return [...new Set([...areas, ...validTunnels])];
     }
 
     clearTunnels(){
