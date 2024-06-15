@@ -7,8 +7,9 @@ let setup = {
      * @param player
      * @param factionName
      * @param random
+     * @param xed
      */
-    async chooseFaction( player, factionName, random ){
+    async chooseFaction( player, factionName, random, xed ){
         if( ! player.data.active ) return;
         let faction = this.data.factions[ factionName ];
 
@@ -24,8 +25,10 @@ let setup = {
         // choose their faction randomly
         let message = `chooses the ${factionName}`;
         if( this.data.gameType === "secret" ) message = `chooses a faction`;
-        if( random ) message = `Like the mighty eagle ${player.data.name} randomly ${message}`;
-        this.message({ message: message, player : player, class : random ? 'highlight' : ''  });
+        if( random && !xed ) message = `Like the mighty eagle ${player.data.name} randomly ${message}`;
+        if( random && xed ) message = `Like the morally-complex goose ${player.data.name} semi-randomly ${message} after crossing off ${xed} faction${xed > 1 ? 's' : ''}`;
+
+        this.message({ message: message, player : player, class : (random) ? 'highlight' : ''  });
 
         // update players
         await this.pushGameDataToPlayers();

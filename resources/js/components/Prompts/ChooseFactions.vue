@@ -115,6 +115,12 @@
 
 
         computed : {
+            /**
+             * How many factions have we xed out?
+             */
+            xedFactions(){
+                return Object.values( this.shared.data.factions ).filter( faction => faction.blocked )?.length ?? 0;
+            },
 
             /**
              * Return an array of our basic factions
@@ -283,7 +289,7 @@
              */
             chooseFaction(){
                 App.event.emit( 'sound', 'ui' );
-                this.shared.socket.emit( 'chooseFaction', this.shared.data.id, this.selectedFaction, this.random );
+                this.shared.socket.emit( 'chooseFaction', this.shared.data.id, this.selectedFaction, this.random, this.xedFactions );
             }
         }
     }
