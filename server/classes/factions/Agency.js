@@ -333,11 +333,13 @@ class Agency extends Faction {
     async surveyorStrike( surveyor ){
         // resolve attack with that unit
         let area = this.game().areas[ surveyor.location ];
+        let targets = this.enemiesWithUnitsInArea( area, { isChampion: true });
+        let passedFactions = this.getPassedFactions();
 
         await this.attack({
             area : area,
             attacks : surveyor.attack,
-            targets : this.enemiesWithUnitsInArea( area, { isChampion: true }),
+            targets : targets.filter(faction => !passedFactions.includes(faction)),
             forceChooseTarget : true,
             unit : surveyor,
             noDecline : true
