@@ -148,7 +148,7 @@ let helpers = {
             // if the token...
             if( area.tokens.some( token =>
                 token.faction === faction.name // .. belongs to the given faction
-                && ( options.revealed === false || token.revealed ) // ... and is revealed (or the options allow unrevealed)
+                && ( !options.revealed || token.revealed ) // ... and is revealed (or the options allow unrevealed)
                 && ( !options.type || token.type === options.type ) ) // ...and the options don't care about type, or we have the proper type
             ){ count++ } // increment the count
         });
