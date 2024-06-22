@@ -52,13 +52,12 @@ class Guerrillas extends Faction {
 
         this.units['talent'].count = 4;
         //this.units['talent'].data.redeployFree = true;
-        this.units['talent'].data.attack = [7, 7];
 
         this.units['mole'].count = 4;
         //this.units['mole'].data.redeployFree = true;
 
         this.units['patsy'].count = 6;
-        this.units['patsy'].data.attack = [9, 9];
+        this.units['patsy'].data.attack = [8, 8];
 
         this.units['champion'] = {
             count: 1,
