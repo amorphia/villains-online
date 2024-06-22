@@ -34,6 +34,7 @@ class Executioners extends Faction {
             data: {
                 cost : 0,
                 influence: 2,
+                resource: 1,
                 type : 'detain',
                 areaStat : true,
                 description: `Make an attack of ${this.data.detainAttack} against each enemy unit that is moved or deployed away from this area`,
@@ -335,7 +336,7 @@ class Executioners extends Faction {
 
         for(let unitEvent of event.units){
             let unit = unitEvent.unit;
-            if( this.data.detainedArea && unit.faction !== this.name && this.data.detainedArea === unitEvent.from ){
+            if( this.data.detainedArea && unit.faction === this.data.condemned && this.data.detainedArea === unitEvent.from ){
                 let result = await this.detainAttack( unit );
                 if(result) kills.push( result );
             }
