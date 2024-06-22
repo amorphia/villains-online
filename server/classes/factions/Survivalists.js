@@ -24,8 +24,8 @@ class Survivalists extends Faction {
 
         this.capturedRewards = [
             { ap : 1, cards : 1, resources: 2 },
-            { ap : 2, cards : 2, resources: 1 },
-            { ap : 2 },
+            { ap : 2, cards : 1, resources: 2 },
+            { ap : 2, cards : 2 },
         ];
 
         this.data.captured.max = this.capturedRewards.length;
@@ -69,7 +69,7 @@ class Survivalists extends Faction {
                 influence: 1,
                 type: 'scrounge',
                 cost: 0,
-                resource: 2,
+                resource: 1,
                 description: "Extra Refunded (gain xRxxRx when revealed), if you have no other tokens here you may deploy a patsy to this area, it becomes prepared",
                 req : "Discard this token if you do not deploy a patsy when activating it",
             }
