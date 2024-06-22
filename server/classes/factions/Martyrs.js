@@ -25,7 +25,7 @@ class Martyrs extends Faction {
         delete this.tokens['battle'];
 
         this.tokens['martyr'] = {
-            count: 2,
+            count: 1,
             data: {
                 influence: 1,
                 type: 'martyr',
