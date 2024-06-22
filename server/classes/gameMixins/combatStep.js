@@ -26,6 +26,10 @@ let obj = {
      * Resolve the combat step
      */
     async resolveCombatStep(){
+        // check faction onAfterDetermineControl Triggers
+        for(let faction of Object.values(this.factions)){
+            if( faction.triggers.onBeforeCombatStep ) await faction[faction.triggers.onBeforeCombatStep]();
+        }
 
         // get the areas with battle markers
         let areas = this.areasWithBattleMarkers();

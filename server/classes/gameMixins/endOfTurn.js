@@ -9,9 +9,9 @@ let obj = {
         await this.determineControlStep();
 
         // check faction onAfterDetermineControl Triggers
-        Object.values( this.factions ).forEach( faction => {
-            if( faction.triggers.onAfterDetermineControl ) faction[faction.triggers.onAfterDetermineControl]();
-        });
+        for(let faction of Object.values( this.factions )){
+            if( faction.triggers.onAfterDetermineControl ) await faction[faction.triggers.onAfterDetermineControl]();
+        }
 
         // collect resources step
         this.collectResourcesStep();

@@ -106,10 +106,7 @@ class Ninjas extends Faction {
         let area = this.game().areas[token.location];
 
         // check if lotus dancer can't legally move
-        if (lotusDancerArea.isTrapped(this) // if she's trapped
-            || !area.data.adjacent.includes(lotusDancer.location) // if she's not adjacent
-            || area.hasKau() // if kau is in the destination
-        ) return;
+        if (!area.data.adjacent.includes(lotusDancer.location)) return;
 
         // choose to dance or not
         this.message( 'Lotus dancer deciding whether to enter the frey' );
@@ -146,7 +143,7 @@ class Ninjas extends Faction {
      */
     async resolveLotusDancerMove( lotusDancer, area ){
         // st lotus dancer's new area
-        this.placeUnit( lotusDancer, area.name )
+        await this.placeUnit( lotusDancer, area.name )
 
         // show results to all players
         this.game().sound('wiff');

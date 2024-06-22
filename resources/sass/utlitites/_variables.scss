@@ -47,6 +47,7 @@
     --faction-survivalists: #7A7535;
     --faction-devils: #d37167;
     --faction-agency: #5f5f89;
+    --faction-executioners: #bc9928;
 }
 
 .faction-neutral{color: white}
@@ -79,6 +80,7 @@
 .faction-survivalists {color: var(--faction-survivalists)}
 .faction-devils {color: var(--faction-devils)}
 .faction-agency {color: var(--faction-agency)}
+.faction-executioners {color: var(--faction-executioners)}
 
 .primary { color: var(--primary-color) }
 .primary-light { color: var(--primary-light-color) }

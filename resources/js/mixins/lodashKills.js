@@ -209,6 +209,12 @@ let helpers = {
         return results;
     },
 
+    factionCondemnedKills( killingFaction, factions ){
+        if( killingFaction.data ) killingFaction = killingFaction.data;
+
+        let kills = this.factionKills( killingFaction, factions );
+        return kills.filter(unit => unit.faction === killingFaction.condemned ).length;
+    },
 
     /**
      * Returns all of the units killed by a given faction

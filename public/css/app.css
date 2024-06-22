@@ -26,7 +26,12 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-
+.icon-detain:before {
+    content: "\E918";
+}
+.icon-condemned:before {
+    content: "\E919";
+}
 .icon-cloak-and-dagger:before {
     content: "\E916";
 }
@@ -535,6 +540,7 @@ a {
   --faction-survivalists: #7A7535;
   --faction-devils: #d37167;
   --faction-agency: #5f5f89;
+  --faction-executioners: #bc9928;
 }
 
 .faction-neutral {
@@ -655,6 +661,10 @@ a {
 
 .faction-agency {
   color: var(--faction-agency);
+}
+
+.faction-executioners {
+  color: var(--faction-executioners);
 }
 
 .primary {

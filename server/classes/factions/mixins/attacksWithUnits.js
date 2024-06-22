@@ -377,6 +377,12 @@ let obj = {
         if( args.unit && this.data.attackBonus ) attackBonus += this.data.attackBonus;
         console.log("attackBonus after attacker.attackBonus", attackBonus);
 
+        // if we are not attacking with a unit and our faction has a non-unit attack bonus, apply it
+        if( !args.unit && this.data.nonUnitAttackBonus ){
+            attackBonus += this.data.nonUnitAttackBonus;
+        }
+        console.log("attackBonus after attacker.nonUnitAttackBonus", attackBonus);
+
         // if we get a bonus for attacking with a unit having a given prop, apply it here
         if( args.unit && this.data.unitPropAttackBonus ){
             for( let prop in this.data.unitPropAttackBonus ) {

@@ -116,6 +116,9 @@
                 return this.shared.getPlayerFaction( this.player );
             },
 
+            condemned(){
+                return this.shared.data.factions['executioners']?.condemned;
+            },
 
             /**
              * Returns an array of ability modifiers and their descriptions
@@ -134,6 +137,11 @@
                 areasToShow = areasToShow.filter( area => !this.shared.data.ignoredAreas.includes( area ) );
 
                 let stats = [];
+
+                // add condemned stat
+                if(this.condemned === this.faction.name){
+                    stats.push({ name : "condemned", title : "condemned", description : "This faction has been condemned by the executioners"  });
+                }
 
                 // add card stats
                 this.faction.cards.active.forEach( card => stats.push({ name : card.class, title : card.name, description : card.description } ));

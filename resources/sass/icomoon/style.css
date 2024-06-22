@@ -26,7 +26,12 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-
+.icon-detain:before {
+    content: "\e918";
+}
+.icon-condemned:before {
+    content: "\e919";
+}
 .icon-cloak-and-dagger:before {
     content: "\e916";
 }
