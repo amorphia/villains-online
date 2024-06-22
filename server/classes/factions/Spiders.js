@@ -9,7 +9,7 @@ class Spiders extends Faction {
 
         // triggers
         this.triggers = {
-            "onSetup" : "setupDropTokens",
+            //"onSetup" : "setupDropTokens",
             "onBeforeBattle" : "xchxchAmbushUnits"
         };
 
@@ -26,7 +26,7 @@ class Spiders extends Faction {
         this.data.drops = [];
 
         this.tokens['drop'] = {
-            count: 3,
+            count: 1,
             data: {
                 influence: 1,
                 type: 'drop',
@@ -111,6 +111,8 @@ class Spiders extends Faction {
     /**
      * Remove the vines tokens we haven't unlocked yet from our reserves
      */
+
+    /*
     setupDropTokens(){
         this.setupVariableItems({
             value: 'drop',
@@ -118,17 +120,21 @@ class Spiders extends Faction {
             reserves: this.data.tokens,
         });
     }
+    */
 
     /**
      * Process faction upgrade
      */
 
-    processUpgrade() {
-        // add additional vines tokens to our reserves
+    processUpgrade( upgrade ) {
+        this.data.dropDeploy = 1 + upgrade;
+
+        /*
         this.upgradeVariableItems({
             cache: this.data.drops,
             reserves: this.data.tokens,
         });
+        */
     }
 
 
@@ -231,7 +237,7 @@ class Spiders extends Faction {
      */
     async activateDropToken( args ) {
         // poop out spiders
-        let units = await this.resolveSpawnSpiders( args.area, 1, `Spiders drop from above in The ${args.area.name}` );
+        let units = await this.resolveSpawnSpiders( args.area, this.data.dropDeploy, `Spiders drop from above in The ${args.area.name}` );
 
         // if we have no spiders to place, log the error
         if( !units.length ) this.message( 'No more spiders in reserves to place', { class : 'warning' });
