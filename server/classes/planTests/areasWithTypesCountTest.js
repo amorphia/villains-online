@@ -25,6 +25,7 @@ const test = function areasWithTypesCount( debug, faction, areaCount, unitCount,
         'unitCount req:', unitCount,
         'unitTypeReq:', unitType,
         'countOfAreasWithMinUnits', countOfAreasWithMinUnits,
+        'unitsOfTheTypeInAreas', unitsOfTheTypeInAreas,
         'result:', result
     );
 
