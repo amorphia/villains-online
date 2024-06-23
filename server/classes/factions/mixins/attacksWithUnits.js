@@ -407,7 +407,6 @@ let obj = {
         // deadly attacks can't be negatively modified, so just return our attack value
         if( args.deadly ) {
             console.log("deadly attacks can't be modified negatively, final toHit:", toHit);
-            console.log("attack args:", args);
             return toHit;
         }
 
@@ -416,7 +415,6 @@ let obj = {
         if( defenseBonus ) toHit += defenseBonus;
 
         console.log("getToHitNumber final", toHit);
-        console.log("attack args:", args);
         return toHit;
     },
 
@@ -649,7 +647,6 @@ let obj = {
         }
 
         // if we decided to buy off some hits, pay the costs here
-        console.log( "tokenDeflects", response.tokenDeflects );
         if( response.tokenDeflects > 0 ){
             this.discardEarliestTokensInArea( response.tokenDeflects, area );
         }
