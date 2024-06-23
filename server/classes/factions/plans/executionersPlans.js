@@ -72,9 +72,14 @@ let obj = [
             {
                 requirements : [
                     { test : 'skilledAtTarget', args : [2] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'killCondemnedUnits', args : [3] },
                 ],
-                value : 2
+                value : 1
             },
             {
                 requirements : [
