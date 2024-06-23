@@ -162,7 +162,7 @@ class Cloners extends Faction {
             if( this.unitTypeIsCloneable( unit, trappedAreas ) ){
                 unitTypes[unit.type] = true;
                 if( unit.additionalTypes ){
-                    unit.additionalTypes.forEach( type => unitTypes[unit.type] = true );
+                    unit.additionalTypes.forEach( type => unitTypes[type] = true );
                 }
             }
         });
