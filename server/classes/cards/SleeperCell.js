@@ -17,7 +17,7 @@ class SleeperCell extends Card {
             unitTypes: ["mole"],
         });
 
-        let moles = this.faction.data.units.filter( unit => unit.type === "mole" );
+        let moles = this.faction.data.units.filter( unit => unit.type === "mole" || unit.additionalTypes?.includes( 'mole' ));
 
         moles.forEach( unit => {
             // add first strike (if needed)
@@ -32,7 +32,7 @@ class SleeperCell extends Card {
     }
 
     clear( faction ){
-        let moles = faction.data.units.filter( unit => unit.type === "mole" );
+        let moles = faction.data.units.filter( unit => unit.type === "mole" || unit.additionalTypes?.includes( 'mole' ));
 
         moles.forEach( unit => {
             // remove first strike (if needed)

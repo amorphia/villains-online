@@ -29,12 +29,12 @@ let helpers = {
             && ( !options.notReady || !unit.ready )
             && ( !options.isUnwounded || ( ( unit.toughness && !unit.flipped ) || unit.prepared ) )
             && ( !options.isWounded || (unit.toughness && unit.flipped) )
-            && ( !options.type || unit.type === options.type )
-            && ( !options.typeIn || options.typeIn.includes(unit.type) )
-            && ( !options.notType || unit.type !== options.notType )
+            && this.unitTypeTest( options, unit )
+            && this.unitTypeInTest( options, unit )
+            && this.unitNotTypeTest( options, unit )
             && ( !options.notChampion || !this.isChampion( unit ) )
             && ( !options.isChampion || this.isChampion( unit ) )
-            && ( !options.types || options.types.includes( unit.type ) )
+            && this.unitTypesTest( options, unit )
             && ( !options.hidden || unit.hidden )
             && ( !options.canCombat || (!unit.hidden || ( unit.attack.length && !unit.webbed ) ) )
             && ( !options.notWebbed || !unit.webbed )
@@ -43,6 +43,42 @@ let helpers = {
             && ( !options.deployableType || !unit.noDeploy )
             && ( !options.hasProp || unit[options.hasProp] )
             && ( ( !options.attacks && !options.withAttack ) || ( unit.attack.length && !unit.webbed ) );
+    },
+
+    unitTypeTest( options, unit ){
+        if( !options.type ) return true;
+
+        if( unit.type === options.type ) return true;
+
+        if( !unit.additionalTypes ) return false;
+
+        return unit.additionalTypes.includes( options.type );
+    },
+
+    unitTypesTest( options, unit ){
+        if( !options.types ) return true;
+
+        if( options.types.includes( unit.type ) ) return true;
+
+        return unit.additionalTypes && this.intersection( unit.additionalTypes, options.types ).length;
+    },
+
+    unitTypeInTest( options, unit ){
+        if( !options.typeIn ) return true;
+
+        if( options.typeIn.includes( unit.type ) ) return true;
+
+        if( !unit.additionalTypes ) return false;
+
+        return this.intersection( unit.additionalTypes, options.typeIn ).length > 0;
+    },
+
+    unitNotTypeTest( options, unit ){
+        if( !options.notType ) return true;
+
+        if( unit.type === options.notType ) return false;
+
+        return !unit.additionalTypes?.includes( options.notType );
     },
 
 

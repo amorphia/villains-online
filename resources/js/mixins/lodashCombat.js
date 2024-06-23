@@ -12,7 +12,7 @@ let helpers = {
 
         units.forEach( unit => {
             // ignore units that can't be assigned hits
-            if( unit.hidden || ( options.nonPatsy && unit.type === 'patsy' ) ) return;
+            if( unit.hidden || ( options.nonPatsy && ( unit.type === 'patsy' || unit.additionalTypes?.includes('patsy') ) ) ) return;
 
             // units with toughness that have't taken a hit yet can be assigned two hits
             if( ( unit.toughness || unit.hasOwnProperty( 'skeleton' ) ) && !unit.flipped ) {

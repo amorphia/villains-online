@@ -189,8 +189,6 @@ let obj = {
      * @returns {object|Faction}
      */
     async setAttackTargets( args ){
-        console.log("setAttackTargets", args);
-
         // if this is a deadly attack we don't have a target
         if( args.deadly ) return { deadly : true, name : 'deadly' };
 
@@ -649,6 +647,13 @@ let obj = {
         if( response.cost > 0 ){
             this.payCost( response.cost, true );
         }
+
+        // if we decided to buy off some hits, pay the costs here
+        console.log( "tokenDeflects", response.tokenDeflects );
+        if( response.tokenDeflects > 0 ){
+            this.discardEarliestTokensInArea( response.tokenDeflects, area );
+        }
+
 
         // assign hits to smoke instead?
         //if( this.smokeScreenAttack( response, killer ) ) return;

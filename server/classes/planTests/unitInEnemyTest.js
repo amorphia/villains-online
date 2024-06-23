@@ -15,7 +15,7 @@ const test = function unitInEnemy( debug, faction, unitType, unitCount ){
     });
 
     let factionUnitCount = faction.data.units.reduce( (acc, unit) => {
-        if( unit.type === unitType
+        if( (unit.type === unitType || unit.additionalTypes?.includes( unitType ))
             && !unit.killed
             && enemyAreas.includes( unit.location )
         ) acc++;

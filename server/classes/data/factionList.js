@@ -28,6 +28,7 @@ let obj = {
     devils : { name: 'devils', owner : null, blocked : false, status : 2, selectable : true, killer : false, },
     agency : { name: 'agency', owner : null, blocked : false, status : 0, selectable : true, killer : false, },
     executioners : { name: 'executioners', owner : null, blocked : false, status : 0, selectable : true, killer : true, },
+    cloners : { name: 'cloners', owner : null, blocked : false, status : 0, selectable : true, killer : false, },
 };
 
 module.exports = Object.assign({}, obj );

@@ -75,7 +75,7 @@ class DesignerPlague extends Card {
      */
     getSacrificeAreas( faction, type ){
         let areas = {};
-        let unitsInPlay = faction.data.units.filter( unit => unit.location && !unit.killed && unit.type === type );
+        let unitsInPlay = faction.data.units.filter( unit => unit.location && !unit.killed && (unit.type === type || unit.additionalTypes?.includes(type) ));
 
         unitsInPlay.forEach( unit => areas[unit.location] = true );
         return Object.keys( areas );

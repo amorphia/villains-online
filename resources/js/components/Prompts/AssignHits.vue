@@ -34,6 +34,16 @@
                     </div>
                 </div>
 
+                <!-- token deflection -->
+                <div v-if="hasTokenDeflect" class="gnome-deflects primary-light">
+                    Discard tokens to cancel hits?
+                    <div class="d-flex align-center justify-center">
+                        <i :disabled="tokenDeflects === 0" @click="tokenDeflects--" class="icon-minimize pr-2"></i>
+                        <span class="highlight mr-3">{{ tokenDeflects }}</span> hits cancelled
+                        <i :disabled="!canTokenDeflect" @click="tokenDeflects++" class="icon-maximize ml-2"></i>
+                    </div>
+                </div>
+
                 <!-- seeking warning -->
                 <div v-if="data.seeking" class="prompt-question" v-html="shared.filterText( `Seeking xSEEKx: Hits must be assigned to a non-patsy unit if possible` )"></div>
 
@@ -59,6 +69,7 @@
             return {
                 shared : App.state,
                 gnomeDeflects : 0,
+                tokenDeflects: 0,
             };
         },
 
@@ -86,6 +97,7 @@
             resolve( option ){
                 let data = {
                     cost : this.cost,
+                    tokenDeflects: this.tokenDeflects,
                     area : this.area.name,
                     targets : []
                 };
@@ -193,6 +205,11 @@
                 return money >= this.cost + 2;
             },
 
+            canTokenDeflect(){
+                if( this.hitsToAssign === 0 ) return;
+                let tokens = this.shared.faction.tokens.filter(token => token.location === this.area.name).length;
+                return tokens > this.tokenDeflects;
+            },
 
             /**
              * Calculate our gnome deflect cost
@@ -212,13 +229,16 @@
                         && _.find( this.shared.faction.units, unit => unit.location === this.area.name && unit.type === 'champion' );
             },
 
+            hasTokenDeflect(){
+              return this.shared.faction.tokenDeflect;
+            },
 
             /**
              * How many hits do we have left to assign?
              * @returns {number}
              */
             hitsToAssign(){
-                let hitsToAssign = this.data.hits - this.hitsAssigned - this.gnomeDeflects;
+                let hitsToAssign = this.data.hits - this.hitsAssigned - this.gnomeDeflects - this.tokenDeflects;
                 if( hitsToAssign > this.assignableHits ) hitsToAssign = this.assignableHits;
                 return this.assignableHits - this.hitsAssigned === 0 ? 0 : hitsToAssign;
             },
