@@ -19,7 +19,7 @@ const test = function areasWithTypesCount( debug, faction, areaCount, unitCount,
 
     let result = countOfAreasWithMinUnits >= areaCount;
 
-    if( debug ) console.log (
+    console.log (
         'areasWithTypesCount ---',
         'areaCount req:', unitType,
         'unitCount req:', unitCount,
