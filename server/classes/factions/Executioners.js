@@ -368,7 +368,7 @@ class Executioners extends Faction {
 
         for(let unitEvent of event.units){
             let unit = unitEvent.unit;
-            if( this.data.detainedArea && unit.faction === this.data.condemned && this.data.detainedArea === unitEvent.from ){
+            if( this.data.detainedArea && !unit.hidden && unit.faction === this.data.condemned && this.data.detainedArea === unitEvent.from ){
                 let result = await this.detainAttack( unit );
                 if(result) kills.push( result );
             }
