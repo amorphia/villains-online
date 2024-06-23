@@ -130,6 +130,7 @@ class Cloners extends Faction {
     async resolveCloneUnit( response ){
         // get our unit object
         let unit = this.game().objectMap[ response.units[0] ];
+        let additionalTypes = unit.additionalTypes ?? [];
 
         let args = {
             area: unit.location,
@@ -137,7 +138,7 @@ class Cloners extends Faction {
             player: this.playerId,
             free: true,
             deployLimit: 1,
-            unitTypes: [unit.type],
+            unitTypes: [unit.type, ...additionalTypes],
         };
 
         // deploy the selected unit
