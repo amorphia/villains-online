@@ -314,16 +314,15 @@ class Executioners extends Faction {
      * @returns {Promise<void>}
      */
     async afterSkillAttack( area ){
-        let condemned = this.game().factions[this.data.condemned];
-        let condemnedUnits = condemned.unitsInArea( area, { notHidden : 'true' } );
+        let enemyUnits = this.enemyUnitsInArea( area, { notHidden: true } );
 
-        if(!condemnedUnits.length){
-            this.message( `No condemned units in the ${area.name} to attack`, { class : 'warning' } );
+        if( !Object.keys( enemyUnits ).length ){
+            this.message( `No units in the ${area.name} to attack`, { class : 'warning' } );
             return;
         }
 
         // resolve attack with that unit
-        let output = await this.attack({ area: area, attacks: [this.data.skillAttack], targets: [this.data.condemned] });
+        let output = await this.attack({ area: area, attacks: [this.data.skillAttack] });
 
         if ( output ) {
             await this.game().timedPrompt('noncombat-attack', {output: [output]})
@@ -368,7 +367,7 @@ class Executioners extends Faction {
 
         for(let unitEvent of event.units){
             let unit = unitEvent.unit;
-            if( this.data.detainedArea && !unit.hidden && unit.faction === this.data.condemned && this.data.detainedArea === unitEvent.from ){
+            if( this.data.detainedArea && !unit.hidden && unit.faction !== this.name && this.data.detainedArea === unitEvent.from ){
                 let result = await this.detainAttack( unit );
                 if(result) kills.push( result );
             }
