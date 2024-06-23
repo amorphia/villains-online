@@ -417,11 +417,14 @@ class Executioners extends Faction {
             factionPoints.push({ name: faction.name, points: totalPoints });
         });
 
-        this.data.condemned = factionPoints.filter( faction => faction.points === highestPoints);
+
+        this.data.condemned = factionPoints.filter( faction => faction.points === highestPoints).map( faction => faction.name );
 
         this.game().updatePlayerData();
         this.game().sound( 'basta' );
-        this.message( `The ${this.data.condemned.join(", ")} have been condemned` );
+
+        const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
+        this.message( `The ${formatter.format(this.data.condemned)} have been condemned` );
     }
 
     /**

@@ -1,6 +1,6 @@
 <template>
     <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-        condemned: <span class="highlight ml-2 mr-4">{{ faction.condemned.join(", ") }}</span> kills :<span class="highlight ml-2">{{ kills }}</span>
+        condemned kills :<span class="highlight ml-2">{{ kills }}</span>
     </div>
 </template>
 
