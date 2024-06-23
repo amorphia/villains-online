@@ -51,7 +51,7 @@
         <div class="place-token__tokens center-text pos-relative">
             <token-set
                 :tokens="reserves"
-                classes="one-line"
+                classes=""
                 :selected="token"
                 noBorder="true"
             ></token-set>
