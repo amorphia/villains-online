@@ -91,7 +91,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'areasWithTypesCount', args : [2, 3, 'patsies'] },
+                    { test : 'areasWithTypesCount', args : [2, 3, 'patsy'] },
                 ],
                 value : 1
             },
@@ -116,7 +116,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'areasWithTypesCount', args : [2, 2, 'goons'] },
+                    { test : 'areasWithTypesCount', args : [2, 2, 'goon'] },
                 ],
                 value : 2
             },
