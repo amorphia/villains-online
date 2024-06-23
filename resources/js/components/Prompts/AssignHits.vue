@@ -36,11 +36,17 @@
 
                 <!-- token deflection -->
                 <div v-if="hasTokenDeflect" class="gnome-deflects primary-light">
-                    Discard tokens to cancel hits?
+                    Discard this tokens to cancel all hits?
+
+                    <div class="d-flex justify-center">
+                        <token-set-item :token="firstTokenInArea" noEmit="true" :hideUnrevealed="true"></token-set-item>
+                    </div>
+
+
                     <div class="d-flex align-center justify-center">
-                        <i :disabled="tokenDeflects === 0" @click="tokenDeflects--" class="icon-minimize pr-2"></i>
+                        <i :disabled="tokenDeflects === 0" @click="tokenDeflects = 0" class="icon-minimize pr-2"></i>
                         <span class="highlight mr-3">{{ tokenDeflects }}</span> hits cancelled
-                        <i :disabled="!canTokenDeflect" @click="tokenDeflects++" class="icon-maximize ml-2"></i>
+                        <i :disabled="!canTokenDeflect" @click="setTokenDeflects" class="icon-maximize ml-2"></i>
                     </div>
                 </div>
 
@@ -97,7 +103,7 @@
             resolve( option ){
                 let data = {
                     cost : this.cost,
-                    tokenDeflects: this.tokenDeflects,
+                    tokenDeflects: this.tokenDeflects > 0 ? 1 : 0,
                     area : this.area.name,
                     targets : []
                 };
@@ -111,6 +117,10 @@
                 this.shared.respond( 'assign-hits', data );
             },
 
+            setTokenDeflects(){
+                this.clearAllHits();
+                this.tokenDeflects = this.data.hits;
+            },
 
             /**
              * Clear all unit hits
@@ -194,6 +204,9 @@
                 return this.hitsToAssign === 0 ?  "confirm hit assignment" : `assign ${this.hitsToAssign} more hits`;
             },
 
+            firstTokenInArea(){
+                return this.area.tokens.find( token => token.faction === this.shared.faction.name) ?? {};
+            },
 
             /**
              * Can we use the gnome delfect to block hits?
@@ -206,7 +219,7 @@
             },
 
             canTokenDeflect(){
-                if( this.hitsToAssign === 0 ) return;
+                if( this.hitsToAssign === 0 || !this.data.unit ) return;
                 let tokens = this.shared.faction.tokens.filter(token => token.location === this.area.name).length;
                 return tokens > this.tokenDeflects;
             },

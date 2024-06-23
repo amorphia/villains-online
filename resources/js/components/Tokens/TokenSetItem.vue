@@ -1,5 +1,6 @@
 <template>
     <div class="tokens-hud__token d-inline-block tooltip selected-circle"
+            :class="wrapperClass"
             @click.left="tokenClicked"
             @click.right.prevent.stop="$refs.tooltip.open()"
     >
@@ -20,7 +21,7 @@
 
 <script>
     export default {
-        props: [ 'token', 'noEmit', 'selected', 'direction' ],
+        props: [ 'token', 'noEmit', 'selected', 'direction', 'hideUnrevealed' ],
         data() {
             return {
                 shared : App.state
@@ -46,8 +47,20 @@
              * @returns {string|false}
              */
             tokenClass(){
+                let classes = [];
                 // if we have a selected token, but this token isn't the selected token reduce the opacity
-                return this.selected && this.selected.id !== this.token.id ? 'opacity-5' : false;
+                if( this.selected && this.selected.id !== this.token.id ) classes.push( 'opacity-5' );
+
+                return classes;
+            },
+
+            wrapperClass(){
+                let classes = [];
+
+                // if we have an unrevealed token and we set our hide unrevealed prop apply the proper styling
+                if( this.hideUnrevealed && !this.token.revealed ) classes.push( 'unrevealed' );
+
+                return classes;
             },
 
             tokenFootnote(){
@@ -80,6 +93,27 @@
     .tokens-hud__token-image.highlight {
         box-shadow: 0 0 6px gold;
         border-color: var(--highlight-color);
+    }
+
+
+    .tokens-hud__token.unrevealed {
+        opacity : .8;
+        filter: saturate(50%);
+        position: relative;
+        margin-bottom: .6em;
+    }
+
+    .tokens-hud__token.unrevealed::before {
+        content: "";
+        position: absolute;
+        width: 40%;
+        height: 40%;
+        background-image: url(/images/icons/hidden.png);
+        z-index: 3;
+        left: 50%;
+        top: 100%;
+        background-size: contain;
+        transform: translate(-50%, -70%);
     }
 
 </style>
