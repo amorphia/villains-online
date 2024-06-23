@@ -117,7 +117,7 @@
             },
 
             condemned(){
-                return this.shared.data.factions['executioners']?.condemned;
+                return this.shared.data.factions['executioners']?.condemned ?? [];
             },
 
             /**
@@ -139,7 +139,7 @@
                 let stats = [];
 
                 // add condemned stat
-                if(this.condemned === this.faction.name){
+                if( this.condemned.includes( this.faction.name ) ){
                     stats.push({ name : "condemned", title : "condemned", description : "This faction has been condemned by the executioners"  });
                 }
 

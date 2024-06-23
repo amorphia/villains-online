@@ -21,7 +21,7 @@ class Executioners extends Faction {
         this.data.name = this.name;
         this.data.title = "The Sinner's Judgement";
         this.data.focusDescription = "Kill units belonging to the condemned player";
-        this.data.condemned = "";
+        this.data.condemned = [];
         this.data.detainedArea = null;
         this.data.nonUnitAttackBonus = 0;
         this.data.detainAttack = 7;
@@ -84,7 +84,7 @@ class Executioners extends Faction {
      */
     battleOrderSort( combatFactions ) {
 
-        if( !combatFactions.find( faction => faction.name === this.data.condemned ) ) return;
+        //if( !combatFactions.find( faction => faction.name === this.data.condemned ) ) return;
 
         combatFactions.sort( (a, b) => {
             if ( a.name === this.name ) return -1;
@@ -417,12 +417,11 @@ class Executioners extends Faction {
             factionPoints.push({ name: faction.name, points: totalPoints });
         });
 
-        let condemned = _.sample(factionPoints.filter( faction => faction.points === highestPoints ));
-        this.data.condemned = condemned.name;
+        this.data.condemned = factionPoints.filter( faction => faction.points === highestPoints);
 
         this.game().updatePlayerData();
         this.game().sound( 'basta' );
-        this.message( `The ${this.data.condemned} have been condemned` );
+        this.message( `The ${this.data.condemned.join(", ")} have been condemned` );
     }
 
     /**
@@ -432,9 +431,9 @@ class Executioners extends Faction {
      * @returns {*}
      */
     factionCombatMods( mods, area ) {
-        if( area.units().find( unit => unit.faction === this.data.condemned ) ){
+        //if( area.units().find( unit => unit.faction === this.data.condemned ) ){
             mods.push( { type : 'attackFirst', text : `Attacks first in combat when a condemned unit is present` });
-        }
+        //}
 
         return mods;
     }

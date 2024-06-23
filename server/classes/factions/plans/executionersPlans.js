@@ -141,7 +141,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'useSkills', args : [2] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 1
             },
@@ -160,7 +160,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 1] },
+                    { test : 'useSkills', args : [2] },
                 ],
                 value : 1
             },

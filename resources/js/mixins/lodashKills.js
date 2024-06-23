@@ -213,7 +213,7 @@ let helpers = {
         if( killingFaction.data ) killingFaction = killingFaction.data;
 
         let kills = this.factionKills( killingFaction, factions );
-        return kills.filter(unit => unit.faction === killingFaction.condemned ).length;
+        return kills.filter(unit => killingFaction.condemned.includes( unit.faction ) ).length;
     },
 
     /**
