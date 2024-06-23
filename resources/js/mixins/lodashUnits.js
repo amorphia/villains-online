@@ -283,6 +283,19 @@ let helpers = {
         return results;
     },
 
+    allUnitsInArea( area, factions, options = {} ){
+        let results = {};
+
+        Object.values( factions ).forEach( faction => {
+            // grab this factions units in the given area, and if they have any ass to our results object
+            let units = this.factionUnitsInArea( faction, area, options );
+            if( units.length ) results[faction.name] = units;
+        });
+
+        return results;
+    },
+
+
     enemyAreasWhereFactionHasUnits( faction, factions, areas, predictions = false ){
         if( faction.data ) faction = faction.data;
 

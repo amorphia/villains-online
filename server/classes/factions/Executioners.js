@@ -78,6 +78,22 @@ class Executioners extends Faction {
     }
 
     /**
+     * Sort this faction to the front of combat order if there is a condemned unit in the area
+     *
+     * @param combatFactions
+     */
+    battleOrderSort( combatFactions ) {
+
+        if( !combatFactions.find( faction => faction.name === this.data.condemned ) ) return;
+
+        combatFactions.sort( (a, b) => {
+            if ( a.name === this.name ) return -1;
+            if ( b.name === this.name ) return 1;
+            return a.order - b.order
+        });
+    }
+
+    /**
      *
      * @returns {*}
      */
@@ -94,6 +110,22 @@ class Executioners extends Faction {
         if( !headsman ) return;
 
         let area = headsman.location;
+        let executeableFactions = 0;
+
+        Object.values( this.game().factions ).forEach( faction => {
+            executeableFactions += this.getUnitsToSacrificeCount( faction, area );
+        });
+
+        if( !executeableFactions ) return this.message("The Silent Headsman has no units to execute", { class: "warning" });
+
+        // prompt player to decide to execute with the Headsman
+        let response = await this.prompt( 'question', {
+            message: `Have The Silent Headsman execute units in the ${headsman.location}?`,
+            showUnits: headsman.location,
+        });
+
+        if ( !response.answer ) return this.message( 'The Silent Headsman declines to execute' );
+
         let promises = [];
         let units = [];
 
@@ -392,6 +424,20 @@ class Executioners extends Faction {
         this.game().updatePlayerData();
         this.game().sound( 'basta' );
         this.message( `The ${this.data.condemned} have been condemned` );
+    }
+
+    /**
+     *
+     * @param mods
+     * @param area
+     * @returns {*}
+     */
+    factionCombatMods( mods, area ) {
+        if( area.units().find( unit => unit.faction === this.data.condemned ) ){
+            mods.push( { type : 'attackFirst', text : `Attacks first in combat when a condemned unit is present` });
+        }
+
+        return mods;
     }
 }
 

@@ -6,6 +6,16 @@
                 <!-- title -->
                 <div class="title">{{ data.message }}</div>
 
+                <!-- area flipper / unit selection -->
+                <area-flipper v-if="data.showUnits" :areas="[shared.data.areas[data.showUnits]]" :index="0">
+                    <div class="">
+                        <unit-row v-for="(set, name) in areaUnits"
+                                  :units="set"
+                                  :key="name"
+                        ></unit-row>
+                    </div>
+                </area-flipper>
+
                 <!-- response buttons -->
                 <div class="flex-center">
                     <button class="button button-empty" @click="resolve( false )">{{ noText }}</button>
@@ -44,6 +54,27 @@
              */
             data(){
                 return this.shared.player.prompt.data;
+            },
+
+            area(){
+                // this.shared.data.areas is the core game data store
+                // this.currentArea is the name of the currently selected area
+                return this.shared.data.areas[ this.data.showUnits ];
+            },
+
+            areaUnits(){
+                // if we don't have the "showEnemyUnits" flag set in our options, then return an empty array
+                if( !this.data.showUnits ) return [];
+
+                // return the enemy units in the current area that meet our option flag
+                return _.allUnitsInArea(
+                    this.area,
+                    this.shared.data.factions,
+                    {
+                        basic : this.data.basicOnly,
+                        notHidden : this.data.notHidden,
+                    }
+                );
             },
         },
 

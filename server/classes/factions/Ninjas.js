@@ -274,7 +274,7 @@ class Ninjas extends Faction {
     factionCombatMods( mods, area ) {
         mods.push({
             type: 'ninjas',
-            text: `The Ninjas attack first in player order, if one of their units rolls a hit place a smoke token in that area if it doesn't have one already.`
+            text: `The Ninjas attack first in combat, if one of their units rolls a hit place a smoke token in that area if it doesn't have one already.`
         });
 
         mods.push({

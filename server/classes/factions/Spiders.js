@@ -326,6 +326,11 @@ class Spiders extends Faction {
             text: `spiders and champions are deadly, deadly units attack all enemies can't be modified`
         });
 
+        mods.push({
+            type: 'fastAttack',
+            text: `attacks first in combat`
+        });
+
         return mods;
     }
 
