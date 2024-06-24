@@ -46,6 +46,9 @@ class Bureau extends Faction {
             }
         };
 
+        this.units['goon'].count = 4;
+        this.units['mole'].count = 4;
+
         this.units['champion'] = {
             count: 1,
             data: {

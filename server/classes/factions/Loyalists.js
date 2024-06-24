@@ -36,6 +36,8 @@ class Loyalists extends Faction {
         };
 
         this.units['patsy'].count = 3;
+        this.units['goon'].count = 4;
+        this.units['mole'].count = 4;
 
         this.units['servant'] = {
             count: 2,

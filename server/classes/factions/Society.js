@@ -65,8 +65,8 @@ class Society extends Faction {
 
         // units
         this.units['patsy'].count = 5;
-        this.units['goon'].count = 6;
-        this.units['mole'].count = 6;
+        this.units['goon'].count = 4;
+        this.units['mole'].count = 4;
         delete this.units['talent'];
 
         this.units['henchman'] = {

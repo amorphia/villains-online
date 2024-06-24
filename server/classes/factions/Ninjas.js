@@ -43,8 +43,10 @@ class Ninjas extends Faction {
         this.units['patsy'].data.onHit = 'placeSmoke';
         this.units['talent'].data.attack = [5];
         this.units['talent'].data.onHit = 'placeSmoke';
+        this.units['mole'].count = 4;
         this.units['mole'].data.attack = [7];
         this.units['mole'].data.onHit = 'placeSmoke';
+        this.units['goon'].count = 4;
         this.units['goon'].data.onHit = 'placeSmoke';
 
         this.units['champion'] = {

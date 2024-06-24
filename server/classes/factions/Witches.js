@@ -40,6 +40,9 @@ class Witches extends Faction {
             }
         };
 
+        this.units['patsy'].count = 5;
+        this.units['goon'].count = 4;
+        this.units['mole'].count = 4;
 
         this.units['champion'] = {
             count: 1,
