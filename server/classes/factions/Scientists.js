@@ -37,7 +37,7 @@ class Scientists extends Faction {
         };
 
         // units
-        this.units['goon'].count = 3;
+        this.units['goon'].count = 2;
         this.units['mole'].count = 4;
         this.units['talent'].count = 6;
 

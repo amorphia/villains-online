@@ -36,7 +36,7 @@ class Mafia extends Faction {
 
         // units
         this.units['talent'].count = 2;
-        this.units['goon'].count = 5;
+        this.units['goon'].count = 4;
         this.units['goon'].data.influence = 2;
         this.units['goon'].data.attack = [4,4];
         this.units['mole'].count = 4;

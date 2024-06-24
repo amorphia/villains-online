@@ -36,7 +36,7 @@ class Commies extends Faction {
 
         // units
         this.units['goon'].count = 4;
-        this.units['mole'].count = 5;
+        this.units['mole'].count = 4;
         this.units['talent'].count = 2;
         this.units['patsy'].count = 12;
         this.units['patsy'].data.onDeploy = "checkRiseToken";

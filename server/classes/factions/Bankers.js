@@ -34,8 +34,8 @@ class Bankers extends Faction {
         };
 
         // units
-        this.units['mole'].count = 7;
-        this.units['goon'].count = 7;
+        this.units['mole'].count = 6;
+        this.units['goon'].count = 6;
         this.units['champion'] = {
             count: 1,
             data: {
