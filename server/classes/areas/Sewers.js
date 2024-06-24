@@ -89,6 +89,9 @@ class Sewers extends Area {
         faction.data.units.forEach( unit => {
             if( this.unitTypeIsCloneable( unit, trappedAreas ) ){
                 unitTypes[unit.type] = true;
+                if( unit.additionalTypes ){
+                    unit.additionalTypes.forEach( type => unitTypes[type] = true );
+                }
             }
         });
 
@@ -136,6 +139,7 @@ class Sewers extends Area {
     async resolveCloneUnit( response, faction ){
         // get our unit object
         let unit = this.game().objectMap[ response.units[0] ];
+        let additionalTypes = unit.additionalTypes ?? [];
 
         let args = {
             area: unit.location,
@@ -143,7 +147,7 @@ class Sewers extends Area {
             player: faction.playerId,
             free: true,
             deployLimit: 1,
-            unitTypes: [unit.type],
+            unitTypes: [unit.type, ...additionalTypes],
         };
 
         // deploy the selected unit
