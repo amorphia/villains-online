@@ -561,7 +561,7 @@ class Agency extends Faction {
         if( !unit.location ){
             await this.placeSurveyor( unit, area );
         } else {
-            await this.surveyorAction( { startingOnly : true } );
+            await this.surveyorAction( { startingOnly : false } );
         }
 
         this.game().advancePlayer();
