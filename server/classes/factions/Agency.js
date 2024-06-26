@@ -128,7 +128,7 @@ class Agency extends Faction {
     }
 
     async checkKilledChampion( unit, options ) {
-        if (!_.isChampion(unit) || this.data.hasKilledChampion.includes( unit.faction )) {
+        if ( unit.faction === this.name || !_.isChampion(unit) || this.data.hasKilledChampion.includes( unit.faction ) ) {
             return;
         }
 
