@@ -60,7 +60,11 @@ let helpers = {
 
         if( options.types.includes( unit.type ) ) return true;
 
-        return unit.additionalTypes && this.intersection( unit.additionalTypes, options.types ).length;
+        let typesIntersection = this.intersection( unit.additionalTypes ?? [], options.types );
+
+        console.log("typesIntersection", typesIntersection);
+
+        return typesIntersection.length > 0;
     },
 
     unitTypeInTest( options, unit ){
