@@ -243,7 +243,7 @@
             },
 
             hasTokenDeflect(){
-              return this.shared.faction.tokenDeflect;
+              return this.shared.faction.tokenDeflect && this.firstTokenInArea;
             },
 
             /**
