@@ -17,7 +17,7 @@ class Commies extends Faction {
         this.data.title = "The New Collective";
         //this.data.commisarPatsyAttackValue = 7;
         this.data.risePatsies = 0; // how many bonus patsies to deploy with our ride token
-        this.data.bonusDeploy = { type: 'patsy', count : 2 };
+        this.data.bonusDeploy = { type: 'patsy', count : 1 };
         this.data.focusDescription = "Have high influence in areas";
         this.data.riseAttackValue = 6;
 

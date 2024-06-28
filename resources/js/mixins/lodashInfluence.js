@@ -148,15 +148,7 @@ let helpers = {
         let influence = 0;
 
         // should this faction gain the benefits of a rise up token?
-        if( this.shouldRiseUp( faction, area ) ){
-            // cycle through our units
-            faction.units.forEach( unit => {
-                if( this.unitInArea( unit, area, { type: 'patsy' } ) ){ // if this unit is in this area
-                    // if we have a rise up then our patsies  also produce an influence
-                    influence++;
-                }
-            });
-        }
+        let shouldRiseUp = this.shouldRiseUp( faction, area );
 
         if( !this.areaShouldStandDown( faction, area ) ){ // in areas with a stand down no units produce influence
             if( faction.data ) faction = faction.data; // format input
@@ -165,6 +157,8 @@ let helpers = {
             faction.units.forEach( unit => {
                 if( this.unitInArea( unit, area ) && !unit.webbed ){ // if this unit is in this area and not webbed
                     influence += unit.influence; // add its influence to our tally
+                    // if we have a rise up then our patsies  also produce an influence
+                    if( shouldRiseUp && unit.type === 'patsy' ) influence++;
                 }
             });
         }
