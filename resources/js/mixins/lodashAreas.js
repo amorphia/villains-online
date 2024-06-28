@@ -118,7 +118,7 @@ let helpers = {
         // if we have a set of predictions use those to determine our enemy areas
         if( predictions ){
             let winningAreas = this.factionWinningAreas( faction, factions, areas, predictions );
-            return Object.keys( areas ).filter( areaName => !winningAreas.includes( areaName ) );
+            return Object.keys( areas ).filter( areaName => !winningAreas.includes( areaName ) && predictions[areaName]  );
         }
 
         // otherwise cycle through each area and push the ones we don't control to our results

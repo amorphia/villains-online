@@ -1,6 +1,5 @@
 <template>
     <div  class="d-flex plan-focus mr-4 primary-light align-center" :class="classes">
-        <span class="mr-4">traps :<span class="highlight ml-2">{{ traps }}</span> </span>
         <span class="mr-4">ambushes :<span class="highlight ml-2">{{ ambushes }}</span> </span>
         kills :<span class="highlight ml-2">{{ kills }}</span>
     </div>
@@ -28,7 +27,7 @@
                     this.faction,
                     this.shared.data.factions,
                     this.shared.data.areas,
-                    this.shared.areaLeaders
+                    this.shared.areaLeaders,
                 ).length;
             },
 

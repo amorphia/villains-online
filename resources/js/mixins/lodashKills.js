@@ -247,7 +247,6 @@ let helpers = {
      */
     factionKillsInEnemy( faction, factions, areas, predictions = false ){
         let enemyAreas = this.determineEnemyAreas( faction, factions, areas, predictions );
-
         return this.factionKills( faction, factions ).filter( unit => enemyAreas.includes( unit.location ) );
     },
 
