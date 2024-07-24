@@ -131,10 +131,10 @@ class Game {
         gameType : 'optimized', // our default game mode, basic/optimized/anarchy
         options : {
             trackData: true,
-            sharedUpgrades: true,
-            catchUpCards: true,
+            // sharedUpgrades: true,
+            // catchUpCards: true,
             thirteenPoints: true,
-            lootWhenLocked: true,
+            // lootWhenLocked: true,
             expansionCards: false,
             openMode: false,
             playtestMode: false,
