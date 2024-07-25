@@ -390,7 +390,7 @@ let setup = {
             card.area = null;
             card.status = null;
 
-            if( this.data.options?.catchUpCards && card.catchUp ){
+            if( card.catchUp ){
                 card.file += "-catchup";
             }
 

@@ -3,9 +3,9 @@ let obj = {
   async lockedAction(){
       this.message( `are locked` );
 
-      if(this.game().data?.options?.lootWhenLocked){
+      //if(this.game().data?.options?.lootWhenLocked){
           await this.lootOnLocked();
-      }
+      //}
   },
 
   async lootOnLocked(){

@@ -11,7 +11,7 @@ class FishInABarrel extends Card {
         let output = await this.faction.nonCombatAttack(4, 3, this.area )
             .catch( error => console.error( error ) );
 
-        if( !this.game.data.options?.catchUpCards ) return;
+        //if( !this.game.data.options?.catchUpCards ) return;
 
         if( this.killedUnitHigherTP( 3, output ) ){
             this.game.sound( 'coin' );

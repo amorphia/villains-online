@@ -8,7 +8,7 @@ class RousingSpeech extends Card {
      * Resolve this card ability
      */
     async handle(){
-        if( !this.game.data.options?.catchUpCards ) return;
+        //if( !this.game.data.options?.catchUpCards ) return;
 
         let oldOwner = this.area.owner();
         if( !oldOwner || (this.faction.totalPoints() + 4) > oldOwner.totalPoints() ) return;
