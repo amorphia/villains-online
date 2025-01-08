@@ -10,7 +10,7 @@ class Executioners extends Faction {
         this.triggers = {
             "onStartOfTurn" : "chooseCondemned",
             "onBeforeCombatStep" : "headsmanExecute",
-            "onAfterActivateToken" : "headsmanMove",
+            // "onAfterActivateToken" : "headsmanMove",
             "onMoveAll" : "checkForDetain",
             "onDeployAll" : "checkForDetain",
             "onAfterSkill" : "afterSkillAttack",
@@ -244,7 +244,7 @@ class Executioners extends Faction {
      *
      * @param token
      * @returns {Promise<void>}
-     */
+     *
     async headsmanMove( token ){
         if(token.faction === this.name || token.type !== 'move') return;
 
@@ -268,6 +268,7 @@ class Executioners extends Faction {
         this.message( 'The Silent Headsman deciding whether to follow the move' );
         await this.chooseToFollow( headsman, area );
     }
+    */
 
     /**
      *
