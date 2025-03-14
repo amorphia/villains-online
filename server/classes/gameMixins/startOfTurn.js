@@ -40,6 +40,9 @@ let obj = {
      */
     async handleStartOfTurn(){
 
+        // handle before start of turn triggers
+        await this.handleBeforeStartOfTurnTriggers();
+
         // Each faction draws their action cards, resets their energy, and draws their plan cards
         Object.values( this.factions ).forEach( faction => {
             faction.drawTurnCards();
@@ -89,6 +92,29 @@ let obj = {
         // handle serial triggers
         for( let faction of Object.values( this.factions ) ){
             if( faction.triggers.onStartOfTurnSerial ) await faction[faction.triggers.onStartOfTurnSerial]();
+        }
+    },
+
+
+    /**
+     * Handle our faction before start of turn triggers
+     */
+    async handleBeforeStartOfTurnTriggers(){
+
+        //  handle parallel triggers
+        let promises = [];
+
+        // Check for before start of turn triggers
+        for( let faction of Object.values( this.factions ) ){
+            if( faction.triggers.onBeforeStartOfTurn ) promises.push( faction[faction.triggers.onBeforeStartOfTurn]() );
+        }
+
+        // wait for serial triggers to resolve
+        await Promise.all( promises );
+
+        // handle serial triggers
+        for( let faction of Object.values( this.factions ) ){
+            if( faction.triggers.onBeforeStartOfTurnSerial ) await faction[faction.triggers.onBeforeStartOfTurnSerial]();
         }
     },
 

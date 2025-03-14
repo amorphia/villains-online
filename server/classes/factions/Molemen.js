@@ -52,7 +52,6 @@ class Molemen extends Faction {
         this.tokens['card'].count = 5;
 
         // units
-        this.units['goon'].count = 5;
         this.units['mole'].count = 6;
         this.units['patsy'].count = 5;
 

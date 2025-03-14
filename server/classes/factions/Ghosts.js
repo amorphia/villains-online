@@ -15,12 +15,12 @@ class Ghosts extends Faction {
         this.data.canPlaceGhostsDuringTokens = true;
         this.data.flipableUnits = ['mad-king','banshee','poltergeist'];
         this.data.addUpgradeToControlInfluence = true;
-        this.data.controlNeutralSetupArea = true;
+        //this.data.controlNeutralSetupArea = true;
         this.data.retainableAreas = [];
 
         this.triggers = {
-            "onCleanUp" : "returnGhosts",
             "onStartOfTurn" : "recordRetainableAreas",
+            "onBeforeStartOfTurnSerial" : "startOfTurnControlArea",
         };
 
         this.shouldSetUnitBaseStats = {
@@ -153,6 +153,66 @@ class Ghosts extends Faction {
         // advance game
         game.data.gameAction++;
         game.advancePlayer();
+    }
+
+    async startOfTurnControlArea(){
+        // if we have at least one area, no need to take any action
+        if( this.areas().length ) return;
+
+        let playersWithTheMostPoints = this.getPlayersWithTheMostPoints();
+
+        let validAreas = Object.values( this.game().areas )
+            .filter ( area => !area.data.owner || playersWithTheMostPoints.includes( area.data.owner ) )
+            .map( area => area.name );
+
+        if( !validAreas ) return this.message('No valid areas for the ghosts to control', { class : 'warning' } );
+
+        // prompt player to select an area
+        let response = await this.prompt( 'choose-area', {
+            areas : validAreas,
+            show : 'units',
+            message : "Choose an area to take control of",
+            canDecline : false,
+        });
+
+        let area = this.game().areas[response.area];
+        let oldOwner = null;
+
+        // if the old owner isn't the neutral, the old owner loses control of the area
+        if(area.data.owner){
+            oldOwner = area.owner();
+            oldOwner.loseControlOfArea( area );
+        }
+
+        // the new owner gains control of the area
+        this.gainControlOfArea( area );
+
+        let trigger = this.triggers.onControlArea;
+        if( trigger ) await this[trigger]( area );
+
+        let message = oldOwner ? `The ${this.name} taken control of the ${area.name} from the ${oldOwner.name}` : `The ${this.name} have claimed control of the ${area.name}`;
+
+        await this.game().timedPrompt('seize-control', {
+            area: area.name,
+            message: message,
+        });
+    }
+
+    getPlayersWithTheMostPoints(){
+        let highestPoints = 0;
+        let factionPoints = [];
+
+        Object.values(this.game().data.factions).forEach(faction => {
+            if(faction.name === this.name) return;
+
+            let totalPoints = faction.ap + faction.pp;
+
+            if(highestPoints < totalPoints) highestPoints = totalPoints;
+            factionPoints.push({ name: faction.name, points: totalPoints });
+        });
+
+
+        return factionPoints.filter( faction => faction.points > 0 && faction.points === highestPoints).map( faction => faction.name );
     }
 
     recordRetainableAreas(){

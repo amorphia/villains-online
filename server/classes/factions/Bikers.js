@@ -50,16 +50,13 @@ class Bikers extends Faction {
 
         // units
         this.units['goon'].data.redeployFree = true;
-        this.units['patsy'].count = 6;
 
         this.units['mole'].data.redeployFree = true;
-        this.units['patsy'].count = 6;
 
-        this.units['patsy'].count = 4;
+        this.units['patsy'].count = 6;
         this.units['patsy'].data.attack = [8];
         this.units['patsy'].data.redeployFree = true;
 
-        this.units['talent'].count = 4;
         this.units['talent'].data.redeployFree = true;
 
 
