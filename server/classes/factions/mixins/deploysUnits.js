@@ -166,7 +166,12 @@ let obj = {
         if( !_.unitInPlay( unit ) ) return false;
 
         // if our deploy is limited to a certain unit type only include areas with those
-        if( args.unitTypes && !args.unitTypes.includes( unit.type ) ) return false;
+        let hasTypeIntersection = false;
+        if( args.unitTypes && unit.additionalTypes && _.intersection( unit.additionalTypes, args.unitTypes ).length ){
+            hasTypeIntersection = true;
+        }
+
+        if( args.unitTypes && (!args.unitTypes.includes( unit.type ) && !hasTypeIntersection) ) return false;
 
         // can we pay for this unit?
         if( money < unit.cost && !(args.free || unit.redeployFree ) ) return false;
