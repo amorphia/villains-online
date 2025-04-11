@@ -1,5 +1,8 @@
 <?php
 
+use App\User;
+use Illuminate\Support\Facades\Hash;
+
 /*
  *  Shorthand to return the authenticated user for the current request
  */
@@ -38,4 +41,14 @@ if( !function_exists( 'getDirectoryFileList' ) )
 
         return $results;
     }
+}
+
+
+function changePassword(int $user_id, string $password){
+    $user = User::findorFail($user_id);
+
+    $user->password = Hash::make($password);
+    $user->save();
+
+    return "Password Saved";
 }
