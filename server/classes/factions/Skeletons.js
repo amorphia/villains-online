@@ -9,27 +9,29 @@ class Skeletons extends Faction {
 
         // triggers
         this.triggers = {
+            "onSetup" : "setupLichTokens",
             //"onCleanUp" : "resetRaiseAreas",
-            "onSetup" : "setupPatsies",
+            //"onSetup" : "setupPatsies",
         };
 
         //data
         this.data.name = this.name;
         this.data.title = "The Restless Dead";
         this.data.focusDescription = "Have units of specific types in enemy areas";
-        //this.data.optionalAttack = true; // this faction doesn't need to attack with its units
+        this.data.raiseCount = 1;
+        this.data.optionalAttack = true; // this faction doesn't need to attack with its units
         //this.data.endOfTurnRevive = 0; // how many skeletons to revive at the end of the turn
-        this.data.patsyCache = [];
+        //this.data.patsyCache = [];
 
         // icons
         this.data.statusIcon = 'skeleton';
         this.data.statusDescription = 'has skeleton units';
         this.data.flipableUnits = ['patsy', 'goon', 'mole', 'talent', 'champion'];
         this.data.raiseAreas = [];
+        this.data.liches = [];
 
         // tokens
-        delete this.tokens['card'];
-        this.tokens['battle'].count = 2;
+        this.tokens['card'].count = 2;
 
         this.tokens['lich'] = {
             count: 3,
@@ -47,21 +49,21 @@ class Skeletons extends Faction {
             props : ['influence', 'skilled']
         };
 
-        //this.units['goon'].count = 5;
+        this.units['goon'].count = 7;
         this.units['goon'].data.toughness = true;
         this.units['goon'].data.flipped = false;
         this.units['goon'].data.onWounded = 'becomeSkeleton';
         this.units['goon'].data.canDeployFlipped = false;
         this.units['goon'].data.deployFlippedMethod = "becomeSkeleton";
 
-        //this.units['mole'].count = 5;
+        this.units['mole'].count = 7;
         this.units['mole'].data.toughness = true;
         this.units['mole'].data.flipped = false;
         this.units['mole'].data.onWounded = 'becomeSkeleton';
         this.units['mole'].data.canDeployFlipped = false;
         this.units['mole'].data.deployFlippedMethod = "becomeSkeleton";
 
-        //this.units['talent'].count = 3;
+        this.units['talent'].count = 5;
         this.units['talent'].data.toughness = true;
         this.units['talent'].data.flipped = false;
         this.units['talent'].data.onWounded = 'becomeSkeleton';
@@ -69,7 +71,7 @@ class Skeletons extends Faction {
         this.units['talent'].data.deployFlippedMethod = "becomeSkeleton";
 
 
-        this.units['patsy'].count = 6;
+        this.units['patsy'].count = 4;
         this.units['patsy'].data.toughness = true;
         this.units['patsy'].data.flipped = false;
         this.units['patsy'].data.onWounded = 'becomeSkeleton';
@@ -83,22 +85,25 @@ class Skeletons extends Faction {
                 name: "Xer'Zhul",
                 type: 'champion',
                 basic: false,
-                influence: 0,
-                attack: [5],
-                cost: 0,
+                influence: 2,
+                attack: [],
+                cost: 1,
+                skilled: true,
                 flipped: false,
                 killed: false,
                 selected: false,
                 skeleton: false,
                 hitsAssigned: 0,
                 toughness: true,
-                seeking: true,
-                onDeploy: 'xerZhulActions',
+                onSkill: 'xerZhulSacrifice',
+                //seeking: true,
+                //onDeploy: 'xerZhulActions',
             }
         };
     }
 
 
+    /*
     setupPatsies(){
         this.setupVariableItems({
             value: 'patsy',
@@ -107,15 +112,17 @@ class Skeletons extends Faction {
             multiplier: 2,
         });
     }
+    */
 
     /**
      * Process faction upgrade
      */
     processUpgrade() {
+        // add additional vines tokens to our reserves
         this.upgradeVariableItems({
-            cache: this.data.patsyCache,
-            reserves: this.data.units,
-            multiplier: 2,
+            reserves: this.data.tokens,
+            cache: this.data.liches,
+            key: 'name',
         });
     }
 
@@ -129,9 +136,121 @@ class Skeletons extends Faction {
      */
     canActivateLich( token, area ) {
         // can we activate a deploy token, or can we activate a card token?
-        return this.deadWeCanRaiseByArea()[area.name] || this.canActivateCard( token, area );
+        return Object.keys(this.deadWeCanRaiseByArea())?.length || this.canActivateCard( token, area ) || this.isXerZhulKilled();
     }
 
+    isXerZhulKilled() {
+        let xerZhul = this.getChampion();
+        return !!xerZhul.killed;
+    }
+
+
+    async xerZhulSacrifice( event ){
+        let promises = [];
+        let units = [];
+
+        // cycle through each faction and have that player sacrifice units equal to the areas they control
+        Object.values( this.game().factions ).forEach( faction => {
+            if(faction.name !== this.name){
+                promises.push( this.factionSacrificeUnits( faction, units ) );
+            }
+        });
+
+        let responses = await Promise.all( promises );
+
+        await this.resolveResponses( responses, units );
+
+        // display the results
+        if( units.length ){
+            await this.game().timedPrompt('units-shifted', {
+                message: `The ${this.name} killed the following units`,
+                units: units
+            });
+        }
+    }
+    
+    async factionSacrificeUnits( faction, units ){
+
+        // get how many units we need to sacrifice, if we don't have any to sacrifice return
+        let unitsToSacrifice = 1;
+        if( !unitsToSacrifice ) return;
+
+        let areas = this.getSacrificeAreas( faction );
+
+        let [player, response] = await this.game().promise({
+            players: faction.playerId,
+            name: 'sacrifice-units',
+            data : {
+                count : unitsToSacrifice,
+                areas : areas,
+                notType : 'patsy', 
+            }});
+
+        this.game().updatePlayerData();
+
+        return {
+            player,
+            faction,
+            units : response.units,
+        }
+    }
+
+    /**
+     * Get the areas this faction has units to sacrifice from
+     *
+     * @param faction
+     * @returns {string[]}
+     */
+    getSacrificeAreas( faction ){
+        let areas = {};
+        let unitsInPlay = faction.data.units.filter( unit => unit.location && !unit.killed && unit.type !== 'patsy');
+
+        unitsInPlay.forEach( unit => areas[unit.location] = true );
+        return Object.keys( areas );
+    }
+
+    async resolveResponses( responses, units ){
+        for( let response of responses ) {
+            await this.resolveFactionSacrificeUnits( response, units );
+        }
+    }
+
+    /**
+     * Resolve a factions's sacrifices
+     *
+     * @param player
+     * @param response
+     * @param units
+     * @param faction
+     */
+    async resolveFactionSacrificeUnits( response, units ){
+        if(!response?.player){
+            return;
+        }
+
+        // clear our prompt
+        response?.player?.setPrompt({ active : false, updatePlayerData : true });
+
+        let unitNames = [];
+
+        // cycle through our units
+        for( let unitId of response.units ){
+            
+            // get the unit object
+            let unit = this.game().objectMap[unitId];
+            
+            // add its name to our names array
+            unitNames.push( unit.name );
+            // add it to our units results array
+            units.push( unit );
+            // kill this unit
+            await this.game().killUnit( unit, this );
+        }
+
+        // log the results
+        let message = `sacrifices <span class="faction-${response.faction.name}item">${unitNames.join(', ')}</span>`;
+        response.faction.message( message );
+    }
 
     deadWeCanRaiseByArea(){
         const unitTypesInReserves = this.unitTypesInReserves();
@@ -200,11 +319,14 @@ class Skeletons extends Faction {
                     actionsTaken.push('card');
                 }
             } else {
-                let unitRaised = await this.raiseUnit(raiseableAreas);
+                //let unitRaised = await this.raiseUnit(raiseableAreas);
 
-                if( unitRaised ){
-                    actionsTaken.push('raise');
-                }
+                //if( unitRaised ){
+                   // 
+               // }
+
+                await this.raiseUnits();
+                actionsTaken.push('raise');
             }
         }
 
@@ -212,6 +334,11 @@ class Skeletons extends Faction {
         if( actionsTaken.length === 0 ){
             this.game().declineToken( this.playerId, args.token, true );
             return;
+        } else {
+            if(this.isXerZhulKilled()){
+                let xerZhul = this.getChampion();
+                await this.resolveUnitRevival( { units: [xerZhul.id] }, {});
+            }
         }
 
         this.game().advancePlayer();
@@ -346,16 +473,18 @@ class Skeletons extends Faction {
         if ( unit.baseSkilled ) unit.skilled = true;
     }
 
-    async raiseUnit( areas, count = 1, type = null){
+    /*
+    async raiseUnit( areas, type = null){
 
        // let filteredAreas = areas.filter(area => !this.data.raiseAreas.includes(area));
+        let count = this.data.raiseCount;
 
         if( !areas.length ){
             this.message( "No dead to raise", { class : 'warning' } );
             return;
         }
 
-        const reserveTypes = this.unitTypesInReserves();
+        let unitTypes = this.unitTypesInReserves();
 
         let response = await this.prompt( 'choose-units', {
             count: count,
@@ -363,7 +492,7 @@ class Skeletons extends Faction {
             killedOnly: true,
             basicOnly: true,
             optionalMax: true,
-            raiseDeadTargets: reserveTypes,
+            raiseDeadTargets: unitTypes,
             canDecline: true,
             differentAreas: true,
             message: count > 1 ? "Choose units to raise as skeletons" : "Choose a unit to raise as a skeleton",
@@ -371,7 +500,74 @@ class Skeletons extends Faction {
 
         return await this.resolveRaiseUnit( response );
     }
+    */
 
+    async raiseUnits(){
+        let raisableByAreas = this.deadWeCanRaiseByArea();
+        console.log('raisableByAreas sets', raisableByAreas);
+
+        // convert sets to arrays
+        Object.entries(raisableByAreas).forEach(([key, value]) => {
+            raisableByAreas[key] = [...value];
+        });
+
+        console.log('raisableByAreas converted', raisableByAreas);
+
+        let areas = Object.keys(raisableByAreas);
+
+        if( !areas?.length ){
+            this.message( "No dead to raise", { class : 'warning' } );
+            return;
+        }
+
+        // prompt player to select an area to raise dead
+        let response = await this.prompt( 'choose-area',  {
+            areas: areas,
+            raisableByAreas: raisableByAreas,
+            message: "Choose an area to raise dead"
+        });
+
+        return await this.resolveRaiseUnits( response, raisableByAreas );
+    }
+
+    async resolveRaiseUnits( response, raisableByAreas ){
+        if( !response?.area){
+            return false;
+        }
+
+        let units = [];
+        let areaName = response.area;
+
+        //let raiseAreas = this.data.raiseAreas;
+
+        raisableByAreas[response.area]?.forEach( unitType => {
+            let unit = this.data.units.find( item => _.unitInReserves( item, { type: unitType } ) );
+
+            if( !unit ){
+                this.message( "Could not raise this unit", { class : 'warning' } );
+                return false;
+            }
+
+            unit.killed = null;
+            if(!unit.skeleton){
+                this.becomeSkeleton( unit );
+            }
+
+            unit.location = areaName;
+            //raiseAreas.push(area);
+
+            units.push(unit);
+        });
+
+        await this.game().timedPrompt('units-shifted', {
+            message: `Skeletons were raised`,
+            units: units
+        });
+
+        return true;
+    }
+
+    /*
     async resolveRaiseUnit( response ){
         if( !response?.units?.length ){
             return false;
@@ -409,7 +605,9 @@ class Skeletons extends Faction {
 
         return true;
     }
+    */
 
+    /*
     async xerZhulActions( event ){
         const toArea = event.unit.location;
         await this.xerZhulAttack( this.getChampion(), toArea );
@@ -452,12 +650,14 @@ class Skeletons extends Faction {
             units: units
         });
     }
+    */
 
     /**
      * Allow Xer'Zhul to raise the dead
      *
      * @param area
      */
+    /*
     async xerZhulRaiseDead( area ){
         const areas = Object.keys( this.deadWeCanRaiseByArea() );
 
@@ -468,6 +668,7 @@ class Skeletons extends Faction {
 
         await this.raiseUnit( [ area ] );
     }
+    */
 
     /*
     resetRaiseAreas(){
@@ -555,10 +756,22 @@ class Skeletons extends Faction {
             type: 'becomeSkeleton',
             text: `Face up units assigned a hit become skeletons, rather than being killed`
         });
+
+        mods.push({
+            type: 'skeletonPassive',
+            text: `May decline to attack with their units`
+        });
         return mods;
     }
 
-
+    setupLichTokens(){
+        this.setupVariableItems({
+            value: 'lich',
+            reserves: this.data.tokens,
+            cache: this.data.liches,
+            key: 'name',
+        });
+    }
 }
 
 

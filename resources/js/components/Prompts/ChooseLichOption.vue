@@ -24,7 +24,7 @@
                 <div class="flex-center">
                     <button class="button button-empty" @click="resolve( 'decline' )">decline</button>
                     <button v-if="data.actions.includes('card')" class="button" @click="resolve( 'card' )">Play a card</button>
-                    <button v-if="data.actions.includes('raise')" class="button" @click="resolve( 'raise'  )">Raise a unit</button>
+                    <button v-if="data.actions.includes('raise')" class="button" @click="resolve( 'raise'  )">Raise dead</button>
                 </div>
 
             </div>

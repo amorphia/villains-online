@@ -9567,6 +9567,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-area',
   data: function data() {
@@ -15627,7 +15643,8 @@ __webpack_require__.r(__webpack_exports__);
       return this.shared.faction.units.filter(function (unit) {
         return _.unitInArea(unit, area, {
           basic: _this2.data.basicOnly,
-          type: _this2.data.type
+          type: _this2.data.type,
+          notType: _this2.data.notType
         });
       });
     }
@@ -73365,6 +73382,44 @@ var render = function () {
                     }),
                     1
                   )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.data.raisableByAreas
+                ? _c("div", { staticClass: "mb-4" }, [
+                    _c("div", { staticClass: "prompt-question center-text" }, [
+                      _vm._v("Raiseable Unit Types"),
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "flex flex-center" },
+                      _vm._l(
+                        _vm.data.raisableByAreas[this.currentAreaName],
+                        function (type) {
+                          return _c(
+                            "div",
+                            {
+                              staticClass:
+                                "units-hud__unit d-inline-block pos-relative overflow-hidden",
+                            },
+                            [
+                              _c("img", {
+                                staticClass:
+                                  "unit-hud__unit-image z-1 pos-relative",
+                                attrs: {
+                                  src:
+                                    "/images/factions/skeletons/units/" +
+                                    type +
+                                    "-flipped.png",
+                                },
+                              }),
+                            ]
+                          )
+                        }
+                      ),
+                      0
+                    ),
+                  ])
                 : _c("token-row", { attrs: { area: _vm.area } }),
             ],
             1
@@ -73973,7 +74028,7 @@ var render = function () {
                       },
                     },
                   },
-                  [_vm._v("Raise a unit")]
+                  [_vm._v("Raise dead")]
                 )
               : _vm._e(),
           ]),

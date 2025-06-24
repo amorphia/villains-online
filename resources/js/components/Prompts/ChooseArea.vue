@@ -16,6 +16,22 @@
                           :selectedUnit="data.addOwnUnit"
                         ></unit-row>
                     </div>
+
+                    <!-- raisable -->
+                    <div v-if="data.raisableByAreas" class="mb-4">
+                        <div class="prompt-question center-text">Raiseable Unit Types</div>
+                        <div class="flex flex-center">
+                            <div v-for="type in data.raisableByAreas[this.currentAreaName]"
+                                class="units-hud__unit d-inline-block pos-relative overflow-hidden"
+                            >
+                                <!-- image -->
+                                <img
+                                    class="unit-hud__unit-image z-1 pos-relative"
+                                    :src="`/images/factions/skeletons/units/${type}-flipped.png`">
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- tokens -->
                     <token-row v-else :area="area"></token-row>
                 </area-flipper>
