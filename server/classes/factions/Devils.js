@@ -1,18 +1,18 @@
-let Faction = require( './Faction' );
+let Faction = require('./Faction');
 
 
 class Devils extends Faction {
     name = 'devils';
 
-    constructor( owner, game ) {
-        super( owner, game );
+    constructor(owner, game) {
+        super(owner, game);
 
         // triggers
         this.triggers = {
-            "onCleanUp" : "resetChaos",
-            "onFactionKillsUnit" : "checkKillChaos",
+            "onCleanUp": "resetChaos",
+            "onFactionKillsUnit": "checkKillChaos",
             //"onAfterSkill" : "shouldTormentAfterSkill",
-            "onAfterTokenReveal" : "handlePrincePlacement",
+            "onAfterTokenReveal": "handlePrincePlacement",
         };
 
         // data
@@ -39,11 +39,11 @@ class Devils extends Faction {
             count: 3,
             data: {
                 influence: 1,
-                type : 'stoke',
-                resource : 1,
-                cost : 0,
+                type: 'stoke',
+                resource: 1,
+                cost: 0,
                 description: "Start a battle in this area. If you have no attackers in this battle: draw an action card as the battle begins, then gain one chaos for each enemy unit killed in this battle",
-                req : "This token must be discarded if no combat takes place when activating it"
+                req: "This token must be discarded if no combat takes place when activating it"
             }
         };
 
@@ -58,17 +58,17 @@ class Devils extends Faction {
                 basic: false,
                 attack: [],
                 influence: 2,
-                seeking : false,
+                seeking: false,
                 noDeploy: true,
-                killed : false,
+                killed: false,
                 hidden: true,
                 areaUnitAttackBonus: 2,
                 onDeploy: 'deployCheckIfDelighted',
                 onPlace: 'deployCheckIfDelighted',
                 //onBeforeBattle: 'increaseCombatAttack',
                 dontUnflipAutomatically: true,
-                selected : false,
-                hitsAssigned : 0,
+                selected: false,
+                hitsAssigned: 0,
             }
         };
     }
@@ -78,14 +78,14 @@ class Devils extends Faction {
      *
      * @param {number} upgrade
      */
-    processUpgrade( upgrade ){
-        if( upgrade !== 2 ) return;
+    processUpgrade(upgrade) {
+        if (upgrade !== 2) return;
 
         let unit = this.getChampion();
         unit.areaUnitAttackBonus++;
     }
 
-    async handlePrincePlacement( token ) {
+    async handlePrincePlacement(token) {
         // if we didn't reveal the token, abort
         if (token.type !== 'stoke') return;
 
@@ -93,21 +93,21 @@ class Devils extends Faction {
 
         // check for areas with vampires (that aren't this area), if we have none, abort
         let prince = this.getChampion();
-        if( prince.killed ) return;
+        if (prince.killed) return;
 
         // prompt player to decide to move lotus dancer
-        let response = await this.prompt( 'question', {
+        let response = await this.prompt('question', {
             message: `Place the Gleeful Prince in the ${destinationAreaName}?`
         });
 
-        if ( !response.answer ) return this.message( 'The Gleeful Prince is happy to stay where he is' );
+        if (!response.answer) return this.message('The Gleeful Prince is happy to stay where he is');
 
         // st lotus dancer's new area
-        this.placeUnit( prince, destinationAreaName )
+        this.placeUnit(prince, destinationAreaName)
 
         // show results to all players
         this.game().sound('wiff');
-        this.message( `The Gleeful Prince jaunted into the ${area.name}` );
+        this.message(`The Gleeful Prince jaunted into the ${area.name}`);
 
         await this.game().timedPrompt('units-shifted', {
             message: `The Gleeful Prince jaunted into the ${area.name}`,
@@ -150,40 +150,40 @@ class Devils extends Faction {
     }
     */
 
-    checkKillChaos( unit, options ){
+    checkKillChaos(unit, options) {
         // if the attack was
-        if(options.inCombat || unit.faction === this.name) return;
+        if (options.inCombat || unit.faction === this.name) return;
         this.raiseChaos();
     }
 
-    raiseChaos(){
-        if(this.data.chaos >= this.data.chaosLevels.max) return;
+    raiseChaos() {
+        if (this.data.chaos >= this.data.chaosLevels.max) return;
 
         // increment chaos
         this.data.chaos++;
         let levelText = '';
 
         // apply strife
-        if( this.data.chaos === this.data.chaosLevels.strife ){
+        if (this.data.chaos === this.data.chaosLevels.strife) {
             this.data.chaosLevel = "strife";
             //this.data.cardLimit++;
             levelText = ": <span class='highlight'>STRIFE</span>";
         }
 
         // apply bedlam
-        if( this.data.chaos === this.data.chaosLevels.bedlam ){
+        if (this.data.chaos === this.data.chaosLevels.bedlam) {
             this.data.chaosLevel = "bedlam";
             levelText = ": <span class='highlight'>BEDLAM</span>";
         }
 
         // apply pandemonium
-        if( this.data.chaos === this.data.chaosLevels.pandemonium ){
-            if( this.data.upgrade ) this.becomesDelighted();
+        if (this.data.chaos === this.data.chaosLevels.pandemonium) {
+            if (this.data.upgrade) this.becomesDelighted();
             this.data.chaosLevel = "pandemonium";
             levelText = ": <span class='highlight'>PANDEMONIUM</span>";
         }
 
-        this.message( `Have achieved chaos level ${this.data.chaos}${levelText}` );
+        this.message(`Have achieved chaos level ${this.data.chaos}${levelText}`);
     }
 
     /*
@@ -198,15 +198,15 @@ class Devils extends Faction {
      *
      * @param event
      */
-    deployCheckIfDelighted( event ) {
-        if(event.unit.flipped || !this.hasChaosLevel("pandemonium") || !this.data.upgrade) return;
-        this.becomesDelighted( event.unit );
+    deployCheckIfDelighted(event) {
+        if (event.unit.flipped || !this.hasChaosLevel("pandemonium") || !this.data.upgrade) return;
+        this.becomesDelighted(event.unit);
     }
 
 
-    becomesDelighted( unit = null ){
+    becomesDelighted(unit = null) {
         unit = unit ?? this.getChampion();
-        if(unit.flipped) return;
+        if (unit.flipped) return;
 
         unit.flipped = true;
         //unit.seeking = true;
@@ -215,7 +215,7 @@ class Devils extends Faction {
 
         //if( this.game().combat ) this.game().combat.addUnitToCombat( unit );
 
-        this.message("The Gleeful Prince becomes delighted" );
+        this.message("The Gleeful Prince becomes delighted");
     }
 
 
@@ -224,51 +224,51 @@ class Devils extends Faction {
      *
      * @param unit
      */
-    unflipUnit( unit = null ) {
+    unflipUnit(unit = null) {
         unit = unit ?? this.getChampion();
 
-        if(!unit.flipped) return;
+        if (!unit.flipped) return;
 
         unit.flipped = false;
         unit.seeking = false;
         unit.attack = [];
         unit.influence = 2;
 
-        this.message("The Gleeful Prince is no longer delighted" );
+        this.message("The Gleeful Prince is no longer delighted");
     }
 
-    princeLootCards( event ) {
+    princeLootCards(event) {
         //if( !this.hasChaosLevel("bedlam") ) return this.message( "Has not achieved bedlam", { class: 'warning' } );
-        if( !this.data.cards.hand.length ) return this.message( "Has no cards to discard", { class: 'warning' } );
+        if (!this.data.cards.hand.length) return this.message("Has no cards to discard", { class: 'warning' });
 
         return this.game().promise({
             players: this.playerId,
             name: 'discard-card',
-            data : {
+            data: {
                 message: "Discard any number of cards to draw that many cards",
                 unlimited: true,
-                canDecline : true,
+                canDecline: true,
             },
-        }).then( ([player, response]) => this.resolveDiscard( response ) );
+        }).then(([player, response]) => this.resolveDiscard(response));
     }
 
-    resolveDiscard(response){
-        if(response.decline) return;
+    resolveDiscard(response) {
+        if (response.decline) return;
 
-        this.discardCards( response.cards );
-        this.drawCards( response.cards.length, true );
+        this.discardCards(response.cards);
+        this.drawCards(response.cards.length, true);
     }
 
-    hasChaosLevel( level ) {
+    hasChaosLevel(level) {
         return this.data.chaos >= this.data.chaosLevels[level] ?? 100;
     }
 
     /**
      * Reset our chaos count for the turn
      */
-    resetChaos(){
+    resetChaos() {
         // reset strife bonus
-        if( this.data.chaos >= this.data.chaosLevels.strife ){
+        if (this.data.chaos >= this.data.chaosLevels.strife) {
             //this.data.cardLimit--;
         }
 
@@ -287,12 +287,12 @@ class Devils extends Faction {
      * @param area
      * @returns {boolean}
      */
-    canActivateStoke( token, area ){
-        return this.canActivateBattle( token, area );
+    canActivateStoke(token, area) {
+        return this.canActivateBattle(token, area);
     }
 
-    collectStokeChaos(unit){
-        if(unit.faction !== this.name){
+    collectStokeChaos(unit) {
+        if (unit.faction !== this.name && unit.killed !== this.name) {
             this.raiseChaos();
         }
     }
@@ -302,21 +302,22 @@ class Devils extends Faction {
      *
      * @param args
      */
-    async activateStokeToken( args ){
+    async activateStokeToken(args) {
         let battles = 0;
-        let stokingTheFlames = !this.hasUnitsInArea( args.area, { withAttack : true } );
+        //let stokingTheFlames = !this.hasUnitsInArea( args.area, { withAttack : true } );
+        let stokingTheFlames = args.area.canBattle();
         let options = {};
 
         if( stokingTheFlames ){
-            this.message( "Is stoking the flames of hate and violence" );
-            this.drawCards( 1, true );
+            this.message("Is stoking the flames of hate and violence");
+            this.drawCards(1, true);
             options.onCombatDeath = { method: 'collectStokeChaos', faction: this };
         }
 
         // keep playing cards until we decide to stop
-        while( battles < this.data.stokeBattles ) {
+        while (battles < this.data.stokeBattles) {
             // resolve a battle in this area
-            await this.game().battle( args.area, options );
+            await this.game().battle(args.area, options);
             battles++;
         }
 
