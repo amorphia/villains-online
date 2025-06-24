@@ -12,7 +12,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [7] },
+                    { test : 'tokensInAreas', args : [6] },
                     { test : 'exterminateAreas', args : [1] },
                 ],
                 value : 2
@@ -26,7 +26,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [7] },
+                    { test : 'tokensInAreas', args : [6] },
                     { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 2
@@ -47,7 +47,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [8] },
+                    { test : 'tokensInAreas', args : [7] },
                     { test : 'controlOwnTarget', args : [] },
                 ],
                 value : 3
@@ -67,7 +67,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [7] },
+                    { test : 'tokensInAreas', args : [6] },
                 ],
                 value : 1
             },
@@ -111,7 +111,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [7] },
+                    { test : 'tokensInAreas', args : [6] },
                 ],
                 value : 1
             },
@@ -136,7 +136,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'tokensInAreas', args : [7] },
+                    { test : 'tokensInAreas', args : [6] },
                     { test : 'enemyMarkers', args : [3] },
                 ],
                 value : 2
