@@ -108,6 +108,7 @@ class Robots extends Faction {
         // get areas with units
         let areas = this.areasWithEnemyUnits({ noCeaseFire : true }, event.unit.location );
 
+        console.log('target areas', areas );
 
 
         if( ! areas.length  ){
@@ -116,7 +117,7 @@ class Robots extends Faction {
         }
 
         this.message(`<span class="faction-robots">Bully G.O.A.T</span> is searching for targets` );
-
+        
         // prompt player to select an area
         let response = await this.prompt( 'choose-area', {
             areas : areas,

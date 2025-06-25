@@ -129,7 +129,7 @@ let mixin = {
         // if we need to filter by adjacent areas do so here
         if( adjacentToArea ) areas = this.filterAreasArrayByAdjacentArea( adjacentToArea, areas );
 
-        if( args.noCeaseFire ) areas = this.filterAreasByCeaseFire( areas );
+        if( args.noCeaseFire ) areas = this.filterAreasByCeaseFire( { areas } );
 
         return areas;
     },
@@ -144,7 +144,9 @@ let mixin = {
     areasWithEnemyUnits( args = {}, adjacentToArea = null ){
         args.enemyOnly = true;
         
-        return this.areasWithAnyPlayerUnits( args, adjacentToArea );
+        let areas = this.areasWithAnyPlayerUnits( args, adjacentToArea );
+        
+        return areas;
     },
 
 
