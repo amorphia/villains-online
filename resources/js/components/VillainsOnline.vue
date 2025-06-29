@@ -21,8 +21,8 @@
             return {
                 shared : App.state,
                 chatClosed : false,
-                disconnectionWait : 5, // how long to wait (in seconds) for a disconnected socket to reconnect before escalating
-                reconnectTimeout : 1 // how long to wait (in seconds) between reconnection attempts
+                disconnectionWait : 20, // how long to wait (in seconds) for a disconnected socket to reconnect before escalating
+                reconnectTimeout : 2 // how long to wait (in seconds) between reconnection attempts
             };
         },
 
@@ -80,9 +80,13 @@
                     let socket = this.shared.socket;
                     let _this = this;
 
-                    setTimeout( () => {
+                    let intervalID = setInterval( () => {
                         socket.connect();
-                        socket.emit( 'newPlayer', { name : App.user.name, id : App.user.uuid });
+                        if(socket.connected){
+                            clearInterval(intervalID);
+                            socket.emit( 'newPlayer', { name : App.user.name, id : App.user.uuid });
+                        }
+                        
                     }, _this.reconnectTimeout * 1000 );
                 });
 
@@ -157,7 +161,7 @@
                 if( !this.shared.socket.disconnected ) return;
 
                 // wait x seconds on a disconnection, if we haven't connected again yet by the time we
-                // are done waiting then cleat the game and return to the lobby
+                // are done waiting then clear the game and return to the lobby
                 let _this = this;
                 setTimeout( function(){
                     if( !_this.shared.socket || _this.shared.socket.disconnected ) {
