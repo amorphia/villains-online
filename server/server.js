@@ -48,7 +48,7 @@ const ioServer = require("socket.io");
 const io = new ioServer.Server(expressServer, {
     allowEIO3: true,
     cors: {
-        origin: ["http://villains-online.localhost", "https://playvillains.jeremykalgreen.com/"],
+        origin: ["http://villains-online.localhost", "https://playvillains.jeremykalgreen.com"],
         credentials: true,
     },
     connectionStateRecovery: {
