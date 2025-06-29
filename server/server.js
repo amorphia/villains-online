@@ -41,23 +41,7 @@ express.use( cors() );
 const expressServer = require( 'http' ).Server( express );
 
 // set up socket.io
-//const io = require( 'socket.io' )( expressServer );
-
-const ioServer = require("socket.io");
-
-const io = new ioServer.Server(expressServer, {
-    allowEIO3: true,
-    cors: {
-        origin: ["http://villains-online.localhost", "https://playvillains.jeremykalgreen.com"],
-        credentials: true,
-    },
-    connectionStateRecovery: {
-        // the backup duration of the sessions and the packets
-        maxDisconnectionDuration: 2 * 60 * 1000,
-        // whether to skip middlewares upon successful recovery
-        skipMiddlewares: true,
-    }
-});
+const io = require( 'socket.io' )( expressServer );
 
 // instantiate a global variable that holds an instance of my Server class
 global.Server = require('./classes/Server')( expressServer, io );

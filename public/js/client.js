@@ -18832,9 +18832,9 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state,
       chatClosed: false,
-      disconnectionWait: 20,
+      disconnectionWait: 5,
       // how long to wait (in seconds) for a disconnected socket to reconnect before escalating
-      reconnectTimeout: 2 // how long to wait (in seconds) between reconnection attempts
+      reconnectTimeout: 1 // how long to wait (in seconds) between reconnection attempts
 
     };
   },
@@ -18888,16 +18888,12 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.socket.on('disconnect', function () {
         var socket = _this3.shared.socket;
         var _this = _this3;
-        var intervalID = setInterval(function () {
+        setTimeout(function () {
           socket.connect();
-
-          if (SocketAddress.connected) {
-            clearInterval(intervalID);
-            socket.emit('newPlayer', {
-              name: App.user.name,
-              id: App.user.uuid
-            });
-          }
+          socket.emit('newPlayer', {
+            name: App.user.name,
+            id: App.user.uuid
+          });
         }, _this.reconnectTimeout * 1000);
       }); // listen for open games
 
@@ -18960,7 +18956,7 @@ __webpack_require__.r(__webpack_exports__);
     watchDisconnected: function watchDisconnected() {
       // if we are no longer disconnected, do nothing
       if (!this.shared.socket.disconnected) return; // wait x seconds on a disconnection, if we haven't connected again yet by the time we
-      // are done waiting then clear the game and return to the lobby
+      // are done waiting then cleat the game and return to the lobby
 
       var _this = this;
 

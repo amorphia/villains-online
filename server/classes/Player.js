@@ -140,10 +140,10 @@ class Player {
     /**
      * return this player's socket.io socket
      *
+     * @returns {Socket}
      */
     socket(){
-        //return Server.io.sockets.connected[this.socketId];
-        return Server.io.sockets.sockets.get(this.socketId);
+        return Server.io.sockets.connected[this.socketId];
     }
 
 
