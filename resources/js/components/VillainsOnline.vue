@@ -84,7 +84,7 @@
                         socket.connect();
                         if(socket.connected){
                             clearInterval(intervalID);
-                            socket.emit( 'newPlayer', { name : App.user.name, id : App.user.uuid });
+                            socket.emit( 'newPlayer', { name : App.user.name, id : App.user.uuid, admin: App.user.admin });
                         }
                         
                     }, _this.reconnectTimeout * 1000 );

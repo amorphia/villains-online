@@ -34,7 +34,7 @@ class Plants extends Faction {
         this.tokens['vines'] = {
             count: 3,
             data: {
-                influence: 2,
+                influence: 3,
                 type: 'vines',
                 cost: 0,
                 areaStat : true,
