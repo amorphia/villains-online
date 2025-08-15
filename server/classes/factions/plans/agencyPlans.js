@@ -46,7 +46,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'assassinate', args : [2] },
+                    { test : 'assassinate', args : [1] },
                     { test : 'useSkills', args : [2] },
                 ],
                 value : 2
@@ -64,18 +64,23 @@ let obj = [
         num : 4,
         faction : 'agency',
         objectives : [
-            {
+                        {
                 requirements : [
                     { test : 'unitsInPlay', args : [8] },
+                ],
+                value : 1
+            },
+            {
+                requirements : [
                     { test : 'useSkills', args : [2] },
                 ],
                 value : 1
             },
             {
                 requirements : [
-                    { test : 'assassinate', args : [2] },
+                    { test : 'assassinate', args : [1] },
                 ],
-                value : 2
+                value : 1
             },
         ]
     },
@@ -86,9 +91,15 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'assassinate', args : [2] },
+                    { test : 'assassinate', args : [1] },
                 ],
-                value : 2
+                value : 1
+            },
+            {
+                requirements : [
+                    { test : 'controlOwnTarget', args : [] },
+                ],
+                value : 1
             },
             {
                 requirements : [
@@ -105,7 +116,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'assassinate', args : [3] },
+                    { test : 'assassinate', args : [2] },
                 ],
                 value : 3
             },
