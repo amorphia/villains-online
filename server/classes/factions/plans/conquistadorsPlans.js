@@ -25,7 +25,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'conquerAreas', args : [8] },
+                    { test : 'conquerEveryArea', args : [] },
                 ],
                 value : 3
             },
