@@ -18832,9 +18832,9 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state,
       chatClosed: false,
-      disconnectionWait: 5,
+      disconnectionWait: 20,
       // how long to wait (in seconds) for a disconnected socket to reconnect before escalating
-      reconnectTimeout: 1 // how long to wait (in seconds) between reconnection attempts
+      reconnectTimeout: 2 // how long to wait (in seconds) between reconnection attempts
 
     };
   },
@@ -18888,12 +18888,17 @@ __webpack_require__.r(__webpack_exports__);
       this.shared.socket.on('disconnect', function () {
         var socket = _this3.shared.socket;
         var _this = _this3;
-        setTimeout(function () {
+        var intervalID = setInterval(function () {
           socket.connect();
-          socket.emit('newPlayer', {
-            name: App.user.name,
-            id: App.user.uuid
-          });
+
+          if (socket.connected) {
+            clearInterval(intervalID);
+            socket.emit('newPlayer', {
+              name: App.user.name,
+              id: App.user.uuid,
+              admin: App.user.admin
+            });
+          }
         }, _this.reconnectTimeout * 1000);
       }); // listen for open games
 
@@ -18956,7 +18961,7 @@ __webpack_require__.r(__webpack_exports__);
     watchDisconnected: function watchDisconnected() {
       // if we are no longer disconnected, do nothing
       if (!this.shared.socket.disconnected) return; // wait x seconds on a disconnection, if we haven't connected again yet by the time we
-      // are done waiting then cleat the game and return to the lobby
+      // are done waiting then clear the game and return to the lobby
 
       var _this = this;
 
@@ -108834,9 +108839,9 @@ var helpers = {
     if (!area) return false; // format input
 
     if (faction.data) faction = faction.data;
-    if (area.data) area = area.data; // return the number of plants we have in this area
+    if (area.data) area = area.data; // return the number of plants we have in this area x 2
 
-    return (_faction$plants = faction.plants) !== null && _faction$plants !== void 0 && _faction$plants[area.name] ? faction.plants[area.name] : 0;
+    return (_faction$plants = faction.plants) !== null && _faction$plants !== void 0 && _faction$plants[area.name] ? faction.plants[area.name] * 2 : 0;
   },
 
   /**
