@@ -89,7 +89,7 @@ class Bikers extends Faction {
      * @param {number} upgrade
      */
     processUpgrade( upgrade ){
-        this.data.bonusDeploy.count = upgrade;
+        this.data.bonusDeploy.count = upgrade + 1;
     }
 
 

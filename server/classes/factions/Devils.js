@@ -82,7 +82,7 @@ class Devils extends Faction {
         if (upgrade !== 2) return;
 
         let unit = this.getChampion();
-        unit.areaUnitAttackBonus++;
+        unit.areaUnitAttackBonus += 2;
     }
 
     async handlePrincePlacement(token) {
