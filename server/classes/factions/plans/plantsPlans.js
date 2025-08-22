@@ -13,7 +13,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'killUnits', args : [2] },
+                    { test : 'killUnits', args : [1] },
                 ],
                 value : 1
             },
@@ -57,7 +57,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'killUnits', args : [2] },
+                    { test : 'killUnits', args : [1] },
                 ],
                 value : 1
             },
