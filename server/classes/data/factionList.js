@@ -26,7 +26,7 @@ let obj = {
     molemen : { name: 'molemen', owner : null, blocked : false, status : 1, selectable : true },
     survivalists : { name: 'survivalists', owner : null, blocked : false, status : 1, selectable : true },
     devils : { name: 'devils', owner : null, blocked : false, status : 2, selectable : true, killer : false, },
-    agency : { name: 'agency', owner : null, blocked : false, status : 0, selectable : true, killer : false, },
+    //agency : { name: 'agency', owner : null, blocked : false, status : 0, selectable : true, killer : false, },
     executioners : { name: 'executioners', owner : null, blocked : false, status : 0, selectable : true, killer : true, },
     cloners : { name: 'cloners', owner : null, blocked : false, status : 0, selectable : true, killer : false, },
 };

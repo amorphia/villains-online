@@ -111517,14 +111517,7 @@ var obj = {
     selectable: true,
     killer: false
   },
-  agency: {
-    name: 'agency',
-    owner: null,
-    blocked: false,
-    status: 0,
-    selectable: true,
-    killer: false
-  },
+  //agency : { name: 'agency', owner : null, blocked : false, status : 0, selectable : true, killer : false, },
   executioners: {
     name: 'executioners',
     owner: null,
