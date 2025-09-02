@@ -1,3 +1,4 @@
+const { unitNotTypeTest } = require('../../../resources/js/mixins/lodashUnits');
 let Faction = require( './Faction' );
 
 
@@ -151,7 +152,8 @@ class Skeletons extends Faction {
 
         // cycle through each faction and have that player sacrifice units equal to the areas they control
         Object.values( this.game().factions ).forEach( faction => {
-            if(faction.name !== this.name){
+            let nonPatsyUnitsCount = _.unitsInPlay( faction.data,  { unitNotTypeTest : 'patsy' }).length;
+            if(faction.name !== this.name && nonPatsyUnitsCount > 0){
                 promises.push( this.factionSacrificeUnits( faction, units ) );
             }
         });
