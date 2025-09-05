@@ -205,7 +205,7 @@
             },
 
             firstTokenInArea(){
-                return this.area.tokens.find( token => token.faction === this.shared.faction.name) ?? {};
+                return this.area.tokens.find( token => token.faction === this.shared.faction.name) ?? null;
             },
 
             /**

@@ -3821,7 +3821,7 @@ __webpack_require__.r(__webpack_exports__);
         total_rolls += val;
         total_val += val * index;
       });
-      return (total_val / total_rolls).toFixed(1);
+      return total_rolls === 0 ? 0 : (total_val / total_rolls).toFixed(1);
     },
     expectedHits: function expectedHits() {
       return Math.round(this.score.hits.expected);
@@ -8398,7 +8398,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       return (_this$area$tokens$fin = this.area.tokens.find(function (token) {
         return token.faction === _this2.shared.faction.name;
-      })) !== null && _this$area$tokens$fin !== void 0 ? _this$area$tokens$fin : {};
+      })) !== null && _this$area$tokens$fin !== void 0 ? _this$area$tokens$fin : null;
     },
 
     /**

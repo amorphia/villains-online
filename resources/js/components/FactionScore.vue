@@ -76,8 +76,7 @@
                     total_val += val * index;
                 });
 
-
-                return (total_val / total_rolls).toFixed( 1 );
+                return total_rolls === 0 ? 0 : (total_val / total_rolls).toFixed( 1 );
             },
 
             expectedHits(){
