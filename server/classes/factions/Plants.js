@@ -103,22 +103,21 @@ class Plants extends Faction {
      * @param area
      * @returns {string[]}
      */
-    factionsWithAdjacentPatsies( area ){
-        let factions = {};
+    factionsWithPatsies(){
+        let factions = [];
 
-        area.data.adjacent.forEach( areaName => {
-            Object.values( this.game().factions ).forEach( faction => {
-                // don;t include ourselves
-                if( faction.name === this.name ) return;
+        Object.values( this.game().factions ).forEach( faction => {
+            // don;t include ourselves
+            if( faction.name === this.name ) return;
 
-                // check for a patsy
-                if( faction.typeInArea( "patsy", areaName ) ){
-                    factions[ faction.name ] = true;
-                }
-            });
+            // check for a patsy
+            
+            if( faction.areasWithUnits({ type: "patsy" })?.length > 0 ){
+                factions.push(faction.name);
+            }
         });
 
-        return Object.keys( factions );
+        return factions;
     }
 
 
@@ -134,8 +133,8 @@ class Plants extends Faction {
         this.message( `The Soul of the Green begins to sing...` );
 
         // get our possible factions to lure, if we have none, then abort
-        let factions = this.factionsWithAdjacentPatsies( area );
-        if( !factions.length ) return this.message( 'No adjacent patsies to lure', { class : 'warning' });
+        let factions = this.factionsWithPatsies();
+        if( !factions.length ) return this.message( 'No patsies to lure', { class : 'warning' });
 
         try {
             // for each faction  cycle through and allow them to choose a patsy to lure
@@ -168,7 +167,7 @@ class Plants extends Faction {
      */
     factionChooseSoulLure( faction, units, area ){
         let player, response;
-        let factionAreas = faction.areasWithUnits({ adjacent : area.data.adjacent, types : ['patsy'] });
+        let factionAreas = faction.areasWithUnits({ type : 'patsy' });
 
         let data = {
             count : 1,
