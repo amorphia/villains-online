@@ -10116,13 +10116,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-factions',
   data: function data() {
     return {
       shared: App.state,
       random: false,
-      selectedFaction: null
+      selectedFaction: null,
+      togglePlans: false
     };
   },
   mounted: function mounted() {
@@ -23469,7 +23484,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.choose-factions__faction.killer:before {\n    content: \"\";\n    background-image: url(\"/images/icons/killer-square.png\");\n    height: 1em;\n    background-repeat: no-repeat;\n    background-position: center;\n    width: 1em;\n    position: relative;\n    bottom: 1px;\n    margin-right: .4em;\n    background-size: contain;\n}\n.choose-factions__basic-factions {\n    border-right: 2px solid #ffa70080;\n}\n.choose-factions__expansion-factions {\n    border-right: 2px dotted #ffa70080;\n}\n.choose-factions__status {\n    width: .5em;\n    height: .5em;\n    border-radius: .1em;\n    margin-left: .1em;\n}\n.choose-factions__status-0 { background-color: red;\n}\n.choose-factions__status-1 { background-color: #ff8800;\n}\n.choose-factions__status-2 { background-color: #a7cc00;\n}\n.choose-factions__status-3 { background-color: green;\n}\n.choose-factions__faction-list {\n    max-height: 95vh;\n}\n\n", ""]);
+exports.push([module.i, "\n.choose-factions__faction-sheet {\n    position: relative;\n}\n.lobby-plan-view {\n    background-image: url(\"/images/background-blurred.jpg\");\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: 100% 100%;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    width: 75%;\n    max-height: 98%;\n    z-index: 1111;\n    position: fixed;\n    transform: translateX(-50%);\n    left: 50%;\n    padding: 2rem;\n    overflow-y: scroll;\n}\n.lobby-plan-toggle-button {\n    position: absolute;\n    top: -2rem;\n    transform: translateX(-50%);\n    left: 50%;\n    background-color: #763165 !important;\n}\n.lobby-plan-grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n    gap: 1rem;\n    overflow-y: scroll;\n}\n.lobby-plan_image {\n    border-radius: 2rem;\n}\n.choose-factions__faction.killer:before {\n    content: \"\";\n    background-image: url(\"/images/icons/killer-square.png\");\n    height: 1em;\n    background-repeat: no-repeat;\n    background-position: center;\n    width: 1em;\n    position: relative;\n    bottom: 1px;\n    margin-right: .4em;\n    background-size: contain;\n}\n.choose-factions__basic-factions {\n    border-right: 2px solid #ffa70080;\n}\n.choose-factions__expansion-factions {\n    border-right: 2px dotted #ffa70080;\n}\n.choose-factions__status {\n    width: .5em;\n    height: .5em;\n    border-radius: .1em;\n    margin-left: .1em;\n}\n.choose-factions__status-0 { background-color: red;\n}\n.choose-factions__status-1 { background-color: #ff8800;\n}\n.choose-factions__status-2 { background-color: #a7cc00;\n}\n.choose-factions__status-3 { background-color: green;\n}\n.choose-factions__faction-list {\n    max-height: 95vh;\n}\n\n", ""]);
 
 // exports
 
@@ -73902,16 +73917,72 @@ var render = function () {
           ]),
           _vm._v(" "),
           _vm.selectedFaction
-            ? _c("div", {
-                staticClass: "choose-factions__faction-sheet",
-                style:
-                  "background-image : url('/images/factions/" +
-                  _vm.selectedFaction +
-                  "/sheet.jpg')",
-              })
+            ? _c(
+                "div",
+                {
+                  staticClass: "choose-factions__faction-sheet",
+                  style:
+                    "background-image : url('/images/factions/" +
+                    _vm.selectedFaction +
+                    "/sheet.jpg')",
+                },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button lobby-plan-toggle-button",
+                      attrs: { "disabled:": "!selectedFaction" },
+                      on: {
+                        click: function ($event) {
+                          _vm.togglePlans = !_vm.togglePlans
+                        },
+                      },
+                    },
+                    [_vm._v("View Plans")]
+                  ),
+                ]
+              )
             : _vm._e(),
         ]
       ),
+      _vm._v(" "),
+      _vm.togglePlans
+        ? _c("div", { staticClass: "lobby-plan-view" }, [
+            _c(
+              "button",
+              {
+                staticClass: "toggle minimize-toggle top right",
+                on: {
+                  click: function ($event) {
+                    _vm.togglePlans = !_vm.togglePlans
+                  },
+                },
+              },
+              [_c("i", { staticClass: "icon-x" })]
+            ),
+            _vm._v(" "),
+            _vm.selectedFaction
+              ? _c(
+                  "div",
+                  { staticClass: "lobby-plan-grid grid gap-2" },
+                  _vm._l(8, function (plan) {
+                    return _c("img", {
+                      staticClass: "lobby-plan_image",
+                      attrs: {
+                        src:
+                          "/images/factions/" +
+                          _vm.selectedFaction +
+                          "/plans/" +
+                          plan +
+                          ".jpg",
+                      },
+                    })
+                  }),
+                  0
+                )
+              : _vm._e(),
+          ])
+        : _vm._e(),
     ]
   )
 }
