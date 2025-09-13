@@ -6381,13 +6381,21 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     activePlayer: function activePlayer() {
-      return this.shared.orderedPlayers()[this.shared.data.activePlayerIndex];
+      var _this$shared, _this$shared$data;
+
+      var activeIndex = (_this$shared = this.shared) === null || _this$shared === void 0 ? void 0 : (_this$shared$data = _this$shared.data) === null || _this$shared$data === void 0 ? void 0 : _this$shared$data.activePlayerIndex;
+      return activeIndex ? this.shared.orderedPlayers()[activeIndex] : null;
     },
     viewingPlayer: function viewingPlayer() {
-      return this.shared.faction;
+      var _this$shared2;
+
+      return ((_this$shared2 = this.shared) === null || _this$shared2 === void 0 ? void 0 : _this$shared2.faction) || null;
     },
     viewingPlayerPlanNumbers: function viewingPlayerPlanNumbers() {
-      var plans = this.shared.faction.plans.current;
+      var _this$shared3, _this$shared3$faction, _this$shared3$faction2;
+
+      var plans = (_this$shared3 = this.shared) === null || _this$shared3 === void 0 ? void 0 : (_this$shared3$faction = _this$shared3.faction) === null || _this$shared3$faction === void 0 ? void 0 : (_this$shared3$faction2 = _this$shared3$faction.plans) === null || _this$shared3$faction2 === void 0 ? void 0 : _this$shared3$faction2.current;
+      if (!plans) return 0;
       var planNumbers = [];
       plans.forEach(function (plan) {
         planNumbers.push(plan.num);
@@ -70890,7 +70898,7 @@ var render = function () {
               )
             : _vm._e(),
           _vm._v(" "),
-          _vm.togglePlans
+          _vm.togglePlans && _vm.activePlayer
             ? _c(
                 "div",
                 {
@@ -70903,7 +70911,7 @@ var render = function () {
                     attrs: { player: _vm.activePlayer, minimal: true },
                   }),
                   _vm._v(" "),
-                  _vm.viewingPlayerPlanNumbers.length
+                  _vm.viewingPlayerPlanNumbers
                     ? _c(
                         "div",
                         _vm._l(_vm.viewingPlayerPlanNumbers, function (num) {

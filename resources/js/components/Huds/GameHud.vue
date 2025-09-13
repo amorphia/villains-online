@@ -27,14 +27,14 @@
             </div>
 
             <!-- PLANS -->
-            <div v-if="togglePlans" class="player-panel grow-1 shrink-1 width-100 overflow-auto">
+            <div v-if="togglePlans && activePlayer" class="player-panel grow-1 shrink-1 width-100 overflow-auto">
                 <player-hud
                     :player="activePlayer"
                     :key="activePlayer.id"
                     :minimal="true"
                 />
 
-                <div v-if="viewingPlayerPlanNumbers.length">
+                <div v-if="viewingPlayerPlanNumbers">
                     <div v-for="num in viewingPlayerPlanNumbers" class="game-hud-plan-wrap">
                         <img  class="game-hud-plan-image" :src="`/images/factions/${viewingPlayer.name}/plans/${num}.jpg`">
                     </div>
@@ -123,15 +123,20 @@
 
         computed: {
             activePlayer(){
-                return this.shared.orderedPlayers()[this.shared.data.activePlayerIndex];
+                let activeIndex = this.shared?.data?.activePlayerIndex;
+
+                return activeIndex ? this.shared.orderedPlayers()[activeIndex] : null;
             },
 
             viewingPlayer(){
-                return this.shared.faction;
+                return this.shared?.faction || null;
             },
 
             viewingPlayerPlanNumbers(){
-                let plans = this.shared.faction.plans.current;
+                let plans = this.shared?.faction?.plans?.current;
+
+                if(!plans) return 0;
+
                 let planNumbers = [];
                 plans.forEach(plan => {
                     planNumbers.push(plan.num);                    
