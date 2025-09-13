@@ -93,12 +93,12 @@
             <div v-if="selectedFaction" class="choose-factions__faction-sheet"
                 :style="`background-image : url('/images/factions/${selectedFaction}/sheet.jpg')`"
                 >
-                    <button disabled:="!selectedFaction" class="button lobby-plan-toggle-button" @click="togglePlans = !togglePlans">View Plans</button>
+                    <button disabled:="!selectedFaction" class="button lobby-plan-toggle-button" @click="TogglePlanState">View Plans</button>
             </div>
         </div>
 
         <div v-if="togglePlans" class="lobby-plan-view">
-            <button @click="togglePlans = !togglePlans" class="toggle minimize-toggle top right">
+            <button @click="TogglePlanState" class="toggle minimize-toggle top right">
                 <i class="icon-x"></i>
             </button>
             
@@ -219,6 +219,9 @@
         },
 
         methods : {
+            togglePlanState(){
+                this.togglePlans = !this.togglePlans;
+            },
 
             /**
              * Sort our factions

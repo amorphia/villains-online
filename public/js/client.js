@@ -6322,15 +6322,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-hud',
   data: function data() {
     return {
       shared: App.state,
-      openSettings: false
+      openSettings: false,
+      togglePlans: false
     };
   },
+  created: function created() {
+    // check our cookies to see any previous hud view setting
+    if (localStorage.getItem("plansUI") === 'true') {
+      this.togglePlans = true;
+    }
+  },
   methods: {
+    togglePlansState: function togglePlansState() {
+      this.togglePlans = !this.togglePlans;
+      localStorage.setItem("plansUI", JSON.stringify(this.togglePlans));
+    },
+
     /**
      * Save our game
      */
@@ -6348,6 +6377,22 @@ __webpack_require__.r(__webpack_exports__);
       var output = 'icon-num-' + index;
       if (this.shared.data.turn === index) output += " active";
       return output;
+    }
+  },
+  computed: {
+    activePlayer: function activePlayer() {
+      return this.shared.orderedPlayers()[this.shared.data.activePlayerIndex];
+    },
+    viewingPlayer: function viewingPlayer() {
+      return this.shared.faction;
+    },
+    viewingPlayerPlanNumbers: function viewingPlayerPlanNumbers() {
+      var plans = this.shared.faction.plans.current;
+      var planNumbers = [];
+      plans.forEach(function (plan) {
+        planNumbers.push(plan.num);
+      });
+      return planNumbers;
     }
   }
 });
@@ -6539,7 +6584,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'player-hud',
-  props: ['player'],
+  props: ['player', 'minimal'],
   data: function data() {
     return {
       shared: App.state
@@ -10231,6 +10276,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    togglePlanState: function togglePlanState() {
+      this.togglePlans = !this.togglePlans;
+    },
+
     /**
      * Sort our factions
      * @param a
@@ -23009,7 +23058,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.game-display-height {\n    height: 91vh;\n}\n", ""]);
+exports.push([module.i, "\n.game-display-height {\n    height: 91vh;\n    scrollbar-width: thin;\n}\n", ""]);
 
 // exports
 
@@ -23123,7 +23172,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n            user-select: none;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n", ""]);
+exports.push([module.i, "\n.game-hud-plan-image {\n    transform: scale(115%);\n    width: 100%;\n}\n.game-hud-plan-wrap {\n    border-radius: 1em;\n    overflow: hidden;\n    width: 100%; \n    margin-bottom: 5px;\n}\n.plan-toggle-on {\n    color:var(--primary-light-color) !important;\n}\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n    scrollbar-width: thin;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n            user-select: none;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n", ""]);
 
 // exports
 
@@ -70780,119 +70829,183 @@ var render = function () {
         attrs: { direction: "right", max: "600", min: "125" },
       }),
       _vm._v(" "),
-      _c("div", { staticClass: "width-100 height-100  flex-column d-flex" }, [
-        _c("div", { staticClass: "game-turn p-3 grow-0 shrink-0" }, [
-          _c(
-            "div",
-            { staticClass: "game-hud__turns width-100 d-flex justify-center" },
-            [
-              _c("span", { staticClass: "px-2" }, [_vm._v("turn")]),
-              _vm._v(" "),
-              _vm._l(4, function (n) {
-                return _c("div", {
-                  staticClass: "turn-count__number",
-                  class: _vm.turnNumClasses(n),
-                })
-              }),
-            ],
-            2
-          ),
+      _c(
+        "div",
+        { staticClass: "width-100 height-100 flex-column d-flex hud-ui" },
+        [
+          _c("div", { staticClass: "game-turn p-3 grow-0 shrink-0" }, [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "game-hud__turns width-100 d-flex justify-center align-center",
+              },
+              [
+                _c("i", {
+                  class: _vm.togglePlans
+                    ? "icon-toggle_on plan-toggle-on"
+                    : "icon-toggle_off",
+                  staticStyle: { color: "gray" },
+                  attrs: { title: "Toggle Plans View" },
+                  on: { click: _vm.togglePlansState },
+                }),
+                _vm._v(" "),
+                _c("span", { staticClass: "px-2" }, [_vm._v("turn")]),
+                _vm._v(" "),
+                _vm._l(4, function (n) {
+                  return _c("div", {
+                    staticClass: "turn-count__number",
+                    class: _vm.turnNumClasses(n),
+                  })
+                }),
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "game-phase center-text highlight lowercase" },
+              [_vm._v(_vm._s(_vm._f("startCase")(_vm.shared.data.phase)))]
+            ),
+          ]),
+          _vm._v(" "),
+          !_vm.togglePlans
+            ? _c(
+                "div",
+                {
+                  staticClass:
+                    "player-panel grow-1 shrink-1 width-100 overflow-auto",
+                },
+                [
+                  _vm._l(_vm.shared.orderedPlayers(), function (player) {
+                    return _c("player-hud", {
+                      key: player.id,
+                      attrs: { player: player },
+                    })
+                  }),
+                  _vm._v(" "),
+                  _c("share-image"),
+                ],
+                2
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.togglePlans
+            ? _c(
+                "div",
+                {
+                  staticClass:
+                    "player-panel grow-1 shrink-1 width-100 overflow-auto",
+                },
+                [
+                  _c("player-hud", {
+                    key: _vm.activePlayer.id,
+                    attrs: { player: _vm.activePlayer, minimal: true },
+                  }),
+                  _vm._v(" "),
+                  _vm.viewingPlayerPlanNumbers.length
+                    ? _c(
+                        "div",
+                        _vm._l(_vm.viewingPlayerPlanNumbers, function (num) {
+                          return _c(
+                            "div",
+                            { staticClass: "game-hud-plan-wrap" },
+                            [
+                              _c("img", {
+                                staticClass: "game-hud-plan-image",
+                                attrs: {
+                                  src:
+                                    "/images/factions/" +
+                                    _vm.viewingPlayer.name +
+                                    "/plans/" +
+                                    num +
+                                    ".jpg",
+                                },
+                              }),
+                            ]
+                          )
+                        }),
+                        0
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("share-image"),
+                ],
+                1
+              )
+            : _vm._e(),
           _vm._v(" "),
           _c(
             "div",
-            { staticClass: "game-phase center-text highlight lowercase" },
-            [_vm._v(_vm._s(_vm._f("startCase")(_vm.shared.data.phase)))]
+            {
+              staticClass:
+                "control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap",
+            },
+            [
+              _c("turn-timer"),
+              _vm._v(" "),
+              _c("game-sound"),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "d-inline stat-icon highlight pointer deck-icon",
+                  attrs: { title: "view discard pile" },
+                  on: {
+                    click: function ($event) {
+                      _vm.shared.viewDiscard = !_vm.shared.viewDiscard
+                    },
+                  },
+                },
+                [
+                  _c("i", { staticClass: "icon-card" }),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "deck-count" }, [
+                    _vm._v(_vm._s(_vm.shared.data.deckCount)),
+                  ]),
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "d-inline stat-icon highlight pointer",
+                  on: {
+                    click: function ($event) {
+                      _vm.shared.openCheatSheets = !_vm.shared.openCheatSheets
+                    },
+                  },
+                },
+                [
+                  _c("i", {
+                    staticClass: "icon-ask",
+                    attrs: { title: "view player aid cards" },
+                  }),
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "d-inline stat-icon highlight pointer",
+                  on: {
+                    click: function ($event) {
+                      _vm.shared.openSettings = !_vm.shared.openSettings
+                    },
+                  },
+                },
+                [
+                  _c("i", {
+                    staticClass: "icon-plans",
+                    attrs: { title: "open game settings" },
+                  }),
+                ]
+              ),
+            ],
+            1
           ),
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "player-panel grow-1 shrink-1 width-100 overflow-auto",
-          },
-          [
-            _vm._l(_vm.shared.orderedPlayers(), function (player) {
-              return _c("player-hud", {
-                key: player.id,
-                attrs: { player: player },
-              })
-            }),
-            _vm._v(" "),
-            _c("share-image"),
-          ],
-          2
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass:
-              "control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap",
-          },
-          [
-            _c("turn-timer"),
-            _vm._v(" "),
-            _c("game-sound"),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "d-inline stat-icon highlight pointer deck-icon",
-                attrs: { title: "view discard pile" },
-                on: {
-                  click: function ($event) {
-                    _vm.shared.viewDiscard = !_vm.shared.viewDiscard
-                  },
-                },
-              },
-              [
-                _c("i", { staticClass: "icon-card" }),
-                _vm._v(" "),
-                _c("span", { staticClass: "deck-count" }, [
-                  _vm._v(_vm._s(_vm.shared.data.deckCount)),
-                ]),
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "d-inline stat-icon highlight pointer",
-                on: {
-                  click: function ($event) {
-                    _vm.shared.openCheatSheets = !_vm.shared.openCheatSheets
-                  },
-                },
-              },
-              [
-                _c("i", {
-                  staticClass: "icon-ask",
-                  attrs: { title: "view player aid cards" },
-                }),
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "d-inline stat-icon highlight pointer",
-                on: {
-                  click: function ($event) {
-                    _vm.shared.openSettings = !_vm.shared.openSettings
-                  },
-                },
-              },
-              [
-                _c("i", {
-                  staticClass: "icon-plans",
-                  attrs: { title: "open game settings" },
-                }),
-              ]
-            ),
-          ],
-          1
-        ),
-      ]),
+        ]
+      ),
     ],
     1
   )
@@ -73932,11 +74045,7 @@ var render = function () {
                     {
                       staticClass: "button lobby-plan-toggle-button",
                       attrs: { "disabled:": "!selectedFaction" },
-                      on: {
-                        click: function ($event) {
-                          _vm.togglePlans = !_vm.togglePlans
-                        },
-                      },
+                      on: { click: _vm.TogglePlanState },
                     },
                     [_vm._v("View Plans")]
                   ),
@@ -73952,11 +74061,7 @@ var render = function () {
               "button",
               {
                 staticClass: "toggle minimize-toggle top right",
-                on: {
-                  click: function ($event) {
-                    _vm.togglePlans = !_vm.togglePlans
-                  },
-                },
+                on: { click: _vm.TogglePlanState },
               },
               [_c("i", { staticClass: "icon-x" })]
             ),
