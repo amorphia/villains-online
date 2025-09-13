@@ -9,7 +9,7 @@
             <!-- GAME STATS -->
             <div class="game-turn p-3 grow-0 shrink-0">
                 <div class="game-hud__turns width-100 d-flex justify-center align-center">
-                    <i style="color:gray" title="Toggle Plans View" :class="togglePlans ? 'icon-toggle_on plan-toggle-on' : 'icon-toggle_off'" @click="togglePlansState"></i>
+                    <i v-if="shared?.player?.isSpectator" style="color:gray" title="Toggle Plans View" :class="togglePlans ? 'icon-toggle_on plan-toggle-on' : 'icon-toggle_off'" @click="togglePlansState"></i>
                     <span class="px-2">turn</span>
                     <div v-for="n in 4" class="turn-count__number" :class="turnNumClasses( n )"></div>
                 </div>
@@ -27,7 +27,7 @@
             </div>
 
             <!-- PLANS -->
-            <div v-if="togglePlans && activePlayer" class="player-panel grow-1 shrink-1 width-100 overflow-auto">
+            <div v-if="togglePlans && !shared?.player?.isSpectator" class="player-panel grow-1 shrink-1 width-100 overflow-auto">
                 <player-hud
                     :player="activePlayer"
                     :key="activePlayer.id"
@@ -96,7 +96,7 @@
 
         methods : {
             togglePlansState(){
-            this.togglePlans = !this.togglePlans;
+                this.togglePlans = !this.togglePlans;
                 localStorage.setItem("plansUI", JSON.stringify( this.togglePlans));
             },
 
@@ -123,9 +123,10 @@
 
         computed: {
             activePlayer(){
-                let activeIndex = this.shared?.data?.activePlayerIndex;
+                if(this.shared.player.isSpectator) return null;
 
-                return activeIndex ? this.shared.orderedPlayers()[activeIndex] : null;
+                let activeIndex = this.shared?.data?.activePlayerIndex;
+                return this.shared.orderedPlayers()[activeIndex];
             },
 
             viewingPlayer(){
@@ -133,9 +134,7 @@
             },
 
             viewingPlayerPlanNumbers(){
-                let plans = this.shared?.faction?.plans?.current;
-
-                if(!plans) return 0;
+                if(this.shared.player.isSpectator) return null;
 
                 let planNumbers = [];
                 plans.forEach(plan => {

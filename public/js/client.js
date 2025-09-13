@@ -6383,8 +6383,9 @@ __webpack_require__.r(__webpack_exports__);
     activePlayer: function activePlayer() {
       var _this$shared, _this$shared$data;
 
+      if (this.shared.player.isSpectator) return null;
       var activeIndex = (_this$shared = this.shared) === null || _this$shared === void 0 ? void 0 : (_this$shared$data = _this$shared.data) === null || _this$shared$data === void 0 ? void 0 : _this$shared$data.activePlayerIndex;
-      return activeIndex ? this.shared.orderedPlayers()[activeIndex] : null;
+      return this.shared.orderedPlayers()[activeIndex];
     },
     viewingPlayer: function viewingPlayer() {
       var _this$shared2;
@@ -6392,10 +6393,7 @@ __webpack_require__.r(__webpack_exports__);
       return ((_this$shared2 = this.shared) === null || _this$shared2 === void 0 ? void 0 : _this$shared2.faction) || null;
     },
     viewingPlayerPlanNumbers: function viewingPlayerPlanNumbers() {
-      var _this$shared3, _this$shared3$faction, _this$shared3$faction2;
-
-      var plans = (_this$shared3 = this.shared) === null || _this$shared3 === void 0 ? void 0 : (_this$shared3$faction = _this$shared3.faction) === null || _this$shared3$faction === void 0 ? void 0 : (_this$shared3$faction2 = _this$shared3$faction.plans) === null || _this$shared3$faction2 === void 0 ? void 0 : _this$shared3$faction2.current;
-      if (!plans) return 0;
+      if (this.shared.player.isSpectator) return null;
       var planNumbers = [];
       plans.forEach(function (plan) {
         planNumbers.push(plan.num);
@@ -70819,209 +70817,9 @@ render._withStripped = true
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Huds/GameHud.vue?vue&type=template&id=e2851c86& ***!
   \***************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function () {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "game-hud pos-relative drawer__aside" },
-    [
-      _c("adjust-handle", {
-        attrs: { direction: "right", max: "600", min: "125" },
-      }),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "width-100 height-100 flex-column d-flex hud-ui" },
-        [
-          _c("div", { staticClass: "game-turn p-3 grow-0 shrink-0" }, [
-            _c(
-              "div",
-              {
-                staticClass:
-                  "game-hud__turns width-100 d-flex justify-center align-center",
-              },
-              [
-                _c("i", {
-                  class: _vm.togglePlans
-                    ? "icon-toggle_on plan-toggle-on"
-                    : "icon-toggle_off",
-                  staticStyle: { color: "gray" },
-                  attrs: { title: "Toggle Plans View" },
-                  on: { click: _vm.togglePlansState },
-                }),
-                _vm._v(" "),
-                _c("span", { staticClass: "px-2" }, [_vm._v("turn")]),
-                _vm._v(" "),
-                _vm._l(4, function (n) {
-                  return _c("div", {
-                    staticClass: "turn-count__number",
-                    class: _vm.turnNumClasses(n),
-                  })
-                }),
-              ],
-              2
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "game-phase center-text highlight lowercase" },
-              [_vm._v(_vm._s(_vm._f("startCase")(_vm.shared.data.phase)))]
-            ),
-          ]),
-          _vm._v(" "),
-          !_vm.togglePlans
-            ? _c(
-                "div",
-                {
-                  staticClass:
-                    "player-panel grow-1 shrink-1 width-100 overflow-auto",
-                },
-                [
-                  _vm._l(_vm.shared.orderedPlayers(), function (player) {
-                    return _c("player-hud", {
-                      key: player.id,
-                      attrs: { player: player },
-                    })
-                  }),
-                  _vm._v(" "),
-                  _c("share-image"),
-                ],
-                2
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.togglePlans && _vm.activePlayer
-            ? _c(
-                "div",
-                {
-                  staticClass:
-                    "player-panel grow-1 shrink-1 width-100 overflow-auto",
-                },
-                [
-                  _c("player-hud", {
-                    key: _vm.activePlayer.id,
-                    attrs: { player: _vm.activePlayer, minimal: true },
-                  }),
-                  _vm._v(" "),
-                  _vm.viewingPlayerPlanNumbers
-                    ? _c(
-                        "div",
-                        _vm._l(_vm.viewingPlayerPlanNumbers, function (num) {
-                          return _c(
-                            "div",
-                            { staticClass: "game-hud-plan-wrap" },
-                            [
-                              _c("img", {
-                                staticClass: "game-hud-plan-image",
-                                attrs: {
-                                  src:
-                                    "/images/factions/" +
-                                    _vm.viewingPlayer.name +
-                                    "/plans/" +
-                                    num +
-                                    ".jpg",
-                                },
-                              }),
-                            ]
-                          )
-                        }),
-                        0
-                      )
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c("share-image"),
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass:
-                "control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap",
-            },
-            [
-              _c("turn-timer"),
-              _vm._v(" "),
-              _c("game-sound"),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass: "d-inline stat-icon highlight pointer deck-icon",
-                  attrs: { title: "view discard pile" },
-                  on: {
-                    click: function ($event) {
-                      _vm.shared.viewDiscard = !_vm.shared.viewDiscard
-                    },
-                  },
-                },
-                [
-                  _c("i", { staticClass: "icon-card" }),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "deck-count" }, [
-                    _vm._v(_vm._s(_vm.shared.data.deckCount)),
-                  ]),
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass: "d-inline stat-icon highlight pointer",
-                  on: {
-                    click: function ($event) {
-                      _vm.shared.openCheatSheets = !_vm.shared.openCheatSheets
-                    },
-                  },
-                },
-                [
-                  _c("i", {
-                    staticClass: "icon-ask",
-                    attrs: { title: "view player aid cards" },
-                  }),
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass: "d-inline stat-icon highlight pointer",
-                  on: {
-                    click: function ($event) {
-                      _vm.shared.openSettings = !_vm.shared.openSettings
-                    },
-                  },
-                },
-                [
-                  _c("i", {
-                    staticClass: "icon-plans",
-                    attrs: { title: "open game settings" },
-                  }),
-                ]
-              ),
-            ],
-            1
-          ),
-        ]
-      ),
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
+throw new Error("Module build failed (from ./node_modules/vue-loader/lib/loaders/templateLoader.js):\nSyntaxError: Unexpected token (1:416)\n    at Parser.pp$4.raise (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2757:13)\n    at Parser.pp.unexpected (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:647:8)\n    at Parser.pp$3.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2196:10)\n    at Parser.<anonymous> (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6003:24)\n    at Parser.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6129:31)\n    at Parser.pp$3.parseExprSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2047:19)\n    at Parser.pp$3.parseMaybeUnary (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2024:17)\n    at Parser.pp$3.parseExprOps (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1966:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1949:19)\n    at Parser.pp$3.parseMaybeAssign (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1925:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1954:28)\n    at Parser.pp$3.parseMaybeAssign (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1925:19)\n    at Parser.pp$3.parseParenAndDistinguishExpression (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2238:30)\n    at Parser.pp$3.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2163:41)\n    at Parser.<anonymous> (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6003:24)\n    at Parser.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6129:31)\n    at Parser.pp$3.parseExprSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2047:19)\n    at Parser.pp$3.parseMaybeUnary (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2024:17)\n    at Parser.pp$3.parseExprOps (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1966:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1949:19)\n    at Parser.pp$3.parseMaybeAssign (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1925:19)\n    at Parser.pp$3.parseExprList (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2663:20)\n    at Parser.pp$3.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2175:26)\n    at Parser.<anonymous> (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6003:24)\n    at Parser.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6129:31)\n    at Parser.pp$3.parseExprSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2047:19)\n    at Parser.pp$3.parseMaybeUnary (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2024:17)\n    at Parser.pp$3.parseExprOps (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1966:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1949:19)\n    at Parser.pp$3.parseMaybeAssign (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1925:19)\n    at Parser.pp$3.parseExprList (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2663:20)\n    at Parser.pp$3.parseSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2075:29)\n    at Parser.pp$3.parseExprSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2050:21)\n    at Parser.pp$3.parseMaybeUnary (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2024:17)\n    at Parser.pp$3.parseExprOps (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1966:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1949:19)");
 
 /***/ }),
 
