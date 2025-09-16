@@ -61,6 +61,10 @@
             };
         },
 
+        mounted(){
+            localStorage.removeItem(this.shared?.data?.id);
+        },
+
 
         methods : {
             /**

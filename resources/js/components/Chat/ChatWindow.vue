@@ -19,19 +19,57 @@
         data() {
             return {
                 shared : App.state,
-                maxChatLength : 500,
+                maxChatLength : 1000,
             };
         },
 
+        created(){
+
+        },
+
         mounted(){
+            this.shared.socket.on( 'joinGame', this.loadCurrentChat );
+
             // handle incoming messages
             this.shared.socket.on( 'message', message => {
                 this.shared.messages.unshift( message );
+
+                this.handleLocalStorage();
+
                 if( this.shared.messages.length > this.maxChatLength ){
                     this.shared.messages.pop();
                 }
             });
-        }
+                          
+            this.shared.socket.on( 'joinedGame', () => {
+                this.loadCurrentChat();
+            });
+        }, 
+
+        methods: {
+            handleLocalStorage(){
+                if(!this.shared?.data?.id) return;
+
+                const now = new Date();
+
+                // save current messages by gameId
+                localStorage.setItem(this.shared?.data?.id, JSON.stringify({
+                    gameId:  this.shared.data.id,
+                    chat: this.shared.messages,
+                    expiration: now.getTime() + 800000000,
+                }));
+            },
+
+            loadCurrentChat(){
+                if(!this.shared?.data?.id) return;
+
+                let currentChatString = localStorage.getItem(this.shared?.data?.id);
+                if(!currentChatString) return;
+
+                let currentChat = JSON.parse(currentChatString);
+                this.shared.messages = currentChat.chat;
+            },
+        },
     }
 </script>
 
