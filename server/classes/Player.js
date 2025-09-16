@@ -225,8 +225,6 @@ class Player {
             return;
         }
 
-        //console.log("CallSocket", method);
-
         socket[method]( ...args );
     }
 }

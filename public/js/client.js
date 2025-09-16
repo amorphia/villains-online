@@ -3550,50 +3550,20 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       shared: App.state,
-      maxChatLength: 1000
+      maxChatLength: 500
     };
   },
-  created: function created() {},
   mounted: function mounted() {
     var _this = this;
 
-    this.shared.socket.on('joinGame', this.loadCurrentChat); // handle incoming messages
-
+    // handle incoming messages
     this.shared.socket.on('message', function (message) {
       _this.shared.messages.unshift(message);
-
-      _this.handleLocalStorage();
 
       if (_this.shared.messages.length > _this.maxChatLength) {
         _this.shared.messages.pop();
       }
     });
-    this.shared.socket.on('joinedGame', function () {
-      _this.loadCurrentChat();
-    });
-  },
-  methods: {
-    handleLocalStorage: function handleLocalStorage() {
-      var _this$shared, _this$shared$data, _this$shared2, _this$shared2$data;
-
-      if (!((_this$shared = this.shared) !== null && _this$shared !== void 0 && (_this$shared$data = _this$shared.data) !== null && _this$shared$data !== void 0 && _this$shared$data.id)) return;
-      var now = new Date(); // save current messages by gameId
-
-      localStorage.setItem((_this$shared2 = this.shared) === null || _this$shared2 === void 0 ? void 0 : (_this$shared2$data = _this$shared2.data) === null || _this$shared2$data === void 0 ? void 0 : _this$shared2$data.id, JSON.stringify({
-        gameId: this.shared.data.id,
-        chat: this.shared.messages,
-        expiration: now.getTime() + 800000000
-      }));
-    },
-    loadCurrentChat: function loadCurrentChat() {
-      var _this$shared3, _this$shared3$data, _this$shared4, _this$shared4$data;
-
-      if (!((_this$shared3 = this.shared) !== null && _this$shared3 !== void 0 && (_this$shared3$data = _this$shared3.data) !== null && _this$shared3$data !== void 0 && _this$shared3$data.id)) return;
-      var currentChatString = localStorage.getItem((_this$shared4 = this.shared) === null || _this$shared4 === void 0 ? void 0 : (_this$shared4$data = _this$shared4.data) === null || _this$shared4$data === void 0 ? void 0 : _this$shared4$data.id);
-      if (!currentChatString) return;
-      var currentChat = JSON.parse(currentChatString);
-      this.shared.messages = currentChat.chat;
-    }
   }
 });
 
@@ -3940,11 +3910,6 @@ __webpack_require__.r(__webpack_exports__);
     return {
       shared: App.state
     };
-  },
-  mounted: function mounted() {
-    var _this$shared, _this$shared$data;
-
-    localStorage.removeItem((_this$shared = this.shared) === null || _this$shared === void 0 ? void 0 : (_this$shared$data = _this$shared.data) === null || _this$shared$data === void 0 ? void 0 : _this$shared$data.id);
   },
   methods: {
     /**

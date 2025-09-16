@@ -43,7 +43,6 @@ let mixin = {
         if( this.data.state !== 'loading' ) {
             player.joinRoom( this.data.id );
             await this.pushGameDataToPlayers( player );
-            player.callSocket( 'emit', 'joinGame' );
         }
     },
 
