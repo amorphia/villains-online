@@ -646,9 +646,37 @@ let obj = {
             this.payCost( response.cost, true );
         }
 
-        // if we decided to buy off some hits, pay the costs here
-        if( response.tokenDeflects > 0 ){
-            this.discardEarliestTokensInArea( response.tokenDeflects, area );
+        // if we decided to deflect some hits, pay the costs here
+        let deflects = response.tokenDeflects;
+        if( deflects > 0 ){
+            
+            // player chooses tokens
+            let deflectResponse = await this.prompt( 'choose-tokens', {
+                count : deflects,
+                areas : [area.name],
+                playerOnly: true,
+            });
+
+            // discard the tokens
+            deflectResponse.tokens.forEach(tokenId => {
+                let token = this.game().objectMap[tokenId];
+                let tokenSpot = _.discardToken( token, area );
+            });
+            
+            // display results
+            let message = `Discard ${deflects > 1 ? deflects : 'a'} token${deflects > 1 ?'(s)' : ''} from the ${area.name} to deflect hits`;
+            this.message( message );
+
+            /*
+           let deflectResponse = await this.deflectChooseTokens( response.tokenDeflects, area );
+
+           if(deflectResponse.cancel){
+                await this.assignHits( hits, area, killer, args );
+                return;
+           }
+
+           this.deflectRemoveTokens(deflectResponse.tokens, area);
+           */
         }
 
 

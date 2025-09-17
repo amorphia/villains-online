@@ -8400,6 +8400,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return token.faction === _this2.shared.faction.name;
       })) !== null && _this$area$tokens$fin !== void 0 ? _this$area$tokens$fin : null;
     },
+    playerTokensInArea: function playerTokensInArea() {
+      var _this$area$tokens$fil,
+          _this3 = this;
+
+      return (_this$area$tokens$fil = this.area.tokens.filter(function (token) {
+        return token.faction === _this3.shared.faction.name;
+      })) !== null && _this$area$tokens$fil !== void 0 ? _this$area$tokens$fil : [];
+    },
 
     /**
      * Can we use the gnome delfect to block hits?
@@ -8411,11 +8419,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return money >= this.cost + 2;
     },
     canTokenDeflect: function canTokenDeflect() {
-      var _this3 = this;
+      var _this$shared$faction,
+          _this4 = this;
 
-      if (this.hitsToAssign === 0 || !this.data.unit) return;
-      var tokens = this.shared.faction.tokens.filter(function (token) {
-        return token.location === _this3.area.name;
+      if (this.hitsToAssign === 0) return;
+      var tokens = (_this$shared$faction = this.shared.faction) === null || _this$shared$faction === void 0 ? void 0 : _this$shared$faction.tokens.filter(function (token) {
+        return token.location === _this4.area.name;
       }).length;
       return tokens > this.tokenDeflects;
     },
@@ -8433,14 +8442,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {boolean}
      */
     hasGnome: function hasGnome() {
-      var _this4 = this;
+      var _this5 = this;
 
       return this.shared.faction.name === 'bankers' && _.find(this.shared.faction.units, function (unit) {
-        return unit.location === _this4.area.name && unit.type === 'champion';
+        return unit.location === _this5.area.name && unit.type === 'champion';
       });
     },
     hasTokenDeflect: function hasTokenDeflect() {
-      return this.shared.faction.tokenDeflect && this.firstTokenInArea;
+      return this.shared.faction.tokenDeflect && this.playerTokensInArea.length;
     },
 
     /**
@@ -8487,10 +8496,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {Unit[]}
      */
     units: function units() {
-      var _this5 = this;
+      var _this6 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this5.area, {
+        return _.unitInArea(unit, _this6.area, {
           notHidden: true
         });
       });
@@ -72706,18 +72715,14 @@ var render = function () {
           _vm.hasTokenDeflect
             ? _c("div", { staticClass: "gnome-deflects primary-light" }, [
                 _vm._v(
-                  "\n                Discard this tokens to cancel all hits?\n\n                "
+                  "\n                Discard token(s) to cancel hits?\n\n                "
                 ),
                 _c(
                   "div",
                   { staticClass: "d-flex justify-center" },
                   [
-                    _c("token-set-item", {
-                      attrs: {
-                        token: _vm.firstTokenInArea,
-                        noEmit: "true",
-                        hideUnrevealed: true,
-                      },
+                    _c("token-set", {
+                      attrs: { tokens: _vm.playerTokensInArea, noEmit: "true" },
                     }),
                   ],
                   1
@@ -72732,7 +72737,7 @@ var render = function () {
                       attrs: { disabled: _vm.tokenDeflects === 0 },
                       on: {
                         click: function ($event) {
-                          _vm.tokenDeflects = 0
+                          _vm.tokenDeflects += -1
                         },
                       },
                     }),
@@ -72744,7 +72749,11 @@ var render = function () {
                     _c("i", {
                       staticClass: "icon-maximize ml-2",
                       attrs: { disabled: !_vm.canTokenDeflect },
-                      on: { click: _vm.setTokenDeflects },
+                      on: {
+                        click: function ($event) {
+                          _vm.tokenDeflects += 1
+                        },
+                      },
                     }),
                   ]
                 ),
