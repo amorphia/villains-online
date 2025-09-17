@@ -90,14 +90,11 @@
         },
 
         methods : {
-<<<<<<< HEAD
             togglePlansState(){
                 this.togglePlans = !this.togglePlans;
                 localStorage.setItem("plansUI", JSON.stringify( this.togglePlans ));
             },
 
-=======
->>>>>>> master
             /**
              * Save our game
              */
