@@ -81,7 +81,7 @@
     export default {
 
         name: 'player-hud',
-        props: ['player','minimal'],
+        props: ['player'],
         data() {
             return {
                 shared : App.state,

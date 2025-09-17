@@ -36,17 +36,17 @@
 
                 <!-- token deflection -->
                 <div v-if="hasTokenDeflect" class="gnome-deflects primary-light">
-                    Discard this tokens to cancel all hits?
+                    Discard token(s) to cancel hits?
 
                     <div class="d-flex justify-center">
-                        <token-set-item :token="firstTokenInArea" noEmit="true" :hideUnrevealed="true"></token-set-item>
+                        <token-set :tokens="playerTokensInArea" noEmit="true"></token-set>
                     </div>
 
 
                     <div class="d-flex align-center justify-center">
-                        <i :disabled="tokenDeflects === 0" @click="tokenDeflects = 0" class="icon-minimize pr-2"></i>
+                        <i :disabled="tokenDeflects === 0" @click="tokenDeflects += -1" class="icon-minimize pr-2"></i>
                         <span class="highlight mr-3">{{ tokenDeflects }}</span> hits cancelled
-                        <i :disabled="!canTokenDeflect" @click="setTokenDeflects" class="icon-maximize ml-2"></i>
+                        <i :disabled="!canTokenDeflect" @click="tokenDeflects += 1" class="icon-maximize ml-2"></i>
                     </div>
                 </div>
 
@@ -208,6 +208,10 @@
                 return this.area.tokens.find( token => token.faction === this.shared.faction.name) ?? null;
             },
 
+            playerTokensInArea(){
+                return this.area.tokens.filter( token => token.faction === this.shared.faction.name) ?? [];
+            },
+
             /**
              * Can we use the gnome delfect to block hits?
              * @returns {boolean}
@@ -219,8 +223,8 @@
             },
 
             canTokenDeflect(){
-                if( this.hitsToAssign === 0 || !this.data.unit ) return;
-                let tokens = this.shared.faction.tokens.filter(token => token.location === this.area.name).length;
+                if( this.hitsToAssign === 0 ) return;
+                let tokens = this.shared.faction?.tokens.filter(token => token.location === this.area.name).length;
                 return tokens > this.tokenDeflects;
             },
 
@@ -243,7 +247,7 @@
             },
 
             hasTokenDeflect(){
-              return this.shared.faction.tokenDeflect && this.firstTokenInArea;
+              return this.shared.faction.tokenDeflect && this.playerTokensInArea.length;
             },
 
             /**

@@ -41,7 +41,6 @@
 <style>
     .game-display-height {
         height: 91vh;
-        scrollbar-width: thin;
     }
 </style>
 

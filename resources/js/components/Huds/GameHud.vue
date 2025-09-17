@@ -3,13 +3,12 @@
         <!-- handle -->
         <adjust-handle direction="right" max="600" min="125"></adjust-handle>
 
-        <div class="width-100 height-100 flex-column d-flex hud-ui">
+        <div class="width-100 height-100  flex-column d-flex">
             <!-- UI -->
 
             <!-- GAME STATS -->
             <div class="game-turn p-3 grow-0 shrink-0">
-                <div class="game-hud__turns width-100 d-flex justify-center align-center">
-                    <i v-if="shared?.player?.isSpectator" style="color:gray" title="Toggle Plans View" :class="togglePlans ? 'icon-toggle_on plan-toggle-on' : 'icon-toggle_off'" @click="togglePlansState"></i>
+                <div class="game-hud__turns width-100 d-flex justify-center">
                     <span class="px-2">turn</span>
                     <div v-for="n in 4" class="turn-count__number" :class="turnNumClasses( n )"></div>
                 </div>
@@ -17,7 +16,7 @@
             </div>
 
             <!-- PLAYER STATS -->
-            <div v-if="!togglePlans" class="player-panel grow-1 shrink-1 width-100 overflow-auto">
+            <div class="player-panel grow-1 shrink-1 width-100 overflow-auto">
                 <player-hud v-for="player in shared.orderedPlayers()"
                     :player="player"
                     :key="player.id"
@@ -26,6 +25,7 @@
                 <share-image />
             </div>
 
+<<<<<<< HEAD
             <!-- PLANS -->
             <div v-if="togglePlans && !shared?.player?.isSpectator" class="player-panel grow-1 shrink-1 width-100 overflow-auto">
                 <player-hud
@@ -42,6 +42,8 @@
 
                 <share-image />
             </div>
+=======
+>>>>>>> master
 
 
             <!-- CONTROLS -->
@@ -84,22 +86,18 @@
             return {
                 shared : App.state,
                 openSettings : false,
-                togglePlans : false,
             };
-        },
-        created(){
-            // check our cookies to see any previous hud view setting
-            if( localStorage.getItem("plansUI") === 'true' ){
-                this.togglePlans = true;
-            }
         },
 
         methods : {
+<<<<<<< HEAD
             togglePlansState(){
                 this.togglePlans = !this.togglePlans;
                 localStorage.setItem("plansUI", JSON.stringify( this.togglePlans ));
             },
 
+=======
+>>>>>>> master
             /**
              * Save our game
              */
@@ -142,29 +140,13 @@
                 });
 
                 return planNumbers;
-            }
+            },
         }
     }
 </script>
 
 
 <style>
-    .game-hud-plan-image {
-        transform: scale(115%);
-        width: 100%;
-    }
-
-    .game-hud-plan-wrap {
-        border-radius: 1em;
-        overflow: hidden;
-        width: 100%; 
-        margin-bottom: 5px;
-    }
-
-    .plan-toggle-on {
-        color:var(--primary-light-color) !important;
-    }
-
     .deck-count {
         font-family: var(--primary-font);
         position: relative;
@@ -197,7 +179,6 @@
 
     .player-panel {
         max-height: 90%;
-        scrollbar-width: thin;
     }
 
     .game-hud {

@@ -6322,44 +6322,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-hud',
   data: function data() {
     return {
       shared: App.state,
-      openSettings: false,
-      togglePlans: false
+      openSettings: false
     };
   },
-  created: function created() {
-    // check our cookies to see any previous hud view setting
-    if (localStorage.getItem("plansUI") === 'true') {
-      this.togglePlans = true;
-    }
-  },
   methods: {
-    togglePlansState: function togglePlansState() {
-      this.togglePlans = !this.togglePlans;
-      localStorage.setItem("plansUI", JSON.stringify(this.togglePlans));
-    },
-
     /**
      * Save our game
      */
@@ -6377,28 +6348,6 @@ __webpack_require__.r(__webpack_exports__);
       var output = 'icon-num-' + index;
       if (this.shared.data.turn === index) output += " active";
       return output;
-    }
-  },
-  computed: {
-    activePlayer: function activePlayer() {
-      var _this$shared, _this$shared$data;
-
-      if (this.shared.player.isSpectator) return null;
-      var activeIndex = (_this$shared = this.shared) === null || _this$shared === void 0 ? void 0 : (_this$shared$data = _this$shared.data) === null || _this$shared$data === void 0 ? void 0 : _this$shared$data.activePlayerIndex;
-      return this.shared.orderedPlayers()[activeIndex];
-    },
-    viewingPlayer: function viewingPlayer() {
-      var _this$shared2;
-
-      return ((_this$shared2 = this.shared) === null || _this$shared2 === void 0 ? void 0 : _this$shared2.faction) || null;
-    },
-    viewingPlayerPlanNumbers: function viewingPlayerPlanNumbers() {
-      if (this.shared.player.isSpectator) return null;
-      var planNumbers = [];
-      plans.forEach(function (plan) {
-        planNumbers.push(plan.num);
-      });
-      return planNumbers;
     }
   }
 });
@@ -6590,7 +6539,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'player-hud',
-  props: ['player', 'minimal'],
+  props: ['player'],
   data: function data() {
     return {
       shared: App.state
@@ -8451,6 +8400,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return token.faction === _this2.shared.faction.name;
       })) !== null && _this$area$tokens$fin !== void 0 ? _this$area$tokens$fin : null;
     },
+    playerTokensInArea: function playerTokensInArea() {
+      var _this$area$tokens$fil,
+          _this3 = this;
+
+      return (_this$area$tokens$fil = this.area.tokens.filter(function (token) {
+        return token.faction === _this3.shared.faction.name;
+      })) !== null && _this$area$tokens$fil !== void 0 ? _this$area$tokens$fil : [];
+    },
 
     /**
      * Can we use the gnome delfect to block hits?
@@ -8462,11 +8419,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return money >= this.cost + 2;
     },
     canTokenDeflect: function canTokenDeflect() {
-      var _this3 = this;
+      var _this$shared$faction,
+          _this4 = this;
 
-      if (this.hitsToAssign === 0 || !this.data.unit) return;
-      var tokens = this.shared.faction.tokens.filter(function (token) {
-        return token.location === _this3.area.name;
+      if (this.hitsToAssign === 0) return;
+      var tokens = (_this$shared$faction = this.shared.faction) === null || _this$shared$faction === void 0 ? void 0 : _this$shared$faction.tokens.filter(function (token) {
+        return token.location === _this4.area.name;
       }).length;
       return tokens > this.tokenDeflects;
     },
@@ -8484,14 +8442,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {boolean}
      */
     hasGnome: function hasGnome() {
-      var _this4 = this;
+      var _this5 = this;
 
       return this.shared.faction.name === 'bankers' && _.find(this.shared.faction.units, function (unit) {
-        return unit.location === _this4.area.name && unit.type === 'champion';
+        return unit.location === _this5.area.name && unit.type === 'champion';
       });
     },
     hasTokenDeflect: function hasTokenDeflect() {
-      return this.shared.faction.tokenDeflect && this.firstTokenInArea;
+      return this.shared.faction.tokenDeflect && this.playerTokensInArea.length;
     },
 
     /**
@@ -8538,10 +8496,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * @returns {Unit[]}
      */
     units: function units() {
-      var _this5 = this;
+      var _this6 = this;
 
       return this.shared.faction.units.filter(function (unit) {
-        return _.unitInArea(unit, _this5.area, {
+        return _.unitInArea(unit, _this6.area, {
           notHidden: true
         });
       });
@@ -10167,28 +10125,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'choose-factions',
   data: function data() {
     return {
       shared: App.state,
       random: false,
-      selectedFaction: null,
-      togglePlans: false
+      selectedFaction: null
     };
   },
   mounted: function mounted() {
@@ -10282,10 +10225,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    togglePlanState: function togglePlanState() {
-      this.togglePlans = !this.togglePlans;
-    },
-
     /**
      * Sort our factions
      * @param a
@@ -23064,7 +23003,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.game-display-height {\n    height: 91vh;\n    scrollbar-width: thin;\n}\n", ""]);
+exports.push([module.i, "\n.game-display-height {\n    height: 91vh;\n}\n", ""]);
 
 // exports
 
@@ -23178,7 +23117,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.game-hud-plan-image {\n    transform: scale(115%);\n    width: 100%;\n}\n.game-hud-plan-wrap {\n    border-radius: 1em;\n    overflow: hidden;\n    width: 100%; \n    margin-bottom: 5px;\n}\n.plan-toggle-on {\n    color:var(--primary-light-color) !important;\n}\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n    scrollbar-width: thin;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n            user-select: none;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n", ""]);
+exports.push([module.i, "\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n            user-select: none;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n", ""]);
 
 // exports
 
@@ -23539,7 +23478,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.choose-factions__faction-sheet {\n    position: relative;\n}\n.lobby-plan-view {\n    background-image: url(\"/images/background-blurred.jpg\");\n    background-position: center;\n    background-repeat: no-repeat;\n    background-size: 100% 100%;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    width: 75%;\n    max-height: 98%;\n    z-index: 1111;\n    position: fixed;\n    transform: translateX(-50%);\n    left: 50%;\n    padding: 2rem;\n    overflow-y: scroll;\n}\n.lobby-plan-toggle-button {\n    position: absolute;\n    top: -2rem;\n    transform: translateX(-50%);\n    left: 50%;\n    background-color: #763165 !important;\n}\n.lobby-plan-grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n    gap: 1rem;\n    overflow-y: scroll;\n}\n.lobby-plan_image {\n    border-radius: 2rem;\n}\n.choose-factions__faction.killer:before {\n    content: \"\";\n    background-image: url(\"/images/icons/killer-square.png\");\n    height: 1em;\n    background-repeat: no-repeat;\n    background-position: center;\n    width: 1em;\n    position: relative;\n    bottom: 1px;\n    margin-right: .4em;\n    background-size: contain;\n}\n.choose-factions__basic-factions {\n    border-right: 2px solid #ffa70080;\n}\n.choose-factions__expansion-factions {\n    border-right: 2px dotted #ffa70080;\n}\n.choose-factions__status {\n    width: .5em;\n    height: .5em;\n    border-radius: .1em;\n    margin-left: .1em;\n}\n.choose-factions__status-0 { background-color: red;\n}\n.choose-factions__status-1 { background-color: #ff8800;\n}\n.choose-factions__status-2 { background-color: #a7cc00;\n}\n.choose-factions__status-3 { background-color: green;\n}\n.choose-factions__faction-list {\n    max-height: 95vh;\n}\n\n", ""]);
+exports.push([module.i, "\n.choose-factions__faction.killer:before {\n    content: \"\";\n    background-image: url(\"/images/icons/killer-square.png\");\n    height: 1em;\n    background-repeat: no-repeat;\n    background-position: center;\n    width: 1em;\n    position: relative;\n    bottom: 1px;\n    margin-right: .4em;\n    background-size: contain;\n}\n.choose-factions__basic-factions {\n    border-right: 2px solid #ffa70080;\n}\n.choose-factions__expansion-factions {\n    border-right: 2px dotted #ffa70080;\n}\n.choose-factions__status {\n    width: .5em;\n    height: .5em;\n    border-radius: .1em;\n    margin-left: .1em;\n}\n.choose-factions__status-0 { background-color: red;\n}\n.choose-factions__status-1 { background-color: #ff8800;\n}\n.choose-factions__status-2 { background-color: #a7cc00;\n}\n.choose-factions__status-3 { background-color: green;\n}\n.choose-factions__faction-list {\n    max-height: 95vh;\n}\n\n", ""]);
 
 // exports
 
@@ -70817,9 +70756,145 @@ render._withStripped = true
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Huds/GameHud.vue?vue&type=template&id=e2851c86& ***!
   \***************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-throw new Error("Module build failed (from ./node_modules/vue-loader/lib/loaders/templateLoader.js):\nSyntaxError: Unexpected token (1:416)\n    at Parser.pp$4.raise (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2757:13)\n    at Parser.pp.unexpected (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:647:8)\n    at Parser.pp$3.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2196:10)\n    at Parser.<anonymous> (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6003:24)\n    at Parser.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6129:31)\n    at Parser.pp$3.parseExprSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2047:19)\n    at Parser.pp$3.parseMaybeUnary (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2024:17)\n    at Parser.pp$3.parseExprOps (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1966:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1949:19)\n    at Parser.pp$3.parseMaybeAssign (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1925:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1954:28)\n    at Parser.pp$3.parseMaybeAssign (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1925:19)\n    at Parser.pp$3.parseParenAndDistinguishExpression (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2238:30)\n    at Parser.pp$3.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2163:41)\n    at Parser.<anonymous> (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6003:24)\n    at Parser.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6129:31)\n    at Parser.pp$3.parseExprSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2047:19)\n    at Parser.pp$3.parseMaybeUnary (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2024:17)\n    at Parser.pp$3.parseExprOps (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1966:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1949:19)\n    at Parser.pp$3.parseMaybeAssign (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1925:19)\n    at Parser.pp$3.parseExprList (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2663:20)\n    at Parser.pp$3.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2175:26)\n    at Parser.<anonymous> (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6003:24)\n    at Parser.parseExprAtom (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:6129:31)\n    at Parser.pp$3.parseExprSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2047:19)\n    at Parser.pp$3.parseMaybeUnary (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2024:17)\n    at Parser.pp$3.parseExprOps (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1966:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1949:19)\n    at Parser.pp$3.parseMaybeAssign (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1925:19)\n    at Parser.pp$3.parseExprList (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2663:20)\n    at Parser.pp$3.parseSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2075:29)\n    at Parser.pp$3.parseExprSubscripts (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2050:21)\n    at Parser.pp$3.parseMaybeUnary (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:2024:17)\n    at Parser.pp$3.parseExprOps (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1966:19)\n    at Parser.pp$3.parseMaybeConditional (D:\\Websites\\villains-online\\node_modules\\vue-template-es2015-compiler\\buble.js:1949:19)");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "game-hud pos-relative drawer__aside" },
+    [
+      _c("adjust-handle", {
+        attrs: { direction: "right", max: "600", min: "125" },
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "width-100 height-100  flex-column d-flex" }, [
+        _c("div", { staticClass: "game-turn p-3 grow-0 shrink-0" }, [
+          _c(
+            "div",
+            { staticClass: "game-hud__turns width-100 d-flex justify-center" },
+            [
+              _c("span", { staticClass: "px-2" }, [_vm._v("turn")]),
+              _vm._v(" "),
+              _vm._l(4, function (n) {
+                return _c("div", {
+                  staticClass: "turn-count__number",
+                  class: _vm.turnNumClasses(n),
+                })
+              }),
+            ],
+            2
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "game-phase center-text highlight lowercase" },
+            [_vm._v(_vm._s(_vm._f("startCase")(_vm.shared.data.phase)))]
+          ),
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "player-panel grow-1 shrink-1 width-100 overflow-auto",
+          },
+          [
+            _vm._l(_vm.shared.orderedPlayers(), function (player) {
+              return _c("player-hud", {
+                key: player.id,
+                attrs: { player: player },
+              })
+            }),
+            _vm._v(" "),
+            _c("share-image"),
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass:
+              "control-panel p-3 grow-0 shrink-0 d-flex align-stretch highlight flex-wrap",
+          },
+          [
+            _c("turn-timer"),
+            _vm._v(" "),
+            _c("game-sound"),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "d-inline stat-icon highlight pointer deck-icon",
+                attrs: { title: "view discard pile" },
+                on: {
+                  click: function ($event) {
+                    _vm.shared.viewDiscard = !_vm.shared.viewDiscard
+                  },
+                },
+              },
+              [
+                _c("i", { staticClass: "icon-card" }),
+                _vm._v(" "),
+                _c("span", { staticClass: "deck-count" }, [
+                  _vm._v(_vm._s(_vm.shared.data.deckCount)),
+                ]),
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "d-inline stat-icon highlight pointer",
+                on: {
+                  click: function ($event) {
+                    _vm.shared.openCheatSheets = !_vm.shared.openCheatSheets
+                  },
+                },
+              },
+              [
+                _c("i", {
+                  staticClass: "icon-ask",
+                  attrs: { title: "view player aid cards" },
+                }),
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "d-inline stat-icon highlight pointer",
+                on: {
+                  click: function ($event) {
+                    _vm.shared.openSettings = !_vm.shared.openSettings
+                  },
+                },
+              },
+              [
+                _c("i", {
+                  staticClass: "icon-plans",
+                  attrs: { title: "open game settings" },
+                }),
+              ]
+            ),
+          ],
+          1
+        ),
+      ]),
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
 
 /***/ }),
 
@@ -72640,18 +72715,14 @@ var render = function () {
           _vm.hasTokenDeflect
             ? _c("div", { staticClass: "gnome-deflects primary-light" }, [
                 _vm._v(
-                  "\n                Discard this tokens to cancel all hits?\n\n                "
+                  "\n                Discard token(s) to cancel hits?\n\n                "
                 ),
                 _c(
                   "div",
                   { staticClass: "d-flex justify-center" },
                   [
-                    _c("token-set-item", {
-                      attrs: {
-                        token: _vm.firstTokenInArea,
-                        noEmit: "true",
-                        hideUnrevealed: true,
-                      },
+                    _c("token-set", {
+                      attrs: { tokens: _vm.playerTokensInArea, noEmit: "true" },
                     }),
                   ],
                   1
@@ -72666,7 +72737,7 @@ var render = function () {
                       attrs: { disabled: _vm.tokenDeflects === 0 },
                       on: {
                         click: function ($event) {
-                          _vm.tokenDeflects = 0
+                          _vm.tokenDeflects += -1
                         },
                       },
                     }),
@@ -72678,7 +72749,11 @@ var render = function () {
                     _c("i", {
                       staticClass: "icon-maximize ml-2",
                       attrs: { disabled: !_vm.canTokenDeflect },
-                      on: { click: _vm.setTokenDeflects },
+                      on: {
+                        click: function ($event) {
+                          _vm.tokenDeflects += 1
+                        },
+                      },
                     }),
                   ]
                 ),
@@ -73836,64 +73911,16 @@ var render = function () {
           ]),
           _vm._v(" "),
           _vm.selectedFaction
-            ? _c(
-                "div",
-                {
-                  staticClass: "choose-factions__faction-sheet",
-                  style:
-                    "background-image : url('/images/factions/" +
-                    _vm.selectedFaction +
-                    "/sheet.jpg')",
-                },
-                [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "button lobby-plan-toggle-button",
-                      attrs: { "disabled:": "!selectedFaction" },
-                      on: { click: _vm.TogglePlanState },
-                    },
-                    [_vm._v("View Plans")]
-                  ),
-                ]
-              )
+            ? _c("div", {
+                staticClass: "choose-factions__faction-sheet",
+                style:
+                  "background-image : url('/images/factions/" +
+                  _vm.selectedFaction +
+                  "/sheet.jpg')",
+              })
             : _vm._e(),
         ]
       ),
-      _vm._v(" "),
-      _vm.togglePlans
-        ? _c("div", { staticClass: "lobby-plan-view" }, [
-            _c(
-              "button",
-              {
-                staticClass: "toggle minimize-toggle top right",
-                on: { click: _vm.TogglePlanState },
-              },
-              [_c("i", { staticClass: "icon-x" })]
-            ),
-            _vm._v(" "),
-            _vm.selectedFaction
-              ? _c(
-                  "div",
-                  { staticClass: "lobby-plan-grid grid gap-2" },
-                  _vm._l(8, function (plan) {
-                    return _c("img", {
-                      staticClass: "lobby-plan_image",
-                      attrs: {
-                        src:
-                          "/images/factions/" +
-                          _vm.selectedFaction +
-                          "/plans/" +
-                          plan +
-                          ".jpg",
-                      },
-                    })
-                  }),
-                  0
-                )
-              : _vm._e(),
-          ])
-        : _vm._e(),
     ]
   )
 }

@@ -18,7 +18,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'areasWithTypesCount', args : [2, 3, 'patsy'] },
+                    { test : 'areasWithTypesCount', args : [2, 2, 'mole'] },
                 ],
                 value : 1
             },
@@ -77,8 +77,9 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'areasWithTypesCount', args : [2, 3, 'mole'] },
-                    { test : 'enemyMarkers', args : [2] },
+                    { test : 'areasWithTypesCount', args : [2, 2, 'goon'] },
+                    { test : 'areasWithTypesCount', args : [2, 2, 'mole'] },
+                    { test : 'areasWithTypesCount', args : [2, 2, 'talent'] },        
                 ],
                 value : 3
             },
@@ -91,7 +92,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'areasWithTypesCount', args : [2, 3, 'patsy'] },
+                    { test : 'areasWithTypesCount', args : [2, 2, 'talent'] },
                 ],
                 value : 1
             },
@@ -160,7 +161,7 @@ let obj = [
         objectives : [
             {
                 requirements : [
-                    { test : 'unitInEnemy', args : ['mole', 1] },
+                    { test : 'skilledAtTarget', args : [2] },
                 ],
                 value : 1
             },
@@ -172,7 +173,7 @@ let obj = [
             },
             {
                 requirements : [
-                    { test : 'skilledAtTarget', args : [2] },
+                    { test : 'unitInEnemy', args : ['mole', 1] },
                 ],
                 value : 1
             },

@@ -36,8 +36,6 @@
 
             <!-- buttons -->
             <div class="d-flex justify-end" :inivisible="!shared.isActive()">
-                
-
                 <button :disabled="!canRandom" class="button button-empty"
                         @click="chooseRandomFaction">Random</button>
 
@@ -96,16 +94,6 @@
                     <button :disabled="!selectedFaction" class="button lobby-plan-toggle-button" @click="TogglePlanState">View Plans</button>
             </div>
         </div>
-
-        <div v-if="togglePlans" class="lobby-plan-view">
-            <button @click="TogglePlanState" class="toggle minimize-toggle top right">
-                <i class="icon-x"></i>
-            </button>
-            
-            <div v-if="selectedFaction" class="lobby-plan-grid grid gap-2">
-                <img v-for="plan in 8" class="lobby-plan_image" :src="`/images/factions/${selectedFaction}/plans/${plan}.jpg`" />
-            </div>
-        </div> 
     </div>
 </template>
 
@@ -119,7 +107,6 @@
                 shared : App.state,
                 random: false,
                 selectedFaction : null,
-                togglePlans : false,
             };
         },
 
@@ -219,9 +206,6 @@
         },
 
         methods : {
-            togglePlanState(){
-                this.togglePlans = !this.togglePlans;
-            },
 
             /**
              * Sort our factions
@@ -315,45 +299,6 @@
 
 
 <style>
-    .choose-factions__faction-sheet {
-        position: relative;
-    }
-
-    .lobby-plan-view {
-        background-image: url("/images/background-blurred.jpg");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-        box-shadow: 0px 0px 6px rgba(0,0,0,.5);
-        width: 75%;
-        max-height: 98%;
-        z-index: 1111;
-        position: fixed;
-        transform: translateX(-50%);
-        left: 50%;
-        padding: 2rem;
-        overflow-y: scroll;
-    }
-
-    .lobby-plan-toggle-button {
-        position: absolute;
-        top: -2rem;
-        transform: translateX(-50%);
-        left: 50%;
-        background-color: #763165 !important;
-    }
-
-    .lobby-plan-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1rem;
-        overflow-y: scroll;
-    }
-
-    .lobby-plan_image {
-        border-radius: 2rem;
-    }
-
     .choose-factions__faction.killer:before {
         content: "";
         background-image: url("/images/icons/killer-square.png");
