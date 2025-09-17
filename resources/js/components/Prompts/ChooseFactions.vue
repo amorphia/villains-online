@@ -93,7 +93,7 @@
             <div v-if="selectedFaction" class="choose-factions__faction-sheet"
                 :style="`background-image : url('/images/factions/${selectedFaction}/sheet.jpg')`"
                 >
-                    <button disabled:="!selectedFaction" class="button lobby-plan-toggle-button" @click="TogglePlanState">View Plans</button>
+                    <button :disabled="!selectedFaction" class="button lobby-plan-toggle-button" @click="TogglePlanState">View Plans</button>
             </div>
         </div>
 

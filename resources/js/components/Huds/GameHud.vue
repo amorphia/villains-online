@@ -36,7 +36,7 @@
 
                 <div v-if="viewingPlayerPlanNumbers">
                     <div v-for="num in viewingPlayerPlanNumbers" class="game-hud-plan-wrap">
-                        <img  class="game-hud-plan-image" :src="`/images/factions/${viewingPlayer.name}/plans/${num}.jpg`">
+                        <img  class="game-hud-plan-image" :src="`/images/factions/${viewingPlayer?.name}/plans/${num}.jpg`">
                     </div>
                 </div>
 
@@ -97,7 +97,7 @@
         methods : {
             togglePlansState(){
                 this.togglePlans = !this.togglePlans;
-                localStorage.setItem("plansUI", JSON.stringify( this.togglePlans));
+                localStorage.setItem("plansUI", JSON.stringify( this.togglePlans ));
             },
 
             /**
@@ -123,7 +123,7 @@
 
         computed: {
             activePlayer(){
-                if(this.shared.player.isSpectator) return null;
+                if(this.shared.player?.isSpectator) return null;
 
                 let activeIndex = this.shared?.data?.activePlayerIndex;
                 return this.shared.orderedPlayers()[activeIndex];
@@ -134,10 +134,10 @@
             },
 
             viewingPlayerPlanNumbers(){
-                if(this.shared.player.isSpectator) return null;
+                if(this.shared.player?.isSpectator) return null;
 
                 let planNumbers = [];
-                plans.forEach(plan => {
+                this.shared.faction?.plans?.current?.forEach(plan => {
                     planNumbers.push(plan.num);                    
                 });
 
