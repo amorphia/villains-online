@@ -66,7 +66,7 @@
              */
             checkForAPSound(){
                 // if points were scored play the points sound
-                if( this.currentAreaData.capture || this.currentAreaData.capitolToken ){
+                if( this.currentAreaData?.capture || this.currentAreaData?.capitolToken ){
                     App.event.emit( 'sound', 'points' );
                     return;
                 }
@@ -107,7 +107,7 @@
              * @returns {string|false}
              */
             currentOwner(){
-                return this.currentAreaData.newController ? this.currentAreaData.newController : false;
+                return this.currentAreaData?.newController ? this.currentAreaData?.newController : false;
             },
 
 
@@ -119,16 +119,16 @@
                 let data = this.currentAreaData;
 
                 // if the area was retained
-                if( this.isRetained( data ) ) return `The ${data.oldController} retain the ${this.currentAreaData.name}`;
+                if( this.isRetained( data ) ) return `The ${data.oldController} retain the ${this.currentAreaData?.name}`;
 
                 // if the area has gone uncontrolled
                 if( !data.newController ) return `The ${data.name} remains uncontrolled`;
 
                 // if this area was not previously controlled
-                if( !data.oldController ) return `The ${data.newController} take the ${this.currentAreaData.name}`;
+                if( !data.oldController ) return `The ${data.newController} take the ${this.currentAreaData?.name}`;
 
                 // otherwise the area must have been taken by one player from another player
-                return `The ${data.newController} take the ${this.currentAreaData.name} from the ${data.oldController}`;
+                return `The ${data.newController} take the ${this.currentAreaData?.name} from the ${data.oldController}`;
             },
 
 
@@ -146,7 +146,7 @@
              * @returns {object[]}
              */
             currentAreaInfluences(){
-                return this.currentAreaData.influences.sort( (a,b) => b.influence - a.influence );
+                return this.currentAreaData?.influences.sort( (a,b) => b.influence - a.influence );
             },
 
 
@@ -155,7 +155,7 @@
              * @returns {string}
              */
             currentAreaName(){
-                return this.currentAreaData.name;
+                return this.currentAreaData?.name;
             },
 
 

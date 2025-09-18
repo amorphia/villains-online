@@ -6322,13 +6322,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'game-hud',
   data: function data() {
     return {
       shared: App.state,
-      openSettings: false
+      openSettings: false,
+      planView: false
     };
+  },
+  created: function created() {
+    // check our cookies to see any previous hud view setting
+    if (localStorage.getItem("planView") === 'true') {
+      this.planView = true;
+    }
   },
   methods: {
     /**
@@ -6337,6 +6363,10 @@ __webpack_require__.r(__webpack_exports__);
     saveGame: function saveGame() {
       App.event.emit('sound', 'ui');
       this.shared.socket.emit('saveGame', this.shared.data.id);
+    },
+    togglePlanView: function togglePlanView() {
+      this.planView = !this.planView;
+      localStorage.setItem("planView", JSON.stringify(this.planView));
     },
 
     /**
@@ -6348,6 +6378,40 @@ __webpack_require__.r(__webpack_exports__);
       var output = 'icon-num-' + index;
       if (this.shared.data.turn === index) output += " active";
       return output;
+    }
+  },
+  computed: {
+    phase: function phase() {
+      return this.shared.data.phase;
+    },
+    activePlayer: function activePlayer() {
+      var _players$this$shared$, _this$shared$data;
+
+      var players = this.shared.orderedPlayers();
+      return (_players$this$shared$ = players[(_this$shared$data = this.shared.data) === null || _this$shared$data === void 0 ? void 0 : _this$shared$data.activePlayerIndex]) !== null && _players$this$shared$ !== void 0 ? _players$this$shared$ : {};
+    },
+    faction: function faction() {
+      return this.shared.faction;
+    },
+    currentPlans: function currentPlans() {
+      var _this$faction$plans$c, _this$faction, _this$faction$plans;
+
+      return (_this$faction$plans$c = (_this$faction = this.faction) === null || _this$faction === void 0 ? void 0 : (_this$faction$plans = _this$faction.plans) === null || _this$faction$plans === void 0 ? void 0 : _this$faction$plans.current) !== null && _this$faction$plans$c !== void 0 ? _this$faction$plans$c : [];
+    },
+    currentPlanNumbers: function currentPlanNumbers() {
+      return this.currentPlans.map(function (plan) {
+        return plan.num;
+      });
+    },
+    isSpectator: function isSpectator() {
+      return this.shared.player.isSpectator;
+    },
+    showPlanView: function showPlanView() {
+      if (this.isSpectator) return false;
+      if (!this.currentPlans.length) return false;
+      var validPhases = ['place-tokens', 'take-actions'];
+      if (!validPhases.includes(this.phase)) return false;
+      return this.planView;
     }
   }
 });
@@ -7168,8 +7232,10 @@ __webpack_require__.r(__webpack_exports__);
      * Choose what sound to play
      */
     checkForAPSound: function checkForAPSound() {
+      var _this$currentAreaData, _this$currentAreaData2;
+
       // if points were scored play the points sound
-      if (this.currentAreaData.capture || this.currentAreaData.capitolToken) {
+      if ((_this$currentAreaData = this.currentAreaData) !== null && _this$currentAreaData !== void 0 && _this$currentAreaData.capture || (_this$currentAreaData2 = this.currentAreaData) !== null && _this$currentAreaData2 !== void 0 && _this$currentAreaData2.capitolToken) {
         App.event.emit('sound', 'points');
         return;
       } // otherwise just play the usual chirp
@@ -7207,7 +7273,9 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {string|false}
      */
     currentOwner: function currentOwner() {
-      return this.currentAreaData.newController ? this.currentAreaData.newController : false;
+      var _this$currentAreaData3, _this$currentAreaData4;
+
+      return (_this$currentAreaData3 = this.currentAreaData) !== null && _this$currentAreaData3 !== void 0 && _this$currentAreaData3.newController ? (_this$currentAreaData4 = this.currentAreaData) === null || _this$currentAreaData4 === void 0 ? void 0 : _this$currentAreaData4.newController : false;
     },
 
     /**
@@ -7215,15 +7283,17 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {string}
      */
     message: function message() {
+      var _this$currentAreaData5, _this$currentAreaData6, _this$currentAreaData7;
+
       var data = this.currentAreaData; // if the area was retained
 
-      if (this.isRetained(data)) return "The ".concat(data.oldController, " retain the ").concat(this.currentAreaData.name); // if the area has gone uncontrolled
+      if (this.isRetained(data)) return "The ".concat(data.oldController, " retain the ").concat((_this$currentAreaData5 = this.currentAreaData) === null || _this$currentAreaData5 === void 0 ? void 0 : _this$currentAreaData5.name); // if the area has gone uncontrolled
 
       if (!data.newController) return "The ".concat(data.name, " remains uncontrolled"); // if this area was not previously controlled
 
-      if (!data.oldController) return "The ".concat(data.newController, " take the ").concat(this.currentAreaData.name); // otherwise the area must have been taken by one player from another player
+      if (!data.oldController) return "The ".concat(data.newController, " take the ").concat((_this$currentAreaData6 = this.currentAreaData) === null || _this$currentAreaData6 === void 0 ? void 0 : _this$currentAreaData6.name); // otherwise the area must have been taken by one player from another player
 
-      return "The ".concat(data.newController, " take the ").concat(this.currentAreaData.name, " from the ").concat(data.oldController);
+      return "The ".concat(data.newController, " take the ").concat((_this$currentAreaData7 = this.currentAreaData) === null || _this$currentAreaData7 === void 0 ? void 0 : _this$currentAreaData7.name, " from the ").concat(data.oldController);
     },
 
     /**
@@ -7239,7 +7309,9 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {object[]}
      */
     currentAreaInfluences: function currentAreaInfluences() {
-      return this.currentAreaData.influences.sort(function (a, b) {
+      var _this$currentAreaData8;
+
+      return (_this$currentAreaData8 = this.currentAreaData) === null || _this$currentAreaData8 === void 0 ? void 0 : _this$currentAreaData8.influences.sort(function (a, b) {
         return b.influence - a.influence;
       });
     },
@@ -7249,7 +7321,9 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {string}
      */
     currentAreaName: function currentAreaName() {
-      return this.currentAreaData.name;
+      var _this$currentAreaData9;
+
+      return (_this$currentAreaData9 = this.currentAreaData) === null || _this$currentAreaData9 === void 0 ? void 0 : _this$currentAreaData9.name;
     },
 
     /**
@@ -23130,7 +23204,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n            user-select: none;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n", ""]);
+exports.push([module.i, "\n.game-hud-plan-image {\n    transform: scale(110%);\n    width: 100%;\n}\n.game-hud-plan-wrap {\n    border-radius: 1em;\n    overflow: hidden;\n    width: 100%; \n    margin-bottom: 5px;\n}\n.deck-count {\n    font-family: var(--primary-font);\n    position: relative;\n    top: .05em;\n    margin-left: .2em;\n    color: #ffffff94;\n}\n.stat-icon.deck-icon {\n    font-size: 1.2em;\n}\n.stat-icon.save-icon {\n    font-size: .95em;\n}\n.rules-link i {\n    font-size: .9em;\n}\n.control-panel {\n    background-color: rgba(0,0,0,.25);\n}\n.control-panel .stat-icon {\n    height: unset;\n    width: unset;\n    flex-grow: 1;\n}\n.player-panel {\n    max-height: 90%;\n    scrollbar-width: thin;\n}\n.game-hud {\n    width: 12vw;\n    background-image: url('/images/background-blurred.jpg');\n    background-size: auto 100%;\n    background-position: left;\n    box-shadow: 0px 0px 6px rgba(0,0,0,.5);\n    font-family: var(--accent-font);\n    font-size: 1rem;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n            user-select: none;\n}\n.drawer__toggle {\n    right: 0;\n    top: 0;\n    transform: translateX(100%);\n    background-color: rgba(0,0,0,.3);\n    color: var(--highlight-color);\n}\n.drawer__toggle.closed {\n    color: var(--primary-light-color);\n}\n.turn-count__number {\n    color : var(--primary-light-color);\n    font-size: 1.3rem;\n}\n.turn-count__number.active {\n    color: var(--highlight-color);\n}\n.game-turn {\n    background-color: rgba(0,0,0,.25);\n    margin-bottom: .5rem;\n}\n", ""]);
 
 // exports
 
@@ -23263,7 +23337,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.timer {\n    font-size: 2rem;\n}\n.timer--white {\n    color: rgba(255,255,255,.65);\n}\n.timer--red {\n    color: red;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.timer {\n    font-size: 1rem;\n}\n.timer--white {\n    color: rgba(255,255,255,.65);\n}\n.timer--red {\n    color: red;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -70791,8 +70865,21 @@ var render = function () {
         _c("div", { staticClass: "game-turn p-3 grow-0 shrink-0" }, [
           _c(
             "div",
-            { staticClass: "game-hud__turns width-100 d-flex justify-center" },
+            {
+              staticClass:
+                "game-hud__turns width-100 d-flex justify-center align-center",
+            },
             [
+              !_vm.isSpectator
+                ? _c("i", {
+                    class: _vm.planView
+                      ? "icon-toggle_on primary-light"
+                      : "icon-toggle_off",
+                    attrs: { title: "Toggle Plan View" },
+                    on: { click: _vm.togglePlanView },
+                  })
+                : _vm._e(),
+              _vm._v(" "),
               _c("span", { staticClass: "px-2" }, [_vm._v("turn")]),
               _vm._v(" "),
               _vm._l(4, function (n) {
@@ -70812,23 +70899,66 @@ var render = function () {
           ),
         ]),
         _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "player-panel grow-1 shrink-1 width-100 overflow-auto",
-          },
-          [
-            _vm._l(_vm.shared.orderedPlayers(), function (player) {
-              return _c("player-hud", {
-                key: player.id,
-                attrs: { player: player },
-              })
-            }),
-            _vm._v(" "),
-            _c("share-image"),
-          ],
-          2
-        ),
+        _vm.showPlanView
+          ? _c(
+              "div",
+              {
+                staticClass:
+                  "player-panel grow-1 shrink-1 width-100 overflow-auto",
+              },
+              [
+                _c("player-hud", {
+                  key: _vm.activePlayer.id,
+                  attrs: { player: _vm.activePlayer },
+                }),
+                _vm._v(" "),
+                _vm.currentPlanNumbers.length
+                  ? _c(
+                      "div",
+                      { staticClass: "p-3" },
+                      _vm._l(_vm.currentPlanNumbers, function (num) {
+                        return _c(
+                          "div",
+                          { staticClass: "game-hud-plan-wrap" },
+                          [
+                            _c("img", {
+                              staticClass: "game-hud-plan-image",
+                              attrs: {
+                                src:
+                                  "/images/factions/" +
+                                  _vm.faction.name +
+                                  "/plans/" +
+                                  num +
+                                  ".jpg",
+                              },
+                            }),
+                          ]
+                        )
+                      }),
+                      0
+                    )
+                  : _vm._e(),
+              ],
+              1
+            )
+          : _c(
+              "div",
+              {
+                staticClass:
+                  "player-panel grow-1 shrink-1 width-100 overflow-auto",
+              },
+              [
+                _vm._l(_vm.shared.orderedPlayers(), function (player) {
+                  return _c("player-hud", {
+                    key: player.id,
+                    attrs: { player: player },
+                  })
+                }),
+                _vm._v(" "),
+                _c("share-image"),
+              ],
+              2
+            ),
         _vm._v(" "),
         _c(
           "div",

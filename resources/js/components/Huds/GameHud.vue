@@ -8,15 +8,34 @@
 
             <!-- GAME STATS -->
             <div class="game-turn p-3 grow-0 shrink-0">
-                <div class="game-hud__turns width-100 d-flex justify-center">
+                <div class="game-hud__turns width-100 d-flex justify-center align-center">
+                     <i v-if="!isSpectator"
+                        title="Toggle Plan View" 
+                        :class="planView ? 'icon-toggle_on primary-light' : 'icon-toggle_off'" 
+                        @click="togglePlanView"
+                    ></i>
                     <span class="px-2">turn</span>
                     <div v-for="n in 4" class="turn-count__number" :class="turnNumClasses( n )"></div>
                 </div>
                 <div class="game-phase center-text highlight lowercase">{{ shared.data.phase | startCase }}</div>
             </div>
 
+            <!-- plan view -->
+            <div v-if="showPlanView" class="player-panel grow-1 shrink-1 width-100 overflow-auto">
+                <player-hud
+                    :player="activePlayer"
+                    :key="activePlayer.id"
+                />
+
+                <div v-if="currentPlanNumbers.length" class="p-3">
+                    <div v-for="num in currentPlanNumbers" class="game-hud-plan-wrap">
+                        <img  class="game-hud-plan-image" :src="`/images/factions/${faction.name}/plans/${num}.jpg`">
+                    </div>
+                </div>
+            </div>
+
             <!-- PLAYER STATS -->
-            <div class="player-panel grow-1 shrink-1 width-100 overflow-auto">
+            <div v-else class="player-panel grow-1 shrink-1 width-100 overflow-auto">
                 <player-hud v-for="player in shared.orderedPlayers()"
                     :player="player"
                     :key="player.id"
@@ -67,7 +86,15 @@
             return {
                 shared : App.state,
                 openSettings : false,
+                planView: false,
             };
+        },
+
+        created(){
+            // check our cookies to see any previous hud view setting
+            if( localStorage.getItem("planView") === 'true' ){
+                this.planView = true;
+            }
         },
 
         methods : {
@@ -80,6 +107,11 @@
             },
 
 
+            togglePlanView(){
+                this.planView = !this.planView;
+                localStorage.setItem("planView", JSON.stringify( this.planView ));
+            },
+
             /**
              * Returns the classes for our turn number
              * @param index
@@ -90,12 +122,61 @@
                 if( this.shared.data.turn === index ) output += " active";
                 return output;
             }
+        },
+
+        computed: {
+            phase(){
+                return this.shared.data.phase;
+            },
+
+            activePlayer(){
+                let players = this.shared.orderedPlayers();
+                return players[this.shared.data?.activePlayerIndex] ?? {};
+            },
+
+            faction(){
+                return this.shared.faction;
+            },
+
+            currentPlans(){
+                return this.faction?.plans?.current ?? [];
+            },
+
+            currentPlanNumbers(){
+                return this.currentPlans.map(plan => plan.num);
+            },
+
+            isSpectator(){
+                return this.shared.player.isSpectator;
+            },
+
+            showPlanView(){
+                if(this.isSpectator) return false;
+                if(!this.currentPlans.length) return false;
+                
+                let validPhases = ['place-tokens', 'take-actions'];
+                if(!validPhases.includes(this.phase)) return false;
+
+                return this.planView;
+            },
         }
     }
 </script>
 
 
 <style>
+    .game-hud-plan-image {
+        transform: scale(110%);
+        width: 100%;
+    }
+
+    .game-hud-plan-wrap {
+        border-radius: 1em;
+        overflow: hidden;
+        width: 100%; 
+        margin-bottom: 5px;
+    }
+
     .deck-count {
         font-family: var(--primary-font);
         position: relative;
@@ -128,6 +209,7 @@
 
     .player-panel {
         max-height: 90%;
+        scrollbar-width: thin;
     }
 
     .game-hud {

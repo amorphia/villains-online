@@ -73,7 +73,7 @@
 
 <style>
     .timer {
-        font-size: 2rem;
+        font-size: 1rem;
     }
 
     .timer--white {
