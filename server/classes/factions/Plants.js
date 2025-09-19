@@ -22,6 +22,7 @@ class Plants extends Faction {
         this.data.flipableUnits = ['champion'];
         this.data.additionalUnitIcon = ['plant'];
         this.data.hasPlants = true;
+        this.data.optionalAttack = true; // this faction doesn't need to attack with its units
 
         // used to store additional word tokens before the appropriate upgrade is scored
         this.data.vines = [];
@@ -48,10 +49,8 @@ class Plants extends Faction {
         //this.units['goon'].count = 3;
         delete this.units['goon'];
         this.units['mole'].count = 8;
-        this.units['mole'].data.attack = [];
         this.units['talent'].count = 6;
-        this.units['talent'].data.attack = [];
-        this.units['patsy'].count = 8;
+        this.units['patsy'].count = 10;
         this.units['patsy'].data.influence = 1;
 
         this.units['champion'] = {
