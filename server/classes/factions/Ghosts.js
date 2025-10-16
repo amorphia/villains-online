@@ -8,7 +8,7 @@ class Ghosts extends Faction {
         super(owner, game);
 
         //data
-        this.data.maxEnergy = 8;
+        //this.data.maxEnergy = 8;
         this.data.name = this.name;
         this.data.title = "The Lost Legion";
         this.data.focusDescription = "Retain areas you control";
@@ -54,7 +54,7 @@ class Ghosts extends Faction {
                 hitsAssigned: 0,
                 onUnflip: 'placeHerald',
                 returnOnCleanup: true,
-                hidden: false,
+                hidden: true,
                 ghost : true,
                 description: "Enemy tokens don't produce xIx in this area, Rule: When revealed place your herald in this or an adjacent area"
             }
@@ -67,7 +67,7 @@ class Ghosts extends Faction {
                 type: 'herald',
                 basic: false,
                 attack: [],
-                influence: 2,
+                influence: 3,
                 noDeploy: true,
                 noMove: true,
                 hidden: true,
@@ -85,14 +85,14 @@ class Ghosts extends Faction {
                 type: 'banshee',
                 isChampion: true,
                 basic: false,
-                attack: [8,8],
+                attack: [7,7],
                 noDeploy: true,
-                influence: 0,
+                influence: 1,
                 noMove: true,
                 killed: false,
                 flipped: false,
                 selected: false,
-                hidden: false,
+                hidden: true,
                 onUnflip: "bansheeWail",
                 returnOnCleanup: true,
                 hitsAssigned: 0,
@@ -109,14 +109,14 @@ class Ghosts extends Faction {
                 type: 'poltergeist',
                 isChampion: true,
                 basic: false,
-                attack: [5,5],
+                attack: [4,4],
                 noDeploy: true,
                 influence: 0,
                 noMove: true,
                 killed: false,
                 flipped: false,
                 selected: false,
-                hidden: false,
+                hidden: true,
                 returnOnCleanup: true,
                 onUnflip: "scareUnits",
                 hitsAssigned: 0,
