@@ -86,7 +86,7 @@ class Skeletons extends Faction {
                 name: "Xer'Zhul",
                 type: 'champion',
                 basic: false,
-                influence: 2,
+                influence: 3,
                 attack: [],
                 cost: 1,
                 skilled: true,
